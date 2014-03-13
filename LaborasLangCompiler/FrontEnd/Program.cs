@@ -11,8 +11,6 @@ namespace LaborasLangCompiler.FrontEnd
     {
         static int Main(string[] args)
         {
-            Parser.ParseSample();
-            /*
             try
             {
                 var compilerArgs = CompilerArguments.Parse(args);
@@ -24,7 +22,7 @@ namespace LaborasLangCompiler.FrontEnd
 
                 return -1;
             }
-            */
+
             return 0;
         }
     }
