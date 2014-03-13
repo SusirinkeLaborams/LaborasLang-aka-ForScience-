@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.Lexer;
 
 namespace LaborasLangCompiler.FrontEnd
 {
@@ -10,6 +11,8 @@ namespace LaborasLangCompiler.FrontEnd
     {
         static int Main(string[] args)
         {
+            Parser.ParseSample();
+            /*
             try
             {
                 var compilerArgs = CompilerArguments.Parse(args);
@@ -21,7 +24,7 @@ namespace LaborasLangCompiler.FrontEnd
 
                 return -1;
             }
-
+            */
             return 0;
         }
     }
