@@ -1,9 +1,9 @@
-﻿using System;
+﻿using LaborasLangCompiler.LexingTools;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LaborasLangCompiler.Lexer;
 
 namespace LaborasLangCompiler.FrontEnd
 {
@@ -14,6 +14,11 @@ namespace LaborasLangCompiler.FrontEnd
             try
             {
                 var compilerArgs = CompilerArguments.Parse(args);
+                foreach (var file in compilerArgs.SourceFiles)
+                {
+                    var bytes = FileReader.Read(file);
+                    var tree = Lexer.MakeTree(bytes);
+                }
             }
             catch (Exception e)
             {

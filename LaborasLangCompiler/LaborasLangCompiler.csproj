@@ -62,7 +62,8 @@
     <Compile Include="FrontEnd\CompilerArguments.cs" />
     <Compile Include="FrontEnd\Program.cs" />
     <Compile Include="ILTools\AssemblyRegistry.cs" />
-    <Compile Include="Parser\Parser.cs" />
+    <Compile Include="LexingTools\FileReader.cs" />
+    <Compile Include="LexingTools\Lexer.cs" />
     <Compile Include="Misc\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
