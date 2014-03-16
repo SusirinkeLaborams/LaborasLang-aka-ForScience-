@@ -68,7 +68,7 @@
     <Compile Include="Parser\Types\FunctionType.cs" />
     <Compile Include="Parser\Types\PrimitiveType.cs" />
     <Compile Include="Parser\Types\Testing.cs" />
-    <Compile Include="Parser\Types\Type.cs" />
+    <Compile Include="Parser\Types\BaseType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
