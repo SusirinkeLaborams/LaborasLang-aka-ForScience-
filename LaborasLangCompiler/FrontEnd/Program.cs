@@ -1,5 +1,4 @@
 ﻿using LaborasLangCompiler.LexingTools;
-using LaborasLangCompiler.Parser.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +12,7 @@ namespace LaborasLangCompiler.FrontEnd
     {
         static int Main(string[] args)
         {
+            //Parser.Types.Testing.TestTypes();
             try
             {
                 var compilerArgs = CompilerArguments.Parse(args);

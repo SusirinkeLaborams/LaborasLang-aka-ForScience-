@@ -1,8 +1,9 @@
 ﻿using System;
 namespace LaborasLangCompiler.Parser.Types
 {
-    interface BaseType
+    abstract class BaseType
     {
-        //apparently, nothing
+        public abstract override bool Equals(object obj);
+        public abstract override int GetHashCode();
     }
 }
