@@ -33,7 +33,8 @@ namespace LaborasLangCompiler.LexingTools
                         Ws?
                         (FunctionArgument Ws? (',' Ws? FunctionArgument Ws?)*)?
                     ')';
-                (?<Function>): FunctionType Ws? CodeBlock / Symbol;
+                (?<NamedFunctionType>): Type Ws? ('(' Ws? ((Type Ws Symbol) Ws? (',' Ws? (Type Ws Symbol) Ws?)*)? ')');
+                (?<Function>): NamedFunctionType Ws? CodeBlock / Symbol;
                 (?<Declaration>): (FunctionType / Type) Ws Symbol;
 
 
