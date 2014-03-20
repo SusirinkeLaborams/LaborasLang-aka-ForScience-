@@ -1,4 +1,11 @@
-type variable;
+int() functionDeclaration;
+int(int, float) functionDeclaration2;
+
+int(int, float) functionDeclarationAndassignment = int(int, float)
+{
+    CodeBlock asdf = 4;
+}
+type variable = 5;
 function(single);
 function(multiple, params);
 _underscore();

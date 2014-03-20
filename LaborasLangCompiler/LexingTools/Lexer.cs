@@ -16,24 +16,35 @@ namespace LaborasLangCompiler.LexingTools
  
                 (?<Ws>): [\n\r\t\s]+;       
                 (?<Symbol>): [a-zA-Z_]+ [a-zA-Z-0-9_]*;
-                (?<Type>): Symbol;
+                
                 (?<Literal>): [0-9];
+                (?<AssignmentOperator>): '+=' / '-=' / '*=' / '/=' / '%=' / '&=' / '|=' / '^=' / '<<=' / '>>=' / '=';                
+                (?<RelationOperator>): '==' / '!=' / '<=' / '>=' / '<' / '>';
+                (?<ShiftOperator>): '>>' / '<<';     
+                (?<UnaryOperator>): '!' / '++' / '--';           
+                
+                (?<Type>): Symbol;
                 (?<Value>): FunctionCall / Symbol / Literal;
-
+                
+                (?<FunctionType>): Type Ws? (?<ArgumentTypes> '(' Ws? (Type Ws? (',' Ws? Type Ws?)*)? ')');
                 (?<FunctionArgument>): Value;
-                (?<FunctionCall>): (?<FunctionName> Symbol) Ws? 
+                (?<FunctionCall>): (Function) Ws? 
                     '('
                         Ws?
                         (FunctionArgument Ws? (',' Ws? FunctionArgument Ws?)*)?
                     ')';
-                
-                (?<Declaration>): Type Ws Symbol;
-                (?<Assignment>): Symbol Ws? '=' Ws? Value;
-                
+                (?<Function>): FunctionType Ws? CodeBlock / Symbol;
+                (?<Declaration>): (FunctionType / Type) Ws Symbol;
+
+
+                (?<Assignment>): (Declaration / Symbol) Ws? '=' Ws? Value /
+                                 Symbol Ws? AssignmentOperator Ws? Value;
+                (?<FunctionAsignment>): Declaration Ws? '=' Ws? Function;
                 (?<ConditionalSentence>): 'if' Ws? '(' Ws? (?<Condition> Value) Ws? ')' Ws? CodeBlock;
                 
                 (?<EndOfSentence>): ';';                
-                (?<Sentence>): (Declaration / Assignment / FunctionCall) EndOfSentence;
+                (?<Sentence>): (Assignment / Declaration / FunctionCall) EndOfSentence /
+                                FunctionAsignment;
                 
                 (?<CodeBlock>): Ws? '{' Ws? ((Sentence / CodeBlock / ConditionalSentence) Ws?)* Ws? '}'  Ws? ;
                 
