@@ -43,7 +43,8 @@ namespace LaborasLangCompiler.FrontEnd
                 if (!child.Token.Name.Equals("Ws"))
                 {
                     var tokenValue = System.Text.Encoding.UTF8.GetString(tokens.Text(child.Token.Start, child.Token.End));
-                    Console.WriteLine(String.Format("{0}{1}: [{2}]\n", tabs, child.Token.Name, tokenValue.Replace("\r\n","")));
+                    tokenValue = tokenValue.Replace("\t", "").Replace("    ", "").Replace("\r\n", "");
+                    Console.WriteLine(String.Format("{0}{1}: [{2}]\n", tabs, child.Token.Name, tokenValue));
                 }
                 foreach (var grandson in child.Children)
                 {

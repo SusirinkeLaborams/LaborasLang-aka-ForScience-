@@ -41,13 +41,14 @@ namespace LaborasLangCompiler.LexingTools
                 (?<Assignment>): (Declaration / Symbol) Ws? '=' Ws? Value /
                                  Symbol Ws? AssignmentOperator Ws? Value;
                 (?<FunctionAsignment>): Declaration Ws? '=' Ws? Function;
-                (?<ConditionalSentence>): 'if' Ws? '(' Ws? (?<Condition> Value) Ws? ')' Ws? CodeBlock;
-                
+                (?<ConditionalSentence>): 'if' Ws? '(' Ws? (?<Condition> Value) Ws? ')' (?<TrueBlock> CodeBlock) 'else' (?<FalseBlock> CodeBlock) /
+                                            'if' Ws? '(' Ws? (?<Condition> Value) Ws? ')' (?<TrueBlock> CodeBlock);
+                (?<Loop>):  'while' Ws? '(' Ws? (?<Condition> Value) Ws? ')' Ws? CodeBlock;
                 (?<EndOfSentence>): ';';                
                 (?<Sentence>): (Assignment / Declaration / FunctionCall) EndOfSentence /
                                 FunctionAsignment;
                 
-                (?<CodeBlock>): Ws? '{' Ws? ((Sentence / CodeBlock / ConditionalSentence) Ws?)* Ws? '}'  Ws? ;
+                (?<CodeBlock>): Ws? '{' Ws? ((Sentence / CodeBlock / ConditionalSentence / Loop) Ws?)* Ws? '}'  Ws? ;
                 
                 (?<Root>): Ws? ((CodeBlock / Sentence) Ws?)* Ws?;
             ".Trim();
