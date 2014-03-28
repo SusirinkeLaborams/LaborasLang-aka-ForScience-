@@ -46,10 +46,7 @@ namespace LaborasLangCompiler.FrontEnd
                     tokenValue = tokenValue.Replace("\t", "").Replace("    ", "").Replace("\r\n", "");
                     Debug.WriteLine(String.Format("{0}{1}: [{2}]", tabs, child.Token.Name, tokenValue));
                 }
-                foreach (var grandson in child.Children)
-                {
-                    PrintAst(grandson, depth + 1, tokens);
-                }
+                PrintAst(child, depth + 1, tokens);
             }
         }
     }

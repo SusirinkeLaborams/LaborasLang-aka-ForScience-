@@ -45,7 +45,7 @@ namespace LaborasLangCompiler.LexingTools
                                             'if' Ws? '(' Ws? (?<Condition> Value) Ws? ')' (?<TrueBlock> CodeBlock);
                 (?<Loop>):  'while' Ws? '(' Ws? (?<Condition> Value) Ws? ')' Ws? CodeBlock;
                 (?<EndOfSentence>): ';';                
-                (?<Sentence>): (Assignment / Declaration / FunctionCall) EndOfSentence /
+                (?<Sentence>): ((Assignment / Declaration / FunctionCall) EndOfSentence) /
                                 FunctionAsignment;
                 
                 (?<CodeBlock>): Ws? '{' Ws? ((Sentence / CodeBlock / ConditionalSentence / Loop) Ws?)* Ws? '}'  Ws? ;
