@@ -44,7 +44,7 @@ namespace LaborasLangCompiler.FrontEnd
                 {
                     var tokenValue = System.Text.Encoding.UTF8.GetString(tokens.Text(child.Token.Start, child.Token.End));
                     tokenValue = tokenValue.Replace("\t", "").Replace("    ", "").Replace("\r\n", "");
-                    Console.WriteLine(String.Format("{0}{1}: [{2}]\n", tabs, child.Token.Name, tokenValue));
+                    Debug.WriteLine(String.Format("{0}{1}: [{2}]", tabs, child.Token.Name, tokenValue));
                 }
                 foreach (var grandson in child.Children)
                 {
