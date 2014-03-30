@@ -12,7 +12,7 @@ namespace LaborasLangCompiler.ILTools
     internal class AssemblyEmitter
     {
         private AssemblyDefinition assemblyDefinition;
-
+        
         public AssemblyEmitter(CompilerArguments compilerArgs, Version version = null)
         {
             if (version == null)
@@ -33,6 +33,16 @@ namespace LaborasLangCompiler.ILTools
         public void SetEntryPoint(MethodDefinition entryPoint)
         {
             assemblyDefinition.EntryPoint = entryPoint;
+        }
+
+        public void AddType(TypeDefinition type)
+        {
+            assemblyDefinition.MainModule.Types.Add(type);
+        }
+
+        public void AddToRegistry(AssemblyRegistry registy)
+        {
+            registy.RegisterAssembly(assemblyDefinition);
         }
 
         public void Save()

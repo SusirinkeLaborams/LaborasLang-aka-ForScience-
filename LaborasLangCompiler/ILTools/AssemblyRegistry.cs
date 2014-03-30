@@ -50,6 +50,17 @@ namespace LaborasLangCompiler.ILTools
             }
         }
 
+        public void RegisterAssembly(AssemblyDefinition assemblyDefinition)
+        {
+            if (assemblyPaths.Contains(assemblyDefinition.MainModule.Name, StringComparer.InvariantCultureIgnoreCase))
+            {
+                return;
+            }
+
+            assemblyPaths.Add(assemblyDefinition.MainModule.Name);
+            assemblies.Add(assemblyDefinition);
+        }
+
         #region Type/Method/Property/Field getters
 
         private TypeDefinition GetType(IList<TypeDefinition> types, string typeName)

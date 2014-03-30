@@ -16,12 +16,12 @@ namespace LaborasLangCompiler.FrontEnd
             try
             {
                 var compilerArgs = CompilerArguments.Parse(args);
+
                 foreach (var file in compilerArgs.SourceFiles)
                 {
                     var bytes = FileReader.Read(file);
                     var tree = Lexer.MakeTree(bytes);
                     PrintAst(tree, 1, bytes);
-
                 }
             }
             catch (Exception e)

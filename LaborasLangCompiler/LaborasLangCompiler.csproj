@@ -63,6 +63,8 @@
     <Compile Include="FrontEnd\Program.cs" />
     <Compile Include="ILTools\AssemblyEmitter.cs" />
     <Compile Include="ILTools\AssemblyRegistry.cs" />
+    <Compile Include="ILTools\MethodEmitter.cs" />
+    <Compile Include="ILTools\TypeEmitter.cs" />
     <Compile Include="LexingTools\FileReader.cs" />
     <Compile Include="LexingTools\Lexer.cs" />
     <Compile Include="Misc\Utils.cs" />
