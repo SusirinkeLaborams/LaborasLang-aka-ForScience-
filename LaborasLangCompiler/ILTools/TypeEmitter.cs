@@ -9,21 +9,26 @@ namespace LaborasLangCompiler.ILTools
 {
     internal class TypeEmitter
     {
-        public static TypeDefinition CreateTypeDefinition(string @namespace, string className, TypeAttributes typeAttributes, TypeReference baseType = null)
+        public static TypeDefinition CreateTypeDefinition(AssemblyEmitter assembly, string @namespace, string className, 
+                                                            TypeAttributes typeAttributes = TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, 
+                                                            TypeReference baseType = null)
         {
+            if (assembly == null)
+            {
+                throw new ArgumentNullException("assembly");
+            }
+
+            
             TypeDefinition typeDefinition;
-
-            if (baseType != null)
+            
+            if (baseType == null)
             {
-                typeDefinition = new TypeDefinition(@namespace, className, typeAttributes, baseType);
-            }
-            else
-            {
-                typeDefinition = new TypeDefinition(@namespace, className, typeAttributes);
+                baseType = assembly.ImportType(typeof(object));
             }
 
-            typeDefinition.IsPublic = true;
-            typeDefinition.IsClass = true;
+            typeDefinition = new TypeDefinition(@namespace, className, typeAttributes, baseType);
+
+            assembly.AddType(typeDefinition);
 
             return typeDefinition;
         }

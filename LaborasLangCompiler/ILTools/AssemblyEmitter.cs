@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.FrontEnd;
 using Mono.Cecil;
+using Mono.Cecil.Pdb;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +13,7 @@ namespace LaborasLangCompiler.ILTools
     internal class AssemblyEmitter
     {
         private AssemblyDefinition assemblyDefinition;
+        private readonly string outputPath;
         
         public AssemblyEmitter(CompilerArguments compilerArgs, Version version = null)
         {
@@ -27,12 +29,8 @@ namespace LaborasLangCompiler.ILTools
                 Runtime = TargetRuntime.Net_4_0
             };
 
-            assemblyDefinition = AssemblyDefinition.CreateAssembly(assemblyName, compilerArgs.OutputPath, moduleParameters);
-        }
-
-        public void SetEntryPoint(MethodDefinition entryPoint)
-        {
-            assemblyDefinition.EntryPoint = entryPoint;
+            assemblyDefinition = AssemblyDefinition.CreateAssembly(assemblyName, Path.GetFileName(compilerArgs.OutputPath), moduleParameters);
+            outputPath = compilerArgs.OutputPath;
         }
 
         public void AddType(TypeDefinition type)
@@ -45,6 +43,11 @@ namespace LaborasLangCompiler.ILTools
             registy.RegisterAssembly(assemblyDefinition);
         }
 
+        public TypeReference ImportType(Type type)
+        {
+            return assemblyDefinition.MainModule.Import(type);
+        }
+
         public void Save()
         {
             if (assemblyDefinition.EntryPoint == null && assemblyDefinition.MainModule.Kind != ModuleKind.Dll)
@@ -52,7 +55,11 @@ namespace LaborasLangCompiler.ILTools
                 throw new Exception(string.Format("Current module kind ({0}) requires entry point set!", assemblyDefinition.MainModule.Kind)); 
             }
 
-            assemblyDefinition.Write(assemblyDefinition.MainModule.Name);
+            var writerParams = new WriterParameters();
+            writerParams.SymbolWriterProvider = new PdbWriterProvider();
+            writerParams.WriteSymbols = true;
+
+            assemblyDefinition.Write(outputPath, writerParams);
         }
     }
 }

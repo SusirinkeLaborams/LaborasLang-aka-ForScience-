@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using LaborasLangCompiler.ILTools;
+using Mono.Cecil;
 
 namespace LaborasLangCompiler.FrontEnd
 {
@@ -16,13 +18,15 @@ namespace LaborasLangCompiler.FrontEnd
             try
             {
                 var compilerArgs = CompilerArguments.Parse(args);
-
+                
                 foreach (var file in compilerArgs.SourceFiles)
                 {
                     var bytes = FileReader.Read(file);
                     var tree = Lexer.MakeTree(bytes);
                     PrintAst(tree, 1, bytes);
                 }
+
+                EmitHelloWorld(compilerArgs);
             }
             catch (Exception e)
             {
@@ -48,6 +52,20 @@ namespace LaborasLangCompiler.FrontEnd
                 }
                 PrintAst(child, depth + 1, tokens);
             }
+        }
+
+        static void EmitHelloWorld(CompilerArguments compilerArgs)
+        {
+            var assemblyRegistry = new AssemblyRegistry(compilerArgs.References);
+            var assembly = new AssemblyEmitter(compilerArgs);
+
+            var type = TypeEmitter.CreateTypeDefinition(assembly, "", "Laboras");
+
+            var method = new MethodEmitter(assemblyRegistry, type, "Main", assemblyRegistry.GetType("System.Void"), MethodAttributes.Static | MethodAttributes.Private);
+            method.EmitHelloWorld();
+            method.SetAsEntryPoint();
+
+            assembly.Save();
         }
     }
 }
