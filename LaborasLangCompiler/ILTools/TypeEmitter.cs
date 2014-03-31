@@ -9,18 +9,20 @@ namespace LaborasLangCompiler.ILTools
 {
     internal class TypeEmitter
     {
-        public static TypeDefinition CreateTypeDefinition(AssemblyEmitter assembly, string @namespace, string className, 
-                                                            TypeAttributes typeAttributes = TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, 
-                                                            TypeReference baseType = null)
+        const TypeAttributes DefaultTypeAttributes = TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed;
+
+        private TypeDefinition typeDefinition;
+
+        public ModuleDefinition Module { get { return typeDefinition.Module; } }
+
+        public TypeEmitter(AssemblyEmitter assembly, string @namespace, string className, 
+                            TypeAttributes typeAttributes = DefaultTypeAttributes, TypeReference baseType = null)
         {
             if (assembly == null)
             {
                 throw new ArgumentNullException("assembly");
             }
-
-            
-            TypeDefinition typeDefinition;
-            
+                                    
             if (baseType == null)
             {
                 baseType = assembly.ImportType(typeof(object));
@@ -29,8 +31,11 @@ namespace LaborasLangCompiler.ILTools
             typeDefinition = new TypeDefinition(@namespace, className, typeAttributes, baseType);
 
             assembly.AddType(typeDefinition);
+        }
 
-            return typeDefinition;
+        public void AddMethod(MethodDefinition method)
+        {
+            typeDefinition.Methods.Add(method);
         }
     }
 }

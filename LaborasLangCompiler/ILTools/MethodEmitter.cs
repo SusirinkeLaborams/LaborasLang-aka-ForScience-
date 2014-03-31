@@ -16,11 +16,11 @@ namespace LaborasLangCompiler.ILTools
         AssemblyRegistry assemblyRegistry;
         ModuleDefinition module;
 
-        public MethodEmitter(AssemblyRegistry assemblyRegistry, TypeDefinition declaringType, string name, TypeReference returnType, 
+        public MethodEmitter(AssemblyRegistry assemblyRegistry, TypeEmitter declaringType, string name, TypeReference returnType, 
                                 MethodAttributes methodAttributes = MethodAttributes.Private)
         {
             methodDefinition = new MethodDefinition(name, methodAttributes, returnType);
-            declaringType.Methods.Add(methodDefinition);
+            declaringType.AddMethod(methodDefinition);
 
             this.assemblyRegistry = assemblyRegistry;
             ilProcessor = methodDefinition.Body.GetILProcessor();
@@ -28,13 +28,8 @@ namespace LaborasLangCompiler.ILTools
 
             if (module == null)
             {
-                throw new ArgumentException("Declaring type isn't assigned to an assembly!");
+                throw new ArgumentException("Declaring type isn't assigned to module!");
             }
-        }
-
-        public void ParseTree(object/*WhateverTreeType*/ tree)
-        {
-            throw new NotImplementedException();
         }
 
         public void EmitHelloWorld()
@@ -50,6 +45,11 @@ namespace LaborasLangCompiler.ILTools
             Call(consoleReadLine);
             Pop();
             Ret();
+        }
+
+        public void ParseTree(object/*WhateverTreeType*/ tree)
+        {
+            throw new NotImplementedException();
         }
 
         public void SetAsEntryPoint()
