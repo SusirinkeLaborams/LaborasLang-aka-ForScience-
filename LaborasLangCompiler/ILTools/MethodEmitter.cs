@@ -10,11 +10,13 @@ namespace LaborasLangCompiler.ILTools
 {
     internal class MethodEmitter
     {
-        MethodDefinition methodDefinition;
-        ILProcessor ilProcessor;
+        private MethodDefinition methodDefinition;
+        private ILProcessor ilProcessor;
 
-        AssemblyRegistry assemblyRegistry;
-        ModuleDefinition module;
+        private AssemblyRegistry assemblyRegistry;
+        private ModuleDefinition module;
+
+        private bool parsed = false;
 
         public MethodEmitter(AssemblyRegistry assemblyRegistry, TypeEmitter declaringType, string name, TypeReference returnType, 
                                 MethodAttributes methodAttributes = MethodAttributes.Private)
@@ -30,6 +32,8 @@ namespace LaborasLangCompiler.ILTools
             {
                 throw new ArgumentException("Declaring type isn't assigned to module!");
             }
+
+            parsed = false;
         }
 
         public void EmitHelloWorld()
@@ -45,6 +49,8 @@ namespace LaborasLangCompiler.ILTools
             Call(consoleReadLine);
             Pop();
             Ret();
+
+            parsed = true;
         }
 
         public void ParseTree(object/*WhateverTreeType*/ tree)
