@@ -9,7 +9,7 @@ namespace LaborasLangCompiler.ILTools
 {
     internal class TypeEmitter
     {
-        const TypeAttributes DefaultTypeAttributes = TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed;
+        const TypeAttributes DefaultTypeAttributes = TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
 
         private TypeDefinition typeDefinition;
 
