@@ -15,7 +15,7 @@ namespace LaborasLangCompiler.LexingTools
             string grammar = @"
  
                 (?<Ws>): [\n\r\t\s]+;       
-                (?<Symbol>): [a-zA-Z_]+ [a-zA-Z-0-9_]*;
+                (?<Symbol>): [a-zA-Z_]+ [a-zA-Z0-9_]*;
                 (?<Period>): [.];
                 (?<FullSymbol>): Symbol (Period Symbol)*;
                 (?<NamespaceImport>): 'use' Ws FullSymbol;
