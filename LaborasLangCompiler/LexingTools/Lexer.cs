@@ -16,7 +16,7 @@ namespace LaborasLangCompiler.LexingTools
  
                 (?<Ws>): [\n\r\t\s]+;       
                 (?<Symbol>): [a-zA-Z_]+ [a-zA-Z-0-9_]*;
-                (?<Period>): '.';
+                (?<Period>): [.];
                 (?<FullSymbol>): Symbol (Period Symbol)*;
                 (?<NamespaceImport>): 'use' Ws FullSymbol;
                 
