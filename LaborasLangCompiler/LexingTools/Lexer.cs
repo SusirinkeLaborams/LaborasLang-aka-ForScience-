@@ -12,10 +12,13 @@ namespace LaborasLangCompiler.LexingTools
     {
         public static AstNode MakeTree(ByteInputIterator bytes)
         {
-            String grammar = @"
+            string grammar = @"
  
                 (?<Ws>): [\n\r\t\s]+;       
                 (?<Symbol>): [a-zA-Z_]+ [a-zA-Z-0-9_]*;
+                (?<Period>): '.';
+                (?<FullSymbol>): Symbol (Period Symbol)*;
+                (?<NamespaceImport>): 'use' Ws FullSymbol;
                 
                 (?<Literal>): [0-9];
                 (?<AssignmentOperator>): '+=' / '-=' / '*=' / '/=' / '%=' / '&=' / '|=' / '^=' / '<<=' / '>>=' / '=';                
@@ -40,13 +43,13 @@ namespace LaborasLangCompiler.LexingTools
 
                 (?<Assignment>): (Declaration / Symbol) Ws? '=' Ws? Value /
                                  Symbol Ws? AssignmentOperator Ws? Value;
-                (?<FunctionAsignment>): Declaration Ws? '=' Ws? Function;
+                (?<FunctionAssignment>): Declaration Ws? '=' Ws? Function;
                 (?<ConditionalSentence>): 'if' Ws? '(' Ws? (?<Condition> Value) Ws? ')' (?<TrueBlock> CodeBlock) 'else' (?<FalseBlock> CodeBlock) /
                                             'if' Ws? '(' Ws? (?<Condition> Value) Ws? ')' (?<TrueBlock> CodeBlock);
                 (?<Loop>):  'while' Ws? '(' Ws? (?<Condition> Value) Ws? ')' Ws? CodeBlock;
                 (?<EndOfSentence>): ';';                
-                (?<Sentence>): ((Assignment / Declaration / FunctionCall) EndOfSentence) /
-                                FunctionAsignment;
+                (?<Sentence>): ((NamespaceImport / Assignment / Declaration / FunctionCall) EndOfSentence) /
+                                FunctionAssignment;
                 
                 (?<CodeBlock>): Ws? '{' Ws? ((Sentence / CodeBlock / ConditionalSentence / Loop) Ws?)* Ws? '}'  Ws? ;
                 

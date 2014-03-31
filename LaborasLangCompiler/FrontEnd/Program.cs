@@ -26,12 +26,13 @@ namespace LaborasLangCompiler.FrontEnd
                     PrintAst(tree, 1, bytes);
                 }
 
-                EmitHelloWorld(compilerArgs);
+                //EmitHelloWorld(compilerArgs);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
                 Console.WriteLine("Compilation failed. Aborting.");
+                Console.ReadKey();
 
                 return -1;
             }

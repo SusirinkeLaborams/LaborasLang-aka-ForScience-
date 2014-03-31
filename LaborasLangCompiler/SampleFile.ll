@@ -1,3 +1,9 @@
+use System.Windows;
+
+Console.WriteLine("Hello, world!");
+Console.ReadLine();
+
+
 int() functionDeclaration;
 int(int, float) functionDeclaration2;
 
