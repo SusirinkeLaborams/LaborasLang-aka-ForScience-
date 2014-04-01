@@ -8,19 +8,23 @@ using NPEG.GrammarInterpreter;
 
 namespace LaborasLangCompiler.LexingTools
 {
-    static class Lexer
+    public static class Lexer
     {
         public static AstNode MakeTree(ByteInputIterator bytes)
         {
             string grammar = @"
  
-                (?<Ws>): [\n\r\t\s]+;       
+                Ws: [\n\r\t\s]+;       
                 (?<Symbol>): [a-zA-Z_]+ [a-zA-Z0-9_]*;
                 (?<Period>): [.];
                 (?<FullSymbol>): Symbol (Period Symbol)*;
                 (?<NamespaceImport>): 'use' Ws FullSymbol;
                 
-                (?<Literal>): [0-9];
+                (?<IntegerLiteral>): [0-9]+;
+                (?<StringLiteral>): '\'' [^']* '\''; 
+                (?<FloatLiteral>): [0-9]+ Period [0-9]+;
+                (?<Literal>):  IntegerLiteral / StringLiteral;
+                
                 (?<AssignmentOperator>): '+=' / '-=' / '*=' / '/=' / '%=' / '&=' / '|=' / '^=' / '<<=' / '>>=' / '=';                
                 (?<RelationOperator>): '==' / '!=' / '<=' / '>=' / '<' / '>';
                 (?<ShiftOperator>): '>>' / '<<';     
@@ -31,7 +35,7 @@ namespace LaborasLangCompiler.LexingTools
                 
                 (?<FunctionType>): Type Ws? (?<ArgumentTypes> '(' Ws? (Type Ws? (',' Ws? Type Ws?)*)? ')');
                 (?<FunctionArgument>): Value;
-                (?<FunctionCall>): (Function) Ws? 
+                (?<FunctionCall>): (FullSymbol) Ws? 
                     '('
                         Ws?
                         (FunctionArgument Ws? (',' Ws? FunctionArgument Ws?)*)?
@@ -61,6 +65,14 @@ namespace LaborasLangCompiler.LexingTools
             rules.Accept(visitor);
             var isMatchIsAMethod = visitor.IsMatch;
             return visitor.AST;
+        }
+
+        public static AstNode MakeTreeFromString(string source)
+        {
+             byte[] bytes = new byte[source.Length * sizeof(char)];
+             System.Buffer.BlockCopy(source.ToCharArray(), 0, bytes, 0, bytes.Length);
+             ByteInputIterator inputIterator = new ByteInputIterator(bytes);
+             return Lexer.MakeTree(inputIterator);
         }
     }
 }
