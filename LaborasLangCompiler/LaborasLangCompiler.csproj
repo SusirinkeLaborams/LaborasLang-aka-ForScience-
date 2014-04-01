@@ -48,7 +48,7 @@
       <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
     <Reference Include="NPEG">
-      <HintPath>..\packages\NPEG.1.7.1\lib\NPEG.dll</HintPath>
+      <HintPath>..\packages\NPEG.1.7.2\lib\NPEG.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

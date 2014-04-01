@@ -35,7 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NPEG">
+    <Reference Include="NPEG, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NPEG.1.7.2\lib\NPEG.dll</HintPath>
     </Reference>
     <Reference Include="System" />
