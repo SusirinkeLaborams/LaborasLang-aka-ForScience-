@@ -23,15 +23,20 @@ namespace LaborasLangCompiler.LexingTools
                 (?<IntegerLiteral>): [0-9]+;
                 (?<StringLiteral>): '\'' [^']* '\''; 
                 (?<FloatLiteral>): [0-9]+ Period [0-9]+;
-                (?<Literal>):  IntegerLiteral / StringLiteral;
-                
+                (?<Literal>):  FloatLiteral / IntegerLiteral / StringLiteral;
+    
+                Factor: '(' Sum ')' / FunctionCall / Symbol / Literal;
+                (?<Product>): Factor (Ws? (?<MultiplicationOperator> '/' / '*')  Ws? Factor)*;
+                (?<Sum>): Product (Ws? (?<SumOperator> '+' / '-')  Ws? Product)*;
+
                 (?<AssignmentOperator>): '+=' / '-=' / '*=' / '/=' / '%=' / '&=' / '|=' / '^=' / '<<=' / '>>=' / '=';                
                 (?<RelationOperator>): '==' / '!=' / '<=' / '>=' / '<' / '>';
                 (?<ShiftOperator>): '>>' / '<<';     
                 (?<UnaryOperator>): '!' / '++' / '--';           
                 
                 (?<Type>): Symbol;
-                (?<Value>): FunctionCall / Symbol / Literal;
+                
+                (?<Value>):  Sum;
                 
                 (?<FunctionType>): Type Ws? (?<ArgumentTypes> '(' Ws? (Type Ws? (',' Ws? Type Ws?)*)? ')');
                 (?<FunctionArgument>): Value;
@@ -67,12 +72,11 @@ namespace LaborasLangCompiler.LexingTools
             return visitor.AST;
         }
 
-        public static AstNode MakeTreeFromString(string source)
+        public static AstNode MakeTree(string source)
         {
-             byte[] bytes = new byte[source.Length * sizeof(char)];
-             System.Buffer.BlockCopy(source.ToCharArray(), 0, bytes, 0, bytes.Length);
-             ByteInputIterator inputIterator = new ByteInputIterator(bytes);
-             return Lexer.MakeTree(inputIterator);
+            var bytes = Encoding.UTF8.GetBytes(source);
+            ByteInputIterator inputIterator = new ByteInputIterator(bytes);
+            return Lexer.MakeTree(inputIterator);
         }
     }
 }

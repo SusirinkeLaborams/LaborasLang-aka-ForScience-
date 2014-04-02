@@ -55,7 +55,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ExpectedTree.cs" />
-    <Compile Include="LiteralTest.cs" />
+    <Compile Include="LiteralTokenTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

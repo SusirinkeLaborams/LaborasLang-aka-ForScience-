@@ -26,6 +26,7 @@ namespace LexerUnitTests
         public ExpectedTree(string token, params ExpectedTree[] children)
         {
             Token = token;
+            Children = new List<ExpectedTree>();
             foreach (var child in children)
             {
                 Children.Add(child);
@@ -40,7 +41,7 @@ namespace LexerUnitTests
 
         public void AsertEqual(AstNode actualTree)
         {
-            Assert.AreEqual(Token, actualTree.Token);
+            Assert.AreEqual(Token, actualTree.Token.Name);
             if (Children != null)
             {
                 Assert.AreEqual(Children.Count, actualTree.Children.Count);
