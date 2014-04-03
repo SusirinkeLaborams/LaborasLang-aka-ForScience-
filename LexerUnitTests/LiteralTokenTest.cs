@@ -14,20 +14,9 @@ namespace LexerUnitTests
         {            
             var source = "foo = 1;";
             AstNode tree = Lexer.MakeTree(source);
-
-            Assert.IsNotNull(tree);
-            ExpectedTree expTree =
-                new ExpectedTree("Root",
-                    new ExpectedTree("Sentence",
-                        new ExpectedTree("Assignment",
-                            new ExpectedTree("Symbol"),
-                            new ExpectedTree("Value",
-                                new ExpectedTree("Sum",
-                                    new ExpectedTree("Product",
-                                        new ExpectedTree("Literal",
-                                            new ExpectedTree("IntegerLiteral")))))),
-                        new ExpectedTree("EndOfSentence")));
-            expTree.AsertEqual(tree);
+            string expected = "Root: Sentence: (Assignment: (Symbol, Value: Sum: Product: Literal: IntegerLiteral), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
@@ -37,18 +26,9 @@ namespace LexerUnitTests
             AstNode tree = Lexer.MakeTree(source);
 
             Assert.IsNotNull(tree);
-            ExpectedTree expTree =
-                new ExpectedTree("Root",
-                    new ExpectedTree("Sentence",
-                        new ExpectedTree("Assignment",
-                            new ExpectedTree("Symbol"),
-                            new ExpectedTree("Value",
-                                  new ExpectedTree("Sum",
-                                    new ExpectedTree("Product",
-                                        new ExpectedTree("Literal",
-                                            new ExpectedTree("StringLiteral")))))),
-                        new ExpectedTree("EndOfSentence")));
-            expTree.AsertEqual(tree);
+            string expected = "Root: Sentence: (Assignment: (Symbol, Value: Sum: Product: Literal: StringLiteral), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
@@ -56,20 +36,10 @@ namespace LexerUnitTests
         {
             var source = "foo = 1.1;";
             AstNode tree = Lexer.MakeTree(source);
-
             Assert.IsNotNull(tree);
-            ExpectedTree expTree =
-                new ExpectedTree("Root",
-                    new ExpectedTree("Sentence",
-                        new ExpectedTree("Assignment",
-                            new ExpectedTree("Symbol"),
-                            new ExpectedTree("Value",
-                                  new ExpectedTree("Sum",
-                                    new ExpectedTree("Product",
-                                        new ExpectedTree("Literal",
-                                            new ExpectedTree("FloatLiteral")))))),
-                        new ExpectedTree("EndOfSentence")));
-            expTree.AsertEqual(tree);
+            string expected = "Root: Sentence: (Assignment: (Symbol, Value: Sum: Product: Literal: FloatLiteral), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
         }
     }
 }

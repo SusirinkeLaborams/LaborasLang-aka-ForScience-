@@ -8,47 +8,35 @@ using NPEG;
 
 namespace LexerUnitTests
 {
-    class ExpectedTree
+    class AstHelper
     {
-        public List<ExpectedTree> Children;
-        public String Token;
-
-        public ExpectedTree(String token, params string[] children)
+        public static string Stringify(AstNode tree)
         {
-            Token = token;
-            Children = new List<ExpectedTree>();
-            foreach(var child in children)
+            if (tree.Children == null || tree.Children.Count == 0)
             {
-                Children.Add(new ExpectedTree(child));
+                return tree.Token.Name;
             }
-        }
-
-        public ExpectedTree(string token, params ExpectedTree[] children)
-        {
-            Token = token;
-            Children = new List<ExpectedTree>();
-            foreach (var child in children)
+            else if (tree.Children.Count == 1)
             {
-                Children.Add(child);
+                return string.Format("{0}: {1}", tree.Token.Name, Stringify(tree.Children[0]));
             }
-        }
-
-        public ExpectedTree(string token)
-        {
-            Token = token;
-            Children = null;
-        }
-
-        public void AsertEqual(AstNode actualTree)
-        {
-            Assert.AreEqual(Token, actualTree.Token.Name);
-            if (Children != null)
+            else
             {
-                Assert.AreEqual(Children.Count, actualTree.Children.Count);
-                for (int i = 0; i < Children.Count; i++)
-                {
-                    Children[i].AsertEqual(actualTree.Children[i]);
+                StringBuilder childrenString = new StringBuilder();
+                var first = true;
+                foreach(var child in tree.Children)
+                {                
+                    if(first)
+                    { 
+                        first = false;
+                    }
+                    else
+                    {
+                        childrenString.Append(", ");
+                    }
+                    childrenString.Append(Stringify(child));
                 }
+                return string.Format("{0}: ({1})", tree.Token.Name, childrenString.ToString());
             }
         }
     }
