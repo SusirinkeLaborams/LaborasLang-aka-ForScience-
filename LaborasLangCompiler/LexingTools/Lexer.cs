@@ -58,9 +58,11 @@ namespace LaborasLangCompiler.LexingTools
                 (?<Loop>):  'while' Ws? '(' Ws? (?<Condition> Value) Ws? ')' Ws? CodeBlock;
                 (?<EndOfSentence>): ';';                
                 (?<Sentence>): ((NamespaceImport / Assignment / Declaration / FunctionCall) EndOfSentence) /
-                                FunctionAssignment;
+                                FunctionAssignment /
+                                Loop /
+                                ConditionalSentence;
                 
-                (?<CodeBlock>): Ws? '{' Ws? ((Sentence / CodeBlock / ConditionalSentence / Loop) Ws?)* Ws? '}'  Ws? ;
+                (?<CodeBlock>): Ws? '{' Ws? ((Sentence / CodeBlock) Ws?)* Ws? '}'  Ws? ;
                 
                 (?<Root>): Ws? ((CodeBlock / Sentence) Ws?)* Ws?;
             ".Trim();

@@ -7,7 +7,10 @@ a = 1 + 2 * functioncall() / 'strings want to be numbers too'  + 1;
 Console.WriteLine('Hello, world!');
 Console.ReadLine();
 
-
+while(foo)
+{
+    bar();
+}
 int() functionDeclaration;
 int(int, float) functionDeclaration2;
 

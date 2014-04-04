@@ -57,6 +57,7 @@
     <Compile Include="LexerTests\ExpectedTree.cs" />
     <Compile Include="LexerTests\LiteralTokenTest.cs" />
     <Compile Include="LexerTests\FunctionTests.cs" />
+    <Compile Include="LexerTests\LoopTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LexerTests\MathOperationsTest.cs" />
   </ItemGroup>
