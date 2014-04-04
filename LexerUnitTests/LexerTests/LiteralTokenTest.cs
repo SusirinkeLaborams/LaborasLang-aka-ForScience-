@@ -4,15 +4,25 @@ using LaborasLangCompiler.LexingTools;
 using NPEG;
 using System.Text;
 
-namespace LexerUnitTests
+namespace LaborasLangCompilerUnitTests.LexerTests
 {
     [TestClass]
     public class LiteralTokenTest
     {
         [TestMethod]
         public void TestIntegerLiteralToken()
-        {            
+        {
             var source = "foo = 1;";
+            AstNode tree = Lexer.MakeTree(source);
+            string expected = "Root: Sentence: (Assignment: (Symbol, Value: Sum: Product: Literal: IntegerLiteral), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestNegativeIntegerToken()
+        {
+            var source = "foo = -1;";
             AstNode tree = Lexer.MakeTree(source);
             string expected = "Root: Sentence: (Assignment: (Symbol, Value: Sum: Product: Literal: IntegerLiteral), EndOfSentence)";
             string actual = AstHelper.Stringify(tree);

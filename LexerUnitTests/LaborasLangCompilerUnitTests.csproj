@@ -6,8 +6,8 @@
     <ProjectGuid>{AE4D15A9-9B29-4F75-B648-E9F70631AF38}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LexerUnitTests</RootNamespace>
-    <AssemblyName>LexerUnitTests</AssemblyName>
+    <RootNamespace>LaborasLangCompilerUnitTests</RootNamespace>
+    <AssemblyName>LaborasLangCompilerUnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -54,9 +54,10 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="ExpectedTree.cs" />
-    <Compile Include="LiteralTokenTest.cs" />
+    <Compile Include="LexerTests\ExpectedTree.cs" />
+    <Compile Include="LexerTests\LiteralTokenTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="LexerTests\MathOperationsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LaborasLangCompiler\LaborasLangCompiler.csproj">

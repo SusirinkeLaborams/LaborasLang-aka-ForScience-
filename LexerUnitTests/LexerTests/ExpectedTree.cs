@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NPEG;
 
-namespace LexerUnitTests
+namespace LaborasLangCompilerUnitTests.LexerTests
 {
     class AstHelper
     {
