@@ -95,7 +95,7 @@ namespace LaborasLangCompiler.Parser.Tree
         public abstract FieldDefinition Field { get; }
     }
 
-    abstract class FunctionArgument : LValueOperandNode
+    abstract class FunctionArgumentNode : LValueOperandNode
     {
         public abstract string Name { get; }
     }
@@ -149,7 +149,7 @@ namespace LaborasLangCompiler.Parser.Tree
         public abstract ExpressionNode RightOperand { get; }
     }
 
-    abstract class SymbolDeclaration : ParserNode
+    abstract class SymbolDeclarationNode : ParserNode
     {
         public abstract LocalVariableNode LocalVariable { get; }
         public abstract ExpressionNode Initializer { get; }
