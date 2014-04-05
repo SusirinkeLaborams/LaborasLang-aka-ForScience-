@@ -15,7 +15,8 @@ namespace LaborasLangCompiler.Parser.Tree
         public enum Type
         {
             Expression,
-            SymbolDeclaration
+            SymbolDeclaration,
+            CodeBlockNode
         }
 
         public abstract Type NodeType { get; }
@@ -41,6 +42,7 @@ namespace LaborasLangCompiler.Parser.Tree
         {
             Literal,
             FunctionCall,
+            ObjectCreation,
             BinaryOperator,
             UnaryOperator,
             AssignmentOperator
@@ -57,6 +59,11 @@ namespace LaborasLangCompiler.Parser.Tree
     abstract class FunctionCallNode : RValueOperandNode
     {
         public abstract MethodReference Function { get; }
+        public abstract IReadOnlyList<ExpressionNode> Arguments { get; }
+    }
+
+    abstract class ObjectCreationNode : RValueOperandNode
+    {
         public abstract IReadOnlyList<ExpressionNode> Arguments { get; }
     }
 
@@ -142,4 +149,8 @@ namespace LaborasLangCompiler.Parser.Tree
         public abstract ExpressionNode Initializer { get; }
     }
 
+    abstract class CodeBlockNode : ParserNode
+    {
+        public abstract IReadOnlyList<ParserNode> Nodes { get; }
+    }
 }
