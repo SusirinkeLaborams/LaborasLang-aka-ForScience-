@@ -59,7 +59,7 @@ namespace LaborasLangCompiler.FrontEnd
         {
             var assemblyRegistry = new AssemblyRegistry(compilerArgs.References);
             var assembly = new AssemblyEmitter(compilerArgs);
-            var type = new TypeEmitter(assembly, "", "Laboras");
+            var type = new TypeEmitter(assembly, "Laboras");
             var method = new MethodEmitter(assemblyRegistry, type, "Main", assemblyRegistry.GetType("System.Void"), MethodAttributes.Static | MethodAttributes.Private);
 
             method.EmitHelloWorld();

@@ -15,7 +15,7 @@ namespace LaborasLangCompiler.ILTools
 
         public ModuleDefinition Module { get { return typeDefinition.Module; } }
 
-        public TypeEmitter(AssemblyEmitter assembly, string @namespace, string className, 
+        public TypeEmitter(AssemblyEmitter assembly, string className, string @namespace = "",
                             TypeAttributes typeAttributes = DefaultTypeAttributes, TypeReference baseType = null)
         {
             if (assembly == null)
