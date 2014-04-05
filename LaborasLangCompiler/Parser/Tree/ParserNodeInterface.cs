@@ -14,9 +14,8 @@ namespace LaborasLangCompiler.Parser.Tree
     {        
         public enum Type
         {
-            Operand,
-            Action,
-            Function
+            Expression,
+            SymbolDeclaration
         }
 
         public abstract Type NodeType { get; }
@@ -24,7 +23,7 @@ namespace LaborasLangCompiler.Parser.Tree
     }
 
     // Literals, function calls, function arguments, local variables and fields
-    abstract class OperandNode : ParserNode
+    abstract class ExpressionNode : ParserNode
     {
         public enum Kind
         {
@@ -32,16 +31,19 @@ namespace LaborasLangCompiler.Parser.Tree
             RValue
         }
 
-        public abstract Kind OperandKind { get; }
-        public abstract TypeReference OperandType { get; }
+        public abstract Kind ExpressionKind { get; }
+        public abstract TypeReference ExpressionType { get; }
     }
 
-    abstract class RValueOperandNode : OperandNode
+    abstract class RValueOperandNode : ExpressionNode
     {
         public enum RValueKind
         {
             Literal,
-            FunctionCall
+            FunctionCall,
+            BinaryOperator,
+            UnaryOperator,
+            AssignmentOperator
         }
 
         public abstract RValueKind RValueOperandKind { get; }
@@ -55,10 +57,10 @@ namespace LaborasLangCompiler.Parser.Tree
     abstract class FunctionCallNode : RValueOperandNode
     {
         public abstract MethodReference Function { get; }
-        public abstract IReadOnlyList<OperandNode> Arguments { get; }
+        public abstract IReadOnlyList<ExpressionNode> Arguments { get; }
     }
 
-    abstract class LValueNodeOperandNode : OperandNode
+    abstract class LValueOperandNode : ExpressionNode
     {
         public enum LValueKind
         {
@@ -70,35 +72,24 @@ namespace LaborasLangCompiler.Parser.Tree
         public abstract LValueKind LValueOperandKind { get; }
     }
 
-    abstract class LocalVariableNode : LValueNodeOperandNode
+    abstract class LocalVariableNode : LValueOperandNode
     {
         public abstract VariableDefinition LocalVariable { get; }
     }
 
-    abstract class FieldNode : LValueNodeOperandNode
+    abstract class FieldNode : LValueOperandNode
     {
         public abstract FieldDefinition Field { get; }
     }
 
-    abstract class FunctionArgument : LValueNodeOperandNode
+    abstract class FunctionArgument : LValueOperandNode
     {
         public abstract string Name { get; }
     }
 
-    abstract class ActionNode : ParserNode
+    abstract class BinaryOperatorNode : RValueOperandNode
     {
-        public enum ActionType
-        {
-            BinaryOperator,
-            UnaryOperator,
-            AssignmentOperator,
-            SymbolDeclaration
-        }
-    }
-
-    abstract class BinaryOperatorNode : ActionNode
-    {
-        public enum Kind
+        public enum BinaryOperatorKind
         {
             Addition,
             Subtraction,
@@ -118,14 +109,14 @@ namespace LaborasLangCompiler.Parser.Tree
             LogicalAnd
         }
 
-        public abstract Kind OperatorKind { get; }
-        public abstract OperandNode LeftOperand { get; }
-        public abstract OperandNode RightOperand { get; }
+        public abstract BinaryOperatorKind OperatorKind { get; }
+        public abstract ExpressionNode LeftOperand { get; }
+        public abstract ExpressionNode RightOperand { get; }
     }
 
-    abstract class UnaryOperatorNode : ActionNode
+    abstract class UnaryOperatorNode : RValueOperandNode
     {
-        public enum Kind
+        public enum UnaryOperatorKind
         {
             Negation,            
             PreIncrement,
@@ -135,25 +126,20 @@ namespace LaborasLangCompiler.Parser.Tree
             VoidOperator    // Discards Operand result
         }
 
-        public abstract Kind OperatorKind { get; }
-        public abstract OperandNode Operand { get; }
+        public abstract UnaryOperatorKind OperatorKind { get; }
+        public abstract ExpressionNode Operand { get; }
     }
 
-    abstract class AssignmentOperatorNode : ActionNode
+    abstract class AssignmentOperatorNode : RValueOperandNode
     {
-        public abstract LValueNodeOperandNode LeftOperand { get; }
-        public abstract OperandNode RightOperand { get; }
+        public abstract LValueOperandNode LeftOperand { get; }
+        public abstract ExpressionNode RightOperand { get; }
     }
 
-    abstract class SymbolDeclaration : ActionNode
+    abstract class SymbolDeclaration : ParserNode
     {
         public abstract LocalVariableNode LocalVariable { get; }
-        public abstract OperandNode Initializer { get; }
+        public abstract ExpressionNode Initializer { get; }
     }
 
-    abstract class Function : ParserNode
-    {
-        public abstract MethodEmitter Method { get; }
-        public abstract List<ParserNode> Body { get; }
-    }
 }
