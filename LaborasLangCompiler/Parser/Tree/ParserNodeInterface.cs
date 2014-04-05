@@ -63,7 +63,7 @@ namespace LaborasLangCompiler.Parser.Tree
         public abstract IReadOnlyList<ExpressionNode> Arguments { get; }
     }
 
-    abstract class MethodCallNode : RValueOperandNode
+    abstract class MethodCallNode : FunctionCallNode
     {
         public abstract ExpressionNode ObjectInstance { get; }
     }
