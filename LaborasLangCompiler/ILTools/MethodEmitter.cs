@@ -18,6 +18,7 @@ namespace LaborasLangCompiler.ILTools
 
         private bool parsed = false;
 
+        public bool Parsed { get { return parsed; } }
         public MethodEmitter(AssemblyRegistry assemblyRegistry, TypeEmitter declaringType, string name, TypeReference returnType, 
                                 MethodAttributes methodAttributes = MethodAttributes.Private)
         {
@@ -36,6 +37,16 @@ namespace LaborasLangCompiler.ILTools
             parsed = false;
         }
 
+        public void AddArgument(TypeReference type, string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public MethodReference GetAsReference()
+        {
+            return methodDefinition;
+        }
+
         public void EmitHelloWorld()
         {
             var console = assemblyRegistry.GetType("System.Console");
@@ -47,6 +58,7 @@ namespace LaborasLangCompiler.ILTools
             Ldstr("Hello, world!");
             Call(consoleWriteLine);
             Call(consoleReadLine);
+            
             Pop();
             Ret();
 
