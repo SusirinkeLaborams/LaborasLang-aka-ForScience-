@@ -42,6 +42,7 @@ namespace LaborasLangCompiler.Parser.Tree
         {
             Literal,
             FunctionCall,
+            MethodCall,
             ObjectCreation,
             BinaryOperator,
             UnaryOperator,
@@ -60,6 +61,11 @@ namespace LaborasLangCompiler.Parser.Tree
     {
         public abstract MethodReference Function { get; }
         public abstract IReadOnlyList<ExpressionNode> Arguments { get; }
+    }
+
+    abstract class MethodCallNode : RValueOperandNode
+    {
+        public abstract ExpressionNode ObjectInstance { get; }
     }
 
     abstract class ObjectCreationNode : RValueOperandNode
