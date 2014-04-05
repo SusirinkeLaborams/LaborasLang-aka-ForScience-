@@ -41,6 +41,7 @@ namespace LaborasLangCompiler.Parser.Tree
         public enum RValueKind
         {
             Literal,
+            Function,
             FunctionCall,
             MethodCall,
             ObjectCreation,
@@ -55,6 +56,11 @@ namespace LaborasLangCompiler.Parser.Tree
     abstract class LiteralNode : RValueOperandNode
     {
         public abstract dynamic Value { get; }
+    }
+
+    abstract class FunctionNode : RValueOperandNode
+    {
+        public abstract MethodReference Function { get; }
     }
 
     abstract class FunctionCallNode : RValueOperandNode

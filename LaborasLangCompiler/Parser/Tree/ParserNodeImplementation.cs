@@ -11,10 +11,8 @@ namespace LaborasLangCompiler.Parser.Tree
     {
     }
 
-    abstract class Function : ParserNode
+    abstract class Function : FunctionNode
     {
-        public abstract MethodEmitter Method { get; }
-
         public abstract List<FunctionArgumentNode> Arguments { get; }
 
         public abstract List<ParserNode> Body { get; }
