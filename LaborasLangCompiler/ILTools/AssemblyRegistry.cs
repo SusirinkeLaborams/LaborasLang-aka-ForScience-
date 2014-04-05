@@ -100,6 +100,11 @@ namespace LaborasLangCompiler.ILTools
             return null;
         }
 
+        public TypeDefinition GetType(TypeReference returnType, IReadOnlyList<TypeReference> args)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool TypeIsKnown(string typeName)
         {
             return GetType(typeName) != null;
