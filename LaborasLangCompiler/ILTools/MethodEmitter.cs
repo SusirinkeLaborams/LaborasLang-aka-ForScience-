@@ -107,7 +107,7 @@ namespace LaborasLangCompiler.ILTools
                     return;
 
                 default:
-                    throw new NotSupportedException("Unknown expression node type!");
+                    throw new NotSupportedException(string.Format("Unknown expression node type: {0}.", expression.ExpressionType);
             }
         }
 
@@ -126,7 +126,7 @@ namespace LaborasLangCompiler.ILTools
                     throw new NotSupportedException("Can't declare field inside of a method.");
 
                 default:
-                    throw new NotSupportedException("Unknown lvalue type");
+                    throw new NotSupportedException(string.Format("Unknown lvalue type: {0}.", symbolDeclaration.DeclaredSymbol.LValueType));
             }
 
             if (symbolDeclaration.Initializer != null)
@@ -157,7 +157,7 @@ namespace LaborasLangCompiler.ILTools
                     return;
 
                 default:
-                    throw new NotSupportedException("Unknown lvalue node type!");
+                    throw new NotSupportedException(string.Format("Unknown lvalue node type: {0}.", lvalue.LValueType));
             }
         }
 
@@ -178,7 +178,7 @@ namespace LaborasLangCompiler.ILTools
                     return;
 
                 default:
-                    throw new NotSupportedException("Unknown lvalue node type!");
+                    throw new NotSupportedException(string.Format("Unknown lvalue node type: {0}.", lvalue.LValueType));
             }
         }
 
@@ -219,7 +219,7 @@ namespace LaborasLangCompiler.ILTools
                     return;
 
                 default:
-                    throw new NotSupportedException("Unknown RValue node type!");
+                    throw new NotSupportedException(string.Format("Unknown RValue node type: {0}.", rvalue.RValueType));
             }
         }
 
@@ -277,7 +277,59 @@ namespace LaborasLangCompiler.ILTools
 
         private void Emit(IBinaryOperatorNode binaryOperator)
         {
-            throw new NotImplementedException();
+            switch (binaryOperator.BinaryOperatorType)
+            {
+                case BinaryOperatorNodeType.Addition:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.BinaryAnd:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.BinaryOr:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.Division:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.Equals:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.GreaterEqualThan:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.GreaterThan:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.Less:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.LessThan:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.LogicalAnd:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.LogicalOr:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.Multiplication:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.NotEquals:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.Remainder:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.Subtraction:
+                    throw new NotImplementedException();
+
+                case BinaryOperatorNodeType.Xor:
+                    throw new NotImplementedException();
+
+                default:
+                    throw new NotSupportedException(string.Format("Unknown binary operator node: {0}", binaryOperator.BinaryOperatorType));                    
+            }
         }
 
         private void Emit(IFunctionNode function)
