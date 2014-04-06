@@ -107,7 +107,7 @@ namespace LaborasLangCompiler.ILTools
                     return;
 
                 default:
-                    throw new NotSupportedException(string.Format("Unknown expression node type: {0}.", expression.ExpressionType);
+                    throw new NotSupportedException(string.Format("Unknown expression node type: {0}.", expression.ExpressionType));
             }
         }
 
@@ -364,22 +364,52 @@ namespace LaborasLangCompiler.ILTools
         
         private void Emit(IFunctionNode function)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException("Function should be declared at type level, not at method level");
         }
 
         private void Emit(IFunctionCallNode functionCall)
         {
-            throw new NotImplementedException();
+            foreach (var argument in functionCall.Arguments)
+            {
+                Emit(argument);
+            }
+
+            Call(functionCall.Function);
         }
 
         private void Emit(ILiteralNode literal)
         {
-            throw new NotImplementedException();
+            switch (literal.ReturnType.FullName)
+            {
+                case "System.Boolean":
+                    Ldc_I4(literal.Value ? 1 : 0);
+                    return;
+
+                case "System.Int32":
+                    Ldc_I4(literal.Value);
+                    return;
+
+                case "System.Single":
+                    Ldc_R8(literal.Value);
+                    return;
+
+                case "System.Double":
+                    Ldc_R8(literal.Value);
+                    return;
+                    
+                case "System.String":
+                    Ldstr(literal.Value);
+                    return;
+
+                default:
+                    throw new NotSupportedException("Unknown literal type: " + literal.ReturnType.FullName);
+            }
         }
 
         private void Emit(IMethodCallNode methodCall)
         {
-            throw new NotImplementedException();
+            Emit(methodCall.ObjectInstance);
+            Emit(methodCall as IFunctionCallNode);
         }
 
         private void Emit(IObjectCreationNode objectCreation)
@@ -821,6 +851,16 @@ namespace LaborasLangCompiler.ILTools
             {
                 ilProcessor.Emit(OpCodes.Ldc_I4, value);
             }
+        }
+
+        private void Ldc_R4(float value)
+        {
+            ilProcessor.Emit(OpCodes.Ldc_R4);
+        }
+
+        private void Ldc_R8(double value)
+        {
+            ilProcessor.Emit(OpCodes.Ldc_R8);
         }
 
         private void Ldfld(FieldDefinition field)
