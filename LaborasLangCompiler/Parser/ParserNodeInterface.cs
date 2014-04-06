@@ -63,15 +63,27 @@ namespace LaborasLangCompiler.Parser.Tree
         MethodReference Function { get; }
     }
 
-    interface IFunctionCallNode : IRValueNode
+    public enum CallNodeType
     {
-        MethodReference Function { get; }
-        IReadOnlyList<IExpressionNode> Arguments { get; }
+        FunctionCall,
+        MethodCall
     }
 
-    interface IMethodCallNode : IFunctionCallNode
+    interface ICallNode : IRValueNode
+    {
+        IReadOnlyList<IExpressionNode> Arguments { get; }
+        CallNodeType CallType { get; }
+    }
+
+    interface IFunctionCallNode : ICallNode
+    {
+        IExpressionNode Function { get; }
+    }
+
+    interface IMethodCallNode : ICallNode
     {
         IExpressionNode ObjectInstance { get; }
+        MethodReference Function { get; }
     }
 
     interface IObjectCreationNode : IRValueNode
