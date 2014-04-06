@@ -68,12 +68,9 @@
     <Compile Include="LexingTools\FileReader.cs" />
     <Compile Include="LexingTools\Lexer.cs" />
     <Compile Include="Misc\Utils.cs" />
-    <Compile Include="Parser\Tree\ParserNodeImplementation.cs" />
-    <Compile Include="Parser\Tree\ParserNodeInterface.cs" />
-    <Compile Include="Parser\Types\FunctionType.cs" />
-    <Compile Include="Parser\Types\PrimitiveType.cs" />
-    <Compile Include="Parser\Types\Testing.cs" />
-    <Compile Include="Parser\Types\BaseType.cs" />
+    <Compile Include="Parser\ParserNodeImplementation.cs" />
+    <Compile Include="Parser\ParserNodeInterface.cs" />
+    <Compile Include="Parser\Symbol.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
