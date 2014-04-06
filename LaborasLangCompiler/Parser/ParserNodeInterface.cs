@@ -85,8 +85,6 @@ namespace LaborasLangCompiler.Parser.Tree
 
     interface ILValueNode : IExpressionNode
     {
-
-
         LValueNodeType LValueType { get; }
     }
 
@@ -155,7 +153,7 @@ namespace LaborasLangCompiler.Parser.Tree
 
     interface ISymbolDeclarationNode : IParserNode
     {
-        ILocalVariableNode LocalVariable { get; }
+        ILValueNode DeclaredSymbol { get; }
         IExpressionNode Initializer { get; }
     }
 
