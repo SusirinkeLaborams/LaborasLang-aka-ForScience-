@@ -26,7 +26,13 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ParserNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
         {
-            throw new NotImplementedException();
+            switch (lexerNode.Token.Name)
+            {
+                case "CodeBlock":
+                    return CodeBlockNode.Parse(parser, parent, lexerNode.Children[0]);
+                default:
+                    throw new NotImplementedException();
+            }
         }
     }
 }
