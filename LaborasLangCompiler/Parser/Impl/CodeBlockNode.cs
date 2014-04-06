@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.Parser.Tree;
+using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,16 @@ namespace LaborasLangCompiler.Parser.Impl
                 return base.GetSymbol(name);
             else
                 return symbols[name];
+        }
+
+        public static new CodeBlockNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
+        {
+            var instance = new CodeBlockNode(parent);
+            foreach(var node in lexerNode.Children)
+            {
+                instance.nodes.Add(ParserNode.Parse(parser, instance, node));
+            }
+            return instance;
         }
     }
 }
