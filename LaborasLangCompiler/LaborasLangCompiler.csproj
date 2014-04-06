@@ -68,9 +68,9 @@
     <Compile Include="LexingTools\FileReader.cs" />
     <Compile Include="LexingTools\Lexer.cs" />
     <Compile Include="Misc\Utils.cs" />
-    <Compile Include="Parser\ParserNodeImplementation.cs" />
+    <Compile Include="Parser\Impl\CodeBlockNode.cs" />
+    <Compile Include="Parser\Impl\ParserNode.cs" />
     <Compile Include="Parser\ParserNodeInterface.cs" />
-    <Compile Include="Parser\Symbol.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
