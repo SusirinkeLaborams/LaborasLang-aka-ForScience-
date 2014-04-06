@@ -13,7 +13,10 @@ namespace LaborasLangCompiler.Parser.Tree
     {
         Expression,
         SymbolDeclaration,
-        CodeBlockNode
+        CodeBlockNode,
+        ConditionBlock,
+        WhileBlock,
+        ImportNode
     }
     interface IParserNode
     {

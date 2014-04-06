@@ -70,6 +70,7 @@
     <Compile Include="Misc\Utils.cs" />
     <Compile Include="Parser\Impl\CodeBlockNode.cs" />
     <Compile Include="Parser\Impl\ParserNode.cs" />
+    <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParserNodeInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
