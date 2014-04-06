@@ -280,17 +280,31 @@ namespace LaborasLangCompiler.ILTools
             switch (binaryOperator.BinaryOperatorType)
             {
                 case BinaryOperatorNodeType.Addition:
-                    throw new NotImplementedException();
+                    EmitAdd(binaryOperator);
+                    return;
+            }
+            
+            Emit(binaryOperator.LeftOperand);
+            Emit(binaryOperator.RightOperand);
 
+            switch (binaryOperator.BinaryOperatorType)
+            {
                 case BinaryOperatorNodeType.BinaryAnd:
-                    throw new NotImplementedException();
+                    RequireInteger(binaryOperator.LeftOperand.ReturnType, "Binary AND requires both operands to be integers");
+                    RequireInteger(binaryOperator.RightOperand.ReturnType, "Binary AND requires both operands to be integers");
+                    And();
+                    return;
 
                 case BinaryOperatorNodeType.BinaryOr:
-                    throw new NotImplementedException();
+                    RequireInteger(binaryOperator.LeftOperand.ReturnType, "Binary OR requires both operands to be integers");
+                    RequireInteger(binaryOperator.RightOperand.ReturnType, "Binary OR requires both operands to be integers");
+                    Or();
+                    return;
 
                 case BinaryOperatorNodeType.Division:
-                    throw new NotImplementedException();
-
+                    EmitDivision(binaryOperator);
+                    return;
+                    
                 case BinaryOperatorNodeType.Equals:
                     throw new NotImplementedException();
 
@@ -362,11 +376,82 @@ namespace LaborasLangCompiler.ILTools
             throw new NotImplementedException();
         }
 
+        private void EmitAdd(IBinaryOperatorNode binaryOperator)
+        {
+            var left = binaryOperator.LeftOperand;
+            var right = binaryOperator.RightOperand;
+
+            bool leftIsString = left.ReturnType.FullName == "System.String";
+            bool rightIsString = left.ReturnType.FullName == "System.String";
+
+            if (leftIsString || rightIsString)
+            {
+                Emit(left);
+
+                if (left.ReturnType.IsValueType)
+                {
+                    Box(left.ReturnType);   
+                }
+
+                Emit(right);
+
+                if (right.ReturnType.IsValueType)
+                {
+                    Box(right.ReturnType);
+                }
+
+                var concatMethod = (from x in assemblyRegistry.GetMethods("System.String", "Concat")
+                                    where x.Parameters.Count == 2 
+                                            && x.Parameters[0].ParameterType.FullName == "System.Object"
+                                            && x.Parameters[1].ParameterType.FullName == "System.Object"
+                                    select x).Single();
+
+                Call(concatMethod);
+            }
+            else
+            {
+                Emit(left);
+                Emit(right);
+                Add();
+
+                throw new NotImplementedException("Still need to implement implicit conversions (like int + float)");
+            }
+        }
+
+        private void EmitDivision(IBinaryOperatorNode binaryOperator)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
+
+        #endregion
+
+        #region Validators
+
+        private void RequireInteger(TypeReference type, string errorMessage)
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 
         #region IL Instructions
+
+        private void Add()
+        {
+            ilProcessor.Emit(OpCodes.Add);
+        }
+
+        private void And()
+        {
+            ilProcessor.Emit(OpCodes.Add);
+        }
+
+        private void Box(TypeReference type)
+        {
+            ilProcessor.Emit(OpCodes.Box, type);
+        }
 
         private void Call(MethodReference method)
         {
@@ -447,6 +532,11 @@ namespace LaborasLangCompiler.ILTools
         private void Ldstr(string str)
         {
             ilProcessor.Emit(OpCodes.Ldstr, str);
+        }
+
+        private void Or()
+        {
+            ilProcessor.Emit(OpCodes.Or);
         }
 
         private void Pop()
