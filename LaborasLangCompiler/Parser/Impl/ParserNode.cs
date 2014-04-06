@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.Parser.Tree;
+using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,11 @@ namespace LaborasLangCompiler.Parser.Impl
         public ParserNode(CodeBlockNode parent)
         {
             ParentBlock = parent;
+        }
+
+        public static ParserNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
+        {
+            throw new NotImplementedException();
         }
     }
 }
