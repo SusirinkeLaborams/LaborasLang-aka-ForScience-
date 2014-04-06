@@ -271,40 +271,41 @@ namespace LaborasLangCompiler.ILTools
 
         private void Emit(IAssignmentOperatorNode assignmentOperator)
         {
-            throw new NotImplementedException();
+            Emit(assignmentOperator.RightOperand);
+            EmitStore(assignmentOperator.LeftOperand);
         }
 
-        private void Emit(IBinaryOperatorNode assignmentOperator)
+        private void Emit(IBinaryOperatorNode binaryOperator)
         {
             throw new NotImplementedException();
         }
 
-        private void Emit(IFunctionNode assignmentOperator)
+        private void Emit(IFunctionNode function)
         {
             throw new NotImplementedException();
         }
 
-        private void Emit(IFunctionCallNode assignmentOperator)
+        private void Emit(IFunctionCallNode functionCall)
         {
             throw new NotImplementedException();
         }
 
-        private void Emit(ILiteralNode assignmentOperator)
+        private void Emit(ILiteralNode literal)
         {
             throw new NotImplementedException();
         }
 
-        private void Emit(IMethodCallNode assignmentOperator)
+        private void Emit(IMethodCallNode methodCall)
         {
             throw new NotImplementedException();
         }
 
-        private void Emit(IObjectCreationNode assignmentOperator)
+        private void Emit(IObjectCreationNode objectCreation)
         {
             throw new NotImplementedException();
         }
 
-        private void Emit(IUnaryOperatorNode assignmentOperator)
+        private void Emit(IUnaryOperatorNode unaryOperator)
         {
             throw new NotImplementedException();
         }
