@@ -364,7 +364,7 @@ namespace LaborasLangCompiler.ILTools
         
         private void Emit(IFunctionNode function)
         {
-            throw new NotSupportedException("Function should be declared at type level, not at method level");
+            Ldftn(function.Function);
         }
 
         private void Emit(IFunctionCallNode functionCall)
@@ -419,7 +419,37 @@ namespace LaborasLangCompiler.ILTools
 
         private void Emit(IUnaryOperatorNode unaryOperator)
         {
-            throw new NotImplementedException();
+            switch (unaryOperator.UnaryOperatorType)
+            {
+                case UnaryOperatorNodeType.BinaryNot:
+                    RequireInteger(unaryOperator.Operand.ReturnType, "Binary negation requires integer operand.");
+                    Not();
+                    return;
+
+                case UnaryOperatorNodeType.LogicalNot:
+                    RequireBoolean(unaryOperator.Operand.ReturnType, "Logical not requires boolean operand.");
+                    throw new NotImplementedException();
+
+                case UnaryOperatorNodeType.Negation:
+                    RequireNumeral(unaryOperator.Operand.ReturnType, "Negation requires numeral operand.");
+                    throw new NotImplementedException();
+
+                case UnaryOperatorNodeType.PostDecrement:
+                    throw new NotImplementedException();
+
+                case UnaryOperatorNodeType.PostIncrement:
+                    throw new NotImplementedException();
+
+                case UnaryOperatorNodeType.PreDecrement:
+                    throw new NotImplementedException();
+
+                case UnaryOperatorNodeType.PreIncrement:
+                    throw new NotImplementedException();
+
+                case UnaryOperatorNodeType.VoidOperator:
+                    Pop();
+                    return;
+            }
         }
 
         #region Add emitter
@@ -868,6 +898,11 @@ namespace LaborasLangCompiler.ILTools
             ilProcessor.Emit(OpCodes.Ldfld, field);
         }
 
+        private void Ldftn(MethodReference function)
+        {
+            ilProcessor.Emit(OpCodes.Ldftn, function);
+        }
+
         private void Ldloc(int index)
         {
             if (index < 4)
@@ -914,6 +949,11 @@ namespace LaborasLangCompiler.ILTools
         private void Or()
         {
             ilProcessor.Emit(OpCodes.Or);
+        }
+
+        private void Not()
+        {
+            ilProcessor.Emit(OpCodes.Not);
         }
 
         private void Pop()

@@ -131,6 +131,8 @@ namespace LaborasLangCompiler.Parser.Tree
 
     public enum UnaryOperatorNodeType
     {
+        BinaryNot,
+        LogicalNot,
         Negation,
         PreIncrement,
         PreDecrement,
