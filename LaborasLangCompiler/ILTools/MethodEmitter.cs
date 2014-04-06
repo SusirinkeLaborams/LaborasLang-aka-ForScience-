@@ -194,20 +194,16 @@ namespace LaborasLangCompiler.ILTools
                     Emit((IBinaryOperatorNode)rvalue);
                     return;
 
+                case RValueNodeType.Call:
+                    Emit((ICallNode)rvalue);
+                    return;
+
                 case RValueNodeType.Function:
                     Emit((IFunctionNode)rvalue);
                     return;
 
-                case RValueNodeType.FunctionCall:
-                    Emit((IFunctionCallNode)rvalue);
-                    return;
-
                 case RValueNodeType.Literal:
                     Emit((ILiteralNode)rvalue);
-                    return;
-
-                case RValueNodeType.MethodCall:
-                    Emit((IMethodCallNode)rvalue);
                     return;
 
                 case RValueNodeType.ObjectCreation:
@@ -367,6 +363,20 @@ namespace LaborasLangCompiler.ILTools
             Ldftn(function.Function);
         }
 
+        private void Emit(ICallNode call)
+        {
+            switch (call.CallType)
+            {
+                case CallNodeType.FunctionCall:
+                    Emit((IFunctionCallNode)call);
+                    return;
+
+                case CallNodeType.MethodCall:
+                    Emit((IMethodCallNode)call);
+                    return;
+            }
+        }
+
         private void Emit(IFunctionCallNode functionCall)
         {
             foreach (var argument in functionCall.Arguments)
@@ -374,7 +384,17 @@ namespace LaborasLangCompiler.ILTools
                 Emit(argument);
             }
 
-            Call(functionCall.Function);
+            var function = functionCall.Function;
+
+            if (function.ExpressionType == ExpressionNodeType.RValue && ((IRValueNode)function).RValueType == RValueNodeType.Function)
+            {
+                Call(((IFunctionNode)function).Function);
+            }
+            else
+            {
+                Emit(functionCall.Function);
+                Calli();
+            }
         }
 
         private void Emit(ILiteralNode literal)
@@ -766,6 +786,11 @@ namespace LaborasLangCompiler.ILTools
         private void Call(MethodReference method)
         {
             ilProcessor.Emit(OpCodes.Call, method);
+        }
+
+        private void Calli()
+        {
+            ilProcessor.Emit(OpCodes.Calli);
         }
 
         private void Ceq()
