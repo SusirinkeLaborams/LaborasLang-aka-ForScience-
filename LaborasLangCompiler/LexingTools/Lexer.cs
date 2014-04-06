@@ -45,26 +45,27 @@ namespace LaborasLangCompiler.LexingTools
                         Ws?
                         (FunctionArgument Ws? (',' Ws? FunctionArgument Ws?)*)?
                     ')';
-                (?<NamedFunctionType>): Type Ws? ('(' Ws? ((Type Ws Symbol) Ws? (',' Ws? (Type Ws Symbol) Ws?)*)? ')');
-                (?<Function>): NamedFunctionType Ws? CodeBlock / Symbol;
+                
+                (?<NamedFunctionType>): (Type Ws? ('(' Ws? ((Type Ws Symbol) Ws? (',' Ws? (Type Ws Symbol) Ws?)*)? ')'));
+                (?<Function>): NamedFunctionType Ws? CodeBlock;
                 (?<Declaration>): (FunctionType / Type) Ws Symbol;
+                (?<DeclarationAndAssignment>): (FunctionType / Type) Ws Symbol Ws? '=' Ws? (Function / Value);
 
-
-                (?<Assignment>): (Declaration / Symbol) Ws? '=' Ws? Value /
+                (?<Assignment>): Symbol Ws? '=' Ws? Function /
+                                 Symbol Ws? '=' Ws? Value /
                                  Symbol Ws? AssignmentOperator Ws? Value;
-                (?<FunctionAssignment>): Declaration Ws? '=' Ws? Function;
+            
                 (?<ConditionalSentence>): 'if' Ws? '(' Ws? (?<Condition> Value) Ws? ')' (?<TrueBlock> CodeBlock) 'else' (?<FalseBlock> CodeBlock) /
                                             'if' Ws? '(' Ws? (?<Condition> Value) Ws? ')' (?<TrueBlock> CodeBlock);
                 (?<Loop>):  'while' Ws? '(' Ws? (?<Condition> Value) Ws? ')' Ws? CodeBlock;
                 (?<EndOfSentence>): ';';                
-                (?<Sentence>): ((NamespaceImport / Assignment / Declaration / FunctionCall) EndOfSentence) /
-                                FunctionAssignment /
+                (?<Sentence>): ((NamespaceImport / DeclarationAndAssignment / Assignment / Declaration / FunctionCall) Ws? EndOfSentence) /
                                 Loop /
                                 ConditionalSentence;
                 
                 (?<CodeBlock>): Ws? '{' Ws? ((Sentence / CodeBlock) Ws?)* Ws? '}'  Ws? ;
                 
-                (?<Root>): Ws? ((CodeBlock / Sentence) Ws?)* Ws?;
+                (?<Root>): Ws? (( CodeBlock / Sentence) Ws?)* Ws?;
             ".Trim();
 
             AExpression rules = PEGrammar.Load(grammar);

@@ -1,4 +1,8 @@
 use System.Windows;
+int i = 0;
+int i = int(int i) { } ;
+int(int) i = int() { } ;
+
 foo = 1;
 foo = 1 * 5;
 foo = 1 * 5 + 1;
