@@ -40,8 +40,7 @@ namespace LaborasLangCompiler.Parser.Tree
     {
         Literal,
         Function,
-        FunctionCall,
-        MethodCall,
+        Call,
         ObjectCreation,
         BinaryOperator,
         UnaryOperator,
