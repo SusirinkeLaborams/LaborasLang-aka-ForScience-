@@ -282,6 +282,30 @@ namespace LaborasLangCompiler.ILTools
                 case BinaryOperatorNodeType.Addition:
                     EmitAdd(binaryOperator);
                     return;
+
+                case BinaryOperatorNodeType.LogicalAnd:
+                    EmitLogicalAnd(binaryOperator);
+                    return;
+
+                case BinaryOperatorNodeType.LogicalOr:
+                    EmitLogicalOr(binaryOperator);
+                    return;
+
+                case BinaryOperatorNodeType.GreaterEqualThan:
+                    EmitGreaterEqualThan(binaryOperator);
+                    return;
+
+                case BinaryOperatorNodeType.GreaterThan:
+                    EmitGreaterThan(binaryOperator);
+                    return;
+
+                case BinaryOperatorNodeType.LessEqualThan:
+                    EmitLessEqualThan(binaryOperator);
+                    return;
+
+                case BinaryOperatorNodeType.LessThan:
+                    EmitLessThan(binaryOperator);
+                    return;
             }
             
             Emit(binaryOperator.LeftOperand);
@@ -306,46 +330,38 @@ namespace LaborasLangCompiler.ILTools
                     return;
                     
                 case BinaryOperatorNodeType.Equals:
-                    throw new NotImplementedException();
-
-                case BinaryOperatorNodeType.GreaterEqualThan:
-                    throw new NotImplementedException();
-
-                case BinaryOperatorNodeType.GreaterThan:
-                    throw new NotImplementedException();
-
-                case BinaryOperatorNodeType.Less:
-                    throw new NotImplementedException();
-
-                case BinaryOperatorNodeType.LessThan:
-                    throw new NotImplementedException();
-
-                case BinaryOperatorNodeType.LogicalAnd:
-                    throw new NotImplementedException();
-
-                case BinaryOperatorNodeType.LogicalOr:
-                    throw new NotImplementedException();
-
+                    Ceq();
+                    return;
+                    
                 case BinaryOperatorNodeType.Multiplication:
-                    throw new NotImplementedException();
+                    Mul();
+                    return;
 
                 case BinaryOperatorNodeType.NotEquals:
-                    throw new NotImplementedException();
+                    Ceq();
+                    Ldc_I4(0);
+                    Ceq();
+                    return;
 
                 case BinaryOperatorNodeType.Remainder:
-                    throw new NotImplementedException();
+                    EmitRemainder(binaryOperator);
+                    return;
 
                 case BinaryOperatorNodeType.Subtraction:
-                    throw new NotImplementedException();
+                    Sub();
+                    return;
 
                 case BinaryOperatorNodeType.Xor:
-                    throw new NotImplementedException();
+                    RequireInteger(binaryOperator.LeftOperand.ReturnType, "XOR requires both operands to be integers");
+                    RequireInteger(binaryOperator.RightOperand.ReturnType, "XOR requires both operands to be integers");
+                    Xor();
+                    return;
 
                 default:
                     throw new NotSupportedException(string.Format("Unknown binary operator node: {0}", binaryOperator.BinaryOperatorType));                    
             }
         }
-
+        
         private void Emit(IFunctionNode function)
         {
             throw new NotImplementedException();
@@ -376,52 +392,256 @@ namespace LaborasLangCompiler.ILTools
             throw new NotImplementedException();
         }
 
+        #region Add emitter
+
         private void EmitAdd(IBinaryOperatorNode binaryOperator)
         {
-            var left = binaryOperator.LeftOperand;
-            var right = binaryOperator.RightOperand;
-
-            bool leftIsString = left.ReturnType.FullName == "System.String";
-            bool rightIsString = left.ReturnType.FullName == "System.String";
-
-            if (leftIsString || rightIsString)
+            if (IsAtLeastOneOperandString(binaryOperator))
             {
-                Emit(left);
-
-                if (left.ReturnType.IsValueType)
-                {
-                    Box(left.ReturnType);   
-                }
-
-                Emit(right);
-
-                if (right.ReturnType.IsValueType)
-                {
-                    Box(right.ReturnType);
-                }
-
-                var concatMethod = (from x in assemblyRegistry.GetMethods("System.String", "Concat")
-                                    where x.Parameters.Count == 2 
-                                            && x.Parameters[0].ParameterType.FullName == "System.Object"
-                                            && x.Parameters[1].ParameterType.FullName == "System.Object"
-                                    select x).Single();
-
-                Call(concatMethod);
+                EmitAddString(binaryOperator.LeftOperand, binaryOperator.RightOperand);
             }
             else
             {
-                Emit(left);
-                Emit(right);
-                Add();
-
-                throw new NotImplementedException("Still need to implement implicit conversions (like int + float)");
+                EmitAddNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand);
             }
         }
 
-        private void EmitDivision(IBinaryOperatorNode binaryOperator)
+        private void EmitAddNumeral(IExpressionNode left, IExpressionNode right)
+        {
+            RequireNumeral(left.ReturnType, "Addition requires both operands to be numerals or at least one to be a string");
+            RequireNumeral(right.ReturnType, "Addition requires both operands to be numerals or at least one to be a string");
+
+            Emit(left);
+            Emit(right);
+            Add();
+
+            throw new NotImplementedException("Still need to implement implicit conversions (like int + float)");
+        }
+
+        private void EmitAddString(IExpressionNode left, IExpressionNode right)
+        {
+            Emit(left);
+
+            if (left.ReturnType.IsValueType)
+            {
+                Box(left.ReturnType);
+            }
+
+            Emit(right);
+
+            if (right.ReturnType.IsValueType)
+            {
+                Box(right.ReturnType);
+            }
+
+            var concatMethod = (from x in assemblyRegistry.GetMethods("System.String", "Concat")
+                                where x.Parameters.Count == 2
+                                        && x.Parameters[0].ParameterType.FullName == "System.Object"
+                                        && x.Parameters[1].ParameterType.FullName == "System.Object"
+                                select x).Single();
+
+            Call(concatMethod);
+        }
+
+        #endregion
+
+        #region Logical And/Logical Or emitters
+
+        private void EmitLogicalAnd(IBinaryOperatorNode binaryOperator)
+        {
+            RequireBoolean(binaryOperator.LeftOperand.ReturnType, "Logical AND requires both operands to be booleans");
+            RequireBoolean(binaryOperator.RightOperand.ReturnType, "Logical AND requires both operands to be booleans");
+
+            throw new NotImplementedException();
+        }
+
+        private void EmitLogicalOr(IBinaryOperatorNode binaryOperator)
+        {
+            RequireBoolean(binaryOperator.LeftOperand.ReturnType, "Logical OR requires both operands to be booleans");
+            RequireBoolean(binaryOperator.RightOperand.ReturnType, "Logical OR requires both operands to be booleans");
+
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Comparison emitters
+
+        #region Greater equal than emitter
+
+        private void EmitGreaterEqualThan(IBinaryOperatorNode binaryOperator)
+        {
+            if (IsAtLeastOneOperandString(binaryOperator))
+            {
+                EmitGreaterEqualThanString(binaryOperator.LeftOperand, binaryOperator.RightOperand);
+            }
+            else
+            {
+                EmitGreaterEqualThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand);
+            }
+        }
+
+        private void EmitGreaterEqualThanString(IExpressionNode left, IExpressionNode right)
         {
             throw new NotImplementedException();
         }
+
+        private void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right)
+        {
+            RequireNumeral(left.ReturnType, "Greater equal than requires both operands to be numerals or at least one to be a string");
+            RequireNumeral(right.ReturnType, "Greater equal than requires both operands to be numerals or at least one to be a string");
+
+            Emit(left);
+            Emit(right);
+
+            Clt();
+            Ldc_I4(0);
+            Ceq();
+
+            throw new NotImplementedException();    // Conversions int <---> float, etc
+        }
+
+        #endregion
+
+        #region Greater than emitter
+
+        private void EmitGreaterThan(IBinaryOperatorNode binaryOperator)
+        {
+            if (IsAtLeastOneOperandString(binaryOperator))
+            {
+                EmitGreaterThanString(binaryOperator.LeftOperand, binaryOperator.RightOperand);
+            }
+            else
+            {
+                EmitGreaterThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand);
+            }
+        }
+
+        private void EmitGreaterThanString(IExpressionNode left, IExpressionNode right)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right)
+        {
+            RequireNumeral(left.ReturnType, "Greater than requires both operands to be numerals or at least one to be a string");
+            RequireNumeral(right.ReturnType, "Greater than requires both operands to be numerals or at least one to be a string");
+
+            Emit(left);
+            Emit(right);
+
+            Cgt();
+
+            throw new NotImplementedException();    // Conversions int <---> float, etc
+        }
+
+        #endregion
+
+        #region Less equal than emitter
+
+        private void EmitLessEqualThan(IBinaryOperatorNode binaryOperator)
+        {
+            if (IsAtLeastOneOperandString(binaryOperator))
+            {
+                EmitLessEqualThanString(binaryOperator.LeftOperand, binaryOperator.RightOperand);
+            }
+            else
+            {
+                EmitLessEqualThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand);
+            }
+        }
+
+        private void EmitLessEqualThanString(IExpressionNode left, IExpressionNode right)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right)
+        {
+            RequireNumeral(left.ReturnType, "Less equal than requires both operands to be numerals or at least one to be a string");
+            RequireNumeral(right.ReturnType, "Less equal than requires both operands to be numerals or at least one to be a string");
+
+            Emit(left);
+            Emit(right);
+
+            Cgt();
+            Ldc_I4(0);
+            Ceq();
+
+            throw new NotImplementedException();    // Conversions int <---> float, etc
+        }
+
+        #endregion
+
+        #region Emit less than
+
+        private void EmitLessThan(IBinaryOperatorNode binaryOperator)
+        {
+            if (IsAtLeastOneOperandString(binaryOperator))
+            {
+                EmitLessThanString(binaryOperator.LeftOperand, binaryOperator.RightOperand);
+            }
+            else
+            {
+                EmitLessThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand);
+            }
+        }
+
+        private void EmitLessThanString(IExpressionNode left, IExpressionNode right)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void EmitLessThanNumeral(IExpressionNode left, IExpressionNode right)
+        {
+            RequireNumeral(left.ReturnType, "Less than requires both operands to be numerals or at least one to be a string");
+            RequireNumeral(right.ReturnType, "Less than requires both operands to be numerals or at least one to be a string");
+
+            Emit(left);
+            Emit(right);
+
+            Clt();
+
+            throw new NotImplementedException();    // Conversions int <---> float, etc
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Division/Remainder emitters
+
+        private void EmitDivision(IBinaryOperatorNode binaryOperator)
+        {
+            RequireNumeral(binaryOperator.LeftOperand.ReturnType, "Division requires both operands to be numerals");
+            RequireNumeral(binaryOperator.RightOperand.ReturnType, "Division requires both operands to be numerals");
+
+            if (AreBothOperandsUnsigned(binaryOperator))
+            {
+                Div_Un();
+            }
+            else
+            {
+                Div();
+            }
+        }
+
+        private void EmitRemainder(IBinaryOperatorNode binaryOperator)
+        {
+            RequireNumeral(binaryOperator.LeftOperand.ReturnType, "Remainder requires both operands to be numerals");
+            RequireNumeral(binaryOperator.RightOperand.ReturnType, "Remainder requires both operands to be numerals");
+
+            if (AreBothOperandsUnsigned(binaryOperator))
+            {
+                Rem_Un();
+            }
+            else
+            {
+                Rem();
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -429,7 +649,37 @@ namespace LaborasLangCompiler.ILTools
 
         #region Validators
 
+        private void RequireNumeral(TypeReference type, string errorMessage)
+        {
+            throw new NotImplementedException();
+        }
+
         private void RequireInteger(TypeReference type, string errorMessage)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void RequireBoolean(TypeReference type, string errorMessage)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Helpers
+
+        bool IsAtLeastOneOperandString(IBinaryOperatorNode binaryOperator)
+        {
+            var left = binaryOperator.LeftOperand;
+            var right = binaryOperator.RightOperand;
+
+            bool leftIsString = left.ReturnType.FullName == "System.String";
+            bool rightIsString = left.ReturnType.FullName == "System.String";
+
+            return leftIsString || rightIsString;
+        }
+
+        bool AreBothOperandsUnsigned(IBinaryOperatorNode binaryOperator)
         {
             throw new NotImplementedException();
         }
@@ -456,6 +706,31 @@ namespace LaborasLangCompiler.ILTools
         private void Call(MethodReference method)
         {
             ilProcessor.Emit(OpCodes.Call, method);
+        }
+
+        private void Ceq()
+        {
+            ilProcessor.Emit(OpCodes.Ceq);
+        }
+
+        private void Cgt()
+        {
+            ilProcessor.Emit(OpCodes.Cgt);
+        }
+
+        private void Clt()
+        {
+            ilProcessor.Emit(OpCodes.Clt);
+        }
+
+        private void Div()
+        {
+            ilProcessor.Emit(OpCodes.Div);
+        }
+
+        private void Div_Un()
+        {
+            ilProcessor.Emit(OpCodes.Div_Un);
         }
 
         private void Ldarg(int index)
@@ -488,6 +763,63 @@ namespace LaborasLangCompiler.ILTools
             else
             {
                 ilProcessor.Emit(OpCodes.Ldarg, index);
+            }
+        }
+
+        private void Ldc_I4(int value)
+        {
+            if (value > -2 && value < 9)
+            {
+                switch (value)
+                {
+                    case -1:
+                        ilProcessor.Emit(OpCodes.Ldc_I4_M1);
+                        return;
+
+                    case 0:
+                        ilProcessor.Emit(OpCodes.Ldc_I4_0);
+                        return;
+
+                    case 1:
+                        ilProcessor.Emit(OpCodes.Ldc_I4_1);
+                        return;
+
+                    case 2:
+                        ilProcessor.Emit(OpCodes.Ldc_I4_2);
+                        return;
+
+                    case 3:
+                        ilProcessor.Emit(OpCodes.Ldc_I4_3);
+                        return;
+
+                    case 4:
+                        ilProcessor.Emit(OpCodes.Ldc_I4_4);
+                        return;
+
+                    case 5:
+                        ilProcessor.Emit(OpCodes.Ldc_I4_5);
+                        return;
+
+                    case 6:
+                        ilProcessor.Emit(OpCodes.Ldc_I4_6);
+                        return;
+
+                    case 7:
+                        ilProcessor.Emit(OpCodes.Ldc_I4_7);
+                        return;
+
+                    case 8:
+                        ilProcessor.Emit(OpCodes.Ldc_I4_8);
+                        return;
+                }
+            }
+            else if (value > -129 && value < 128)
+            {
+                ilProcessor.Emit(OpCodes.Ldc_I4_S, value);
+            }
+            else
+            {
+                ilProcessor.Emit(OpCodes.Ldc_I4, value);
             }
         }
 
@@ -534,6 +866,11 @@ namespace LaborasLangCompiler.ILTools
             ilProcessor.Emit(OpCodes.Ldstr, str);
         }
 
+        private void Mul()
+        {
+            ilProcessor.Emit(OpCodes.Mul);
+        }
+
         private void Or()
         {
             ilProcessor.Emit(OpCodes.Or);
@@ -542,6 +879,16 @@ namespace LaborasLangCompiler.ILTools
         private void Pop()
         {
             ilProcessor.Emit(OpCodes.Pop);
+        }
+
+        private void Rem()
+        {
+            ilProcessor.Emit(OpCodes.Rem);
+        }
+
+        private void Rem_Un()
+        {
+            ilProcessor.Emit(OpCodes.Rem_Un);
         }
 
         private void Ret()
@@ -597,6 +944,16 @@ namespace LaborasLangCompiler.ILTools
             {
                 ilProcessor.Emit(OpCodes.Stloc, index);
             }
+        }
+
+        private void Sub()
+        {
+            ilProcessor.Emit(OpCodes.Sub);
+        }
+
+        private void Xor()
+        {
+            ilProcessor.Emit(OpCodes.Xor);
         }
 
         #endregion

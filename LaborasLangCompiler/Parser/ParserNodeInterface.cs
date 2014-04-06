@@ -115,7 +115,7 @@ namespace LaborasLangCompiler.Parser.Tree
         GreaterThan,
         GreaterEqualThan,
         LessThan,
-        Less,
+        LessEqualThan,
         Equals,
         NotEquals,
         LogicalOr,
