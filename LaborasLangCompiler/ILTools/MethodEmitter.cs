@@ -113,12 +113,26 @@ namespace LaborasLangCompiler.ILTools
 
         private void Emit(ISymbolDeclarationNode symbolDeclaration)
         {
-            body.Variables.Add(symbolDeclaration.LocalVariable.LocalVariable);
+            switch (symbolDeclaration.DeclaredSymbol.LValueType)
+            {
+                case LValueNodeType.LocalVariable:
+                    body.Variables.Add(((ILocalVariableNode)symbolDeclaration.DeclaredSymbol).LocalVariable);
+                    break;
+
+                case LValueNodeType.FunctionArgument:
+                    throw new NotSupportedException("Can't declare argument.");
+
+                case LValueNodeType.Field:
+                    throw new NotSupportedException("Can't declare field inside of a method.");
+
+                default:
+                    throw new NotSupportedException("Unknown lvalue type");
+            }
 
             if (symbolDeclaration.Initializer != null)
             {
                 Emit(symbolDeclaration.Initializer);
-                EmitStore(symbolDeclaration.LocalVariable);
+                EmitStore(symbolDeclaration.DeclaredSymbol);
             }
         }
 
