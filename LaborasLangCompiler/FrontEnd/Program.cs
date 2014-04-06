@@ -26,7 +26,7 @@ namespace LaborasLangCompiler.FrontEnd
                     PrintAst(tree, 1, bytes);
                 }
 
-                //EmitHelloWorld(compilerArgs);
+                Test(compilerArgs);
             }
             catch (Exception e)
             {
@@ -63,6 +63,19 @@ namespace LaborasLangCompiler.FrontEnd
             var method = new MethodEmitter(assemblyRegistry, type, "Main", assemblyRegistry.GetType("System.Void"), MethodAttributes.Static | MethodAttributes.Private);
 
             method.EmitHelloWorld();
+            method.SetAsEntryPoint();
+
+            assembly.Save();
+        }
+
+        static void Test(CompilerArguments compilerArgs)
+        {
+            var assemblyRegistry = new AssemblyRegistry(compilerArgs.References);
+            var assembly = new AssemblyEmitter(compilerArgs);
+            var type = new TypeEmitter(assembly, "Laboras");
+            var method = new MethodEmitter(assemblyRegistry, type, "Main", assemblyRegistry.GetType("System.Void"), MethodAttributes.Static | MethodAttributes.Private);
+
+            method.EmitTest();
             method.SetAsEntryPoint();
 
             assembly.Save();

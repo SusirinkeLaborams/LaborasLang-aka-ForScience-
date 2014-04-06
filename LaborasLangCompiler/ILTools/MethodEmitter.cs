@@ -790,7 +790,11 @@ namespace LaborasLangCompiler.ILTools
 
         private void Calli()
         {
-            ilProcessor.Emit(OpCodes.Calli);
+            //var callSite = new CallSite(new );
+
+           // ilProcessor.Emit(OpCodes.Calli, callSite);
+
+            throw new NotImplementedException();
         }
 
         private void Ceq()
@@ -927,7 +931,7 @@ namespace LaborasLangCompiler.ILTools
         {
             ilProcessor.Emit(OpCodes.Ldftn, function);
         }
-
+        
         private void Ldloc(int index)
         {
             if (index < 4)
@@ -965,7 +969,7 @@ namespace LaborasLangCompiler.ILTools
         {
             ilProcessor.Emit(OpCodes.Ldstr, str);
         }
-
+        
         private void Mul()
         {
             ilProcessor.Emit(OpCodes.Mul);
@@ -1084,5 +1088,9 @@ namespace LaborasLangCompiler.ILTools
         }
 
         #endregion
+
+        public void EmitTest()
+        {
+        }
     }
 }
