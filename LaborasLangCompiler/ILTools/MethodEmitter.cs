@@ -1,24 +1,22 @@
-﻿using Mono.Cecil;
+﻿using LaborasLangCompiler.Parser.Tree;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.ILTools
 {
     internal class MethodEmitter
     {
         private MethodDefinition methodDefinition;
+        private MethodBody body;
         private ILProcessor ilProcessor;
 
         private AssemblyRegistry assemblyRegistry;
         private ModuleDefinition module;
 
-        private bool parsed = false;
+        public bool Parsed { get; private set; }
 
-        public bool Parsed { get { return parsed; } }
         public MethodEmitter(AssemblyRegistry assemblyRegistry, TypeEmitter declaringType, string name, TypeReference returnType, 
                                 MethodAttributes methodAttributes = MethodAttributes.Private)
         {
@@ -26,20 +24,23 @@ namespace LaborasLangCompiler.ILTools
             declaringType.AddMethod(methodDefinition);
 
             this.assemblyRegistry = assemblyRegistry;
-            ilProcessor = methodDefinition.Body.GetILProcessor();
             module = declaringType.Module;
+
+            body = methodDefinition.Body;
+            ilProcessor = body.GetILProcessor();
 
             if (module == null)
             {
                 throw new ArgumentException("Declaring type isn't assigned to module!");
             }
-
-            parsed = false;
         }
 
-        public void AddArgument(TypeReference type, string name)
+        public ParameterDefinition AddArgument(TypeReference type, string name)
         {
-            throw new NotImplementedException();
+            var parameter = new ParameterDefinition(name, ParameterAttributes.None, type);
+            methodDefinition.Parameters.Add(parameter);
+
+            return parameter;
         }
 
         public MethodReference GetAsReference()
@@ -47,27 +48,10 @@ namespace LaborasLangCompiler.ILTools
             return methodDefinition;
         }
 
-        public void EmitHelloWorld()
+        public void ParseTree(ICodeBlockNode tree)
         {
-            var console = assemblyRegistry.GetType("System.Console");
-
-            var consoleWriteLine = module.Import(assemblyRegistry.GetMethods(console, "WriteLine")
-                           .Where(x => x.Parameters.Count == 1 && x.Parameters[0].ParameterType.FullName == "System.String").Single());
-            var consoleReadLine = module.Import(assemblyRegistry.GetMethods(console, "ReadLine").Where(x => x.Parameters.Count == 0).Single());
-
-            Ldstr("Hello, world!");
-            Call(consoleWriteLine);
-            Call(consoleReadLine);
-            
-            Pop();
-            Ret();
-
-            parsed = true;
-        }
-
-        public void ParseTree(object/*WhateverTreeType*/ tree)
-        {
-            throw new NotImplementedException();
+            Emit(tree);
+            Parsed = true;
         }
 
         public void SetAsEntryPoint()
@@ -80,14 +64,327 @@ namespace LaborasLangCompiler.ILTools
             methodDefinition.DeclaringType.Module.EntryPoint = methodDefinition;
         }
 
+        #region Emitters
+
+        private void Emit(IParserNode node)
+        {
+            switch (node.Type)
+            {
+                case NodeType.CodeBlockNode:
+                    Emit((ICodeBlockNode)node);
+                    return;
+
+                case NodeType.Expression:
+                    Emit((IExpressionNode)node);
+                    return;
+
+                case NodeType.SymbolDeclaration:
+                    Emit((ISymbolDeclarationNode)node);
+                    return;
+            }
+        }
+
+        #region Parser node
+
+        private void Emit(ICodeBlockNode codeBlock)
+        {
+            foreach (var node in codeBlock.Nodes)
+            {
+                Emit(node);
+            }
+        }
+
+        private void Emit(IExpressionNode expression)
+        {
+            switch (expression.ExpressionType)
+            {
+                case ExpressionNodeType.LValue:
+                    Emit((ILValueNode)expression);
+                    return;
+
+                case ExpressionNodeType.RValue:
+                    Emit((IRValueNode)expression);
+                    return;
+
+                default:
+                    throw new NotSupportedException("Unknown expression node type!");
+            }
+        }
+
+        private void Emit(ISymbolDeclarationNode symbolDeclaration)
+        {
+            body.Variables.Add(symbolDeclaration.LocalVariable.LocalVariable);
+
+            if (symbolDeclaration.Initializer != null)
+            {
+                Emit(symbolDeclaration.Initializer);
+                EmitStore(symbolDeclaration.LocalVariable);
+            }
+        }
+
+        #endregion
+
+        #region Expression node
+
+        private void Emit(ILValueNode lvalue)
+        {
+            switch (lvalue.LValueType)
+            {
+                case LValueNodeType.Field:
+                    Emit((IFieldNode)lvalue);
+                    return;
+
+                case LValueNodeType.FunctionArgument:
+                    Emit((IFunctionArgumentNode)lvalue);
+                    return;
+
+                case LValueNodeType.LocalVariable:
+                    Emit((ILocalVariableNode)lvalue);
+                    return;
+
+                default:
+                    throw new NotSupportedException("Unknown lvalue node type!");
+            }
+        }
+
+        private void EmitStore(ILValueNode lvalue)
+        {
+            switch (lvalue.LValueType)
+            {
+                case LValueNodeType.Field:
+                    EmitStore((IFieldNode)lvalue);
+                    return;
+
+                case LValueNodeType.FunctionArgument:
+                    EmitStore((IFunctionArgumentNode)lvalue);
+                    return;
+
+                case LValueNodeType.LocalVariable:
+                    EmitStore((ILocalVariableNode)lvalue);
+                    return;
+
+                default:
+                    throw new NotSupportedException("Unknown lvalue node type!");
+            }
+        }
+
+        private void Emit(IRValueNode rvalue)
+        {
+            switch (rvalue.RValueType)
+            {
+                case RValueNodeType.AssignmentOperator:
+                    Emit((IAssignmentOperatorNode)rvalue);
+                    return;
+
+                case RValueNodeType.BinaryOperator:
+                    Emit((IBinaryOperatorNode)rvalue);
+                    return;
+
+                case RValueNodeType.Function:
+                    Emit((IFunctionNode)rvalue);
+                    return;
+
+                case RValueNodeType.FunctionCall:
+                    Emit((IFunctionCallNode)rvalue);
+                    return;
+
+                case RValueNodeType.Literal:
+                    Emit((ILiteralNode)rvalue);
+                    return;
+
+                case RValueNodeType.MethodCall:
+                    Emit((IMethodCallNode)rvalue);
+                    return;
+
+                case RValueNodeType.ObjectCreation:
+                    Emit((IObjectCreationNode)rvalue);
+                    return;
+
+                case RValueNodeType.UnaryOperator:
+                    Emit((IUnaryOperatorNode)rvalue);
+                    return;
+
+                default:
+                    throw new NotSupportedException("Unknown RValue node type!");
+            }
+        }
+
+        #endregion
+
+        #region LValue node
+
+        #region Load lvalue node
+
+        private void Emit(IFieldNode field)
+        {
+            Ldfld(field.Field);
+        }
+
+        private void Emit(IFunctionArgumentNode argument)
+        {
+            Ldarg(argument.Param.Index);
+        }
+
+        private void Emit(ILocalVariableNode variable)
+        {
+            Ldloc(variable.LocalVariable.Index);
+        }
+
+        #endregion
+
+        #region Store rvalue node
+
+        private void EmitStore(IFieldNode field)
+        {
+            Stfld(field.Field);
+        }
+
+        private void EmitStore(IFunctionArgumentNode argument)
+        {
+            Starg(argument.Param.Index);
+        }
+
+        private void EmitStore(ILocalVariableNode variable)
+        {
+            Stloc(variable.LocalVariable.Index);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region RValue node
+
+        private void Emit(IAssignmentOperatorNode assignmentOperator)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Emit(IBinaryOperatorNode assignmentOperator)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Emit(IFunctionNode assignmentOperator)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Emit(IFunctionCallNode assignmentOperator)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Emit(ILiteralNode assignmentOperator)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Emit(IMethodCallNode assignmentOperator)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Emit(IObjectCreationNode assignmentOperator)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Emit(IUnaryOperatorNode assignmentOperator)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #endregion
+
+        #region IL Instructions
+
+        private void Call(MethodReference method)
+        {
+            ilProcessor.Emit(OpCodes.Call, method);
+        }
+
+        private void Ldarg(int index)
+        {
+            if (index < 4)
+            {
+                switch (index)
+                {
+                    case 0:
+                        ilProcessor.Emit(OpCodes.Ldarg_0);
+                        return;
+
+                    case 1:
+                        ilProcessor.Emit(OpCodes.Ldarg_1);
+                        return;
+
+                    case 2:
+                        ilProcessor.Emit(OpCodes.Ldarg_2);
+                        return;
+
+                    case 3:
+                        ilProcessor.Emit(OpCodes.Ldarg_3);
+                        return;
+                }
+            }
+            else if (index < 256)
+            {
+                ilProcessor.Emit(OpCodes.Ldarg_S, index);
+            }
+            else
+            {
+                ilProcessor.Emit(OpCodes.Ldarg, index);
+            }
+        }
+
+        private void Ldfld(FieldDefinition field)
+        {
+            ilProcessor.Emit(OpCodes.Ldfld, field);
+        }
+
+        private void Ldloc(int index)
+        {
+            if (index < 4)
+            {
+                switch (index)
+                {
+                    case 0:
+                        ilProcessor.Emit(OpCodes.Ldloc_0);
+                        return;
+
+                    case 1:
+                        ilProcessor.Emit(OpCodes.Ldloc_1);
+                        return;
+
+                    case 2:
+                        ilProcessor.Emit(OpCodes.Ldloc_2);
+                        return;
+
+                    case 3:
+                        ilProcessor.Emit(OpCodes.Ldloc_3);
+                        return;
+                }
+            }
+            else if (index < 256)
+            {
+                ilProcessor.Emit(OpCodes.Ldloc_S, index);
+            }
+            else
+            {
+                ilProcessor.Emit(OpCodes.Ldloc, index);
+            }
+        }
+
         private void Ldstr(string str)
         {
             ilProcessor.Emit(OpCodes.Ldstr, str);
         }
 
-        private void Call(MethodReference method)
+        private void Pop()
         {
-            ilProcessor.Emit(OpCodes.Call, method);
+            ilProcessor.Emit(OpCodes.Pop);
         }
 
         private void Ret()
@@ -95,9 +392,78 @@ namespace LaborasLangCompiler.ILTools
             ilProcessor.Emit(OpCodes.Ret);
         }
 
-        private void Pop()
+        private void Starg(int index)
         {
-            ilProcessor.Emit(OpCodes.Pop);
+            if (index < 256)
+            {
+                ilProcessor.Emit(OpCodes.Starg_S, index);
+            }
+            else
+            {
+                ilProcessor.Emit(OpCodes.Starg, index);
+            }
         }
+
+        private void Stfld(FieldDefinition field)
+        {
+            ilProcessor.Emit(OpCodes.Stfld, field);
+        }
+
+        private void Stloc(int index)
+        {
+            if (index < 4)
+            {
+                switch (index)
+                {
+                    case 0:
+                        ilProcessor.Emit(OpCodes.Stloc_0);
+                        return;
+
+                    case 1:
+                        ilProcessor.Emit(OpCodes.Stloc_1);
+                        return;
+
+                    case 2:
+                        ilProcessor.Emit(OpCodes.Stloc_2);
+                        return;
+
+                    case 3:
+                        ilProcessor.Emit(OpCodes.Stloc_3);
+                        return;
+                }
+            }
+            else if (index < 256)
+            {
+                ilProcessor.Emit(OpCodes.Stloc_S, index);
+            }
+            else
+            {
+                ilProcessor.Emit(OpCodes.Stloc, index);
+            }
+        }
+
+        #endregion
+
+        #region Emit Hello World
+
+        public void EmitHelloWorld()
+        {
+            var console = assemblyRegistry.GetType("System.Console");
+
+            var consoleWriteLine = module.Import(assemblyRegistry.GetMethods(console, "WriteLine")
+                           .Where(x => x.Parameters.Count == 1 && x.Parameters[0].ParameterType.FullName == "System.String").Single());
+            var consoleReadLine = module.Import(assemblyRegistry.GetMethods(console, "ReadLine").Where(x => x.Parameters.Count == 0).Single());
+
+            Ldstr("Hello, world!");
+            Call(consoleWriteLine);
+            Call(consoleReadLine);
+
+            Pop();
+            Ret();
+
+            Parsed = true;
+        }
+
+        #endregion
     }
 }
