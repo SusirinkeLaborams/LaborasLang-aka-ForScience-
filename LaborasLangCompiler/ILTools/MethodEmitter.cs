@@ -156,6 +156,10 @@ namespace LaborasLangCompiler.ILTools
                     Emit((ILocalVariableNode)lvalue);
                     return;
 
+                case LValueNodeType.Property:
+                    Emit((IPropertyNode)lvalue);
+                    return;
+
                 default:
                     throw new NotSupportedException(string.Format("Unknown lvalue node type: {0}.", lvalue.LValueType));
             }
@@ -227,7 +231,19 @@ namespace LaborasLangCompiler.ILTools
 
         private void Emit(IFieldNode field)
         {
-            Ldfld(field.Field);
+            if (!field.Field.IsStatic)
+            {
+                Emit(field.ObjectInstance);
+            }
+
+            if (field.Field.Module != module)
+            {
+                Ldfld(module.Import(field.Field));
+            }
+            else
+            {
+                Ldfld(field.Field);
+            }
         }
 
         private void Emit(IFunctionArgumentNode argument)
@@ -240,13 +256,49 @@ namespace LaborasLangCompiler.ILTools
             Ldloc(variable.LocalVariable.Index);
         }
 
+        private void Emit(IPropertyNode property)
+        {
+            var getter = property.Property.GetMethod;
+
+            if (getter == null)
+            {
+                throw new ArgumentException(string.Format("Property {0} has no getter.", property.Property.FullName));
+            }
+
+            if (!getter.IsStatic)
+            {
+                Emit(property.ObjectInstance);
+            }
+
+            if (getter.Module != module)
+            {
+                Call(module.Import(getter));
+            }
+            else
+            {
+                Call(getter);
+            }
+        }
+
         #endregion
 
-        #region Store rvalue node
+        #region Store lvalue node
 
         private void EmitStore(IFieldNode field)
         {
-            Stfld(field.Field);
+            if (!field.Field.IsStatic)
+            {
+                Emit(field.ObjectInstance);
+            }
+
+            if (field.Field.Module != module)
+            {
+                Stfld(module.Import(field.Field));
+            }
+            else
+            {
+                Stfld(field.Field);
+            }
         }
 
         private void EmitStore(IFunctionArgumentNode argument)
@@ -267,8 +319,39 @@ namespace LaborasLangCompiler.ILTools
 
         private void Emit(IAssignmentOperatorNode assignmentOperator)
         {
-            Emit(assignmentOperator.RightOperand);
-            EmitStore(assignmentOperator.LeftOperand);
+            if (assignmentOperator.LeftOperand.LValueType == LValueNodeType.Property)
+            {
+                var propertyNode = (IPropertyNode)assignmentOperator.LeftOperand;
+                var setter = propertyNode.Property.SetMethod;
+                
+                if (setter == null)
+                {
+                    throw new ArgumentException(string.Format("Property {0} has no setter.", propertyNode.Property.FullName));
+                }
+
+                if (!setter.IsStatic)
+                {
+                    Emit(propertyNode.ObjectInstance);
+                }
+
+                Emit(assignmentOperator.RightOperand);
+
+                if (setter.Module != module)
+                {
+                    Call(module.Import(setter));
+                }
+                else
+                {
+                    Call(setter);
+                }
+            }
+            else
+            {
+                Emit(assignmentOperator.RightOperand);
+                EmitStore(assignmentOperator.LeftOperand);
+            }
+
+            Emit(assignmentOperator.LeftOperand);
         }
 
         private void Emit(IBinaryOperatorNode binaryOperator)
@@ -922,7 +1005,7 @@ namespace LaborasLangCompiler.ILTools
             ilProcessor.Emit(OpCodes.Ldc_R8);
         }
 
-        private void Ldfld(FieldDefinition field)
+        private void Ldfld(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Ldfld, field);
         }
@@ -1017,7 +1100,7 @@ namespace LaborasLangCompiler.ILTools
             }
         }
 
-        private void Stfld(FieldDefinition field)
+        private void Stfld(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Stfld, field);
         }

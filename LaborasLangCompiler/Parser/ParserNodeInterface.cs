@@ -94,6 +94,7 @@ namespace LaborasLangCompiler.Parser.Tree
     {
         LocalVariable,
         Field,
+        Property,
         FunctionArgument
     }
 
@@ -109,13 +110,21 @@ namespace LaborasLangCompiler.Parser.Tree
 
     interface IFieldNode : ILValueNode
     {
+        IExpressionNode ObjectInstance { get; }
         FieldDefinition Field { get; }
+    }
+
+    interface IPropertyNode : ILValueNode
+    {
+        IExpressionNode ObjectInstance { get; }
+        PropertyDefinition Property { get; }
     }
 
     interface IFunctionArgumentNode : ILValueNode
     {
         ParameterDefinition Param { get; }
     }
+
     public enum BinaryOperatorNodeType
     {
         Addition,
