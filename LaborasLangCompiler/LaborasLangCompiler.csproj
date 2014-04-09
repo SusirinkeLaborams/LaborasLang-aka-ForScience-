@@ -68,6 +68,7 @@
     <Compile Include="LexingTools\FileReader.cs" />
     <Compile Include="LexingTools\Lexer.cs" />
     <Compile Include="Misc\Utils.cs" />
+    <Compile Include="Parser\Exceptions\SymbolNotFoundException.cs" />
     <Compile Include="Parser\Impl\CodeBlockNode.cs" />
     <Compile Include="Parser\Impl\ExpressionNode.cs" />
     <Compile Include="Parser\Impl\LValueNode.cs" />

@@ -14,19 +14,28 @@ namespace LaborasLangCompiler.Parser.Impl
         public override NodeType Type { get { return NodeType.CodeBlockNode; } }
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
         private List<IParserNode> nodes;
-        private Dictionary<string, ILValueNode> symbols;
-        public CodeBlockNode(CodeBlockNode parent) : base(parent)
+        private Dictionary<string, LValueNode> symbols;
+        private CodeBlockNode parent;
+        public CodeBlockNode(CodeBlockNode parent) 
         {
             nodes = new List<IParserNode>();
-            symbols = new Dictionary<string, ILValueNode>();
+            symbols = new Dictionary<string, LValueNode>();
+            this.parent = parent;
         }
 
-        public override ILValueNode GetSymbol(string name)
+        public LValueNode GetSymbol(string name)
         {
-            if (!symbols.ContainsKey(name))
-                return base.GetSymbol(name);
-            else
+            if(symbols.ContainsKey(name))
+            {
                 return symbols[name];
+            }
+            else
+            {
+                if (parent != null)
+                    return parent.GetSymbol(name);
+                else
+                    return null;
+            }
         }
 
         public ILValueNode AddSymbol(TypeReference type, string name)

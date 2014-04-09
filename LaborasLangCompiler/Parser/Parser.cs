@@ -13,12 +13,17 @@ namespace LaborasLangCompiler.Parser
     class Parser
     {
         public AssemblyRegistry Registry { get; private set; }
-        public IParserNode Root { get; set; }
-
-        public Parser(AssemblyRegistry registry, AstNode tree)
+        public CodeBlockNode Root { get; set; }
+        private ByteInputIterator source;
+        public Parser(AssemblyRegistry registry, AstNode tree, ByteInputIterator source)
         {
             Registry = registry;
+            this.source = source;
             ParserNode.Parse(this, null, tree);
+        }
+        public string GetNodeValue(AstNode node)
+        {
+            return System.Text.Encoding.UTF8.GetString(source.Text(node.Token.Start, node.Token.End));
         }
     }
 }
