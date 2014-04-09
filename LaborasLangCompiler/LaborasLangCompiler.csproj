@@ -69,6 +69,8 @@
     <Compile Include="LexingTools\Lexer.cs" />
     <Compile Include="Misc\Utils.cs" />
     <Compile Include="Parser\Impl\CodeBlockNode.cs" />
+    <Compile Include="Parser\Impl\ExpressionNode.cs" />
+    <Compile Include="Parser\Impl\LValueNode.cs" />
     <Compile Include="Parser\Impl\ParserNode.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParserNodeInterface.cs" />
