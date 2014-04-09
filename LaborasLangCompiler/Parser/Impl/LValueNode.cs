@@ -37,10 +37,9 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.LocalVariable; } }
         public VariableDefinition LocalVariable { get; private set; }
-        public override TypeReference ReturnType { get; protected set; }
-        public LocalVariableNode(TypeReference type, VariableDefinition variable)
+        public override TypeReference ReturnType { get { return LocalVariable.VariableType; } }
+        public LocalVariableNode(VariableDefinition variable)
         {
-            ReturnType = type;
             LocalVariable = variable;
         }
     }

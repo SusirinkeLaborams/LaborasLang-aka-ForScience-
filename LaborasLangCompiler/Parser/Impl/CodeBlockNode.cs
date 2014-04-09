@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.Parser.Tree;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -40,9 +41,10 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public ILValueNode AddSymbol(TypeReference type, string name)
         {
-            //if (symbols.ContainsKey(name))
+            if (symbols.ContainsKey(name))
                 return null;
-            
+            symbols.Add(name, new LocalVariableNode(new VariableDefinition(type)));
+            return symbols[name];
         }
 
         public static new CodeBlockNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
