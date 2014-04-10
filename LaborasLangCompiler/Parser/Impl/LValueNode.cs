@@ -55,14 +55,20 @@ namespace LaborasLangCompiler.Parser.Impl
         }
     }
 
-    /*class FieldNode : LValueNode, IFieldNode
+    class FieldNode : LValueNode, IFieldNode
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.Field; } }
-        public IExpressionNode ObjectInstance { get; }
-        public FieldDefinition Field { get; }
+        public IExpressionNode ObjectInstance { get; private set; }
+        public FieldDefinition Field { get; private set; }
+        public override TypeReference ReturnType { get { return Field.FieldType; } }
+        public FieldNode(ExpressionNode instance, FieldDefinition field)
+        {
+            ObjectInstance = instance;
+            Field = field;
+        }
     }
 
-    class PropertyNode : LValueNode, IPropertyNode
+    /*class PropertyNode : LValueNode, IPropertyNode
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.Property; } }
         public IExpressionNode ObjectInstance { get; }

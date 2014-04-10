@@ -15,7 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override NodeType Type { get { return NodeType.CodeBlockNode; } }
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
         private List<IParserNode> nodes;
-        private Dictionary<string, LValueNode> symbols;
+        protected Dictionary<string, LValueNode> symbols;
         private CodeBlockNode parent;
         public CodeBlockNode(CodeBlockNode parent) 
         {
@@ -39,7 +39,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public ILValueNode AddSymbol(TypeReference type, string name)
+        public virtual ILValueNode AddSymbol(TypeReference type, string name)
         {
             if (symbols.ContainsKey(name))
                 return null;
