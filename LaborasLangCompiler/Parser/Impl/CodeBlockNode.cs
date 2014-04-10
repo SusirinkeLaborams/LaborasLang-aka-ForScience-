@@ -43,7 +43,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             if (symbols.ContainsKey(name))
                 return null;
-            symbols.Add(name, new LocalVariableNode(new VariableDefinition(type)));
+            symbols.Add(name, new LocalVariableNode(new VariableDefinition(name, type)));
             return symbols[name];
         }
 
