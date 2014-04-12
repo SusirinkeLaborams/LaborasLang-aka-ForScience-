@@ -26,11 +26,11 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
             foreach (var type in module.Types)
             {
-                DisassembleType(type, disassembler);
+                DisassembleType(type, disassembler, writer);
 
                 foreach (var nestedType in type.NestedTypes)
                 {
-                    DisassembleType(nestedType, disassembler);
+                    DisassembleType(nestedType, disassembler, writer);
                 }
             }
 
@@ -42,11 +42,11 @@ namespace LaborasLangCompilerUnitTests.ILTests
             StringWriter writer;
             var disassembler = CreateDisassembler(out writer);
 
-            DisassembleType(type, disassembler);
+            DisassembleType(type, disassembler, writer);
 
             foreach (var nestedType in type.NestedTypes)
             {
-                DisassembleType(nestedType, disassembler);
+                DisassembleType(nestedType, disassembler, writer);
             }
 
             return writer.ToString();
@@ -61,16 +61,23 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
             StringWriter writer;
             var disassembler = CreateDisassembler(out writer);
+
+            writer.WriteLine(method.FullName.ToString());
             disassembler.Disassemble(method.Body, null);
+            writer.WriteLine();
+            writer.WriteLine();
 
             return writer.ToString();
         }
 
-        private static void DisassembleType(TypeDefinition type, MethodBodyDisassembler disassembler)
+        private static void DisassembleType(TypeDefinition type, MethodBodyDisassembler disassembler, StringWriter writer)
         {
             foreach (var method in type.Methods.Where(x => x.HasBody))
             {
+                writer.WriteLine(method.FullName.ToString());
                 disassembler.Disassemble(method.Body, null);
+                writer.WriteLine();
+                writer.WriteLine();
             }
         }
 
