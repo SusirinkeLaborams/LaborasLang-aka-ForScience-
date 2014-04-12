@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,9 @@ namespace LaborasLangCompiler.ILTools
     {
         private HashSet<string> assemblyPaths;             // Keep assembly paths to prevent from registering single assembly twice
         private List<AssemblyDefinition> assemblies;
+        private AssemblyDefinition mscorlib;
 
-        public AssemblyRegistry()
+        private AssemblyRegistry()
         {
             assemblyPaths = new HashSet<string>();
             assemblies = new List<AssemblyDefinition>();
@@ -20,7 +22,14 @@ namespace LaborasLangCompiler.ILTools
 
         public AssemblyRegistry(IEnumerable<string> references) : this()
         {
+            if (!references.Any(x => Path.GetFileName(x) == "mscorlib.dll"))
+            {
+                throw new ArgumentException("Assembly registry must reference mscorlib!");
+            }
+
             RegisterReferences(references);
+
+            mscorlib = assemblies.Single(x => x.Name.Name == "mscorlib");
         }
 
         public void RegisterReferences(IEnumerable<string> references)
@@ -59,6 +68,11 @@ namespace LaborasLangCompiler.ILTools
 
             assemblyPaths.Add(assemblyDefinition.MainModule.Name);
             assemblies.Add(assemblyDefinition);
+        }
+
+        public TypeDefinition ImportType(Type type)
+        {
+            return mscorlib.MainModule.Import(type).Resolve();
         }
 
         #region Type/Method/Property/Field getters
