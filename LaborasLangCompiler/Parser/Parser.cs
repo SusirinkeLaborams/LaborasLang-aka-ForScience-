@@ -1,6 +1,7 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompiler.Parser.Tree;
+using Mono.Cecil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace LaborasLangCompiler.Parser
         public AssemblyRegistry Registry { get; private set; }
         public CodeBlockNode Root { get; set; }
         private ByteInputIterator source;
+        private Dictionary<string, TypeReference> primitives;
         public Parser(AssemblyRegistry registry, AstNode tree, ByteInputIterator source)
         {
             Registry = registry;
@@ -23,7 +25,7 @@ namespace LaborasLangCompiler.Parser
         }
         public string GetNodeValue(AstNode node)
         {
-            return System.Text.Encoding.UTF8.GetString(source.Text(node.Token.Start, node.Token.End));
+            return Encoding.UTF8.GetString(source.Text(node.Token.Start, node.Token.End));
         }
     }
 }

@@ -44,23 +44,34 @@ namespace LaborasLangCompiler.Parser.Impl
         }
     }
 
-    /*class FieldNode : LValueNode, IFieldNode
+    class FunctionArgumentNode : LValueNode, IFunctionArgumentNode
     {
-        public override LValueNodeType LValueType { get { return LValueNodeType.Field; } }
-        public IExpressionNode ObjectInstance { get; }
-        public FieldDefinition Field { get; }
+        public override LValueNodeType LValueType { get { return LValueNodeType.FunctionArgument; } }
+        public ParameterDefinition Param { get; private set; }
+        public override TypeReference ReturnType { get { return Param.ParameterType; } }
+        public FunctionArgumentNode(ParameterDefinition param)
+        {
+            Param = param;
+        }
     }
 
-    class PropertyNode : LValueNode, IPropertyNode
+    class FieldNode : LValueNode, IFieldNode
+    {
+        public override LValueNodeType LValueType { get { return LValueNodeType.Field; } }
+        public IExpressionNode ObjectInstance { get; private set; }
+        public FieldDefinition Field { get; private set; }
+        public override TypeReference ReturnType { get { return Field.FieldType; } }
+        public FieldNode(ExpressionNode instance, FieldDefinition field)
+        {
+            ObjectInstance = instance;
+            Field = field;
+        }
+    }
+
+    /*class PropertyNode : LValueNode, IPropertyNode
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.Property; } }
         public IExpressionNode ObjectInstance { get; }
         public PropertyDefinition Property { get; }
-    }
-
-    class FunctionArgumentNode : LValueNode, IFunctionArgumentNode
-    {
-        public override LValueNodeType LValueType { get { return LValueNodeType.FunctionArgument; } }
-        public ParameterDefinition Param { get; }
     }*/
 }
