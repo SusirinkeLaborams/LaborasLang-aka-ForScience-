@@ -55,7 +55,8 @@ namespace LaborasLangCompiler.Parser
                 if (primitives.ContainsKey(type))
                     return primitives[type];
                 else
-                    return null;
+                    throw new NotImplementedException("Darius said he'll fix it later");
+                    //return null;
             }
             else
             {
