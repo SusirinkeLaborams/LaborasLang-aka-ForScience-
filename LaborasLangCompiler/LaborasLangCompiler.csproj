@@ -63,6 +63,9 @@
     <Compile Include="FrontEnd\Program.cs" />
     <Compile Include="ILTools\AssemblyEmitter.cs" />
     <Compile Include="ILTools\AssemblyRegistry.cs" />
+    <Compile Include="ILTools\DelegateEmitter.cs" />
+    <Compile Include="ILTools\FunctorMethodEmitter.cs" />
+    <Compile Include="ILTools\FunctorTypeEmitter.cs" />
     <Compile Include="ILTools\MethodEmitter.cs" />
     <Compile Include="ILTools\TypeEmitter.cs" />
     <Compile Include="LexingTools\FileReader.cs" />

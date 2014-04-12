@@ -12,6 +12,7 @@ namespace LaborasLangCompiler.ILTools
     {
         private HashSet<string> assemblyPaths;             // Keep assembly paths to prevent from registering single assembly twice
         private List<AssemblyDefinition> assemblies;
+        private Dictionary<string, TypeDefinition> functorTypes;
         private AssemblyDefinition mscorlib;
 
         private AssemblyRegistry()
@@ -114,9 +115,16 @@ namespace LaborasLangCompiler.ILTools
             return null;
         }
 
-        public TypeDefinition GetType(TypeReference returnType, IReadOnlyList<TypeReference> args)
+        public TypeDefinition GetType(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
         {
-            throw new NotImplementedException();
+            var name = FunctorTypeEmitter.ComputeClassName(returnType, arguments);
+
+            if (!functorTypes.ContainsKey(name))
+            {
+                functorTypes.Add(name, FunctorTypeEmitter.Create(this, assembly, returnType, arguments));
+            }
+
+            return functorTypes[name];
         }
 
         public bool TypeIsKnown(string typeName)

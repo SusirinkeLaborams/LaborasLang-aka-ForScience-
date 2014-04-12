@@ -12,8 +12,8 @@ namespace LaborasLangCompiler.ILTools
         private MethodBody body;
         private ILProcessor ilProcessor;
 
-        private AssemblyRegistry assemblyRegistry;
-        private ModuleDefinition module;
+        protected AssemblyRegistry assemblyRegistry;
+        protected ModuleDefinition module;
 
         public bool Parsed { get; private set; }
 
@@ -37,7 +37,20 @@ namespace LaborasLangCompiler.ILTools
 
         public ParameterDefinition AddArgument(TypeReference type, string name)
         {
-            var parameter = new ParameterDefinition(name, ParameterAttributes.None, type);
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Invalid argument name: " + name != null ? name : "<null>");
+            }
+
+            var parameter = new ParameterDefinition(name, ParameterAttributes.None, Import(type));
+            methodDefinition.Parameters.Add(parameter);
+
+            return parameter;
+        }
+
+        protected ParameterDefinition AddArgument(TypeReference type)
+        {
+            var parameter = new ParameterDefinition(Import(type));
             methodDefinition.Parameters.Add(parameter);
 
             return parameter;
@@ -458,8 +471,7 @@ namespace LaborasLangCompiler.ILTools
             }
             else
             {
-                Emit(functionCall.Function);
-                Calli();
+                throw new NotImplementedException();
             }
         }
 
@@ -806,6 +818,11 @@ namespace LaborasLangCompiler.ILTools
 
         #endregion
 
+        protected void Emit(Instruction instruction)
+        {
+            body.Instructions.Add(instruction);
+        }
+
         #endregion
 
         #region Validators
@@ -831,7 +848,7 @@ namespace LaborasLangCompiler.ILTools
 
         #region Importers 
 
-        TypeReference Import(TypeReference type)
+        protected TypeReference Import(TypeReference type)
         {
             if (type.Module != module)
             {
@@ -841,7 +858,7 @@ namespace LaborasLangCompiler.ILTools
             return type;
         }
 
-        MethodReference Import(MethodReference method)
+        protected MethodReference Import(MethodReference method)
         {
             if (method.Module != module)
             {
@@ -851,7 +868,7 @@ namespace LaborasLangCompiler.ILTools
             return method;
         }
 
-        FieldReference Import(FieldReference field)
+        protected FieldReference Import(FieldReference field)
         {
             if (field.Module != module)
             {
@@ -863,7 +880,7 @@ namespace LaborasLangCompiler.ILTools
 
         #endregion
 
-        bool IsAtLeastOneOperandString(IBinaryOperatorNode binaryOperator)
+        protected bool IsAtLeastOneOperandString(IBinaryOperatorNode binaryOperator)
         {
             var left = binaryOperator.LeftOperand;
             var right = binaryOperator.RightOperand;
@@ -874,75 +891,100 @@ namespace LaborasLangCompiler.ILTools
             return leftIsString || rightIsString;
         }
 
-        bool AreBothOperandsUnsigned(IBinaryOperatorNode binaryOperator)
+        protected bool AreBothOperandsUnsigned(IBinaryOperatorNode binaryOperator)
         {
             throw new NotImplementedException();
+        }
+
+        protected Instruction CreateLabel()
+        {
+            return Instruction.Create(OpCodes.Nop);
         }
 
         #endregion
 
         #region IL Instructions
 
-        private void Add()
+        protected void Add()
         {
             ilProcessor.Emit(OpCodes.Add);
         }
 
-        private void And()
+        protected void And()
         {
             ilProcessor.Emit(OpCodes.Add);
         }
 
-        private void Box(TypeReference type)
+        protected void Box(TypeReference type)
         {
             ilProcessor.Emit(OpCodes.Box, type);
         }
 
-        private void Call(MethodReference method)
+        protected void Brfalse(Instruction target)
+        {
+            if (target.Offset < 256)
+            {
+                ilProcessor.Emit(OpCodes.Brfalse_S, target);
+            }
+            else
+            {
+                ilProcessor.Emit(OpCodes.Brfalse, target);
+            }
+        }
+
+        protected void Brtrue(Instruction target)
+        {
+            if (target.Offset < 256)
+            {
+                ilProcessor.Emit(OpCodes.Brtrue_S, target);
+            }
+            else
+            {
+                ilProcessor.Emit(OpCodes.Brtrue, target);
+            }
+        }
+
+        protected void Call(MethodReference method)
         {
             ilProcessor.Emit(OpCodes.Call, method);
         }
 
-        private void Calli()
+        protected void Calli(CallSite callSite)
         {
-            //var callSite = new CallSite(new );
-
-           // ilProcessor.Emit(OpCodes.Calli, callSite);
-
-            throw new NotImplementedException();
+            ilProcessor.Emit(OpCodes.Calli, callSite);
         }
 
-        private void Ceq()
+        protected void Ceq()
         {
             ilProcessor.Emit(OpCodes.Ceq);
         }
 
-        private void Cgt()
+        protected void Cgt()
         {
             ilProcessor.Emit(OpCodes.Cgt);
         }
 
-        private void Clt()
+        protected void Clt()
         {
             ilProcessor.Emit(OpCodes.Clt);
         }
 
-        private void Div()
+        protected void Div()
         {
             ilProcessor.Emit(OpCodes.Div);
         }
 
-        private void Div_Un()
+        protected void Div_Un()
         {
             ilProcessor.Emit(OpCodes.Div_Un);
         }
 
-        private void Dup()
+        protected void Dup()
         {
             ilProcessor.Emit(OpCodes.Dup);
         }
 
-        private void Ldarg(int index)
+        protected void Ldarg(int index)
         {
             if (index < 4)
             {
@@ -975,7 +1017,7 @@ namespace LaborasLangCompiler.ILTools
             }
         }
 
-        private void Ldc_I4(int value)
+        protected void Ldc_I4(int value)
         {
             if (value > -2 && value < 9)
             {
@@ -1032,27 +1074,27 @@ namespace LaborasLangCompiler.ILTools
             }
         }
 
-        private void Ldc_R4(float value)
+        protected void Ldc_R4(float value)
         {
             ilProcessor.Emit(OpCodes.Ldc_R4, value);
         }
 
-        private void Ldc_R8(double value)
+        protected void Ldc_R8(double value)
         {
             ilProcessor.Emit(OpCodes.Ldc_R8, value);
         }
 
-        private void Ldfld(FieldReference field)
+        protected void Ldfld(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Ldfld, field);
         }
 
-        private void Ldftn(MethodReference function)
+        protected void Ldftn(MethodReference function)
         {
             ilProcessor.Emit(OpCodes.Ldftn, function);
         }
         
-        private void Ldloc(int index)
+        protected void Ldloc(int index)
         {
             if (index < 4)
             {
@@ -1085,52 +1127,62 @@ namespace LaborasLangCompiler.ILTools
             }
         }
 
-        private void Ldsfld(FieldReference field)
+        protected void Ldsfld(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Ldsfld, field);
         }
 
-        private void Ldstr(string str)
+        protected void Ldstr(string str)
         {
             ilProcessor.Emit(OpCodes.Ldstr, str);
         }
         
-        private void Mul()
+        protected void Mul()
         {
             ilProcessor.Emit(OpCodes.Mul);
         }
 
-        private void Or()
+        protected void Newobj(MethodReference method)
+        {
+            ilProcessor.Emit(OpCodes.Newobj, method);
+        }
+
+        protected void Or()
         {
             ilProcessor.Emit(OpCodes.Or);
         }
 
-        private void Not()
+        protected void Nop()
+        {
+            ilProcessor.Emit(OpCodes.Nop);
+        }
+
+        protected void Not()
         {
             ilProcessor.Emit(OpCodes.Not);
         }
 
-        private void Pop()
+        protected void Pop()
         {
             ilProcessor.Emit(OpCodes.Pop);
         }
 
-        private void Rem()
+        protected void Rem()
         {
             ilProcessor.Emit(OpCodes.Rem);
         }
 
-        private void Rem_Un()
+        protected void Rem_Un()
         {
             ilProcessor.Emit(OpCodes.Rem_Un);
         }
 
-        private void Ret()
+        protected void Ret()
         {
             ilProcessor.Emit(OpCodes.Ret);
         }
 
-        private void Starg(int index)
+        protected void Starg(int index)
         {
             if (index < 256)
             {
@@ -1142,12 +1194,12 @@ namespace LaborasLangCompiler.ILTools
             }
         }
 
-        private void Stfld(FieldReference field)
+        protected void Stfld(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Stfld, field);
         }
 
-        private void Stloc(int index)
+        protected void Stloc(int index)
         {
             if (index < 4)
             {
@@ -1180,17 +1232,17 @@ namespace LaborasLangCompiler.ILTools
             }
         }
 
-        private void Stsfld(FieldReference field)
+        protected void Stsfld(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Stsfld, field);
         }
 
-        private void Sub()
+        protected void Sub()
         {
             ilProcessor.Emit(OpCodes.Sub);
         }
 
-        private void Xor()
+        protected void Xor()
         {
             ilProcessor.Emit(OpCodes.Xor);
         }

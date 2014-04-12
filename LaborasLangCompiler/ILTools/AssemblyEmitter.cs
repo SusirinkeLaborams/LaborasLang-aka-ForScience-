@@ -63,5 +63,15 @@ namespace LaborasLangCompiler.ILTools
 
             assemblyDefinition.Write(outputPath, writerParams);
         }
+
+        public TypeReference Import(TypeReference type)
+        {
+            if (type.Module != assemblyDefinition.MainModule)
+            {
+                type = assemblyDefinition.MainModule.Import(type);
+            }
+
+            return type;
+        }
     }
 }

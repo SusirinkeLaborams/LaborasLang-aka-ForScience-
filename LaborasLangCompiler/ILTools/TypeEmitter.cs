@@ -11,7 +11,7 @@ namespace LaborasLangCompiler.ILTools
     {
         const TypeAttributes DefaultTypeAttributes = TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
 
-        private TypeDefinition typeDefinition;
+        protected TypeDefinition typeDefinition;
 
         public ModuleDefinition Module { get { return typeDefinition.Module; } }
 
