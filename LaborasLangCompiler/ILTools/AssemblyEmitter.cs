@@ -14,7 +14,9 @@ namespace LaborasLangCompiler.ILTools
     {
         private AssemblyDefinition assemblyDefinition;
         private readonly string outputPath;
-        
+
+        public string OutputPath { get { return outputPath; } }
+
         public AssemblyEmitter(CompilerArguments compilerArgs, Version version = null)
         {
             if (version == null)
@@ -52,7 +54,7 @@ namespace LaborasLangCompiler.ILTools
         {
             if (assemblyDefinition.EntryPoint == null && assemblyDefinition.MainModule.Kind != ModuleKind.Dll)
             {
-                throw new Exception(string.Format("Current module kind ({0}) requires entry point set!", assemblyDefinition.MainModule.Kind)); 
+                throw new Exception(string.Format("Current module kind ({0}) requires entry point set!", assemblyDefinition.MainModule.Kind));
             }
 
             var writerParams = new WriterParameters();

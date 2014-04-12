@@ -70,9 +70,9 @@ namespace LaborasLangCompiler.ILTools
             assemblies.Add(assemblyDefinition);
         }
 
-        public TypeDefinition ImportType(Type type)
+        public TypeReference ImportType(Type type)
         {
-            return mscorlib.MainModule.Import(type).Resolve();
+            return mscorlib.MainModule.Import(type);
         }
 
         #region Type/Method/Property/Field getters

@@ -20,11 +20,11 @@ namespace LaborasLangCompiler.ILTools
         public MethodEmitter(AssemblyRegistry assemblyRegistry, TypeEmitter declaringType, string name, TypeReference returnType, 
                                 MethodAttributes methodAttributes = MethodAttributes.Private)
         {
-            methodDefinition = new MethodDefinition(name, methodAttributes, returnType);
-            declaringType.AddMethod(methodDefinition);
-
             this.assemblyRegistry = assemblyRegistry;
             module = declaringType.Module;
+
+            methodDefinition = new MethodDefinition(name, methodAttributes, Import(returnType));
+            declaringType.AddMethod(methodDefinition);
 
             body = methodDefinition.Body;
             ilProcessor = body.GetILProcessor();
@@ -51,6 +51,7 @@ namespace LaborasLangCompiler.ILTools
         public void ParseTree(ICodeBlockNode tree)
         {
             Emit(tree);
+            Ret();
             Parsed = true;
         }
 
@@ -236,14 +237,7 @@ namespace LaborasLangCompiler.ILTools
                 Emit(field.ObjectInstance);
             }
 
-            if (field.Field.Module != module)
-            {
-                Ldfld(module.Import(field.Field));
-            }
-            else
-            {
-                Ldfld(field.Field);
-            }
+            Ldfld(Import(field.Field));
         }
 
         private void Emit(IFunctionArgumentNode argument)
@@ -270,14 +264,7 @@ namespace LaborasLangCompiler.ILTools
                 Emit(property.ObjectInstance);
             }
 
-            if (getter.Module != module)
-            {
-                Call(module.Import(getter));
-            }
-            else
-            {
-                Call(getter);
-            }
+            Call(Import(getter));
         }
 
         #endregion
@@ -291,14 +278,7 @@ namespace LaborasLangCompiler.ILTools
                 Emit(field.ObjectInstance);
             }
 
-            if (field.Field.Module != module)
-            {
-                Stfld(module.Import(field.Field));
-            }
-            else
-            {
-                Stfld(field.Field);
-            }
+            Stfld(Import(field.Field));
         }
 
         private void EmitStore(IFunctionArgumentNode argument)
@@ -336,14 +316,7 @@ namespace LaborasLangCompiler.ILTools
 
                 Emit(assignmentOperator.RightOperand);
 
-                if (setter.Module != module)
-                {
-                    Call(module.Import(setter));
-                }
-                else
-                {
-                    Call(setter);
-                }
+                Call(Import(setter));
             }
             else
             {
@@ -471,7 +444,8 @@ namespace LaborasLangCompiler.ILTools
 
             if (function.ExpressionType == ExpressionNodeType.RValue && ((IRValueNode)function).RValueType == RValueNodeType.Function)
             {
-                Call(((IFunctionNode)function).Function);
+                var callableFunction = ((IFunctionNode)function).Function;
+                Call(Import(callableFunction));
             }
             else
             {
@@ -522,6 +496,8 @@ namespace LaborasLangCompiler.ILTools
 
         private void Emit(IUnaryOperatorNode unaryOperator)
         {
+            Emit(unaryOperator.Operand);
+
             switch (unaryOperator.UnaryOperatorType)
             {
                 case UnaryOperatorNodeType.BinaryNot:
@@ -830,6 +806,40 @@ namespace LaborasLangCompiler.ILTools
         #endregion
 
         #region Helpers
+
+        #region Importers 
+
+        TypeReference Import(TypeReference type)
+        {
+            if (type.Module != module)
+            {
+                type = module.Import(type);
+            }
+
+            return type;
+        }
+
+        MethodReference Import(MethodReference method)
+        {
+            if (method.Module != module)
+            {
+                method = module.Import(method);
+            }
+
+            return method;
+        }
+
+        FieldReference Import(FieldReference field)
+        {
+            if (field.Module != module)
+            {
+                field = module.Import(field);
+            }
+
+            return field;
+        }
+
+        #endregion
 
         bool IsAtLeastOneOperandString(IBinaryOperatorNode binaryOperator)
         {
@@ -1156,9 +1166,9 @@ namespace LaborasLangCompiler.ILTools
         {
             var console = assemblyRegistry.GetType("System.Console");
 
-            var consoleWriteLine = module.Import(assemblyRegistry.GetMethods(console, "WriteLine")
+            var consoleWriteLine = Import(assemblyRegistry.GetMethods(console, "WriteLine")
                            .Where(x => x.Parameters.Count == 1 && x.Parameters[0].ParameterType.FullName == "System.String").Single());
-            var consoleReadLine = module.Import(assemblyRegistry.GetMethods(console, "ReadLine").Where(x => x.Parameters.Count == 0).Single());
+            var consoleReadLine = Import(assemblyRegistry.GetMethods(console, "ReadLine").Where(x => x.Parameters.Count == 0).Single());
 
             Ldstr("Hello, world!");
             Call(consoleWriteLine);
