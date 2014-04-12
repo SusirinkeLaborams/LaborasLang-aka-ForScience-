@@ -1134,7 +1134,7 @@ namespace LaborasLangCompiler.ILTools
         {
             if (index < 256)
             {
-                ilProcessor.Emit(OpCodes.Starg_S, index);
+                ilProcessor.Emit(OpCodes.Starg_S, (byte)index);
             }
             else
             {

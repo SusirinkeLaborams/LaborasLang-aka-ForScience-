@@ -247,7 +247,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             typeEmitter.AddField(backingField);
 
-            var setter = new MethodEmitter(assemblyRegistry, typeEmitter, "set_doubleField", assemblyRegistry.ImportType(typeof(void)),
+            var setter = new MethodEmitter(assemblyRegistry, typeEmitter, "set_doubleProperty", assemblyRegistry.ImportType(typeof(void)),
                 MethodAttributes.Static | MethodAttributes.Private);
 
             var argument = setter.AddArgument(assemblyRegistry.ImportType(typeof(double)), "value");
@@ -312,7 +312,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             ExpectedIL = string.Join("\r\n", new string[]
             {
-                @"System.Void klass::set_doubleField(System.Double)",
+                @"System.Void klass::set_doubleProperty(System.Double)",
                 @"// Method begins at RVA 0x2050",
                 @"// Code size 7 (0x7)",
                 @".maxstack 8",
@@ -332,13 +332,122 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 @")",
                 @"",
                 @"IL_0000: ldloc.0",
-                @"IL_0001: call void klass::set_doubleField(float64)",
+                @"IL_0001: call void klass::set_doubleProperty(float64)",
                 @"IL_0006: ret"
             });
 
             Test();
         }
-        
+
+        [TestMethod]
+        public void TestCanEmit_StoreArgument_LoadProperty_LoadStringLiteral()
+        {
+            var property = new PropertyDefinition("stringProperty", PropertyAttributes.HasDefault, assemblyRegistry.ImportType(typeof(string)));
+            
+            var getter = new MethodEmitter(assemblyRegistry, typeEmitter, "get_stringProperty", assemblyRegistry.ImportType(typeof(string)),
+                MethodAttributes.Static | MethodAttributes.Private);
+
+            getter.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>(new IParserNode[]
+                {
+                    new LiteralNode()
+                    {
+                        ReturnType = assemblyRegistry.ImportType(typeof(string)),
+                        Value = "Test"
+                    }
+                })
+            });
+
+            property.GetMethod = getter.Get();
+            typeEmitter.AddProperty(property);
+
+            var methodWithArgument = new MethodEmitter(assemblyRegistry, typeEmitter, "TestMethod", assemblyRegistry.ImportType(typeof(void)),
+                MethodAttributes.Static | MethodAttributes.Private);
+
+            var argument = methodWithArgument.AddArgument(assemblyRegistry.ImportType(typeof(string)), "arg");
+
+            methodWithArgument.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>(new IParserNode[]
+                {
+                    new UnaryOperatorNode()
+                    {
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        ReturnType = assemblyRegistry.ImportType(typeof(void)),
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FunctionArgumentNode()
+                            {
+                                Param = argument
+                            },
+                            RightOperand = new PropertyNode()
+                            {
+                                Property = property
+                            }
+                        }
+                    }
+                })
+            });
+            
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>(new IParserNode[]
+                {
+                    new FunctionCallNode()
+                    {
+                        ReturnType = assemblyRegistry.ImportType(typeof(void)),
+                        Function = new FunctionNode()
+                        {
+                            Function = methodWithArgument.Get()
+                        },
+                        Arguments = new List<IExpressionNode>(new IExpressionNode[]
+                        {
+                            new LiteralNode()
+                            {
+                                ReturnType = assemblyRegistry.ImportType(typeof(string)),
+                                Value = "Test"
+                            }
+                        })
+                    }
+                })
+            };
+
+            ExpectedIL = string.Join("\r\n", new string[]
+            {
+                @"System.String klass::get_stringProperty()",
+                @"// Method begins at RVA 0x2050",
+                @"// Code size 6 (0x6)",
+                @".maxstack 8",
+                @"",
+                @"IL_0000: ldstr ""Test""",
+                @"IL_0005: ret",
+                @"",
+                @"",
+                @"System.Void klass::TestMethod(System.String)",
+                @"// Method begins at RVA 0x2058",
+                @"// Code size 8 (0x8)",
+                @".maxstack 8",
+                @"",
+                @"IL_0000: call string klass::get_stringProperty()",
+                @"IL_0005: starg.s arg",
+                @"IL_0007: ret",
+                @"",
+                @"",
+                @"System.Void klass::dummy()",
+                @"// Method begins at RVA 0x2064",
+                @"// Code size 11 (0xb)",
+                @".maxstack 8",
+                @".entrypoint",
+                @"",
+                @"IL_0000: ldstr ""Test""",
+                @"IL_0005: call void klass::TestMethod(string)",
+                @"IL_000a: ret"
+            });
+
+            Test();
+        }
+
         #endregion
 
         #endregion
