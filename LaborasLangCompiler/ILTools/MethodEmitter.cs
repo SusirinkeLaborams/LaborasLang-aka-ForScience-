@@ -463,19 +463,19 @@ namespace LaborasLangCompiler.ILTools
                     return;
 
                 case "System.Int32":
-                    Ldc_I4(literal.Value);
+                    Ldc_I4((int)literal.Value);
                     return;
 
                 case "System.Single":
-                    Ldc_R8(literal.Value);
+                    Ldc_R4((float)literal.Value);
                     return;
 
                 case "System.Double":
-                    Ldc_R8(literal.Value);
+                    Ldc_R8((double)literal.Value);
                     return;
                     
                 case "System.String":
-                    Ldstr(literal.Value);
+                    Ldstr((string)literal.Value);
                     return;
 
                 default:
@@ -1007,12 +1007,12 @@ namespace LaborasLangCompiler.ILTools
 
         private void Ldc_R4(float value)
         {
-            ilProcessor.Emit(OpCodes.Ldc_R4);
+            ilProcessor.Emit(OpCodes.Ldc_R4, value);
         }
 
         private void Ldc_R8(double value)
         {
-            ilProcessor.Emit(OpCodes.Ldc_R8);
+            ilProcessor.Emit(OpCodes.Ldc_R8, value);
         }
 
         private void Ldfld(FieldReference field)

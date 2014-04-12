@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 {
@@ -19,6 +20,10 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
         private CompilerArguments compilerArgs;
         private AssemblyRegistry assemblyRegistry;
+        private TypeEmitter typeEmitter;
+        private AssemblyEmitter assemblyEmitter;
+
+        #region Test methods
 
         [TestMethod]
         public void TestCanEmitEmptyMethod()
@@ -101,18 +106,59 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
+        [TestMethod]
+        public void TestCanEmitFloatDeclarationAndInitialization()
+        {
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>(new IParserNode[]
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        DeclaredSymbol = new LocalVariableNode()
+                        {
+                            LocalVariable = new VariableDefinition("floatValue", assemblyRegistry.ImportType(typeof(float)))                            
+                        },
+                        Initializer = new LiteralNode()
+                        {
+                            ReturnType = assemblyRegistry.ImportType(typeof(float)),
+                            Value = 2.5
+                        }
+                    }
+                })
+            };
+
+            ExpectedIL = string.Join("\r\n", new string[]
+            {
+                @"// Method begins at RVA 0x2050",
+                @"// Code size 7 (0x7)",
+                @".maxstack 1",
+                @".entrypoint",
+                @".locals (",
+                @"	[0] float32",
+                @")",
+                @"",
+                @"IL_0000: ldc.r4 2.5",
+                @"IL_0005: stloc.0",
+                @"IL_0006: ret"
+            });
+            Test();
+        }
+
+        #endregion
+
         #region Helpers
 
         public MethodBodyTests()
         {
             compilerArgs = CompilerArguments.Parse(new[] { "dummy.il" });
             assemblyRegistry = new AssemblyRegistry(compilerArgs.References);
+            assemblyEmitter = new AssemblyEmitter(compilerArgs);
+            typeEmitter = new TypeEmitter(assemblyEmitter, "klass");
         }
 
         private void Test()
         {
-            var assemblyEmitter = new AssemblyEmitter(compilerArgs);
-            var typeEmitter = new TypeEmitter(assemblyEmitter, "klass");
             var methodEmitter = new MethodEmitter(assemblyRegistry, typeEmitter, "dummy", assemblyRegistry.ImportType(typeof(void)), 
                 MethodAttributes.Static | MethodAttributes.Private);
 
