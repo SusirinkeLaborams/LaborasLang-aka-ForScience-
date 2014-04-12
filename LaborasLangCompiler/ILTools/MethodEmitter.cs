@@ -324,10 +324,15 @@ namespace LaborasLangCompiler.ILTools
 
         #region RValue node
 
-        private void Emit(IAssignmentOperatorNode assignmentOperator)
+        private void Emit(IAssignmentOperatorNode assignmentOperator, bool duplicateValueInStack = true)
         {
             Emit(assignmentOperator.RightOperand);
-            Dup();
+
+            if (duplicateValueInStack)
+            {
+                Dup();
+            }
+
             EmitStore(assignmentOperator.LeftOperand);
         }
 
@@ -500,12 +505,11 @@ namespace LaborasLangCompiler.ILTools
 
         private void Emit(IUnaryOperatorNode unaryOperator)
         {
-            Emit(unaryOperator.Operand);
-
             switch (unaryOperator.UnaryOperatorType)
             {
                 case UnaryOperatorNodeType.BinaryNot:
                     RequireInteger(unaryOperator.Operand.ReturnType, "Binary negation requires integer operand.");
+                    Emit(unaryOperator.Operand);
                     Not();
                     return;
 
@@ -530,7 +534,7 @@ namespace LaborasLangCompiler.ILTools
                     throw new NotImplementedException();
 
                 case UnaryOperatorNodeType.VoidOperator:
-                    Pop();
+                    EmitVoidOperator(unaryOperator);
                     return;
             }
         }
@@ -785,6 +789,20 @@ namespace LaborasLangCompiler.ILTools
         }
 
         #endregion
+
+        private void EmitVoidOperator(IUnaryOperatorNode binaryOperator)
+        {
+            if (binaryOperator.Operand.ExpressionType == ExpressionNodeType.RValue &&
+                ((IRValueNode)binaryOperator.Operand).RValueType == RValueNodeType.AssignmentOperator)
+            {
+                Emit(((IAssignmentOperatorNode)binaryOperator.Operand), false);
+            }
+            else
+            {
+                Emit(binaryOperator.Operand);
+                Pop();
+            }
+        }
 
         #endregion
 
