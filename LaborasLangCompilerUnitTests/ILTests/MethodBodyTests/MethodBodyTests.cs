@@ -56,7 +56,6 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new FunctionCallNode()
                     {
-                        ReturnType = assemblyRegistry.ImportType(typeof(void)),
                         Function = new FunctionNode()
                         {
                             Function = assemblyRegistry.GetMethods("System.Console", "WriteLine")
@@ -77,7 +76,6 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         ReturnType = assemblyRegistry.ImportType(typeof(void)),
                         Operand = new FunctionCallNode()
                         {
-                            ReturnType = assemblyRegistry.ImportType(typeof(ConsoleKeyInfo)),
                             Function = new FunctionNode()
                             {
                                 Function = assemblyRegistry.GetMethods("System.Console", "ReadKey").Single(x => x.Parameters.Count == 0)
@@ -111,7 +109,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         #region Load/Store lvalues and load literals tests
 
         [TestMethod]
-        public void TestCanEmit_VariableDeclarationAndInitialization_LoadLiteralFloat()
+        public void TestCanEmit_VariableDeclarationAndInitialization_LoadFloatLiteral()
         {
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -240,7 +238,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         }
 
         [TestMethod]
-        public void TestCanEmit_StoreProperty_LoadLocalVariable_LoadArgument()
+        public void TestCanEmit_StoreProperty_LoadLocalVariable_LoadArgument_LoadDoubleLiteral()
         {
             var property = new PropertyDefinition("doubleProperty", PropertyAttributes.HasDefault, assemblyRegistry.ImportType(typeof(double)));
             var backingField = new FieldDefinition("doubleProperty_backingField", FieldAttributes.Static, assemblyRegistry.ImportType(typeof(double)));
@@ -288,7 +286,12 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     {
                         DeclaredSymbol = new LocalVariableNode()
                         {
-                            LocalVariable = localVariable
+                            LocalVariable = localVariable,
+                        },
+                        Initializer = new LiteralNode
+                        {
+                            ReturnType = assemblyRegistry.ImportType(typeof(double)),
+                            Value = 5.5
                         }
                     },
                     new UnaryOperatorNode()
@@ -324,16 +327,18 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 @"",
                 @"System.Void klass::dummy()",
                 @"// Method begins at RVA 0x2058",
-                @"// Code size 7 (0x7)",
+                @"// Code size 17 (0x11)",
                 @".maxstack 1",
                 @".entrypoint",
                 @".locals (",
                 @"	[0] float64",
                 @")",
                 @"",
-                @"IL_0000: ldloc.0",
-                @"IL_0001: call void klass::set_doubleProperty(float64)",
-                @"IL_0006: ret"
+                @"IL_0000: ldc.r8 5.5",
+                @"IL_0009: stloc.0",
+                @"IL_000a: ldloc.0",
+                @"IL_000b: call void klass::set_doubleProperty(float64)",
+                @"IL_0010: ret"
             });
 
             Test();
@@ -343,7 +348,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         public void TestCanEmit_StoreArgument_LoadProperty_LoadStringLiteral()
         {
             var property = new PropertyDefinition("stringProperty", PropertyAttributes.HasDefault, assemblyRegistry.ImportType(typeof(string)));
-            
+
             var getter = new MethodEmitter(assemblyRegistry, typeEmitter, "get_stringProperty", assemblyRegistry.ImportType(typeof(string)),
                 MethodAttributes.Static | MethodAttributes.Private);
 
@@ -389,14 +394,13 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     }
                 })
             });
-            
+
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>(new IParserNode[]
                 {
                     new FunctionCallNode()
                     {
-                        ReturnType = assemblyRegistry.ImportType(typeof(void)),
                         Function = new FunctionNode()
                         {
                             Function = methodWithArgument.Get()
@@ -448,7 +452,147 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
+        [TestMethod]
+        public void TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral()
+        {
+            var callableMethod = new MethodEmitter(assemblyRegistry, typeEmitter, "Test", assemblyRegistry.ImportType(typeof(void)),
+                MethodAttributes.Private | MethodAttributes.Static);
+
+            callableMethod.AddArgument(assemblyRegistry.ImportType(typeof(bool)), "isTrue");
+            callableMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+            });
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>(new IParserNode[]
+                {
+                    new FunctionCallNode()
+                    {
+                        Function = new FunctionNode()
+                        {
+                            Function = callableMethod.Get()
+                        },
+                        Arguments = new List<IExpressionNode>()
+                        {
+                            new LiteralNode
+                            {
+                                ReturnType = assemblyRegistry.ImportType(typeof(bool)),
+                                Value = true
+                            }
+                        }
+                    }
+                })
+            };
+
+            ExpectedIL = string.Join("\r\n", new string[]
+            {
+                @"System.Void klass::Test(System.Boolean)",
+                @"// Method begins at RVA 0x2050",
+                @"// Code size 1 (0x1)",
+                @".maxstack 8",
+                @"",
+                @"IL_0000: ret",
+                @"",
+                @"",
+                @"System.Void klass::dummy()",
+                @"// Method begins at RVA 0x2054",
+                @"// Code size 7 (0x7)",
+                @".maxstack 8",
+                @".entrypoint",
+                @"",
+                @"IL_0000: ldc.i4.1",
+                @"IL_0001: call void klass::Test(bool)",
+                @"IL_0006: ret"
+            });
+
+            Test();
+        }
+
         #endregion
+
+        [TestMethod]
+        public void TestCanEmit_MultipleNestedAssignments()
+        {
+            var assignmentNode = new AssignmentOperatorNode()
+            {
+                RightOperand = new LiteralNode()
+                {
+                    ReturnType = assemblyEmitter.ImportType(typeof(int)),
+                    Value = 110
+                }
+            };
+
+            const int count = 10;
+            for (int i = 0; i < count; i++)
+            {
+                var field = new FieldDefinition("intField" + i.ToString(), FieldAttributes.Static | FieldAttributes.Private,
+                    assemblyRegistry.ImportType(typeof(int)));
+                typeEmitter.AddField(field);
+
+                assignmentNode.LeftOperand = new FieldNode()
+                {
+                    Field = field
+                };
+
+                if (i != count - 1)
+                {
+                    var newNode = new AssignmentOperatorNode()
+                    {
+                        RightOperand = assignmentNode
+                    };
+
+                    assignmentNode = newNode;
+                }
+            }
+            
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>(new IParserNode[]
+                {
+                    new UnaryOperatorNode()
+                    {
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        ReturnType = assemblyEmitter.ImportType(typeof(void)),
+                        Operand = assignmentNode
+                    }
+                })
+            };
+
+            ExpectedIL = string.Join("\r\n", new string[]
+            {
+                @"System.Void klass::dummy()",
+                @"// Method begins at RVA 0x2050",
+                @"// Code size 62 (0x3e)",
+                @".maxstack 8",
+                @".entrypoint",
+                @"",
+                @"IL_0000: ldc.i4.s 110",
+                @"IL_0002: dup",
+                @"IL_0003: stsfld int32 klass::intField0",
+                @"IL_0008: dup",
+                @"IL_0009: stsfld int32 klass::intField1",
+                @"IL_000e: dup",
+                @"IL_000f: stsfld int32 klass::intField2",
+                @"IL_0014: dup",
+                @"IL_0015: stsfld int32 klass::intField3",
+                @"IL_001a: dup",
+                @"IL_001b: stsfld int32 klass::intField4",
+                @"IL_0020: dup",
+                @"IL_0021: stsfld int32 klass::intField5",
+                @"IL_0026: dup",
+                @"IL_0027: stsfld int32 klass::intField6",
+                @"IL_002c: dup",
+                @"IL_002d: stsfld int32 klass::intField7",
+                @"IL_0032: dup",
+                @"IL_0033: stsfld int32 klass::intField8",
+                @"IL_0038: stsfld int32 klass::intField9",
+                @"IL_003d: ret"
+            });
+
+            Test();
+        }
 
         #endregion
 

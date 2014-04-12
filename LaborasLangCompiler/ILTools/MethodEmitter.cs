@@ -1024,7 +1024,7 @@ namespace LaborasLangCompiler.ILTools
             }
             else if (value > -129 && value < 128)
             {
-                ilProcessor.Emit(OpCodes.Ldc_I4_S, value);
+                ilProcessor.Emit(OpCodes.Ldc_I4_S, (sbyte)value);
             }
             else
             {

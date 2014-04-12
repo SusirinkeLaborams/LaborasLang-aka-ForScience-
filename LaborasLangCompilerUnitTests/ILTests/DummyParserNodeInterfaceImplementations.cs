@@ -38,7 +38,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public RValueNodeType RValueType { get { return RValueNodeType.Call; } }
         public CallNodeType CallType { get { return CallNodeType.FunctionCall; } }
 
-        public TypeReference ReturnType { get; set; }
+        public TypeReference ReturnType { get { return Function.ReturnType; } }
         public IExpressionNode Function { get; set; }
 
         public IReadOnlyList<IExpressionNode> Arguments
