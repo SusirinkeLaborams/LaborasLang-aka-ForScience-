@@ -182,6 +182,10 @@ namespace LaborasLangCompiler.ILTools
                     EmitStore((ILocalVariableNode)lvalue);
                     return;
 
+                case LValueNodeType.Property:
+                    EmitStore((IPropertyNode)lvalue);
+                    return;
+
                 default:
                     throw new NotSupportedException(string.Format("Unknown lvalue node type: {0}.", lvalue.LValueType));
             }
@@ -235,9 +239,12 @@ namespace LaborasLangCompiler.ILTools
             if (!field.Field.IsStatic)
             {
                 Emit(field.ObjectInstance);
+                Ldfld(Import(field.Field));
             }
-
-            Ldfld(Import(field.Field));
+            else
+            {
+                Ldsfld(Import(field.Field));
+            }
         }
 
         private void Emit(IFunctionArgumentNode argument)
@@ -276,9 +283,12 @@ namespace LaborasLangCompiler.ILTools
             if (!field.Field.IsStatic)
             {
                 Emit(field.ObjectInstance);
+                Stfld(Import(field.Field));
             }
-
-            Stfld(Import(field.Field));
+            else
+            {
+                Stsfld(Import(field.Field));
+            }
         }
 
         private void EmitStore(IFunctionArgumentNode argument)
@@ -291,6 +301,23 @@ namespace LaborasLangCompiler.ILTools
             Stloc(variable.LocalVariable.Index);
         }
 
+        private void EmitStore(IPropertyNode property)
+        {
+            var setter = property.Property.SetMethod;
+
+            if (setter == null)
+            {
+                throw new ArgumentException(string.Format("Property {0} has no setter.", property.Property.FullName));
+            }
+
+            if (!setter.IsStatic)
+            {
+                Emit(property.ObjectInstance);
+            }
+
+            Call(Import(setter));
+        }
+
         #endregion
 
         #endregion
@@ -299,32 +326,9 @@ namespace LaborasLangCompiler.ILTools
 
         private void Emit(IAssignmentOperatorNode assignmentOperator)
         {
-            if (assignmentOperator.LeftOperand.LValueType == LValueNodeType.Property)
-            {
-                var propertyNode = (IPropertyNode)assignmentOperator.LeftOperand;
-                var setter = propertyNode.Property.SetMethod;
-                
-                if (setter == null)
-                {
-                    throw new ArgumentException(string.Format("Property {0} has no setter.", propertyNode.Property.FullName));
-                }
-
-                if (!setter.IsStatic)
-                {
-                    Emit(propertyNode.ObjectInstance);
-                }
-
-                Emit(assignmentOperator.RightOperand);
-
-                Call(Import(setter));
-            }
-            else
-            {
-                Emit(assignmentOperator.RightOperand);
-                EmitStore(assignmentOperator.LeftOperand);
-            }
-
-            Emit(assignmentOperator.LeftOperand);
+            Emit(assignmentOperator.RightOperand);
+            Dup();
+            EmitStore(assignmentOperator.LeftOperand);
         }
 
         private void Emit(IBinaryOperatorNode binaryOperator)
@@ -915,6 +919,11 @@ namespace LaborasLangCompiler.ILTools
             ilProcessor.Emit(OpCodes.Div_Un);
         }
 
+        private void Dup()
+        {
+            ilProcessor.Emit(OpCodes.Dup);
+        }
+
         private void Ldarg(int index)
         {
             if (index < 4)
@@ -1058,6 +1067,11 @@ namespace LaborasLangCompiler.ILTools
             }
         }
 
+        private void Ldsfld(FieldReference field)
+        {
+            ilProcessor.Emit(OpCodes.Ldsfld, field);
+        }
+
         private void Ldstr(string str)
         {
             ilProcessor.Emit(OpCodes.Ldstr, str);
@@ -1146,6 +1160,11 @@ namespace LaborasLangCompiler.ILTools
             {
                 ilProcessor.Emit(OpCodes.Stloc, index);
             }
+        }
+
+        private void Stsfld(FieldReference field)
+        {
+            ilProcessor.Emit(OpCodes.Stsfld, field);
         }
 
         private void Sub()
