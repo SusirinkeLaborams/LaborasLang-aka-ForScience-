@@ -34,19 +34,6 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Assert.AreEqual(ExpectedIL, methodBodyString);
         }
 
-        private AssemblyRegistry CreateDefaultAssemblyRegistry()
-        {
-            var referenceAssembliesPath = Utils.CombinePaths(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
-                "Reference Assemblies", "Microsoft", "Framework", ".NETFramework", "v4.5");
-
-            var references = new List<string>
-            {
-                Path.Combine(referenceAssembliesPath, "mscorlib.dll")
-            };
-
-            return new AssemblyRegistry(references);
-        }
-
         #endregion
     }
 }
