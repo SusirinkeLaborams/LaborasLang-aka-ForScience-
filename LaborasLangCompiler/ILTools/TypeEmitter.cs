@@ -37,5 +37,15 @@ namespace LaborasLangCompiler.ILTools
         {
             typeDefinition.Methods.Add(method);
         }
+
+        public void AddField(FieldDefinition field)
+        {
+            typeDefinition.Fields.Add(field);
+        }
+
+        public void AddProperty(PropertyDefinition property)
+        {
+            typeDefinition.Properties.Add(property);
+        }
     }
 }
