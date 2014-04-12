@@ -145,13 +145,59 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
+        [TestMethod]
+        public void TestCanEmitStoreIntLiteralToField()
+        {
+            var field = new FieldDefinition("intField", FieldAttributes.Static, assemblyRegistry.ImportType(typeof(int)));
+            typeEmitter.AddField(field);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>(new IParserNode[]
+                {
+                    new UnaryOperatorNode()
+                    {
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        ReturnType = assemblyRegistry.ImportType(typeof(void)),
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = field
+                            },
+                            RightOperand = new LiteralNode()
+                            {
+                                ReturnType = assemblyRegistry.ImportType(typeof(int)),
+                                Value = 1
+                            }
+                        }
+                    }
+                })
+            };
+
+            ExpectedIL = string.Join("\r\n", new string[]
+            {
+                @"// Method begins at RVA 0x2050",
+                @"// Code size 7 (0x7)",
+                @".maxstack 8",
+                @".entrypoint",
+                @"",
+                @"IL_0000: ldc.i4.1",
+                @"IL_0001: stsfld int32 klass::intField",
+                @"IL_0006: ret"
+            });
+
+            Test();
+        }
+
         #endregion
 
         #region Helpers
 
         public MethodBodyTests()
         {
-            compilerArgs = CompilerArguments.Parse(new[] { "dummy.il" });
+            var tempLocation = Path.GetTempFileName() + ".exe";
+            compilerArgs = CompilerArguments.Parse(new[] { "dummy.il", "/out:" + tempLocation });
             assemblyRegistry = new AssemblyRegistry(compilerArgs.References);
             assemblyEmitter = new AssemblyEmitter(compilerArgs);
             typeEmitter = new TypeEmitter(assemblyEmitter, "klass");
