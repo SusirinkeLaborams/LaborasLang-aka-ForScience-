@@ -81,6 +81,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ILTests\Disassembler.cs" />
+    <Compile Include="ILTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="LexerTests\ExpectedTree.cs" />
     <Compile Include="LexerTests\LiteralTokenTest.cs" />
     <Compile Include="LexerTests\FunctionTests.cs" />
@@ -98,9 +99,7 @@
     <None Include="packages.config" />
     <None Include="Properties\packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ILTests\MethodBodyTests\" />
-  </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
