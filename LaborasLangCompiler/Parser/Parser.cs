@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompiler.Parser.Tree;
 using Mono.Cecil;
@@ -31,18 +32,22 @@ namespace LaborasLangCompiler.Parser
         {
             return Encoding.UTF8.GetString(source.Text(node.Token.Start, node.Token.End));
         }
-        public Dictionary<string, List<AstNode>> FindChildren(string[] types, AstNode node)
+        public Dictionary<string, AstNode> FindChildren(string[] types, AstNode node)
         {
-            Dictionary<string, List<AstNode>> ret = new Dictionary<string,List<AstNode>>();
+            Dictionary<string, AstNode> ret = new Dictionary<string, AstNode>();
             foreach(var type in types)
             {
-                ret.Add(type, new List<AstNode>());
+                ret.Add(type, null);
             }
             foreach(var child in node.Children)
             {
-                if(ret.ContainsKey(child.Token.Name))
+                string type = child.Token.Name;
+                if(ret.ContainsKey(type))
                 {
-                    ret[child.Token.Name].Add(child);
+                    if(ret[type] == null)
+                        ret[type] = child;
+                    else
+                        throw new ParseException("Multiple definitions of " + type + " in node");
                 }
             }
             return ret;
@@ -55,8 +60,7 @@ namespace LaborasLangCompiler.Parser
                 if (primitives.ContainsKey(type))
                     return primitives[type];
                 else
-                    throw new NotImplementedException("Darius said he'll fix it later");
-                    //return null;
+                    throw new SymbolNotFoundException("Type " + type + " is not a primitive .NET type");
             }
             else
             {
