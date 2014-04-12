@@ -43,7 +43,7 @@ namespace LaborasLangCompiler.ILTools
             return parameter;
         }
 
-        public MethodReference GetAsReference()
+        public MethodDefinition Get()
         {
             return methodDefinition;
         }
