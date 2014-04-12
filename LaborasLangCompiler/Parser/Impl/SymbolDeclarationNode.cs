@@ -26,49 +26,36 @@ namespace LaborasLangCompiler.Parser.Impl
             string type = lexerNode.Token.Name;
             if (type == "Declaration" || type == "DeclarationAndAssignment")
             {
-                try
+
+                var nodes = parser.FindChildren(new string[] { "Type", "FunctionType", "Symbol", "Function", "Value" }, lexerNode);
+                if (!nodes.ContainsKey("Symbol"))
+                    throw new ParseException("Symbol not found in declaration");
+                string name = parser.GetNodeValue(nodes["Symbol"]);
+                if(nodes.ContainsKey("Type"))
                 {
-                    var nodes = parser.FindChildren(new string[] { "Type", "FunctionType", "Symbol", "Function", "Value" }, lexerNode);
-                    string name = parser.GetNodeValue(nodes["Symbol"][0]);
-                    if(nodes.ContainsKey("Type"))
-                    {
-                        symbol = parent.AddSymbol(parser.ParseType(nodes["Type"][0]), name);
-
-                        throw new NotImplementedException("Darius said he'll fix it later, taking first element is stupid");
-                    }
-                    else if (nodes.ContainsKey("FunctionType"))
-                    {
-                        symbol = parent.AddSymbol(parser.ParseType(nodes["FunctionType"][0]), name);
-
-                        throw new NotImplementedException("Darius said he'll fix it later, taking first element is stupid");
-                    }
-                    else
-                    {
-                        throw new ParseException("Type not defined in declaration");
-                    }
-
-                    AstNode init = null;
-                    if (nodes.ContainsKey("Value"))
-                    {
-                        init = nodes["Value"][0];
-
-                        throw new NotImplementedException("Darius said he'll fix it later, taking first element is stupid");
-                    }
-                    else if (nodes.ContainsKey("Function"))
-                    {
-                        init = nodes["Function"][0];
-
-                        throw new NotImplementedException("Darius said he'll fix it later, taking first element is stupid");
-                    }
-
-
-                    if (init != null)
-                        initializer = ExpressionNode.Parse(parser, parent, init);
+                    symbol = parent.AddSymbol(parser.ParseType(nodes["Type"]), name);
                 }
-                catch(IndexOutOfRangeException e)
+                else if (nodes.ContainsKey("FunctionType"))
                 {
-                    throw new ParseException("Less than one subnode in type/functiontype/value/function", e);
+                    symbol = parent.AddSymbol(parser.ParseType(nodes["FunctionType"]), name);
                 }
+                else
+                {
+                    throw new ParseException("Type not defined in declaration");
+                }
+
+                AstNode init = null;
+                if (nodes.ContainsKey("Value"))
+                {
+                    init = nodes["Value"];
+                }
+                else if (nodes.ContainsKey("Function"))
+                {
+                    init = nodes["Function"];
+                }
+
+                if (init != null)
+                    initializer = ExpressionNode.Parse(parser, parent, init);
             }
             else
             {
