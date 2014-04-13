@@ -1,4 +1,5 @@
-﻿using Mono.Cecil;
+﻿using LaborasLangCompiler.Parser.Tree;
+using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,6 +60,16 @@ namespace LaborasLangCompiler.ILTools
         public void AddProperty(PropertyDefinition property)
         {
             typeDefinition.Properties.Add(property);
+        }
+
+        public void AddInitializer(FieldDefinition field, IExpressionNode initializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddInitializer(PropertyDefinition property, IExpressionNode initializer)
+        {
+            throw new NotImplementedException();
         }
 
         public static string ComputeNameFromReturnAndArgumentTypes(TypeReference returnType, IReadOnlyList<TypeReference> arguments)
