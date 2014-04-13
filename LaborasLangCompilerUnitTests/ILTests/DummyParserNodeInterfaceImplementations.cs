@@ -29,35 +29,6 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public MethodReference Function { get; set; }
     }
 
-    class FunctionCallNode : IFunctionCallNode
-    {
-        private List<IExpressionNode> arguments;
-
-        public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
-        public RValueNodeType RValueType { get { return RValueNodeType.Call; } }
-        public CallNodeType CallType { get { return CallNodeType.FunctionCall; } }
-
-        public TypeReference ReturnType { get { return Function.ReturnType; } }
-        public IExpressionNode Function { get; set; }
-
-        public IReadOnlyList<IExpressionNode> Arguments
-        {
-            get { return arguments; }
-            set
-            {
-                if (value is List<IExpressionNode>)
-                {
-                    arguments = (List<IExpressionNode>)value;
-                }
-                else
-                {
-                    arguments = value.ToList();
-                }
-            }
-        }
-    }
-
     class MethodCallNode : IMethodCallNode
     {
         private List<IExpressionNode> arguments;
@@ -65,10 +36,9 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
         public RValueNodeType RValueType { get { return RValueNodeType.Call; } }
-        public CallNodeType CallType { get { return CallNodeType.MethodCall; } }
 
         public TypeReference ReturnType { get; set; }
-        public MethodReference Function { get; set; }
+        public IExpressionNode Function { get; set; }
         public IExpressionNode ObjectInstance { get; set; }
 
         public IReadOnlyList<IExpressionNode> Arguments

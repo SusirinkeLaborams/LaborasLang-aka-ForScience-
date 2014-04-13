@@ -217,7 +217,7 @@ namespace LaborasLangCompiler.ILTools
                     return;
 
                 case RValueNodeType.Call:
-                    Emit((ICallNode)rvalue);
+                    Emit((IMethodCallNode)rvalue);
                     return;
 
                 case RValueNodeType.Function:
@@ -441,22 +441,12 @@ namespace LaborasLangCompiler.ILTools
             Ldftn(function.Function);
         }
 
-        private void Emit(ICallNode call)
+        private void Emit(IMethodCallNode functionCall)
         {
-            switch (call.CallType)
+            if (functionCall.ObjectInstance != null)
             {
-                case CallNodeType.FunctionCall:
-                    Emit((IFunctionCallNode)call);
-                    return;
-
-                case CallNodeType.MethodCall:
-                    Emit((IMethodCallNode)call);
-                    return;
+                Emit(functionCall.ObjectInstance);
             }
-        }
-
-        private void Emit(IFunctionCallNode functionCall)
-        {
             foreach (var argument in functionCall.Arguments)
             {
                 Emit(argument);
@@ -502,12 +492,6 @@ namespace LaborasLangCompiler.ILTools
                 default:
                     throw new NotSupportedException("Unknown literal type: " + literal.ReturnType.FullName);
             }
-        }
-
-        private void Emit(IMethodCallNode methodCall)
-        {
-            Emit(methodCall.ObjectInstance);
-            Emit(methodCall as IFunctionCallNode);
         }
 
         private void Emit(IObjectCreationNode objectCreation)

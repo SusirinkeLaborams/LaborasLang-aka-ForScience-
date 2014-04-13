@@ -47,7 +47,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>(new IParserNode[]
                 {
-                    new FunctionCallNode()
+                    new MethodCallNode()
                     {
                         Function = new FunctionNode()
                         {
@@ -67,7 +67,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         ReturnType = assemblyRegistry.ImportType(typeof(void)),
-                        Operand = new FunctionCallNode()
+                        Operand = new MethodCallNode()
                         {
                             Function = new FunctionNode()
                             {
@@ -310,7 +310,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>(new IParserNode[]
                 {
-                    new FunctionCallNode()
+                    new MethodCallNode()
                     {
                         Function = new FunctionNode()
                         {
@@ -348,7 +348,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>(new IParserNode[]
                 {
-                    new FunctionCallNode()
+                    new MethodCallNode()
                     {
                         Function = new FunctionNode()
                         {
