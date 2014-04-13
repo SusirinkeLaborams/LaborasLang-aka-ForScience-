@@ -87,6 +87,7 @@
     <Compile Include="ILTests\Disassembler.cs" />
     <Compile Include="ILTests\DummyParserNodeInterfaceImplementations.cs" />
     <Compile Include="ILTests\MethodBodyTests\MethodBodyTests.cs" />
+    <Compile Include="ILTests\TestBase.cs" />
     <Compile Include="LexerTests\ExpectedTree.cs" />
     <Compile Include="LexerTests\LiteralTokenTest.cs" />
     <Compile Include="LexerTests\FunctionTests.cs" />

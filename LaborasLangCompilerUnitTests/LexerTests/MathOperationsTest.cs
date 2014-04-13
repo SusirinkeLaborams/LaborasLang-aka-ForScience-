@@ -2,24 +2,19 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NPEG;
 using LaborasLangCompiler.LexingTools;
+using LaborasLangCompilerUnitTests.ILTests;
 
 namespace LaborasLangCompilerUnitTests.LexerTests
 {
     [TestClass]
-    public class MathOperationsTest
+    public class MathOperationsTest : TestBase
     {
-        Lexer Lexer;
-        [TestInitialize]
-        public void Initialize()
-        {
-            this.Lexer = new Lexer();
-        }
 
         [TestMethod]
         public void TestUnaryNegation()
         {
             var source = @"foo = -bar";
-            AstNode tree = Lexer.MakeTree(source);
+            AstNode tree = lexer.MakeTree(source);
 
             Assert.IsNotNull(tree);
             string expected = "Root: Sentence: (Assignment: Negation: Symbol, EndOfSentence)";
@@ -31,7 +26,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         public void TestAddition()
         {
             var source = @"foo = 1 + bar;";
-            AstNode tree = Lexer.MakeTree(source);
+            AstNode tree = lexer.MakeTree(source);
 
             Assert.IsNotNull(tree);
             string expected = "Root: Sentence: (Assignment: (Symbol, Value: Sum: (Product: Literal: IntegerLiteral, SumOperator, Product: Symbol)), EndOfSentence)";
@@ -43,7 +38,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         public void TestSubtraction()
         {
             var source = @"foo = bar - 1;";
-            AstNode tree = Lexer.MakeTree(source);
+            AstNode tree = lexer.MakeTree(source);
 
             Assert.IsNotNull(tree);
             string expected = "Root: Sentence: (Assignment: (Symbol, Value: Sum: (Product: Symbol, SumOperator, Product: Literal: IntegerLiteral)), EndOfSentence)";
@@ -55,7 +50,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         public void TestMultiplication()
         {
             var source = @"foo = bar * 1.5;";
-            AstNode tree = Lexer.MakeTree(source);
+            AstNode tree = lexer.MakeTree(source);
 
             Assert.IsNotNull(tree);
             string expected = "Root: Sentence: (Assignment: (Symbol, Value: Sum: Product: (Symbol, MultiplicationOperator, Literal: FloatLiteral)), EndOfSentence)";
@@ -67,7 +62,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         public void TestDivision()
         {
             var source = @"foo = 1.5 / bar;";
-            AstNode tree = Lexer.MakeTree(source);
+            AstNode tree = lexer.MakeTree(source);
 
             Assert.IsNotNull(tree);
             string expected = "Root: Sentence: (Assignment: (Symbol, Value: Sum: Product: (Literal: FloatLiteral, MultiplicationOperator, Symbol)), EndOfSentence)";
@@ -79,7 +74,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         public void TestAdditionAndMultiplicationOrder()
         {
             var source = @"foo = 5 + 1.2 * bar;";
-            AstNode tree = Lexer.MakeTree(source);
+            AstNode tree = lexer.MakeTree(source);
 
             Assert.IsNotNull(tree);
             string expected = "Root: Sentence: (Assignment: (Symbol, Value: Sum: (Product: Literal: IntegerLiteral, SumOperator, Product: (Literal: FloatLiteral, MultiplicationOperator, Symbol))), EndOfSentence)";
@@ -91,7 +86,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         public void TestSubtractionAndDivisionOrder()
         {
             var source = @"foo = 1.5  - bar / 15;";
-            AstNode tree = Lexer.MakeTree(source);
+            AstNode tree = lexer.MakeTree(source);
 
             Assert.IsNotNull(tree);
             string expected = "Root: Sentence: (Assignment: (Symbol, Value: Sum: (Product: Literal: FloatLiteral, SumOperator, Product: (Symbol, MultiplicationOperator, Literal: IntegerLiteral))), EndOfSentence)";

@@ -2,6 +2,7 @@
 using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser;
+using LaborasLangCompilerUnitTests.ILTests;
 using LaborasLangCompilerUnitTests.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NPEG;
@@ -14,15 +15,13 @@ using System.Threading.Tasks;
 namespace LaborasLangCompilerUnitTests.ParserTests
 {
     [TestClass]
-    public class SomeRandomTest
+    public class SomeRandomTest : TestBase
     {
-        private Lexer lexer;
         private CompilerArguments compilerArgs;
         [TestInitialize]
         public void Init()
         {
             compilerArgs = CompilerArguments.Parse(new[] { "test.ll" });
-            lexer = new Lexer();
         }
         [TestMethod]
         public void TestSerialization()

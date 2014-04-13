@@ -2,24 +2,18 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NPEG;
 using LaborasLangCompiler.LexingTools;
+using LaborasLangCompilerUnitTests.ILTests;
 
 namespace LaborasLangCompilerUnitTests.LexerTests
 {
     [TestClass]
-    public class FunctionTests
+    public class FunctionTests : TestBase
     {
-        Lexer Lexer;
-        [TestInitialize]
-        public void Initialize()
-        {
-            this.Lexer = new Lexer();
-        }
-
         [TestMethod]
         public void DeclareFunctionTest()
         {
             var source = @"int(int, bool) foo;";
-            AstNode tree = Lexer.MakeTree(source);
+            AstNode tree = lexer.MakeTree(source);
 
             Assert.IsNotNull(tree);
             string expected = "Root: Sentence: (Declaration: (FunctionType: (Type: Symbol, ArgumentTypes: (Type: Symbol, Type: Symbol)), Symbol), EndOfSentence)";
