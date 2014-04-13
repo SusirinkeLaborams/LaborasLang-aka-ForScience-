@@ -21,6 +21,8 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 case "Symbol":
                     return LValueNode.Parse(parser, parent, lexerNode);
+                case "Literal":
+                    return RValueNode.Parse(parser, parent, lexerNode);
                 default:
                     throw new NotImplementedException();
             }

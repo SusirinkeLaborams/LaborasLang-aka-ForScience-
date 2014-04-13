@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 
 namespace LaborasLangCompiler.FrontEnd
@@ -14,16 +15,18 @@ namespace LaborasLangCompiler.FrontEnd
     {
         static int Main(string[] args)
         {
-            //Parser.Types.Testing.TestTypes();
             try
             {
                 var compilerArgs = CompilerArguments.Parse(args);
+                var lexer = new Lexer();
                 
                 foreach (var file in compilerArgs.SourceFiles)
                 {
+                    var assembly = new AssemblyEmitter(compilerArgs);
+                    var assemblyRegistry = new AssemblyRegistry(compilerArgs.References);
                     var bytes = FileReader.Read(file);
-                    var lexer = new Lexer();
                     var tree = lexer.MakeTree(bytes);
+                    var parser = new Parser.Parser(assembly, assemblyRegistry, tree, bytes, file);
                     PrintAst(tree, 1, bytes);
                 }
 

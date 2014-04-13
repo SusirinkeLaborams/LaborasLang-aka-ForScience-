@@ -25,14 +25,16 @@ namespace LaborasLangCompiler.Parser
             Registry = registry;
             Assembly = assembly;
             this.source = source;
-            ParserNode.Parse(this, null, tree);
             Filename = filename;
+
             var primitives = new Dictionary<string, TypeReference>();
             primitives.Add("bool", Registry.GetType("System.Boolean"));
             primitives.Add("int", Registry.GetType("System.Int32"));
             primitives.Add("float", Registry.GetType("System.Single"));
             primitives.Add("string", Registry.GetType("System.String"));
             Primitives = primitives;
+
+            RootNode.Parse(this, null, tree);
         }
         public string GetNodeValue(AstNode node)
         {
