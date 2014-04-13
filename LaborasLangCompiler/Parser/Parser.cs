@@ -16,13 +16,15 @@ namespace LaborasLangCompiler.Parser
     {
         public AssemblyRegistry Registry { get; private set; }
         public CodeBlockNode Root { get; set; }
+        public string Filename { get; private set; }
         private ByteInputIterator source;
         private Dictionary<string, TypeReference> primitives;
-        public Parser(AssemblyRegistry registry, AstNode tree, ByteInputIterator source)
+        public Parser(AssemblyRegistry registry, AstNode tree, ByteInputIterator source, string filename)
         {
             Registry = registry;
             this.source = source;
             ParserNode.Parse(this, null, tree);
+            Filename = filename;
             primitives = new Dictionary<string, TypeReference>();
             primitives.Add("bool", Registry.GetType("System.Boolean"));
             primitives.Add("int", Registry.GetType("System.Int32"));

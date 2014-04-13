@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser.Exceptions;
+﻿using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
 using NPEG;
 using System;
@@ -11,8 +12,10 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class RootNode : CodeBlockNode
     {
-        public RootNode() : base(null)
+        private TypeEmitter fileClass;
+        public RootNode(Parser parser) : base(null)
         {
+            //fileClass = new TypeEmitter(parser.Registry, parser.Filename);
         }
         public override Tree.ILValueNode AddSymbol(TypeReference type, string name)
         {
@@ -24,7 +27,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static new CodeBlockNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
         {
-            var instance = new RootNode();
+            var instance = new RootNode(parser);
             parser.Root = instance;
             foreach(var node in lexerNode.Children)
             {
@@ -49,7 +52,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     throw new ParseException("Node Sentence expected, " + node.Token.Name + " received");
                 }
             }
-            throw new NotImplementedException();
+            return instance;
         }
     }
 }

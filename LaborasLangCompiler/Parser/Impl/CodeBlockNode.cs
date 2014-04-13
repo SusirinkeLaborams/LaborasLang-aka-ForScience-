@@ -26,17 +26,16 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public LValueNode GetSymbol(string name)
         {
+            //check node table
             if(symbols.ContainsKey(name))
-            {
                 return symbols[name];
-            }
-            else
-            {
-                if (parent != null)
-                    return parent.GetSymbol(name);
-                else
-                    return null;
-            }
+
+            //check parent block table
+            if (parent != null)
+                return parent.GetSymbol(name);
+
+            //symbol not found
+            return null;
         }
 
         public virtual ILValueNode AddSymbol(TypeReference type, string name)
