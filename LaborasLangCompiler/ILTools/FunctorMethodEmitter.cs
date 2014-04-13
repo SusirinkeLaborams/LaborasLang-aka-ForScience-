@@ -57,11 +57,11 @@ namespace LaborasLangCompiler.ILTools
             var functionPtrArgument = AddArgument(assemblyRegistry.ImportType(typeof(System.IntPtr)), "functionPtr");
 
             Ldarg(0);
-            Ldarg(objectInstanceArgument.Index);
+            Ldarg(objectInstanceArgument.Index + 1);
             Stfld(objectInstanceField);
             
             Ldarg(0);
-            Ldarg(functionPtrArgument.Index);
+            Ldarg(functionPtrArgument.Index + 1);
             Stfld(functionPtrField);
 
             Ret();
@@ -70,32 +70,56 @@ namespace LaborasLangCompiler.ILTools
         private void EmitInvokeBody(FieldDefinition objectInstanceField, FieldDefinition functionPtrField, TypeReference returnType,
             IReadOnlyList<TypeReference> arguments)
         {
-            var callsite = new CallSite(returnType);
+            var staticCallsite = new CallSite(returnType);
+            var instanceCallsite = new CallSite(returnType);
 
             foreach (var parameterType in arguments)
             {
                 AddArgument(parameterType);
-                callsite.Parameters.Add(new ParameterDefinition(parameterType));
+                staticCallsite.Parameters.Add(new ParameterDefinition(parameterType));
+                instanceCallsite.Parameters.Add(new ParameterDefinition(parameterType));
             }
+
+            staticCallsite.HasThis = false;
+            instanceCallsite.HasThis = true;
 
             var labelAfterConditionalBlock = CreateLabel();
 
-            // Check if object is not null and if it's not, leave it in the stack
+            // if (objectInstance != 0)
             Ldarg(0);
             Ldfld(objectInstanceField);
             Dup();
             Brtrue(labelAfterConditionalBlock);
-            Pop();
 
-            Emit(labelAfterConditionalBlock);
-
-            for (int i = 0; i < arguments.Count; i++)
             {
-                Ldarg(i + 1);
-            }
+                Pop();  // This pops earlier-duplicated objectInstance field
 
-            Calli(callsite);
-            Ret();
+                for (int i = 0; i < arguments.Count; i++)
+                {
+                    Ldarg(i + 1);
+                }
+
+                Ldarg(0);
+                Ldfld(functionPtrField);
+
+                Calli(staticCallsite);
+                Ret();
+            }
+            // else
+            {
+                Emit(labelAfterConditionalBlock);
+
+                for (int i = 0; i < arguments.Count; i++)
+                {
+                    Ldarg(i + 1);
+                }
+
+                Ldarg(0);
+                Ldfld(functionPtrField);
+
+                Calli(instanceCallsite);
+                Ret();
+            }
         }
 
         private void EmitAsDelegate(FieldDefinition objectInstanceField, FieldDefinition functionPtrField, TypeDefinition delegateType)
@@ -104,11 +128,13 @@ namespace LaborasLangCompiler.ILTools
                 x.Parameters[0].ParameterType.FullName == "System.Object" && x.Parameters[1].ParameterType.FullName == "System.IntPtr");
 
             Ldarg(0);
-            Dup();
             Ldfld(objectInstanceField);
+
+            Ldarg(0);
             Ldfld(functionPtrField);
 
             Newobj(Import(ctor));
+            Ret();
         }
     }
 }

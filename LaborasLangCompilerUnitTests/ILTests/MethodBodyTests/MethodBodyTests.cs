@@ -512,6 +512,8 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
         #endregion
 
+        #region Operator tests
+
         [TestMethod]
         public void TestCanEmit_MultipleNestedAssignments()
         {
@@ -593,6 +595,25 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             Test();
         }
+
+        #endregion
+
+        #region Functor tests
+
+        [TestMethod]
+        public void TestCanEmit_FunctorDefinition()
+        {
+            FunctorTypeEmitter.Create(assemblyRegistry, assemblyEmitter, assemblyRegistry.ImportType(typeof(void)), new List<TypeReference>());
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+            };
+
+            Test();
+        }
+
+        #endregion
 
         #endregion
 

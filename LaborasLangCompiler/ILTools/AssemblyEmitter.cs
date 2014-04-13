@@ -50,6 +50,16 @@ namespace LaborasLangCompiler.ILTools
             return assemblyDefinition.MainModule.Import(type);
         }
 
+        public TypeReference ImportType(TypeReference type)
+        {
+            if (type.Module != assemblyDefinition.MainModule)
+            {
+                type = assemblyDefinition.MainModule.Import(type);
+            }
+
+            return type;
+        }
+
         public void Save()
         {
             if (assemblyDefinition.EntryPoint == null && assemblyDefinition.MainModule.Kind != ModuleKind.Dll)
@@ -62,16 +72,6 @@ namespace LaborasLangCompiler.ILTools
             writerParams.WriteSymbols = true;
 
             assemblyDefinition.Write(outputPath, writerParams);
-        }
-
-        public TypeReference Import(TypeReference type)
-        {
-            if (type.Module != assemblyDefinition.MainModule)
-            {
-                type = assemblyDefinition.MainModule.Import(type);
-            }
-
-            return type;
         }
     }
 }

@@ -9,22 +9,7 @@ namespace LaborasLangCompiler.ILTools
 {
     internal class FunctorTypeEmitter : TypeEmitter
     {
-        public static string ComputeClassName(TypeReference returnType, IReadOnlyList<TypeReference> arguments)
-        {
-            var name = new StringBuilder("$Functor$" + returnType.FullName + "$");
-
-            for (int i = 0; i < arguments.Count; i++)
-            {
-                if (i != 0)
-                {
-                    name.Append("_");
-                }
-
-                name.Append(arguments[i].FullName);
-            }
-
-            return name.ToString();
-        }
+        private const TypeAttributes FunctorTypeAttributes = TypeAttributes.SequentialLayout | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
 
         public static TypeDefinition Create(AssemblyRegistry assemblyRegistry, AssemblyEmitter assembly,
             TypeReference returnType, IReadOnlyList<TypeReference> arguments)
@@ -34,16 +19,16 @@ namespace LaborasLangCompiler.ILTools
 
         private FunctorTypeEmitter(AssemblyRegistry assemblyRegistry, AssemblyEmitter assembly,
             TypeReference returnType, IReadOnlyList<TypeReference> arguments) :
-            base(assembly, ComputeClassName(returnType, arguments), "$Functors")
+            base(assembly, ComputeName(returnType, arguments), "$Functors", FunctorTypeAttributes, assemblyRegistry.GetType("System.ValueType"))
         {
-            var delegateType = DelegateEmitter.Create(assemblyRegistry, assembly, "$Functors", returnType, arguments);
+            var delegateType = DelegateEmitter.Create(assemblyRegistry, assembly, typeDefinition, returnType, arguments);
             typeDefinition.NestedTypes.Add(delegateType);
 
             var objectInstanceField = new FieldDefinition("objectInstance", FieldAttributes.Private | FieldAttributes.InitOnly,
-                assembly.Import(assemblyRegistry.ImportType(typeof(object))));
+                Module.Import(typeof(object)));
 
             var functionPtrField = new FieldDefinition("functionPtr", FieldAttributes.Private | FieldAttributes.InitOnly,
-                assembly.Import(assemblyRegistry.ImportType(typeof(IntPtr))));
+                Module.Import(typeof(IntPtr)));
 
             typeDefinition.Fields.Add(objectInstanceField);
             typeDefinition.Fields.Add(functionPtrField);
@@ -51,6 +36,11 @@ namespace LaborasLangCompiler.ILTools
             FunctorMethodEmitter.EmitConstructor(assemblyRegistry, this, objectInstanceField, functionPtrField);
             FunctorMethodEmitter.EmitInvoke(assemblyRegistry, this, objectInstanceField, functionPtrField, returnType, arguments);
             FunctorMethodEmitter.EmitAsDelegate(assemblyRegistry, this, delegateType, objectInstanceField, functionPtrField);
+        }
+
+        private static string ComputeName(TypeReference returnType, IReadOnlyList<TypeReference> arguments)
+        {
+            return ComputeNameFromReturnAndArgumentTypes(returnType, arguments);
         }
     }
 }

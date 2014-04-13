@@ -16,21 +16,34 @@ namespace LaborasLangCompiler.ILTools
         public ModuleDefinition Module { get { return typeDefinition.Module; } }
 
         public TypeEmitter(AssemblyEmitter assembly, string className, string @namespace = "",
-                            TypeAttributes typeAttributes = DefaultTypeAttributes, TypeReference baseType = null)
+                            TypeAttributes typeAttributes = DefaultTypeAttributes, TypeReference baseType = null) :
+            this(assembly, className, @namespace, typeAttributes, baseType, true)
+        {
+        }
+
+        protected TypeEmitter(AssemblyEmitter assembly, string className, string @namespace, TypeAttributes typeAttributes,
+            TypeReference baseType, bool addToAssembly)
         {
             if (assembly == null)
             {
                 throw new ArgumentNullException("assembly");
             }
-                                    
+
             if (baseType == null)
             {
                 baseType = assembly.ImportType(typeof(object));
             }
+            else
+            {
+                baseType = assembly.ImportType(baseType);
+            }
 
             typeDefinition = new TypeDefinition(@namespace, className, typeAttributes, baseType);
 
-            assembly.AddType(typeDefinition);
+            if (addToAssembly)
+            {
+                assembly.AddType(typeDefinition);
+            }
         }
 
         public void AddMethod(MethodDefinition method)
@@ -46,6 +59,25 @@ namespace LaborasLangCompiler.ILTools
         public void AddProperty(PropertyDefinition property)
         {
             typeDefinition.Properties.Add(property);
+        }
+
+        public static string ComputeNameFromReturnAndArgumentTypes(TypeReference returnType, IReadOnlyList<TypeReference> arguments)
+        {
+            var name = new StringBuilder("$" + returnType.FullName + "$");
+
+            for (int i = 0; i < arguments.Count; i++)
+            {
+                if (i != 0)
+                {
+                    name.Append("`");
+                }
+
+                name.Append(arguments[i].FullName);
+            }
+
+            name.Replace('.', '_');
+
+            return name.ToString();
         }
     }
 }

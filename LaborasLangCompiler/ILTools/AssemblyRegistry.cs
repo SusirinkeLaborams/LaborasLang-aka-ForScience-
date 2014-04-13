@@ -117,7 +117,7 @@ namespace LaborasLangCompiler.ILTools
 
         public TypeDefinition GetType(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
         {
-            var name = FunctorTypeEmitter.ComputeClassName(returnType, arguments);
+            var name = FunctorTypeEmitter.ComputeNameFromReturnAndArgumentTypes(returnType, arguments);
 
             if (!functorTypes.ContainsKey(name))
             {
