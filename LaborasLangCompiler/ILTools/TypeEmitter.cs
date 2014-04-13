@@ -63,20 +63,14 @@ namespace LaborasLangCompiler.ILTools
 
         public static string ComputeNameFromReturnAndArgumentTypes(TypeReference returnType, IReadOnlyList<TypeReference> arguments)
         {
-            var name = new StringBuilder("$" + returnType.FullName + "$");
+            var name = new StringBuilder("$" + returnType.FullName);
 
-            for (int i = 0; i < arguments.Count; i++)
+            foreach (var argument in arguments)
             {
-                if (i != 0)
-                {
-                    name.Append("`");
-                }
-
-                name.Append(arguments[i].FullName);
+                name.Append("$" + argument.FullName);
             }
 
             name.Replace('.', '_');
-
             return name.ToString();
         }
     }

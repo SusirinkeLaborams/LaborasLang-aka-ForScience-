@@ -444,6 +444,26 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
+        [TestMethod]
+        public void TestCanEmit_FunctorWithReturnTypeAndArguments()
+        {
+            FunctorTypeEmitter.Create(assemblyRegistry, assemblyEmitter, assemblyRegistry.ImportType(typeof(int)), 
+                new List<TypeReference>(new TypeReference[]
+                {
+                    assemblyRegistry.ImportType(typeof(bool)),
+                    assemblyRegistry.ImportType(typeof(float)),
+                    assemblyRegistry.ImportType(typeof(string)),
+                }));
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+            };
+
+            ExpectedILFilePath = "TestCanEmit_FunctorWithReturnTypeAndArguments.il";
+            Test();
+        }
+
         #endregion
 
         #endregion

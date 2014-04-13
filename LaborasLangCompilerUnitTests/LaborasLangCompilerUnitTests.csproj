@@ -99,6 +99,7 @@
   <ItemGroup>
     <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_EmptyMethod.il" />
     <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_FunctorDefinition.il" />
+    <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_FunctorWithReturnTypeAndArguments.il" />
     <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_HelloWorld.il" />
     <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral.il" />
     <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_MultipleNestedAssignments.il" />
