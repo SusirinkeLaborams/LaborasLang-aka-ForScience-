@@ -26,7 +26,6 @@ namespace LaborasLangCompiler.Parser.Impl
                 case "Value":
                     return ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
                 case "Sum":
-                    goto case "Product";
                 case "Product":
                     return BinaryOperatorNode.Parse(parser, parent, lexerNode);
                 default:
