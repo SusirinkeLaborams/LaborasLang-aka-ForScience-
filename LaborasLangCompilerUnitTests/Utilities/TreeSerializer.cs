@@ -26,7 +26,7 @@ namespace LaborasLangCompilerUnitTests.Utilities
             }
         }
 
-        static void Serialize(string fileName, AstNode tree)
+        public static void Serialize(string fileName, AstNode tree)
         {
             using (var writer = new XmlTextWriter(fileName, Encoding.UTF8))
             {
@@ -34,7 +34,7 @@ namespace LaborasLangCompilerUnitTests.Utilities
             }
         }
 
-        static AstNode Deserialize(string fileName)
+        public static AstNode Deserialize(string fileName)
         {
             using (var streamReader = new StreamReader(fileName))
             {
