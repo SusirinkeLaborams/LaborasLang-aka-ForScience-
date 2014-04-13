@@ -36,8 +36,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         case "NamespaceImport":
                             throw new NotImplementedException();
                         case "Declaration":
-                            instance.nodes.Add(SymbolDeclarationNode.Parse(parser, instance, sentence));
-                            break;
+                            goto case "DeclarationAndAssignment";
                         case "DeclarationAndAssignment":
                             instance.nodes.Add(SymbolDeclarationNode.Parse(parser, instance, sentence));
                             break;
