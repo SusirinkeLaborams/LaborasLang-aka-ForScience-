@@ -14,7 +14,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.CodeBlockNode; } }
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
-        private List<IParserNode> nodes;
+        protected List<IParserNode> nodes;
         protected Dictionary<string, LValueNode> symbols;
         private CodeBlockNode parent;
         public CodeBlockNode(CodeBlockNode parent) 
