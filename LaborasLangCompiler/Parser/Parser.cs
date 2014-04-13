@@ -15,13 +15,15 @@ namespace LaborasLangCompiler.Parser
     class Parser
     {
         public AssemblyRegistry Registry { get; private set; }
+        public AssemblyEmitter Assembly { get; private set; }
         public CodeBlockNode Root { get; set; }
         public string Filename { get; private set; }
         private ByteInputIterator source;
         public IReadOnlyDictionary<string, TypeReference> Primitives { get; private set; }
-        public Parser(AssemblyRegistry registry, AstNode tree, ByteInputIterator source, string filename)
+        public Parser(AssemblyEmitter assembly, AssemblyRegistry registry, AstNode tree, ByteInputIterator source, string filename)
         {
             Registry = registry;
+            Assembly = assembly;
             this.source = source;
             ParserNode.Parse(this, null, tree);
             Filename = filename;

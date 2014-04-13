@@ -15,14 +15,16 @@ namespace LaborasLangCompiler.Parser.Impl
         private TypeEmitter fileClass;
         public RootNode(Parser parser) : base(null)
         {
-            //fileClass = new TypeEmitter(parser.Registry, parser.Filename);
+            fileClass = new TypeEmitter(parser.Assembly, parser.Filename);
         }
         public override Tree.ILValueNode AddSymbol(TypeReference type, string name)
         {
             if (symbols.ContainsKey(name))
                 return null;
-            symbols.Add(name, new FieldNode(null, new FieldDefinition(name, FieldAttributes.Private | FieldAttributes.Static, type)));
-            return symbols[name];
+            var field = new FieldNode(null, new FieldDefinition(name, FieldAttributes.Private | FieldAttributes.Static, type));
+            fileClass.AddField(field.Field);
+            symbols.Add(name, field);
+            return field;
         }
 
         public static new CodeBlockNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
