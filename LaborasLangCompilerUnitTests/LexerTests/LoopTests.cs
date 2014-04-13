@@ -8,6 +8,13 @@ namespace LaborasLangCompilerUnitTests.LexerTests
     [TestClass]
     public class LoopTests
     {
+        Lexer Lexer;
+        [TestInitialize]
+        public void Initialize()
+        {
+            this.Lexer = new Lexer();
+        }
+
         [TestMethod]
         public void TestWhileLoop()
         {

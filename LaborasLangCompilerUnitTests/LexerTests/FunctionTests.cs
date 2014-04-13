@@ -8,6 +8,13 @@ namespace LaborasLangCompilerUnitTests.LexerTests
     [TestClass]
     public class FunctionTests
     {
+        Lexer Lexer;
+        [TestInitialize]
+        public void Initialize()
+        {
+            this.Lexer = new Lexer();
+        }
+
         [TestMethod]
         public void DeclareFunctionTest()
         {

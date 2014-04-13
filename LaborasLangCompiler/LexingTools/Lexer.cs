@@ -8,11 +8,10 @@ using NPEG.GrammarInterpreter;
 
 namespace LaborasLangCompiler.LexingTools
 {
-    public static class Lexer
+    public class Lexer
     {
-        public static AstNode MakeTree(ByteInputIterator bytes)
-        {
-            string grammar = @"
+        private AExpression GrammarTree;
+        private static String Grammar = @"
  
                 Ws: [\n\r\t\s]+;       
                 (?<Symbol>): [a-zA-Z_]+ [a-zA-Z0-9_]*;
@@ -68,18 +67,25 @@ namespace LaborasLangCompiler.LexingTools
                 (?<Root>): Ws? (( CodeBlock / Sentence) Ws?)* Ws?;
             ".Trim();
 
-            AExpression rules = PEGrammar.Load(grammar);
-            var visitor = new NpegParserVisitor(bytes);
-            rules.Accept(visitor);
-            var isMatchIsAMethod = visitor.IsMatch;
-            return visitor.AST;
+        public Lexer()
+        {
+            GrammarTree = PEGrammar.Load(Grammar);
         }
 
-        public static AstNode MakeTree(string source)
+        public AstNode MakeTree(string source)
         {
             var bytes = Encoding.UTF8.GetBytes(source);
             ByteInputIterator inputIterator = new ByteInputIterator(bytes);
-            return Lexer.MakeTree(inputIterator);
+            return MakeTree(inputIterator);
         }
+
+        public AstNode MakeTree(ByteInputIterator inputIterator)
+        {
+            var visitor = new NpegParserVisitor(inputIterator);
+            GrammarTree.Accept(visitor);
+            var isMatch = visitor.IsMatch;
+            return visitor.AST;
+        }
+
     }
 }

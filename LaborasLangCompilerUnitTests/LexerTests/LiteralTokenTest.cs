@@ -9,6 +9,13 @@ namespace LaborasLangCompilerUnitTests.LexerTests
     [TestClass]
     public class LiteralTokenTest
     {
+        Lexer Lexer;
+        [TestInitialize]
+        public void Initialize()
+        {
+            this.Lexer = new Lexer();
+        }
+
         [TestMethod]
         public void TestIntegerLiteralToken()
         {
