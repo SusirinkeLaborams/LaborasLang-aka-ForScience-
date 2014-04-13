@@ -97,10 +97,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_EmptyMethod.il" />
+    <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_FunctorDefinition.il" />
+    <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_HelloWorld.il" />
+    <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral.il" />
+    <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_MultipleNestedAssignments.il" />
+    <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_StoreArgument_LoadProperty_LoadStringLiteral.il" />
+    <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_StoreLocalVariable_LoadField.il" />
+    <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_StoreProperty_LoadLocalVariable_LoadArgument_LoadDoubleLiteral.il" />
+    <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_VariableDeclarationAndInitialization_LoadFloatLiteral.il" />
     <None Include="packages.config" />
     <None Include="Properties\packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="ILTests\MethodBodyTests\MethodBodyTestsExpected\TestCanEmit_StoreField_LoadIntLiteral.il" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

@@ -9,13 +9,16 @@ using System.Linq;
 using System.IO;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using System.Text;
+using System.Runtime.CompilerServices;
+using System.Diagnostics;
 
 namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 {
     [TestClass]
     public class MethodBodyTests
     {
-        private string ExpectedIL { get; set; }
+        private string ExpectedILFilePath { get; set; }
         private ICodeBlockNode BodyCodeBlock { get; set; }
 
         private CompilerArguments compilerArgs;
@@ -26,29 +29,19 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         #region Test methods
 
         [TestMethod]
-        public void TestCanEmitEmptyMethod()
+        public void TestCanEmit_EmptyMethod()
         {
             BodyCodeBlock = new CodeBlockNode
             {
                 Nodes = new List<IParserNode>()
             };
 
-            ExpectedIL = string.Join("\r\n", new string[]
-            {
-                @"System.Void klass::dummy()",
-                @"// Method begins at RVA 0x2050",
-                @"// Code size 1 (0x1)",
-                @".maxstack 8",
-                @".entrypoint",
-                @"",
-                @"IL_0000: ret"
-            });
-
+            ExpectedILFilePath = "TestCanEmit_EmptyMethod.il";
             Test();
         }
 
         [TestMethod]
-        public void TestCanEmitHelloWorld()
+        public void TestCanEmit_HelloWorld()
         {
             BodyCodeBlock = new CodeBlockNode
             {
@@ -88,21 +81,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 })
             };
 
-            ExpectedIL = string.Join("\r\n", new string[]
-            {
-                @"System.Void klass::dummy()",
-                @"// Method begins at RVA 0x2050",
-                @"// Code size 17 (0x11)",
-                @".maxstack 8",
-                @".entrypoint",
-                @"",
-                @"IL_0000: ldstr ""Hello, world!""",
-                @"IL_0005: call void [mscorlib]System.Console::WriteLine(string)",
-                @"IL_000a: call valuetype [mscorlib]System.ConsoleKeyInfo [mscorlib]System.Console::ReadKey()",
-                @"IL_000f: pop",
-                @"IL_0010: ret"
-            });
-
+            ExpectedILFilePath = "TestCanEmit_HelloWorld.il";
             Test();
         }
 
@@ -130,21 +109,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 })
             };
 
-            ExpectedIL = string.Join("\r\n", new string[]
-            {
-                @"System.Void klass::dummy()",
-                @"// Method begins at RVA 0x2050",
-                @"// Code size 7 (0x7)",
-                @".maxstack 1",
-                @".entrypoint",
-                @".locals (",
-                @"	[0] float32",
-                @")",
-                @"",
-                @"IL_0000: ldc.r4 2.5",
-                @"IL_0005: stloc.0",
-                @"IL_0006: ret"
-            });
+            ExpectedILFilePath = "TestCanEmit_VariableDeclarationAndInitialization_LoadFloatLiteral.il";
             Test();
         }
 
@@ -178,19 +143,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 })
             };
 
-            ExpectedIL = string.Join("\r\n", new string[]
-            {
-                @"System.Void klass::dummy()",
-                @"// Method begins at RVA 0x2050",
-                @"// Code size 7 (0x7)",
-                @".maxstack 8",
-                @".entrypoint",
-                @"",
-                @"IL_0000: ldc.i4.1",
-                @"IL_0001: stsfld int32 klass::intField",
-                @"IL_0006: ret"
-            });
-
+            ExpectedILFilePath = "TestCanEmit_StoreField_LoadIntLiteral.il";
             Test();
         }
 
@@ -218,22 +171,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 })
             };
 
-            ExpectedIL = string.Join("\r\n", new string[]
-            {
-                @"System.Void klass::dummy()",
-                @"// Method begins at RVA 0x2050",
-                @"// Code size 7 (0x7)",
-                @".maxstack 1",
-                @".entrypoint",
-                @".locals (",
-                @"	[0] int32",
-                @")",
-                @"",
-                @"IL_0000: ldsfld int32 klass::intField",
-                @"IL_0005: stloc.0",
-                @"IL_0006: ret"
-            });
-
+            ExpectedILFilePath = "TestCanEmit_StoreLocalVariable_LoadField.il";
             Test();
         }
 
@@ -313,34 +251,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 })
             };
 
-            ExpectedIL = string.Join("\r\n", new string[]
-            {
-                @"System.Void klass::set_doubleProperty(System.Double)",
-                @"// Method begins at RVA 0x2050",
-                @"// Code size 7 (0x7)",
-                @".maxstack 8",
-                @"",
-                @"IL_0000: ldarg.0",
-                @"IL_0001: stsfld float64 klass::doubleProperty_backingField",
-                @"IL_0006: ret",
-                @"",
-                @"",
-                @"System.Void klass::dummy()",
-                @"// Method begins at RVA 0x2058",
-                @"// Code size 17 (0x11)",
-                @".maxstack 1",
-                @".entrypoint",
-                @".locals (",
-                @"	[0] float64",
-                @")",
-                @"",
-                @"IL_0000: ldc.r8 5.5",
-                @"IL_0009: stloc.0",
-                @"IL_000a: ldloc.0",
-                @"IL_000b: call void klass::set_doubleProperty(float64)",
-                @"IL_0010: ret"
-            });
-
+            ExpectedILFilePath = "TestCanEmit_StoreProperty_LoadLocalVariable_LoadArgument_LoadDoubleLiteral.il";
             Test();
         }
 
@@ -417,38 +328,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 })
             };
 
-            ExpectedIL = string.Join("\r\n", new string[]
-            {
-                @"System.String klass::get_stringProperty()",
-                @"// Method begins at RVA 0x2050",
-                @"// Code size 6 (0x6)",
-                @".maxstack 8",
-                @"",
-                @"IL_0000: ldstr ""Test""",
-                @"IL_0005: ret",
-                @"",
-                @"",
-                @"System.Void klass::TestMethod(System.String)",
-                @"// Method begins at RVA 0x2058",
-                @"// Code size 8 (0x8)",
-                @".maxstack 8",
-                @"",
-                @"IL_0000: call string klass::get_stringProperty()",
-                @"IL_0005: starg.s arg",
-                @"IL_0007: ret",
-                @"",
-                @"",
-                @"System.Void klass::dummy()",
-                @"// Method begins at RVA 0x2064",
-                @"// Code size 11 (0xb)",
-                @".maxstack 8",
-                @".entrypoint",
-                @"",
-                @"IL_0000: ldstr ""Test""",
-                @"IL_0005: call void klass::TestMethod(string)",
-                @"IL_000a: ret"
-            });
-
+            ExpectedILFilePath = "TestCanEmit_StoreArgument_LoadProperty_LoadStringLiteral.il";
             Test();
         }
 
@@ -486,27 +366,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 })
             };
 
-            ExpectedIL = string.Join("\r\n", new string[]
-            {
-                @"System.Void klass::Test(System.Boolean)",
-                @"// Method begins at RVA 0x2050",
-                @"// Code size 1 (0x1)",
-                @".maxstack 8",
-                @"",
-                @"IL_0000: ret",
-                @"",
-                @"",
-                @"System.Void klass::dummy()",
-                @"// Method begins at RVA 0x2054",
-                @"// Code size 7 (0x7)",
-                @".maxstack 8",
-                @".entrypoint",
-                @"",
-                @"IL_0000: ldc.i4.1",
-                @"IL_0001: call void klass::Test(bool)",
-                @"IL_0006: ret"
-            });
-
+            ExpectedILFilePath = "TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral.il";
             Test();
         }
 
@@ -562,37 +422,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 })
             };
 
-            ExpectedIL = string.Join("\r\n", new string[]
-            {
-                @"System.Void klass::dummy()",
-                @"// Method begins at RVA 0x2050",
-                @"// Code size 62 (0x3e)",
-                @".maxstack 8",
-                @".entrypoint",
-                @"",
-                @"IL_0000: ldc.i4.s 110",
-                @"IL_0002: dup",
-                @"IL_0003: stsfld int32 klass::intField0",
-                @"IL_0008: dup",
-                @"IL_0009: stsfld int32 klass::intField1",
-                @"IL_000e: dup",
-                @"IL_000f: stsfld int32 klass::intField2",
-                @"IL_0014: dup",
-                @"IL_0015: stsfld int32 klass::intField3",
-                @"IL_001a: dup",
-                @"IL_001b: stsfld int32 klass::intField4",
-                @"IL_0020: dup",
-                @"IL_0021: stsfld int32 klass::intField5",
-                @"IL_0026: dup",
-                @"IL_0027: stsfld int32 klass::intField6",
-                @"IL_002c: dup",
-                @"IL_002d: stsfld int32 klass::intField7",
-                @"IL_0032: dup",
-                @"IL_0033: stsfld int32 klass::intField8",
-                @"IL_0038: stsfld int32 klass::intField9",
-                @"IL_003d: ret"
-            });
-
+            ExpectedILFilePath = "TestCanEmit_MultipleNestedAssignments.il";
             Test();
         }
 
@@ -610,6 +440,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 Nodes = new List<IParserNode>()
             };
 
+            ExpectedILFilePath = "TestCanEmit_FunctorDefinition.il";
             Test();
         }
 
@@ -639,9 +470,12 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var il = Disassembler.DisassembleAssembly(assemblyEmitter.OutputPath);
 
+            var expectedILPath = Path.Combine("..", "..", "ILTests", "MethodBodyTests", "MethodBodyTestsExpected", ExpectedILFilePath);
+            var expectedIL = File.ReadAllText(expectedILPath, Encoding.UTF8);
+
             try
             {
-                Assert.AreEqual(ExpectedIL, il.Trim());
+                Assert.AreEqual(expectedIL.Trim(), il.Trim());
             }
             finally
             {
