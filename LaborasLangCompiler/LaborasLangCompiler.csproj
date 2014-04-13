@@ -76,6 +76,7 @@
     <Compile Include="Parser\Exceptions\SymbolNotFoundException.cs" />
     <Compile Include="Parser\Impl\CodeBlockNode.cs" />
     <Compile Include="Parser\Impl\ExpressionNode.cs" />
+    <Compile Include="Parser\Impl\LiteralNode.cs" />
     <Compile Include="Parser\Impl\LValueNode.cs" />
     <Compile Include="Parser\Impl\ParserNode.cs" />
     <Compile Include="Parser\Impl\RootNode.cs" />
