@@ -26,36 +26,18 @@ namespace LaborasLangCompiler.Parser.Impl
             string type = lexerNode.Token.Name;
             if (type == "Declaration" || type == "DeclarationAndAssignment")
             {
-
-                var nodes = parser.FindChildren(new string[] { "Type", "FunctionType", "Symbol", "Function", "Value" }, lexerNode);
-                if (!nodes.ContainsKey("Symbol"))
-                    throw new ParseException("Symbol not found in declaration");
-                string name = parser.GetNodeValue(nodes["Symbol"]);
-                if(nodes.ContainsKey("Type"))
+                try
                 {
-                    symbol = parent.AddSymbol(parser.ParseType(nodes["Type"]), name);
+                    var declaredType = parser.ParseType(lexerNode.Children[0]);
+                    var name = parser.GetNodeValue(lexerNode.Children[1]);
+                    symbol = parent.AddSymbol(declaredType, name);
+                    if (type == "DeclarationAndAssignment")
+                        initializer = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
                 }
-                else if (nodes.ContainsKey("FunctionType"))
+                catch(Exception e)
                 {
-                    symbol = parent.AddSymbol(parser.ParseType(nodes["FunctionType"]), name);
+                    throw new ParseException("Failed to parse declaration " + parser.GetNodeValue(lexerNode), e);
                 }
-                else
-                {
-                    throw new ParseException("Type not defined in declaration");
-                }
-
-                AstNode init = null;
-                if (nodes.ContainsKey("Value"))
-                {
-                    init = nodes["Value"];
-                }
-                else if (nodes.ContainsKey("Function"))
-                {
-                    init = nodes["Function"];
-                }
-
-                if (init != null)
-                    initializer = ExpressionNode.Parse(parser, parent, init);
             }
             else
             {
