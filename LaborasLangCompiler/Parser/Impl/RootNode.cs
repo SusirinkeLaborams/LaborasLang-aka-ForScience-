@@ -13,7 +13,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class RootNode : CodeBlockNode
     {
         private TypeEmitter fileClass;
-        public RootNode(Parser parser) : base(null)
+        protected RootNode(Parser parser) : base(null)
         {
             fileClass = new TypeEmitter(parser.Assembly, parser.Filename);
         }

@@ -14,7 +14,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override NodeType Type { get { return NodeType.SymbolDeclaration; } }
         public ILValueNode DeclaredSymbol { get; private set; }
         public IExpressionNode Initializer { get; private set; }
-        public SymbolDeclarationNode(ILValueNode symbol, IExpressionNode init)
+        private SymbolDeclarationNode(ILValueNode symbol, IExpressionNode init)
         {
             DeclaredSymbol = symbol;
             Initializer = init;

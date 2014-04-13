@@ -11,7 +11,6 @@ namespace LaborasLangCompiler.Parser.Impl
     abstract class ParserNode : IParserNode
     {
         public abstract NodeType Type { get; }
-
         public static ParserNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
         {
             switch (lexerNode.Token.Name)

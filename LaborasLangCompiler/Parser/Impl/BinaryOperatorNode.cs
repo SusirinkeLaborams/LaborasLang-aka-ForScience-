@@ -13,7 +13,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public abstract IExpressionNode RightOperand { get; }
         public abstract IExpressionNode LeftOperand { get; }
         public abstract BinaryOperatorNodeType BinaryOperatorType { get; }
-
         public static new ExpressionNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
         {
             if (lexerNode.Children.Count == 1)

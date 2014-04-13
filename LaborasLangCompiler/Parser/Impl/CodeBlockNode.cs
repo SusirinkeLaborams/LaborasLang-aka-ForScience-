@@ -17,13 +17,12 @@ namespace LaborasLangCompiler.Parser.Impl
         protected List<IParserNode> nodes;
         protected Dictionary<string, LValueNode> symbols;
         private CodeBlockNode parent;
-        public CodeBlockNode(CodeBlockNode parent) 
+        protected CodeBlockNode(CodeBlockNode parent) 
         {
             nodes = new List<IParserNode>();
             symbols = new Dictionary<string, LValueNode>();
             this.parent = parent;
         }
-
         public LValueNode GetSymbol(string name)
         {
             //check node table
