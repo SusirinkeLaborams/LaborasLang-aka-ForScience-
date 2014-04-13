@@ -24,6 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static new LiteralNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
         {
+            lexerNode = lexerNode.Children[0];
             string type = lexerNode.Token.Name;
             string value = parser.GetNodeValue(lexerNode);
             try
