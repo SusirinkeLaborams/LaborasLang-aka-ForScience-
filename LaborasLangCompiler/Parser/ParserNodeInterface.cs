@@ -59,13 +59,13 @@ namespace LaborasLangCompiler.Parser.Tree
 
     interface IFunctionNode : IRValueNode
     {
+        IExpressionNode ObjectInstance { get; }
         MethodReference Function { get; }
     }
 
     interface IMethodCallNode : IRValueNode
     {
         IReadOnlyList<IExpressionNode> Arguments { get; }
-        IExpressionNode ObjectInstance { get; }
         IExpressionNode Function { get; }
     }
 

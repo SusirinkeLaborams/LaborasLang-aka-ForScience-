@@ -475,7 +475,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             var tempLocation = Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
             compilerArgs = CompilerArguments.Parse(new[] { "dummy.il", "/out:" + tempLocation });
             assemblyRegistry = new AssemblyRegistry(compilerArgs.References);
-            assemblyEmitter = new AssemblyEmitter(compilerArgs);
+            assemblyEmitter = new AssemblyEmitter(compilerArgs, assemblyRegistry);
             typeEmitter = new TypeEmitter(assemblyEmitter, "klass");
         }
 

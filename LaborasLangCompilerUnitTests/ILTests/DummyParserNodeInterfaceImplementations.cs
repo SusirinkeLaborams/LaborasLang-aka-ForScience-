@@ -26,6 +26,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public RValueNodeType RValueType { get { return RValueNodeType.Function; } }
 
         public TypeReference ReturnType { get { return Function.ReturnType; } }
+        public IExpressionNode ObjectInstance { get; set; }
         public MethodReference Function { get; set; }
     }
 
@@ -39,7 +40,6 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
         public TypeReference ReturnType { get; set; }
         public IExpressionNode Function { get; set; }
-        public IExpressionNode ObjectInstance { get; set; }
 
         public IReadOnlyList<IExpressionNode> Arguments
         {

@@ -19,8 +19,8 @@ namespace LaborasLangCompiler.FrontEnd
             {
                 var compilerArgs = CompilerArguments.Parse(args);
                 var lexer = new Lexer();
-                var assembly = new AssemblyEmitter(compilerArgs);
                 var assemblyRegistry = new AssemblyRegistry(compilerArgs.References);
+                var assembly = new AssemblyEmitter(compilerArgs, assemblyRegistry);
                 
                 foreach (var file in compilerArgs.SourceFiles)
                 {
@@ -62,7 +62,7 @@ namespace LaborasLangCompiler.FrontEnd
         static void EmitHelloWorld(CompilerArguments compilerArgs)
         {
             var assemblyRegistry = new AssemblyRegistry(compilerArgs.References);
-            var assembly = new AssemblyEmitter(compilerArgs);
+            var assembly = new AssemblyEmitter(compilerArgs, assemblyRegistry);
             var type = new TypeEmitter(assembly, "Laboras");
             var method = new MethodEmitter(assemblyRegistry, type, "Main", assemblyRegistry.GetType("System.Void"), MethodAttributes.Static | MethodAttributes.Private);
 
@@ -75,7 +75,7 @@ namespace LaborasLangCompiler.FrontEnd
         static void Test(CompilerArguments compilerArgs)
         {
             var assemblyRegistry = new AssemblyRegistry(compilerArgs.References);
-            var assembly = new AssemblyEmitter(compilerArgs);
+            var assembly = new AssemblyEmitter(compilerArgs, assemblyRegistry);
             var type = new TypeEmitter(assembly, "Laboras");
             var method = new MethodEmitter(assemblyRegistry, type, "Main", assemblyRegistry.GetType("System.Void"), MethodAttributes.Static | MethodAttributes.Private);
 

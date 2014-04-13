@@ -443,21 +443,35 @@ namespace LaborasLangCompiler.ILTools
 
         private void Emit(IMethodCallNode functionCall)
         {
-            if (functionCall.ObjectInstance != null)
-            {
-                Emit(functionCall.ObjectInstance);
-            }
-            foreach (var argument in functionCall.Arguments)
-            {
-                Emit(argument);
-            }
-
             var function = functionCall.Function;
-
+            
             if (function.ExpressionType == ExpressionNodeType.RValue && ((IRValueNode)function).RValueType == RValueNodeType.Function)
             {
-                var callableFunction = ((IFunctionNode)function).Function;
-                Call(Import(callableFunction));
+                var functionNode = (IFunctionNode)function;
+                bool isStatic = functionNode.Function.Resolve().IsStatic;
+
+                if (functionNode.ObjectInstance != null)
+                {
+                    if (!isStatic)
+                    {
+                        Emit(functionNode.ObjectInstance);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Method is static but there is an object instance set!", "functionCall.Function.ObjectInstance");
+                    }
+                }
+                else if (!isStatic)
+                {
+                    throw new ArgumentNullException("Method is not static but there is no object instance set!", "functionCall.Function.ObjectInstance");
+                }
+
+                foreach (var argument in functionCall.Arguments)
+                {
+                    Emit(argument);
+                }
+
+                Call(Import(functionNode.Function));
             }
             else
             {

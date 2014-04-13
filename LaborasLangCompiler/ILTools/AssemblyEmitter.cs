@@ -17,7 +17,7 @@ namespace LaborasLangCompiler.ILTools
 
         public string OutputPath { get { return outputPath; } }
 
-        public AssemblyEmitter(CompilerArguments compilerArgs, Version version = null)
+        public AssemblyEmitter(CompilerArguments compilerArgs, AssemblyRegistry registry, Version version = null)
         {
             if (version == null)
             {
@@ -32,17 +32,13 @@ namespace LaborasLangCompiler.ILTools
             };
 
             assemblyDefinition = AssemblyDefinition.CreateAssembly(assemblyName, Path.GetFileName(compilerArgs.OutputPath), moduleParameters);
+            registry.RegisterAssembly(assemblyDefinition);
             outputPath = compilerArgs.OutputPath;
         }
 
         public void AddType(TypeDefinition type)
         {
             assemblyDefinition.MainModule.Types.Add(type);
-        }
-
-        public void AddToRegistry(AssemblyRegistry registy)
-        {
-            registy.RegisterAssembly(assemblyDefinition);
         }
 
         public TypeReference ImportType(Type type)
