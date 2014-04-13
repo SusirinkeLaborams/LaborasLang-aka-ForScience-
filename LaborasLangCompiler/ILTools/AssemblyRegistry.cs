@@ -19,6 +19,7 @@ namespace LaborasLangCompiler.ILTools
         {
             assemblyPaths = new HashSet<string>();
             assemblies = new List<AssemblyDefinition>();
+            functorTypes = new Dictionary<string, TypeDefinition>();
         }
 
         public AssemblyRegistry(IEnumerable<string> references) : this()
@@ -47,12 +48,11 @@ namespace LaborasLangCompiler.ILTools
             {
                 return;
             }
-
-            assemblyPaths.Add(reference);
-
+            
             try
             {
                 assemblies.Add(AssemblyDefinition.ReadAssembly(reference));
+                assemblyPaths.Add(reference);
             }
             catch (Exception e)
             {
