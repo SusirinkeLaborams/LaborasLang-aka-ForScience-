@@ -15,15 +15,16 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
         public abstract LValueNodeType LValueType { get; }
-
-        public static new LValueNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
+        public static new LValueNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             if(lexerNode.Token.Name == "Symbol")
             {
                 var value = parser.GetNodeValue(lexerNode);
-                var instance = parent.GetSymbol(value);
+                LValueNode instance = null;
+                if(parentBlock != null)
+                    instance = parentBlock.GetSymbol(value);
                 if(instance == null)
-                    parser.Root.GetSymbol(value);
+                    instance = parentClass.GetField(value);
                 if (instance != null)
                     return instance;
                 else
@@ -59,12 +60,35 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.Field; } }
         public IExpressionNode ObjectInstance { get; private set; }
-        public FieldDefinition Field { get; private set; }
-        public override TypeReference ReturnType { get { return Field.FieldType; } }
+        public FieldDefinition Field { get; protected set; }
+        public override TypeReference ReturnType { get { return InnerType; } }
+        public TypeReference InnerType { get; set; }
+        public string Name { get; protected set; }
         public FieldNode(ExpressionNode instance, FieldDefinition field)
         {
             ObjectInstance = instance;
             Field = field;
+            InnerType = field.FieldType;
+        }
+        public FieldNode(string name, TypeReference type)
+        {
+            Name = name;
+            InnerType = type;
+        }
+
+    }
+    class FieldDeclarationNode : FieldNode
+    {
+        public IExpressionNode Initializer { get; set; }
+        public FieldDeclarationNode(string name, TypeReference type) : base(name, type)
+        {
+        }
+        public FieldDefinition CreateFieldDefinition()
+        {
+            if (InnerType != null)
+                return Field = new FieldDefinition(Name, FieldAttributes.Private | FieldAttributes.Static, InnerType);
+            else
+                throw new TypeException("Cannot create a field without a declared type");
         }
     }
 

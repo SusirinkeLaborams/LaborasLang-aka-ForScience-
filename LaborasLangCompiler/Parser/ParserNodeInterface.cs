@@ -16,7 +16,8 @@ namespace LaborasLangCompiler.Parser.Tree
         CodeBlockNode,
         ConditionBlock,
         WhileBlock,
-        ImportNode
+        ImportNode,
+        ClassNode
     }
     interface IParserNode
     {

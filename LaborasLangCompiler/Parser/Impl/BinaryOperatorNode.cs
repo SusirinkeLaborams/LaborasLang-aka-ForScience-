@@ -13,10 +13,10 @@ namespace LaborasLangCompiler.Parser.Impl
         public abstract IExpressionNode RightOperand { get; }
         public abstract IExpressionNode LeftOperand { get; }
         public abstract BinaryOperatorNodeType BinaryOperatorType { get; }
-        public static new ExpressionNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
+        public static new ExpressionNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             if (lexerNode.Children.Count == 1)
-                return ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
+                return ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
             else
                 throw new NotImplementedException("Not parsing binary operators");
         }

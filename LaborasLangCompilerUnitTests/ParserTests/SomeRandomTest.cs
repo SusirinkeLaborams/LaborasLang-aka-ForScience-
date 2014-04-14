@@ -29,8 +29,10 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             var registry = new AssemblyRegistry(compilerArgs.References);
             var assembly = new AssemblyEmitter(compilerArgs, registry);
-            string source = "int a = 5; \nint b = a;";
+            string source = "auto a = 5; \nint b = a;";
             var bytes = SourceReader.ReadSource(source);
+            //var tree = lexer.MakeTree(bytes);
+            //TreeSerializer.Serialize(path + "test.xml", tree);
             var tree = TreeSerializer.Deserialize(path + "test.xml");
             Parser parser = new Parser(assembly, registry, tree, bytes, "test");
         }

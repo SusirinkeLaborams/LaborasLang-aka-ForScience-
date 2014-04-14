@@ -16,7 +16,7 @@ namespace LaborasLangCompiler.Parser
     {
         public AssemblyRegistry Registry { get; private set; }
         public AssemblyEmitter Assembly { get; private set; }
-        public CodeBlockNode Root { get; set; }
+        public ClassNode Root { get; set; }
         public string Filename { get; private set; }
         private ByteInputIterator source;
         public IReadOnlyDictionary<string, TypeReference> Primitives { get; private set; }
@@ -32,9 +32,10 @@ namespace LaborasLangCompiler.Parser
             primitives.Add("int", Registry.GetType("System.Int32"));
             primitives.Add("float", Registry.GetType("System.Single"));
             primitives.Add("string", Registry.GetType("System.String"));
+            primitives.Add("auto", null);
             Primitives = primitives;
 
-            RootNode.Parse(this, null, tree);
+            ClassNode.Parse(this, null, null, tree);
         }
         public string GetNodeValue(AstNode node)
         {
@@ -80,6 +81,18 @@ namespace LaborasLangCompiler.Parser
             {
                 throw new NotImplementedException("Only parsing primitives");
             }
+        }
+        public static bool CompareTypes(TypeReference first, TypeReference second)
+        {
+            if (first.Name != second.Name)
+                return false;
+            if (first.Namespace != second.Namespace)
+                return false;
+            string firstName = first.Scope is ModuleDefinition ? first.Module.Assembly.Name.FullName : first.FullName;
+            string secondName = second.Scope is ModuleDefinition ? second.Module.Assembly.Name.FullName : second.FullName;
+            if (firstName != secondName)
+                return false;
+            return true;
         }
     }
 }

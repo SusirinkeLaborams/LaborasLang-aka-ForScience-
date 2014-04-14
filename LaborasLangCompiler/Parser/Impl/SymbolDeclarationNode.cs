@@ -19,7 +19,7 @@ namespace LaborasLangCompiler.Parser.Impl
             DeclaredSymbol = symbol;
             Initializer = init;
         }
-        public static new SymbolDeclarationNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
+        public static new SymbolDeclarationNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             ILValueNode symbol = null;
             IExpressionNode initializer = null;
@@ -30,9 +30,9 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     var declaredType = parser.ParseType(lexerNode.Children[0]);
                     var name = parser.GetNodeValue(lexerNode.Children[1]);
-                    symbol = parent.AddSymbol(declaredType, name);
+                    symbol = parentBlock.AddSymbol(declaredType, name);
                     if (type == "DeclarationAndAssignment")
-                        initializer = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
+                        initializer = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
                 }
                 catch(Exception e)
                 {
