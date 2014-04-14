@@ -26,7 +26,7 @@ namespace LaborasLangCompiler.FrontEnd
                 {
                     var bytes = FileReader.Read(file);
                     var tree = lexer.MakeTree(bytes);
-                    var parser = new Parser.Parser(assembly, assemblyRegistry, tree, bytes, file);
+                    var parser = new Parser.Parser(assembly, assemblyRegistry, tree, bytes, System.IO.Path.GetFileNameWithoutExtension(file));
                     PrintAst(tree, 1, bytes);
 
                 }

@@ -18,6 +18,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
     public class SomeRandomTest : TestBase
     {
         private CompilerArguments compilerArgs;
+        private const string path = @"..\..\ParserTests\SerializedLexerTrees\";
         [TestInitialize]
         public void Init()
         {
@@ -30,9 +31,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             var assembly = new AssemblyEmitter(compilerArgs, registry);
             string source = "int a = 5; \nint b = a;";
             var bytes = SourceReader.ReadSource(source);
-            var tree = lexer.MakeTree(bytes);
-            TreeSerializer.Serialize("test.xml", tree);
-            tree = TreeSerializer.Deserialize("test.xml");
+            var tree = TreeSerializer.Deserialize(path + "test.xml");
             Parser parser = new Parser(assembly, registry, tree, bytes, "test");
         }
     }
