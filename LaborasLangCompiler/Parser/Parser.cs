@@ -60,6 +60,12 @@ namespace LaborasLangCompiler.Parser
             }
             return ret;
         }
+        /// <summary>
+        /// Parses node as a type
+        /// </summary>
+        /// <param name="typeNode">The node to parse</param>
+        /// <returns>Mono.Cecil.TypeReference</returns>
+        /// <exception cref="TypeException">If the type is not a .NET primitive</exception>
         public TypeReference ParseType(AstNode typeNode)
         {
             if(typeNode.Children.Count == 1)
@@ -68,7 +74,7 @@ namespace LaborasLangCompiler.Parser
                 if (Primitives.ContainsKey(type))
                     return Primitives[type];
                 else
-                    throw new SymbolNotFoundException("Type " + type + " is not a primitive .NET type");
+                    throw new TypeException("Type " + type + " is not a primitive .NET type");
             }
             else
             {

@@ -74,6 +74,7 @@
     <Compile Include="Parser\Exceptions\ParseException.cs" />
     <Compile Include="Parser\Exceptions\SymbolAlreadyDeclaredException.cs" />
     <Compile Include="Parser\Exceptions\SymbolNotFoundException.cs" />
+    <Compile Include="Parser\Exceptions\TypeException.cs" />
     <Compile Include="Parser\Impl\BinaryOperatorNode.cs" />
     <Compile Include="Parser\Impl\CodeBlockNode.cs" />
     <Compile Include="Parser\Impl\ExpressionNode.cs" />
