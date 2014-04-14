@@ -11,5 +11,12 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
         public abstract RValueNodeType RValueType { get; }
+        public override bool Equals(ParserNode obj)
+        {
+            if (!(obj is RValueNode))
+                return false;
+            var that = (RValueNode)obj;
+            return base.Equals(obj) && RValueType == that.RValueType;
+        }
     }
 }

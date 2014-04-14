@@ -45,14 +45,33 @@ namespace LaborasLangCompiler.Parser.Impl
             return symbols[name];
         }
 
-        public static new CodeBlockNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
+        public static new CodeBlockNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
-            var instance = new CodeBlockNode(parent);
+            var instance = new CodeBlockNode(parentBlock);
             foreach(var node in lexerNode.Children)
             {
-                instance.nodes.Add(ParserNode.Parse(parser, instance, node));
+                instance.nodes.Add(ParserNode.Parse(parser, parentClass, instance, node));
             }
             return instance;
+        }
+
+        public override bool Equals(ParserNode obj)
+        {
+            if (!(obj is CodeBlockNode))
+                return false;
+            var that = (CodeBlockNode)obj;
+
+            if (parent != null && that.parent != null)
+            {
+                if (!parent.Equals(that.parent))
+                    return false;
+            }
+            else
+            {
+                if (parent != null || that.parent != null)
+                    return false;
+            }
+            return base.Equals(obj) && nodes.SequenceEqual(that.nodes) && symbols.OrderBy(k => k.Key).SequenceEqual(that.symbols.OrderBy(k => k.Key));
         }
     }
 }

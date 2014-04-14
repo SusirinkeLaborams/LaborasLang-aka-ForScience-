@@ -87,12 +87,15 @@
     <Compile Include="ILTests\Disassembler.cs" />
     <Compile Include="ILTests\DummyParserNodeInterfaceImplementations.cs" />
     <Compile Include="ILTests\MethodBodyTests\MethodBodyTests.cs" />
+    <Compile Include="TestBase.cs" />
     <Compile Include="LexerTests\ExpectedTree.cs" />
     <Compile Include="LexerTests\LiteralTokenTest.cs" />
     <Compile Include="LexerTests\FunctionTests.cs" />
     <Compile Include="LexerTests\LoopTests.cs" />
+    <Compile Include="ParserTests\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LexerTests\MathOperationsTest.cs" />
+    <Compile Include="Utilities\SourceReader.cs" />
     <Compile Include="Utilities\TreeSerializer.cs" />
   </ItemGroup>
   <ItemGroup>

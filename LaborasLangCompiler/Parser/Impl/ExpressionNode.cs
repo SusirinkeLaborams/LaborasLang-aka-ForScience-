@@ -14,24 +14,34 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.Expression; } }
         public abstract ExpressionNodeType ExpressionType { get; }
-        public abstract TypeReference ReturnType { get; }
-        public static new ExpressionNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
+        public abstract TypeReference ReturnType { get; set; }
+        public static new ExpressionNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             switch (lexerNode.Token.Name)
             {
                 case "Symbol":
-                    return LValueNode.Parse(parser, parent, lexerNode);
+                    return LValueNode.Parse(parser, parentClass, parentBlock, lexerNode);
                 case "Literal":
-                    return LiteralNode.Parse(parser, parent, lexerNode);
+                    return LiteralNode.Parse(parser, parentClass, parentBlock, lexerNode);
                 case "Value":
-                    return ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
+                    return ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
                 case "Sum":
-                    goto case "Product";
                 case "Product":
-                    return BinaryOperatorNode.Parse(parser, parent, lexerNode);
+                    return BinaryOperatorNode.Parse(parser, parentClass, parentBlock, lexerNode);
                 default:
                     throw new NotImplementedException();
             }
+        }
+        public override bool Equals(ParserNode obj)
+        {
+            if (!(obj is ExpressionNode))
+                return false;
+            var that = (ExpressionNode)obj;
+            return base.Equals(obj) && ExpressionType == that.ExpressionType && Parser.CompareTypes(ReturnType, that.ReturnType);
+        }
+        public override string Print()
+        {
+            return String.Format("(ExpressionNode: {0} {1})", ExpressionType, ReturnType);
         }
     }
 }

@@ -19,7 +19,7 @@ namespace LaborasLangCompiler.Parser.Impl
             DeclaredSymbol = symbol;
             Initializer = init;
         }
-        public static new SymbolDeclarationNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
+        public static new SymbolDeclarationNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             ILValueNode symbol = null;
             IExpressionNode initializer = null;
@@ -30,9 +30,18 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     var declaredType = parser.ParseType(lexerNode.Children[0]);
                     var name = parser.GetNodeValue(lexerNode.Children[1]);
-                    symbol = parent.AddSymbol(declaredType, name);
                     if (type == "DeclarationAndAssignment")
-                        initializer = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
+                        initializer = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
+                    if (declaredType == null && initializer == null)
+                        throw new TypeException("Type inference requires initialization");
+                    if(initializer != null)
+                    {
+                        if (declaredType == null)
+                            declaredType = initializer.ReturnType;
+                        else if(!Parser.CompareTypes(declaredType, initializer.ReturnType))
+                            throw new TypeException("Type mismatch, type " + declaredType.FullName + " initialized with " + initializer.ReturnType.FullName);
+                    }
+                    symbol = parentBlock.AddSymbol(declaredType, name);
                 }
                 catch(Exception e)
                 {
@@ -44,6 +53,23 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new ParseException("Declaration expected, " + lexerNode.Token.Name + " received");
             }
             return new SymbolDeclarationNode(symbol, initializer);
+        }
+        public override bool Equals(ParserNode obj)
+        {
+            if (!(obj is SymbolDeclarationNode))
+                return false;
+            var that = (SymbolDeclarationNode)obj;
+            if (Initializer != null && that.Initializer != null)
+            {
+                if (!Initializer.Equals(that.Initializer))
+                    return false;
+            }
+            else
+            {
+                if (Initializer != null || that.Initializer != null)
+                    return false;
+            }
+            return base.Equals(obj) && DeclaredSymbol.Equals(that.DeclaredSymbol);
         }
     }
 }

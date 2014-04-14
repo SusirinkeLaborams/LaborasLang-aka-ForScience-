@@ -2,27 +2,69 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NPEG;
 using LaborasLangCompiler.LexingTools;
+using LaborasLangCompilerUnitTests.ILTests;
 
 namespace LaborasLangCompilerUnitTests.LexerTests
 {
     [TestClass]
-    public class FunctionTests
+    public class FunctionTests : TestBase
     {
-        Lexer Lexer;
-        [TestInitialize]
-        public void Initialize()
-        {
-            this.Lexer = new Lexer();
-        }
-
         [TestMethod]
         public void DeclareFunctionTest()
         {
             var source = @"int(int, bool) foo;";
-            AstNode tree = Lexer.MakeTree(source);
+            AstNode tree = lexer.MakeTree(source);
 
             Assert.IsNotNull(tree);
             string expected = "Root: Sentence: (Declaration: (FunctionType: (Type: Symbol, ArgumentTypes: (Type: Symbol, Type: Symbol)), Symbol), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void AssignFunctionTest_NoArguments()
+        {
+            var source = @"foo = int() { bar(); };";
+            AstNode tree = lexer.MakeTree(source);
+
+            Assert.IsNotNull(tree);
+            string expected = "Root: Sentence: (Assignment: (Symbol, Function: (NamedFunctionType: Type: Symbol, CodeBlock: Sentence: (FunctionCall: FullSymbol: Symbol, EndOfSentence))), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void AssignFunctionTest_OneArgument()
+        {
+            var source = @"foo = int(int a) { bar(); };";
+            AstNode tree = lexer.MakeTree(source);
+
+            Assert.IsNotNull(tree);
+            string expected = "Root: Sentence: (Assignment: (Symbol, Function: (NamedFunctionType: (Type: Symbol, FunctionArgumentDeclaration: (Type: Symbol, Symbol)), CodeBlock: Sentence: (FunctionCall: FullSymbol: Symbol, EndOfSentence))), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void AssignFunctionTest_TwoArguments()
+        {
+            var source = @"foo = int(int a, float c) { bar(); };";
+            AstNode tree = lexer.MakeTree(source);
+
+            Assert.IsNotNull(tree);
+            string expected = "Root: Sentence: (Assignment: (Symbol, Function: (NamedFunctionType: (Type: Symbol, FunctionArgumentDeclaration: (Type: Symbol, Symbol), FunctionArgumentDeclaration: (Type: Symbol, Symbol)), CodeBlock: Sentence: (FunctionCall: FullSymbol: Symbol, EndOfSentence))), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void AssignFunctionTest_MultipleArguments()
+        {
+            var source = @"foo = int(int a, float c, float d,  float d2) { bar(); };";
+            AstNode tree = lexer.MakeTree(source);
+
+            Assert.IsNotNull(tree);
+            string expected = "Root: Sentence: (Assignment: (Symbol, Function: (NamedFunctionType: (Type: Symbol, FunctionArgumentDeclaration: (Type: Symbol, Symbol), FunctionArgumentDeclaration: (Type: Symbol, Symbol), FunctionArgumentDeclaration: (Type: Symbol, Symbol), FunctionArgumentDeclaration: (Type: Symbol, Symbol)), CodeBlock: Sentence: (FunctionCall: FullSymbol: Symbol, EndOfSentence))), EndOfSentence)";
             string actual = AstHelper.Stringify(tree);
             Assert.AreEqual(expected, actual);
         }
