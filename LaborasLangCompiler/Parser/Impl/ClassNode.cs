@@ -148,7 +148,9 @@ namespace LaborasLangCompiler.Parser.Impl
             StringBuilder builder = new StringBuilder("(ClassNode: Fields: ");
             foreach(var field in fields)
             {
-                builder.Append(String.Format("{0}{1} {2} = {3}", delim, field.Value.ReturnType.FullName, field.Key, field.Value.Initializer.Print()));
+                builder.Append(String.Format("{0}{1} {2}", delim, field.Value.ReturnType.FullName, field.Key));
+                if (field.Value.Initializer != null)
+                    builder.Append(" = ").Append(field.Value.Initializer.Print());
                 delim = ", ";
             }
             builder.Append(" Methods: ");

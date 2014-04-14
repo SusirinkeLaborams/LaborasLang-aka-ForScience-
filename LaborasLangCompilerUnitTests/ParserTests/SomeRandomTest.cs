@@ -30,13 +30,13 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             var registry = new AssemblyRegistry(compilerArgs.References);
             var assembly = new AssemblyEmitter(compilerArgs, registry);
-            string source = "auto a = 5; \nint b = a;";
+            string source = "auto a = 5; \nint b;";
             var bytes = SourceReader.ReadSource(source);
             //var tree = lexer.MakeTree(bytes);
             //TreeSerializer.Serialize(path + "test.xml", tree);
             var tree = TreeSerializer.Deserialize(path + "test.xml");
             Parser parser = new Parser(assembly, registry, tree, bytes, "test");
-            string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b = (LValueNode: Field System.Int32) Methods: )";
+            string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b Methods: )";
             string parsed = parser.Root.Print();
             Assert.AreEqual(expected, parsed);
         }
