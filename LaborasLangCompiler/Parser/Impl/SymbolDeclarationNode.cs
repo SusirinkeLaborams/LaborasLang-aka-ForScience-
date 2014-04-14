@@ -30,9 +30,18 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     var declaredType = parser.ParseType(lexerNode.Children[0]);
                     var name = parser.GetNodeValue(lexerNode.Children[1]);
-                    symbol = parentBlock.AddSymbol(declaredType, name);
                     if (type == "DeclarationAndAssignment")
                         initializer = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
+                    if (declaredType == null && initializer == null)
+                        throw new TypeException("Type inference requires initialization");
+                    if(initializer != null)
+                    {
+                        if (declaredType == null)
+                            declaredType = initializer.ReturnType;
+                        else if(!Parser.CompareTypes(declaredType, initializer.ReturnType))
+                            throw new TypeException("Type mismatch, type " + declaredType.FullName + " initialized with " + initializer.ReturnType.FullName);
+                    }
+                    symbol = parentBlock.AddSymbol(declaredType, name);
                 }
                 catch(Exception e)
                 {
