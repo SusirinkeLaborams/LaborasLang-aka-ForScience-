@@ -21,5 +21,12 @@ namespace LaborasLangCompiler.Parser.Impl
                     throw new NotImplementedException();
             }
         }
+        public virtual bool Equals(ParserNode obj)
+        {
+            if (Type != obj.Type)
+                return false;
+
+            return true;
+        }
     }
 }

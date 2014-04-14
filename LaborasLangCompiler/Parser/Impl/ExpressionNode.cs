@@ -32,5 +32,12 @@ namespace LaborasLangCompiler.Parser.Impl
                     throw new NotImplementedException();
             }
         }
+        public override bool Equals(ParserNode obj)
+        {
+            if (!(obj is ExpressionNode))
+                return false;
+            var that = (ExpressionNode)obj;
+            return base.Equals(obj) && ExpressionType == that.ExpressionType && Parser.CompareTypes(ReturnType, that.ReturnType);
+        }
     }
 }

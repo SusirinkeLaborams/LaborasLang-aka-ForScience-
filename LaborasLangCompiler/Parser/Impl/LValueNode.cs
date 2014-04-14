@@ -32,6 +32,14 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             throw new NotImplementedException();
         }
+        public override bool Equals(ParserNode obj)
+        {
+            if (!(obj is LValueNode))
+                return false;
+            var that = (LValueNode)obj;
+
+            return base.Equals(obj) && LValueType == that.LValueType;
+        }
     }
 
     class LocalVariableNode : LValueNode, ILocalVariableNode
@@ -76,7 +84,23 @@ namespace LaborasLangCompiler.Parser.Impl
             Name = name;
             ReturnType = type;
         }
-
+        public override bool Equals(ParserNode obj)
+        {
+            if (!(obj is FieldNode))
+                return false;
+            var that = (FieldNode)obj;
+            if (ObjectInstance != null && that.ObjectInstance != null)
+            {
+                if (!ObjectInstance.Equals(that.ObjectInstance))
+                    return false;
+            }
+            else
+            {
+                if (ObjectInstance != null || that.ObjectInstance != null)
+                    return false;
+            }
+            return base.Equals(obj) && Name == that.Name;
+        }
     }
     class FieldDeclarationNode : FieldNode
     {
@@ -84,12 +108,29 @@ namespace LaborasLangCompiler.Parser.Impl
         public FieldDeclarationNode(string name, TypeReference type) : base(name, type)
         {
         }
-        public FieldDefinition CreateFieldDefinition()
+        public FieldDefinition CreateFieldDefinition(FieldAttributes attributes)
         {
             if (ReturnType != null)
-                return Field = new FieldDefinition(Name, FieldAttributes.Private | FieldAttributes.Static, ReturnType);
+                return Field = new FieldDefinition(Name, attributes, ReturnType);
             else
                 throw new TypeException("Cannot create a field without a declared type");
+        }
+        public override bool Equals(ParserNode obj)
+        {
+            if (!(obj is FieldDeclarationNode))
+                return false;
+            var that = (FieldDeclarationNode)obj;
+            if (Initializer != null && that.Initializer != null)
+            {
+                if (!Initializer.Equals(that.Initializer))
+                    return false;
+            }
+            else
+            {
+                if (Initializer != null || that.Initializer != null)
+                    return false;
+            }
+            return base.Equals(obj);
         }
     }
 

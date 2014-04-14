@@ -54,5 +54,24 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return instance;
         }
+
+        public override bool Equals(ParserNode obj)
+        {
+            if (!(obj is CodeBlockNode))
+                return false;
+            var that = (CodeBlockNode)obj;
+
+            if (parent != null && that.parent != null)
+            {
+                if (!parent.Equals(that.parent))
+                    return false;
+            }
+            else
+            {
+                if (parent != null || that.parent != null)
+                    return false;
+            }
+            return base.Equals(obj) && nodes.SequenceEqual(that.nodes) && symbols.OrderBy(k => k.Key).SequenceEqual(that.symbols.OrderBy(k => k.Key));
+        }
     }
 }

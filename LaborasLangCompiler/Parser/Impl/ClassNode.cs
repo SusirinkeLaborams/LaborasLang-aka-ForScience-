@@ -18,7 +18,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private List<IFunctionNode> methods;
         private ClassNode parent;
         private TypeEmitter typeEmitter;
-        private ClassNode(Parser parser, ClassNode parent)
+        private ClassNode(Parser parser = null, ClassNode parent = null)
         {
             this.parent = parent;
             methods = new List<IFunctionNode>();
@@ -99,7 +99,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         goto case "Declaration";
                     case "Declaration":
                         field = instance.fields[parser.GetNodeValue(sentence.Children[1])];
-                        field.CreateFieldDefinition();
+                        field.CreateFieldDefinition(FieldAttributes.Static | FieldAttributes.Private);
                         instance.typeEmitter.AddField(field.Field);
                         //TODO: Add init
                         break;
@@ -120,31 +120,27 @@ namespace LaborasLangCompiler.Parser.Impl
                 klass.AddField(name, declaredType);
         }
 
-        /*public static new SymbolDeclarationNode Parse(Parser parser, CodeBlockNode parent, AstNode lexerNode)
+        public override bool Equals(ParserNode obj)
         {
-            ILValueNode symbol = null;
-            IExpressionNode initializer = null;
-            string type = lexerNode.Token.Name;
-            if (type == "Declaration" || type == "DeclarationAndAssignment")
+            if (!(obj is ClassNode))
+                return false;
+
+            var that = (ClassNode)obj;
+
+            if (!(base.Equals(obj) && fields.SequenceEqual(that.fields) && methods.SequenceEqual(that.methods)))
+                return false;
+
+            if (parent != null && that.parent != null)
             {
-                try
-                {
-                    var declaredType = parser.ParseType(lexerNode.Children[0]);
-                    var name = parser.GetNodeValue(lexerNode.Children[1]);
-                    symbol = parent.AddSymbol(declaredType, name);
-                    if (type == "DeclarationAndAssignment")
-                        initializer = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
-                }
-                catch (Exception e)
-                {
-                    throw new ParseException("Failed to parse declaration " + parser.GetNodeValue(lexerNode), e);
-                }
+                if (!parent.Equals(that.parent))
+                    return false;
             }
             else
             {
-                throw new ParseException("Declaration expected, " + lexerNode.Token.Name + " received");
+                if (parent != null || that.parent != null)
+                    return false;
             }
-            return new SymbolDeclarationNode(symbol, initializer);
-        }*/
+            return true;
+        }
     }
 }

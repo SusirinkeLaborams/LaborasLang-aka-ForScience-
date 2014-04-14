@@ -49,5 +49,12 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new ParseException("Could not fit " + value + " in " + type, e);
             }
         }
+        public override bool Equals(ParserNode obj)
+        {
+            if (!(obj is LiteralNode))
+                return false;
+            var that = (LiteralNode)obj;
+            return base.Equals(obj) && Value == that.Value;
+        }
     }
 }
