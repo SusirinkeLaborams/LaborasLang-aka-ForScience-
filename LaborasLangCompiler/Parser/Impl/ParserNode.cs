@@ -28,5 +28,9 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return true;
         }
+        public virtual string Print()
+        {
+            return "";
+        }
     }
 }

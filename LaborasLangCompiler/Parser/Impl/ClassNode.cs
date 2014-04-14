@@ -18,7 +18,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private List<IFunctionNode> methods;
         private ClassNode parent;
         private TypeEmitter typeEmitter;
-        private ClassNode(Parser parser = null, ClassNode parent = null)
+        private ClassNode(Parser parser, ClassNode parent)
         {
             this.parent = parent;
             methods = new List<IFunctionNode>();
@@ -84,7 +84,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 switch (sentence.Token.Name)
                 {
                     case "DeclarationAndAssignment":
-                        IExpressionNode init = ExpressionNode.Parse(parser, instance, null, sentence.Children[2]);
+                        ExpressionNode init = ExpressionNode.Parse(parser, instance, null, sentence.Children[2]);
                         field = instance.fields[parser.GetNodeValue(sentence.Children[1])];
                         field.Initializer = init;
                         if (field.ReturnType == null)
@@ -141,6 +141,25 @@ namespace LaborasLangCompiler.Parser.Impl
                     return false;
             }
             return true;
+        }
+        public override string Print()
+        {
+            string delim = "";
+            StringBuilder builder = new StringBuilder("(ClassNode: Fields: ");
+            foreach(var field in fields)
+            {
+                builder.Append(String.Format("{0}{1} {2} = {3}", delim, field.Value.ReturnType.FullName, field.Key, field.Value.Initializer.Print()));
+                delim = ", ";
+            }
+            builder.Append(" Methods: ");
+            delim = "";
+            foreach(var method in methods)
+            {
+                builder.Append(String.Format("{0}{1}", delim, method.ReturnType.FullName));
+                delim = ", ";
+            }
+            
+            return builder.Append(")").ToString();
         }
     }
 }

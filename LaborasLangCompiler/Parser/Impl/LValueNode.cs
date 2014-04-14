@@ -40,6 +40,10 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return base.Equals(obj) && LValueType == that.LValueType;
         }
+        public override string Print()
+        {
+            return String.Format("(LValueNode: {0} {1})", LValueType, ReturnType);
+        }
     }
 
     class LocalVariableNode : LValueNode, ILocalVariableNode
@@ -104,7 +108,7 @@ namespace LaborasLangCompiler.Parser.Impl
     }
     class FieldDeclarationNode : FieldNode
     {
-        public IExpressionNode Initializer { get; set; }
+        public ExpressionNode Initializer { get; set; }
         public FieldDeclarationNode(string name, TypeReference type) : base(name, type)
         {
         }

@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NPEG;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,6 +36,9 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             //TreeSerializer.Serialize(path + "test.xml", tree);
             var tree = TreeSerializer.Deserialize(path + "test.xml");
             Parser parser = new Parser(assembly, registry, tree, bytes, "test");
+            string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b = (LValueNode: Field System.Int32) Methods: )";
+            string parsed = parser.Root.Print();
+            Assert.AreEqual(expected, parsed);
         }
     }
 }

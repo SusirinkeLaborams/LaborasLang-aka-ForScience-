@@ -56,5 +56,9 @@ namespace LaborasLangCompiler.Parser.Impl
             var that = (LiteralNode)obj;
             return base.Equals(obj) && Value == that.Value;
         }
+        public override string Print()
+        {
+            return "(Literal: " + ReturnType.FullName + " " + Value + ")";
+        }
     }
 }
