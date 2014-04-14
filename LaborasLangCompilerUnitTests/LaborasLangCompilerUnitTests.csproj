@@ -92,7 +92,7 @@
     <Compile Include="LexerTests\LiteralTokenTest.cs" />
     <Compile Include="LexerTests\FunctionTests.cs" />
     <Compile Include="LexerTests\LoopTests.cs" />
-    <Compile Include="ParserTests\SomeRandomTest.cs" />
+    <Compile Include="ParserTests\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="LexerTests\MathOperationsTest.cs" />
     <Compile Include="Utilities\SourceReader.cs" />
