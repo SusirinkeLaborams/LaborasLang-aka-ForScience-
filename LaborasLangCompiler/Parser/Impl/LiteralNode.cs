@@ -15,11 +15,10 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.Literal; } }
         public dynamic Value { get; private set; }
-        public override TypeReference ReturnType { get { return returnType; } }
-        private TypeReference returnType;
+        public override TypeReference ReturnType { get; set; }
         private LiteralNode(dynamic value, TypeReference type)
         {
-            returnType = type;
+            ReturnType = type;
             Value = value;
         }
         public static new LiteralNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)

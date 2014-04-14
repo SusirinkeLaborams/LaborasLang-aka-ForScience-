@@ -14,7 +14,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.Expression; } }
         public abstract ExpressionNodeType ExpressionType { get; }
-        public abstract TypeReference ReturnType { get; }
+        public abstract TypeReference ReturnType { get; set; }
         public static new ExpressionNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             switch (lexerNode.Token.Name)

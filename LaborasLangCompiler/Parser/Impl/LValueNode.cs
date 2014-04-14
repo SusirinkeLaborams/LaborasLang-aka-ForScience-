@@ -37,43 +37,44 @@ namespace LaborasLangCompiler.Parser.Impl
     class LocalVariableNode : LValueNode, ILocalVariableNode
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.LocalVariable; } }
-        public VariableDefinition LocalVariable { get; private set; }
-        public override TypeReference ReturnType { get { return LocalVariable.VariableType; } }
+        public VariableDefinition LocalVariable { get; set; }
+        public override TypeReference ReturnType { get; set; }
         public LocalVariableNode(VariableDefinition variable)
         {
             LocalVariable = variable;
+            ReturnType = variable.VariableType;
         }
     }
 
     class FunctionArgumentNode : LValueNode, IFunctionArgumentNode
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.FunctionArgument; } }
-        public ParameterDefinition Param { get; private set; }
-        public override TypeReference ReturnType { get { return Param.ParameterType; } }
+        public ParameterDefinition Param { get; set; }
+        public override TypeReference ReturnType { get; set; }
         public FunctionArgumentNode(ParameterDefinition param)
         {
             Param = param;
+            ReturnType = param.ParameterType;
         }
     }
 
     class FieldNode : LValueNode, IFieldNode
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.Field; } }
-        public IExpressionNode ObjectInstance { get; private set; }
-        public FieldDefinition Field { get; protected set; }
-        public override TypeReference ReturnType { get { return InnerType; } }
-        public TypeReference InnerType { get; set; }
-        public string Name { get; protected set; }
+        public IExpressionNode ObjectInstance { get; set; }
+        public FieldDefinition Field { get; set; }
+        public override TypeReference ReturnType { get; set; }
+        public string Name { get; set; }
         public FieldNode(ExpressionNode instance, FieldDefinition field)
         {
             ObjectInstance = instance;
             Field = field;
-            InnerType = field.FieldType;
+            ReturnType = field.FieldType;
         }
         public FieldNode(string name, TypeReference type)
         {
             Name = name;
-            InnerType = type;
+            ReturnType = type;
         }
 
     }
@@ -85,8 +86,8 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public FieldDefinition CreateFieldDefinition()
         {
-            if (InnerType != null)
-                return Field = new FieldDefinition(Name, FieldAttributes.Private | FieldAttributes.Static, InnerType);
+            if (ReturnType != null)
+                return Field = new FieldDefinition(Name, FieldAttributes.Private | FieldAttributes.Static, ReturnType);
             else
                 throw new TypeException("Cannot create a field without a declared type");
         }

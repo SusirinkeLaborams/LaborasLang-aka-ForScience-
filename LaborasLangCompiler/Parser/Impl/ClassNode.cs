@@ -87,14 +87,14 @@ namespace LaborasLangCompiler.Parser.Impl
                         IExpressionNode init = ExpressionNode.Parse(parser, instance, null, sentence.Children[2]);
                         field = instance.fields[parser.GetNodeValue(sentence.Children[1])];
                         field.Initializer = init;
-                        if (field.InnerType == null)
+                        if (field.ReturnType == null)
                         {
-                            field.InnerType = init.ReturnType;
+                            field.ReturnType = init.ReturnType;
                         }
                         else
                         {
-                            if (!Parser.CompareTypes(field.InnerType, init.ReturnType))
-                                throw new TypeException("Type mismatch, field " + field.Name + " type " + field.InnerType.FullName + " initialized with " + init.ReturnType.FullName);
+                            if (!Parser.CompareTypes(field.ReturnType, init.ReturnType))
+                                throw new TypeException("Type mismatch, field " + field.Name + " type " + field.ReturnType.FullName + " initialized with " + init.ReturnType.FullName);
                         }
                         goto case "Declaration";
                     case "Declaration":
