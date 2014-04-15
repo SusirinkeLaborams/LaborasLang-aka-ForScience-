@@ -59,7 +59,7 @@ namespace LaborasLangCompiler.ILTools.Types
             typeDefinition.Methods.Add(method);
         }
 
-        public void AddField(FieldDefinition field, IExpressionNode initializer)
+        public void AddField(FieldDefinition field, IExpressionNode initializer = null)
         {
             CheckForDuplicates(field.Name);
             typeDefinition.Fields.Add(field);
@@ -77,7 +77,7 @@ namespace LaborasLangCompiler.ILTools.Types
             }
         }
 
-        public void AddProperty(PropertyDefinition property, IExpressionNode initializer)
+        public void AddProperty(PropertyDefinition property, IExpressionNode initializer = null)
         {
             if (property.SetMethod == null && property.GetMethod == null)
             {
