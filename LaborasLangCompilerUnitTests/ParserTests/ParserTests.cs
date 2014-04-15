@@ -60,7 +60,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             {
                 tree = TreeSerializer.Deserialize(path + name + ".xml");
             }
-            Parser parser = new Parser(assembly, registry, tree, bytes, "test");
+            Parser parser = new Parser(assembly, tree, bytes, "test");
             string result = parser.Root.Print();
             Assert.AreEqual(expected, result);
         }
