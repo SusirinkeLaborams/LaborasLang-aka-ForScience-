@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.LexingTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -17,7 +18,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public abstract LValueNodeType LValueType { get; }
         public static new LValueNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
-            if(lexerNode.Token.Name == "Symbol")
+            if(lexerNode.Token.Name == Lexer.Symbol)
             {
                 var value = parser.GetNodeValue(lexerNode);
                 LValueNode instance = null;
@@ -30,7 +31,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 else
                     throw new SymbolNotFoundException("Symbol " + value + " not found");
             }
-            throw new NotImplementedException();
+            else
+            {
+                throw new NotImplementedException("Only parsing simple symbols");
+            }
         }
         public override bool Equals(ParserNode obj)
         {

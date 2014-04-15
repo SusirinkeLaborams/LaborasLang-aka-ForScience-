@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.ILTools.Types;
+using LaborasLangCompiler.LexingTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -58,17 +59,17 @@ namespace LaborasLangCompiler.Parser.Impl
             //declarations
             foreach (var node in lexerNode.Children)
             {
-                if (node.Token.Name == "Sentence")
+                if (node.Token.Name == Lexer.Sentence)
                 {
                     sentence = node.Children[0];
                     switch (sentence.Token.Name)
                     {
-                        case "NamespaceImport":
+                        case Lexer.NamespaceImport:
                             throw new NotImplementedException();
-                        case "Declaration":
+                        case Lexer.Declaration:
                             ParseDeclaration(parser, instance, sentence, false);
                             break;
-                        case "DeclarationAndAssignment":
+                        case Lexer.DeclarationAndAssignment:
                             ParseDeclaration(parser, instance, sentence, true);
                             break;
                         default:
@@ -88,7 +89,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 sentence = node.Children[0];
                 switch (sentence.Token.Name)
                 {
-                    case "DeclarationAndAssignment":
+                    case Lexer.DeclarationAndAssignment:
                         ExpressionNode init = ExpressionNode.Parse(parser, instance, null, sentence.Children[2]);
                         field = instance.fields[parser.GetNodeValue(sentence.Children[1])];
                         field.Initializer = init;
@@ -101,8 +102,8 @@ namespace LaborasLangCompiler.Parser.Impl
                             if (!Parser.CompareTypes(field.ReturnType, init.ReturnType))
                                 throw new TypeException("Type mismatch, field " + field.Name + " type " + field.ReturnType.FullName + " initialized with " + init.ReturnType.FullName);
                         }
-                        goto case "Declaration";
-                    case "Declaration":
+                        goto case Lexer.Declaration;
+                    case Lexer.Declaration:
                         field = instance.fields[parser.GetNodeValue(sentence.Children[1])];
                         field.CreateFieldDefinition(FieldAttributes.Static | FieldAttributes.Private);
                         instance.typeEmitter.AddField(field.Field);

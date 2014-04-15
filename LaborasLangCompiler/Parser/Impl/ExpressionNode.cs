@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.LexingTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -19,14 +20,14 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             switch (lexerNode.Token.Name)
             {
-                case "Symbol":
+                case Lexer.Symbol:
                     return LValueNode.Parse(parser, parentClass, parentBlock, lexerNode);
-                case "Literal":
+                case Lexer.Literal:
                     return LiteralNode.Parse(parser, parentClass, parentBlock, lexerNode);
-                case "Value":
+                case Lexer.Value:
                     return ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
-                case "Sum":
-                case "Product":
+                case Lexer.Sum:
+                case Lexer.Product:
                     return BinaryOperatorNode.Parse(parser, parentClass, parentBlock, lexerNode);
                 default:
                     throw new NotImplementedException();
