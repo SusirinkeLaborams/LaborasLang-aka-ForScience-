@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser.Exceptions;
+﻿using LaborasLangCompiler.LexingTools;
+using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
 using NPEG;
 using System;
@@ -27,14 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static TypeReference ParseType(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
-            if(lexerNode.Token.Name == "Function")
-            {
-                return FunctionHeader.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]).FunctionType;
-            }
-            else
-            {
-                throw new ParseException("Function expected, " + lexerNode.Token.Name + " received");
-            }
+            return FunctionHeader.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]).FunctionType;
         }
     }
 }

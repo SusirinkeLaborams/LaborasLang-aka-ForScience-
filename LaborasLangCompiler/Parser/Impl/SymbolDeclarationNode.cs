@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.LexingTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -24,13 +25,13 @@ namespace LaborasLangCompiler.Parser.Impl
             ILValueNode symbol = null;
             IExpressionNode initializer = null;
             string type = lexerNode.Token.Name;
-            if (type == "Declaration" || type == "DeclarationAndAssignment")
+            if (type == Lexer.Declaration || type == Lexer.DeclarationAndAssignment)
             {
                 try
                 {
                     var declaredType = parser.ParseType(lexerNode.Children[0]);
                     var name = parser.GetNodeValue(lexerNode.Children[1]);
-                    if (type == "DeclarationAndAssignment")
+                    if (type == Lexer.DeclarationAndAssignment)
                         initializer = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
                     if (declaredType == null && initializer == null)
                         throw new TypeException("Type inference requires initialization");

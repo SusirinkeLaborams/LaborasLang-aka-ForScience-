@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser;
+﻿using LaborasLangCompiler.LexingTools;
+using LaborasLangCompiler.Parser;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             switch (lexerNode.Token.Name)
             {
-                case "CodeBlock":
+                case Lexer.CodeBlock:
                     return CodeBlockNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
                 default:
                     throw new NotImplementedException();

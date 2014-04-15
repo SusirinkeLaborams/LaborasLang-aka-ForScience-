@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser;
+﻿using LaborasLangCompiler.LexingTools;
+using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using NPEG;
 using System;
@@ -26,8 +27,8 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 switch (lexerNode.Token.Name)
                 {
-                    case "Sum":
-                    case "Product":
+                    case Lexer.Sum:
+                    case Lexer.Product:
                         return ArithmeticOperatorNode.Parse(parser, parentClass, parentBlock, lexerNode);
                     default:
                         throw new NotImplementedException("Only parsing Sum and Product");

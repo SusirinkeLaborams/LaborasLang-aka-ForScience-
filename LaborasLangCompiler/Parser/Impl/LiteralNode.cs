@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.LexingTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -30,11 +31,11 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 switch (type)
                 {
-                    case "StringLiteral":
+                    case Lexer.StringLiteral:
                         return new LiteralNode(value, parser.Primitives["string"]);
-                    case "IntegerLiteral":
+                    case Lexer.IntegerLiteral:
                         return new LiteralNode(Convert.ToInt32(value), parser.Primitives["int"]);
-                    case "FloatLiteral":
+                    case Lexer.FloatLiteral:
                         return new LiteralNode(Convert.ToSingle(value, CultureInfo.InvariantCulture.NumberFormat), parser.Primitives["float"]);
                     default:
                         throw new ParseException("Literal expected, " + type + " received");
