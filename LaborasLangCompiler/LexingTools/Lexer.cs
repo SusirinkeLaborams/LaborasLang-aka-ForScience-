@@ -41,10 +41,7 @@ namespace LaborasLangCompiler.LexingTools
         public const string Condition = "Condition";
         public const string TrueBlock = "TrueBlock";
         public const string FalseBlock = "FalseBlock";
-        public const string Condition = "Condition";
-        public const string TrueBlock = "TrueBlock";
         public const string Loop = "Loop";
-        public const string Condition = "Condition";
         public const string EndOfSentence = "EndOfSentence";
         public const string Sentence = "Sentence";
         public const string CodeBlock = "CodeBlock";
