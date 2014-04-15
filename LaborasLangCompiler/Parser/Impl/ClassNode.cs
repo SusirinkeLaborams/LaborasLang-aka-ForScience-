@@ -16,19 +16,23 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.ClassNode; } }
         private Dictionary<string, FieldDeclarationNode> fields;
-        private List<IFunctionNode> methods;
+        private List<FunctionDeclarationNode> methods;
         private ClassNode parent;
         private TypeEmitter typeEmitter;
         private ClassNode(Parser parser, ClassNode parent)
         {
             this.parent = parent;
-            methods = new List<IFunctionNode>();
+            methods = new List<FunctionDeclarationNode>();
             fields = new Dictionary<string, FieldDeclarationNode>();
             typeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
         private void AddField(string name, TypeReference type)
         {
             fields.Add(name, new FieldDeclarationNode(name, type));
+        }
+        private void AddMethod(FunctionDeclarationNode method)
+        {
+            methods.Add(method);
         }
         public FieldNode GetField(string name)
         {

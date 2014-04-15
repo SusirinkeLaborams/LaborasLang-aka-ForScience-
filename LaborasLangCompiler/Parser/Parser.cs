@@ -31,6 +31,7 @@ namespace LaborasLangCompiler.Parser
             primitives.Add("int", Registry.GetType("System.Int32"));
             primitives.Add("float", Registry.GetType("System.Single"));
             primitives.Add("string", Registry.GetType("System.String"));
+            primitives.Add("void", Registry.GetType("System.Void"));
             primitives.Add("auto", null);
             Primitives = primitives;
 
