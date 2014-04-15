@@ -42,6 +42,28 @@ namespace LaborasLangCompiler.ILTools
             throw new NotSupportedException("Type is not an integer!");
         }
 
+        public static float GetFloatWidth(TypeReference type)
+        {
+            var typeName = type.FullName;
+
+            if (typeName == "System.Single")
+            {
+                return 4;
+            }
+
+            if (typeName == "System.Double")
+            {
+                return 8;
+            }
+
+            if (typeName == "System.Decimal")
+            {
+                return 16;
+            }
+
+            throw new NotSupportedException("Type is not a float!");
+        }
+
         public static bool IsSignedInteger(this TypeReference type)
         {
             return SignedIntegerTypes.Any(x => x == type.FullName);
