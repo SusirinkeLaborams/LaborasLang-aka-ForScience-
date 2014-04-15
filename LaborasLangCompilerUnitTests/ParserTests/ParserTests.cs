@@ -31,7 +31,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         public void TypeExceptionTest()
         {
             string source = "int a = 0.0;";
-            string expected = "(ClassNode: Fields: System.Single a = (Literal: System.Single 0) Methods: )";
+            string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Single 0) Methods: )";
             try
             {
                 TestParser(source, expected, "TypeFailure", false);
