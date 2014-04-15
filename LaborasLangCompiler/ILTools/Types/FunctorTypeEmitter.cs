@@ -12,17 +12,15 @@ namespace LaborasLangCompiler.ILTools.Types
     {
         private const TypeAttributes FunctorTypeAttributes = TypeAttributes.SequentialLayout | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
 
-        public static TypeDefinition Create(AssemblyRegistry assemblyRegistry, AssemblyEmitter assembly,
-            TypeReference returnType, IReadOnlyList<TypeReference> arguments)
+        public static TypeDefinition Create(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
         {
-            return new FunctorTypeEmitter(assemblyRegistry, assembly, returnType, arguments).typeDefinition;
+            return new FunctorTypeEmitter(assembly, returnType, arguments).typeDefinition;
         }
 
-        private FunctorTypeEmitter(AssemblyRegistry assemblyRegistry, AssemblyEmitter assembly,
-            TypeReference returnType, IReadOnlyList<TypeReference> arguments) :
-            base(assembly, ComputeName(returnType, arguments), "$Functors", FunctorTypeAttributes, assemblyRegistry.GetType("System.ValueType"))
+        private FunctorTypeEmitter(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments) :
+            base(assembly, ComputeName(returnType, arguments), "$Functors", FunctorTypeAttributes, AssemblyRegistry.GetType("System.ValueType"))
         {
-            var delegateType = DelegateEmitter.Create(assemblyRegistry, assembly, typeDefinition, returnType, arguments);
+            var delegateType = DelegateEmitter.Create(assembly, typeDefinition, returnType, arguments);
             typeDefinition.NestedTypes.Add(delegateType);
 
             var objectInstanceField = new FieldDefinition("objectInstance", FieldAttributes.Private | FieldAttributes.InitOnly,
@@ -34,9 +32,9 @@ namespace LaborasLangCompiler.ILTools.Types
             typeDefinition.Fields.Add(objectInstanceField);
             typeDefinition.Fields.Add(functionPtrField);
 
-            FunctorMethodEmitter.EmitConstructor(assemblyRegistry, this, objectInstanceField, functionPtrField);
-            FunctorMethodEmitter.EmitInvoke(assemblyRegistry, this, objectInstanceField, functionPtrField, returnType, arguments);
-            FunctorMethodEmitter.EmitAsDelegate(assemblyRegistry, this, delegateType, objectInstanceField, functionPtrField);
+            FunctorMethodEmitter.EmitConstructor(this, objectInstanceField, functionPtrField);
+            FunctorMethodEmitter.EmitInvoke(this, objectInstanceField, functionPtrField, returnType, arguments);
+            FunctorMethodEmitter.EmitAsDelegate(this, delegateType, objectInstanceField, functionPtrField);
         }
 
         private static string ComputeName(TypeReference returnType, IReadOnlyList<TypeReference> arguments)

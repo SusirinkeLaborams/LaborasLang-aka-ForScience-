@@ -13,25 +13,23 @@ namespace LaborasLangCompiler.Parser
 {
     class Parser
     {
-        public AssemblyRegistry Registry { get; private set; }
         public AssemblyEmitter Assembly { get; private set; }
         public ClassNode Root { get; set; }
         public string Filename { get; private set; }
         private ByteInputIterator source;
         public IReadOnlyDictionary<string, TypeReference> Primitives { get; private set; }
-        public Parser(AssemblyEmitter assembly, AssemblyRegistry registry, AstNode tree, ByteInputIterator source, string filename)
+        public Parser(AssemblyEmitter assembly, AstNode tree, ByteInputIterator source, string filename)
         {
-            Registry = registry;
             Assembly = assembly;
             this.source = source;
             Filename = filename;
 
             var primitives = new Dictionary<string, TypeReference>();
-            primitives.Add("bool", Registry.GetType("System.Boolean"));
-            primitives.Add("int", Registry.GetType("System.Int32"));
-            primitives.Add("float", Registry.GetType("System.Single"));
-            primitives.Add("string", Registry.GetType("System.String"));
-            primitives.Add("void", Registry.GetType("System.Void"));
+            primitives.Add("bool", AssemblyRegistry.GetType("System.Boolean"));
+            primitives.Add("int", AssemblyRegistry.GetType("System.Int32"));
+            primitives.Add("float", AssemblyRegistry.GetType("System.Single"));
+            primitives.Add("string", AssemblyRegistry.GetType("System.String"));
+            primitives.Add("void", AssemblyRegistry.GetType("System.Void"));
             primitives.Add("auto", null);
             Primitives = primitives;
 

@@ -21,15 +21,14 @@ namespace LaborasLangCompiler.ILTools
         private TypeReference asyncResultType;
         private TypeReference asyncCallbackType;
 
-        public static TypeDefinition Create(AssemblyRegistry assemblyRegistry, AssemblyEmitter assembly, TypeDefinition declaringType, 
+        public static TypeDefinition Create(AssemblyEmitter assembly, TypeDefinition declaringType, 
             TypeReference returnType, IReadOnlyList<TypeReference> arguments) 
         {
-            return new DelegateEmitter(assemblyRegistry, assembly, declaringType, returnType, arguments).typeDefinition;
+            return new DelegateEmitter(assembly, declaringType, returnType, arguments).typeDefinition;
         }
 
-        private DelegateEmitter(AssemblyRegistry assemblyRegistry, AssemblyEmitter assembly, TypeDefinition declaringType,
-            TypeReference returnType, IReadOnlyList<TypeReference> arguments) :
-            base(assembly, ComputeName(returnType, arguments), "", DelegateTypeAttributes, assemblyRegistry.GetType("System.MulticastDelegate"), false)
+        private DelegateEmitter(AssemblyEmitter assembly, TypeDefinition declaringType, TypeReference returnType, IReadOnlyList<TypeReference> arguments) :
+            base(assembly, ComputeName(returnType, arguments), "", DelegateTypeAttributes, AssemblyRegistry.GetType("System.MulticastDelegate"), false)
         {
             if (declaringType == null)
             {

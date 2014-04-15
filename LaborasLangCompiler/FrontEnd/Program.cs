@@ -21,19 +21,17 @@ namespace LaborasLangCompiler.FrontEnd
             {
                 var compilerArgs = CompilerArguments.Parse(args);
                 var lexer = new Lexer();
-                var assemblyRegistry = new AssemblyRegistry(compilerArgs.References);
-                var assembly = new AssemblyEmitter(compilerArgs, assemblyRegistry);
+                AssemblyRegistry.Create(compilerArgs.References);
+                var assembly = new AssemblyEmitter(compilerArgs);
                 
                 foreach (var file in compilerArgs.SourceFiles)
                 {
                     var bytes = FileReader.Read(file);
                     var tree = lexer.MakeTree(bytes);
-                    var parser = new Parser.Parser(assembly, assemblyRegistry, tree, bytes, System.IO.Path.GetFileNameWithoutExtension(file));
+                    var parser = new Parser.Parser(assembly, tree, bytes, System.IO.Path.GetFileNameWithoutExtension(file));
                     PrintAst(tree, 1, bytes);
 
                 }
-
-                Test(compilerArgs);
             }
             catch (Exception e)
             {
@@ -60,32 +58,6 @@ namespace LaborasLangCompiler.FrontEnd
                 }
                 PrintAst(child, depth + 1, tokens);
             }
-        }
-
-        static void EmitHelloWorld(CompilerArguments compilerArgs)
-        {
-            var assemblyRegistry = new AssemblyRegistry(compilerArgs.References);
-            var assembly = new AssemblyEmitter(compilerArgs, assemblyRegistry);
-            var type = new TypeEmitter(assembly, "Laboras");
-            var method = new MethodEmitter(assemblyRegistry, type, "Main", assemblyRegistry.GetType("System.Void"), MethodAttributes.Static | MethodAttributes.Private);
-
-            method.EmitHelloWorld();
-            method.SetAsEntryPoint();
-
-            assembly.Save();
-        }
-
-        static void Test(CompilerArguments compilerArgs)
-        {
-            var assemblyRegistry = new AssemblyRegistry(compilerArgs.References);
-            var assembly = new AssemblyEmitter(compilerArgs, assemblyRegistry);
-            var type = new TypeEmitter(assembly, "Laboras");
-            var method = new MethodEmitter(assemblyRegistry, type, "Main", assemblyRegistry.GetType("System.Void"), MethodAttributes.Static | MethodAttributes.Private);
-
-            method.EmitTest();
-            method.SetAsEntryPoint();
-
-            assembly.Save();
         }
     }
 }

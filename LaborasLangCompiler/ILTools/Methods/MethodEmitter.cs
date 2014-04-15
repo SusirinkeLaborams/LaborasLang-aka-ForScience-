@@ -13,15 +13,13 @@ namespace LaborasLangCompiler.ILTools.Methods
         private MethodBody body;
         private ILProcessor ilProcessor;
 
-        protected AssemblyRegistry assemblyRegistry;
         protected ModuleDefinition module;
 
         public bool Parsed { get; private set; }
 
-        public MethodEmitter(AssemblyRegistry assemblyRegistry, TypeEmitter declaringType, string name, TypeReference returnType, 
+        public MethodEmitter(TypeEmitter declaringType, string name, TypeReference returnType, 
                                 MethodAttributes methodAttributes = MethodAttributes.Private)
         {
-            this.assemblyRegistry = assemblyRegistry;
             module = declaringType.Module;
 
             methodDefinition = new MethodDefinition(name, methodAttributes, Import(returnType));
@@ -609,7 +607,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Box(right.ReturnType);
             }
 
-            var concatMethod = (from x in assemblyRegistry.GetMethods("System.String", "Concat")
+            var concatMethod = (from x in AssemblyRegistry.GetMethods("System.String", "Concat")
                                 where x.Parameters.Count == 2
                                         && x.Parameters[0].ParameterType.FullName == "System.Object"
                                         && x.Parameters[1].ParameterType.FullName == "System.Object"
@@ -1264,31 +1262,5 @@ namespace LaborasLangCompiler.ILTools.Methods
         }
 
         #endregion
-
-        #region Emit Hello World
-
-        public void EmitHelloWorld()
-        {
-            var console = assemblyRegistry.GetType("System.Console");
-
-            var consoleWriteLine = Import(assemblyRegistry.GetMethods(console, "WriteLine")
-                           .Where(x => x.Parameters.Count == 1 && x.Parameters[0].ParameterType.FullName == "System.String").Single());
-            var consoleReadLine = Import(assemblyRegistry.GetMethods(console, "ReadLine").Where(x => x.Parameters.Count == 0).Single());
-
-            Ldstr("Hello, world!");
-            Call(consoleWriteLine);
-            Call(consoleReadLine);
-
-            Pop();
-            Ret();
-
-            Parsed = true;
-        }
-
-        #endregion
-
-        public void EmitTest()
-        {
-        }
     }
 }

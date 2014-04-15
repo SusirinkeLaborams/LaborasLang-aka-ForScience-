@@ -1,4 +1,5 @@
-﻿using Mono.Cecil;
+﻿using LaborasLangCompiler.ILTools;
+using Mono.Cecil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 types.Add(arg.ReturnType);
             }
             instance.Args = args;
-            instance.FunctionType = parser.Registry.GetType(parser.Assembly, instance.ReturnType, types);
+            instance.FunctionType = AssemblyRegistry.GetType(parser.Assembly, instance.ReturnType, types);
             return instance;
         }
         public static FunctionArgumentNode ParseArgument(Parser parser, AstNode lexerNode)

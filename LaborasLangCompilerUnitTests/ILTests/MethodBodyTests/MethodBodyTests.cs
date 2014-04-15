@@ -24,7 +24,6 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         private ICodeBlockNode BodyCodeBlock { get; set; }
 
         private CompilerArguments compilerArgs;
-        private AssemblyRegistry assemblyRegistry;
         private TypeEmitter typeEmitter;
         private AssemblyEmitter assemblyEmitter;
 
@@ -53,14 +52,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     {
                         Function = new FunctionNode()
                         {
-                            Function = assemblyRegistry.GetMethods("System.Console", "WriteLine")
+                            Function = AssemblyRegistry.GetMethods("System.Console", "WriteLine")
                                             .Single(x => x.Parameters.Count == 1 && x.Parameters[0].ParameterType.FullName == "System.String")
                         },
                         Arguments = new List<IExpressionNode>(new IExpressionNode[]
                         {
                             new LiteralNode()
                             {
-                                ReturnType = assemblyRegistry.ImportType(typeof(string)),
+                                ReturnType = AssemblyRegistry.ImportType(typeof(string)),
                                 Value = "Hello, world!"
                             }
                         })
@@ -68,12 +67,12 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = assemblyRegistry.ImportType(typeof(void)),
+                        ReturnType = AssemblyRegistry.ImportType(typeof(void)),
                         Operand = new MethodCallNode()
                         {
                             Function = new FunctionNode()
                             {
-                                Function = assemblyRegistry.GetMethods("System.Console", "ReadKey").Single(x => x.Parameters.Count == 0)
+                                Function = AssemblyRegistry.GetMethods("System.Console", "ReadKey").Single(x => x.Parameters.Count == 0)
                             },
                             Arguments = new List<IExpressionNode>(new IExpressionNode[]
                             {
@@ -100,11 +99,11 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     {
                         DeclaredSymbol = new LocalVariableNode()
                         {
-                            LocalVariable = new VariableDefinition("floatValue", assemblyRegistry.ImportType(typeof(float)))                            
+                            LocalVariable = new VariableDefinition("floatValue", AssemblyRegistry.ImportType(typeof(float)))                            
                         },
                         Initializer = new LiteralNode()
                         {
-                            ReturnType = assemblyRegistry.ImportType(typeof(float)),
+                            ReturnType = AssemblyRegistry.ImportType(typeof(float)),
                             Value = 2.5
                         }
                     }
@@ -118,7 +117,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         [TestMethod]
         public void TestCanEmit_StoreField_LoadIntLiteral()
         {
-            var field = new FieldDefinition("intField", FieldAttributes.Static, assemblyRegistry.ImportType(typeof(int)));
+            var field = new FieldDefinition("intField", FieldAttributes.Static, AssemblyRegistry.ImportType(typeof(int)));
             typeEmitter.AddField(field);
 
             BodyCodeBlock = new CodeBlockNode()
@@ -128,7 +127,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = assemblyRegistry.ImportType(typeof(void)),
+                        ReturnType = AssemblyRegistry.ImportType(typeof(void)),
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new FieldNode()
@@ -137,7 +136,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new LiteralNode()
                             {
-                                ReturnType = assemblyRegistry.ImportType(typeof(int)),
+                                ReturnType = AssemblyRegistry.ImportType(typeof(int)),
                                 Value = 1
                             }
                         }
@@ -152,7 +151,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         [TestMethod]
         public void TestCanEmit_StoreLocalVariable_LoadField()
         {
-            var field = new FieldDefinition("intField", FieldAttributes.Static, assemblyRegistry.ImportType(typeof(int)));
+            var field = new FieldDefinition("intField", FieldAttributes.Static, AssemblyRegistry.ImportType(typeof(int)));
             typeEmitter.AddField(field);
 
             BodyCodeBlock = new CodeBlockNode()
@@ -163,7 +162,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     {
                         DeclaredSymbol = new LocalVariableNode()
                         {
-                            LocalVariable = new VariableDefinition("intLocal", assemblyRegistry.ImportType(typeof(int)))
+                            LocalVariable = new VariableDefinition("intLocal", AssemblyRegistry.ImportType(typeof(int)))
                         },
                         Initializer = new FieldNode()
                         {
@@ -180,15 +179,15 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         [TestMethod]
         public void TestCanEmit_StoreProperty_LoadLocalVariable_LoadArgument_LoadDoubleLiteral()
         {
-            var property = new PropertyDefinition("doubleProperty", PropertyAttributes.HasDefault, assemblyRegistry.ImportType(typeof(double)));
-            var backingField = new FieldDefinition("doubleProperty_backingField", FieldAttributes.Static, assemblyRegistry.ImportType(typeof(double)));
+            var property = new PropertyDefinition("doubleProperty", PropertyAttributes.HasDefault, AssemblyRegistry.ImportType(typeof(double)));
+            var backingField = new FieldDefinition("doubleProperty_backingField", FieldAttributes.Static, AssemblyRegistry.ImportType(typeof(double)));
 
             typeEmitter.AddField(backingField);
 
-            var setter = new MethodEmitter(assemblyRegistry, typeEmitter, "set_doubleProperty", assemblyRegistry.ImportType(typeof(void)),
+            var setter = new MethodEmitter(typeEmitter, "set_doubleProperty", AssemblyRegistry.ImportType(typeof(void)),
                 MethodAttributes.Static | MethodAttributes.Private);
 
-            var argument = setter.AddArgument(assemblyRegistry.ImportType(typeof(double)), "value");
+            var argument = setter.AddArgument(AssemblyRegistry.ImportType(typeof(double)), "value");
             setter.ParseTree(new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>(new IParserNode[]
@@ -196,7 +195,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = assemblyRegistry.ImportType(typeof(void)),
+                        ReturnType = AssemblyRegistry.ImportType(typeof(void)),
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new FieldNode()
@@ -216,7 +215,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             typeEmitter.AddProperty(property);
 
-            var localVariable = new VariableDefinition("doubleLocal", assemblyRegistry.ImportType(typeof(double)));
+            var localVariable = new VariableDefinition("doubleLocal", AssemblyRegistry.ImportType(typeof(double)));
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -230,14 +229,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         },
                         Initializer = new LiteralNode
                         {
-                            ReturnType = assemblyRegistry.ImportType(typeof(double)),
+                            ReturnType = AssemblyRegistry.ImportType(typeof(double)),
                             Value = 5.5
                         }
                     },
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = assemblyRegistry.ImportType(typeof(void)),
+                        ReturnType = AssemblyRegistry.ImportType(typeof(void)),
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new PropertyNode()
@@ -260,9 +259,9 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         [TestMethod]
         public void TestCanEmit_StoreArgument_LoadProperty_LoadStringLiteral()
         {
-            var property = new PropertyDefinition("stringProperty", PropertyAttributes.HasDefault, assemblyRegistry.ImportType(typeof(string)));
+            var property = new PropertyDefinition("stringProperty", PropertyAttributes.HasDefault, AssemblyRegistry.ImportType(typeof(string)));
 
-            var getter = new MethodEmitter(assemblyRegistry, typeEmitter, "get_stringProperty", assemblyRegistry.ImportType(typeof(string)),
+            var getter = new MethodEmitter(typeEmitter, "get_stringProperty", AssemblyRegistry.ImportType(typeof(string)),
                 MethodAttributes.Static | MethodAttributes.Private);
 
             getter.ParseTree(new CodeBlockNode()
@@ -271,7 +270,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new LiteralNode()
                     {
-                        ReturnType = assemblyRegistry.ImportType(typeof(string)),
+                        ReturnType = AssemblyRegistry.ImportType(typeof(string)),
                         Value = "Test"
                     }
                 })
@@ -280,10 +279,10 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             property.GetMethod = getter.Get();
             typeEmitter.AddProperty(property);
 
-            var methodWithArgument = new MethodEmitter(assemblyRegistry, typeEmitter, "TestMethod", assemblyRegistry.ImportType(typeof(void)),
+            var methodWithArgument = new MethodEmitter(typeEmitter, "TestMethod", AssemblyRegistry.ImportType(typeof(void)),
                 MethodAttributes.Static | MethodAttributes.Private);
 
-            var argument = methodWithArgument.AddArgument(assemblyRegistry.ImportType(typeof(string)), "arg");
+            var argument = methodWithArgument.AddArgument(AssemblyRegistry.ImportType(typeof(string)), "arg");
 
             methodWithArgument.ParseTree(new CodeBlockNode()
             {
@@ -292,7 +291,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = assemblyRegistry.ImportType(typeof(void)),
+                        ReturnType = AssemblyRegistry.ImportType(typeof(void)),
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new FunctionArgumentNode()
@@ -322,7 +321,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = assemblyRegistry.ImportType(typeof(string)),
+                                ReturnType = AssemblyRegistry.ImportType(typeof(string)),
                                 Value = "Test"
                             }
                         })
@@ -337,10 +336,10 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         [TestMethod]
         public void TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral()
         {
-            var callableMethod = new MethodEmitter(assemblyRegistry, typeEmitter, "Test", assemblyRegistry.ImportType(typeof(void)),
+            var callableMethod = new MethodEmitter(typeEmitter, "Test", AssemblyRegistry.ImportType(typeof(void)),
                 MethodAttributes.Private | MethodAttributes.Static);
 
-            callableMethod.AddArgument(assemblyRegistry.ImportType(typeof(bool)), "isTrue");
+            callableMethod.AddArgument(AssemblyRegistry.ImportType(typeof(bool)), "isTrue");
             callableMethod.ParseTree(new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
@@ -360,7 +359,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode
                             {
-                                ReturnType = assemblyRegistry.ImportType(typeof(bool)),
+                                ReturnType = AssemblyRegistry.ImportType(typeof(bool)),
                                 Value = true
                             }
                         }
@@ -392,7 +391,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             for (int i = 0; i < count; i++)
             {
                 var field = new FieldDefinition("intField" + i.ToString(), FieldAttributes.Static | FieldAttributes.Private,
-                    assemblyRegistry.ImportType(typeof(int)));
+                    AssemblyRegistry.ImportType(typeof(int)));
                 typeEmitter.AddField(field);
 
                 assignmentNode.LeftOperand = new FieldNode()
@@ -435,7 +434,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         [TestMethod]
         public void TestCanEmit_FunctorDefinition()
         {
-            FunctorTypeEmitter.Create(assemblyRegistry, assemblyEmitter, assemblyRegistry.ImportType(typeof(void)), new List<TypeReference>());
+            FunctorTypeEmitter.Create(assemblyEmitter, AssemblyRegistry.ImportType(typeof(void)), new List<TypeReference>());
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -449,12 +448,12 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         [TestMethod]
         public void TestCanEmit_FunctorWithReturnTypeAndArguments()
         {
-            FunctorTypeEmitter.Create(assemblyRegistry, assemblyEmitter, assemblyRegistry.ImportType(typeof(int)), 
+            FunctorTypeEmitter.Create(assemblyEmitter, AssemblyRegistry.ImportType(typeof(int)), 
                 new List<TypeReference>(new TypeReference[]
                 {
-                    assemblyRegistry.ImportType(typeof(bool)),
-                    assemblyRegistry.ImportType(typeof(float)),
-                    assemblyRegistry.ImportType(typeof(string)),
+                    AssemblyRegistry.ImportType(typeof(bool)),
+                    AssemblyRegistry.ImportType(typeof(float)),
+                    AssemblyRegistry.ImportType(typeof(string)),
                 }));
 
             BodyCodeBlock = new CodeBlockNode()
@@ -476,14 +475,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         {
             var tempLocation = Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
             compilerArgs = CompilerArguments.Parse(new[] { "dummy.il", "/out:" + tempLocation });
-            assemblyRegistry = new AssemblyRegistry(compilerArgs.References);
-            assemblyEmitter = new AssemblyEmitter(compilerArgs, assemblyRegistry);
+            AssemblyRegistry.Create(compilerArgs.References);
+            assemblyEmitter = new AssemblyEmitter(compilerArgs);
             typeEmitter = new TypeEmitter(assemblyEmitter, "klass");
         }
 
         private void Test()
         {
-            var methodEmitter = new MethodEmitter(assemblyRegistry, typeEmitter, "dummy", assemblyRegistry.ImportType(typeof(void)),
+            var methodEmitter = new MethodEmitter(typeEmitter, "dummy", AssemblyRegistry.ImportType(typeof(void)),
                 MethodAttributes.Static | MethodAttributes.Private);
 
             methodEmitter.ParseTree(BodyCodeBlock);

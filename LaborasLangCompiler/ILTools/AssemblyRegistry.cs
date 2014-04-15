@@ -11,6 +11,8 @@ namespace LaborasLangCompiler.ILTools
 {
     internal class AssemblyRegistry
     {
+        private static AssemblyRegistry instance;
+
         private HashSet<string> assemblyPaths;             // Keep assembly paths to prevent from registering single assembly twice
         private List<AssemblyDefinition> assemblies;
         private Dictionary<string, TypeDefinition> functorTypes;
@@ -23,7 +25,8 @@ namespace LaborasLangCompiler.ILTools
             functorTypes = new Dictionary<string, TypeDefinition>();
         }
 
-        public AssemblyRegistry(IEnumerable<string> references) : this()
+        private AssemblyRegistry(IEnumerable<string> references)
+            : this()
         {
             if (!references.Any(x => Path.GetFileName(x) == "mscorlib.dll"))
             {
@@ -35,7 +38,17 @@ namespace LaborasLangCompiler.ILTools
             mscorlib = assemblies.Single(x => x.Name.Name == "mscorlib");
         }
 
-        public void RegisterReferences(IEnumerable<string> references)
+        public static void Create(IEnumerable<string> references)
+        {
+            if (instance != null)
+            {
+                throw new InvalidOperationException("Assembly registry is already created!");
+            }
+
+            instance = new AssemblyRegistry(references);
+        }
+
+        public static void RegisterReferences(IEnumerable<string> references)
         {
             foreach (var reference in references)
             {
@@ -43,17 +56,17 @@ namespace LaborasLangCompiler.ILTools
             }
         }
 
-        public void RegisterReference(string reference)
+        public static void RegisterReference(string reference)
         {
-            if (assemblyPaths.Contains(reference, StringComparer.InvariantCultureIgnoreCase))
+            if (instance.assemblyPaths.Contains(reference, StringComparer.InvariantCultureIgnoreCase))
             {
                 return;
             }
-            
+
             try
             {
-                assemblies.Add(AssemblyDefinition.ReadAssembly(reference));
-                assemblyPaths.Add(reference);
+                instance.assemblies.Add(AssemblyDefinition.ReadAssembly(reference));
+                instance.assemblyPaths.Add(reference);
             }
             catch (Exception e)
             {
@@ -61,20 +74,20 @@ namespace LaborasLangCompiler.ILTools
             }
         }
 
-        public void RegisterAssembly(AssemblyDefinition assemblyDefinition)
+        public static void RegisterAssembly(AssemblyDefinition assemblyDefinition)
         {
-            if (assemblyPaths.Contains(assemblyDefinition.MainModule.Name, StringComparer.InvariantCultureIgnoreCase))
+            if (instance.assemblyPaths.Contains(assemblyDefinition.MainModule.Name, StringComparer.InvariantCultureIgnoreCase))
             {
                 return;
             }
 
-            assemblyPaths.Add(assemblyDefinition.MainModule.Name);
-            assemblies.Add(assemblyDefinition);
+            instance.assemblyPaths.Add(assemblyDefinition.MainModule.Name);
+            instance.assemblies.Add(assemblyDefinition);
         }
 
-        public TypeReference ImportType(Type type)
+        public static TypeReference ImportType(Type type)
         {
-            return mscorlib.MainModule.Import(type);
+            return instance.mscorlib.MainModule.Import(type);
         }
 
         #region Type/Method/Property/Field getters
@@ -101,11 +114,11 @@ namespace LaborasLangCompiler.ILTools
             return null;
         }
 
-        public TypeDefinition GetType(string typeName)
+        public static TypeDefinition GetType(string typeName)
         {
-            foreach (var assembly in assemblies)
+            foreach (var assembly in instance.assemblies)
             {
-                var type = GetType(assembly.MainModule.Types, typeName);
+                var type = instance.GetType(assembly.MainModule.Types, typeName);
 
                 if (type != null)
                 {
@@ -116,29 +129,29 @@ namespace LaborasLangCompiler.ILTools
             return null;
         }
 
-        public TypeDefinition GetType(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
+        public static TypeDefinition GetType(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
         {
             var name = FunctorTypeEmitter.ComputeNameFromReturnAndArgumentTypes(returnType, arguments);
 
-            if (!functorTypes.ContainsKey(name))
+            if (!instance.functorTypes.ContainsKey(name))
             {
-                functorTypes.Add(name, FunctorTypeEmitter.Create(this, assembly, returnType, arguments));
+                instance.functorTypes.Add(name, FunctorTypeEmitter.Create(assembly, returnType, arguments));
             }
 
-            return functorTypes[name];
+            return instance.functorTypes[name];
         }
 
-        public bool TypeIsKnown(string typeName)
+        public static bool TypeIsKnown(string typeName)
         {
             return GetType(typeName) != null;
         }
 
-        public IList<MethodDefinition> GetMethods(string typeName, string methodName)
+        public static IList<MethodDefinition> GetMethods(string typeName, string methodName)
         {
             return GetMethods(GetType(typeName), methodName);
         }
 
-        public IList<MethodDefinition> GetMethods(TypeDefinition type, string methodName)
+        public static IList<MethodDefinition> GetMethods(TypeDefinition type, string methodName)
         {
             if (!type.HasMethods)
             {
@@ -148,12 +161,12 @@ namespace LaborasLangCompiler.ILTools
             return type.Methods.Where(x => x.Name == methodName).ToList<MethodDefinition>();
         }
 
-        public PropertyDefinition GetProperty(string typeName, string propertyName)
+        public static PropertyDefinition GetProperty(string typeName, string propertyName)
         {
             return GetProperty(GetType(typeName), propertyName);
         }
 
-        public PropertyDefinition GetProperty(TypeDefinition type, string propertyName)
+        public static PropertyDefinition GetProperty(TypeDefinition type, string propertyName)
         {
             if (!type.HasProperties)
             {
@@ -163,12 +176,12 @@ namespace LaborasLangCompiler.ILTools
             return type.Properties.SingleOrDefault(x => x.Name == propertyName);
         }
 
-        public FieldDefinition GetField(string typeName, string fieldName)
+        public static FieldDefinition GetField(string typeName, string fieldName)
         {
             return GetField(GetType(fieldName), fieldName);
         }
 
-        public FieldDefinition GetField(TypeDefinition type, string fieldName)
+        public static FieldDefinition GetField(TypeDefinition type, string fieldName)
         {
             if (!type.HasFields)
             {

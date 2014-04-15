@@ -29,8 +29,8 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         private void TestParser(string source, string expected, string name, bool lex)
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
-            var registry = new AssemblyRegistry(compilerArgs.References);
-            var assembly = new AssemblyEmitter(compilerArgs, registry);
+            AssemblyRegistry.Create(compilerArgs.References);
+            var assembly = new AssemblyEmitter(compilerArgs);
             var bytes = SourceReader.ReadSource(source);
             AstNode tree;
             if(lex)
@@ -42,7 +42,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             {
                 tree = TreeSerializer.Deserialize(path + name + ".xml");
             }
-            Parser parser = new Parser(assembly, registry, tree, bytes, "test");
+            Parser parser = new Parser(assembly, tree, bytes, "test");
             Assert.AreEqual(expected, parser.Root.Print());
         }
     }

@@ -13,10 +13,10 @@ namespace LaborasLangCompiler.ILTools.Methods
     {
         #region Factories
 
-        static public MethodDefinition EmitConstructor(AssemblyRegistry assemblyRegistry, TypeEmitter declaringType, 
-            FieldDefinition objectInstanceField, FieldDefinition functionPtrField)
+        static public MethodDefinition EmitConstructor(TypeEmitter declaringType, FieldDefinition objectInstanceField, 
+            FieldDefinition functionPtrField)
         {
-            var definition = new FunctorMethodEmitter(assemblyRegistry, declaringType, ".ctor", assemblyRegistry.ImportType(typeof(void)),
+            var definition = new FunctorMethodEmitter(declaringType, ".ctor", AssemblyRegistry.ImportType(typeof(void)),
                 MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName);
 
             definition.EmitConstructorBody(objectInstanceField, functionPtrField);
@@ -24,20 +24,20 @@ namespace LaborasLangCompiler.ILTools.Methods
             return definition.Get();
         }
 
-        static public MethodDefinition EmitInvoke(AssemblyRegistry assemblyRegistry, TypeEmitter declaringType,
-            FieldDefinition objectInstanceField, FieldDefinition functionPtrField, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
+        static public MethodDefinition EmitInvoke(TypeEmitter declaringType, FieldDefinition objectInstanceField, 
+            FieldDefinition functionPtrField, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
         {
-            var definition = new FunctorMethodEmitter(assemblyRegistry, declaringType, "Invoke", returnType, MethodAttributes.Public);
+            var definition = new FunctorMethodEmitter(declaringType, "Invoke", returnType, MethodAttributes.Public);
 
             definition.EmitInvokeBody(objectInstanceField, functionPtrField, returnType, arguments);
 
             return definition.Get();
         }
 
-        static public MethodDefinition EmitAsDelegate(AssemblyRegistry assemblyRegistry, TypeEmitter declaringType, TypeDefinition delegateType,
+        static public MethodDefinition EmitAsDelegate(TypeEmitter declaringType, TypeDefinition delegateType,
             FieldDefinition objectInstanceField, FieldDefinition functionPtrField)
         {
-            var definition = new FunctorMethodEmitter(assemblyRegistry, declaringType, "AsDelegate", delegateType, MethodAttributes.Public);
+            var definition = new FunctorMethodEmitter(declaringType, "AsDelegate", delegateType, MethodAttributes.Public);
 
             definition.EmitAsDelegate(objectInstanceField, functionPtrField, delegateType);
 
@@ -46,16 +46,15 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #endregion
 
-        private FunctorMethodEmitter(AssemblyRegistry assemblyRegistry, TypeEmitter declaringType, string name,
-            TypeReference returnType, MethodAttributes methodAttributes) :
-            base(assemblyRegistry, declaringType, name, returnType, methodAttributes)
+        private FunctorMethodEmitter(TypeEmitter declaringType, string name, TypeReference returnType, MethodAttributes methodAttributes) :
+            base(declaringType, name, returnType, methodAttributes)
         {
         }
 
         private void EmitConstructorBody(FieldDefinition objectInstanceField, FieldDefinition functionPtrField)
         {
-            var objectInstanceArgument = AddArgument(assemblyRegistry.ImportType(typeof(object)), "objectInstance");
-            var functionPtrArgument = AddArgument(assemblyRegistry.ImportType(typeof(System.IntPtr)), "functionPtr");
+            var objectInstanceArgument = AddArgument(AssemblyRegistry.ImportType(typeof(object)), "objectInstance");
+            var functionPtrArgument = AddArgument(AssemblyRegistry.ImportType(typeof(System.IntPtr)), "functionPtr");
 
             Ldarg(0);
             Ldarg(objectInstanceArgument.Index + 1);

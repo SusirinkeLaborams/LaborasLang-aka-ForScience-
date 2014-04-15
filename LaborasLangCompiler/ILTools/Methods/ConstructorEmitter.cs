@@ -15,9 +15,9 @@ namespace LaborasLangCompiler.ILTools.Methods
         private const MethodAttributes StaticAttributes = MethodAttributes.Private | MethodAttributes.Static | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
         private readonly bool isStatic;
         
-        public ConstructorEmitter(AssemblyRegistry assemblyRegistry, TypeEmitter declaringType, bool isStatic) :
-            base(assemblyRegistry, declaringType, isStatic ? ".cctor" : ".ctor", 
-            assemblyRegistry.ImportType(typeof(void)), isStatic ? InstanceAttributes : StaticAttributes)
+        public ConstructorEmitter(TypeEmitter declaringType, bool isStatic) :
+            base(declaringType, isStatic ? ".cctor" : ".ctor", 
+            AssemblyRegistry.ImportType(typeof(void)), isStatic ? InstanceAttributes : StaticAttributes)
         {
             this.isStatic = isStatic;
         }
