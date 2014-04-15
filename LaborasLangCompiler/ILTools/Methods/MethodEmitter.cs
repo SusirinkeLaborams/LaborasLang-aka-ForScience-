@@ -87,7 +87,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Emitters
 
-        private void Emit(IParserNode node)
+        protected void Emit(IParserNode node)
         {
             switch (node.Type)
             {
@@ -107,7 +107,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Parser node
 
-        private void Emit(ICodeBlockNode codeBlock)
+        protected void Emit(ICodeBlockNode codeBlock)
         {
             foreach (var node in codeBlock.Nodes)
             {
@@ -115,7 +115,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void Emit(IExpressionNode expression)
+        protected void Emit(IExpressionNode expression)
         {
             switch (expression.ExpressionType)
             {
@@ -132,7 +132,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void Emit(ISymbolDeclarationNode symbolDeclaration)
+        protected void Emit(ISymbolDeclarationNode symbolDeclaration)
         {
             switch (symbolDeclaration.DeclaredSymbol.LValueType)
             {
@@ -161,7 +161,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Expression node
 
-        private void Emit(ILValueNode lvalue)
+        protected void Emit(ILValueNode lvalue)
         {
             switch (lvalue.LValueType)
             {
@@ -186,7 +186,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void EmitStore(ILValueNode lvalue)
+        protected void EmitStore(ILValueNode lvalue)
         {
             switch (lvalue.LValueType)
             {
@@ -211,7 +211,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void Emit(IRValueNode rvalue)
+        protected void Emit(IRValueNode rvalue)
         {
             switch (rvalue.RValueType)
             {
@@ -254,7 +254,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Load lvalue node
 
-        private void Emit(IFieldNode field)
+        protected void Emit(IFieldNode field)
         {
             if (!field.Field.IsStatic)
             {
@@ -267,17 +267,17 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void Emit(IFunctionArgumentNode argument)
+        protected void Emit(IFunctionArgumentNode argument)
         {
             Ldarg(argument.Param.Index);
         }
 
-        private void Emit(ILocalVariableNode variable)
+        protected void Emit(ILocalVariableNode variable)
         {
             Ldloc(variable.LocalVariable.Index);
         }
 
-        private void Emit(IPropertyNode property)
+        protected void Emit(IPropertyNode property)
         {
             var getter = property.Property.GetMethod;
 
@@ -298,7 +298,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Store lvalue node
 
-        private void EmitStore(IFieldNode field)
+        protected void EmitStore(IFieldNode field)
         {
             if (!field.Field.IsStatic)
             {
@@ -311,17 +311,17 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void EmitStore(IFunctionArgumentNode argument)
+        protected void EmitStore(IFunctionArgumentNode argument)
         {
             Starg(argument.Param.Index);
         }
 
-        private void EmitStore(ILocalVariableNode variable)
+        protected void EmitStore(ILocalVariableNode variable)
         {
             Stloc(variable.LocalVariable.Index);
         }
 
-        private void EmitStore(IPropertyNode property)
+        protected void EmitStore(IPropertyNode property)
         {
             var setter = property.Property.SetMethod;
 
@@ -344,7 +344,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region RValue node
 
-        private void Emit(IAssignmentOperatorNode assignmentOperator, bool duplicateValueInStack = true)
+        protected void Emit(IAssignmentOperatorNode assignmentOperator, bool duplicateValueInStack = true)
         {
             Emit(assignmentOperator.RightOperand);
 
@@ -356,7 +356,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             EmitStore(assignmentOperator.LeftOperand);
         }
 
-        private void Emit(IBinaryOperatorNode binaryOperator)
+        protected void Emit(IBinaryOperatorNode binaryOperator)
         {
             switch (binaryOperator.BinaryOperatorType)
             {
@@ -443,12 +443,12 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
         
-        private void Emit(IFunctionNode function)
+        protected void Emit(IFunctionNode function)
         {
             Ldftn(function.Function);
         }
 
-        private void Emit(IMethodCallNode functionCall)
+        protected void Emit(IMethodCallNode functionCall)
         {
             var function = functionCall.Function;
             
@@ -486,7 +486,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void Emit(ILiteralNode literal)
+        protected void Emit(ILiteralNode literal)
         {
             switch (literal.ReturnType.FullName)
             {
@@ -515,12 +515,12 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void Emit(IObjectCreationNode objectCreation)
+        protected void Emit(IObjectCreationNode objectCreation)
         {
             throw new NotImplementedException();
         }
 
-        private void Emit(IUnaryOperatorNode unaryOperator)
+        protected void Emit(IUnaryOperatorNode unaryOperator)
         {
             switch (unaryOperator.UnaryOperatorType)
             {
@@ -558,7 +558,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Add emitter
 
-        private void EmitAdd(IBinaryOperatorNode binaryOperator)
+        protected void EmitAdd(IBinaryOperatorNode binaryOperator)
         {
             if (IsAtLeastOneOperandString(binaryOperator))
             {
@@ -570,7 +570,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void EmitAddNumeral(IExpressionNode left, IExpressionNode right)
+        protected void EmitAddNumeral(IExpressionNode left, IExpressionNode right)
         {
             RequireNumeral(left.ReturnType, "Addition requires both operands to be numerals or at least one to be a string");
             RequireNumeral(right.ReturnType, "Addition requires both operands to be numerals or at least one to be a string");
@@ -582,7 +582,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             throw new NotImplementedException("Still need to implement implicit conversions (like int + float)");
         }
 
-        private void EmitAddString(IExpressionNode left, IExpressionNode right)
+        protected void EmitAddString(IExpressionNode left, IExpressionNode right)
         {
             Emit(left);
 
@@ -611,7 +611,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Logical And/Logical Or emitters
 
-        private void EmitLogicalAnd(IBinaryOperatorNode binaryOperator)
+        protected void EmitLogicalAnd(IBinaryOperatorNode binaryOperator)
         {
             RequireBoolean(binaryOperator.LeftOperand.ReturnType, "Logical AND requires both operands to be booleans");
             RequireBoolean(binaryOperator.RightOperand.ReturnType, "Logical AND requires both operands to be booleans");
@@ -619,7 +619,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             throw new NotImplementedException();
         }
 
-        private void EmitLogicalOr(IBinaryOperatorNode binaryOperator)
+        protected void EmitLogicalOr(IBinaryOperatorNode binaryOperator)
         {
             RequireBoolean(binaryOperator.LeftOperand.ReturnType, "Logical OR requires both operands to be booleans");
             RequireBoolean(binaryOperator.RightOperand.ReturnType, "Logical OR requires both operands to be booleans");
@@ -633,7 +633,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Greater equal than emitter
 
-        private void EmitGreaterEqualThan(IBinaryOperatorNode binaryOperator)
+        protected void EmitGreaterEqualThan(IBinaryOperatorNode binaryOperator)
         {
             if (IsAtLeastOneOperandString(binaryOperator))
             {
@@ -645,12 +645,12 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void EmitGreaterEqualThanString(IExpressionNode left, IExpressionNode right)
+        protected void EmitGreaterEqualThanString(IExpressionNode left, IExpressionNode right)
         {
             throw new NotImplementedException();
         }
 
-        private void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right)
+        protected void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             RequireNumeral(left.ReturnType, "Greater equal than requires both operands to be numerals or at least one to be a string");
             RequireNumeral(right.ReturnType, "Greater equal than requires both operands to be numerals or at least one to be a string");
@@ -669,7 +669,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Greater than emitter
 
-        private void EmitGreaterThan(IBinaryOperatorNode binaryOperator)
+        protected void EmitGreaterThan(IBinaryOperatorNode binaryOperator)
         {
             if (IsAtLeastOneOperandString(binaryOperator))
             {
@@ -681,12 +681,12 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void EmitGreaterThanString(IExpressionNode left, IExpressionNode right)
+        protected void EmitGreaterThanString(IExpressionNode left, IExpressionNode right)
         {
             throw new NotImplementedException();
         }
 
-        private void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right)
+        protected void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             RequireNumeral(left.ReturnType, "Greater than requires both operands to be numerals or at least one to be a string");
             RequireNumeral(right.ReturnType, "Greater than requires both operands to be numerals or at least one to be a string");
@@ -703,7 +703,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Less equal than emitter
 
-        private void EmitLessEqualThan(IBinaryOperatorNode binaryOperator)
+        protected void EmitLessEqualThan(IBinaryOperatorNode binaryOperator)
         {
             if (IsAtLeastOneOperandString(binaryOperator))
             {
@@ -715,12 +715,12 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void EmitLessEqualThanString(IExpressionNode left, IExpressionNode right)
+        protected void EmitLessEqualThanString(IExpressionNode left, IExpressionNode right)
         {
             throw new NotImplementedException();
         }
 
-        private void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right)
+        protected void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             RequireNumeral(left.ReturnType, "Less equal than requires both operands to be numerals or at least one to be a string");
             RequireNumeral(right.ReturnType, "Less equal than requires both operands to be numerals or at least one to be a string");
@@ -739,7 +739,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Emit less than
 
-        private void EmitLessThan(IBinaryOperatorNode binaryOperator)
+        protected void EmitLessThan(IBinaryOperatorNode binaryOperator)
         {
             if (IsAtLeastOneOperandString(binaryOperator))
             {
@@ -751,12 +751,12 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void EmitLessThanString(IExpressionNode left, IExpressionNode right)
+        protected void EmitLessThanString(IExpressionNode left, IExpressionNode right)
         {
             throw new NotImplementedException();
         }
 
-        private void EmitLessThanNumeral(IExpressionNode left, IExpressionNode right)
+        protected void EmitLessThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             RequireNumeral(left.ReturnType, "Less than requires both operands to be numerals or at least one to be a string");
             RequireNumeral(right.ReturnType, "Less than requires both operands to be numerals or at least one to be a string");
@@ -775,7 +775,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Division/Remainder emitters
 
-        private void EmitDivision(IBinaryOperatorNode binaryOperator)
+        protected void EmitDivision(IBinaryOperatorNode binaryOperator)
         {
             RequireNumeral(binaryOperator.LeftOperand.ReturnType, "Division requires both operands to be numerals");
             RequireNumeral(binaryOperator.RightOperand.ReturnType, "Division requires both operands to be numerals");
@@ -790,7 +790,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void EmitRemainder(IBinaryOperatorNode binaryOperator)
+        protected void EmitRemainder(IBinaryOperatorNode binaryOperator)
         {
             RequireNumeral(binaryOperator.LeftOperand.ReturnType, "Remainder requires both operands to be numerals");
             RequireNumeral(binaryOperator.RightOperand.ReturnType, "Remainder requires both operands to be numerals");
@@ -807,7 +807,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #endregion
 
-        private void EmitVoidOperator(IUnaryOperatorNode binaryOperator)
+        protected void EmitVoidOperator(IUnaryOperatorNode binaryOperator)
         {
             if (binaryOperator.Operand.ExpressionType == ExpressionNodeType.RValue &&
                 ((IRValueNode)binaryOperator.Operand).RValueType == RValueNodeType.AssignmentOperator)
