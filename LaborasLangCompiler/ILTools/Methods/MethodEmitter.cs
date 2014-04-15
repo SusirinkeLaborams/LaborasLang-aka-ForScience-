@@ -9,13 +9,13 @@ namespace LaborasLangCompiler.ILTools.Methods
 {
     internal class MethodEmitter
     {
-        private MethodDefinition methodDefinition;
-        private MethodBody body;
-        private ILProcessor ilProcessor;
+        protected MethodDefinition methodDefinition;
+        protected MethodBody body;
+        protected ILProcessor ilProcessor;
 
         protected ModuleDefinition module;
 
-        public bool Parsed { get; private set; }
+        public bool Parsed { get; protected set; }
 
         public MethodEmitter(TypeEmitter declaringType, string name, TypeReference returnType, 
                                 MethodAttributes methodAttributes = MethodAttributes.Private)
