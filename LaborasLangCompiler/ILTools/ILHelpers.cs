@@ -155,7 +155,6 @@ namespace LaborasLangCompiler.ILTools
 
         private static readonly string[] IntegerTypes = new string[]
         {
-            "System.Boolean",
             "System.Char",
             "System.Byte",
             "System.SByte",
