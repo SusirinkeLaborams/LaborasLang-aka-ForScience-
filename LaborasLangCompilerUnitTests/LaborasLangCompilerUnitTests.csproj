@@ -112,6 +112,7 @@
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_FunctorWithReturnTypeAndArguments.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_HelloWorld.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_InstanceFieldInitializer.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_MultipleNestedAssignments.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_StoreArgument_LoadProperty_LoadStringLiteral.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_StoreLocalVariable_LoadField.il" />
