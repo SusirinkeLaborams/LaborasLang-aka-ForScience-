@@ -63,12 +63,12 @@
     <Compile Include="FrontEnd\Program.cs" />
     <Compile Include="ILTools\AssemblyEmitter.cs" />
     <Compile Include="ILTools\AssemblyRegistry.cs" />
-    <Compile Include="ILTools\DelegateEmitter.cs" />
-    <Compile Include="ILTools\FunctorMethodEmitter.cs" />
-    <Compile Include="ILTools\FunctorTypeEmitter.cs" />
+    <Compile Include="ILTools\Types\DelegateEmitter.cs" />
+    <Compile Include="ILTools\Methods\FunctorMethodEmitter.cs" />
+    <Compile Include="ILTools\Types\FunctorTypeEmitter.cs" />
     <Compile Include="ILTools\ILHelpers.cs" />
-    <Compile Include="ILTools\MethodEmitter.cs" />
-    <Compile Include="ILTools\TypeEmitter.cs" />
+    <Compile Include="ILTools\Methods\MethodEmitter.cs" />
+    <Compile Include="ILTools\Types\TypeEmitter.cs" />
     <Compile Include="LexingTools\FileReader.cs" />
     <Compile Include="LexingTools\Lexer.cs" />
     <Compile Include="Misc\Utils.cs" />

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LaborasLangCompiler.ILTools
+namespace LaborasLangCompiler.ILTools.Types
 {
     internal class TypeEmitter
     {

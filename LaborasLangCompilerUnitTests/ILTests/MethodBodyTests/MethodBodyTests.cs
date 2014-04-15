@@ -12,6 +12,8 @@ using Mono.Cecil.Cil;
 using System.Text;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
+using LaborasLangCompiler.ILTools.Types;
+using LaborasLangCompiler.ILTools.Methods;
 
 namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 {

@@ -1,10 +1,11 @@
-﻿using LaborasLangCompiler.Parser;
+﻿using LaborasLangCompiler.ILTools.Types;
+using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Linq;
 
-namespace LaborasLangCompiler.ILTools
+namespace LaborasLangCompiler.ILTools.Methods
 {
     internal class MethodEmitter
     {

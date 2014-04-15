@@ -8,6 +8,8 @@ using System.Diagnostics;
 using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser;
 using Mono.Cecil;
+using LaborasLangCompiler.ILTools.Types;
+using LaborasLangCompiler.ILTools.Methods;
 
 namespace LaborasLangCompiler.FrontEnd
 {

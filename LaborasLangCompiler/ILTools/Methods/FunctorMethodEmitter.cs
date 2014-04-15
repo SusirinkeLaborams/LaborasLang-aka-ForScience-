@@ -1,4 +1,5 @@
-﻿using Mono.Cecil;
+﻿using LaborasLangCompiler.ILTools.Types;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LaborasLangCompiler.ILTools
+namespace LaborasLangCompiler.ILTools.Methods
 {
     internal class FunctorMethodEmitter : MethodEmitter
     {

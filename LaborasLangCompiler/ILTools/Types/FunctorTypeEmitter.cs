@@ -1,11 +1,12 @@
-﻿using Mono.Cecil;
+﻿using LaborasLangCompiler.ILTools.Methods;
+using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LaborasLangCompiler.ILTools
+namespace LaborasLangCompiler.ILTools.Types
 {
     internal class FunctorTypeEmitter : TypeEmitter
     {
