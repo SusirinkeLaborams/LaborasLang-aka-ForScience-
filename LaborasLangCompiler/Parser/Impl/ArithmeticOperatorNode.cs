@@ -18,9 +18,9 @@ namespace LaborasLangCompiler.Parser.Impl
             var left = instance.LeftOperand = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
             var right = instance.RightOperand = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
             string op = parser.GetNodeValue(lexerNode.Children[1]);
-            if (!ILHelpers.IsNumeralType(left.ReturnType) || !ILHelpers.IsNumeralType(right.ReturnType))
+            if (!left.ReturnType.IsNumeralType() || !right.ReturnType.IsNumeralType())
                 throw new TypeException(String.Format("Arithmetic operations only allowed on numeric types, {0} and {1} received", left.ReturnType.FullName, right.ReturnType.FullName));
-            if (ILHelpers.IsFloatingPointType(left.ReturnType) || ILHelpers.IsFloatingPointType(right.ReturnType))
+            if (left.ReturnType.IsFloatingPointType() || right.ReturnType.IsFloatingPointType())
                 instance.ReturnType = parser.Primitives["float"];
             else
                 instance.ReturnType = parser.Primitives["int"];

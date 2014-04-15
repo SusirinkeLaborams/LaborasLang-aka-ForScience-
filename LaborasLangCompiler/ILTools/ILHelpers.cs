@@ -102,7 +102,7 @@ namespace LaborasLangCompiler.ILTools
                     return false;
                 }
 
-                if (IsFloatingPointType(left) && IsFloatingPointType(right))
+                if (left.IsFloatingPointType() && right.IsFloatingPointType())
                 {
                     if (leftName == "System.Float")
                     {
