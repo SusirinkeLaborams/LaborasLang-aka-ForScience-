@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LaborasLangCompiler.Parser.Tree
+namespace LaborasLangCompiler.Parser
 {
     public enum NodeType
     {

@@ -1,4 +1,4 @@
-﻿using LaborasLangCompiler.Parser.Tree;
+﻿using LaborasLangCompiler.Parser;
 using System;
 using System.Collections.Generic;
 using System.Linq;

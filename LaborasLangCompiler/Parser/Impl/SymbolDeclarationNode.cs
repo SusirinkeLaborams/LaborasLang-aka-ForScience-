@@ -1,5 +1,5 @@
 ﻿using LaborasLangCompiler.Parser.Exceptions;
-using LaborasLangCompiler.Parser.Tree;
+using LaborasLangCompiler.Parser;
 using NPEG;
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,6 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
-using LaborasLangCompiler.Parser.Tree;
+using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using NPEG;
 using System;
@@ -13,7 +13,7 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class ClassNode : ParserNode
     {
-        public override Tree.NodeType Type { get { return Tree.NodeType.ClassNode; } }
+        public override NodeType Type { get { return NodeType.ClassNode; } }
         private Dictionary<string, FieldDeclarationNode> fields;
         private List<IFunctionNode> methods;
         private ClassNode parent;

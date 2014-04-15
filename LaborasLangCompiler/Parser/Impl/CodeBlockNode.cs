@@ -1,4 +1,4 @@
-﻿using LaborasLangCompiler.Parser.Tree;
+﻿using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NPEG;
