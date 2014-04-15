@@ -49,6 +49,12 @@ namespace LaborasLangCompiler.ILTools.Methods
             return parameter;
         }
 
+        public ParameterDefinition AddArgument(ParameterDefinition parameter)
+        {
+            methodDefinition.Parameters.Add(parameter);
+            return parameter;
+        }
+
         protected ParameterDefinition AddArgument(TypeReference type)
         {
             var parameter = new ParameterDefinition(Import(type));

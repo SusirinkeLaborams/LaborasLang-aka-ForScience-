@@ -78,9 +78,11 @@
     <Compile Include="Parser\Exceptions\TypeException.cs" />
     <Compile Include="Parser\Impl\ArithmeticOperatorNode.cs" />
     <Compile Include="Parser\Impl\BinaryOperatorNode.cs" />
+    <Compile Include="Parser\Impl\FunctionDeclarationNode.cs" />
     <Compile Include="Parser\Impl\ClassNode.cs" />
     <Compile Include="Parser\Impl\CodeBlockNode.cs" />
     <Compile Include="Parser\Impl\ExpressionNode.cs" />
+    <Compile Include="Parser\Impl\FunctionHeader.cs" />
     <Compile Include="Parser\Impl\LiteralNode.cs" />
     <Compile Include="Parser\Impl\LValueNode.cs" />
     <Compile Include="Parser\Impl\ParserNode.cs" />
