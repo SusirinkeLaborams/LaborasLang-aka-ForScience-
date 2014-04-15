@@ -18,17 +18,8 @@ using LaborasLangCompiler.ILTools.Methods;
 namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 {
     [TestClass]
-    public class MethodBodyTests : TestBase
+    public class MethodBodyTests : ILTestBase
     {
-        private string ExpectedILFilePath { get; set; }
-        private ICodeBlockNode BodyCodeBlock { get; set; }
-
-        private CompilerArguments compilerArgs;
-        private TypeEmitter typeEmitter;
-        private AssemblyEmitter assemblyEmitter;
-
-        #region Test methods
-
         [TestMethod]
         public void TestCanEmit_EmptyMethod()
         {
@@ -463,45 +454,6 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             ExpectedILFilePath = "TestCanEmit_FunctorWithReturnTypeAndArguments.il";
             Test();
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Helpers
-
-        public MethodBodyTests()
-        {
-            var tempLocation = Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
-            compilerArgs = CompilerArguments.Parse(new[] { "dummy.il", "/out:" + tempLocation });
-            assemblyEmitter = new AssemblyEmitter(compilerArgs);
-            typeEmitter = new TypeEmitter(assemblyEmitter, "klass");
-        }
-
-        private void Test()
-        {
-            var methodEmitter = new MethodEmitter(typeEmitter, "dummy", AssemblyRegistry.ImportType(typeof(void)),
-                MethodAttributes.Static | MethodAttributes.Private);
-
-            methodEmitter.ParseTree(BodyCodeBlock);
-            methodEmitter.SetAsEntryPoint();
-            assemblyEmitter.Save();
-
-            var il = Disassembler.DisassembleAssembly(assemblyEmitter.OutputPath);
-
-            var expectedILPath = Path.Combine("..", "..", "ILTests", "MethodBodyTests", "MethodBodyTestsExpected", ExpectedILFilePath);
-            var expectedIL = File.ReadAllText(expectedILPath, Encoding.UTF8);
-
-            try
-            {
-                Assert.AreEqual(expectedIL.Trim(), il.Trim());
-            }
-            finally
-            {
-                File.Delete(assemblyEmitter.OutputPath);
-                File.Delete(Path.ChangeExtension(assemblyEmitter.OutputPath, ".pdb"));
-            }
         }
 
         #endregion
