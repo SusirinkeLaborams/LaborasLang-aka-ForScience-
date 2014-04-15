@@ -43,7 +43,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     }
                     symbol = parentBlock.AddSymbol(declaredType, name);
                 }
-                catch(Exception e)
+                catch(IndexOutOfRangeException e)
                 {
                     throw new ParseException("Failed to parse declaration " + parser.GetNodeValue(lexerNode), e);
                 }

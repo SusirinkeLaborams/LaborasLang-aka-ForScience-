@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.Parser.Tree;
+using Mono.Cecil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -12,13 +13,26 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public IExpressionNode RightOperand { get; set; }
         public IExpressionNode LeftOperand { get; set; }
-        public abstract BinaryOperatorNodeType BinaryOperatorType { get; }
+        public override RValueNodeType RValueType { get { return RValueNodeType.BinaryOperator; } }
+        public BinaryOperatorNodeType BinaryOperatorType { get; set; }
+        public override TypeReference ReturnType { get; set; }
         public static new ExpressionNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             if (lexerNode.Children.Count == 1)
+            {
                 return ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
+            }
             else
-                throw new NotImplementedException("Not parsing binary operators");
+            {
+                switch (lexerNode.Token.Name)
+                {
+                    case "Sum":
+                    case "Product":
+                        return ArithmeticOperatorNode.Parse(parser, parentClass, parentBlock, lexerNode);
+                    default:
+                        throw new NotImplementedException("Only parsing Sum and Product");
+                }
+            }
         }
         public override bool Equals(ParserNode obj)
         {
