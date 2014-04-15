@@ -35,5 +35,24 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Stfld(field);
             }
         }
+
+        public void AddPropertyInitializer(PropertyDefinition property, IExpressionNode initializer)
+        {
+            var setter = property.SetMethod;
+
+            if (setter == null)
+            {
+                throw new ArgumentException(string.Format("Property {0} has no setter.", property.FullName));
+            }
+
+            Emit(initializer);
+
+            if (isStatic)
+            {
+                Ldarg(0);
+            }
+
+            Call(Import(setter));
+        }
     }
 }
