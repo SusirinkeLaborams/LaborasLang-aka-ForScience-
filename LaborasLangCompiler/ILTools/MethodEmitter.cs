@@ -63,8 +63,14 @@ namespace LaborasLangCompiler.ILTools
 
         public void ParseTree(ICodeBlockNode tree)
         {
+            if (Parsed)
+            {
+                throw new InvalidOperationException("Can't parse same method twice!");
+            }
+
             Emit(tree);
             Ret();
+
             Parsed = true;
         }
 
