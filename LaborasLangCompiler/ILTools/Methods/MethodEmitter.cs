@@ -51,6 +51,11 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         public ParameterDefinition AddArgument(ParameterDefinition parameter)
         {
+            if (parameter.ParameterType.Module != module)
+            {
+                throw new ArgumentException("Parameter type is not imported!");
+            }
+
             methodDefinition.Parameters.Add(parameter);
             return parameter;
         }
