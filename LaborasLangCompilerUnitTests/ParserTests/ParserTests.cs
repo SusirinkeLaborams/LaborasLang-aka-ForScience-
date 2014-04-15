@@ -47,7 +47,6 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         private void TestParser(string source, string expected, string name, bool lex)
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
-            AssemblyRegistry.Create(compilerArgs.References);
             var assembly = new AssemblyEmitter(compilerArgs);
             var bytes = SourceReader.ReadSource(source);
             AstNode tree;

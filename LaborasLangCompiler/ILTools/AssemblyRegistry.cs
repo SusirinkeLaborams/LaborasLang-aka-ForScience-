@@ -20,6 +20,8 @@ namespace LaborasLangCompiler.ILTools
 
         private AssemblyRegistry()
         {
+            instance = this;
+
             assemblyPaths = new HashSet<string>();
             assemblies = new List<AssemblyDefinition>();
             functorTypes = new Dictionary<string, TypeDefinition>();
@@ -45,7 +47,7 @@ namespace LaborasLangCompiler.ILTools
                 throw new InvalidOperationException("Assembly registry is already created!");
             }
 
-            instance = new AssemblyRegistry(references);
+            new AssemblyRegistry(references);
         }
 
         public static void RegisterReferences(IEnumerable<string> references)

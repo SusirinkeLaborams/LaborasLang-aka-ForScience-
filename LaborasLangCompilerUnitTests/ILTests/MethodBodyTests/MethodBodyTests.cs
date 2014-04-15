@@ -18,7 +18,7 @@ using LaborasLangCompiler.ILTools.Methods;
 namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 {
     [TestClass]
-    public class MethodBodyTests
+    public class MethodBodyTests : TestBase
     {
         private string ExpectedILFilePath { get; set; }
         private ICodeBlockNode BodyCodeBlock { get; set; }
@@ -474,8 +474,6 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         public MethodBodyTests()
         {
             var tempLocation = Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
-            compilerArgs = CompilerArguments.Parse(new[] { "dummy.il", "/out:" + tempLocation });
-            AssemblyRegistry.Create(compilerArgs.References);
             assemblyEmitter = new AssemblyEmitter(compilerArgs);
             typeEmitter = new TypeEmitter(assemblyEmitter, "klass");
         }
