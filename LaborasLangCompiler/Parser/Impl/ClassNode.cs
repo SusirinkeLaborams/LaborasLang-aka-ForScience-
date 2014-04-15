@@ -83,14 +83,15 @@ namespace LaborasLangCompiler.Parser.Impl
             }
 
             //init
-            FieldDeclarationNode field;
+            FieldDeclarationNode field = null;
+            ExpressionNode init = null;
             foreach (var node in lexerNode.Children)
             {
                 sentence = node.Children[0];
                 switch (sentence.Token.Name)
                 {
                     case Lexer.DeclarationAndAssignment:
-                        ExpressionNode init = ExpressionNode.Parse(parser, instance, null, sentence.Children[2]);
+                        init = ExpressionNode.Parse(parser, instance, null, sentence.Children[2]);
                         field = instance.fields[parser.GetNodeValue(sentence.Children[1])];
                         field.Initializer = init;
                         if (field.ReturnType == null)
@@ -106,8 +107,8 @@ namespace LaborasLangCompiler.Parser.Impl
                     case Lexer.Declaration:
                         field = instance.fields[parser.GetNodeValue(sentence.Children[1])];
                         field.CreateFieldDefinition(FieldAttributes.Static | FieldAttributes.Private);
-                        instance.typeEmitter.AddField(field.Field);
-                        //TODO: Add init
+                        instance.typeEmitter.AddField(field.Field, init);
+                        init = null;
                         break;
                     default:
                         break;
@@ -120,10 +121,26 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var declaredType = parser.ParseType(lexerNode.Children[0]);
             var name = parser.GetNodeValue(lexerNode.Children[1]);
+            
             if (declaredType == null && !init)
+            {
                 throw new TypeException("Type inference requires initialization");
+            }
             else
-                klass.AddField(name, declaredType);
+            {
+                //worst special case ever
+                //jei deklaruojam funkcija be tipo, jos tipas isparsinamas
+                //tipas reikalingas rekursijai
+                if (declaredType == null && lexerNode.Children[2].Token.Name == Lexer.Function)
+                {
+                    declaredType = FunctionDeclarationNode.ParseType(parser, klass, null, lexerNode.Children[2]);
+                    klass.AddField(name, declaredType);
+                }
+                else
+                {
+                    klass.AddField(name, declaredType);
+                }
+            }
         }
 
         public override bool Equals(ParserNode obj)
