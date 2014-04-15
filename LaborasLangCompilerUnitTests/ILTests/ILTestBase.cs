@@ -36,13 +36,21 @@ namespace LaborasLangCompilerUnitTests.ILTests
             var methodEmitter = new MethodEmitter(typeEmitter, "dummy", AssemblyRegistry.ImportType(typeof(void)),
                 MethodAttributes.Static | MethodAttributes.Private);
 
+            if (BodyCodeBlock == null)
+            {
+                BodyCodeBlock = new CodeBlockNode()
+                {
+                    Nodes = new List<IParserNode>()
+                };
+            }
+
             methodEmitter.ParseTree(BodyCodeBlock);
             methodEmitter.SetAsEntryPoint();
             assemblyEmitter.Save();
 
             var il = Disassembler.DisassembleAssembly(assemblyEmitter.OutputPath);
 
-            var expectedILPath = Path.Combine("..", "..", "ILTests", "MethodBodyTests", "MethodBodyTestsExpected", ExpectedILFilePath);
+            var expectedILPath = Path.Combine("..", "..", "ILTests", "MethodBodyTests", "Expected", ExpectedILFilePath);
             var expectedIL = File.ReadAllText(expectedILPath, Encoding.UTF8);
 
             try
