@@ -10,8 +10,48 @@ namespace LaborasLangCompiler.LexingTools
 {
     public class Lexer
     {
+        public const string Symbol = "Symbol";
+        public const string FullSymbol = "FullSymbol";
+        public const string NamespaceImport = "NamespaceImport";
+        public const string IntegerLiteral = "IntegerLiteral";
+        public const string StringLiteral = "StringLiteral";
+        public const string FloatLiteral = "FloatLiteral";
+        public const string Literal = "Literal";
+        public const string Product = "Product";
+        public const string MultiplicationOperator = "MultiplicationOperator";
+        public const string Sum = "Sum";
+        public const string SumOperator = "SumOperator";
+        public const string AssignmentOperator = "AssignmentOperator";
+        public const string RelationOperator = "RelationOperator";
+        public const string ShiftOperator = "ShiftOperator";
+        public const string UnaryOperator = "UnaryOperator";
+        public const string Type = "Type";
+        public const string Value = "Value";
+        public const string FunctionType = "FunctionType";
+        public const string ArgumentTypes = "ArgumentTypes";
+        public const string FunctionArgument = "FunctionArgument";
+        public const string FunctionCall = "FunctionCall";
+        public const string FunctionArgumentDeclaration = "FunctionArgumentDeclaration";
+        public const string NamedFunctionType = "NamedFunctionType";
+        public const string Function = "Function";
+        public const string Declaration = "Declaration";
+        public const string DeclarationAndAssignment = "DeclarationAndAssignment";
+        public const string Assignment = "Assignment";
+        public const string ConditionalSentence = "ConditionalSentence";
+        public const string Condition = "Condition";
+        public const string TrueBlock = "TrueBlock";
+        public const string FalseBlock = "FalseBlock";
+        public const string Condition = "Condition";
+        public const string TrueBlock = "TrueBlock";
+        public const string Loop = "Loop";
+        public const string Condition = "Condition";
+        public const string EndOfSentence = "EndOfSentence";
+        public const string Sentence = "Sentence";
+        public const string CodeBlock = "CodeBlock";
+        public const string Root = "Root";
+
         private AExpression GrammarTree;
-        private static String Grammar = @"
+        private static string Grammar = @"
  
                 Ws: [\n\r\t\s]+;       
                 (?<Symbol>): [a-zA-Z_]+ [a-zA-Z0-9_]*;
