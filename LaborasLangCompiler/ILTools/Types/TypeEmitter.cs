@@ -16,7 +16,7 @@ namespace LaborasLangCompiler.ILTools.Types
         private ConstructorEmitter instanceConstructor;
         private ConstructorEmitter staticConstructor;
         protected TypeDefinition typeDefinition;
-
+        
         public ModuleDefinition Module { get { return typeDefinition.Module; } }
 
         public TypeEmitter(AssemblyEmitter assembly, string className, string @namespace = "",
@@ -48,9 +48,6 @@ namespace LaborasLangCompiler.ILTools.Types
             {
                 assembly.AddType(typeDefinition);
             }
-
-            instanceConstructor = new ConstructorEmitter(this, false);
-            staticConstructor = new ConstructorEmitter(this, true);
         }
 
         public void AddMethod(MethodDefinition method)
@@ -68,11 +65,11 @@ namespace LaborasLangCompiler.ILTools.Types
             {
                 if (field.IsStatic)
                 {
-                    staticConstructor.AddFieldInitializer(field, initializer);
+                    GetStaticConstructor().AddFieldInitializer(field, initializer);
                 }
                 else
                 {
-                    instanceConstructor.AddFieldInitializer(field, initializer);
+                    GetInstanceConstructor().AddFieldInitializer(field, initializer);
                 }
             }
         }
@@ -94,11 +91,11 @@ namespace LaborasLangCompiler.ILTools.Types
 
                 if (isStatic)
                 {
-                    staticConstructor.AddPropertyInitializer(property, initializer);
+                    GetStaticConstructor().AddPropertyInitializer(property, initializer);
                 }
                 else
                 {
-                    instanceConstructor.AddPropertyInitializer(property, initializer);
+                    GetInstanceConstructor().AddPropertyInitializer(property, initializer);
                 }
             }
         }
@@ -130,6 +127,26 @@ namespace LaborasLangCompiler.ILTools.Types
 
             name.Replace('.', '_');
             return name.ToString();
+        }
+
+        private ConstructorEmitter GetInstanceConstructor()
+        {
+            if (instanceConstructor == null)
+            {
+                instanceConstructor = new ConstructorEmitter(this, false);
+            }
+
+            return instanceConstructor;
+        }
+
+        private ConstructorEmitter GetStaticConstructor()
+        {
+            if (staticConstructor == null)
+            {
+                staticConstructor = new ConstructorEmitter(this, true);
+            }
+
+            return staticConstructor;
         }
     }
 }
