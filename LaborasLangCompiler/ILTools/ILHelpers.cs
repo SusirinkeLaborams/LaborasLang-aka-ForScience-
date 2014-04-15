@@ -176,7 +176,7 @@ namespace LaborasLangCompiler.ILTools
             "System.Int32",
             "System.Int64",
             "System.IntPtr"
-        }
+        };
 
         private static readonly string[] FloatingPointTypes = new string[]
         {

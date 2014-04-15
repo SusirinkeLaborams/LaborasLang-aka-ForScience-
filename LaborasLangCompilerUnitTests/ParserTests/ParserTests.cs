@@ -18,27 +18,32 @@ namespace LaborasLangCompilerUnitTests.ParserTests
     [TestClass]
     public class ParserTests : TestBase
     {
-        private CompilerArguments compilerArgs;
         private const string path = @"..\..\ParserTests\SerializedLexerTrees\";
-        [TestInitialize]
-        public void Init()
-        {
-            compilerArgs = CompilerArguments.Parse(new[] { "test.ll" });
-        }
         [TestMethod]
         public void FieldDeclarationTest()
         {
+            string source = "auto a = 5; int b; int c = 10;";
+            string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b, System.Int32 c = (Literal: System.Int32 10) Methods: )";
+            TestParser(source, expected, "Declarations", false);
+        }
+        private void TestParser(string source, string expected, string name, bool lex)
+        {
+            var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
             var registry = new AssemblyRegistry(compilerArgs.References);
             var assembly = new AssemblyEmitter(compilerArgs, registry);
-            string source = "auto a = 5; int b; int c = 10;";
             var bytes = SourceReader.ReadSource(source);
-            //var tree = lexer.MakeTree(bytes);
-            //TreeSerializer.Serialize(path + "test.xml", tree);
-            var tree = TreeSerializer.Deserialize(path + "test.xml");
+            AstNode tree;
+            if(lex)
+            {
+                tree = lexer.MakeTree(bytes);
+                TreeSerializer.Serialize(path + name + ".xml", tree);
+            }
+            else
+            {
+                tree = TreeSerializer.Deserialize(path + name + ".xml");
+            }
             Parser parser = new Parser(assembly, registry, tree, bytes, "test");
-            string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b, System.Int32 c = (Literal: System.Int32 10) Methods: )";
-            string parsed = parser.Root.Print();
-            Assert.AreEqual(expected, parsed);
+            Assert.AreEqual(expected, parser.Root.Print());
         }
     }
 }
