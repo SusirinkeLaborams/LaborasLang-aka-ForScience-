@@ -2,6 +2,7 @@
 using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser;
+using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompilerUnitTests.ILTests;
 using LaborasLangCompilerUnitTests.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,6 +27,23 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b, System.Int32 c = (Literal: System.Int32 10) Methods: )";
             TestParser(source, expected, "Declarations", false);
         }
+        [TestMethod]
+        public void TypeExceptionTest()
+        {
+            string source = "int a = 0.0;";
+            string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Single 0) Methods: )";
+            try
+            {
+                TestParser(source, expected, "TypeFailure", false);
+            }
+            catch(TypeException)
+            {
+                //should throw
+                return;
+            }
+            //no type error
+            Assert.Fail();
+        }
         private void TestParser(string source, string expected, string name, bool lex)
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
@@ -42,8 +60,9 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             {
                 tree = TreeSerializer.Deserialize(path + name + ".xml");
             }
-            Parser parser = new Parser(assembly, tree, bytes, "test");
-            Assert.AreEqual(expected, parser.Root.Print());
+            Parser parser = new Parser(assembly, registry, tree, bytes, "test");
+            string result = parser.Root.Print();
+            Assert.AreEqual(expected, result);
         }
     }
 }
