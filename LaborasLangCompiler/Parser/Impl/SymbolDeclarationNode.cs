@@ -28,7 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
             string type = lexerNode.Token.Name;
 
             var declaredType = parser.ParseType(lexerNode.Children[0]);
-            var name = parser.GetNodeValue(lexerNode.Children[1]);
+            var name = parser.ValueOf(lexerNode.Children[1]);
 
             if (type == Lexer.DeclarationAndAssignment)
                 initializer = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);

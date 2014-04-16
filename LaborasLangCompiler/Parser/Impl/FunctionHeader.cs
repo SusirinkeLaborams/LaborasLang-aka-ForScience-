@@ -33,7 +33,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public static FunctionArgumentNode ParseArgument(Parser parser, AstNode lexerNode)
         {
             var type = parser.ParseType(lexerNode.Children[0]);
-            var name = parser.GetNodeValue(lexerNode.Children[1]);
+            var name = parser.ValueOf(lexerNode.Children[1]);
             return new FunctionArgumentNode(new ParameterDefinition(name, ParameterAttributes.None, type));
         }
     }
