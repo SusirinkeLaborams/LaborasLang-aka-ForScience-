@@ -80,17 +80,5 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException("Only parsing primitives");
             }
         }
-        public static bool CompareTypes(TypeReference first, TypeReference second)
-        {
-            if (first.Name != second.Name)
-                return false;
-            if (first.Namespace != second.Namespace)
-                return false;
-            string firstName = first.Scope is ModuleDefinition ? first.Module.Assembly.Name.FullName : first.FullName;
-            string secondName = second.Scope is ModuleDefinition ? second.Module.Assembly.Name.FullName : second.FullName;
-            if (firstName != secondName)
-                return false;
-            return true;
-        }
     }
 }

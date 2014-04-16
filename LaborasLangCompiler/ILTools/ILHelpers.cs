@@ -127,8 +127,10 @@ namespace LaborasLangCompiler.ILTools
             return false;
         }
 
-        private static ILHelpers()
+        static ILHelpers()
         {
+            assignmentMap = new Dictionary<string, string[]>();
+
             assignmentMap["System.Byte"] = new string[0];
             assignmentMap["System.SByte"] = new string[0];
             assignmentMap["System.UIntPtr"] = new string[0];

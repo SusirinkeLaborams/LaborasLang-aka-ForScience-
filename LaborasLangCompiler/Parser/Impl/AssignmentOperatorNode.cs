@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser.Exceptions;
+﻿using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
 using NPEG;
 using System;
@@ -21,7 +22,7 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.LeftOperand = LValueNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
             instance.RightOperand = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
             instance.ReturnType = instance.LeftOperand.ReturnType;
-            if (Parser.CompareTypes(instance.LeftOperand.ReturnType, instance.RightOperand.ReturnType))
+            if (ILHelpers.IsAssignableTo(instance.LeftOperand.ReturnType, instance.RightOperand.ReturnType))
                 return instance;
             else
                 throw new TypeException(String.Format("Assigned {0} to {1}", instance.RightOperand.ReturnType, instance.LeftOperand.ReturnType));

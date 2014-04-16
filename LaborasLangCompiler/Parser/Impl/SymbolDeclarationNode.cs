@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.LexingTools;
+using LaborasLangCompiler.ILTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -42,7 +43,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     {
                         if (declaredType == null)
                             declaredType = initializer.ReturnType;
-                        else if(!Parser.CompareTypes(declaredType, initializer.ReturnType))
+                        else if (!ILHelpers.IsAssignableTo(declaredType, initializer.ReturnType))
                             throw new TypeException("Type mismatch, type " + declaredType.FullName + " initialized with " + initializer.ReturnType.FullName);
                     }
                     symbol = parentBlock.AddSymbol(declaredType, name);
