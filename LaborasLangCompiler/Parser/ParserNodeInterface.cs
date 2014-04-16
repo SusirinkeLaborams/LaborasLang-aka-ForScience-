@@ -96,13 +96,13 @@ namespace LaborasLangCompiler.Parser
     interface IFieldNode : ILValueNode
     {
         IExpressionNode ObjectInstance { get; }
-        FieldDefinition Field { get; }
+        FieldReference Field { get; }
     }
 
     interface IPropertyNode : ILValueNode
     {
         IExpressionNode ObjectInstance { get; }
-        PropertyDefinition Property { get; }
+        PropertyReference Property { get; }
     }
 
     interface IFunctionArgumentNode : ILValueNode

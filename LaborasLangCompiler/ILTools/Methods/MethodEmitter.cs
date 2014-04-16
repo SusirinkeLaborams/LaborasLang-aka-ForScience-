@@ -57,7 +57,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             return parameter;
         }
 
-        public MethodDefinition Get()
+        public MethodReference Get()
         {
             return methodDefinition;
         }
@@ -256,7 +256,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Emit(IFieldNode field)
         {
-            if (!field.Field.IsStatic)
+            if (!field.Field.Resolve().IsStatic)
             {
                 Emit(field.ObjectInstance);
                 Ldfld(field.Field);
@@ -300,7 +300,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitStore(IFieldNode field)
         {
-            if (!field.Field.IsStatic)
+            if (!field.Field.Resolve().IsStatic)
             {
                 Emit(field.ObjectInstance);
                 Stfld(field.Field);
@@ -323,14 +323,14 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitStore(IPropertyNode property)
         {
-            var setter = property.Property.SetMethod;
+            var setter = AssemblyRegistry.GetPropertySetter(Assembly, property.Property);
 
             if (setter == null)
             {
                 throw new ArgumentException(string.Format("Property {0} has no setter.", property.Property.FullName));
             }
 
-            if (!setter.IsStatic)
+            if (!setter.Resolve().IsStatic)
             {
                 Emit(property.ObjectInstance);
             }
@@ -598,11 +598,10 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Box(right.ReturnType);
             }
 
-            var concatMethod = (from x in AssemblyRegistry.GetMethods(Assembly, "System.String", "Concat")
-                                where x.Parameters.Count == 2
-                                        && x.Parameters[0].ParameterType.FullName == "System.Object"
-                                        && x.Parameters[1].ParameterType.FullName == "System.Object"
-                                select x).Single();
+            var concatMethod = AssemblyRegistry.GetMethods(Assembly, "System.String", "Concat").Single(x =>
+                                    x.Parameters.Count == 2 &&
+                                    x.Parameters[0].ParameterType.FullName == "System.Object" &&
+                                    x.Parameters[1].ParameterType.FullName == "System.Object");
 
             Call(concatMethod);
         }

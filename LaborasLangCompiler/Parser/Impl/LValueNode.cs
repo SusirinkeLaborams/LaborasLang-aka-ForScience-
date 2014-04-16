@@ -78,10 +78,10 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.Field; } }
         public IExpressionNode ObjectInstance { get; set; }
-        public FieldDefinition Field { get; set; }
+        public FieldReference Field { get; set; }
         public override TypeReference ReturnType { get; set; }
         public string Name { get; set; }
-        public FieldNode(ExpressionNode instance, FieldDefinition field)
+        public FieldNode(ExpressionNode instance, FieldReference field)
         {
             ObjectInstance = instance;
             Field = field;
@@ -116,7 +116,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public FieldDeclarationNode(string name, TypeReference type) : base(name, type)
         {
         }
-        public FieldDefinition CreateFieldDefinition(FieldAttributes attributes)
+        public FieldReference CreateFieldDefinition(FieldAttributes attributes)
         {
             if (ReturnType != null)
                 return Field = new FieldDefinition(Name, attributes, ReturnType);
@@ -146,6 +146,6 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.Property; } }
         public IExpressionNode ObjectInstance { get; }
-        public PropertyDefinition Property { get; }
+        public PropertyReference Property { get; }
     }*/
 }

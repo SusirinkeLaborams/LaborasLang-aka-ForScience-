@@ -63,7 +63,8 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Function = new FunctionNode()
                             {
-                                Function = AssemblyRegistry.GetMethods(assemblyEmitter, "System.Console", "ReadKey").Single(x => x.Parameters.Count == 0)
+                                Function = AssemblyRegistry.GetMethods(assemblyEmitter, "System.Console", "ReadKey").Single(x =>
+                                                x.Parameters.Count == 0)
                             },
                             Arguments = new List<IExpressionNode>(new IExpressionNode[]
                             {

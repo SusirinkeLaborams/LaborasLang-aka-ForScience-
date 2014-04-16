@@ -103,7 +103,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
         public TypeReference ReturnType { get { return Field.FieldType; } }
         public IExpressionNode ObjectInstance { get; set; }
-        public FieldDefinition Field { get; set; }
+        public FieldReference Field { get; set; }
     }
 
     class PropertyNode : IPropertyNode
@@ -114,7 +114,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
         public TypeReference ReturnType { get { return Property.PropertyType; } }
         public IExpressionNode ObjectInstance { get; set; }
-        public PropertyDefinition Property { get; set; }
+        public PropertyReference Property { get; set; }
     }
 
     class FunctionArgumentNode : IFunctionArgumentNode

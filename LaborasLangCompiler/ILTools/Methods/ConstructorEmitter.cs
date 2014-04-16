@@ -38,7 +38,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             AddEpilogue();
         }
 
-        public void AddFieldInitializer(FieldDefinition field, IExpressionNode initializer)
+        public void AddFieldInitializer(FieldReference field, IExpressionNode initializer)
         {
             RemoveEpilogue();
 
@@ -57,9 +57,9 @@ namespace LaborasLangCompiler.ILTools.Methods
             AddEpilogue();
         }
 
-        public void AddPropertyInitializer(PropertyDefinition property, IExpressionNode initializer)
+        public void AddPropertyInitializer(PropertyReference property, IExpressionNode initializer)
         {
-            var setter = property.SetMethod;
+            var setter = AssemblyRegistry.GetPropertySetter(Assembly, property);
 
             if (setter == null)
             {

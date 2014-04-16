@@ -116,7 +116,7 @@ namespace LaborasLangCompiler.Parser.Impl
                             var method = (FunctionDeclarationNode) field.Initializer;
                             method.Emit(instance.typeEmitter, field.Name);
                         }
-                        instance.typeEmitter.AddField(field.Field, field.Initializer);
+                        instance.typeEmitter.AddField((FieldDefinition)field.Field, field.Initializer);
                         break;
                     default:
                         break;

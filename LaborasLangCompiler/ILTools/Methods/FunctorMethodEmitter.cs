@@ -13,35 +13,29 @@ namespace LaborasLangCompiler.ILTools.Methods
     {
         #region Factories
 
-        static public MethodDefinition EmitConstructor(TypeEmitter declaringType, FieldDefinition objectInstanceField, 
-            FieldDefinition functionPtrField)
+        static public void EmitConstructor(TypeEmitter declaringType, FieldReference objectInstanceField,
+            FieldReference functionPtrField)
         {
             var definition = new FunctorMethodEmitter(declaringType, ".ctor", declaringType.Assembly.TypeToTypeReference(typeof(void)),
                 MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName);
 
             definition.EmitConstructorBody(objectInstanceField, functionPtrField);
-
-            return definition.Get();
         }
 
-        static public MethodDefinition EmitInvoke(TypeEmitter declaringType, FieldDefinition objectInstanceField, 
-            FieldDefinition functionPtrField, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
+        static public void EmitInvoke(TypeEmitter declaringType, FieldReference objectInstanceField,
+            FieldReference functionPtrField, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
         {
             var definition = new FunctorMethodEmitter(declaringType, "Invoke", returnType, MethodAttributes.Public);
 
             definition.EmitInvokeBody(objectInstanceField, functionPtrField, returnType, arguments);
-
-            return definition.Get();
         }
 
-        static public MethodDefinition EmitAsDelegate(TypeEmitter declaringType, TypeDefinition delegateType,
-            FieldDefinition objectInstanceField, FieldDefinition functionPtrField)
+        static public void EmitAsDelegate(TypeEmitter declaringType, TypeReference delegateType,
+            FieldReference objectInstanceField, FieldReference functionPtrField)
         {
             var definition = new FunctorMethodEmitter(declaringType, "AsDelegate", delegateType, MethodAttributes.Public);
 
             definition.EmitAsDelegate(objectInstanceField, functionPtrField, delegateType);
-
-            return definition.Get();
         }
 
         #endregion
@@ -51,7 +45,7 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
         }
 
-        private void EmitConstructorBody(FieldDefinition objectInstanceField, FieldDefinition functionPtrField)
+        private void EmitConstructorBody(FieldReference objectInstanceField, FieldReference functionPtrField)
         {
             var objectInstanceArgument = AddArgument(Assembly.TypeToTypeReference(typeof(object)), "objectInstance");
             var functionPtrArgument = AddArgument(Assembly.TypeToTypeReference(typeof(System.IntPtr)), "functionPtr");
@@ -67,7 +61,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             Ret();
         }
 
-        private void EmitInvokeBody(FieldDefinition objectInstanceField, FieldDefinition functionPtrField, TypeReference returnType,
+        private void EmitInvokeBody(FieldReference objectInstanceField, FieldReference functionPtrField, TypeReference returnType,
             IReadOnlyList<TypeReference> arguments)
         {
             var staticCallsite = new CallSite(returnType);

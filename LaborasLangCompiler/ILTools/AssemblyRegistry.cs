@@ -106,7 +106,7 @@ namespace LaborasLangCompiler.ILTools
             return ScopeToAssembly(assemblyScope, type);
         }
 
-        public static TypeDefinition GetFunctorType(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
+        public static TypeReference GetFunctorType(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
         {
             var name = FunctorTypeEmitter.ComputeNameFromReturnAndArgumentTypes(returnType, arguments);
 
@@ -135,19 +135,21 @@ namespace LaborasLangCompiler.ILTools
             return resolvedType.Methods.Where(x => x.Name == methodName).Select(x => ScopeToAssembly(assembly, x)).ToList<MethodReference>();
         }
 
-        public static PropertyDefinition GetProperty(AssemblyEmitter assembly, string typeName, string propertyName)
+        public static PropertyReference GetProperty(AssemblyEmitter assembly, string typeName, string propertyName)
         {
             return GetProperty(assembly, GetTypeInternal(typeName), propertyName);
         }
 
-        public static PropertyDefinition GetProperty(AssemblyEmitter assembly, TypeDefinition type, string propertyName)
+        public static PropertyReference GetProperty(AssemblyEmitter assembly, TypeReference type, string propertyName)
         {
-            if (!type.HasProperties)
+            var resolvedType = type.Resolve();
+
+            if (!resolvedType.HasProperties)
             {
                 return null;
             }
 
-            return type.Properties.SingleOrDefault(x => x.Name == propertyName);
+            return resolvedType.Properties.SingleOrDefault(x => x.Name == propertyName);
         }
 
         public static MethodReference GetPropertyGetter(AssemblyEmitter assembly, PropertyReference property)
@@ -179,14 +181,16 @@ namespace LaborasLangCompiler.ILTools
             return GetField(assembly, GetTypeInternal(fieldName), fieldName);
         }
 
-        public static FieldReference GetField(AssemblyEmitter assembly, TypeDefinition type, string fieldName)
+        public static FieldReference GetField(AssemblyEmitter assembly, TypeReference type, string fieldName)
         {
-            if (!type.HasFields)
+            var resolvedType = type.Resolve();
+
+            if (!resolvedType.HasFields)
             {
                 return null;
             }
 
-            return ScopeToAssembly(assembly, type.Fields.SingleOrDefault(x => x.Name == fieldName));
+            return ScopeToAssembly(assembly, resolvedType.Fields.SingleOrDefault(x => x.Name == fieldName));
         }
 
         #endregion
