@@ -203,7 +203,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 })
             });
 
-            property.SetMethod = setter.Get();
+            property.SetMethod = setter.Get().Resolve();
 
             typeEmitter.AddProperty(property);
 
@@ -268,7 +268,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 })
             });
 
-            property.GetMethod = getter.Get();
+            property.GetMethod = getter.Get().Resolve();
             typeEmitter.AddProperty(property);
 
             var methodWithArgument = new MethodEmitter(typeEmitter, "TestMethod", assemblyEmitter.TypeToTypeReference(typeof(void)),
