@@ -25,14 +25,14 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string source = "auto a = 5; int b; int c = 10;";
             string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b, System.Int32 c = (Literal: System.Int32 10))";
-            TestParser(source, expected, "Declarations", false);
+            TestParser(source, expected, "FieldDeclarationTest", false);
         }
         [TestMethod]
         public void ImplicitIntToLong()
         {
             string source = "auto a = 5; long b = a;";
             string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int64 b = (LValueNode: Field System.Int32))";
-            TestParser(source, expected, "Declarations", false);
+            TestParser(source, expected, "ImplicitIntToLong", false);
         }
         [TestMethod]
         public void TypeExceptionTest()
@@ -41,7 +41,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Single 0))";
             try
             {
-                TestParser(source, expected, "TypeFailure", false);
+                TestParser(source, expected, "TypeExceptionTest", false);
             }
             catch(TypeException)
             {
