@@ -22,8 +22,9 @@ namespace LaborasLangCompiler.Parser.Impl
         private TypeReference functionReturnType;
         public void Emit(TypeEmitter klass, string name)
         {
-            var emitter = new MethodEmitter(klass, name + "_method", functionReturnType);
+            var emitter = new MethodEmitter(klass, name + "_method", functionReturnType, MethodAttributes.Static | MethodAttributes.Private);
             emitter.ParseTree(body);
+            emitter.SetAsEntryPoint();
             Function = emitter.Get();
         }
         public static new FunctionDeclarationNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)

@@ -34,6 +34,7 @@ namespace LaborasLangCompiler.Parser
             Primitives = primitives;
 
             ClassNode.Parse(this, null, null, tree);
+            Assembly.Save();
         }
         public string GetNodeValue(AstNode node)
         {
