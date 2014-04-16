@@ -26,37 +26,25 @@ namespace LaborasLangCompiler.Parser.Impl
             ILValueNode symbol = null;
             IExpressionNode initializer = null;
             string type = lexerNode.Token.Name;
-            if (type == Lexer.Declaration || type == Lexer.DeclarationAndAssignment)
+
+            var declaredType = parser.ParseType(lexerNode.Children[0]);
+            var name = parser.GetNodeValue(lexerNode.Children[1]);
+
+            if (type == Lexer.DeclarationAndAssignment)
+                initializer = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
+
+            if (declaredType == null && initializer == null)
+                throw new TypeException("Type inference requires initialization");
+
+            if (initializer != null)
             {
-                try
-                {
-                    var declaredType = parser.ParseType(lexerNode.Children[0]);
-                    var name = parser.GetNodeValue(lexerNode.Children[1]);
-
-                    if (type == Lexer.DeclarationAndAssignment)
-                        initializer = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
-
-                    if (declaredType == null && initializer == null)
-                        throw new TypeException("Type inference requires initialization");
-
-                    if(initializer != null)
-                    {
-                        if (declaredType == null)
-                            declaredType = initializer.ReturnType;
-                        else if (!ILHelpers.IsAssignableTo(initializer.ReturnType, declaredType))
-                            throw new TypeException("Type mismatch, type " + declaredType.FullName + " initialized with " + initializer.ReturnType.FullName);
-                    }
-                    symbol = parentBlock.AddSymbol(declaredType, name);
-                }
-                catch(IndexOutOfRangeException e)
-                {
-                    throw new ParseException("Failed to parse declaration " + parser.GetNodeValue(lexerNode), e);
-                }
+                if (declaredType == null)
+                    declaredType = initializer.ReturnType;
+                else if (!ILHelpers.IsAssignableTo(initializer.ReturnType, declaredType))
+                    throw new TypeException("Type mismatch, type " + declaredType.FullName + " initialized with " + initializer.ReturnType.FullName);
             }
-            else
-            {
-                throw new ParseException("Declaration expected, " + lexerNode.Token.Name + " received");
-            }
+            symbol = parentBlock.AddSymbol(declaredType, name);
+
             return new SymbolDeclarationNode(symbol, initializer);
         }
     }
