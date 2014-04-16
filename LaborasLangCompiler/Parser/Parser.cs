@@ -30,6 +30,7 @@ namespace LaborasLangCompiler.Parser
             primitives.Add("float", Assembly.TypeToTypeReference(typeof(float)));
             primitives.Add("string", Assembly.TypeToTypeReference(typeof(string)));
             primitives.Add("void", Assembly.TypeToTypeReference(typeof(void)));
+            primitives.Add("long", Assembly.TypeToTypeReference(typeof(long)));
             primitives.Add("auto", null);
             Primitives = primitives;
 

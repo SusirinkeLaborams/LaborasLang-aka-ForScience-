@@ -28,6 +28,13 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             TestParser(source, expected, "Declarations", false);
         }
         [TestMethod]
+        public void ImplicitIntToLong()
+        {
+            string source = "auto a = 5; long b = a;";
+            string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int64 b = (LValueNode: Field System.Int32))";
+            TestParser(source, expected, "Declarations", false);
+        }
+        [TestMethod]
         public void TypeExceptionTest()
         {
             string source = "int a = 0.0;";
