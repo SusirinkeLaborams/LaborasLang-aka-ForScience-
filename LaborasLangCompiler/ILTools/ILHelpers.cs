@@ -96,55 +96,7 @@ namespace LaborasLangCompiler.ILTools
 
             if (left.IsPrimitive && right.IsPrimitive)
             {
-                if (left.IsIntegerType() && right.IsIntegerType())
-                {
-                    if (left.IsSignedInteger() != right.IsSignedInteger())
-                    {
-                        return false;
-                    }
-
-                    int leftWidth = GetIntegerWidth(left),
-                        rightWidth = GetIntegerWidth(right);
-
-                    if (leftWidth == rightWidth)
-                    {
-                        return true;
-                    }
-
-                    if (leftWidth == 0 || rightWidth == 0)
-                    {
-                        return false;
-                    }
-
-                    if (leftWidth >= rightWidth)
-                    {
-                        return true;
-                    }
-
-                    return false;
-                }
-
-                if (left.IsFloatingPointType() && right.IsFloatingPointType())
-                {
-                    if (leftName == "System.Float")
-                    {
-                        return false;
-                    }
-
-                    if (leftName == "System.Double" && rightName == "System.Decimal")
-                    {
-                        return false;
-                    }
-
-                    if (leftName == "System.Decimal" && rightName == "System.Double")
-                    {
-                        return false;
-                    }
-
-                    return true;
-                }
-
-                return false;
+                return assignmentMap[leftName].Any(x => x == rightName);
             }
 
             var leftType = left.Resolve();
@@ -174,6 +126,73 @@ namespace LaborasLangCompiler.ILTools
 
             return false;
         }
+
+        private static ILHelpers()
+        {
+            assignmentMap["System.Byte"] = new string[0];
+            assignmentMap["System.SByte"] = new string[0];
+            assignmentMap["System.UIntPtr"] = new string[0];
+            assignmentMap["System.IntPtr"] = new string[0];
+            assignmentMap["System.Single"] = new string[0];
+
+            assignmentMap["System.Char"] = new string[]
+            {
+                "System.Byte", 
+                "System.UInt16"
+            };
+
+            assignmentMap["System.UInt16"] = new string[]
+            {
+                "System.Byte", 
+                "System.Char"
+            };
+            
+            assignmentMap["System.UInt32"] = new string[]
+            {
+                "System.Byte", 
+                "System.Char",
+                "System.UInt16"
+            };
+
+            assignmentMap["System.UInt64"] = new string[]
+            {
+                "System.Byte", 
+                "System.Char",
+                "System.UInt16",
+                "System.UInt32"
+            };
+
+            assignmentMap["System.Int16"] = new string[]
+            {
+                "System.SByte",
+            };
+
+            assignmentMap["System.Int32"] = new string[]
+            {
+                "System.SByte", 
+                "System.Int16"
+            };
+
+            assignmentMap["System.Int64"] = new string[]
+            {
+                "System.SByte", 
+                "System.Int16",
+                "System.Int32"
+            };
+
+            assignmentMap["System.Double"] = new string[]
+            {
+                "System.Single",
+            };
+
+            assignmentMap["System.Decimal"] = new string[]
+            {
+                "System.Single"
+            };
+        }
+
+        // Doesn't include self
+        private static Dictionary<string, string[]> assignmentMap;
 
         private static readonly string[] IntegerTypes = new string[]
         {
