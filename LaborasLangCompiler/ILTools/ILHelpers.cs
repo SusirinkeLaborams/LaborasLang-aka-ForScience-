@@ -102,26 +102,24 @@ namespace LaborasLangCompiler.ILTools
             var leftType = left.Resolve();
             var rightType = right.Resolve();
 
-            if (left.Resolve().IsInterface)
-            {
-                return right.Resolve().Interfaces.Contains(left);
-            }
-
-            if (left.Resolve().HasGenericParameters || right.Resolve().HasGenericParameters)
+            if (leftType.HasGenericParameters || rightType.HasGenericParameters)
             {
                 throw new NotSupportedException("Generic types are not supported!");
             }
 
-            rightType = rightType.BaseType.Resolve();
-            
-            while (rightType != null)
+            if (leftType.IsInterface)
             {
+                return rightType.Interfaces.Any(x => x.FullName == leftName);
+            }
+                        
+            while (rightType.BaseType != null)
+            {
+                rightType = rightType.BaseType.Resolve();
+
                 if (leftName == rightType.FullName)
                 {
                     return true;
                 }
-
-                rightType = rightType.BaseType.Resolve();
             }
 
             return false;
@@ -131,6 +129,7 @@ namespace LaborasLangCompiler.ILTools
         {
             assignmentMap = new Dictionary<string, string[]>();
 
+            assignmentMap["System.Boolean"] = new string[0];
             assignmentMap["System.Byte"] = new string[0];
             assignmentMap["System.SByte"] = new string[0];
             assignmentMap["System.UIntPtr"] = new string[0];
