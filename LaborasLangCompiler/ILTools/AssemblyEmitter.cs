@@ -44,7 +44,7 @@ namespace LaborasLangCompiler.ILTools
 
         public TypeReference TypeToTypeReference(Type type)
         {
-            return assemblyDefinition.MainModule.Import(type);
+            return MainModule.Import(type);
         }
 
         public void Save()
