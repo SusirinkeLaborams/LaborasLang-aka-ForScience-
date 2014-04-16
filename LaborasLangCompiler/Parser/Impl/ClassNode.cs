@@ -84,7 +84,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     case Lexer.DeclarationAndAssignment:
                         var init = ExpressionNode.Parse(parser, instance, null, sentence.Children[2]);
-                        var field = instance.fields[parser.GetNodeValue(sentence.Children[1])];
+                        var field = instance.fields[parser.ValueOf(sentence.Children[1])];
                         field.Initializer = init;
                         if (field.ReturnType == null)
                         {
@@ -109,7 +109,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     case Lexer.Declaration:
                     case Lexer.DeclarationAndAssignment:
-                        var field = instance.fields[parser.GetNodeValue(sentence.Children[1])];
+                        var field = instance.fields[parser.ValueOf(sentence.Children[1])];
                         field.CreateFieldDefinition(FieldAttributes.Static | FieldAttributes.Private);
                         if(field.Initializer is FunctionDeclarationNode)
                         {
@@ -128,7 +128,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private static void ParseDeclaration(Parser parser, ClassNode klass, AstNode lexerNode, bool init)
         {
             var declaredType = parser.ParseType(lexerNode.Children[0]);
-            var name = parser.GetNodeValue(lexerNode.Children[1]);
+            var name = parser.ValueOf(lexerNode.Children[1]);
             
             if (declaredType == null && !init)
             {

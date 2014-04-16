@@ -20,7 +20,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             if(lexerNode.Token.Name == Lexer.Symbol)
             {
-                var value = parser.GetNodeValue(lexerNode);
+                var value = parser.ValueOf(lexerNode);
                 LValueNode instance = null;
                 if(parentBlock != null)
                     instance = parentBlock.GetSymbol(value);

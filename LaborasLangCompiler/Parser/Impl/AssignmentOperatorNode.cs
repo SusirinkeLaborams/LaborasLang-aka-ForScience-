@@ -22,7 +22,12 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.LeftOperand = LValueNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
             instance.RightOperand = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
             instance.ReturnType = instance.LeftOperand.ReturnType;
-            if (ILHelpers.IsAssignableTo(instance.RightOperand.ReturnType, instance.LeftOperand.ReturnType))
+
+            var op = parser.ValueOf(lexerNode.Children[1]);
+            if (op != "=")
+                throw new NotImplementedException("Only parsing simple assignment");
+
+            if (instance.RightOperand.ReturnType.IsAssignableTo(instance.LeftOperand.ReturnType))
                 return instance;
             else
                 throw new TypeException(String.Format("Assigned {0} to {1}", instance.RightOperand.ReturnType, instance.LeftOperand.ReturnType));

@@ -87,9 +87,7 @@ namespace LaborasLangCompiler.LexingTools
                 (?<Declaration>): (FunctionType / Type) Ws Symbol;
                 (?<DeclarationAndAssignment>): (FunctionType / Type) Ws Symbol Ws? '=' Ws? (Function / Value);
 
-                (?<Assignment>): Symbol Ws? '=' Ws? Function /
-                                 Symbol Ws? '=' Ws? Value /
-                                 Symbol Ws? AssignmentOperator Ws? Value;
+                (?<Assignment>): Symbol Ws? AssignmentOperator Ws? (Function / Value);
             
                 (?<ConditionalSentence>): 'if' Ws? '(' Ws? (?<Condition> Value) Ws? ')' (?<TrueBlock> CodeBlock) 'else' (?<FalseBlock> CodeBlock) /
                                             'if' Ws? '(' Ws? (?<Condition> Value) Ws? ')' (?<TrueBlock> CodeBlock);

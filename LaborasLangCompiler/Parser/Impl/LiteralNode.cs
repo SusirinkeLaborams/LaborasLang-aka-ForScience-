@@ -26,7 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             lexerNode = lexerNode.Children[0];
             string type = lexerNode.Token.Name;
-            string value = parser.GetNodeValue(lexerNode);
+            string value = parser.ValueOf(lexerNode);
             try
             {
                 switch (type)

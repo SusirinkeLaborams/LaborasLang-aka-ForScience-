@@ -36,7 +36,7 @@ namespace LaborasLangCompiler.Parser
 
             ClassNode.Parse(this, null, null, tree);
         }
-        public string GetNodeValue(AstNode node)
+        public string ValueOf(AstNode node)
         {
             return Encoding.UTF8.GetString(source.Text(node.Token.Start, node.Token.End));
         }
@@ -70,7 +70,7 @@ namespace LaborasLangCompiler.Parser
         {
             if(typeNode.Children.Count == 1)
             {
-                string type = GetNodeValue(typeNode.Children[0]);
+                string type = ValueOf(typeNode.Children[0]);
                 if (Primitives.ContainsKey(type))
                     return Primitives[type];
                 else
