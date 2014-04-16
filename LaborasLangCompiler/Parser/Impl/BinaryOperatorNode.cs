@@ -35,12 +35,5 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
-        public override bool Equals(ParserNode obj)
-        {
-            if (!(obj is BinaryOperatorNode))
-                return false;
-            var that = (BinaryOperatorNode)obj;
-            return base.Equals(obj) && BinaryOperatorType == that.BinaryOperatorType && RightOperand.Equals(that.RightOperand) && LeftOperand.Equals(that.LeftOperand);
-        }
     }
 }

@@ -36,14 +36,6 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new NotImplementedException("Only parsing simple symbols");
             }
         }
-        public override bool Equals(ParserNode obj)
-        {
-            if (!(obj is LValueNode))
-                return false;
-            var that = (LValueNode)obj;
-
-            return base.Equals(obj) && LValueType == that.LValueType;
-        }
         public override string Print()
         {
             return String.Format("(LValueNode: {0} {1})", LValueType, ReturnType);
@@ -92,23 +84,6 @@ namespace LaborasLangCompiler.Parser.Impl
             Name = name;
             ReturnType = type;
         }
-        public override bool Equals(ParserNode obj)
-        {
-            if (!(obj is FieldNode))
-                return false;
-            var that = (FieldNode)obj;
-            if (ObjectInstance != null && that.ObjectInstance != null)
-            {
-                if (!ObjectInstance.Equals(that.ObjectInstance))
-                    return false;
-            }
-            else
-            {
-                if (ObjectInstance != null || that.ObjectInstance != null)
-                    return false;
-            }
-            return base.Equals(obj) && Name == that.Name;
-        }
     }
     class FieldDeclarationNode : FieldNode
     {
@@ -122,23 +97,6 @@ namespace LaborasLangCompiler.Parser.Impl
                 return Field = new FieldDefinition(Name, attributes, ReturnType);
             else
                 throw new TypeException("Cannot create a field without a declared type");
-        }
-        public override bool Equals(ParserNode obj)
-        {
-            if (!(obj is FieldDeclarationNode))
-                return false;
-            var that = (FieldDeclarationNode)obj;
-            if (Initializer != null && that.Initializer != null)
-            {
-                if (!Initializer.Equals(that.Initializer))
-                    return false;
-            }
-            else
-            {
-                if (Initializer != null || that.Initializer != null)
-                    return false;
-            }
-            return base.Equals(obj);
         }
     }
 

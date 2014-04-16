@@ -58,22 +58,5 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return new SymbolDeclarationNode(symbol, initializer);
         }
-        public override bool Equals(ParserNode obj)
-        {
-            if (!(obj is SymbolDeclarationNode))
-                return false;
-            var that = (SymbolDeclarationNode)obj;
-            if (Initializer != null && that.Initializer != null)
-            {
-                if (!Initializer.Equals(that.Initializer))
-                    return false;
-            }
-            else
-            {
-                if (Initializer != null || that.Initializer != null)
-                    return false;
-            }
-            return base.Equals(obj) && DeclaredSymbol.Equals(that.DeclaredSymbol);
-        }
     }
 }
