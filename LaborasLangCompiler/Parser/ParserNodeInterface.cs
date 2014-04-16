@@ -108,6 +108,7 @@ namespace LaborasLangCompiler.Parser
     interface IFunctionArgumentNode : ILValueNode
     {
         ParameterDefinition Param { get; }
+        bool IsFunctionStatic { get; }
     }
 
     public enum BinaryOperatorNodeType

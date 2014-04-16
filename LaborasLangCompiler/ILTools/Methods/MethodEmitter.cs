@@ -3,6 +3,7 @@ using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace LaborasLangCompiler.ILTools.Methods
@@ -258,7 +259,15 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             if (!field.Field.Resolve().IsStatic)
             {
-                Emit(field.ObjectInstance);
+                if (field.ObjectInstance != null)
+                {
+                    Emit(field.ObjectInstance);
+                }
+                else
+                {
+                    Ldarg(0);
+                }
+
                 Ldfld(field.Field);
             }
             else
@@ -269,7 +278,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Emit(IFunctionArgumentNode argument)
         {
-            Ldarg(argument.Param.Index);
+            Ldarg(argument.Param.Index + (argument.IsFunctionStatic ? 0 : 1));
         }
 
         protected void Emit(ILocalVariableNode variable)
@@ -288,7 +297,14 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             if (!getter.Resolve().IsStatic)
             {
-                Emit(property.ObjectInstance);
+                if (property.ObjectInstance != null)
+                {
+                    Emit(property.ObjectInstance);
+                }
+                else
+                {
+                    Ldarg(0);
+                }
             }
 
             Call(getter);
@@ -302,7 +318,6 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             if (!field.Field.Resolve().IsStatic)
             {
-                Emit(field.ObjectInstance);
                 Stfld(field.Field);
             }
             else
@@ -330,11 +345,6 @@ namespace LaborasLangCompiler.ILTools.Methods
                 throw new ArgumentException(string.Format("Property {0} has no setter.", property.Property.FullName));
             }
 
-            if (!setter.Resolve().IsStatic)
-            {
-                Emit(property.ObjectInstance);
-            }
-
             Call(setter);
         }
 
@@ -344,16 +354,106 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region RValue node
 
+        // Duplicating in stack can happen in two ways. 
+        // Asterisks show which instructions would not be present if we're not duplicating
+        // If left side is a non static field:
+        //  - Emit object instance
+        //  - Emit right side
+        //  - Dup (*)
+        //  - Stfld left side
+        //  - Ldfld left side (*)
+        // Else if left side is a non static property:
+        //  - Emit object instance
+        //  - Emit right side
+        //  - Dup (*)
+        //  - Stloc temp (*)
+        //  - Call setter
+        //  - Ldloc temp (*)
+        // Else:
+        //  - Emit right side
+        //  - Dup (*)
+        //  - EmitStore left side
+        // We need to store value in case of setting to a non static property because
+        // we cannot guarantee whether getter will return the same result as we set in the setter
+        // (that would also be inefficient even if we could)
         protected void Emit(IAssignmentOperatorNode assignmentOperator, bool duplicateValueInStack = true)
         {
+            // If we're storing to field or property and it's not static, we need to load object instance now
+            // and if we're also duplicating value, we got to save it to temp variable
+            bool isField = assignmentOperator.LeftOperand.LValueType == LValueNodeType.Field;
+            bool isProperty = assignmentOperator.LeftOperand.LValueType == LValueNodeType.Property;
+            IExpressionNode objectInstance = null;
+
+            bool isNonStaticMember = false;
+
+            if (isField)
+            {
+                var fieldNode = (IFieldNode)assignmentOperator.LeftOperand;
+
+                if (!fieldNode.Field.Resolve().IsStatic)
+                {
+                    isNonStaticMember = true;
+                    objectInstance = fieldNode.ObjectInstance;
+                }
+            }
+            else if (isProperty)
+            {
+                var propertyNode = (IPropertyNode)assignmentOperator.LeftOperand;
+                var property = propertyNode.Property.Resolve();
+
+                if (property.SetMethod == null)
+                {
+                    throw new ArgumentException(string.Format("Property {0} has no setter!", property.FullName));
+                }
+
+                if (!property.SetMethod.IsStatic)
+                {
+                    isNonStaticMember = true;
+                    objectInstance = propertyNode.ObjectInstance;
+                }
+            }
+
+            VariableDefinition tempVariable = null;
+
+            if (isNonStaticMember)
+            {
+                if (objectInstance != null)
+                {
+                    Emit(objectInstance);
+                }
+                else
+                {
+                    Ldarg(0);
+                }
+            }
+
             Emit(assignmentOperator.RightOperand);
 
             if (duplicateValueInStack)
             {
                 Dup();
+                
+                if (isNonStaticMember && isProperty)
+                {
+                    tempVariable = AcquireTempVariable(assignmentOperator.RightOperand.ReturnType);
+                    Stloc(tempVariable.Index);
+                }
             }
 
             EmitStore(assignmentOperator.LeftOperand);
+
+            if (isNonStaticMember && duplicateValueInStack)
+            {
+                if (isProperty)
+                {
+                    Ldloc(tempVariable.Index);
+                    ReleaseTempVariable(tempVariable);
+                }
+                else // Field
+                {
+                    Emit(assignmentOperator.LeftOperand);
+                }
+            }            
         }
 
         protected void Emit(IBinaryOperatorNode binaryOperator)
@@ -457,20 +557,20 @@ namespace LaborasLangCompiler.ILTools.Methods
                 var functionNode = (IFunctionNode)function;
                 bool isStatic = functionNode.Function.Resolve().IsStatic;
 
-                if (functionNode.ObjectInstance != null)
+                if (!isStatic)
                 {
-                    if (!isStatic)
+                    if (functionNode.ObjectInstance != null)
                     {
                         Emit(functionNode.ObjectInstance);
                     }
                     else
                     {
-                        throw new ArgumentException("Method is static but there is an object instance set!", "functionCall.Function.ObjectInstance");
+                        Ldarg(0);
                     }
                 }
-                else if (!isStatic)
+                else if (functionNode.ObjectInstance != null)
                 {
-                    throw new ArgumentNullException("Method is not static but there is no object instance set!", "functionCall.Function.ObjectInstance");
+                    throw new ArgumentException("Method is static but there is an object instance set!", "functionCall.Function.ObjectInstance");
                 }
 
                 foreach (var argument in functionCall.Arguments)
@@ -850,7 +950,6 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Helpers
 
-
         protected bool IsAtLeastOneOperandString(IBinaryOperatorNode binaryOperator)
         {
             var left = binaryOperator.LeftOperand;
@@ -870,6 +969,47 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected Instruction CreateLabel()
         {
             return Instruction.Create(OpCodes.Nop);
+        }
+
+        private class TempVariable
+        {
+            public VariableDefinition Variable { get; private set; }
+            public bool IsTaken { get; set; }
+
+            public TempVariable(VariableDefinition variable, bool isTaken)
+            {
+                Variable = variable;
+                IsTaken = isTaken;
+            }
+        }
+
+        List<TempVariable> temporaryVariables = new List<TempVariable>();
+
+        protected VariableDefinition AcquireTempVariable(TypeReference type)
+        {
+            for (int i = 0; i < temporaryVariables.Count; i++)
+            {
+                if (!temporaryVariables[i].IsTaken)
+                {
+                    temporaryVariables[i].IsTaken = true;
+                    return temporaryVariables[i].Variable;
+                }
+            }
+
+            temporaryVariables.Add(new TempVariable(new VariableDefinition("$Temp" + (temporaryVariables.Count + 1).ToString(), type), true));
+            return temporaryVariables[temporaryVariables.Count - 1].Variable;
+        }
+
+        protected void ReleaseTempVariable(VariableDefinition variable)
+        {
+            for (int i = 0; i < temporaryVariables.Count; i++)
+            {
+                if (temporaryVariables[i].Variable == variable)
+                {
+                    temporaryVariables[i].IsTaken = false;
+                    return;
+                }
+            }
         }
 
         #endregion

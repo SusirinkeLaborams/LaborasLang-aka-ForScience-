@@ -28,8 +28,8 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 var objectCtor = AssemblyRegistry.GetMethods(declaringType.Assembly, "System.Object", ".ctor").Single(x => x.Parameters.Count == 0);
 
-                epilogue.Add(Instruction.Create(OpCodes.Ldarg_0));
-                epilogue.Add(Instruction.Create(OpCodes.Call, objectCtor));
+                Ldarg(0);
+                Call(objectCtor);
             }
 
             Parsed = true;
@@ -68,13 +68,12 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             RemoveEpilogue();
 
-            Emit(initializer);
-
             if (!isStatic)
             {
                 Ldarg(0);
             }
-
+            
+            Emit(initializer);
             Call(setter);
 
             AddEpilogue();

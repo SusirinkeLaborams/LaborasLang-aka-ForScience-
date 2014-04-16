@@ -125,6 +125,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
         public TypeReference ReturnType { get { return Param.ParameterType; } }
         public ParameterDefinition Param { get; set; }
+        public bool IsFunctionStatic { get; set; }
     }
 
     class BinaryOperatorNode : IBinaryOperatorNode

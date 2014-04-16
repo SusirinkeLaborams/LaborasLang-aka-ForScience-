@@ -58,10 +58,12 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.FunctionArgument; } }
         public ParameterDefinition Param { get; set; }
+        public bool IsFunctionStatic { get; set; }
         public override TypeReference ReturnType { get; set; }
-        public FunctionArgumentNode(ParameterDefinition param)
+        public FunctionArgumentNode(ParameterDefinition param, bool isFunctionStatic)
         {
             Param = param;
+            IsFunctionStatic = isFunctionStatic;
             ReturnType = param.ParameterType;
         }
     }
