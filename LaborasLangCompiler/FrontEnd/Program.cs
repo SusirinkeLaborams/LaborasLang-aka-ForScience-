@@ -30,6 +30,7 @@ namespace LaborasLangCompiler.FrontEnd
                     var tree = lexer.MakeTree(bytes);
                     var parser = new Parser.Parser(assembly, tree, bytes, System.IO.Path.GetFileNameWithoutExtension(file));
                     PrintAst(tree, 1, bytes);
+                    assembly.Save();
                 }
             }
             catch (Exception e)
