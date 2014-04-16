@@ -43,7 +43,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     {
                         if (declaredType == null)
                             declaredType = initializer.ReturnType;
-                        else if (!ILHelpers.IsAssignableTo(declaredType, initializer.ReturnType))
+                        else if (!ILHelpers.IsAssignableTo(initializer.ReturnType, declaredType))
                             throw new TypeException("Type mismatch, type " + declaredType.FullName + " initialized with " + initializer.ReturnType.FullName);
                     }
                     symbol = parentBlock.AddSymbol(declaredType, name);
