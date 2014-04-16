@@ -84,7 +84,7 @@ namespace LaborasLangCompiler.ILTools
             return type.IsIntegerType() || type.IsFloatingPointType();
         }
 
-        public static bool IsAssignableTo(this TypeReference left, TypeReference right)
+        public static bool IsAssignableTo(this TypeReference right, TypeReference left)
         {
             var leftName = left.FullName;
             var rightName = right.FullName;
