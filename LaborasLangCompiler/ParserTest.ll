@@ -1,5 +1,5 @@
 int a = 5;
-int b = a + 2 * a;
+int b = a;
 auto func = void(int arg)
 {
 	

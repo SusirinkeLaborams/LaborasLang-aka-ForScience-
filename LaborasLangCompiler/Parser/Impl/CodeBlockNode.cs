@@ -45,9 +45,11 @@ namespace LaborasLangCompiler.Parser.Impl
             return symbols[name];
         }
 
-        public static new CodeBlockNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static CodeBlockNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode, IReadOnlyList<FunctionArgumentNode> args = null)
         {
             var instance = new CodeBlockNode(parentBlock);
+            if (args != null)
+                instance.nodes.AddRange(args);
             foreach(var node in lexerNode.Children)
             {
                 instance.nodes.Add(ParserNode.Parse(parser, parentClass, instance, node));

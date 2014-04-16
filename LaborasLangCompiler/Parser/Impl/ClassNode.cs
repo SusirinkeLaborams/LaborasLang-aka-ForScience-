@@ -17,23 +17,17 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.ClassNode; } }
         private Dictionary<string, FieldDeclarationNode> fields;
-        private List<FunctionDeclarationNode> methods;
         private ClassNode parent;
         private TypeEmitter typeEmitter;
         private ClassNode(Parser parser, ClassNode parent)
         {
             this.parent = parent;
-            methods = new List<FunctionDeclarationNode>();
             fields = new Dictionary<string, FieldDeclarationNode>();
             typeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
         private void AddField(string name, TypeReference type)
         {
             fields.Add(name, new FieldDeclarationNode(name, type));
-        }
-        private void AddMethod(FunctionDeclarationNode method)
-        {
-            methods.Add(method);
         }
         public FieldNode GetField(string name)
         {
@@ -56,7 +50,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (parentBlock != null)
                 throw new ParseException("WhatIsThisIDontEven: Class defined inside a code block");
 
-            //declarations
+            //symbols
             foreach (var node in lexerNode.Children)
             {
                 if (node.Token.Name == Lexer.Sentence)
@@ -83,16 +77,14 @@ namespace LaborasLangCompiler.Parser.Impl
             }
 
             //init
-            FieldDeclarationNode field = null;
-            ExpressionNode init = null;
             foreach (var node in lexerNode.Children)
             {
                 sentence = node.Children[0];
                 switch (sentence.Token.Name)
                 {
                     case Lexer.DeclarationAndAssignment:
-                        init = ExpressionNode.Parse(parser, instance, null, sentence.Children[2]);
-                        field = instance.fields[parser.GetNodeValue(sentence.Children[1])];
+                        var init = ExpressionNode.Parse(parser, instance, null, sentence.Children[2]);
+                        var field = instance.fields[parser.GetNodeValue(sentence.Children[1])];
                         field.Initializer = init;
                         if (field.ReturnType == null)
                         {
@@ -103,12 +95,28 @@ namespace LaborasLangCompiler.Parser.Impl
                             if (!Parser.CompareTypes(field.ReturnType, init.ReturnType))
                                 throw new TypeException("Type mismatch, field " + field.Name + " type " + field.ReturnType.FullName + " initialized with " + init.ReturnType.FullName);
                         }
-                        goto case Lexer.Declaration;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            //field declarations
+            foreach(var node in lexerNode.Children)
+            {
+                sentence = node.Children[0];
+                switch (sentence.Token.Name)
+                {
                     case Lexer.Declaration:
-                        field = instance.fields[parser.GetNodeValue(sentence.Children[1])];
+                    case Lexer.DeclarationAndAssignment:
+                        var field = instance.fields[parser.GetNodeValue(sentence.Children[1])];
                         field.CreateFieldDefinition(FieldAttributes.Static | FieldAttributes.Private);
-                        instance.typeEmitter.AddField(field.Field, init);
-                        init = null;
+                        if(field.Initializer is FunctionDeclarationNode)
+                        {
+                            var method = (FunctionDeclarationNode) field.Initializer;
+                            method.Emit(instance.typeEmitter, field.Name);
+                        }
+                        instance.typeEmitter.AddField(field.Field, field.Initializer);
                         break;
                     default:
                         break;
@@ -142,29 +150,6 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
-
-        public override bool Equals(ParserNode obj)
-        {
-            if (!(obj is ClassNode))
-                return false;
-
-            var that = (ClassNode)obj;
-
-            if (!(base.Equals(obj) && fields.SequenceEqual(that.fields) && methods.SequenceEqual(that.methods)))
-                return false;
-
-            if (parent != null && that.parent != null)
-            {
-                if (!parent.Equals(that.parent))
-                    return false;
-            }
-            else
-            {
-                if (parent != null || that.parent != null)
-                    return false;
-            }
-            return true;
-        }
         public override string Print()
         {
             string delim = "";
@@ -174,13 +159,6 @@ namespace LaborasLangCompiler.Parser.Impl
                 builder.Append(String.Format("{0}{1} {2}", delim, field.Value.ReturnType.FullName, field.Key));
                 if (field.Value.Initializer != null)
                     builder.Append(" = ").Append(field.Value.Initializer.Print());
-                delim = ", ";
-            }
-            builder.Append(" Methods: ");
-            delim = "";
-            foreach(var method in methods)
-            {
-                builder.Append(String.Format("{0}{1}", delim, method.ReturnType.FullName));
                 delim = ", ";
             }
             

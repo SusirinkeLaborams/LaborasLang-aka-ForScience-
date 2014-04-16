@@ -1,4 +1,6 @@
-﻿using LaborasLangCompiler.LexingTools;
+﻿using LaborasLangCompiler.ILTools.Methods;
+using LaborasLangCompiler.ILTools.Types;
+using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
 using NPEG;
@@ -10,21 +12,28 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class FunctionDeclarationNode : CodeBlockNode, IFunctionNode
+    class FunctionDeclarationNode : RValueNode, IFunctionNode
     {
         public IExpressionNode ObjectInstance { get { return null; } }
-        public MethodReference Function { get; set; }
-        public RValueNodeType RValueType { get { return RValueNodeType.Function; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
-        public TypeReference ReturnType { get; set; }
-        private FunctionDeclarationNode(CodeBlockNode parent) : base(parent)
+        public MethodReference Function { get; private set; }
+        public override RValueNodeType RValueType { get { return RValueNodeType.Function; } }
+        public override TypeReference ReturnType { get; set; }
+        private CodeBlockNode body;
+        private TypeReference functionReturnType;
+        public void Emit(TypeEmitter klass, string name)
         {
+            var emitter = new MethodEmitter(klass, name + "_method", functionReturnType);
+            emitter.ParseTree(body);
+            Function = emitter.Get();
         }
         public static new FunctionDeclarationNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
-            var instance = new FunctionDeclarationNode(parentBlock);
-            var header = FunctionHeader.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
-            throw new NotImplementedException();
+            var instance = new FunctionDeclarationNode();
+            var header = FunctionHeader.Parse(parser, parentClass, null, lexerNode.Children[0]);
+            instance.body = CodeBlockNode.Parse(parser, parentClass, null, lexerNode.Children[1], header.Args);
+            instance.ReturnType = header.FunctionType;
+            instance.functionReturnType = header.ReturnType;
+            return instance;
         }
         public static TypeReference ParseType(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
