@@ -16,8 +16,8 @@ namespace LaborasLangCompiler.ILTools.Types
         private ConstructorEmitter instanceConstructor;
         private ConstructorEmitter staticConstructor;
         protected TypeDefinition typeDefinition;
-        
-        public ModuleDefinition Module { get { return typeDefinition.Module; } }
+
+        public AssemblyEmitter Assembly { get; private set; }
 
         public TypeEmitter(AssemblyEmitter assembly, string className, string @namespace = "",
                             TypeAttributes typeAttributes = DefaultTypeAttributes, TypeReference baseType = null) :
@@ -33,20 +33,18 @@ namespace LaborasLangCompiler.ILTools.Types
                 throw new ArgumentNullException("assembly");
             }
 
+            Assembly = assembly;
+
             if (baseType == null)
             {
-                baseType = assembly.ImportType(typeof(object));
-            }
-            else
-            {
-                baseType = assembly.ImportType(baseType);
+                baseType = Assembly.TypeToTypeReference(typeof(object));
             }
 
             typeDefinition = new TypeDefinition(@namespace, className, typeAttributes, baseType);
 
             if (addToAssembly)
             {
-                assembly.AddType(typeDefinition);
+                Assembly.AddType(typeDefinition);
             }
         }
 

@@ -47,7 +47,7 @@ namespace LaborasLangCompiler.ILTools
                 throw new InvalidOperationException("Assembly registry is already created!");
             }
 
-            new AssemblyRegistry(references);
+            new AssemblyRegistry(references);   // Sue me
         }
 
         public static void RegisterReferences(IEnumerable<string> references)
@@ -86,52 +86,27 @@ namespace LaborasLangCompiler.ILTools
             instance.assemblyPaths.Add(assemblyDefinition.MainModule.Name);
             instance.assemblies.Add(assemblyDefinition);
         }
-
-        public static TypeReference ImportType(Type type)
-        {
-            return instance.mscorlib.MainModule.Import(type);
-        }
-
+        
         #region Type/Method/Property/Field getters
 
-        private TypeDefinition GetType(IList<TypeDefinition> types, string typeName)
+        public static bool IsTypeKnown(string typeName)
         {
-            foreach (var type in types)
-            {
-                if (type.FullName == typeName)
-                {
-                    return type;
-                }
-
-                if (type.HasNestedTypes)
-                {
-                    var nestedType = GetType(type.NestedTypes, typeName);
-                    if (nestedType != null)
-                    {
-                        return nestedType;
-                    }
-                }
-            }
-
-            return null;
+            return GetTypeInternal(typeName) != null;
         }
 
-        public static TypeDefinition GetType(string typeName)
+        public static TypeReference GetType(AssemblyEmitter assemblyScope, string typeName)
         {
-            foreach (var assembly in instance.assemblies)
-            {
-                var type = instance.GetType(assembly.MainModule.Types, typeName);
+            var type = GetTypeInternal(typeName);
 
-                if (type != null)
-                {
-                    return type;
-                }
+            if (type == null)
+            {
+                return null;
             }
 
-            return null;
+            return ScopeToAssembly(assemblyScope, type);
         }
 
-        public static TypeDefinition GetType(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
+        public static TypeDefinition GetFunctorType(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
         {
             var name = FunctorTypeEmitter.ComputeNameFromReturnAndArgumentTypes(returnType, arguments);
 
@@ -143,32 +118,29 @@ namespace LaborasLangCompiler.ILTools
             return instance.functorTypes[name];
         }
 
-        public static bool TypeIsKnown(string typeName)
+        public static IList<MethodReference> GetMethods(AssemblyEmitter assembly, string typeName, string methodName)
         {
-            return GetType(typeName) != null;
+            return GetMethods(assembly, GetTypeInternal(typeName), methodName);
         }
 
-        public static IList<MethodDefinition> GetMethods(string typeName, string methodName)
+        public static IList<MethodReference> GetMethods(AssemblyEmitter assembly, TypeReference type, string methodName)
         {
-            return GetMethods(GetType(typeName), methodName);
-        }
+            var resolvedType = type.Resolve();
 
-        public static IList<MethodDefinition> GetMethods(TypeDefinition type, string methodName)
-        {
-            if (!type.HasMethods)
+            if (!resolvedType.HasMethods)
             {
                 return null;
-            }
+            }            
 
-            return type.Methods.Where(x => x.Name == methodName).ToList<MethodDefinition>();
+            return resolvedType.Methods.Where(x => x.Name == methodName).Select(x => ScopeToAssembly(assembly, x)).ToList<MethodReference>();
         }
 
-        public static PropertyDefinition GetProperty(string typeName, string propertyName)
+        public static PropertyDefinition GetProperty(AssemblyEmitter assembly, string typeName, string propertyName)
         {
-            return GetProperty(GetType(typeName), propertyName);
+            return GetProperty(assembly, GetTypeInternal(typeName), propertyName);
         }
 
-        public static PropertyDefinition GetProperty(TypeDefinition type, string propertyName)
+        public static PropertyDefinition GetProperty(AssemblyEmitter assembly, TypeDefinition type, string propertyName)
         {
             if (!type.HasProperties)
             {
@@ -178,19 +150,128 @@ namespace LaborasLangCompiler.ILTools
             return type.Properties.SingleOrDefault(x => x.Name == propertyName);
         }
 
-        public static FieldDefinition GetField(string typeName, string fieldName)
+        public static MethodReference GetPropertyGetter(AssemblyEmitter assembly, PropertyReference property)
         {
-            return GetField(GetType(fieldName), fieldName);
+            var resolvedProperty = property.Resolve();
+
+            if (resolvedProperty.GetMethod == null)
+            {
+                return null;
+            }
+
+            return ScopeToAssembly(assembly, resolvedProperty.GetMethod);
         }
 
-        public static FieldDefinition GetField(TypeDefinition type, string fieldName)
+        public static MethodReference GetPropertySetter(AssemblyEmitter assembly, PropertyReference property)
+        {
+            var resolvedProperty = property.Resolve();
+
+            if (resolvedProperty.SetMethod == null)
+            {
+                return null;
+            }
+
+            return ScopeToAssembly(assembly, resolvedProperty.SetMethod);
+        }
+
+        public static FieldReference GetField(AssemblyEmitter assembly, string typeName, string fieldName)
+        {
+            return GetField(assembly, GetTypeInternal(fieldName), fieldName);
+        }
+
+        public static FieldReference GetField(AssemblyEmitter assembly, TypeDefinition type, string fieldName)
         {
             if (!type.HasFields)
             {
                 return null;
             }
 
-            return type.Fields.SingleOrDefault(x => x.Name == fieldName);
+            return ScopeToAssembly(assembly, type.Fields.SingleOrDefault(x => x.Name == fieldName));
+        }
+
+        #endregion
+
+        #region Privates
+
+        private TypeDefinition GetTypeInternal(IList<TypeDefinition> types, string typeName)
+        {
+            foreach (var type in types)
+            {
+                if (type.FullName == typeName)
+                {
+                    return type;
+                }
+
+                if (type.HasNestedTypes)
+                {
+                    var nestedType = GetTypeInternal(type.NestedTypes, typeName);
+                    if (nestedType != null)
+                    {
+                        return nestedType;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private static TypeDefinition GetTypeInternal(string typeName)
+        {
+            foreach (var assembly in instance.assemblies)
+            {
+                var type = instance.GetTypeInternal(assembly.MainModule.Types, typeName);
+
+                if (type != null)
+                {
+                    return type;
+                }
+            }
+
+            return null;
+        }
+
+        private static TypeReference ScopeToAssembly(AssemblyEmitter assemblyScope, TypeReference reference)
+        {
+            var module = assemblyScope.MainModule;
+
+            if ((reference.Scope.MetadataScopeType != MetadataScopeType.ModuleDefinition) || (ModuleDefinition)reference.Scope != module)
+            {
+                return module.Import(reference);
+            }
+            else
+            {
+                return reference.Resolve();
+            }
+        }
+
+        private static MethodReference ScopeToAssembly(AssemblyEmitter assemblyScope, MethodReference reference)
+        {
+            var module = assemblyScope.MainModule;
+
+            if ((reference.DeclaringType.Scope.MetadataScopeType != MetadataScopeType.ModuleDefinition) ||
+                    (ModuleDefinition)reference.DeclaringType.Scope != module)
+            {
+                return module.Import(reference);
+            }
+            else
+            {
+                return reference.Resolve();
+            }
+        }
+
+        private static FieldReference ScopeToAssembly(AssemblyEmitter assemblyScope, FieldReference reference)
+        {
+            var module = assemblyScope.MainModule;
+
+            if ((reference.DeclaringType.Scope.MetadataScopeType != MetadataScopeType.ModuleDefinition) ||
+                    (ModuleDefinition)reference.DeclaringType.Scope != module)
+            {
+                return module.Import(reference);
+            }
+            else
+            {
+                return reference.Resolve();
+            }
         }
 
         #endregion

@@ -28,7 +28,7 @@ namespace LaborasLangCompiler.ILTools
         }
 
         private DelegateEmitter(AssemblyEmitter assembly, TypeDefinition declaringType, TypeReference returnType, IReadOnlyList<TypeReference> arguments) :
-            base(assembly, ComputeName(returnType, arguments), "", DelegateTypeAttributes, AssemblyRegistry.GetType("System.MulticastDelegate"), false)
+            base(assembly, ComputeName(returnType, arguments), "", DelegateTypeAttributes, AssemblyRegistry.GetType(assembly, "System.MulticastDelegate"), false)
         {
             if (declaringType == null)
             {
@@ -36,7 +36,6 @@ namespace LaborasLangCompiler.ILTools
             }
 
             typeDefinition.DeclaringType = declaringType;
-            returnType = Module.Import(returnType);
 
             InitializeTypes();
 
@@ -48,11 +47,11 @@ namespace LaborasLangCompiler.ILTools
 
         private void InitializeTypes()
         {
-            voidType = Module.Import(typeof(void));
-            objectType = Module.Import(typeof(object));
-            nativeIntType = Module.Import(typeof(IntPtr));
-            asyncResultType = Module.Import(typeof(IAsyncResult));
-            asyncCallbackType = Module.Import(typeof(AsyncCallback));
+            voidType = Assembly.TypeToTypeReference(typeof(void));
+            objectType = Assembly.TypeToTypeReference(typeof(object));
+            nativeIntType = Assembly.TypeToTypeReference(typeof(IntPtr));
+            asyncResultType = Assembly.TypeToTypeReference(typeof(IAsyncResult));
+            asyncCallbackType = Assembly.TypeToTypeReference(typeof(AsyncCallback));
         }
 
         private void AddConstructor()
@@ -70,7 +69,7 @@ namespace LaborasLangCompiler.ILTools
             var beginInvoke = new MethodDefinition("BeginInvoke", DelegateMethodAttributes, asyncResultType);
             foreach (var argument in arguments)
             {
-                beginInvoke.Parameters.Add(new ParameterDefinition(Module.Import(argument)));
+                beginInvoke.Parameters.Add(new ParameterDefinition(argument));
             }
 
             beginInvoke.Parameters.Add(new ParameterDefinition("callback", ParameterAttributes.None, asyncCallbackType));
@@ -95,7 +94,7 @@ namespace LaborasLangCompiler.ILTools
 
             foreach (var argument in arguments)
             {
-                invoke.Parameters.Add(new ParameterDefinition(Module.Import(argument)));
+                invoke.Parameters.Add(new ParameterDefinition(argument));
             }
 
             invoke.ImplAttributes = MethodImplAttributes.Runtime;

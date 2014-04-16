@@ -14,7 +14,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         [TestMethod]
         public void TestCanEmit_InstanceFieldInitializer()
         {
-            var intType = assemblyEmitter.ImportType(typeof(int));
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
 
             var initializer = new LiteralNode()
             {

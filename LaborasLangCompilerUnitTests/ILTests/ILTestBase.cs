@@ -33,7 +33,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
         protected virtual void Test()
         {
-            var methodEmitter = new MethodEmitter(typeEmitter, "dummy", AssemblyRegistry.ImportType(typeof(void)),
+            var methodEmitter = new MethodEmitter(typeEmitter, "dummy", assemblyEmitter.TypeToTypeReference(typeof(void)),
                 MethodAttributes.Static | MethodAttributes.Private);
 
             if (BodyCodeBlock == null)

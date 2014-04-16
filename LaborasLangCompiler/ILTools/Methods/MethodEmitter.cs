@@ -13,25 +13,21 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected MethodBody body;
         protected ILProcessor ilProcessor;
 
-        protected ModuleDefinition module;
-
+        protected TypeEmitter DeclaringType { get; private set; }
+        protected AssemblyEmitter Assembly { get { return DeclaringType.Assembly; } }
+        
         public bool Parsed { get; protected set; }
 
         public MethodEmitter(TypeEmitter declaringType, string name, TypeReference returnType, 
                                 MethodAttributes methodAttributes = MethodAttributes.Private)
         {
-            module = declaringType.Module;
+            DeclaringType = declaringType;
 
-            methodDefinition = new MethodDefinition(name, methodAttributes, Import(returnType));
+            methodDefinition = new MethodDefinition(name, methodAttributes, returnType);
             declaringType.AddMethod(methodDefinition);
 
             body = methodDefinition.Body;
             ilProcessor = body.GetILProcessor();
-
-            if (module == null)
-            {
-                throw new ArgumentException("Declaring type isn't assigned to module!");
-            }
         }
 
         public ParameterDefinition AddArgument(TypeReference type, string name)
@@ -41,7 +37,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 throw new ArgumentException("Invalid argument name: " + name != null ? name : "<null>");
             }
 
-            var parameter = new ParameterDefinition(name, ParameterAttributes.None, Import(type));
+            var parameter = new ParameterDefinition(name, ParameterAttributes.None, type);
             methodDefinition.Parameters.Add(parameter);
 
             return parameter;
@@ -49,18 +45,13 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         public ParameterDefinition AddArgument(ParameterDefinition parameter)
         {
-            if (parameter.ParameterType.Module != module)
-            {
-                throw new ArgumentException("Parameter type is not imported!");
-            }
-
             methodDefinition.Parameters.Add(parameter);
             return parameter;
         }
 
         protected ParameterDefinition AddArgument(TypeReference type)
         {
-            var parameter = new ParameterDefinition(Import(type));
+            var parameter = new ParameterDefinition(type);
             methodDefinition.Parameters.Add(parameter);
 
             return parameter;
@@ -268,11 +259,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             if (!field.Field.IsStatic)
             {
                 Emit(field.ObjectInstance);
-                Ldfld(Import(field.Field));
+                Ldfld(field.Field);
             }
             else
             {
-                Ldsfld(Import(field.Field));
+                Ldsfld(field.Field);
             }
         }
 
@@ -288,19 +279,19 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Emit(IPropertyNode property)
         {
-            var getter = property.Property.GetMethod;
+            var getter = AssemblyRegistry.GetPropertyGetter(Assembly, property.Property);
 
             if (getter == null)
             {
                 throw new ArgumentException(string.Format("Property {0} has no getter.", property.Property.FullName));
             }
 
-            if (!getter.IsStatic)
+            if (!getter.Resolve().IsStatic)
             {
                 Emit(property.ObjectInstance);
             }
 
-            Call(Import(getter));
+            Call(getter);
         }
 
         #endregion
@@ -312,11 +303,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             if (!field.Field.IsStatic)
             {
                 Emit(field.ObjectInstance);
-                Stfld(Import(field.Field));
+                Stfld(field.Field);
             }
             else
             {
-                Stsfld(Import(field.Field));
+                Stsfld(field.Field);
             }
         }
 
@@ -344,7 +335,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Emit(property.ObjectInstance);
             }
 
-            Call(Import(setter));
+            Call(setter);
         }
 
         #endregion
@@ -487,7 +478,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Emit(argument);
                 }
 
-                Call(Import(functionNode.Function));
+                Call(functionNode.Function);
             }
             else
             {
@@ -607,7 +598,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Box(right.ReturnType);
             }
 
-            var concatMethod = (from x in AssemblyRegistry.GetMethods("System.String", "Concat")
+            var concatMethod = (from x in AssemblyRegistry.GetMethods(Assembly, "System.String", "Concat")
                                 where x.Parameters.Count == 2
                                         && x.Parameters[0].ParameterType.FullName == "System.Object"
                                         && x.Parameters[1].ParameterType.FullName == "System.Object"
@@ -860,39 +851,6 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Helpers
 
-        #region Importers 
-
-        protected TypeReference Import(TypeReference type)
-        {
-            if (type.Module != module)
-            {
-                type = module.Import(type);
-            }
-
-            return type;
-        }
-
-        protected MethodReference Import(MethodReference method)
-        {
-            if (method.Module != module)
-            {
-                method = module.Import(method);
-            }
-
-            return method;
-        }
-
-        protected FieldReference Import(FieldReference field)
-        {
-            if (field.Module != module)
-            {
-                field = module.Import(field);
-            }
-
-            return field;
-        }
-
-        #endregion
 
         protected bool IsAtLeastOneOperandString(IBinaryOperatorNode binaryOperator)
         {

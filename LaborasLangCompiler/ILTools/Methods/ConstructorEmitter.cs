@@ -20,16 +20,16 @@ namespace LaborasLangCompiler.ILTools.Methods
         
         public ConstructorEmitter(TypeEmitter declaringType, bool isStatic) :
             base(declaringType, isStatic ? ".cctor" : ".ctor",
-            AssemblyRegistry.ImportType(typeof(void)), isStatic ? StaticAttributes : InstanceAttributes)
+            declaringType.Assembly.TypeToTypeReference(typeof(void)), isStatic ? StaticAttributes : InstanceAttributes)
         {
             this.isStatic = isStatic;
 
             if (!isStatic)
             {
-                var objectCtor = AssemblyRegistry.GetMethods("System.Object", ".ctor").Single(x => x.Parameters.Count == 0);
+                var objectCtor = AssemblyRegistry.GetMethods(declaringType.Assembly, "System.Object", ".ctor").Single(x => x.Parameters.Count == 0);
 
                 epilogue.Add(Instruction.Create(OpCodes.Ldarg_0));
-                epilogue.Add(Instruction.Create(OpCodes.Call, Import(objectCtor)));
+                epilogue.Add(Instruction.Create(OpCodes.Call, objectCtor));
             }
 
             Parsed = true;
@@ -75,7 +75,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Ldarg(0);
             }
 
-            Call(Import(setter));
+            Call(setter);
 
             AddEpilogue();
         }

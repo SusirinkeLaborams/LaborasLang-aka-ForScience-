@@ -18,16 +18,16 @@ namespace LaborasLangCompiler.ILTools.Types
         }
 
         private FunctorTypeEmitter(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments) :
-            base(assembly, ComputeName(returnType, arguments), "$Functors", FunctorTypeAttributes, AssemblyRegistry.GetType("System.ValueType"))
+            base(assembly, ComputeName(returnType, arguments), "$Functors", FunctorTypeAttributes, AssemblyRegistry.GetType(assembly, "System.ValueType"))
         {
             var delegateType = DelegateEmitter.Create(assembly, typeDefinition, returnType, arguments);
             typeDefinition.NestedTypes.Add(delegateType);
 
             var objectInstanceField = new FieldDefinition("objectInstance", FieldAttributes.Private | FieldAttributes.InitOnly,
-                Module.Import(typeof(object)));
+                Assembly.TypeToTypeReference(typeof(object)));
 
             var functionPtrField = new FieldDefinition("functionPtr", FieldAttributes.Private | FieldAttributes.InitOnly,
-                Module.Import(typeof(IntPtr)));
+                Assembly.TypeToTypeReference(typeof(IntPtr)));
 
             typeDefinition.Fields.Add(objectInstanceField);
             typeDefinition.Fields.Add(functionPtrField);

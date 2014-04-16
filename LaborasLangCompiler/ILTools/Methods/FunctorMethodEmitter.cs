@@ -16,7 +16,7 @@ namespace LaborasLangCompiler.ILTools.Methods
         static public MethodDefinition EmitConstructor(TypeEmitter declaringType, FieldDefinition objectInstanceField, 
             FieldDefinition functionPtrField)
         {
-            var definition = new FunctorMethodEmitter(declaringType, ".ctor", AssemblyRegistry.ImportType(typeof(void)),
+            var definition = new FunctorMethodEmitter(declaringType, ".ctor", declaringType.Assembly.TypeToTypeReference(typeof(void)),
                 MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName);
 
             definition.EmitConstructorBody(objectInstanceField, functionPtrField);
@@ -53,8 +53,8 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         private void EmitConstructorBody(FieldDefinition objectInstanceField, FieldDefinition functionPtrField)
         {
-            var objectInstanceArgument = AddArgument(AssemblyRegistry.ImportType(typeof(object)), "objectInstance");
-            var functionPtrArgument = AddArgument(AssemblyRegistry.ImportType(typeof(System.IntPtr)), "functionPtr");
+            var objectInstanceArgument = AddArgument(Assembly.TypeToTypeReference(typeof(object)), "objectInstance");
+            var functionPtrArgument = AddArgument(Assembly.TypeToTypeReference(typeof(System.IntPtr)), "functionPtr");
 
             Ldarg(0);
             Ldarg(objectInstanceArgument.Index + 1);
@@ -122,9 +122,9 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void EmitAsDelegate(FieldDefinition objectInstanceField, FieldDefinition functionPtrField, TypeDefinition delegateType)
+        private void EmitAsDelegate(FieldReference objectInstanceField, FieldReference functionPtrField, TypeReference delegateType)
         {
-            var ctor = delegateType.Methods.Single(x => x.Parameters.Count == 2 &&
+            var ctor = AssemblyRegistry.GetMethods(Assembly, delegateType, ".ctor").Single(x => x.Parameters.Count == 2 &&
                 x.Parameters[0].ParameterType.FullName == "System.Object" && x.Parameters[1].ParameterType.FullName == "System.IntPtr");
 
             Ldarg(0);
@@ -133,7 +133,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             Ldarg(0);
             Ldfld(functionPtrField);
 
-            Newobj(Import(ctor));
+            Newobj(ctor);
             Ret();
         }
     }

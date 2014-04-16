@@ -25,11 +25,11 @@ namespace LaborasLangCompiler.Parser
             Filename = filename;
 
             var primitives = new Dictionary<string, TypeReference>();
-            primitives.Add("bool", AssemblyRegistry.GetType("System.Boolean"));
-            primitives.Add("int", AssemblyRegistry.GetType("System.Int32"));
-            primitives.Add("float", AssemblyRegistry.GetType("System.Single"));
-            primitives.Add("string", AssemblyRegistry.GetType("System.String"));
-            primitives.Add("void", AssemblyRegistry.GetType("System.Void"));
+            primitives.Add("bool", Assembly.TypeToTypeReference(typeof(bool)));
+            primitives.Add("int", Assembly.TypeToTypeReference(typeof(int)));
+            primitives.Add("float", Assembly.TypeToTypeReference(typeof(float)));
+            primitives.Add("string", Assembly.TypeToTypeReference(typeof(string)));
+            primitives.Add("void", Assembly.TypeToTypeReference(typeof(void)));
             primitives.Add("auto", null);
             Primitives = primitives;
 

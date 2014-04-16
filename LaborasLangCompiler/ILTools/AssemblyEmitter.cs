@@ -16,6 +16,7 @@ namespace LaborasLangCompiler.ILTools
         private readonly string outputPath;
 
         public string OutputPath { get { return outputPath; } }
+        public ModuleDefinition MainModule { get { return assemblyDefinition.MainModule; } }
 
         public AssemblyEmitter(CompilerArguments compilerArgs, Version version = null)
         {
@@ -41,19 +42,9 @@ namespace LaborasLangCompiler.ILTools
             assemblyDefinition.MainModule.Types.Add(type);
         }
 
-        public TypeReference ImportType(Type type)
+        public TypeReference TypeToTypeReference(Type type)
         {
             return assemblyDefinition.MainModule.Import(type);
-        }
-
-        public TypeReference ImportType(TypeReference type)
-        {
-            if (type.Module != assemblyDefinition.MainModule)
-            {
-                type = assemblyDefinition.MainModule.Import(type);
-            }
-
-            return type;
         }
 
         public void Save()
