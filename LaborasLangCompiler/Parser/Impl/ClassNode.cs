@@ -92,7 +92,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         }
                         else
                         {
-                            if (!ILHelpers.IsAssignableTo(field.ReturnType, init.ReturnType))
+                            if (!ILHelpers.IsAssignableTo(init.ReturnType, field.ReturnType))
                                 throw new TypeException("Type mismatch, field " + field.Name + " type " + field.ReturnType.FullName + " initialized with " + init.ReturnType.FullName);
                         }
                         break;
