@@ -26,10 +26,11 @@ namespace LaborasLangCompiler.Parser.Impl
                     instance = parentBlock.GetSymbol(value);
                 if(instance == null)
                     instance = parentClass.GetField(value);
-                if (instance != null)
-                    return instance;
-                else
+                if (instance == null)
                     throw new SymbolNotFoundException("Symbol " + value + " not found");
+                if (instance.ReturnType == null)
+                    throw new TypeException("Cannot reference a typeless symbol");
+                return instance;
             }
             else
             {
