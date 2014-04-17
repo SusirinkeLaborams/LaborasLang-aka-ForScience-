@@ -49,9 +49,9 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             nodes.Add(node);
         }
-        private void AddNode(ExpressionNode node, Parser parser)
+        private void AddExpression(ExpressionNode node, Parser parser)
         {
-            if (node.ReturnType == parser.Primitives["void"])
+            if (node.ReturnType == parser.Primitives[Parser.Void])
                 AddNode(node);
             else
                 AddNode(UnaryOperatorNode.Void(node));
@@ -75,7 +75,7 @@ namespace LaborasLangCompiler.Parser.Impl
                             instance.AddNode(SymbolDeclarationNode.Parse(parser, parentClass, instance, sentence));
                             break;
                         case Lexer.Assignment:
-                            instance.AddNode(AssignmentOperatorNode.Parse(parser, parentClass, instance, sentence), parser);
+                            instance.AddExpression(AssignmentOperatorNode.Parse(parser, parentClass, instance, sentence), parser);
                             break;
                         case Lexer.FunctionCall:
                         case Lexer.Loop:

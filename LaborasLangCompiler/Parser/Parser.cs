@@ -18,6 +18,13 @@ namespace LaborasLangCompiler.Parser
         public string Filename { get; private set; }
         private ByteInputIterator source;
         public IReadOnlyDictionary<string, TypeReference> Primitives { get; private set; }
+        public const string Bool   = "bool";
+        public const string Int    = "int";
+        public const string Long   = "long";
+        public const string Float  = "float";
+        public const string String = "string";
+        public const string Void   = "void";
+        public const string Auto   = "auto";
         public Parser(AssemblyEmitter assembly, AstNode tree, ByteInputIterator source, string filename)
         {
             Assembly = assembly;
@@ -25,13 +32,13 @@ namespace LaborasLangCompiler.Parser
             Filename = filename;
 
             var primitives = new Dictionary<string, TypeReference>();
-            primitives.Add("bool", Assembly.TypeToTypeReference(typeof(bool)));
-            primitives.Add("int", Assembly.TypeToTypeReference(typeof(int)));
-            primitives.Add("float", Assembly.TypeToTypeReference(typeof(float)));
-            primitives.Add("string", Assembly.TypeToTypeReference(typeof(string)));
-            primitives.Add("void", Assembly.TypeToTypeReference(typeof(void)));
-            primitives.Add("long", Assembly.TypeToTypeReference(typeof(long)));
-            primitives.Add("auto", null);
+            primitives.Add(Bool, Assembly.TypeToTypeReference(typeof(bool)));
+            primitives.Add(Int, Assembly.TypeToTypeReference(typeof(int)));
+            primitives.Add(Float, Assembly.TypeToTypeReference(typeof(float)));
+            primitives.Add(String, Assembly.TypeToTypeReference(typeof(string)));
+            primitives.Add(Void, Assembly.TypeToTypeReference(typeof(void)));
+            primitives.Add(Long, Assembly.TypeToTypeReference(typeof(long)));
+            primitives.Add(Auto, null);
             Primitives = primitives;
 
             ClassNode.Parse(this, null, null, tree);
