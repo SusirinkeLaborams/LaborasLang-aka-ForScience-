@@ -40,26 +40,6 @@ namespace LaborasLangCompiler.Parser
         {
             return Encoding.UTF8.GetString(source.Text(node.Token.Start, node.Token.End));
         }
-        public Dictionary<string, AstNode> FindChildren(string[] types, AstNode node)
-        {
-            Dictionary<string, AstNode> ret = new Dictionary<string, AstNode>();
-            foreach(var type in types)
-            {
-                ret.Add(type, null);
-            }
-            foreach(var child in node.Children)
-            {
-                string type = child.Token.Name;
-                if(ret.ContainsKey(type))
-                {
-                    if(ret[type] == null)
-                        ret[type] = child;
-                    else
-                        throw new ParseException("Multiple definitions of " + type + " in node");
-                }
-            }
-            return ret;
-        }
         /// <summary>
         /// Parses node as a type
         /// </summary>
@@ -74,7 +54,7 @@ namespace LaborasLangCompiler.Parser
                 if (Primitives.ContainsKey(type))
                     return Primitives[type];
                 else
-                    throw new TypeException("Type " + type + " is not a primitive .NET type");
+                    throw new TypeException("Type '" + type + "' is not a primitive .NET type");
             }
             else
             {

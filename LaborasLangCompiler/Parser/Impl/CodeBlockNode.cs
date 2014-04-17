@@ -1,4 +1,6 @@
-﻿using LaborasLangCompiler.Parser;
+﻿using LaborasLangCompiler.LexingTools;
+using LaborasLangCompiler.Parser;
+using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NPEG;
@@ -17,7 +19,7 @@ namespace LaborasLangCompiler.Parser.Impl
         protected List<IParserNode> nodes;
         protected Dictionary<string, LValueNode> symbols;
         private CodeBlockNode parent;
-        protected CodeBlockNode(CodeBlockNode parent) 
+        protected CodeBlockNode(CodeBlockNode parent)
         {
             nodes = new List<IParserNode>();
             symbols = new Dictionary<string, LValueNode>();
@@ -26,7 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public LValueNode GetSymbol(string name)
         {
             //check node table
-            if(symbols.ContainsKey(name))
+            if (symbols.ContainsKey(name))
                 return symbols[name];
 
             //check parent block table
@@ -36,23 +38,61 @@ namespace LaborasLangCompiler.Parser.Impl
             //symbol not found
             return null;
         }
-
-        public virtual ILValueNode AddSymbol(TypeReference type, string name)
+        public virtual ILValueNode AddVariable(TypeReference type, string name)
         {
             if (symbols.ContainsKey(name))
                 return null;
             symbols.Add(name, new LocalVariableNode(new VariableDefinition(name, type)));
             return symbols[name];
         }
-
+        private void AddNode(SymbolDeclarationNode node)
+        {
+            nodes.Add(node);
+        }
+        private void AddNode(ExpressionNode node)
+        {
+            throw new NotImplementedException();
+        }
+        private void AddNode(CodeBlockNode node)
+        {
+            nodes.Add(node);
+        }
         public static CodeBlockNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode, IReadOnlyList<FunctionArgumentNode> args = null)
         {
             var instance = new CodeBlockNode(parentBlock);
             if (args != null)
                 instance.nodes.AddRange(args);
-            foreach(var node in lexerNode.Children)
+            foreach (var node in lexerNode.Children)
             {
-                throw new NotImplementedException();
+                if (node.Token.Name == Lexer.Sentence)
+                {
+                    var sentence = node.Children[0];
+                    switch (sentence.Token.Name)
+                    {
+                        case Lexer.NamespaceImport:
+                            throw new ParseException("Imports only allowed in classes");
+                        case Lexer.Declaration:
+                        case Lexer.DeclarationAndAssignment:
+                            instance.AddNode(SymbolDeclarationNode.Parse(parser, parentClass, instance, sentence));
+                            break;
+                        case Lexer.Assignment:
+                            instance.AddNode(AssignmentOperatorNode.Parse(parser, parentClass, instance, sentence));
+                            break;
+                        case Lexer.FunctionCall:
+                        case Lexer.Loop:
+                        case Lexer.ConditionalSentence:
+                            throw new NotImplementedException();
+                        case Lexer.CodeBlock:
+                            instance.AddNode(CodeBlockNode.Parse(parser, parentClass, instance, sentence));
+                            break;
+                        default:
+                            throw new ParseException("Node " + sentence.Token.Name + " in sentence, dafuq");
+                    }
+                }
+                else
+                {
+                    throw new ParseException("Sentence expected, " + node.Token.Name + " received");
+                }
             }
             return instance;
         }
