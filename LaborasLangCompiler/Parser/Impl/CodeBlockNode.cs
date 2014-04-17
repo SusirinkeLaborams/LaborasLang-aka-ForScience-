@@ -45,17 +45,16 @@ namespace LaborasLangCompiler.Parser.Impl
             symbols.Add(name, new LocalVariableNode(new VariableDefinition(name, type)));
             return symbols[name];
         }
-        private void AddNode(SymbolDeclarationNode node)
+        private void AddNode(ParserNode node)
         {
             nodes.Add(node);
         }
-        private void AddNode(ExpressionNode node)
+        private void AddNode(ExpressionNode node, Parser parser)
         {
-            throw new NotImplementedException();
-        }
-        private void AddNode(CodeBlockNode node)
-        {
-            nodes.Add(node);
+            if (node.ReturnType == parser.Primitives["void"])
+                AddNode(node);
+            else
+                AddNode(UnaryOperatorNode.Void(node));
         }
         public static CodeBlockNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode, IReadOnlyList<FunctionArgumentNode> args = null)
         {
@@ -76,7 +75,7 @@ namespace LaborasLangCompiler.Parser.Impl
                             instance.AddNode(SymbolDeclarationNode.Parse(parser, parentClass, instance, sentence));
                             break;
                         case Lexer.Assignment:
-                            instance.AddNode(AssignmentOperatorNode.Parse(parser, parentClass, instance, sentence));
+                            instance.AddNode(AssignmentOperatorNode.Parse(parser, parentClass, instance, sentence), parser);
                             break;
                         case Lexer.FunctionCall:
                         case Lexer.Loop:
