@@ -18,12 +18,12 @@ namespace LaborasLangCompiler.Parser.Impl
         public override NodeType Type { get { return NodeType.ClassNode; } }
         private Dictionary<string, FieldDeclarationNode> fields;
         private ClassNode parent;
-        private TypeEmitter typeEmitter;
+        public TypeEmitter TypeEmitter { get; private set; }
         private ClassNode(Parser parser, ClassNode parent)
         {
             this.parent = parent;
             fields = new Dictionary<string, FieldDeclarationNode>();
-            typeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
+            TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
         private void AddField(string name, TypeReference type)
         {
@@ -114,9 +114,9 @@ namespace LaborasLangCompiler.Parser.Impl
                         if(field.Initializer is FunctionDeclarationNode)
                         {
                             var method = (FunctionDeclarationNode) field.Initializer;
-                            method.Emit(instance.typeEmitter, field.Name);
+                            method.Emit(instance.TypeEmitter, field.Name);
                         }
-                        instance.typeEmitter.AddField((FieldDefinition)field.Field, field.Initializer);
+                        instance.TypeEmitter.AddField((FieldDefinition)field.Field, field.Initializer);
                         break;
                     default:
                         break;

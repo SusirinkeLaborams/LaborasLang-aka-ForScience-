@@ -42,6 +42,11 @@ namespace LaborasLangCompiler.Parser.Impl
                     declaredType = initializer.ReturnType;
                 else if (!ILHelpers.IsAssignableTo(initializer.ReturnType, declaredType))
                     throw new TypeException("Type mismatch, type " + declaredType.FullName + " initialized with " + initializer.ReturnType.FullName);
+                if(initializer is FunctionDeclarationNode)
+                {
+                    var method = (FunctionDeclarationNode)initializer;
+                    method.Emit(parentClass.TypeEmitter, name + "local_method");
+                }
             }
             symbol = parentBlock.AddVariable(declaredType, name);
 
