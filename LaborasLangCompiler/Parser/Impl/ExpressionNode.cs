@@ -30,7 +30,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.Product:
                     return BinaryOperatorNode.Parse(parser, parentClass, parentBlock, lexerNode);
                 case Lexer.Function:
-                   return FunctionDeclarationNode.Parse(parser, parentClass, parentBlock, lexerNode);
+                    return FunctionDeclarationNode.Parse(parser, parentClass, parentBlock, lexerNode);
+                case Lexer.PrefixNode:
+                case Lexer.SuffixNode:
+                    return UnaryOperatorNode.Parse(parser, parentClass, parentBlock, lexerNode);
                 default:
                     throw new NotImplementedException();
             }

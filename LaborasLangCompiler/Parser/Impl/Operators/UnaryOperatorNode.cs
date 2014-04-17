@@ -19,9 +19,16 @@ namespace LaborasLangCompiler.Parser.Impl
             Operand = operand;
             UnaryOperatorType = type;
         }
-        public static ExpressionNode Parser(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static new ExpressionNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
-            throw new NotImplementedException();
+            if(lexerNode.Children.Count == 1)
+            {
+                return ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
         public static UnaryOperatorNode Void(ExpressionNode expression)
         {

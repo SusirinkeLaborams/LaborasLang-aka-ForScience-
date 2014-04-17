@@ -20,19 +20,20 @@ namespace LaborasLangCompilerUnitTests.ParserTests
     public class ParserTests : TestBase
     {
         private const string path = @"..\..\ParserTests\SerializedLexerTrees\";
+        private const bool lex = false;
         [TestMethod]
         public void FieldDeclarationTest()
         {
             string source = "auto a = 5; int b; int c = 10;";
             string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b, System.Int32 c = (Literal: System.Int32 10))";
-            TestParser(source, expected, "FieldDeclarationTest", false);
+            TestParser(source, expected, "FieldDeclarationTest", lex);
         }
         [TestMethod]
         public void ImplicitIntToLong()
         {
             string source = "auto a = 5; long b = a;";
             string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int64 b = (LValueNode: Field System.Int32))";
-            TestParser(source, expected, "ImplicitIntToLong", false);
+            TestParser(source, expected, "ImplicitIntToLong", lex);
         }
         [TestMethod]
         public void TypeExceptionTest()
@@ -41,7 +42,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Single 0))";
             try
             {
-                TestParser(source, expected, "TypeExceptionTest", false);
+                TestParser(source, expected, "TypeExceptionTest", lex);
             }
             catch(TypeException)
             {
