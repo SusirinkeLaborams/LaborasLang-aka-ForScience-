@@ -10,6 +10,7 @@ using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using LaborasLangCompiler.ILTools.Types;
 using LaborasLangCompiler.ILTools.Methods;
+using NPEG;
 
 namespace LaborasLangCompiler.FrontEnd
 {
@@ -28,8 +29,8 @@ namespace LaborasLangCompiler.FrontEnd
                 {
                     var bytes = FileReader.Read(file);
                     var tree = lexer.MakeTree(bytes);
-                    var parser = new Parser.Parser(assembly, tree, bytes, System.IO.Path.GetFileNameWithoutExtension(file));
                     PrintAst(tree, 1, bytes);
+                    var parser = new Parser.Parser(assembly, tree, bytes, System.IO.Path.GetFileNameWithoutExtension(file));
                 }
 
                 assembly.Save();
@@ -46,19 +47,30 @@ namespace LaborasLangCompiler.FrontEnd
             return 0;
         }
 
-        static void PrintAst(NPEG.AstNode Tree, int depth, NPEG.ByteInputIterator tokens)
+        static void PrintAst(AstNode tree, ByteInputIterator tokens)
+        {
+            PrintAstNode(tree, tokens, "");
+            PrintAst(tree, 1, tokens);
+        }
+
+        static void PrintAst(AstNode tree, int depth, ByteInputIterator tokens)
         {
             var tabs = new String('\t', depth);
-            foreach (var child in Tree.Children)
+            foreach (var child in tree.Children)
             {
                 if (!child.Token.Name.Equals("Ws"))
                 {
-                    var tokenValue = System.Text.Encoding.UTF8.GetString(tokens.Text(child.Token.Start, child.Token.End));
-                    tokenValue = tokenValue.Replace("\t", "").Replace("    ", "").Replace("\r\n", "");
-                    Debug.WriteLine(String.Format("{0}{1}: [{2}]", tabs, child.Token.Name, tokenValue));
+                    PrintAstNode(child, tokens, tabs);
                 }
                 PrintAst(child, depth + 1, tokens);
             }
+        }
+
+        static void PrintAstNode(AstNode node, ByteInputIterator tokens, string tabs)
+        {
+            var tokenValue = System.Text.Encoding.UTF8.GetString(tokens.Text(node.Token.Start, node.Token.End));
+            tokenValue = tokenValue.Replace("\t", "").Replace("    ", "").Replace("\r\n", "");
+            Debug.WriteLine(String.Format("{0}{1}: [{2}]", tabs, node.Token.Name, tokenValue));
         }
     }
 }
