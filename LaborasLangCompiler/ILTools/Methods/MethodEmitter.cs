@@ -16,10 +16,10 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected TypeEmitter DeclaringType { get; private set; }
         protected AssemblyEmitter Assembly { get { return DeclaringType.Assembly; } }
-        
+
         public bool Parsed { get; protected set; }
 
-        public MethodEmitter(TypeEmitter declaringType, string name, TypeReference returnType, 
+        public MethodEmitter(TypeEmitter declaringType, string name, TypeReference returnType,
                                 MethodAttributes methodAttributes = MethodAttributes.Private)
         {
             DeclaringType = declaringType;
@@ -354,6 +354,16 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region RValue node
 
+        #region Assignment
+
+        // There are 2 types of assignment
+        //
+        // LValue <- Value
+        // Delegate <- Functor
+        //
+        // The reason Delegate <- Functor assignment is special is because
+        // we actually have to call Functor.AsDelegate() to emit right side
+        //
         // Duplicating in stack can happen in two ways. 
         // Asterisks show which instructions would not be present if we're not duplicating
         // If left side is a non static field:
@@ -383,6 +393,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             bool isField = assignmentOperator.LeftOperand.LValueType == LValueNodeType.Field;
             bool isProperty = assignmentOperator.LeftOperand.LValueType == LValueNodeType.Property;
             IExpressionNode objectInstance = null;
+            VariableDefinition tempVariable = null;
 
             bool isNonStaticMember = false;
 
@@ -412,9 +423,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     objectInstance = propertyNode.ObjectInstance;
                 }
             }
-
-            VariableDefinition tempVariable = null;
-
+            
             if (isNonStaticMember)
             {
                 if (objectInstance != null)
@@ -427,15 +436,17 @@ namespace LaborasLangCompiler.ILTools.Methods
                 }
             }
 
-            Emit(assignmentOperator.RightOperand);
-
+            EmitRightOperandForAssignment(assignmentOperator);
+            
             if (duplicateValueInStack)
             {
                 Dup();
-                
+
                 if (isNonStaticMember && isProperty)
                 {
-                    tempVariable = AcquireTempVariable(assignmentOperator.RightOperand.ReturnType);
+                    // Right operand could be functor and left could be delegate
+                    // In that case, a delegate reference is on top of the stack
+                    tempVariable = AcquireTempVariable(assignmentOperator.LeftOperand.ReturnType);
                     Stloc(tempVariable.Index);
                 }
             }
@@ -453,8 +464,41 @@ namespace LaborasLangCompiler.ILTools.Methods
                 {
                     Emit(assignmentOperator.LeftOperand);
                 }
-            }            
+            }
         }
+
+        private void EmitRightOperandForAssignment(IAssignmentOperatorNode assignmentOperator)
+        {
+            bool rightIsFunction = assignmentOperator.RightOperand.ExpressionType == ExpressionNodeType.RValue &&
+                ((IRValueNode)assignmentOperator.RightOperand).RValueType == RValueNodeType.Function;
+            bool rightIsFunctor = assignmentOperator.RightOperand.ReturnType.FullName.StartsWith("$Functors.");
+            bool leftIsDelegate = assignmentOperator.LeftOperand.ReturnType.Resolve().BaseType.FullName == "System.MulticastDelegate";
+
+            // We'll want to emit right operand in all cases
+            Emit(assignmentOperator.RightOperand);
+
+            if (leftIsDelegate && (rightIsFunction || rightIsFunctor))
+            {
+                // Here we have a functor object on top of the stack
+                // We will just want to construct a delegate from its two fields
+
+                var functorType = assignmentOperator.RightOperand.ReturnType;
+                var delegateType = assignmentOperator.LeftOperand.ReturnType;
+                
+                var objectInstanceField = AssemblyRegistry.GetField(Assembly, functorType, "objectInstance");
+                var functionPtrField = AssemblyRegistry.GetField(Assembly, functorType, "functionPtr");
+                var delegateCtor = AssemblyRegistry.GetMethods(Assembly, delegateType, ".ctor")
+                                      .Where(x => x.Parameters.Count == 2 && x.Parameters[0].ParameterType.FullName == "System.Object" &&
+                                                    x.Parameters[1].ParameterType.FullName == "System.IntPtr").Single();
+                
+                Dup();
+                Ldfld(objectInstanceField);
+                Ldfld(functionPtrField);
+                Newobj(delegateCtor);
+            }
+        }
+        
+        #endregion
 
         protected void Emit(IBinaryOperatorNode binaryOperator)
         {
@@ -488,7 +532,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     EmitLessThan(binaryOperator);
                     return;
             }
-            
+
             Emit(binaryOperator.LeftOperand);
             Emit(binaryOperator.RightOperand);
 
@@ -509,11 +553,11 @@ namespace LaborasLangCompiler.ILTools.Methods
                 case BinaryOperatorNodeType.Division:
                     EmitDivision(binaryOperator);
                     return;
-                    
+
                 case BinaryOperatorNodeType.Equals:
                     Ceq();
                     return;
-                    
+
                 case BinaryOperatorNodeType.Multiplication:
                     Mul();
                     return;
@@ -539,10 +583,10 @@ namespace LaborasLangCompiler.ILTools.Methods
                     return;
 
                 default:
-                    throw new NotSupportedException(string.Format("Unknown binary operator node: {0}", binaryOperator.BinaryOperatorType));                    
+                    throw new NotSupportedException(string.Format("Unknown binary operator node: {0}", binaryOperator.BinaryOperatorType));
             }
         }
-        
+
         protected void Emit(IFunctionNode function)
         {
             Ldftn(function.Function);
@@ -551,7 +595,7 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Emit(IMethodCallNode functionCall)
         {
             var function = functionCall.Function;
-            
+
             if (function.ExpressionType == ExpressionNodeType.RValue && ((IRValueNode)function).RValueType == RValueNodeType.Function)
             {
                 var functionNode = (IFunctionNode)function;
@@ -605,7 +649,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 case "System.Double":
                     Ldc_R8((double)literal.Value);
                     return;
-                    
+
                 case "System.String":
                     Ldstr((string)literal.Value);
                     return;
@@ -1204,7 +1248,7 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             ilProcessor.Emit(OpCodes.Ldftn, function);
         }
-        
+
         protected void Ldloc(int index)
         {
             if (index < 4)
@@ -1247,7 +1291,7 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             ilProcessor.Emit(OpCodes.Ldstr, str);
         }
-        
+
         protected void Mul()
         {
             ilProcessor.Emit(OpCodes.Mul);
