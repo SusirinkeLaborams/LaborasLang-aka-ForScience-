@@ -19,14 +19,12 @@ namespace LaborasLangCompiler.Parser.Impl
         public override RValueNodeType RValueType { get { return RValueNodeType.Function; } }
         public override TypeReference ReturnType { get; set; }
         private CodeBlockNode body;
-        private TypeReference functionReturnType;
-        public void Emit(TypeEmitter klass, string name, bool entry = false)
+        private MethodEmitter emitter;
+        public void Emit(bool entry = false)
         {
-            var emitter = new MethodEmitter(klass, name + "_method", functionReturnType, MethodAttributes.Static | MethodAttributes.Private);
             emitter.ParseTree(body);
             if(entry)
                 emitter.SetAsEntryPoint();
-            Function = emitter.Get();
         }
         public static new FunctionDeclarationNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
@@ -34,7 +32,8 @@ namespace LaborasLangCompiler.Parser.Impl
             var header = FunctionHeader.Parse(parser, parentClass, null, lexerNode.Children[0]);
             instance.body = CodeBlockNode.Parse(parser, parentClass, null, lexerNode.Children[1], header.Args);
             instance.ReturnType = header.FunctionType;
-            instance.functionReturnType = header.ReturnType;
+            instance.emitter = new MethodEmitter(parentClass.TypeEmitter, Parser.RandomName, header.ReturnType, MethodAttributes.Static | MethodAttributes.Private);
+            instance.Function = instance.emitter.Get();
             return instance;
         }
         public static TypeReference ParseType(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)

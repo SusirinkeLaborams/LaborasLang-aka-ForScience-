@@ -7,6 +7,6 @@ auto Main = void(int arg)
 
 	auto f = int(int a, float b)
 	{
-		c = a * b;
+		auto c = a * b;
 	};
 };

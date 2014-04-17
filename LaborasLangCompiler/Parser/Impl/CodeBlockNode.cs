@@ -41,7 +41,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public virtual ILValueNode AddVariable(TypeReference type, string name)
         {
             if (symbols.ContainsKey(name))
-                return null;
+                throw new SymbolAlreadyDeclaredException(String.Format("Var {0} already declared", name));
             symbols.Add(name, new LocalVariableNode(new VariableDefinition(name, type)));
             return symbols[name];
         }

@@ -19,6 +19,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private Dictionary<string, FieldDeclarationNode> fields;
         private ClassNode parent;
         public TypeEmitter TypeEmitter { get; private set; }
+        private List<Tuple<string, FunctionDeclarationNode>> methods = new List<Tuple<string,FunctionDeclarationNode>>();
         private ClassNode(Parser parser, ClassNode parent)
         {
             this.parent = parent;
@@ -28,6 +29,10 @@ namespace LaborasLangCompiler.Parser.Impl
         private void AddField(string name, TypeReference type)
         {
             fields.Add(name, new FieldDeclarationNode(name, type));
+        }
+        public void AddMethod(FunctionDeclarationNode method, string name)
+        {
+            methods.Add(Tuple.Create(name, method));
         }
         public FieldNode GetField(string name)
         {
@@ -113,14 +118,17 @@ namespace LaborasLangCompiler.Parser.Impl
                         field.CreateFieldDefinition(FieldAttributes.Static | FieldAttributes.Private);
                         if(field.Initializer is FunctionDeclarationNode)
                         {
-                            var method = (FunctionDeclarationNode) field.Initializer;
-                            method.Emit(instance.TypeEmitter, field.Name, field.Name == "Main");
+                            instance.AddMethod((FunctionDeclarationNode)field.Initializer, field.Name);
                         }
                         instance.TypeEmitter.AddField((FieldDefinition)field.Field, field.Initializer);
                         break;
                     default:
                         break;
                 }
+            }
+            foreach(var method in instance.methods)
+            {
+                method.Item2.Emit(method.Item1 == "Main");
             }
             return instance;
         }
