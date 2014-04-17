@@ -589,7 +589,19 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Emit(IFunctionNode function)
         {
+            var ctor = AssemblyRegistry.GetMethods(Assembly, function.ReturnType, ".ctor").Single();
+
+            if (function.ObjectInstance != null)
+            {
+                Emit(function.ObjectInstance);
+            }
+            else
+            {
+                Ldnull();
+            }
+            
             Ldftn(function.Function);
+            Newobj(ctor);
         }
 
         protected void Emit(IMethodCallNode functionCall)
@@ -1280,6 +1292,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 ilProcessor.Emit(OpCodes.Ldloc, index);
             }
+        }
+
+        protected void Ldnull()
+        {
+            ilProcessor.Emit(OpCodes.Ldnull);
         }
 
         protected void Ldsfld(FieldReference field)
