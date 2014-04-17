@@ -77,9 +77,9 @@
     <Compile Include="Parser\Exceptions\SymbolAlreadyDeclaredException.cs" />
     <Compile Include="Parser\Exceptions\SymbolNotFoundException.cs" />
     <Compile Include="Parser\Exceptions\TypeException.cs" />
-    <Compile Include="Parser\Impl\ArithmeticOperatorNode.cs" />
-    <Compile Include="Parser\Impl\AssignmentOperatorNode.cs" />
-    <Compile Include="Parser\Impl\BinaryOperatorNode.cs" />
+    <Compile Include="Parser\Impl\Operators\ArithmeticOperatorNode.cs" />
+    <Compile Include="Parser\Impl\Operators\AssignmentOperatorNode.cs" />
+    <Compile Include="Parser\Impl\Operators\BinaryOperatorNode.cs" />
     <Compile Include="Parser\Impl\ClassNode.cs" />
     <Compile Include="Parser\Impl\CodeBlockNode.cs" />
     <Compile Include="Parser\Impl\ExpressionNode.cs" />
@@ -90,6 +90,7 @@
     <Compile Include="Parser\Impl\ParserNode.cs" />
     <Compile Include="Parser\Impl\RValueNode.cs" />
     <Compile Include="Parser\Impl\SymbolDeclarationNode.cs" />
+    <Compile Include="Parser\Impl\Operators\UnaryOperatorNode.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParserNodeInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
