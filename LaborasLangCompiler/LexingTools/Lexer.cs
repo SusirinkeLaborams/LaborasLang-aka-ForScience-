@@ -93,13 +93,13 @@ namespace LaborasLangCompiler.LexingTools
                                             'if' Ws? '(' Ws? (?<Condition> Value) Ws? ')' (?<TrueBlock> CodeBlock);
                 (?<Loop>):  'while' Ws? '(' Ws? (?<Condition> Value) Ws? ')' Ws? CodeBlock;
                 (?<EndOfSentence>): ';';                
+                (?<CodeBlock>): Ws? '{' Ws? (Sentence Ws?)* Ws? '}'  Ws? ;
                 (?<Sentence>): ((NamespaceImport / DeclarationAndAssignment / Assignment / Declaration / FunctionCall) Ws? EndOfSentence) /
                                 Loop /
-                                ConditionalSentence;
+                                ConditionalSentence /
+                                CodeBlock;
                 
-                (?<CodeBlock>): Ws? '{' Ws? ((Sentence / CodeBlock) Ws?)* Ws? '}'  Ws? ;
-                
-                (?<Root>): Ws? (( CodeBlock / Sentence) Ws?)* Ws?;
+                (?<Root>): Ws? (Sentence Ws?)* Ws?;
             ".Trim();
 
         public Lexer()
