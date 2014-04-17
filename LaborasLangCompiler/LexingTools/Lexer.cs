@@ -46,6 +46,10 @@ namespace LaborasLangCompiler.LexingTools
         public const string Sentence = "Sentence";
         public const string CodeBlock = "CodeBlock";
         public const string Root = "Root";
+        public const string PrefixNode = "PrefixNode";
+        public const string SuffixNode = "SuffixNode";
+        public const string SuffixOperator = "SuffixOperator";
+        public const string PrefixOperator = "PrefixOperator";
 
         private AExpression GrammarTree;
         private static string Grammar = @"
@@ -60,10 +64,16 @@ namespace LaborasLangCompiler.LexingTools
                 (?<StringLiteral>): '\'' [^']* '\''; 
                 (?<FloatLiteral>): [0-9]+ Period [0-9]+;
                 (?<Literal>):  FloatLiteral / IntegerLiteral / StringLiteral;
-    
-                Factor: '(' Sum ')' / FunctionCall / Symbol / Literal;
-                (?<Product>): Factor (Ws? (?<MultiplicationOperator> '/' / '*')  Ws? Factor)*;
-                (?<Sum>): Product (Ws? (?<SumOperator> '+' / '-')  Ws? Product)*;
+                
+                (?<PrefixOperator>): '++' / '--' / '-' / '!' / '~';
+                (?<SuffixOperator>): '++' / '--';
+                (?<MultiplicationOperator>): '/' / '*';
+                (?<SumOperator>): '+' / '-';
+
+                (?<PrefixNode>): (PrefixOperator Ws?)* ('(' Sum ')' / FunctionCall / Symbol / Literal);
+                (?<SuffixNode>): PrefixNode (Ws? SuffixOperator)*;
+                (?<Product>): SuffixNode (Ws? MultiplicationOperator  Ws? SuffixNode)*;
+                (?<Sum>): Product (Ws? SumOperator  Ws? Product)*;
 
                 (?<AssignmentOperator>): '+=' / '-=' / '*=' / '/=' / '%=' / '&=' / '|=' / '^=' / '<<=' / '>>=' / '=';                
                 (?<RelationOperator>): '==' / '!=' / '<=' / '>=' / '<' / '>';
