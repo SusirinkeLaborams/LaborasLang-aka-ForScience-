@@ -21,7 +21,7 @@ namespace LaborasLangCompiler.Parser.Impl
             DeclaredSymbol = symbol;
             Initializer = init;
         }
-        public static new SymbolDeclarationNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static SymbolDeclarationNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             ILValueNode symbol = null;
             IExpressionNode initializer = null;

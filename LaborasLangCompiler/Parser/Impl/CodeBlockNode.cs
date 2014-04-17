@@ -52,7 +52,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 instance.nodes.AddRange(args);
             foreach(var node in lexerNode.Children)
             {
-                instance.nodes.Add(ParserNode.Parse(parser, parentClass, instance, node));
+                throw new NotImplementedException();
             }
             return instance;
         }

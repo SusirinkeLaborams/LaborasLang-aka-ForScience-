@@ -39,7 +39,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return null;
         }
-        public static new ClassNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static ClassNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             var instance = new ClassNode(parser, parentClass);
             AstNode sentence;
