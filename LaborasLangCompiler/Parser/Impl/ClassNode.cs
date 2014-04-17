@@ -114,7 +114,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         if(field.Initializer is FunctionDeclarationNode)
                         {
                             var method = (FunctionDeclarationNode) field.Initializer;
-                            method.Emit(instance.TypeEmitter, field.Name);
+                            method.Emit(instance.TypeEmitter, field.Name, field.Name == "Main");
                         }
                         instance.TypeEmitter.AddField((FieldDefinition)field.Field, field.Initializer);
                         break;

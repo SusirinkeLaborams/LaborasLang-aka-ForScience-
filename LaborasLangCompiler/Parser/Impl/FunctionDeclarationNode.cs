@@ -20,11 +20,12 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ReturnType { get; set; }
         private CodeBlockNode body;
         private TypeReference functionReturnType;
-        public void Emit(TypeEmitter klass, string name)
+        public void Emit(TypeEmitter klass, string name, bool entry = false)
         {
             var emitter = new MethodEmitter(klass, name + "_method", functionReturnType, MethodAttributes.Static | MethodAttributes.Private);
             emitter.ParseTree(body);
-            emitter.SetAsEntryPoint();
+            if(entry)
+                emitter.SetAsEntryPoint();
             Function = emitter.Get();
         }
         public static new FunctionDeclarationNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
