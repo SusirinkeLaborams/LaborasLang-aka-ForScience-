@@ -638,7 +638,16 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                throw new NotImplementedException();
+                var invokeMethod = AssemblyRegistry.GetMethods(Assembly, function.ReturnType, "Invoke").Single();
+
+                Emit(function);
+
+                foreach (var argument in functionCall.Arguments)
+                {
+                    Emit(argument);
+                }
+
+                Call(invokeMethod);
             }
         }
 
