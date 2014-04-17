@@ -26,13 +26,15 @@ namespace LaborasLangCompiler.Parser.Impl
             if(entry)
                 emitter.SetAsEntryPoint();
         }
-        public static new FunctionDeclarationNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static FunctionDeclarationNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode, string name = null)
         {
+            if (name == null)
+                name = parentClass.NewFunctionName();
             var instance = new FunctionDeclarationNode();
             var header = FunctionHeader.Parse(parser, parentClass, null, lexerNode.Children[0]);
             instance.body = CodeBlockNode.Parse(parser, parentClass, null, lexerNode.Children[1], header.Args);
             instance.ReturnType = header.FunctionType;
-            instance.emitter = new MethodEmitter(parentClass.TypeEmitter, Parser.RandomName, header.ReturnType, MethodAttributes.Static | MethodAttributes.Private);
+            instance.emitter = new MethodEmitter(parentClass.TypeEmitter, "$" + name, header.ReturnType, MethodAttributes.Static | MethodAttributes.Private);
             instance.Function = instance.emitter.Get();
             return instance;
         }

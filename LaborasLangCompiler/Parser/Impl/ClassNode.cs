@@ -20,6 +20,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private ClassNode parent;
         public TypeEmitter TypeEmitter { get; private set; }
         private List<Tuple<string, FunctionDeclarationNode>> methods = new List<Tuple<string,FunctionDeclarationNode>>();
+        private int lambdaCounter = 0;
         private ClassNode(Parser parser, ClassNode parent)
         {
             this.parent = parent;
@@ -88,8 +89,12 @@ namespace LaborasLangCompiler.Parser.Impl
                 switch (sentence.Token.Name)
                 {
                     case Lexer.DeclarationAndAssignment:
-                        var init = ExpressionNode.Parse(parser, instance, null, sentence.Children[2]);
+                        ExpressionNode init = null;
                         var field = instance.fields[parser.ValueOf(sentence.Children[1])];
+                        if (sentence.Children[2].Token.Name == Lexer.Function)
+                            init = FunctionDeclarationNode.Parse(parser, instance, null, sentence.Children[2], field.Name);
+                        else
+                            init = ExpressionNode.Parse(parser, instance, null, sentence.Children[2]);
                         field.Initializer = init;
                         if (field.ReturnType == null)
                         {
@@ -126,6 +131,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         break;
                 }
             }
+
             foreach(var method in instance.methods)
             {
                 method.Item2.Emit(method.Item1 == "Main");
@@ -157,6 +163,10 @@ namespace LaborasLangCompiler.Parser.Impl
                     klass.AddField(name, declaredType);
                 }
             }
+        }
+        public string NewFunctionName()
+        {
+            return "Lambda_" + lambdaCounter++.ToString();
         }
         public override string Print()
         {

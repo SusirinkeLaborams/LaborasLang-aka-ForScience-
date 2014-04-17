@@ -68,12 +68,5 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException("Only parsing primitives");
             }
         }
-        static Parser()
-        {
-            rand = new Random();
-        }
-        private const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        private static readonly Random rand;
-        public static string RandomName { get { return new string(Enumerable.Repeat(chars, 20).Select(s => s[rand.Next(s.Length)]).ToArray()); } }
     }
 }
