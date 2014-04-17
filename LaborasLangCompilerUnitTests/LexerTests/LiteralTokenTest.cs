@@ -26,7 +26,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         {
             var source = "foo = -1;";
             AstNode tree = lexer.MakeTree(source);
-            string expected = "Root: Sentence: (Assignment: (Symbol, Value: Sum: Product: Literal: IntegerLiteral), EndOfSentence)";
+            string expected = "Root: Sentence: (Assignment: (Symbol, AssignmentOperator, Value: Sum: Product: SuffixNode: PrefixNode: (PrefixOperator, Literal: IntegerLiteral)), EndOfSentence)";
             string actual = AstHelper.Stringify(tree);
             Assert.AreEqual(expected, actual);
         }
