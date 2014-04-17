@@ -60,7 +60,12 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var instance = new CodeBlockNode(parentBlock);
             if (args != null)
-                instance.nodes.AddRange(args);
+            {
+                foreach (var arg in args)
+                {
+                    instance.symbols.Add(arg.Param.Name, arg);
+                }
+            }
             foreach (var node in lexerNode.Children)
             {
                 if (node.Token.Name == Lexer.Sentence)
