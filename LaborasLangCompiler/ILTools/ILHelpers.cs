@@ -79,9 +79,13 @@ namespace LaborasLangCompiler.ILTools
             return FloatingPointTypes.Any(x => x == type.FullName);
         }
 
-        public static bool IsNumeralType(this TypeReference type)
+        public static bool IsNumericType(this TypeReference type)
         {
             return type.IsIntegerType() || type.IsFloatingPointType();
+        }
+        public static bool isStringType(this TypeReference type)
+        {
+            return type.FullName == "System.String";
         }
 
         public static bool IsAssignableTo(this TypeReference right, TypeReference left)
