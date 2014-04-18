@@ -83,7 +83,8 @@ namespace LaborasLangCompiler.ILTools
         {
             return type.IsIntegerType() || type.IsFloatingPointType();
         }
-        public static bool isStringType(this TypeReference type)
+
+        public static bool IsStringType(this TypeReference type)
         {
             return type.FullName == "System.String";
         }

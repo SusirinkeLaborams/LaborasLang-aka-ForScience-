@@ -25,14 +25,24 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                switch (lexerNode.Token.Name)
-                {
-                    case Lexer.Sum:
-                    case Lexer.Product:
-                        return ArithmeticOperatorNode.Parse(parser, parentClass, parentBlock, lexerNode);
-                    default:
-                        throw new NotImplementedException("Only parsing Sum and Product");
-                }
+                var op = parser.ValueOf(lexerNode.Children[1]);
+                var left = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
+                var right = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
+                return Parse(op, left, right);
+            }
+        }
+        public static BinaryOperatorNode Parse(string op, IExpressionNode left, IExpressionNode right)
+        {
+            switch (op)
+            {
+                case "+":
+                case "-":
+                case "*":
+                case "/":
+                case "%":
+                    return ArithmeticOperatorNode.Parse(op, left, right);
+                default:
+                    throw new NotImplementedException();
             }
         }
         public override string ToString()
