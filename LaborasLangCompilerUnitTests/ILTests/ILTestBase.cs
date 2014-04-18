@@ -56,6 +56,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
             try
             {
                 Assert.AreEqual(expectedIL.Trim(), il.Trim());
+                PEVerifyRunner.Run(assemblyEmitter.OutputPath);
             }
             finally
             {

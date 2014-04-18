@@ -90,6 +90,7 @@
     <Compile Include="ILTests\MethodBodyTests\ConstructorTests.cs" />
     <Compile Include="ILTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="ILTests\ILHelpersTests.cs" />
+    <Compile Include="ILTests\PEVerifyRunner.cs" />
     <Compile Include="LexerTests\PrefixSuffixTests.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="LexerTests\ExpectedTree.cs" />
@@ -110,6 +111,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_EmptyMethod.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_FunctionAssignmentToFunctorWithoutArgs.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_FunctorDefinition.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_FunctorWithReturnTypeAndArguments.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_HelloWorld.il" />

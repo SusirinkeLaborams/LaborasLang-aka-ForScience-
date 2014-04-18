@@ -25,7 +25,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
         public RValueNodeType RValueType { get { return RValueNodeType.Function; } }
 
-        public TypeReference ReturnType { get { return Function.ReturnType; } }
+        public TypeReference ReturnType { get; set; }
         public IExpressionNode ObjectInstance { get; set; }
         public MethodReference Function { get; set; }
     }

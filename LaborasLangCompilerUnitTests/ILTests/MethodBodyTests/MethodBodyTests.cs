@@ -458,6 +458,26 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
+        [TestMethod]
+        public void TestCanEmit_FunctionAssignmentToFunctorWithoutArgs()
+        {
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(int));
+
+            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, voidType, new List<TypeReference>());
+            var field = new FieldDefinition("myFunction", FieldAttributes.Public | FieldAttributes.Static, functorType);
+
+            var initializer = new FunctionNode()
+            {
+                Function = methodEmitter.Get(),
+                ReturnType = functorType
+            };
+
+            typeEmitter.AddField(field, initializer);
+
+            ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToFunctorWithoutArgs.il";
+            Test();
+        }
+
         #endregion
     }
 }

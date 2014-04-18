@@ -1,0 +1,69 @@
+﻿System.Void klass::dummy()
+// Method begins at RVA 0x2050
+// Code size 1 (0x1)
+.maxstack 8
+.entrypoint
+
+IL_0000: ret
+
+
+System.Void klass::.cctor()
+// Method begins at RVA 0x2054
+// Code size 18 (0x12)
+.maxstack 8
+
+IL_0000: ldnull
+IL_0001: ldftn void klass::dummy()
+IL_0007: newobj instance void $Functors.$System_Int32::.ctor(object, native int)
+IL_000c: stsfld valuetype $Functors.$System_Int32 klass::myFunction
+IL_0011: ret
+
+
+System.Void $Functors.$System_Int32::.ctor(System.Object,System.IntPtr)
+// Method begins at RVA 0x2068
+// Code size 15 (0xf)
+.maxstack 8
+
+IL_0000: ldarg.0
+IL_0001: ldarg.1
+IL_0002: stfld object $Functors.$System_Int32::objectInstance
+IL_0007: ldarg.0
+IL_0008: ldarg.2
+IL_0009: stfld native int $Functors.$System_Int32::functionPtr
+IL_000e: ret
+
+
+System.Int32 $Functors.$System_Int32::Invoke()
+// Method begins at RVA 0x2078
+// Code size 35 (0x23)
+.maxstack 8
+
+IL_0000: ldarg.0
+IL_0001: ldfld object $Functors.$System_Int32::objectInstance
+IL_0006: dup
+IL_0007: brtrue.s IL_0016
+
+IL_0009: pop
+IL_000a: ldarg.0
+IL_000b: ldfld native int $Functors.$System_Int32::functionPtr
+IL_0010: calli System.Int32()
+IL_0015: ret
+
+IL_0016: nop
+IL_0017: ldarg.0
+IL_0018: ldfld native int $Functors.$System_Int32::functionPtr
+IL_001d: calli System.Int32()
+IL_0022: ret
+
+
+$Functors.$System_Int32/$Delegate$System_Int32 $Functors.$System_Int32::AsDelegate()
+// Method begins at RVA 0x209c
+// Code size 18 (0x12)
+.maxstack 8
+
+IL_0000: ldarg.0
+IL_0001: ldfld object $Functors.$System_Int32::objectInstance
+IL_0006: ldarg.0
+IL_0007: ldfld native int $Functors.$System_Int32::functionPtr
+IL_000c: newobj instance void $Functors.$System_Int32/$Delegate$System_Int32::.ctor(object, native int)
+IL_0011: ret
