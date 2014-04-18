@@ -45,6 +45,11 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return null;
         }
+        private void AddFieldToEmitter(Parser parser, FieldDefinition field, IExpressionNode init)
+        {
+            if (!parser.Testing)
+                TypeEmitter.AddField(field, init);
+        }
         public static ClassNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             var instance = new ClassNode(parser, parentClass);
@@ -125,20 +130,21 @@ namespace LaborasLangCompiler.Parser.Impl
                         {
                             instance.AddMethod((FunctionDeclarationNode)field.Initializer, field.Name);
                         }
-                        instance.TypeEmitter.AddField((FieldDefinition)field.Field, field.Initializer);
+                        instance.AddFieldToEmitter(parser, (FieldDefinition)field.Field, field.Initializer);
                         break;
                     default:
                         break;
                 }
             }
-
-            foreach(var method in instance.methods)
+            if (!parser.Testing)
             {
-                method.Item2.Emit(method.Item1 == "Main");
+                foreach (var method in instance.methods)
+                {
+                    method.Item2.Emit(method.Item1 == "Main");
+                }
             }
             return instance;
         }
-
         private static void ParseDeclaration(Parser parser, ClassNode klass, AstNode lexerNode, bool init)
         {
             var declaredType = parser.ParseType(lexerNode.Children[0]);

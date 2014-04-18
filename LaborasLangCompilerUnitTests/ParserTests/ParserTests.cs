@@ -69,7 +69,14 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 	                };
                 };";
             string expected = @"(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b = (LValueNode: Field System.Int32), $Functors.$System_Void$System_Int32 Main = (Function: $Functors.$System_Void$System_Int32(System.Int32 arg)(CodeBlock: Symbols: ((LValueNode: FunctionArgument System.Int32) arg, (LValueNode: LocalVariable System.Int32) a, (LValueNode: LocalVariable $Functors.$System_Int32$System_Int32$System_Single) f) Nodes: ((Declaration: (LValueNode: LocalVariable System.Int32) = (Literal: System.Int32 20)), (UnaryOp: RValue (Assignment: (LValueNode: LocalVariable System.Int32) = (Literal: System.Int32 10))), (Declaration: (LValueNode: LocalVariable $Functors.$System_Int32$System_Int32$System_Single) = (Function: $Functors.$System_Int32$System_Int32$System_Single(System.Int32 a, System.Single b)(CodeBlock: Symbols: ((LValueNode: FunctionArgument System.Int32) a, (LValueNode: FunctionArgument System.Single) b, (LValueNode: LocalVariable System.Single) c) Nodes: ((Declaration: (LValueNode: LocalVariable System.Single) = (BinaryOp: (LValueNode: FunctionArgument System.Int32) Multiplication (LValueNode: FunctionArgument System.Single)))))))))))";
-            TestParser(source, expected, "SomeTest", true);
+            TestParser(source, expected, "SomeTest", lex);
+        }
+        [TestMethod]
+        public void TestPrecedence()
+        {
+            string source = "auto a = 5 * 4 + 8 * (2 + 1);";
+            string expected = "(ClassNode: Fields: System.Int32 a = (BinaryOp: (BinaryOp: (Literal: System.Int32 5) Multiplication (Literal: System.Int32 4)) Addition (BinaryOp: (Literal: System.Int32 8) Multiplication (BinaryOp: (Literal: System.Int32 2) Addition (Literal: System.Int32 1)))))";
+            TestParser(source, expected, "TestPrecedence", lex);
         }
         private void TestParser(string source, string expected, string name, bool lex)
         {
@@ -86,7 +93,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             {
                 tree = TreeSerializer.Deserialize(path + name + ".xml");
             }
-            Parser parser = new Parser(assembly, tree, bytes, "test");
+            Parser parser = new Parser(assembly, tree, bytes, "test", true);
             string result = parser.Root.ToString();
             Assert.AreEqual(expected, result);
         }
