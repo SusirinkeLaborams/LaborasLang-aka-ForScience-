@@ -134,7 +134,6 @@ namespace LaborasLangCompiler.ILTools
             assignmentMap["System.SByte"] = new string[0];
             assignmentMap["System.UIntPtr"] = new string[0];
             assignmentMap["System.IntPtr"] = new string[0];
-            assignmentMap["System.Single"] = new string[0];
 
             assignmentMap["System.Char"] = new string[]
             {
@@ -170,20 +169,49 @@ namespace LaborasLangCompiler.ILTools
 
             assignmentMap["System.Int32"] = new string[]
             {
+                "System.Char",
                 "System.SByte", 
-                "System.Int16"
+                "System.Byte", 
+                "System.Int16",
+                "System.UInt16",
             };
 
             assignmentMap["System.Int64"] = new string[]
             {
+                "System.Char",
                 "System.SByte", 
+                "System.Byte",
                 "System.Int16",
-                "System.Int32"
+                "System.UInt16",
+                "System.Int32",
+                "System.UInt32",
+            };
+
+            assignmentMap["System.Single"] = new string[]
+            {
+                "System.Char",
+                "System.Byte",
+                "System.SByte",
+                "System.Char",
+                "System.Int16",
+                "System.UInt16",
+                "System.Int32",
+                "System.UInt32",
             };
 
             assignmentMap["System.Double"] = new string[]
             {
                 "System.Single",
+                "System.Char",
+                "System.Byte",
+                "System.SByte",
+                "System.Char",
+                "System.Int16",
+                "System.UInt16",
+                "System.Int32",
+                "System.UInt32",
+                "System.Int64",
+                "System.UInt64",
             };
 
             assignmentMap["System.Decimal"] = new string[]

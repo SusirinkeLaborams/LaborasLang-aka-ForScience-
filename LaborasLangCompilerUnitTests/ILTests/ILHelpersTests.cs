@@ -56,15 +56,22 @@ namespace LaborasLangCompilerUnitTests.ILTests
                         break;
 
                     case "int32":
+                        exceptions.Add("char");
                         exceptions.Add("int8");
+                        exceptions.Add("uint8");
                         exceptions.Add("int16");
+                        exceptions.Add("uint16");
                         exceptions.Add("int32");
                         break;
 
                     case "int64":
+                        exceptions.Add("char");
                         exceptions.Add("int8");
+                        exceptions.Add("uint8");
                         exceptions.Add("int16");
+                        exceptions.Add("uint16");
                         exceptions.Add("int32");
+                        exceptions.Add("uint32");
                         exceptions.Add("int64");
                         break;
 
