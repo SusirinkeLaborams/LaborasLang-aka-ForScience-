@@ -72,6 +72,21 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             TestParser(source, expected, "SomeTest", lex);
         }
         [TestMethod]
+        public void AssignmentArithmeticOperatorTest()
+        {
+            string source = @"
+                auto a = 5;
+                auto Main = void(int b)
+                {
+                    a += b;
+                    b *= a;
+                    a /= 5;
+                    a -= 8;
+                };";
+            string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), $Functors.$System_Void$System_Int32 Main = (Function: $Functors.$System_Void$System_Int32(System.Int32 b)(CodeBlock: Symbols: ((LValueNode: FunctionArgument System.Int32) b) Nodes: ((UnaryOp: RValue (Assignment: (LValueNode: Field System.Int32) = (BinaryOp: (LValueNode: Field System.Int32) Addition (LValueNode: FunctionArgument System.Int32)))), (UnaryOp: RValue (Assignment: (LValueNode: FunctionArgument System.Int32) = (BinaryOp: (LValueNode: FunctionArgument System.Int32) Multiplication (LValueNode: Field System.Int32)))), (UnaryOp: RValue (Assignment: (LValueNode: Field System.Int32) = (BinaryOp: (LValueNode: Field System.Int32) Division (Literal: System.Int32 5)))), (UnaryOp: RValue (Assignment: (LValueNode: Field System.Int32) = (BinaryOp: (LValueNode: Field System.Int32) Subtraction (Literal: System.Int32 8))))))))";
+            TestParser(source, expected, "AssignmentArithmeticOperatorTest", lex);
+        }
+        [TestMethod]
         public void TestPrecedence()
         {
             string source = "auto a = 5 * 4 + 8 * (2 + 1);";

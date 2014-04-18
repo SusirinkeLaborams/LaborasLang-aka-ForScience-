@@ -19,18 +19,19 @@ namespace LaborasLangCompiler.Parser.Impl
         public static new AssignmentOperatorNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             var instance = new AssignmentOperatorNode();
-            instance.LeftOperand = LValueNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
-            instance.RightOperand = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
-            instance.ReturnType = instance.LeftOperand.ReturnType;
+            var left = LValueNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
+            var right = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
+            instance.ReturnType = left.ReturnType;
 
             var op = parser.ValueOf(lexerNode.Children[1]);
             if (op != "=")
-                throw new NotImplementedException("Only parsing simple assignment");
+                right = BinaryOperatorNode.Parse(op.Remove(op.Length - 1), left, right);
 
-            if (instance.RightOperand.ReturnType.IsAssignableTo(instance.LeftOperand.ReturnType))
-                return instance;
-            else
+            if (!right.ReturnType.IsAssignableTo(left.ReturnType))
                 throw new TypeException(String.Format("Assigned {0} to {1}", instance.RightOperand.ReturnType, instance.LeftOperand.ReturnType));
+            instance.RightOperand = right;
+            instance.LeftOperand = left;
+            return instance;    
         }
         public override string ToString()
         {

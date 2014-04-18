@@ -12,13 +12,22 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class ArithmeticOperatorNode : BinaryOperatorNode
     {
-        public static new ArithmeticOperatorNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static new ArithmeticOperatorNode Parse(string op, IExpressionNode left, IExpressionNode right)
         {
             var instance = new ArithmeticOperatorNode();
-            var left = instance.LeftOperand = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
-            var right = instance.RightOperand = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
-            string op = parser.ValueOf(lexerNode.Children[1]);
-            if ((left.ReturnType.IsStringType() && right.ReturnType.IsStringType() && op == "+")
+            BinaryOperatorNodeType type;
+            try
+            {
+                type = BinaryOperatorNode.Operators[op];
+            }
+            catch (KeyNotFoundException)
+            {
+                throw new ParseException("Unkown operator '" + op + "'");
+            }
+            instance.LeftOperand = left;
+            instance.RightOperand = right;
+            instance.BinaryOperatorType = type;
+            if ((left.ReturnType.IsStringType() && right.ReturnType.IsStringType() && type == BinaryOperatorNodeType.Addition)
                 ||
                 (left.ReturnType.IsNumericType() && right.ReturnType.IsNumericType()))
             {
@@ -28,14 +37,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     instance.ReturnType = left.ReturnType;
                 else
                     throw new TypeException(String.Format("Incompatible operand types, {0} and {1} received", left.ReturnType.FullName, right.ReturnType.FullName));
-                try
-                {
-                    instance.BinaryOperatorType = BinaryOperatorNode.Operators[op];
-                }
-                catch (KeyNotFoundException)
-                {
-                    throw new ParseException("Unkown operator '" + op + "'");
-                }
+
                 return instance;
             }
             else
