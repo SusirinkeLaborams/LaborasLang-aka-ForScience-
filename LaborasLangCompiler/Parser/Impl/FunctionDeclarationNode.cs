@@ -44,7 +44,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             return FunctionHeader.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]).FunctionType;
         }
-        public override string Print()
+        public override string ToString()
         {
             StringBuilder builder = new StringBuilder("(Function: ");
             builder.Append(ReturnType).Append("(");
@@ -54,7 +54,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 builder.Append(String.Format("{0}{1} {2}", delim, arg.ParameterType, arg.Name));
                 delim = ", ";
             }
-            builder.Append(")").Append(body.Print()).Append(")");
+            builder.Append(")").Append(body.ToString()).Append(")");
             return builder.ToString();
         }
     }

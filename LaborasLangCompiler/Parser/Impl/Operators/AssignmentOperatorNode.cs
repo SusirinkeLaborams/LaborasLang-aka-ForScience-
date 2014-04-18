@@ -32,7 +32,7 @@ namespace LaborasLangCompiler.Parser.Impl
             else
                 throw new TypeException(String.Format("Assigned {0} to {1}", instance.RightOperand.ReturnType, instance.LeftOperand.ReturnType));
         }
-        public override string Print()
+        public override string ToString()
         {
             return String.Format("(Assignment: {0} = {1})", LeftOperand, RightOperand);
         }

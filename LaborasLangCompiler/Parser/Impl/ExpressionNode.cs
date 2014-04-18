@@ -38,7 +38,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     throw new NotImplementedException();
             }
         }
-        public override string Print()
+        public override string ToString()
         {
             return String.Format("(ExpressionNode: {0} {1})", ExpressionType, ReturnType);
         }

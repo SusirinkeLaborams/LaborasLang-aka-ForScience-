@@ -52,6 +52,25 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             //no type error
             Assert.Fail();
         }
+        [TestMethod]
+        public void SomeTest()
+        {
+            string source = @"
+                int a = 5;
+                int b = a;
+                auto Main = void(int arg)
+                {
+	                int a = 20;
+	                a = 10;
+
+	                auto f = int(int a, float b)
+	                {
+		                auto c = a * b;
+	                };
+                };";
+            string expected = @"(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b = (LValueNode: Field System.Int32), $Functors.$System_Void$System_Int32 Main = (Function: $Functors.$System_Void$System_Int32(System.Int32 arg)(CodeBlock: Symbols: ((LValueNode: FunctionArgument System.Int32) arg, (LValueNode: LocalVariable System.Int32) a, (LValueNode: LocalVariable $Functors.$System_Int32$System_Int32$System_Single) f) Nodes: ((Declaration: (LValueNode: LocalVariable System.Int32) = (Literal: System.Int32 20)), (UnaryOp: RValue (Assignment: (LValueNode: LocalVariable System.Int32) = (Literal: System.Int32 10))), (Declaration: (LValueNode: LocalVariable $Functors.$System_Int32$System_Int32$System_Single) = (Function: $Functors.$System_Int32$System_Int32$System_Single(System.Int32 a, System.Single b)(CodeBlock: Symbols: ((LValueNode: FunctionArgument System.Int32) a, (LValueNode: FunctionArgument System.Single) b, (LValueNode: LocalVariable System.Single) c) Nodes: ((Declaration: (LValueNode: LocalVariable System.Single) = (BinaryOp: (LValueNode: FunctionArgument System.Int32) Multiplication (LValueNode: FunctionArgument System.Single)))))))))))";
+            TestParser(source, expected, "SomeTest", true);
+        }
         private void TestParser(string source, string expected, string name, bool lex)
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
@@ -68,7 +87,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 tree = TreeSerializer.Deserialize(path + name + ".xml");
             }
             Parser parser = new Parser(assembly, tree, bytes, "test");
-            string result = parser.Root.Print();
+            string result = parser.Root.ToString();
             Assert.AreEqual(expected, result);
         }
     }

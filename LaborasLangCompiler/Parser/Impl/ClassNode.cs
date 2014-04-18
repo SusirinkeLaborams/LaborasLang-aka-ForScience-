@@ -168,7 +168,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             return "Lambda_" + lambdaCounter++.ToString();
         }
-        public override string Print()
+        public override string ToString()
         {
             string delim = "";
             StringBuilder builder = new StringBuilder("(ClassNode: Fields: ");
@@ -176,7 +176,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 builder.Append(String.Format("{0}{1} {2}", delim, field.Value.ReturnType.FullName, field.Key));
                 if (field.Value.Initializer != null)
-                    builder.Append(" = ").Append(field.Value.Initializer.Print());
+                    builder.Append(" = ").Append(field.Value.Initializer.ToString());
                 delim = ", ";
             }
             

@@ -35,9 +35,9 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
-        public override string Print()
+        public override string ToString()
         {
-            return String.Format("(BinaryOp: {0} {2} {1})", LeftOperand, BinaryOperatorType, RightOperand);
+            return String.Format("(BinaryOp: {0} {1} {2})", LeftOperand, BinaryOperatorType, RightOperand);
         }
     }
 }

@@ -100,23 +100,23 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return instance;
         }
-        public override string Print()
+        public override string ToString()
         {
-            StringBuilder builder = new StringBuilder("(CodeBlock: Symbols: ");
+            StringBuilder builder = new StringBuilder("(CodeBlock: Symbols: (");
             string delim = "";
             foreach(var symbol in symbols)
             {
-                builder.Append(String.Format("{0}{1} {2}", delim, symbol.Value.Print(), symbol.Key));
+                builder.Append(String.Format("{0}{1} {2}", delim, symbol.Value.ToString(), symbol.Key));
                 delim = ", ";
             }
             delim = "";
-            builder.Append("Nodes: ");
+            builder.Append(") Nodes: (");
             foreach(var node in nodes)
             {
-                builder.Append(delim).Append(node.Print());
+                builder.Append(delim).Append(node.ToString());
                 delim = ", ";
             }
-            builder.Append(")");
+            builder.Append("))");
             return builder.ToString();
         }
     }

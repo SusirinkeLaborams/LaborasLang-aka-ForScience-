@@ -37,7 +37,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new NotImplementedException("Only parsing simple symbols");
             }
         }
-        public override string Print()
+        public override string ToString()
         {
             return String.Format("(LValueNode: {0} {1})", LValueType, ReturnType);
         }

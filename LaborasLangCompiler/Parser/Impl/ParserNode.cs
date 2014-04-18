@@ -12,9 +12,5 @@ namespace LaborasLangCompiler.Parser.Impl
     abstract class ParserNode : IParserNode
     {
         public abstract NodeType Type { get; }
-        public virtual string Print()
-        {
-            return "";
-        }
     }
 }

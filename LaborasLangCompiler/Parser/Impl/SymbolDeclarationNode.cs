@@ -51,9 +51,9 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return new SymbolDeclarationNode(symbol, initializer);
         }
-        public override string Print()
+        public override string ToString()
         {
-            return String.Format("(Declaraion: {0} {1} = {2})", Type, DeclaredSymbol, Initializer != null ? Initializer.ToString() : "");
+            return String.Format("(Declaration: {0} = {1})", DeclaredSymbol.ToString(), Initializer != null ? Initializer.ToString() : "");
         }
     }
 }

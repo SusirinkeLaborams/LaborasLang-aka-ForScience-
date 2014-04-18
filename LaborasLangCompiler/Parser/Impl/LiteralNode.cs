@@ -50,7 +50,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new ParseException("Could not fit " + value + " in " + type, e);
             }
         }
-        public override string Print()
+        public override string ToString()
         {
             return "(Literal: " + ReturnType.FullName + " " + Value + ")";
         }
