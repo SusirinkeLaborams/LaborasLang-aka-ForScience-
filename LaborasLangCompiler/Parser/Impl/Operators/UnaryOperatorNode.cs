@@ -34,5 +34,9 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             return new UnaryOperatorNode(UnaryOperatorNodeType.VoidOperator, expression);
         }
+        public override string Print()
+        {
+            return String.Format("(UnaryOp: {0} {1})", ExpressionType, Operand);
+        }
     }
 }
