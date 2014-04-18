@@ -568,7 +568,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Ceq();
                     return;
 
-                case BinaryOperatorNodeType.Remainder:
+                case BinaryOperatorNodeType.Modulus:
                     EmitRemainder(binaryOperator);
                     return;
 

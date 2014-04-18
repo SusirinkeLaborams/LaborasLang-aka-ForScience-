@@ -117,7 +117,7 @@ namespace LaborasLangCompiler.Parser
         Subtraction,
         Multiplication,
         Division,
-        Remainder,
+        Modulus,
         BinaryOr,
         BinaryAnd,
         Xor,
