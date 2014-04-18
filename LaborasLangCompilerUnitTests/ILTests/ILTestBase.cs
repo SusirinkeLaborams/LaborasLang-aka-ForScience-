@@ -20,6 +20,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         internal ICodeBlockNode BodyCodeBlock { get; set; }
 
         internal CompilerArguments compilerArgs;
+        internal MethodEmitter methodEmitter;
         internal TypeEmitter typeEmitter;
         internal AssemblyEmitter assemblyEmitter;
 
@@ -29,13 +30,12 @@ namespace LaborasLangCompilerUnitTests.ILTests
             compilerArgs = CompilerArguments.Parse(new[] { "dummy.il", "/out:" + tempLocation });
             assemblyEmitter = new AssemblyEmitter(compilerArgs);
             typeEmitter = new TypeEmitter(assemblyEmitter, "klass");
+            methodEmitter = new MethodEmitter(typeEmitter, "dummy", assemblyEmitter.TypeToTypeReference(typeof(void)),
+                MethodAttributes.Static | MethodAttributes.Private);
         }
 
         protected virtual void Test()
         {
-            var methodEmitter = new MethodEmitter(typeEmitter, "dummy", assemblyEmitter.TypeToTypeReference(typeof(void)),
-                MethodAttributes.Static | MethodAttributes.Private);
-
             if (BodyCodeBlock == null)
             {
                 BodyCodeBlock = new CodeBlockNode()
