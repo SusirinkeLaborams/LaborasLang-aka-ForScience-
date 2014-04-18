@@ -13,10 +13,14 @@ namespace LaborasLangCompilerUnitTests.ILTests
     {
         protected static Lexer lexer = new Lexer();
 
-        static TestBase()
+        public TestBase()
         {
             var compilerArgs = CompilerArguments.Parse(new[] { "dummy.il" });
-            AssemblyRegistry.Create(compilerArgs.References);
+            AssemblyRegistry.CreateAndOverrideIfNeeded(compilerArgs.References);
+        }
+
+        static TestBase()
+        {
         }
     }
 }

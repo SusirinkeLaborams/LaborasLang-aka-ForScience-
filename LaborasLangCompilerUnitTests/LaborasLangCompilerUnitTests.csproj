@@ -111,7 +111,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_EmptyMethod.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_FunctionAssignmentToFunctorWithArgs.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_FunctionAssignmentToFunctorWithoutArgs.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_FunctorAssignmentToDelegate.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_FunctorDefinition.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_FunctorWithReturnTypeAndArguments.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_HelloWorld.il" />

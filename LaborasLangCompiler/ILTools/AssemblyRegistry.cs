@@ -47,6 +47,11 @@ namespace LaborasLangCompiler.ILTools
                 throw new InvalidOperationException("Assembly registry is already created!");
             }
 
+            CreateAndOverrideIfNeeded(references);
+        }
+
+        internal static void CreateAndOverrideIfNeeded(IEnumerable<string> references)
+        {
             new AssemblyRegistry(references);   // Sue me
         }
 
@@ -108,7 +113,7 @@ namespace LaborasLangCompiler.ILTools
 
         public static TypeReference GetFunctorType(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
         {
-            var name = FunctorTypeEmitter.ComputeNameFromReturnAndArgumentTypes(returnType, arguments);
+            var name = TypeEmitter.ComputeNameFromReturnAndArgumentTypes(returnType, arguments);
 
             if (!instance.functorTypes.ContainsKey(name))
             {
@@ -244,7 +249,7 @@ namespace LaborasLangCompiler.ILTools
             }
             else
             {
-                return reference.Resolve();
+                return reference;
             }
         }
 

@@ -461,9 +461,9 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         [TestMethod]
         public void TestCanEmit_FunctionAssignmentToFunctorWithoutArgs()
         {
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
 
-            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, voidType, new List<TypeReference>());
+            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, intType, new List<TypeReference>());
             var field = new FieldDefinition("myFunction", FieldAttributes.Public | FieldAttributes.Static, functorType);
 
             var initializer = new FunctionNode()
@@ -475,6 +475,80 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             typeEmitter.AddField(field, initializer);
 
             ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToFunctorWithoutArgs.il";
+            Test();
+        }
+
+        [TestMethod]
+        public void TestCanEmit_FunctionAssignmentToFunctorWithArgs()
+        {
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+
+            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, intType, 
+                new List<TypeReference>(new TypeReference[]
+                {
+                    assemblyEmitter.TypeToTypeReference(typeof(double)),
+                    assemblyEmitter.TypeToTypeReference(typeof(float))
+                }));
+            var field = new FieldDefinition("myFunction", FieldAttributes.Public | FieldAttributes.Static, functorType);
+
+            var initializer = new FunctionNode()
+            {
+                Function = methodEmitter.Get(),
+                ReturnType = functorType
+            };
+
+            typeEmitter.AddField(field, initializer);
+
+            ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToFunctorWithArgs.il";
+            Test();
+        }
+
+        [TestMethod]
+        public void TestCanEmit_FunctorAssignmentToDelegate()
+        {
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var arguments = new List<TypeReference>(new TypeReference[]
+                {
+                    assemblyEmitter.TypeToTypeReference(typeof(int)),
+                    assemblyEmitter.TypeToTypeReference(typeof(string))
+                });
+
+            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, voidType, arguments);
+            
+            var functorField = new FieldDefinition("myFunction", FieldAttributes.Public | FieldAttributes.Static, functorType);
+            typeEmitter.AddField(functorField);
+
+            var declaringType = (TypeDefinition)typeEmitter.Get(assemblyEmitter);
+            var delegateType = DelegateEmitter.Create(assemblyEmitter, declaringType, voidType, arguments);
+            declaringType.NestedTypes.Add(delegateType);
+
+            var delegateField = new FieldDefinition("myDelegate", FieldAttributes.Public | FieldAttributes.Static, delegateType);
+            typeEmitter.AddField(delegateField);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        ReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = delegateField
+                            },
+                            RightOperand = new FieldNode()
+                            {
+                                Field = functorField
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_FunctorAssignmentToDelegate.il";
             Test();
         }
 

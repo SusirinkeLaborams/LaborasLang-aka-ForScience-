@@ -467,6 +467,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
+        // TO DO: Rewrite to not use temp variable when possible
         private void EmitRightOperandForAssignment(IAssignmentOperatorNode assignmentOperator)
         {
             bool rightIsFunction = assignmentOperator.RightOperand.ExpressionType == ExpressionNodeType.RValue &&
@@ -491,10 +492,21 @@ namespace LaborasLangCompiler.ILTools.Methods
                                       .Where(x => x.Parameters.Count == 2 && x.Parameters[0].ParameterType.FullName == "System.Object" &&
                                                     x.Parameters[1].ParameterType.FullName == "System.IntPtr").Single();
                 
-                Dup();
+                // First, store it to a temp variable, then load its address twice
+
+                var tempVariable = AcquireTempVariable(functorType);
+
+                Stloc(tempVariable.Index);
+
+                Ldloca(tempVariable.Index);
                 Ldfld(objectInstanceField);
+
+                Ldloca(tempVariable.Index);
                 Ldfld(functionPtrField);
+
                 Newobj(delegateCtor);
+
+                ReleaseTempVariable(tempVariable);
             }
         }
         
@@ -1061,8 +1073,11 @@ namespace LaborasLangCompiler.ILTools.Methods
                 }
             }
 
-            temporaryVariables.Add(new TempVariable(new VariableDefinition("$Temp" + (temporaryVariables.Count + 1).ToString(), type), true));
-            return temporaryVariables[temporaryVariables.Count - 1].Variable;
+            var variableName = "$Temp" + (temporaryVariables.Count + 1).ToString();
+            var variable = new VariableDefinition(variableName, type);
+            temporaryVariables.Add(new TempVariable(variable, true));
+            body.Variables.Add(variable);
+            return variable;
         }
 
         protected void ReleaseTempVariable(VariableDefinition variable)
@@ -1300,6 +1315,18 @@ namespace LaborasLangCompiler.ILTools.Methods
             else
             {
                 ilProcessor.Emit(OpCodes.Ldloc, index);
+            }
+        }
+
+        protected void Ldloca(int index)
+        {
+            if (index < 256)
+            {
+                ilProcessor.Emit(OpCodes.Ldloca_S, (byte)index);
+            }
+            else
+            {
+                ilProcessor.Emit(OpCodes.Ldloca, index);
             }
         }
 
