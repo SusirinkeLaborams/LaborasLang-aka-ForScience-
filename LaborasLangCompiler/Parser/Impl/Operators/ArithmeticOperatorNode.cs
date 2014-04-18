@@ -25,22 +25,13 @@ namespace LaborasLangCompiler.Parser.Impl
             else
                 instance.ReturnType = parser.Primitives["int"];
             //temp code, paskui reiks ziuret pagal tipu dydzius
-            switch (op)
+            try
             {
-                case "+":
-                    instance.BinaryOperatorType = BinaryOperatorNodeType.Addition;
-                    break;
-                case "-":
-                    instance.BinaryOperatorType = BinaryOperatorNodeType.Subtraction;
-                    break;
-                case "*":
-                    instance.BinaryOperatorType = BinaryOperatorNodeType.Multiplication;
-                    break;
-                case "/":
-                    instance.BinaryOperatorType = BinaryOperatorNodeType.Division;
-                    break;
-                default:
-                    throw new ParseException("Unkown operator '" + op + "'");
+                instance.BinaryOperatorType = BinaryOperatorNode.Operators[op];
+            }
+            catch(KeyNotFoundException)
+            {
+                throw new ParseException("Unkown operator '" + op + "'");
             }
             return instance;
         }
