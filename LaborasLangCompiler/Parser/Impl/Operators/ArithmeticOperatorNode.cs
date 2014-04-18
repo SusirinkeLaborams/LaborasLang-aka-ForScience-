@@ -18,7 +18,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var left = instance.LeftOperand = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
             var right = instance.RightOperand = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
             string op = parser.ValueOf(lexerNode.Children[1]);
-            if ((left.ReturnType.isStringType() && right.ReturnType.isStringType() && op == "+")
+            if ((left.ReturnType.IsStringType() && right.ReturnType.IsStringType() && op == "+")
                 ||
                 (left.ReturnType.IsNumericType() && right.ReturnType.IsNumericType()))
             {
