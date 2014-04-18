@@ -35,12 +35,27 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.body = CodeBlockNode.Parse(parser, parentClass, null, lexerNode.Children[1], header.Args);
             instance.ReturnType = header.FunctionType;
             instance.emitter = new MethodEmitter(parentClass.TypeEmitter, "$" + name, header.ReturnType, MethodAttributes.Static | MethodAttributes.Private);
+            foreach (var arg in header.Args)
+                instance.emitter.AddArgument(arg.Param);
             instance.Function = instance.emitter.Get();
             return instance;
         }
         public static TypeReference ParseType(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             return FunctionHeader.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]).FunctionType;
+        }
+        public override string Print()
+        {
+            StringBuilder builder = new StringBuilder("(Function: ");
+            builder.Append(ReturnType).Append("(");
+            string delim = "";
+            foreach(var arg in emitter.Get().Parameters)
+            {
+                builder.Append(String.Format("{0}{1} {2}", delim, arg.ParameterType, arg.Name));
+                delim = ", ";
+            }
+            builder.Append(")").Append(body.Print()).Append(")");
+            return builder.ToString();
         }
     }
 }

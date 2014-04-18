@@ -16,12 +16,12 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.CodeBlockNode; } }
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
-        protected List<IParserNode> nodes;
+        protected List<ParserNode> nodes;
         protected Dictionary<string, LValueNode> symbols;
         private CodeBlockNode parent;
         protected CodeBlockNode(CodeBlockNode parent)
         {
-            nodes = new List<IParserNode>();
+            nodes = new List<ParserNode>();
             symbols = new Dictionary<string, LValueNode>();
             this.parent = parent;
         }
@@ -99,6 +99,25 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
             return instance;
+        }
+        public override string Print()
+        {
+            StringBuilder builder = new StringBuilder("(CodeBlock: Symbols: ");
+            string delim = "";
+            foreach(var symbol in symbols)
+            {
+                builder.Append(String.Format("{0}{1} {2}", delim, symbol.Value.Print(), symbol.Key));
+                delim = ", ";
+            }
+            delim = "";
+            builder.Append("Nodes: ");
+            foreach(var node in nodes)
+            {
+                builder.Append(delim).Append(node.Print());
+                delim = ", ";
+            }
+            builder.Append(")");
+            return builder.ToString();
         }
     }
 }
