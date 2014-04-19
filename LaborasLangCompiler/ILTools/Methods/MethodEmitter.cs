@@ -616,6 +616,10 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Newobj(delegateCtor);
                 }
             }
+            else
+            {
+                EmitConversionIfNeeded(assignmentOperator.RightOperand.ReturnType, assignmentOperator.LeftOperand.ReturnType);
+            }
         }
 
         #endregion

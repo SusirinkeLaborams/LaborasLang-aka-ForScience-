@@ -400,7 +400,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     assignmentNode = newNode;
                 }
             }
-            
+
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
@@ -415,6 +415,112 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_MultipleNestedAssignments.il";
+            Test();
+        }
+
+        [TestMethod]
+        public void TestCanEmit_AddIntegers()
+        {
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            
+            var localVariable = new VariableDefinition("myVar", intType);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        DeclaredSymbol = new LocalVariableNode()
+                        {
+                            LocalVariable = localVariable
+                        }
+                    },
+                    new UnaryOperatorNode()
+                    {
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        ReturnType = voidType,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new LocalVariableNode()
+                            {
+                                LocalVariable = localVariable
+                            },
+                            RightOperand = new BinaryOperatorNode()
+                            {
+                                ReturnType = intType,
+                                LeftOperand = new LiteralNode()
+                                {
+                                    ReturnType = intType,
+                                    Value = 2
+                                },
+                                RightOperand = new LiteralNode()
+                                {
+                                    ReturnType = intType,
+                                    Value = 3
+                                },
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_AddIntegers.il";
+            Test();
+        }
+
+        [TestMethod]
+        public void TestCanEmit_AddFloatAndInteger()
+        {
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
+            var doubleType = assemblyEmitter.TypeToTypeReference(typeof(double));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+
+            var localVariable = new VariableDefinition("myVar", doubleType);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        DeclaredSymbol = new LocalVariableNode()
+                        {
+                            LocalVariable = localVariable
+                        }
+                    },
+                    new UnaryOperatorNode()
+                    {
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        ReturnType = voidType,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new LocalVariableNode()
+                            {
+                                LocalVariable = localVariable
+                            },
+                            RightOperand = new BinaryOperatorNode()
+                            {
+                                ReturnType = floatType,
+                                LeftOperand = new LiteralNode()
+                                {
+                                    ReturnType = intType,
+                                    Value = 2
+                                },
+                                RightOperand = new LiteralNode()
+                                {
+                                    ReturnType = floatType,
+                                    Value = 3.2f
+                                },
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_AddFloatAndInteger.il";
             Test();
         }
 
@@ -439,7 +545,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         [TestMethod]
         public void TestCanEmit_FunctorWithReturnTypeAndArguments()
         {
-            FunctorTypeEmitter.Create(assemblyEmitter, assemblyEmitter.TypeToTypeReference(typeof(int)), 
+            FunctorTypeEmitter.Create(assemblyEmitter, assemblyEmitter.TypeToTypeReference(typeof(int)),
                 new List<TypeReference>()
                 {
                     assemblyEmitter.TypeToTypeReference(typeof(bool)),
@@ -481,7 +587,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
 
-            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, intType, 
+            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, intType,
                 new List<TypeReference>()
                 {
                     assemblyEmitter.TypeToTypeReference(typeof(double)),
@@ -512,7 +618,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 };
 
             var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, voidType, arguments);
-            
+
             var functorField = new FieldDefinition("myFunction", FieldAttributes.Public | FieldAttributes.Static, functorType);
             typeEmitter.AddField(functorField);
 
@@ -554,7 +660,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         public void TestCanEmit_FunctionAssignmentToDelegate()
         {
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
-            
+
             var myMethod = methodEmitter.Get();
             var methodReturnType = myMethod.ReturnType;
             var methodArguments = myMethod.Parameters.Select(x => x.ParameterType).ToList();
@@ -624,7 +730,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     }
                 }
             });
-                 
+
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()

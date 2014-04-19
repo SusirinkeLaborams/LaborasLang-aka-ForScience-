@@ -1,7 +1,10 @@
-﻿auto Main = void()
+﻿auto Func = void()
 {
-	float i = 2 + 3.5;
+	System.Console.WriteLine("Func called");
+};
 
-	System.Console.WriteLine(System.String.Format("Hello, world: {0}!", i));
+auto Main = void()
+{
+	Func();
 	System.Console.ReadKey();
 };
