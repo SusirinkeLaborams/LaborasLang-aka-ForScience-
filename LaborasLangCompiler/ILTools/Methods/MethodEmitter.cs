@@ -472,7 +472,7 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             bool rightIsFunction = assignmentOperator.RightOperand.ExpressionType == ExpressionNodeType.RValue &&
                 ((IRValueNode)assignmentOperator.RightOperand).RValueType == RValueNodeType.Function;
-            bool rightIsFunctor = assignmentOperator.RightOperand.ReturnType.FullName.StartsWith("$Functors.");
+            bool rightIsFunctor = assignmentOperator.RightOperand.ReturnType.IsFunctorType();
             bool leftIsDelegate = assignmentOperator.LeftOperand.ReturnType.Resolve().BaseType.FullName == "System.MulticastDelegate";
 
             // We'll want to emit right operand in all cases

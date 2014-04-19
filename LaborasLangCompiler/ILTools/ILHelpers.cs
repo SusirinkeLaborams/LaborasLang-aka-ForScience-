@@ -89,6 +89,11 @@ namespace LaborasLangCompiler.ILTools
             return type.FullName == "System.String";
         }
 
+        public static bool IsFunctorType(this TypeReference type)
+        {
+            return type.FullName.StartsWith("$Functors.");
+        }
+
         public static bool IsAssignableTo(this TypeReference right, TypeReference left)
         {
             var leftName = left.FullName;
@@ -128,6 +133,20 @@ namespace LaborasLangCompiler.ILTools
             }
 
             return false;
+        }
+
+        public static TypeReference GetFunctorReturnTypeAndArguments(AssemblyEmitter assemblyScope, TypeReference functorType, 
+            out List<TypeReference> arguments)
+        {
+            if (!functorType.IsFunctorType())
+            {
+                throw new ArgumentException("functorType isn't a functor type!");
+            }
+            
+            var invokeMethod = AssemblyRegistry.GetMethods(assemblyScope, functorType, "Invoke").Single();
+            
+            arguments = invokeMethod.Parameters.Select(x => x.ParameterType).ToList();
+            return invokeMethod.ReturnType;
         }
 
         static ILHelpers()
