@@ -790,7 +790,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitAddNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand);
+                EmitAddNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ReturnType);
             }
         }
 
@@ -833,15 +833,35 @@ namespace LaborasLangCompiler.ILTools.Methods
         #endregion
 
         #region Logical And/Logical Or emitters
-
+                
         protected void EmitLogicalAnd(IBinaryOperatorNode binaryOperator)
         {
-            throw new NotImplementedException();
+            var emitFalse = ilProcessor.Create(OpCodes.Ldc_I4, 0);
+            var end = CreateLabel();
+
+            Emit(binaryOperator.LeftOperand, false);
+            Brfalse(emitFalse);
+
+            Emit(binaryOperator.RightOperand, false);
+            Br(end);
+
+            Emit(emitFalse);
+            Emit(end);
         }
 
         protected void EmitLogicalOr(IBinaryOperatorNode binaryOperator)
         {
-            throw new NotImplementedException();
+            var emitTrue = ilProcessor.Create(OpCodes.Ldc_I4, 1);
+            var end = CreateLabel();
+
+            Emit(binaryOperator.LeftOperand, false);
+            Brtrue(emitTrue);
+
+            Emit(binaryOperator.RightOperand, false);
+            Br(end);
+
+            Emit(emitTrue);
+            Emit(end);
         }
 
         #endregion
@@ -1221,6 +1241,18 @@ namespace LaborasLangCompiler.ILTools.Methods
             else
             {
                 ilProcessor.Emit(OpCodes.Brfalse, target);
+            }
+        }
+
+        protected void Br(Instruction target)
+        {
+            if (target.Offset < 256)
+            {
+                ilProcessor.Emit(OpCodes.Br_S, target);
+            }
+            else
+            {
+                ilProcessor.Emit(OpCodes.Br, target);
             }
         }
 
