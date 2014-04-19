@@ -596,6 +596,78 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
+        [TestMethod]
+        public void TestCanEmit_CallFunctor_PassReturnValueAsArgument()
+        {
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
+
+            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, intType, new List<TypeReference>()
+                {
+                    stringType,
+                    floatType
+                });
+
+            var field = new FieldDefinition("myFunction", FieldAttributes.Public | FieldAttributes.Static, functorType);
+            typeEmitter.AddField(field);
+
+            var getFirstArgumentMethod = new MethodEmitter(typeEmitter, "GetString", stringType, MethodAttributes.Private | MethodAttributes.Static);
+
+            getFirstArgumentMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new LiteralNode()
+                    {
+                        ReturnType = stringType,
+                        Value = "Str"
+                    }
+                }
+            });
+                 
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        ReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new MethodCallNode()
+                        {
+                            Function = new FieldNode()
+                            {
+                                Field = field
+                            },
+                            Arguments = new List<IExpressionNode>()
+                            {
+                                new MethodCallNode()
+                                {
+                                    Arguments = new List<IExpressionNode>(),
+                                    Function = new FunctionNode()
+                                    {
+                                        ReturnType = stringType,
+                                        Function = getFirstArgumentMethod.Get()
+                                    },
+                                    ReturnType = stringType
+                                },
+                                new LiteralNode()
+                                {
+                                    ReturnType = floatType,
+                                    Value = 3.5f
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_CallFunctor_PassReturnValueAsArgument.il";
+            Test();
+        }
+
         #endregion
     }
 }

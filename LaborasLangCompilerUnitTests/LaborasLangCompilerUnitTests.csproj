@@ -110,6 +110,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_CallFunctor_PassReturnValueAsArgument.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_EmptyMethod.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_FunctionAssignmentToDelegate.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_FunctionAssignmentToFunctorWithArgs.il" />

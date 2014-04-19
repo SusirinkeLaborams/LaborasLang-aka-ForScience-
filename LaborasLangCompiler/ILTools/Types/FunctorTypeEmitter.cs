@@ -23,10 +23,10 @@ namespace LaborasLangCompiler.ILTools.Types
             var delegateType = DelegateEmitter.Create(assembly, typeDefinition, returnType, arguments);
             typeDefinition.NestedTypes.Add(delegateType);
 
-            var objectInstanceField = new FieldDefinition("objectInstance", FieldAttributes.Private | FieldAttributes.InitOnly,
+            var objectInstanceField = new FieldDefinition("objectInstance", FieldAttributes.Public | FieldAttributes.InitOnly,
                 Assembly.TypeToTypeReference(typeof(object)));
 
-            var functionPtrField = new FieldDefinition("functionPtr", FieldAttributes.Private | FieldAttributes.InitOnly,
+            var functionPtrField = new FieldDefinition("functionPtr", FieldAttributes.Public | FieldAttributes.InitOnly,
                 Assembly.TypeToTypeReference(typeof(IntPtr)));
 
             typeDefinition.Fields.Add(objectInstanceField);

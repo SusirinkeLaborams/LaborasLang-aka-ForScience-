@@ -88,7 +88,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Emitters
 
-        protected void Emit(IParserNode node)
+        protected void Emit(IParserNode node, bool emitReference)
         {
             switch (node.Type)
             {
@@ -97,7 +97,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     return;
 
                 case NodeType.Expression:
-                    Emit((IExpressionNode)node);
+                    Emit((IExpressionNode)node, emitReference);
                     return;
 
                 case NodeType.SymbolDeclaration:
@@ -112,16 +112,16 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             foreach (var node in codeBlock.Nodes)
             {
-                Emit(node);
+                Emit(node, false);
             }
         }
 
-        protected void Emit(IExpressionNode expression)
+        protected void Emit(IExpressionNode expression, bool emitReference)
         {
             switch (expression.ExpressionType)
             {
                 case ExpressionNodeType.LValue:
-                    Emit((ILValueNode)expression);
+                    Emit((ILValueNode)expression, emitReference);
                     return;
 
                 case ExpressionNodeType.RValue:
@@ -153,7 +153,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             if (symbolDeclaration.Initializer != null)
             {
-                Emit(symbolDeclaration.Initializer);
+                Emit(symbolDeclaration.Initializer, false);
                 EmitStore(symbolDeclaration.DeclaredSymbol);
             }
         }
@@ -162,20 +162,20 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Expression node
 
-        protected void Emit(ILValueNode lvalue)
+        protected void Emit(ILValueNode lvalue, bool emitReference)
         {
             switch (lvalue.LValueType)
             {
                 case LValueNodeType.Field:
-                    Emit((IFieldNode)lvalue);
+                    Emit((IFieldNode)lvalue, emitReference);
                     return;
 
                 case LValueNodeType.FunctionArgument:
-                    Emit((IFunctionArgumentNode)lvalue);
+                    Emit((IFunctionArgumentNode)lvalue, emitReference);
                     return;
 
                 case LValueNodeType.LocalVariable:
-                    Emit((ILocalVariableNode)lvalue);
+                    Emit((ILocalVariableNode)lvalue, emitReference);
                     return;
 
                 case LValueNodeType.Property:
@@ -255,35 +255,70 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Load lvalue node
 
-        protected void Emit(IFieldNode field)
+        protected void Emit(IFieldNode field, bool emitReference)
         {
+            emitReference &= field.Field.FieldType.IsValueType;
+
             if (!field.Field.Resolve().IsStatic)
             {
                 if (field.ObjectInstance != null)
                 {
-                    Emit(field.ObjectInstance);
+                    Emit(field.ObjectInstance, true);
                 }
                 else
                 {
                     Ldarg(0);
                 }
 
-                Ldfld(field.Field);
+                if (emitReference)
+                {
+                    Ldflda(field.Field);
+                }
+                else
+                {
+                    Ldfld(field.Field);
+                }
             }
             else
             {
-                Ldsfld(field.Field);
+                if (emitReference)
+                {
+                    Ldsflda(field.Field);
+                }
+                else
+                {
+                    Ldsfld(field.Field);
+                }
             }
         }
 
-        protected void Emit(IFunctionArgumentNode argument)
+        protected void Emit(IFunctionArgumentNode argument, bool emitReference)
         {
-            Ldarg(argument.Param.Index + (argument.IsFunctionStatic ? 0 : 1));
+            var index = argument.Param.Index + (argument.IsFunctionStatic ? 0 : 1);
+            emitReference &= argument.Param.ParameterType.IsValueType;
+
+            if (emitReference)
+            {
+                Ldarga(index);
+            }
+            else
+            {
+                Ldarg(index);
+            }
         }
 
-        protected void Emit(ILocalVariableNode variable)
+        protected void Emit(ILocalVariableNode variable, bool emitReference)
         {
-            Ldloc(variable.LocalVariable.Index);
+            emitReference &= variable.LocalVariable.VariableType.IsValueType;
+
+            if (emitReference)
+            {
+                Ldloca(variable.LocalVariable.Index);
+            }
+            else
+            {
+                Ldloc(variable.LocalVariable.Index);
+            }
         }
 
         protected void Emit(IPropertyNode property)
@@ -299,14 +334,14 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 if (property.ObjectInstance != null)
                 {
-                    Emit(property.ObjectInstance);
+                    Emit(property.ObjectInstance, true);
                 }
                 else
                 {
                     Ldarg(0);
                 }
             }
-
+            
             Call(getter);
         }
 
@@ -394,7 +429,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             bool isProperty = assignmentOperator.LeftOperand.LValueType == LValueNodeType.Property;
             IExpressionNode objectInstance = null;
             VariableDefinition tempVariable = null;
-
+            
             bool isNonStaticMember = false;
 
             if (isField)
@@ -428,7 +463,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 if (objectInstance != null)
                 {
-                    Emit(objectInstance);
+                    Emit(objectInstance, true);
                 }
                 else
                 {
@@ -453,30 +488,30 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             EmitStore(assignmentOperator.LeftOperand);
 
-            if (isNonStaticMember && duplicateValueInStack)
+            if (duplicateValueInStack)
             {
-                if (isProperty)
+                if (isNonStaticMember && isProperty)
                 {
                     Ldloc(tempVariable.Index);
                     ReleaseTempVariable(tempVariable);
                 }
-                else // Field
+                else if (isNonStaticMember)
                 {
-                    Emit(assignmentOperator.LeftOperand);
+                    Emit(assignmentOperator.LeftOperand, false);
                 }
             }
         }
 
-        // TO DO: Rewrite to not use temp variable when possible
         private void EmitRightOperandForAssignment(IAssignmentOperatorNode assignmentOperator)
         {
             bool rightIsFunction = assignmentOperator.RightOperand.ExpressionType == ExpressionNodeType.RValue &&
                 ((IRValueNode)assignmentOperator.RightOperand).RValueType == RValueNodeType.Function;
             bool rightIsFunctor = assignmentOperator.RightOperand.ReturnType.IsFunctorType();
+            bool canEmitRightAsReference = CanEmitAsReference(assignmentOperator.RightOperand);
             bool leftIsDelegate = assignmentOperator.LeftOperand.ReturnType.Resolve().BaseType.FullName == "System.MulticastDelegate";
 
             // We'll want to emit right operand in all cases
-            Emit(assignmentOperator.RightOperand);
+            Emit(assignmentOperator.RightOperand, leftIsDelegate && canEmitRightAsReference);
             
             if (leftIsDelegate)
             {
@@ -487,7 +522,8 @@ namespace LaborasLangCompiler.ILTools.Methods
                 }
                 else if (rightIsFunctor)
                 {
-                    // Here we have a functor object on top of the stack
+                    // Here we have a functor object on top of the stack OR its reference,
+                    // depending whether we were able to load it
                     // We will just want to construct a delegate from its two fields
 
                     var delegateType = assignmentOperator.LeftOperand.ReturnType;
@@ -499,21 +535,31 @@ namespace LaborasLangCompiler.ILTools.Methods
                                           .Where(x => x.Parameters.Count == 2 && x.Parameters[0].ParameterType.FullName == "System.Object" &&
                                                         x.Parameters[1].ParameterType.FullName == "System.IntPtr").Single();
 
-                    // First, store it to a temp variable, then load its address twice
+                    if (!canEmitRightAsReference)
+                    {
+                        // First, store it to a temp variable, then load its address twice
+                        var tempVariable = AcquireTempVariable(functorType);
 
-                    var tempVariable = AcquireTempVariable(functorType);
+                        Stloc(tempVariable.Index);
 
-                    Stloc(tempVariable.Index);
+                        Ldloca(tempVariable.Index);
+                        Ldfld(objectInstanceField);
 
-                    Ldloca(tempVariable.Index);
-                    Ldfld(objectInstanceField);
+                        Ldloca(tempVariable.Index);
+                        Ldfld(functionPtrField);
 
-                    Ldloca(tempVariable.Index);
-                    Ldfld(functionPtrField);
+                        ReleaseTempVariable(tempVariable);
+                    }
+                    else
+                    {   // If we were able to load address once, it means it's either an argument, local variable
+                        // or field, which means its loading is cheap
+                        Ldfld(objectInstanceField);
+
+                        Emit(assignmentOperator.RightOperand, true);
+                        Ldfld(functionPtrField);
+                    }
 
                     Newobj(delegateCtor);
-
-                    ReleaseTempVariable(tempVariable);
                 }
             }
         }
@@ -553,20 +599,16 @@ namespace LaborasLangCompiler.ILTools.Methods
                     return;
             }
 
-            Emit(binaryOperator.LeftOperand);
-            Emit(binaryOperator.RightOperand);
+            Emit(binaryOperator.LeftOperand, false);
+            Emit(binaryOperator.RightOperand, false);
 
             switch (binaryOperator.BinaryOperatorType)
             {
                 case BinaryOperatorNodeType.BinaryAnd:
-                    RequireInteger(binaryOperator.LeftOperand.ReturnType, "Binary AND requires both operands to be integers");
-                    RequireInteger(binaryOperator.RightOperand.ReturnType, "Binary AND requires both operands to be integers");
                     And();
                     return;
 
                 case BinaryOperatorNodeType.BinaryOr:
-                    RequireInteger(binaryOperator.LeftOperand.ReturnType, "Binary OR requires both operands to be integers");
-                    RequireInteger(binaryOperator.RightOperand.ReturnType, "Binary OR requires both operands to be integers");
                     Or();
                     return;
 
@@ -597,8 +639,6 @@ namespace LaborasLangCompiler.ILTools.Methods
                     return;
 
                 case BinaryOperatorNodeType.Xor:
-                    RequireInteger(binaryOperator.LeftOperand.ReturnType, "XOR requires both operands to be integers");
-                    RequireInteger(binaryOperator.RightOperand.ReturnType, "XOR requires both operands to be integers");
                     Xor();
                     return;
 
@@ -613,7 +653,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             if (function.ObjectInstance != null)
             {
-                Emit(function.ObjectInstance);
+                Emit(function.ObjectInstance, true);
             }
             else
             {
@@ -637,7 +677,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 {
                     if (functionNode.ObjectInstance != null)
                     {
-                        Emit(functionNode.ObjectInstance);
+                        Emit(functionNode.ObjectInstance, true);
                     }
                     else
                     {
@@ -651,7 +691,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
                 foreach (var argument in functionCall.Arguments)
                 {
-                    Emit(argument);
+                    Emit(argument, false);
                 }
 
                 Call(functionNode.Function);
@@ -660,11 +700,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 var invokeMethod = AssemblyRegistry.GetMethods(Assembly, function.ReturnType, "Invoke").Single();
 
-                Emit(function);
+                Emit(function, true);
 
                 foreach (var argument in functionCall.Arguments)
                 {
-                    Emit(argument);
+                    Emit(argument, false);
                 }
 
                 Call(invokeMethod);
@@ -710,17 +750,14 @@ namespace LaborasLangCompiler.ILTools.Methods
             switch (unaryOperator.UnaryOperatorType)
             {
                 case UnaryOperatorNodeType.BinaryNot:
-                    RequireInteger(unaryOperator.Operand.ReturnType, "Binary negation requires integer operand.");
-                    Emit(unaryOperator.Operand);
+                    Emit(unaryOperator.Operand, false);
                     Not();
                     return;
 
                 case UnaryOperatorNodeType.LogicalNot:
-                    RequireBoolean(unaryOperator.Operand.ReturnType, "Logical not requires boolean operand.");
                     throw new NotImplementedException();
 
                 case UnaryOperatorNodeType.Negation:
-                    RequireNumeral(unaryOperator.Operand.ReturnType, "Negation requires numeral operand.");
                     throw new NotImplementedException();
 
                 case UnaryOperatorNodeType.PostDecrement:
@@ -757,11 +794,8 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitAddNumeral(IExpressionNode left, IExpressionNode right)
         {
-            RequireNumeral(left.ReturnType, "Addition requires both operands to be numerals or at least one to be a string");
-            RequireNumeral(right.ReturnType, "Addition requires both operands to be numerals or at least one to be a string");
-
-            Emit(left);
-            Emit(right);
+            Emit(left, false);
+            Emit(right, false);
             Add();
 
             throw new NotImplementedException("Still need to implement implicit conversions (like int + float)");
@@ -769,14 +803,14 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitAddString(IExpressionNode left, IExpressionNode right)
         {
-            Emit(left);
+            Emit(left, false);
 
             if (left.ReturnType.IsValueType)
             {
                 Box(left.ReturnType);
             }
 
-            Emit(right);
+            Emit(right, false);
 
             if (right.ReturnType.IsValueType)
             {
@@ -797,17 +831,11 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitLogicalAnd(IBinaryOperatorNode binaryOperator)
         {
-            RequireBoolean(binaryOperator.LeftOperand.ReturnType, "Logical AND requires both operands to be booleans");
-            RequireBoolean(binaryOperator.RightOperand.ReturnType, "Logical AND requires both operands to be booleans");
-
             throw new NotImplementedException();
         }
 
         protected void EmitLogicalOr(IBinaryOperatorNode binaryOperator)
         {
-            RequireBoolean(binaryOperator.LeftOperand.ReturnType, "Logical OR requires both operands to be booleans");
-            RequireBoolean(binaryOperator.RightOperand.ReturnType, "Logical OR requires both operands to be booleans");
-
             throw new NotImplementedException();
         }
 
@@ -836,11 +864,8 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right)
         {
-            RequireNumeral(left.ReturnType, "Greater equal than requires both operands to be numerals or at least one to be a string");
-            RequireNumeral(right.ReturnType, "Greater equal than requires both operands to be numerals or at least one to be a string");
-
-            Emit(left);
-            Emit(right);
+            Emit(left, false);
+            Emit(right, false);
 
             Clt();
             Ldc_I4(0);
@@ -872,11 +897,8 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right)
         {
-            RequireNumeral(left.ReturnType, "Greater than requires both operands to be numerals or at least one to be a string");
-            RequireNumeral(right.ReturnType, "Greater than requires both operands to be numerals or at least one to be a string");
-
-            Emit(left);
-            Emit(right);
+            Emit(left, false);
+            Emit(right, false);
 
             Cgt();
 
@@ -906,11 +928,8 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right)
         {
-            RequireNumeral(left.ReturnType, "Less equal than requires both operands to be numerals or at least one to be a string");
-            RequireNumeral(right.ReturnType, "Less equal than requires both operands to be numerals or at least one to be a string");
-
-            Emit(left);
-            Emit(right);
+            Emit(left, false);
+            Emit(right, false);
 
             Cgt();
             Ldc_I4(0);
@@ -942,11 +961,8 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitLessThanNumeral(IExpressionNode left, IExpressionNode right)
         {
-            RequireNumeral(left.ReturnType, "Less than requires both operands to be numerals or at least one to be a string");
-            RequireNumeral(right.ReturnType, "Less than requires both operands to be numerals or at least one to be a string");
-
-            Emit(left);
-            Emit(right);
+            Emit(left, false);
+            Emit(right, false);
 
             Clt();
 
@@ -961,9 +977,6 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitDivision(IBinaryOperatorNode binaryOperator)
         {
-            RequireNumeral(binaryOperator.LeftOperand.ReturnType, "Division requires both operands to be numerals");
-            RequireNumeral(binaryOperator.RightOperand.ReturnType, "Division requires both operands to be numerals");
-
             if (AreBothOperandsUnsigned(binaryOperator))
             {
                 Div_Un();
@@ -976,9 +989,6 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitRemainder(IBinaryOperatorNode binaryOperator)
         {
-            RequireNumeral(binaryOperator.LeftOperand.ReturnType, "Remainder requires both operands to be numerals");
-            RequireNumeral(binaryOperator.RightOperand.ReturnType, "Remainder requires both operands to be numerals");
-
             if (AreBothOperandsUnsigned(binaryOperator))
             {
                 Rem_Un();
@@ -1000,7 +1010,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                Emit(binaryOperator.Operand);
+                Emit(binaryOperator.Operand, false);
                 Pop();
             }
         }
@@ -1013,27 +1023,13 @@ namespace LaborasLangCompiler.ILTools.Methods
         }
 
         #endregion
-
-        #region Validators
-
-        private void RequireNumeral(TypeReference type, string errorMessage)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void RequireInteger(TypeReference type, string errorMessage)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void RequireBoolean(TypeReference type, string errorMessage)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
-
+        
         #region Helpers
+
+        protected bool CanEmitAsReference(IExpressionNode node)
+        {
+            return node.ExpressionType == ExpressionNodeType.LValue && ((ILValueNode)node).LValueType != LValueNodeType.Property;
+        }
 
         protected bool IsAtLeastOneOperandString(IBinaryOperatorNode binaryOperator)
         {
@@ -1215,6 +1211,17 @@ namespace LaborasLangCompiler.ILTools.Methods
                 ilProcessor.Emit(OpCodes.Ldarg, index);
             }
         }
+        protected void Ldarga(int index)
+        {
+            if (index < 256)
+            {
+                ilProcessor.Emit(OpCodes.Ldarga_S, index);
+            }
+            else
+            {
+                ilProcessor.Emit(OpCodes.Ldarga, index);
+            }
+        }
 
         protected void Ldc_I4(int value)
         {
@@ -1288,6 +1295,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             ilProcessor.Emit(OpCodes.Ldfld, field);
         }
 
+        protected void Ldflda(FieldReference field)
+        {
+            ilProcessor.Emit(OpCodes.Ldflda, field);
+        }
+
         protected void Ldftn(MethodReference function)
         {
             ilProcessor.Emit(OpCodes.Ldftn, function);
@@ -1346,6 +1358,11 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Ldsfld(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Ldsfld, field);
+        }
+
+        protected void Ldsflda(FieldReference field)
+        {
+            ilProcessor.Emit(OpCodes.Ldsflda, field);
         }
 
         protected void Ldstr(string str)

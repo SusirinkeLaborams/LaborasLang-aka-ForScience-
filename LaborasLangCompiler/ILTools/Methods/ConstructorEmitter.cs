@@ -44,13 +44,13 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             if (isStatic)
             {
-                Emit(initializer);
+                Emit(initializer, false);
                 Stsfld(field);
             }
             else
             {
                 Ldarg(0);
-                Emit(initializer);
+                Emit(initializer, false);
                 Stfld(field);
             }
 
@@ -73,7 +73,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Ldarg(0);
             }
             
-            Emit(initializer);
+            Emit(initializer, false);
             Call(setter);
 
             AddEpilogue();
