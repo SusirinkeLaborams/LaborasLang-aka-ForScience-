@@ -32,11 +32,14 @@ namespace LaborasLangCompiler.Parser.Impl
                 switch (type)
                 {
                     case Lexer.StringLiteral:
-                        return new LiteralNode(value.Substring(1, value.Length - 2), parser.Primitives["string"]);
+                        return new LiteralNode(value.Substring(1, value.Length - 2), parser.Primitives[Parser.String]);
                     case Lexer.IntegerLiteral:
-                        return new LiteralNode(Convert.ToInt32(value), parser.Primitives["int"]);
+                        return new LiteralNode(Convert.ToInt32(value), parser.Primitives[Parser.Int]);
                     case Lexer.FloatLiteral:
-                        return new LiteralNode(Convert.ToSingle(value, CultureInfo.InvariantCulture.NumberFormat), parser.Primitives["float"]);
+                        return new LiteralNode(Convert.ToSingle(value, CultureInfo.InvariantCulture.NumberFormat), parser.Primitives[Parser.Float]);
+                    case Lexer.BooleanLiteral:
+                        bool val = value == "true" ? true : false;
+                        return new LiteralNode(val, parser.Primitives[Parser.Bool]);
                     default:
                         throw new ParseException("Literal expected, " + type + " received");
                 }
