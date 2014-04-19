@@ -36,7 +36,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public override string ToString()
         {
-            return String.Format("(UnaryOp: {0} {1})", ExpressionType, Operand);
+            return String.Format("(UnaryOp: {0} {1})", UnaryOperatorType, Operand);
         }
     }
 }

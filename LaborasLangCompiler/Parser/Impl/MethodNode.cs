@@ -24,14 +24,10 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static MethodNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode, List<TypeReference> args)
         {
-            StringBuilder type = new StringBuilder();
-            string delim = "";
-            for (int i = 0; i < lexerNode.Children.Count - 1; i++)
-            {
-                type.Append(delim).Append(parser.ValueOf(lexerNode.Children[i]));
-                delim = ".";
-            }
-            string name = parser.ValueOf(lexerNode.Children[lexerNode.Children.Count - 1]);
+            var full = parser.ValueOf(lexerNode);
+            var index = full.LastIndexOf('.');
+            var type = full.Substring(0, index);
+            var name = full.Substring(index + 1);
             var method = AssemblyRegistry.GetCompatibleMethod(parser.Assembly, type.ToString(), name, args);
             return new MethodNode(method, AssemblyRegistry.GetFunctorType(parser.Assembly, method));
         }
