@@ -878,7 +878,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitGreaterEqualThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand);
+                EmitGreaterEqualThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ReturnType);
             }
         }
 
@@ -887,16 +887,17 @@ namespace LaborasLangCompiler.ILTools.Methods
             throw new NotImplementedException();
         }
 
-        protected void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right)
+        protected void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
             Emit(left, false);
+            EmitConversionIfNeeded(left.ReturnType, resultType);
+
             Emit(right, false);
+            EmitConversionIfNeeded(right.ReturnType, resultType);
 
             Clt();
             Ldc_I4(0);
             Ceq();
-
-            throw new NotImplementedException();    // Conversions int <---> float, etc
         }
 
         #endregion
@@ -911,7 +912,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitGreaterThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand);
+                EmitGreaterThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ReturnType);
             }
         }
 
@@ -920,14 +921,15 @@ namespace LaborasLangCompiler.ILTools.Methods
             throw new NotImplementedException();
         }
 
-        protected void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right)
+        protected void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
             Emit(left, false);
+            EmitConversionIfNeeded(left.ReturnType, resultType);
+
             Emit(right, false);
+            EmitConversionIfNeeded(right.ReturnType, resultType);
 
             Cgt();
-
-            throw new NotImplementedException();    // Conversions int <---> float, etc
         }
 
         #endregion
@@ -942,7 +944,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitLessEqualThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand);
+                EmitLessEqualThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ReturnType);
             }
         }
 
@@ -951,16 +953,17 @@ namespace LaborasLangCompiler.ILTools.Methods
             throw new NotImplementedException();
         }
 
-        protected void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right)
+        protected void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
             Emit(left, false);
+            EmitConversionIfNeeded(left.ReturnType, resultType);
+
             Emit(right, false);
+            EmitConversionIfNeeded(right.ReturnType, resultType);
 
             Cgt();
             Ldc_I4(0);
             Ceq();
-
-            throw new NotImplementedException();    // Conversions int <---> float, etc
         }
 
         #endregion
@@ -975,7 +978,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitLessThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand);
+                EmitLessThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ReturnType);
             }
         }
 
@@ -984,14 +987,15 @@ namespace LaborasLangCompiler.ILTools.Methods
             throw new NotImplementedException();
         }
 
-        protected void EmitLessThanNumeral(IExpressionNode left, IExpressionNode right)
+        protected void EmitLessThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
             Emit(left, false);
+            EmitConversionIfNeeded(left.ReturnType, resultType);
+
             Emit(right, false);
+            EmitConversionIfNeeded(right.ReturnType, resultType);
 
             Clt();
-
-            throw new NotImplementedException();    // Conversions int <---> float, etc
         }
 
         #endregion
@@ -1161,7 +1165,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected bool AreBothOperandsUnsigned(IBinaryOperatorNode binaryOperator)
         {
-            throw new NotImplementedException();
+            return binaryOperator.LeftOperand.ReturnType.IsUnsignedInteger() && binaryOperator.RightOperand.ReturnType.IsUnsignedInteger();
         }
 
         protected Instruction CreateLabel()
