@@ -794,13 +794,15 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        protected void EmitAddNumeral(IExpressionNode left, IExpressionNode right)
+        protected void EmitAddNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
             Emit(left, false);
-            Emit(right, false);
-            Add();
+            EmitConversionIfNeeded(left.ReturnType, resultType);
 
-            throw new NotImplementedException("Still need to implement implicit conversions (like int + float)");
+            Emit(right, false);
+            EmitConversionIfNeeded(right.ReturnType, resultType);
+            
+            Add();
         }
 
         protected void EmitAddString(IExpressionNode left, IExpressionNode right)
