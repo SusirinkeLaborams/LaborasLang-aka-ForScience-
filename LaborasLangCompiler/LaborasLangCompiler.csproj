@@ -101,6 +101,7 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="CodeSamples\HelloWorld.ll" />
+    <None Include="CodeSamples\Something.ll" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
