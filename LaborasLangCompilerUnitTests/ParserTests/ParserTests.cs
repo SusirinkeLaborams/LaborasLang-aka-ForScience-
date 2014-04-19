@@ -66,7 +66,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         [TestMethod]
         public void StringLiteralTest()
         {
-            string source = @"auto a = 'word';";
+            string source = @"auto a = ""word"";";
             string expected = "(ClassNode: Fields: System.String a = (Literal: System.String word))";
             TestParser(source, expected, "StringLiteralTest", lex);
         }
@@ -76,7 +76,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 auto Main = void()
                 {
-	                System.Console.WriteLine('Hello, World!');
+	                System.Console.WriteLine(""Hello, World!"");
                 };";
             string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (Function: $Functors.$System_Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!) Function: (Method: System.Void System.Console::WriteLine(System.String)))))))";
             TestParser(source, expected, "HelloWorld", lex);
@@ -96,6 +96,28 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (Function: $Functors.$System_Void()(CodeBlock: Symbols: ((LValueNode: LocalVariable System.Boolean) a, (LValueNode: LocalVariable System.Int32) c) Nodes: ((Declaration: (LValueNode: LocalVariable System.Boolean) = ), (Declaration: (LValueNode: LocalVariable System.Int32) = (Literal: System.Int32 5)), (WhileBlock: Condition: (LValueNode: LocalVariable System.Boolean), Block: (CodeBlock: Symbols: () Nodes: ((UnaryOp: VoidOperator (Assignment: (LValueNode: LocalVariable System.Int32) = (BinaryOp: (LValueNode: LocalVariable System.Int32) Addition (Literal: System.Int32 1))))))))))";
             TestParser(source, expected, "While", lex);
+        }
+        [TestMethod]
+        public void If()
+        {
+            string source = @"
+                auto Main = void()
+                {
+                    if(true)
+                    {
+                        int a;
+                    }
+                    else
+                    {
+                        int b;
+                    }
+                    if(false)
+                    {
+                        int c;
+                    }
+                };";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (Function: $Functors.$System_Void()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: ((LValueNode: LocalVariable System.Int32) a) Nodes: ((Declaration: (LValueNode: LocalVariable System.Int32) = ))), False: (CodeBlock: Symbols: ((LValueNode: LocalVariable System.Int32) b) Nodes: ((Declaration: (LValueNode: LocalVariable System.Int32) = ))), (ConditionBlock: Condition: (Literal: System.Boolean False), True: (CodeBlock: Symbols: ((LValueNode: LocalVariable System.Int32) c) Nodes: ((Declaration: (LValueNode: LocalVariable System.Int32) = ))), False: ))))";
+            TestParser(source, expected, "If", lex);
         }
         [TestMethod]
         public void SomeTest()

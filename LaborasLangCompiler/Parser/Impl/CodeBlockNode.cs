@@ -89,7 +89,8 @@ namespace LaborasLangCompiler.Parser.Impl
                             instance.AddNode(WhileBlock.Parse(parser, parentClass, instance, sentence));
                             break;
                         case Lexer.ConditionalSentence:
-                            throw new NotImplementedException();
+                            instance.AddNode(ConditionBlockNode.Parse(parser, parentClass, instance, sentence));
+                            break;
                         case Lexer.CodeBlock:
                             instance.AddNode(CodeBlockNode.Parse(parser, parentClass, instance, sentence));
                             break;
