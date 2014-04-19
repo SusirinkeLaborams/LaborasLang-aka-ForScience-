@@ -63,7 +63,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Function = new FunctionNode()
                             {
-                                Function = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "ReadKey
+                                Function = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "ReadKey",
                                     new List<TypeReference>())
                             },
                             Arguments = new List<IExpressionNode>(new IExpressionNode[]
