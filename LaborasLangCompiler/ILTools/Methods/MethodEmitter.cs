@@ -764,34 +764,59 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Emit(IUnaryOperatorNode unaryOperator)
         {
+            if (unaryOperator.UnaryOperatorType == UnaryOperatorNodeType.VoidOperator)
+            {
+                EmitVoidOperator(unaryOperator);
+                return;
+            }
+
+            Emit((ILValueNode)unaryOperator.Operand, false);
+
             switch (unaryOperator.UnaryOperatorType)
             {
                 case UnaryOperatorNodeType.BinaryNot:
-                    Emit(unaryOperator.Operand, false);
                     Not();
                     return;
 
                 case UnaryOperatorNodeType.LogicalNot:
-                    throw new NotImplementedException();
+                    Ldc_I4(0);
+                    Ceq();
+                    return;
 
                 case UnaryOperatorNodeType.Negation:
-                    throw new NotImplementedException();
+                    Neg();
+                    return;
 
                 case UnaryOperatorNodeType.PostDecrement:
-                    throw new NotImplementedException();
+                    Dup();
+                    Ldc_I4(-1);
+                    Add();
+                    EmitStore((ILValueNode)unaryOperator.Operand);
+                    return;
 
                 case UnaryOperatorNodeType.PostIncrement:
-                    throw new NotImplementedException();
+                    Dup();
+                    Ldc_I4(1);
+                    Add();
+                    EmitStore((ILValueNode)unaryOperator.Operand);
+                    return;
 
                 case UnaryOperatorNodeType.PreDecrement:
-                    throw new NotImplementedException();
+                    Ldc_I4(-1);
+                    Add();
+                    Dup();
+                    EmitStore((ILValueNode)unaryOperator.Operand);
+                    return;
 
                 case UnaryOperatorNodeType.PreIncrement:
-                    throw new NotImplementedException();
-
-                case UnaryOperatorNodeType.VoidOperator:
-                    EmitVoidOperator(unaryOperator);
+                    Ldc_I4(1);
+                    Add();
+                    Dup();
+                    EmitStore((ILValueNode)unaryOperator.Operand);
                     return;
+
+                default:
+                    throw new NotSupportedException(string.Format("Unknown unary operator type: {0}", unaryOperator.UnaryOperatorType));
             }
         }
 
@@ -1099,6 +1124,14 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 Rem();
             }
+        }
+
+        #endregion
+
+        #region Increment/Decrement emitters
+
+        protected void EmitPostDecrement(IExpressionNode operand)
+        {
         }
 
         #endregion
@@ -1669,6 +1702,11 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Or()
         {
             ilProcessor.Emit(OpCodes.Or);
+        }
+
+        protected void Neg()
+        {
+            ilProcessor.Emit(OpCodes.Neg);
         }
 
         protected void Nop()
