@@ -75,6 +75,19 @@ namespace LaborasLangCompiler.Parser
         IReadOnlyList<IExpressionNode> Arguments { get; }
     }
 
+    interface IWhileBlockNode : IParserNode
+    {
+        IExpressionNode Condition { get; }
+        ICodeBlockNode ExecutedBlock { get; }
+    }
+
+    interface IConditionBlock : IParserNode
+    {
+        IExpressionNode Condition { get; }
+        ICodeBlockNode TrueBlock { get; }
+        ICodeBlockNode FalseBlock { get; }
+    }
+
     public enum LValueNodeType
     {
         LocalVariable,
