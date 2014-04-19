@@ -118,8 +118,11 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         private void EmitAsDelegate(FieldReference objectInstanceField, FieldReference functionPtrField, TypeReference delegateType)
         {
-            var ctor = AssemblyRegistry.GetMethods(Assembly, delegateType, ".ctor").Single(x => x.Parameters.Count == 2 &&
-                x.Parameters[0].ParameterType.FullName == "System.Object" && x.Parameters[1].ParameterType.FullName == "System.IntPtr");
+            var ctor = AssemblyRegistry.GetCompatibleMethod(Assembly, delegateType, ".ctor", new List<string>()
+            {
+                "System.Object",
+                "System.IntPtr"
+            });
 
             Ldarg(0);
             Ldfld(objectInstanceField);

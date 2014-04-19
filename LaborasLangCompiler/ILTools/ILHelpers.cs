@@ -135,6 +135,77 @@ namespace LaborasLangCompiler.ILTools
             return false;
         }
 
+        public static bool MatchesArgumentList(this MethodReference method, IReadOnlyList<TypeReference> desiredParameters)
+        {
+            var methodParameters = method.Parameters;
+
+            if (methodParameters.Count != desiredParameters.Count && (methodParameters.Count == 0 ||
+                methodParameters.Last().CustomAttributes.All(x => x.AttributeType.FullName != "System.ParamArrayAttribute")))
+            {
+                return false;
+            }
+
+            int numberOfMatches = 0;
+            while (numberOfMatches < methodParameters.Count && numberOfMatches < desiredParameters.Count)
+            {
+                if (desiredParameters[numberOfMatches].IsAssignableTo(methodParameters[numberOfMatches].ParameterType))
+                {
+                    numberOfMatches++;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (numberOfMatches == methodParameters.Count && numberOfMatches == desiredParameters.Count)
+            {
+                return true;
+            }
+            else if (methodParameters.Count < desiredParameters.Count)
+            {
+                // Check params parameters
+
+                if (numberOfMatches != methodParameters.Count - 1)
+                {
+                    return false;
+                }
+
+                var paramsArgument = methodParameters.Last().ParameterType.GetElementType();
+
+                for (int i = methodParameters.Count - 1; i < desiredParameters.Count; i++)
+                {
+                    if (!desiredParameters[i].IsAssignableTo(paramsArgument))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+            else if (methodParameters.Count > desiredParameters.Count)
+            {
+                // Check optional parameters
+
+                if (numberOfMatches != desiredParameters.Count)
+                {
+                    return false;
+                }
+
+                for (int i = desiredParameters.Count; i < methodParameters.Count; i++)
+                {
+                    if (!methodParameters[i].IsOptional)
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
         public static TypeReference GetFunctorReturnTypeAndArguments(AssemblyEmitter assemblyScope, TypeReference functorType, 
             out List<TypeReference> arguments)
         {

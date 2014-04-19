@@ -531,9 +531,11 @@ namespace LaborasLangCompiler.ILTools.Methods
 
                     var objectInstanceField = AssemblyRegistry.GetField(Assembly, functorType, "objectInstance");
                     var functionPtrField = AssemblyRegistry.GetField(Assembly, functorType, "functionPtr");
-                    var delegateCtor = AssemblyRegistry.GetMethods(Assembly, delegateType, ".ctor")
-                                          .Where(x => x.Parameters.Count == 2 && x.Parameters[0].ParameterType.FullName == "System.Object" &&
-                                                        x.Parameters[1].ParameterType.FullName == "System.IntPtr").Single();
+                    var delegateCtor = AssemblyRegistry.GetCompatibleMethod(Assembly, delegateType, ".ctor", new List<string>()
+                    {
+                        "System.Object",
+                        "System.IntPtr"
+                    });
 
                     if (!canEmitRightAsReference)
                     {
@@ -817,10 +819,11 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Box(right.ReturnType);
             }
 
-            var concatMethod = AssemblyRegistry.GetMethods(Assembly, "System.String", "Concat").Single(x =>
-                                    x.Parameters.Count == 2 &&
-                                    x.Parameters[0].ParameterType.FullName == "System.Object" &&
-                                    x.Parameters[1].ParameterType.FullName == "System.Object");
+            var concatMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, "System.String", "Concat", new List<string>()
+                {
+                    "System.Object",
+                    "System.Object"
+                });
 
             Call(concatMethod);
         }

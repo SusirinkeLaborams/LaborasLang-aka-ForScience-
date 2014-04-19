@@ -91,7 +91,7 @@ namespace LaborasLangCompiler.ILTools
             instance.assemblyPaths.Add(assemblyDefinition.MainModule.Name);
             instance.assemblies.Add(assemblyDefinition);
         }
-        
+
         #region Type/Method/Property/Field getters
 
         public static bool IsTypeKnown(string typeName)
@@ -134,10 +134,55 @@ namespace LaborasLangCompiler.ILTools
 
             if (!resolvedType.HasMethods)
             {
-                return null;
-            }            
+                return new List<MethodReference>();
+            }
 
             return resolvedType.Methods.Where(x => x.Name == methodName).Select(x => ScopeToAssembly(assembly, x)).ToList<MethodReference>();
+        }
+
+        public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, string type,
+            string methodName, IReadOnlyList<string> arguments)
+        {
+            return GetCompatibleMethod(assembly, GetTypeInternal(type), methodName, arguments.Select(x => GetTypeInternal(x)).ToList());
+        }
+
+        public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, string type,
+            string methodName, IReadOnlyList<TypeReference> arguments)
+        {
+            return GetCompatibleMethod(assembly, GetTypeInternal(type), methodName, arguments);
+        }
+
+        public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeReference type,
+            string methodName, IReadOnlyList<string> arguments)
+        {
+            return GetCompatibleMethod(assembly, type, methodName, arguments.Select(x => GetTypeInternal(x)).ToList());
+        }
+
+        public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeReference type,
+            string methodName, IReadOnlyList<TypeReference> arguments)
+        {
+            var methods = GetMethods(assembly, type, methodName).Where(x => x.MatchesArgumentList(arguments)).ToList();
+
+            if (methods.Count > 1)
+            {
+                // More than one is compatible, so one must match exactly, or we have ambiguity
+
+                foreach (var method in methods)
+                {
+                    if (method.Parameters.Select(x => x.ParameterType.FullName).SequenceEqual(arguments.Select(x => x.FullName)))
+                    {
+                        return method;
+                    }
+                }
+
+                throw new Exception(string.Format("Method is ambigous. Could be: \r\n{0}", string.Join("\r\n", methods)));
+            }
+            else if (methods.Count == 0)
+            {
+                return null;
+            }
+
+            return methods.Single();
         }
 
         public static PropertyReference GetProperty(AssemblyEmitter assembly, string typeName, string propertyName)

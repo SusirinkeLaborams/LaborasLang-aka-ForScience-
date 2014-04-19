@@ -26,7 +26,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             if (!isStatic)
             {
-                var objectCtor = AssemblyRegistry.GetMethods(declaringType.Assembly, "System.Object", ".ctor").Single(x => x.Parameters.Count == 0);
+                var objectCtor = AssemblyRegistry.GetCompatibleMethod(declaringType.Assembly, "System.Object", ".ctor", new List<TypeReference>());
 
                 Ldarg(0);
                 Call(objectCtor);
