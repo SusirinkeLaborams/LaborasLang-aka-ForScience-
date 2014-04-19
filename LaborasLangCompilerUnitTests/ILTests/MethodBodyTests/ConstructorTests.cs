@@ -70,7 +70,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var setterBody = new CodeBlockNode()
             {
-                Nodes = new List<IParserNode>(new IParserNode[]
+                Nodes = new List<IParserNode>()
                 {
                     new UnaryOperatorNode()
                     {
@@ -88,7 +88,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             }
                         }
                     }
-                })
+                }
             };
 
             setter.AddArgument(value);
@@ -123,7 +123,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var setterBody = new CodeBlockNode()
             {
-                Nodes = new List<IParserNode>(new IParserNode[]
+                Nodes = new List<IParserNode>()
                 {
                     new UnaryOperatorNode()
                     {
@@ -142,7 +142,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             }
                         }
                     }
-                })
+                }
             };
 
             setter.AddArgument(value);

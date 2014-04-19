@@ -37,7 +37,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         {
             BodyCodeBlock = new CodeBlockNode
             {
-                Nodes = new List<IParserNode>(new IParserNode[]
+                Nodes = new List<IParserNode>()
                 {
                     new MethodCallNode()
                     {
@@ -46,14 +46,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             Function = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", 
                                 new List<string>() { "System.String" })
                         },
-                        Arguments = new List<IExpressionNode>(new IExpressionNode[]
+                        Arguments = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
                                 ReturnType = assemblyEmitter.TypeToTypeReference(typeof(string)),
                                 Value = "Hello, world!"
                             }
-                        })
+                        }
                     },
                     new UnaryOperatorNode()
                     {
@@ -66,12 +66,10 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                 Function = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "ReadKey",
                                     new List<TypeReference>())
                             },
-                            Arguments = new List<IExpressionNode>(new IExpressionNode[]
-                            {
-                            })
+                            Arguments = new List<IExpressionNode>()
                         }
                     }
-                })
+                }
             };
 
             ExpectedILFilePath = "TestCanEmit_HelloWorld.il";
@@ -85,7 +83,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         {
             BodyCodeBlock = new CodeBlockNode()
             {
-                Nodes = new List<IParserNode>(new IParserNode[]
+                Nodes = new List<IParserNode>()
                 {
                     new SymbolDeclarationNode()
                     {
@@ -99,7 +97,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             Value = 2.5
                         }
                     }
-                })
+                }
             };
 
             ExpectedILFilePath = "TestCanEmit_VariableDeclarationAndInitialization_LoadFloatLiteral.il";
@@ -114,7 +112,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             BodyCodeBlock = new CodeBlockNode()
             {
-                Nodes = new List<IParserNode>(new IParserNode[]
+                Nodes = new List<IParserNode>()
                 {
                     new UnaryOperatorNode()
                     {
@@ -133,7 +131,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             }
                         }
                     }
-                })
+                }
             };
 
             ExpectedILFilePath = "TestCanEmit_StoreField_LoadIntLiteral.il";
@@ -148,7 +146,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             BodyCodeBlock = new CodeBlockNode()
             {
-                Nodes = new List<IParserNode>(new IParserNode[]
+                Nodes = new List<IParserNode>()
                 {
                     new SymbolDeclarationNode()
                     {
@@ -161,7 +159,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             Field = field
                         }
                     }
-                })
+                }
             };
 
             ExpectedILFilePath = "TestCanEmit_StoreLocalVariable_LoadField.il";
@@ -182,7 +180,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             var argument = setter.AddArgument(assemblyEmitter.TypeToTypeReference(typeof(double)), "value");
             setter.ParseTree(new CodeBlockNode()
             {
-                Nodes = new List<IParserNode>(new IParserNode[]
+                Nodes = new List<IParserNode>()
                 {
                     new UnaryOperatorNode()
                     {
@@ -201,7 +199,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             }
                         }
                     }
-                })
+                }
             });
 
             property.SetMethod = setter.Get().Resolve();
@@ -212,7 +210,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             BodyCodeBlock = new CodeBlockNode()
             {
-                Nodes = new List<IParserNode>(new IParserNode[]
+                Nodes = new List<IParserNode>()
                 {
                     new SymbolDeclarationNode()
                     {
@@ -242,7 +240,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             }
                         }
                     }
-                })
+                }
             };
 
             ExpectedILFilePath = "TestCanEmit_StoreProperty_LoadLocalVariable_LoadArgument_LoadDoubleLiteral.il";
@@ -259,14 +257,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             getter.ParseTree(new CodeBlockNode()
             {
-                Nodes = new List<IParserNode>(new IParserNode[]
+                Nodes = new List<IParserNode>()
                 {
                     new LiteralNode()
                     {
                         ReturnType = assemblyEmitter.TypeToTypeReference(typeof(string)),
                         Value = "Test"
                     }
-                })
+                }
             });
 
             property.GetMethod = getter.Get().Resolve();
@@ -279,7 +277,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             methodWithArgument.ParseTree(new CodeBlockNode()
             {
-                Nodes = new List<IParserNode>(new IParserNode[]
+                Nodes = new List<IParserNode>()
                 {
                     new UnaryOperatorNode()
                     {
@@ -297,12 +295,12 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             }
                         }
                     }
-                })
+                }
             });
 
             BodyCodeBlock = new CodeBlockNode()
             {
-                Nodes = new List<IParserNode>(new IParserNode[]
+                Nodes = new List<IParserNode>()
                 {
                     new MethodCallNode()
                     {
@@ -310,16 +308,16 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Function = methodWithArgument.Get()
                         },
-                        Arguments = new List<IExpressionNode>(new IExpressionNode[]
+                        Arguments = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
                                 ReturnType = assemblyEmitter.TypeToTypeReference(typeof(string)),
                                 Value = "Test"
                             }
-                        })
+                        }
                     }
-                })
+                }
             };
 
             ExpectedILFilePath = "TestCanEmit_StoreArgument_LoadProperty_LoadStringLiteral.il";
@@ -340,7 +338,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             BodyCodeBlock = new CodeBlockNode()
             {
-                Nodes = new List<IParserNode>(new IParserNode[]
+                Nodes = new List<IParserNode>()
                 {
                     new MethodCallNode()
                     {
@@ -357,7 +355,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             }
                         }
                     }
-                })
+                }
             };
 
             ExpectedILFilePath = "TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral.il";
@@ -405,7 +403,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             
             BodyCodeBlock = new CodeBlockNode()
             {
-                Nodes = new List<IParserNode>(new IParserNode[]
+                Nodes = new List<IParserNode>()
                 {
                     new UnaryOperatorNode()
                     {
@@ -413,7 +411,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         ReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = assignmentNode
                     }
-                })
+                }
             };
 
             ExpectedILFilePath = "TestCanEmit_MultipleNestedAssignments.il";
@@ -442,12 +440,12 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         public void TestCanEmit_FunctorWithReturnTypeAndArguments()
         {
             FunctorTypeEmitter.Create(assemblyEmitter, assemblyEmitter.TypeToTypeReference(typeof(int)), 
-                new List<TypeReference>(new TypeReference[]
+                new List<TypeReference>()
                 {
                     assemblyEmitter.TypeToTypeReference(typeof(bool)),
                     assemblyEmitter.TypeToTypeReference(typeof(float)),
                     assemblyEmitter.TypeToTypeReference(typeof(string)),
-                }));
+                });
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -484,11 +482,11 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
 
             var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, intType, 
-                new List<TypeReference>(new TypeReference[]
+                new List<TypeReference>()
                 {
                     assemblyEmitter.TypeToTypeReference(typeof(double)),
                     assemblyEmitter.TypeToTypeReference(typeof(float))
-                }));
+                });
             var field = new FieldDefinition("myFunction", FieldAttributes.Public | FieldAttributes.Static, functorType);
 
             var initializer = new FunctionNode()
@@ -507,11 +505,11 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         public void TestCanEmit_FunctorAssignmentToDelegate()
         {
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
-            var arguments = new List<TypeReference>(new TypeReference[]
+            var arguments = new List<TypeReference>()
                 {
                     assemblyEmitter.TypeToTypeReference(typeof(int)),
                     assemblyEmitter.TypeToTypeReference(typeof(string))
-                });
+                };
 
             var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, voidType, arguments);
             
