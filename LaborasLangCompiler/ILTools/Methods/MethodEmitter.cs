@@ -658,7 +658,10 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
 
             Emit(binaryOperator.LeftOperand, false);
+            EmitConversionIfNeeded(binaryOperator.LeftOperand.ReturnType, binaryOperator.ReturnType);
+
             Emit(binaryOperator.RightOperand, false);
+            EmitConversionIfNeeded(binaryOperator.RightOperand.ReturnType, binaryOperator.ReturnType);
 
             switch (binaryOperator.BinaryOperatorType)
             {
