@@ -418,6 +418,10 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
+        #region Binary operators
+
+        #region Arithmetic operators
+
         [TestMethod]
         public void TestCanEmit_AddIntegers()
         {
@@ -523,6 +527,345 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             ExpectedILFilePath = "TestCanEmit_AddFloatAndInteger.il";
             Test();
         }
+
+        [TestMethod]
+        public void TestCanEmit_AddStrings()
+        {
+            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+
+            var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, stringType);
+            typeEmitter.AddField(field);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        ReturnType = voidType,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = field
+                            },
+                            RightOperand = new BinaryOperatorNode()
+                            {
+                                ReturnType = stringType,
+                                LeftOperand = new LiteralNode()
+                                {
+                                    ReturnType = stringType,
+                                    Value = "testing string addition: "
+                                },
+                                RightOperand = new LiteralNode()
+                                {
+                                    ReturnType = intType,
+                                    Value = 22
+                                },
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_AddStrings.il";
+            Test();
+        }
+
+        [TestMethod]
+        public void TestCanEmit_Subtraction()
+        {
+            var doubleType = assemblyEmitter.TypeToTypeReference(typeof(double));
+            var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+
+            var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, doubleType);
+            typeEmitter.AddField(field);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        ReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = field
+                            },
+                            RightOperand = new BinaryOperatorNode()
+                            {
+                                ReturnType = doubleType,
+                                BinaryOperatorType = BinaryOperatorNodeType.Subtraction,
+                                LeftOperand = new LiteralNode()
+                                {
+                                    ReturnType = floatType,
+                                    Value = 5.5f
+                                },
+                                RightOperand = new LiteralNode()
+                                {
+                                    ReturnType = doubleType,
+                                    Value = 3.4
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_Subtraction.il";
+            Test();
+        }
+
+        [TestMethod]
+        public void TestCanEmit_Multiplication()
+        {
+            var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
+            var ushortType = assemblyEmitter.TypeToTypeReference(typeof(ushort));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+
+            var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, ushortType);
+            typeEmitter.AddField(field);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        ReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = field
+                            },
+                            RightOperand = new BinaryOperatorNode()
+                            {
+                                ReturnType = uintType,
+                                BinaryOperatorType = BinaryOperatorNodeType.Multiplication,
+                                LeftOperand = new LiteralNode()
+                                {
+                                    ReturnType = uintType,
+                                    Value = 5
+                                },
+                                RightOperand = new LiteralNode()
+                                {
+                                    ReturnType = uintType,
+                                    Value = 3
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_Multiplication.il";
+            Test();
+        }
+
+        [TestMethod]
+        public void TestCanEmit_SignedDivision()
+        {
+            var doubleType = assemblyEmitter.TypeToTypeReference(typeof(double));
+            var longType = assemblyEmitter.TypeToTypeReference(typeof(long));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+
+            var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, longType);
+            typeEmitter.AddField(field);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        ReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = field
+                            },
+                            RightOperand = new BinaryOperatorNode()
+                            {
+                                ReturnType = doubleType,
+                                BinaryOperatorType = BinaryOperatorNodeType.Division,
+                                LeftOperand = new LiteralNode()
+                                {
+                                    ReturnType = doubleType,
+                                    Value = 15.4
+                                },
+                                RightOperand = new LiteralNode()
+                                {
+                                    ReturnType = doubleType,
+                                    Value = 4.8
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_SignedDivision.il";
+            Test();
+        }
+
+        [TestMethod]
+        public void TestCanEmit_UnsignedDivision()
+        {
+            var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
+            var ushortType = assemblyEmitter.TypeToTypeReference(typeof(ushort));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+
+            var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, ushortType);
+            typeEmitter.AddField(field);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        ReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = field
+                            },
+                            RightOperand = new BinaryOperatorNode()
+                            {
+                                ReturnType = ushortType,
+                                BinaryOperatorType = BinaryOperatorNodeType.Division,
+                                LeftOperand = new LiteralNode()
+                                {
+                                    ReturnType = uintType,
+                                    Value = 17
+                                },
+                                RightOperand = new LiteralNode()
+                                {
+                                    ReturnType = uintType,
+                                    Value = 3
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_UnsignedDivision.il";
+            Test();
+        }
+
+        [TestMethod]
+        public void TestCanEmit_SignedRemainder()
+        {
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var longType = assemblyEmitter.TypeToTypeReference(typeof(long));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+
+            var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, longType);
+            typeEmitter.AddField(field);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        ReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = field
+                            },
+                            RightOperand = new BinaryOperatorNode()
+                            {
+                                ReturnType = intType,
+                                BinaryOperatorType = BinaryOperatorNodeType.Modulus,
+                                LeftOperand = new LiteralNode()
+                                {
+                                    ReturnType = intType,
+                                    Value = 94
+                                },
+                                RightOperand = new LiteralNode()
+                                {
+                                    ReturnType = intType,
+                                    Value = -17
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_SignedRemainder.il";
+            Test();
+        }
+
+        [TestMethod]
+        public void TestCanEmit_UnsignedRemainder()
+        {
+            var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
+            var ushortType = assemblyEmitter.TypeToTypeReference(typeof(ushort));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+
+            var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, ushortType);
+            typeEmitter.AddField(field);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        ReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = field
+                            },
+                            RightOperand = new BinaryOperatorNode()
+                            {
+                                ReturnType = ushortType,
+                                BinaryOperatorType = BinaryOperatorNodeType.Modulus,
+                                LeftOperand = new LiteralNode()
+                                {
+                                    ReturnType = uintType,
+                                    Value = 41
+                                },
+                                RightOperand = new LiteralNode()
+                                {
+                                    ReturnType = uintType,
+                                    Value = 81
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_UnsignedRemainder.il";
+            Test();
+        }
+
+        #endregion
+
+        #endregion
 
         #endregion
 

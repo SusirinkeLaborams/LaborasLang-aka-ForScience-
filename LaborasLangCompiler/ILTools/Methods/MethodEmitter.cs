@@ -792,8 +792,36 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Ldc_I4(literal.Value ? 1 : 0);
                     return;
 
+                case "System.SByte":
+                    Ldc_I4((sbyte)literal.Value);
+                    return;
+
+                case "System.Int16":
+                    Ldc_I4((short)literal.Value);
+                    return;
+
                 case "System.Int32":
                     Ldc_I4((int)literal.Value);
+                    return;
+
+                case "System.Int64":
+                    Ldc_I8((int)literal.Value);
+                    return;
+
+                case "System.Byte":
+                    Ldc_I4((byte)literal.Value);
+                    return;
+
+                case "System.UInt16":
+                    Ldc_I4((ushort)literal.Value);
+                    return;
+
+                case "System.UInt32":
+                    Ldc_I4((int)literal.Value);
+                    return;
+
+                case "System.UInt64":
+                    Ldc_I8((long)literal.Value);
                     return;
 
                 case "System.Single":
@@ -1192,14 +1220,6 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #endregion
 
-        #region Increment/Decrement emitters
-
-        protected void EmitPostDecrement(IExpressionNode operand)
-        {
-        }
-
-        #endregion
-
         protected void EmitVoidOperator(IUnaryOperatorNode binaryOperator)
         {
             if (binaryOperator.Operand.ExpressionType == ExpressionNodeType.RValue &&
@@ -1589,6 +1609,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 ilProcessor.Emit(OpCodes.Ldarg, index);
             }
         }
+
         protected void Ldarga(int index)
         {
             if (index < 256)
@@ -1656,6 +1677,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 ilProcessor.Emit(OpCodes.Ldc_I4, value);
             }
+        }
+
+        protected void Ldc_I8(long value)
+        {
+            ilProcessor.Emit(OpCodes.Ldc_I8, value);
         }
 
         protected void Ldc_R4(float value)

@@ -88,6 +88,8 @@
     <Compile Include="ILTests\DummyParserNodeInterfaceImplementations.cs" />
     <Compile Include="ILTests\ILTestBase.cs" />
     <Compile Include="ILTests\MethodBodyTests\ConstructorTests.cs" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_AddStrings.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_Multiplication.il" />
     <Compile Include="ILTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="ILTests\ILHelpersTests.cs" />
     <Compile Include="ILTests\PEVerifyRunner.cs" />
@@ -125,11 +127,16 @@
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_InstanceFieldInitializer.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_InstancePropertyInitializer.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_MultipleNestedAssignments.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_SignedDivision.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_SignedRemainder.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_StaticFieldInitializer.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_StaticPropertyInitializer.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_StoreArgument_LoadProperty_LoadStringLiteral.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_StoreLocalVariable_LoadField.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_StoreProperty_LoadLocalVariable_LoadArgument_LoadDoubleLiteral.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_Subtraction.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_UnsignedDivision.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_UnsignedRemainder.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_VariableDeclarationAndInitialization_LoadFloatLiteral.il" />
     <None Include="packages.config" />
     <None Include="Properties\packages.config" />
