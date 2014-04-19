@@ -50,6 +50,7 @@ namespace LaborasLangCompiler.LexingTools
         public const string SuffixNode = "SuffixNode";
         public const string SuffixOperator = "SuffixOperator";
         public const string PrefixOperator = "PrefixOperator";
+        public const string ReturnSentence = "ReturnSentence";
 
         private AExpression GrammarTree;
         private static string Grammar = @"
@@ -72,7 +73,7 @@ namespace LaborasLangCompiler.LexingTools
 
                 (?<PrefixNode>): (PrefixOperator Ws?)* ('(' Sum ')' / FunctionCall / Symbol / Literal);
                 (?<SuffixNode>): PrefixNode (Ws? SuffixOperator)*;
-                (?<Product>): SuffixNode (Ws? MultiplicationOperator  Ws? SuffixNode)*;
+                (?<Product>): SuffixNode (Ws? MultiplicationOperator Ws? SuffixNode)*;
                 (?<Sum>): Product (Ws? SumOperator  Ws? Product)*;
 
                 (?<AssignmentOperator>): '+=' / '-=' / '*=' / '/=' / '%=' / '&=' / '|=' / '^=' / '<<=' / '>>=' / '=';                
@@ -84,6 +85,7 @@ namespace LaborasLangCompiler.LexingTools
                 
                 (?<Value>):  Sum;
                 
+                (?<ReturnSentence>): 'return' Ws Value;
                 (?<FunctionType>): Type Ws? (?<ArgumentTypes> '(' Ws? (Type Ws? (',' Ws? Type Ws?)*)? ')');
                 (?<FunctionArgument>): Value;
                 (?<FunctionCall>): (FullSymbol) Ws? 
@@ -104,7 +106,7 @@ namespace LaborasLangCompiler.LexingTools
                 (?<Loop>):  'while' Ws? '(' Ws? (?<Condition> Value) Ws? ')' Ws? CodeBlock;
                 (?<EndOfSentence>): ';';                
                 (?<CodeBlock>): Ws? '{' Ws? (Sentence Ws?)* Ws? '}'  Ws? ;
-                (?<Sentence>): ((NamespaceImport / DeclarationAndAssignment / Assignment / Declaration / FunctionCall) Ws? EndOfSentence) /
+                (?<Sentence>): ((NamespaceImport / DeclarationAndAssignment / Assignment / Declaration / FunctionCall / ReturnSentence) Ws? EndOfSentence) /
                                 Loop /
                                 ConditionalSentence /
                                 CodeBlock;

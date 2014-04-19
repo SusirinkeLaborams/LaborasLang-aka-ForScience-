@@ -68,5 +68,23 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             string actual = AstHelper.Stringify(tree);
             Assert.AreEqual(expected, actual);
         }
+
+        [TestMethod]
+        public void HelloWorldTest()
+        {
+            var source = @"
+                auto Main = int()
+                {
+                    System.Console.WriteLine('Hello, world');
+                    System.Console.ReadKey();
+                    return 0;
+                };";
+            AstNode tree = lexer.MakeTree(source);
+
+            Assert.IsNotNull(tree);
+            string expected = "Root: Sentence: (DeclarationAndAssignment: (Type: Symbol, Symbol, Function: (NamedFunctionType: Type: Symbol, CodeBlock: (Sentence: (FunctionCall: (FullSymbol: (Symbol, Symbol, Symbol), FunctionArgument: Value: Sum: Product: SuffixNode: PrefixNode: Literal: StringLiteral), EndOfSentence), Sentence: (FunctionCall: FullSymbol: (Symbol, Symbol, Symbol), EndOfSentence), Sentence: (ReturnSentence: Value: Sum: Product: SuffixNode: PrefixNode: Literal: IntegerLiteral, EndOfSentence)))), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
     }
 }
