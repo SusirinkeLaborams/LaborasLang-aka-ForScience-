@@ -751,7 +751,15 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Emit(IObjectCreationNode objectCreation)
         {
-            throw new NotImplementedException();
+            var ctor = AssemblyRegistry.GetCompatibleMethod(Assembly, objectCreation.ReturnType, ".ctor", 
+                objectCreation.Arguments.Select(x => x.ReturnType).ToList());
+
+            foreach (var argument in objectCreation.Arguments)
+            {
+                Emit(argument, false);
+            }
+
+            Newobj(ctor);
         }
 
         protected void Emit(IUnaryOperatorNode unaryOperator)
