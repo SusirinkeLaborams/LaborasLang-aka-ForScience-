@@ -64,6 +64,13 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             TestParser(source, expected, "MethodCallTest", lex);
         }
         [TestMethod]
+        public void StringLiteralTest()
+        {
+            string source = @"auto a = 'word';";
+            string expected = "(ClassNode: Fields: System.String a = (Literal: System.String word))";
+            TestParser(source, expected, "StringLiteralTest", lex);
+        }
+        [TestMethod]
         public void SomeTest()
         {
             string source = @"

@@ -32,7 +32,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 switch (type)
                 {
                     case Lexer.StringLiteral:
-                        return new LiteralNode(value, parser.Primitives["string"]);
+                        return new LiteralNode(value.Substring(1, value.Length - 2), parser.Primitives["string"]);
                     case Lexer.IntegerLiteral:
                         return new LiteralNode(Convert.ToInt32(value), parser.Primitives["int"]);
                     case Lexer.FloatLiteral:
