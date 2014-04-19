@@ -43,7 +43,8 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     {
                         Function = new FunctionNode()
                         {
-                            Function = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<string>() { "System.String" })
+                            Function = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", 
+                                new List<string>() { "System.String" })
                         },
                         Arguments = new List<IExpressionNode>(new IExpressionNode[]
                         {
@@ -62,7 +63,8 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Function = new FunctionNode()
                             {
-                                Function = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "ReadKey", new List<TypeReference>())
+                                Function = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "ReadKey
+                                    new List<TypeReference>())
                             },
                             Arguments = new List<IExpressionNode>(new IExpressionNode[]
                             {
