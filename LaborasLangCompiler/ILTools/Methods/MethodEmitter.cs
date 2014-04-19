@@ -96,12 +96,20 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Emit((ICodeBlockNode)node);
                     return;
 
+                case NodeType.ConditionBlock:
+                    Emit((IConditionBlock)node);
+                    return;
+
                 case NodeType.Expression:
                     Emit((IExpressionNode)node, emitReference);
                     return;
 
                 case NodeType.SymbolDeclaration:
                     Emit((ISymbolDeclarationNode)node);
+                    return;
+
+                case NodeType.WhileBlock:
+                    Emit((IWhileBlockNode)node);
                     return;
             }
         }
@@ -114,6 +122,34 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 Emit(node, false);
             }
+        }
+
+        protected void Emit(IConditionBlock conditionBlock)
+        {
+            var elseBlock = CreateLabel();
+            var end = CreateLabel();
+
+            Emit(conditionBlock.Condition, false);
+
+            if (conditionBlock.FalseBlock != null)
+            {
+                Brfalse(elseBlock);
+            }
+            else
+            {
+                Brfalse(end);
+            }
+
+            Emit(conditionBlock.TrueBlock);
+
+            if (conditionBlock.FalseBlock != null)
+            {
+                Br(end);
+                Emit(elseBlock);
+                Emit(conditionBlock.FalseBlock);
+            }
+
+            Emit(end);
         }
 
         protected void Emit(IExpressionNode expression, bool emitReference)
@@ -156,6 +192,22 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Emit(symbolDeclaration.Initializer, false);
                 EmitStore(symbolDeclaration.DeclaredSymbol);
             }
+        }
+
+        protected void Emit(IWhileBlockNode whileBlockNode)
+        {
+            var loopStart = CreateLabel();
+            var loopEnd = CreateLabel();
+
+            Emit(loopStart);
+
+            Emit(whileBlockNode.Condition, false);
+            Brfalse(loopEnd);
+
+            Emit(whileBlockNode.ExecutedBlock);
+            Br(loopStart);
+
+            Emit(loopEnd);
         }
 
         #endregion
@@ -341,7 +393,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Ldarg(0);
                 }
             }
-            
+
             Call(getter);
         }
 
@@ -429,7 +481,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             bool isProperty = assignmentOperator.LeftOperand.LValueType == LValueNodeType.Property;
             IExpressionNode objectInstance = null;
             VariableDefinition tempVariable = null;
-            
+
             bool isNonStaticMember = false;
 
             if (isField)
@@ -458,7 +510,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     objectInstance = propertyNode.ObjectInstance;
                 }
             }
-            
+
             if (isNonStaticMember)
             {
                 if (objectInstance != null)
@@ -472,7 +524,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
 
             EmitRightOperandForAssignment(assignmentOperator);
-            
+
             if (duplicateValueInStack)
             {
                 Dup();
@@ -512,7 +564,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             // We'll want to emit right operand in all cases
             Emit(assignmentOperator.RightOperand, leftIsDelegate && canEmitRightAsReference);
-            
+
             if (leftIsDelegate)
             {
                 // Sanity check
@@ -565,7 +617,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 }
             }
         }
-        
+
         #endregion
 
         protected void Emit(IBinaryOperatorNode binaryOperator)
@@ -661,7 +713,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 Ldnull();
             }
-            
+
             Ldftn(function.Function);
             Newobj(ctor);
         }
@@ -751,7 +803,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Emit(IObjectCreationNode objectCreation)
         {
-            var ctor = AssemblyRegistry.GetCompatibleMethod(Assembly, objectCreation.ReturnType, ".ctor", 
+            var ctor = AssemblyRegistry.GetCompatibleMethod(Assembly, objectCreation.ReturnType, ".ctor",
                 objectCreation.Arguments.Select(x => x.ReturnType).ToList());
 
             foreach (var argument in objectCreation.Arguments)
@@ -841,7 +893,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             Emit(right, false);
             EmitConversionIfNeeded(right.ReturnType, resultType);
-            
+
             Add();
         }
 
@@ -873,7 +925,7 @@ namespace LaborasLangCompiler.ILTools.Methods
         #endregion
 
         #region Logical And/Logical Or emitters
-                
+
         protected void EmitLogicalAnd(IBinaryOperatorNode binaryOperator)
         {
             var emitFalse = ilProcessor.Create(OpCodes.Ldc_I4, 0);
@@ -1250,7 +1302,7 @@ namespace LaborasLangCompiler.ILTools.Methods
         }
 
         #endregion
-        
+
         #region Helpers
 
         protected bool CanEmitAsReference(IExpressionNode node)
