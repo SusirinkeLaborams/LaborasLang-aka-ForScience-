@@ -477,36 +477,44 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             // We'll want to emit right operand in all cases
             Emit(assignmentOperator.RightOperand);
-
-            if (leftIsDelegate && (rightIsFunction || rightIsFunctor))
+            
+            if (leftIsDelegate)
             {
-                // Here we have a functor object on top of the stack
-                // We will just want to construct a delegate from its two fields
+                // Sanity check
+                if (rightIsFunction && rightIsFunctor)
+                {
+                    throw new ArgumentException("When function is assigned to delegate, its return type should be a delegate, not a functor!");
+                }
+                else if (rightIsFunctor)
+                {
+                    // Here we have a functor object on top of the stack
+                    // We will just want to construct a delegate from its two fields
 
-                var functorType = assignmentOperator.RightOperand.ReturnType;
-                var delegateType = assignmentOperator.LeftOperand.ReturnType;
-                
-                var objectInstanceField = AssemblyRegistry.GetField(Assembly, functorType, "objectInstance");
-                var functionPtrField = AssemblyRegistry.GetField(Assembly, functorType, "functionPtr");
-                var delegateCtor = AssemblyRegistry.GetMethods(Assembly, delegateType, ".ctor")
-                                      .Where(x => x.Parameters.Count == 2 && x.Parameters[0].ParameterType.FullName == "System.Object" &&
-                                                    x.Parameters[1].ParameterType.FullName == "System.IntPtr").Single();
-                
-                // First, store it to a temp variable, then load its address twice
+                    var delegateType = assignmentOperator.LeftOperand.ReturnType;
+                    var functorType = assignmentOperator.RightOperand.ReturnType;
 
-                var tempVariable = AcquireTempVariable(functorType);
+                    var objectInstanceField = AssemblyRegistry.GetField(Assembly, functorType, "objectInstance");
+                    var functionPtrField = AssemblyRegistry.GetField(Assembly, functorType, "functionPtr");
+                    var delegateCtor = AssemblyRegistry.GetMethods(Assembly, delegateType, ".ctor")
+                                          .Where(x => x.Parameters.Count == 2 && x.Parameters[0].ParameterType.FullName == "System.Object" &&
+                                                        x.Parameters[1].ParameterType.FullName == "System.IntPtr").Single();
 
-                Stloc(tempVariable.Index);
+                    // First, store it to a temp variable, then load its address twice
 
-                Ldloca(tempVariable.Index);
-                Ldfld(objectInstanceField);
+                    var tempVariable = AcquireTempVariable(functorType);
 
-                Ldloca(tempVariable.Index);
-                Ldfld(functionPtrField);
+                    Stloc(tempVariable.Index);
 
-                Newobj(delegateCtor);
+                    Ldloca(tempVariable.Index);
+                    Ldfld(objectInstanceField);
 
-                ReleaseTempVariable(tempVariable);
+                    Ldloca(tempVariable.Index);
+                    Ldfld(functionPtrField);
+
+                    Newobj(delegateCtor);
+
+                    ReleaseTempVariable(tempVariable);
+                }
             }
         }
         

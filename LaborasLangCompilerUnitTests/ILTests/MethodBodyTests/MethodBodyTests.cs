@@ -552,6 +552,50 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
+        [TestMethod]
+        public void TestCanEmit_FunctionAssignmentToDelegate()
+        {
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            
+            var myMethod = methodEmitter.Get();
+            var methodReturnType = myMethod.ReturnType;
+            var methodArguments = myMethod.Parameters.Select(x => x.ParameterType).ToList();
+
+            var declaringType = (TypeDefinition)typeEmitter.Get(assemblyEmitter);
+            var delegateType = DelegateEmitter.Create(assemblyEmitter, declaringType, methodReturnType, methodArguments);
+            declaringType.NestedTypes.Add(delegateType);
+
+            var delegateField = new FieldDefinition("myDelegate", FieldAttributes.Public | FieldAttributes.Static, delegateType);
+            typeEmitter.AddField(delegateField);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        ReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = delegateField
+                            },
+                            RightOperand = new FunctionNode()
+                            {
+                                ReturnType = delegateType,
+                                Function = myMethod
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToDelegate.il";
+            Test();
+        }
+
         #endregion
     }
 }
