@@ -53,6 +53,17 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             Assert.Fail();
         }
         [TestMethod]
+        public void MethodCallTest()
+        {
+            string source = @"
+                auto Main = void(int arg)
+                {
+	                Main(4);
+                };";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void$System_Int32 Main = (Function: $Functors.$System_Void$System_Int32(System.Int32 arg)(CodeBlock: Symbols: ((LValueNode: FunctionArgument System.Int32) arg) Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.Int32 4) Function: (LValueNode: Field $Functors.$System_Void$System_Int32))))))";
+            TestParser(source, expected, "MethodCallTest", lex);
+        }
+        [TestMethod]
         public void SomeTest()
         {
             string source = @"

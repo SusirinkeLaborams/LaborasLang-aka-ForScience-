@@ -18,24 +18,17 @@ namespace LaborasLangCompiler.Parser.Impl
         public abstract LValueNodeType LValueType { get; }
         public static new LValueNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
-            if(lexerNode.Token.Name == Lexer.Symbol)
-            {
-                var value = parser.ValueOf(lexerNode);
-                LValueNode instance = null;
-                if(parentBlock != null)
-                    instance = parentBlock.GetSymbol(value);
-                if(instance == null)
-                    instance = parentClass.GetField(value);
-                if (instance == null)
-                    throw new SymbolNotFoundException("Symbol " + value + " not found");
-                if (instance.ReturnType == null)
-                    throw new TypeException("Cannot reference a typeless symbol");
-                return instance;
-            }
-            else
-            {
-                throw new NotImplementedException("Only parsing simple symbols");
-            }
+            var value = parser.ValueOf(lexerNode);
+            LValueNode instance = null;
+            if (parentBlock != null)
+                instance = parentBlock.GetSymbol(value);
+            if (instance == null)
+                instance = parentClass.GetField(value);
+            if (instance == null)
+                throw new SymbolNotFoundException("Symbol " + value + " not found");
+            if (instance.ReturnType == null)
+                throw new TypeException("Cannot reference a typeless symbol");
+            return instance;
         }
         public override string ToString()
         {

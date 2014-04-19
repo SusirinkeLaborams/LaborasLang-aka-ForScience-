@@ -21,10 +21,12 @@ namespace LaborasLangCompiler.Parser.Impl
             switch (lexerNode.Token.Name)
             {
                 case Lexer.Symbol:
+                case Lexer.FullSymbol:
                     return LValueNode.Parse(parser, parentClass, parentBlock, lexerNode);
                 case Lexer.Literal:
                     return LiteralNode.Parse(parser, parentClass, parentBlock, lexerNode);
                 case Lexer.Value:
+                case Lexer.FunctionArgument:
                     return ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
                 case Lexer.Sum:
                 case Lexer.Product:
@@ -34,6 +36,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.PrefixNode:
                 case Lexer.SuffixNode:
                     return UnaryOperatorNode.Parse(parser, parentClass, parentBlock, lexerNode);
+                case Lexer.FunctionCall:
+                    return MethodCallNode.Parse(parser, parentClass, parentBlock, lexerNode);
                 default:
                     throw new NotImplementedException();
             }
