@@ -71,6 +71,17 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             TestParser(source, expected, "StringLiteralTest", lex);
         }
         [TestMethod]
+        public void HelloWorld()
+        {
+            string source = @"
+                auto Main = void()
+                {
+	                System.Console.WriteLine('Hello, World!');
+                };";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (Function: $Functors.$System_Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!) Function: (Method: System.Void System.Console::WriteLine(System.String)))))))";
+            TestParser(source, expected, "HelloWorld", lex);
+        }
+        [TestMethod]
         public void SomeTest()
         {
             string source = @"
