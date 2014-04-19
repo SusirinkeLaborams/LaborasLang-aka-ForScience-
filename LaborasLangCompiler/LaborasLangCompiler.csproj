@@ -78,6 +78,7 @@
     <Compile Include="Parser\Exceptions\SymbolNotFoundException.cs" />
     <Compile Include="Parser\Exceptions\TypeException.cs" />
     <Compile Include="Parser\Impl\MethodCallNode.cs" />
+    <Compile Include="Parser\Impl\MethodNode.cs" />
     <Compile Include="Parser\Impl\Operators\ArithmeticOperatorNode.cs" />
     <Compile Include="Parser\Impl\Operators\AssignmentOperatorNode.cs" />
     <Compile Include="Parser\Impl\Operators\BinaryOperatorNode.cs" />
