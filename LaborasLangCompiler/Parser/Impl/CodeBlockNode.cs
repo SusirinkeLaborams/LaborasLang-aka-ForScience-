@@ -86,6 +86,8 @@ namespace LaborasLangCompiler.Parser.Impl
                             instance.AddExpression(MethodCallNode.Parse(parser, parentClass, instance, sentence), parser);
                             break;
                         case Lexer.Loop:
+                            instance.AddNode(WhileBlock.Parse(parser, parentClass, instance, sentence));
+                            break;
                         case Lexer.ConditionalSentence:
                             throw new NotImplementedException();
                         case Lexer.CodeBlock:

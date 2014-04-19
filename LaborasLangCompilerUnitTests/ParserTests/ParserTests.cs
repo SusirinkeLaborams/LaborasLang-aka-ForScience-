@@ -82,6 +82,22 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             TestParser(source, expected, "HelloWorld", lex);
         }
         [TestMethod]
+        public void While()
+        {
+            string source = @"
+                auto Main = void()
+                {
+                    bool a;
+                    int c = 5;
+	                while(a)
+                    {
+                        c += 1;
+                    }
+                };";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (Function: $Functors.$System_Void()(CodeBlock: Symbols: ((LValueNode: LocalVariable System.Boolean) a, (LValueNode: LocalVariable System.Int32) c) Nodes: ((Declaration: (LValueNode: LocalVariable System.Boolean) = ), (Declaration: (LValueNode: LocalVariable System.Int32) = (Literal: System.Int32 5)), (WhileBlock: Condition: (LValueNode: LocalVariable System.Boolean), Block: (CodeBlock: Symbols: () Nodes: ((UnaryOp: VoidOperator (Assignment: (LValueNode: LocalVariable System.Int32) = (BinaryOp: (LValueNode: LocalVariable System.Int32) Addition (Literal: System.Int32 1))))))))))";
+            TestParser(source, expected, "While", lex);
+        }
+        [TestMethod]
         public void SomeTest()
         {
             string source = @"
