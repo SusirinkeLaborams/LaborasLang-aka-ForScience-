@@ -64,6 +64,11 @@ namespace LaborasLangCompiler.ILTools
             throw new NotSupportedException("Type is not a float!");
         }
 
+        public static bool IsUnsignedInteger(this TypeReference type)
+        {
+            return type.IsIntegerType() && !type.IsSignedInteger();
+        }
+
         public static bool IsSignedInteger(this TypeReference type)
         {
             return SignedIntegerTypes.Any(x => x == type.FullName);

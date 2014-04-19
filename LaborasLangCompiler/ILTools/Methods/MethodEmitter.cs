@@ -1025,6 +1025,98 @@ namespace LaborasLangCompiler.ILTools.Methods
             body.Instructions.Add(instruction);
         }
 
+        protected void EmitConversionIfNeeded(TypeReference sourceType, TypeReference targetType)
+        {
+            if (sourceType.FullName == targetType.FullName)
+            {
+                return;
+            }
+
+            if (sourceType.IsValueType && !targetType.IsValueType)
+            {
+                Box(targetType);
+                return;
+            }
+            else if (!sourceType.IsValueType && targetType.IsValueType)
+            {
+                Unbox(targetType);
+                Ldobj(targetType);
+                return;
+            }
+
+            if (!sourceType.IsValueType && !targetType.IsValueType)
+            {
+                Castclass(targetType);
+                return;
+            }
+
+            if (!sourceType.IsPrimitive || !sourceType.IsPrimitive)
+            {
+                throw new ArgumentException("Can't cast non primitive value types!");
+            }
+
+            switch (targetType.FullName)
+            {
+                case "System.SByte":
+                    Conv_I1();
+                    break;
+
+                case "System.Int16":
+                    Conv_I2();
+                    break;
+
+                case "System.Int32":
+                    Conv_I4();
+                    break;
+
+                case "System.Int64":
+                    Conv_I8();
+                    break;
+
+                case "System.IntPtr":
+                    Conv_I();
+                    break;
+
+                case "System.Byte":
+                    Conv_U1();
+                    break;
+
+                case "System.UInt16":
+                    Conv_U2();
+                    break;
+
+                case "System.UInt32":
+                    Conv_U4();
+                    break;
+
+                case "System.UInt64":
+                    Conv_U8();
+                    break;
+
+                case "System.UIntPtr":
+                    Conv_U();
+                    break;
+
+                case "System.Single":
+                    if (sourceType.IsUnsignedInteger())
+                    {
+                        Conv_R_Un();
+                    }
+                    else
+                    {
+                        Conv_R4();
+                    }
+                    break;
+
+                case "System.Double":
+                    Conv_R8();
+                    break;
+
+                default:
+                    throw new NotSupportedException(string.Format("Unknown primitive type: {0}", targetType.FullName));
+            }
+        }
+
         #endregion
         
         #region Helpers
@@ -1152,6 +1244,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             ilProcessor.Emit(OpCodes.Calli, callSite);
         }
 
+        protected void Castclass(TypeReference targetType)
+        {
+            ilProcessor.Emit(OpCodes.Castclass, targetType);
+        }
+
         protected void Ceq()
         {
             ilProcessor.Emit(OpCodes.Ceq);
@@ -1165,6 +1262,71 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Clt()
         {
             ilProcessor.Emit(OpCodes.Clt);
+        }
+
+        protected void Conv_I()
+        {
+            ilProcessor.Emit(OpCodes.Conv_I);
+        }
+
+        protected void Conv_I1()
+        {
+            ilProcessor.Emit(OpCodes.Conv_I1);
+        }
+
+        protected void Conv_I2()
+        {
+            ilProcessor.Emit(OpCodes.Conv_I2);
+        }
+
+        protected void Conv_I4()
+        {
+            ilProcessor.Emit(OpCodes.Conv_I4);
+        }
+
+        protected void Conv_I8()
+        {
+            ilProcessor.Emit(OpCodes.Conv_I8);
+        }
+
+        protected void Conv_R_Un()
+        {
+            ilProcessor.Emit(OpCodes.Conv_R_Un);
+        }
+
+        protected void Conv_R4()
+        {
+            ilProcessor.Emit(OpCodes.Conv_R4);
+        }
+
+        protected void Conv_R8()
+        {
+            ilProcessor.Emit(OpCodes.Conv_R8);
+        }
+
+        protected void Conv_U()
+        {
+            ilProcessor.Emit(OpCodes.Conv_U);
+        }
+
+        protected void Conv_U1()
+        {
+            ilProcessor.Emit(OpCodes.Conv_U1);
+        }
+
+        protected void Conv_U2()
+        {
+            ilProcessor.Emit(OpCodes.Conv_U2);
+        }
+
+        protected void Conv_U4()
+        {
+            ilProcessor.Emit(OpCodes.Conv_U4);
+        }
+
+        protected void Conv_U8()
+        {
+            ilProcessor.Emit(OpCodes.Conv_U8);
         }
 
         protected void Div()
@@ -1358,6 +1520,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             ilProcessor.Emit(OpCodes.Ldnull);
         }
 
+        protected void Ldobj(TypeReference targetType)
+        {
+            ilProcessor.Emit(OpCodes.Ldobj);
+        }
+
         protected void Ldsfld(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Ldsfld, field);
@@ -1476,6 +1643,11 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Sub()
         {
             ilProcessor.Emit(OpCodes.Sub);
+        }
+
+        protected void Unbox(TypeReference targetType)
+        {
+            ilProcessor.Emit(OpCodes.Unbox, targetType);
         }
 
         protected void Xor()
