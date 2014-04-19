@@ -696,7 +696,14 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Emit(argument, false);
                 }
 
-                Call(functionNode.Function);
+                if (functionNode.Function.Resolve().IsVirtual)
+                {
+                    Callvirt(functionNode.Function);
+                }
+                else
+                {
+                    Call(functionNode.Function);
+                }
             }
             else
             {
@@ -884,7 +891,23 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitGreaterEqualThanString(IExpressionNode left, IExpressionNode right)
         {
-            throw new NotImplementedException();
+            var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, "System.String", "CompareOrdinal",
+                new List<string>()
+                {
+                    "System.String",
+                    "System.String"
+                });
+
+            Emit(left, false);
+            Emit(right, false);
+
+            Call(stringComparisonMethod);
+
+            Ldc_I4(0);
+            Clt();
+
+            Ldc_I4(0);
+            Ceq();
         }
 
         protected void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
@@ -918,7 +941,20 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitGreaterThanString(IExpressionNode left, IExpressionNode right)
         {
-            throw new NotImplementedException();
+            var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, "System.String", "CompareOrdinal",
+                new List<string>()
+                {
+                    "System.String",
+                    "System.String"
+                });
+
+            Emit(left, false);
+            Emit(right, false);
+
+            Call(stringComparisonMethod);
+
+            Ldc_I4(0);
+            Cgt();
         }
 
         protected void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
@@ -950,7 +986,23 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitLessEqualThanString(IExpressionNode left, IExpressionNode right)
         {
-            throw new NotImplementedException();
+            var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, "System.String", "CompareOrdinal",
+                new List<string>()
+                {
+                    "System.String",
+                    "System.String"
+                });
+
+            Emit(left, false);
+            Emit(right, false);
+
+            Call(stringComparisonMethod);
+
+            Ldc_I4(0);
+            Cgt();
+
+            Ldc_I4(0);
+            Ceq();
         }
 
         protected void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
@@ -984,7 +1036,20 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitLessThanString(IExpressionNode left, IExpressionNode right)
         {
-            throw new NotImplementedException();
+            var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, "System.String", "CompareOrdinal",
+                new List<string>()
+                {
+                    "System.String",
+                    "System.String"
+                });
+
+            Emit(left, false);
+            Emit(right, false);
+
+            Call(stringComparisonMethod);
+
+            Ldc_I4(0);
+            Clt();
         }
 
         protected void EmitLessThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
@@ -1280,6 +1345,11 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Calli(CallSite callSite)
         {
             ilProcessor.Emit(OpCodes.Calli, callSite);
+        }
+
+        protected void Callvirt(MethodReference method)
+        {
+            ilProcessor.Emit(OpCodes.Callvirt, method);
         }
 
         protected void Castclass(TypeReference targetType)
