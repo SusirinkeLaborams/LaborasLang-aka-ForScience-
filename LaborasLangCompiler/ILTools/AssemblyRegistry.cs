@@ -111,6 +111,11 @@ namespace LaborasLangCompiler.ILTools
             return ScopeToAssembly(assemblyScope, type);
         }
 
+        public static TypeReference GetFunctorType(AssemblyEmitter assembly, MethodReference containedMethod)
+        {
+            return GetFunctorType(assembly, containedMethod.ReturnType, containedMethod.Parameters.Select(x => x.ParameterType).ToList());
+        }
+
         public static TypeReference GetFunctorType(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
         {
             var name = TypeEmitter.ComputeNameFromReturnAndArgumentTypes(returnType, arguments);
