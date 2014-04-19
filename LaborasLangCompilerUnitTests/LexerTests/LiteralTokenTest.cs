@@ -43,6 +43,44 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             Assert.AreEqual(expected, actual);
         }
 
+
+        [TestMethod]
+        public void TestBooleanLiteralTrue()
+        {
+            var source = @"foo = true;";
+            AstNode tree = lexer.MakeTree(source);
+
+            Assert.IsNotNull(tree);
+            string expected = "Root: Sentence: (Assignment: (Symbol, AssignmentOperator, Value: Sum: Product: SuffixNode: PrefixNode: Literal: BooleanLiteral), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
+
+
+        [TestMethod]
+        public void TestBooleanLiteralFalse()
+        {
+            var source = @"foo = false;";
+            AstNode tree = lexer.MakeTree(source);
+
+            Assert.IsNotNull(tree);
+            string expected = "Root: Sentence: (Assignment: (Symbol, AssignmentOperator, Value: Sum: Product: SuffixNode: PrefixNode: Literal: BooleanLiteral), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestStringLiteralTokenDoubleQuote()
+        {
+            var source = @"foo = ""bar"";";
+            AstNode tree = lexer.MakeTree(source);
+
+            Assert.IsNotNull(tree);
+            string expected = "Root: Sentence: (Assignment: (Symbol, AssignmentOperator, Value: Sum: Product: SuffixNode: PrefixNode: Literal: StringLiteral), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
+
         [TestMethod]
         public void TestFloatLiteralToken()
         {

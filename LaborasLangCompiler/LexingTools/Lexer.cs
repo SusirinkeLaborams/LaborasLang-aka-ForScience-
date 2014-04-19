@@ -51,6 +51,7 @@ namespace LaborasLangCompiler.LexingTools
         public const string SuffixOperator = "SuffixOperator";
         public const string PrefixOperator = "PrefixOperator";
         public const string ReturnSentence = "ReturnSentence";
+        public const string BooleanLiteral = "BooleanLiteral";
 
         private AExpression GrammarTree;
         private static string Grammar = @"
@@ -62,16 +63,17 @@ namespace LaborasLangCompiler.LexingTools
                 (?<NamespaceImport>): 'use' Ws FullSymbol;
                 
                 (?<IntegerLiteral>): [0-9]+;
-                (?<StringLiteral>): '\'' [^']* '\''; 
+                (?<StringLiteral>): ('\'' [^']* '\'') / ('""' [^""]* '""'); 
                 (?<FloatLiteral>): [0-9]+ Period [0-9]+;
-                (?<Literal>):  FloatLiteral / IntegerLiteral / StringLiteral;
+                (?<BooleanLiteral>): 'true' / 'false';
+                (?<Literal>):  FloatLiteral / IntegerLiteral / StringLiteral / BooleanLiteral;
                 
                 (?<PrefixOperator>): '++' / '--' / '-' / '!' / '~';
                 (?<SuffixOperator>): '++' / '--';
                 (?<MultiplicationOperator>): '/' / '*';
                 (?<SumOperator>): '+' / '-';
 
-                (?<PrefixNode>): (PrefixOperator Ws?)* ('(' Sum ')' / FunctionCall / Symbol / Literal);
+                (?<PrefixNode>): (PrefixOperator Ws?)* ('(' Sum ')' / FunctionCall / Literal / Symbol);
                 (?<SuffixNode>): PrefixNode (Ws? SuffixOperator)*;
                 (?<Product>): SuffixNode (Ws? MultiplicationOperator Ws? SuffixNode)*;
                 (?<Sum>): Product (Ws? SumOperator  Ws? Product)*;
