@@ -743,9 +743,14 @@ namespace LaborasLangCompiler.ILTools.Methods
                     throw new ArgumentException("Method is static but there is an object instance set!", "functionCall.Function.ObjectInstance");
                 }
 
-                foreach (var argument in functionCall.Arguments)
+                for (int i = 0; i < functionCall.Arguments.Count; i++)
                 {
-                    Emit(argument, false);
+                    Emit(functionCall.Arguments[i], false);
+
+                    if (functionCall.Arguments[i].ReturnType.IsValueType && !functionNode.Function.Parameters[i].ParameterType.IsValueType)
+                    {
+                        Box(functionCall.Arguments[i].ReturnType);
+                    }
                 }
 
                 if (functionNode.Function.Resolve().IsVirtual)
@@ -1218,7 +1223,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             if (sourceType.IsValueType && !targetType.IsValueType)
             {
-                Box(targetType);
+                Box(sourceType);
                 return;
             }
             else if (!sourceType.IsValueType && targetType.IsValueType)
