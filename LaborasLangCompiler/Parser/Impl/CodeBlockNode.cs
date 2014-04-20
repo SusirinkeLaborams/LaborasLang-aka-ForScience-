@@ -94,6 +94,9 @@ namespace LaborasLangCompiler.Parser.Impl
                         case Lexer.CodeBlock:
                             instance.AddNode(CodeBlockNode.Parse(parser, parentClass, instance, sentence));
                             break;
+                        case Lexer.ReturnSentence:
+                            instance.AddNode(ReturnNode.Parse(parser, parentClass, instance, sentence));
+                            break;
                         default:
                             throw new ParseException("Node " + sentence.Token.Name + " in sentence, dafuq");
                     }

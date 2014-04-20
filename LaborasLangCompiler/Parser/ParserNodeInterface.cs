@@ -17,7 +17,8 @@ namespace LaborasLangCompiler.Parser
         ConditionBlock,
         WhileBlock,
         ImportNode,
-        ClassNode
+        ClassNode,
+        ReturnNode
     }
     interface IParserNode
     {
@@ -184,5 +185,9 @@ namespace LaborasLangCompiler.Parser
     interface ICodeBlockNode : IParserNode
     {
         IReadOnlyList<IParserNode> Nodes { get; }
+    }
+    interface IReturnNode : IParserNode
+    {
+        IExpressionNode Expression { get; }
     }
 }

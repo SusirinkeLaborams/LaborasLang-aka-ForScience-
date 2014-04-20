@@ -160,6 +160,16 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: System.Int32 a = (BinaryOp: (BinaryOp: (Literal: System.Int32 5) Multiplication (Literal: System.Int32 4)) Addition (BinaryOp: (Literal: System.Int32 8) Multiplication (BinaryOp: (Literal: System.Int32 2) Addition (Literal: System.Int32 1)))))";
             TestParser(source, expected, "TestPrecedence", lex);
         }
+        [TestMethod]
+        public void TestReturnValue()
+        {
+            string source = @"auto Main = int(int b)
+                {
+                    return b;
+                };";
+            string expected = "";
+            TestParser(source, expected, "TestReturnValue", true);
+        }
         private void TestParser(string source, string expected, string name, bool lex)
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
