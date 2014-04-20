@@ -167,8 +167,8 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     return b;
                 };";
-            string expected = "";
-            TestParser(source, expected, "TestReturnValue", true);
+            string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Int32 Main = (Function: $Functors.$System_Int32$System_Int32(System.Int32 b)(CodeBlock: Symbols: ((LValueNode: FunctionArgument System.Int32) b) Nodes: ((ReturnNode: (LValueNode: FunctionArgument System.Int32))))))";
+            TestParser(source, expected, "TestReturnValue", lex);
         }
         private void TestParser(string source, string expected, string name, bool lex)
         {

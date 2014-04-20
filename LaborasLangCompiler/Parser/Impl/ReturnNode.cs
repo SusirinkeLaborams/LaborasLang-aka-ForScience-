@@ -18,5 +18,9 @@ namespace LaborasLangCompiler.Parser.Impl
                 instance.Expression = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
             return instance;
         }
+        public override string ToString()
+        {
+            return String.Format("(ReturnNode: {0})", Expression);
+        }
     }
 }
