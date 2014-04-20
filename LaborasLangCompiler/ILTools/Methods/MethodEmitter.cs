@@ -672,6 +672,11 @@ namespace LaborasLangCompiler.ILTools.Methods
                 case BinaryOperatorNodeType.LessThan:
                     EmitLessThan(binaryOperator);
                     return;
+
+                case BinaryOperatorNodeType.ShiftLeft:
+                case BinaryOperatorNodeType.ShiftRight:
+                    EmitShift(binaryOperator);
+                    return;
             }
 
             Emit(binaryOperator.LeftOperand, false);
@@ -1230,6 +1235,26 @@ namespace LaborasLangCompiler.ILTools.Methods
         }
 
         #endregion
+
+        private void EmitShift(IBinaryOperatorNode binaryOperator)
+        {
+            Emit(binaryOperator.LeftOperand, false);
+            Emit(binaryOperator.RightOperand, false);
+
+            switch (binaryOperator.BinaryOperatorType)
+            {
+                case BinaryOperatorNodeType.ShiftLeft:
+                    Shl();
+                    break;
+
+                case BinaryOperatorNodeType.ShiftRight:
+                    Shr();
+                    break;
+
+                default:
+                    throw new NotSupportedException(string.Format("Unknown shift operator: {0}.", binaryOperator.BinaryOperatorType));
+            }
+        }
 
         protected void EmitVoidOperator(IUnaryOperatorNode binaryOperator)
         {
@@ -1838,6 +1863,16 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Ret()
         {
             ilProcessor.Emit(OpCodes.Ret);
+        }
+
+        protected void Shl()
+        {
+            ilProcessor.Emit(OpCodes.Shl);
+        }
+
+        protected void Shr()
+        {
+            ilProcessor.Emit(OpCodes.Shr);
         }
 
         protected void Starg(int index)
