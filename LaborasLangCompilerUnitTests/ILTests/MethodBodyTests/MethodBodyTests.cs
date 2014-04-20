@@ -933,8 +933,8 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             var outputMethod = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<string>()
             {
                 "System.String",
-                "System.Int32",
-                "System.Int32"
+                literalType.FullName,
+                literalType.FullName
             });
 
             var localA = new VariableDefinition("a", literalType);
@@ -1170,20 +1170,142 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
+        public void TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(TypeReference literalType, dynamic value1, dynamic value2)
+        {
+            var outputMethod = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<string>()
+            {
+                "System.String",
+                literalType.FullName,
+                literalType.FullName,
+                "System.Boolean"
+            });
+
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var booleanType = assemblyEmitter.TypeToTypeReference(typeof(bool));
+            
+            var literal1 = new LiteralNode()
+            {
+                ReturnType = literalType,
+                Value = value1,
+            };
+
+            var literal2 = new LiteralNode()
+            {
+                ReturnType = literalType,
+                Value = value2,
+            };
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new MethodCallNode()
+                    {
+                        ReturnType = voidType,
+                        Function = new FunctionNode()
+                        {
+                            Function = outputMethod
+                        },
+                        Arguments = new List<IExpressionNode>()
+                        {
+                            new LiteralNode()
+                            {
+                                ReturnType = stringType,
+                                Value = "Is {0} is greater than or equal to {1}? {2}"
+                            },
+                            literal1,
+                            literal2,
+                            new BinaryOperatorNode()
+                            {
+                                ReturnType = booleanType,
+                                BinaryOperatorType = BinaryOperatorNodeType.GreaterEqualThan,
+                                LeftOperand = literal1,
+                                RightOperand = literal2
+                            }
+                        }                        
+                    },
+                    new MethodCallNode()
+                    {
+                        ReturnType = voidType,
+                        Function = new FunctionNode()
+                        {
+                            Function = outputMethod
+                        },
+                        Arguments = new List<IExpressionNode>()
+                        {
+                            new LiteralNode()
+                            {
+                                ReturnType = stringType,
+                                Value = "Is {0} is less than or equal to {1}? {2}"
+                            },
+                            literal1,
+                            literal2,
+                            new BinaryOperatorNode()
+                            {
+                                ReturnType = booleanType,
+                                BinaryOperatorType = BinaryOperatorNodeType.LessEqualThan,
+                                LeftOperand = literal1,
+                                RightOperand = literal2
+                            }
+                        }                        
+                    },
+                    new MethodCallNode()
+                    {
+                        ReturnType = voidType,
+                        Function = new FunctionNode()
+                        {
+                            Function = outputMethod
+                        },
+                        Arguments = new List<IExpressionNode>()
+                        {
+                            new LiteralNode()
+                            {
+                                ReturnType = stringType,
+                                Value = "Is {0} is not equal to {1}? {2}"
+                            },
+                            literal1,
+                            literal2,
+                            new BinaryOperatorNode()
+                            {
+                                ReturnType = booleanType,
+                                BinaryOperatorType = BinaryOperatorNodeType.NotEquals,
+                                LeftOperand = literal1,
+                                RightOperand = literal2
+                            }
+                        }                        
+                    }
+                }
+            };
+        }
+
+        [TestMethod, TestCategory("IL Tests")]
+        public void TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Numerals()
+        {
+            TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(assemblyEmitter.TypeToTypeReference(typeof(float)), 3.5, 2.1);
+
+            ExpectedILFilePath = "TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Numerals.il";
+            Test();
+        }
+
+        [TestMethod, TestCategory("IL Tests")]
+        public void TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Strings()
+        {
+            TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(assemblyEmitter.TypeToTypeReference(typeof(string)), "hi", "bye");
+
+            ExpectedILFilePath = "TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Strings.il";
+            Test();
+        }
+
         #endregion
 
         /* Missing tests for binary operators:
             BinaryAnd
             BinaryOr
             BinaryXor
-
-            NotEquals
-
+        
             LogicalAnd
             LogicalOr
-
-            GreaterEqualThan
-            LessEqualThan
         */
 
         #endregion
