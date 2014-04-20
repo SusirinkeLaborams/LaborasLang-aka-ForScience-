@@ -45,10 +45,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 case BinaryOperatorNodeType.Subtraction:
                 case BinaryOperatorNodeType.Multiplication:
                 case BinaryOperatorNodeType.Division:
-                    ParseArithmetic(parser, instance);
-                    break;
                 case BinaryOperatorNodeType.Modulus:
-                    ParseModulus(parser, instance);
+                    ParseArithmetic(parser, instance);
                     break;
                 case BinaryOperatorNodeType.GreaterThan:
                 case BinaryOperatorNodeType.LessThan:
@@ -75,10 +73,6 @@ namespace LaborasLangCompiler.Parser.Impl
                     throw new ParseException(String.Format("Binary op expected, '{0}' received", op));
             }
             return instance;
-        }
-        private static void ParseModulus(Parser parser, BinaryOperatorNode instance)
-        {
-            throw new NotImplementedException();
         }
         private static void ParseArithmetic(Parser parser, BinaryOperatorNode instance)
         {
