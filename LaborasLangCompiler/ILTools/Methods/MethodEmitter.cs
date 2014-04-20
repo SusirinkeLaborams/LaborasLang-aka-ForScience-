@@ -104,6 +104,10 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Emit((IExpressionNode)node, emitReference);
                     return;
 
+                case NodeType.ReturnNode:
+                    Emit((IReturnNode)node);
+                    return;
+
                 case NodeType.SymbolDeclaration:
                     Emit((ISymbolDeclarationNode)node);
                     return;
@@ -111,6 +115,9 @@ namespace LaborasLangCompiler.ILTools.Methods
                 case NodeType.WhileBlock:
                     Emit((IWhileBlockNode)node);
                     return;
+
+                default:
+                    throw new NotSupportedException(string.Format("Unknown IParserNode type: {0}", node.Type));
             }
         }
 
@@ -167,6 +174,12 @@ namespace LaborasLangCompiler.ILTools.Methods
                 default:
                     throw new NotSupportedException(string.Format("Unknown expression node type: {0}.", expression.ExpressionType));
             }
+        }
+
+        protected void Emit(IReturnNode returnNode)
+        {
+            Emit(returnNode, false);
+            Ret();
         }
 
         protected void Emit(ISymbolDeclarationNode symbolDeclaration)
