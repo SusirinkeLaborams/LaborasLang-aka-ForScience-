@@ -81,6 +81,8 @@ namespace LaborasLangCompiler.Parser.Impl
             Operators["!="] = BinaryOperatorNodeType.NotEquals;
             Operators["||"] = BinaryOperatorNodeType.LogicalOr;
             Operators["&&"] = BinaryOperatorNodeType.LogicalAnd;
+            Operators[">>"] = BinaryOperatorNodeType.ShiftRight;
+            Operators["<<"] = BinaryOperatorNodeType.ShiftLeft;
         }
     }
 }
