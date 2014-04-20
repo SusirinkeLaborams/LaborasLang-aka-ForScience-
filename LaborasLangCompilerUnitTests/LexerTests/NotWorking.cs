@@ -85,5 +85,20 @@ auto Main = int()
             var tree = lexer.MakeTree(source);
             Assert.IsTrue(tree != null && tree.Children.Count > 0);
         }
+
+        [TestMethod]
+        public void TestCanLex_ShiftOperator()
+        {
+            var source =
+@"auto Main = int()
+{
+	System.Console.WriteLine(50 >> 3);
+	System.Console.ReadKey();
+	return 0;
+};";
+
+            var tree = lexer.MakeTree(source);
+            Assert.IsTrue(tree != null && tree.Children.Count > 0);
+        }
     }
 }
