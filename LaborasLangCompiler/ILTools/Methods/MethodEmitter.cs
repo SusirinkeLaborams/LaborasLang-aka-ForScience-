@@ -71,7 +71,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
 
             Emit(tree);
-            Ret();
+
+            if (body.Instructions.Last().OpCode != OpCodes.Ret)
+            {
+                Ret();
+            }
 
             Parsed = true;
         }
