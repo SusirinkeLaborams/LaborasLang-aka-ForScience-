@@ -10,7 +10,7 @@ namespace LaborasLangCompiler.ILTools
     static class ILHelpers
     {
         // 0 means native
-        public static int GetIntegerWidth(TypeReference type)
+        public static int GetIntegerWidth(this TypeReference type)
         {
             var typeName = type.FullName;
             

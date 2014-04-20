@@ -129,7 +129,17 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private static void ParseBinary(Parser parser, BinaryOperatorNode instance)
         {
-            throw new NotImplementedException();
+            var left = instance.LeftOperand;
+            var right = instance.RightOperand;
+            instance.ReturnType = left.ReturnType;
+
+            if (left.ReturnType.IsIntegerType() && right.ReturnType.IsIntegerType())
+                throw new TypeException(String.Format("Binary operations only allowed on equal length integers, operands: {0}, {1}",
+                    left.ReturnType, right.ReturnType));
+
+            if(left.ReturnType.GetIntegerWidth() != right.ReturnType.GetIntegerWidth())
+                throw new TypeException(String.Format("Binary operations only allowed on equal length integers, operands: {0}, {1}",
+                    left.ReturnType, right.ReturnType));
         }
         private static void ParseLogical(Parser parser, BinaryOperatorNode instance)
         {
