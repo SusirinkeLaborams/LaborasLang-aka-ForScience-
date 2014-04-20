@@ -1454,7 +1454,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void And()
         {
-            ilProcessor.Emit(OpCodes.Add);
+            ilProcessor.Emit(OpCodes.And);
         }
 
         protected void Box(TypeReference type)
