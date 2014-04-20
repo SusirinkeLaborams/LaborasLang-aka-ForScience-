@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser;
+using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl.Operators;
 using Mono.Cecil;
 using NPEG;
@@ -49,8 +50,11 @@ namespace LaborasLangCompiler.Parser.Impl
                 case "==":
                 case "!=":
                     return ComparisonOperatorNode.Parse(parser, op, left, right);
+                case "<<":
+                case ">>":
+                    return ShiftOperatorNode.Parse(parser, op, left, right);
                 default:
-                    throw new NotImplementedException();
+                    throw new ParseException(String.Format("Binary op expected, '{0}' received", op));
             }
         }
         public override string ToString()
