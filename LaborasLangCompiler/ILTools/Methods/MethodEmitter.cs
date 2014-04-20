@@ -715,7 +715,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Sub();
                     return;
 
-                case BinaryOperatorNodeType.Xor:
+                case BinaryOperatorNodeType.BinaryXor:
                     Xor();
                     return;
 

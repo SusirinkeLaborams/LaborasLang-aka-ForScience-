@@ -45,8 +45,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 case BinaryOperatorNodeType.Subtraction:
                 case BinaryOperatorNodeType.Multiplication:
                 case BinaryOperatorNodeType.Division:
-                case BinaryOperatorNodeType.Modulus:
                     ParseArithmetic(parser, instance);
+                    break;
+                case BinaryOperatorNodeType.Modulus:
+                    ParseModulus(parser, instance);
                     break;
                 case BinaryOperatorNodeType.GreaterThan:
                 case BinaryOperatorNodeType.LessThan:
@@ -60,10 +62,23 @@ namespace LaborasLangCompiler.Parser.Impl
                 case BinaryOperatorNodeType.ShiftRight:
                     ParseShift(parser, instance);
                     break;
+                case BinaryOperatorNodeType.LogicalAnd:
+                case BinaryOperatorNodeType.LogicalOr:
+                    ParseLogical(parser, instance);
+                    break;
+                case BinaryOperatorNodeType.BinaryAnd:
+                case BinaryOperatorNodeType.BinaryOr:
+                case BinaryOperatorNodeType.BinaryXor:
+                    ParseBinary(parser, instance);
+                    break;
                 default:
                     throw new ParseException(String.Format("Binary op expected, '{0}' received", op));
             }
             return instance;
+        }
+        private static void ParseModulus(Parser parser, BinaryOperatorNode instance)
+        {
+            throw new NotImplementedException();
         }
         private static void ParseArithmetic(Parser parser, BinaryOperatorNode instance)
         {
@@ -141,7 +156,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Operators["%"] = BinaryOperatorNodeType.Modulus;
             Operators["|"] = BinaryOperatorNodeType.BinaryOr;
             Operators["&"] = BinaryOperatorNodeType.BinaryAnd;
-            Operators["^"] = BinaryOperatorNodeType.Xor;
+            Operators["^"] = BinaryOperatorNodeType.BinaryXor;
             Operators[">"] = BinaryOperatorNodeType.GreaterThan;
             Operators[">="] = BinaryOperatorNodeType.GreaterEqualThan;
             Operators["<"] = BinaryOperatorNodeType.LessThan;

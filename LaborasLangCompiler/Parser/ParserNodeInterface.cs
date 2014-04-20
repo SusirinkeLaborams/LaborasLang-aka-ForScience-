@@ -134,7 +134,7 @@ namespace LaborasLangCompiler.Parser
         Modulus,
         BinaryOr,
         BinaryAnd,
-        Xor,
+        BinaryXor,
         GreaterThan,
         GreaterEqualThan,
         LessThan,
