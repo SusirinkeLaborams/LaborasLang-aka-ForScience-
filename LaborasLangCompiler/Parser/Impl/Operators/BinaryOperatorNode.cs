@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser;
+using LaborasLangCompiler.Parser.Impl.Operators;
 using Mono.Cecil;
 using NPEG;
 using System;
@@ -28,10 +29,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 var op = parser.ValueOf(lexerNode.Children[1]);
                 var left = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
                 var right = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
-                return Parse(op, left, right);
+                return Parse(parser, op, left, right);
             }
         }
-        public static BinaryOperatorNode Parse(string op, IExpressionNode left, IExpressionNode right)
+        public static BinaryOperatorNode Parse(Parser parser, string op, IExpressionNode left, IExpressionNode right)
         {
             switch (op)
             {
@@ -40,7 +41,14 @@ namespace LaborasLangCompiler.Parser.Impl
                 case "*":
                 case "/":
                 case "%":
-                    return ArithmeticOperatorNode.Parse(op, left, right);
+                    return ArithmeticOperatorNode.Parse(parser, op, left, right);
+                case ">":
+                case "<":
+                case ">=":
+                case "<=":
+                case "==":
+                case "!=":
+                    return ComparisonOperatorNode.Parse(parser, op, left, right);
                 default:
                     throw new NotImplementedException();
             }

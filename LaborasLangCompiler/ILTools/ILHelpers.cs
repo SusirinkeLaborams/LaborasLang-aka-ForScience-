@@ -94,6 +94,11 @@ namespace LaborasLangCompiler.ILTools
             return type.FullName == "System.String";
         }
 
+        public static bool IsBooleanType(this TypeReference type)
+        {
+            return type.FullName == "System.Boolean";
+        }
+
         public static bool IsFunctorType(this TypeReference type)
         {
             return type.FullName.StartsWith("$Functors.");

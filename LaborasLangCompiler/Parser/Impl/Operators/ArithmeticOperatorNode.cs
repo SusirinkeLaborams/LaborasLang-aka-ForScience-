@@ -12,18 +12,10 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class ArithmeticOperatorNode : BinaryOperatorNode
     {
-        public static new ArithmeticOperatorNode Parse(string op, IExpressionNode left, IExpressionNode right)
+        public static new ArithmeticOperatorNode Parse(Parser parser, string op, IExpressionNode left, IExpressionNode right)
         {
             var instance = new ArithmeticOperatorNode();
-            BinaryOperatorNodeType type;
-            try
-            {
-                type = BinaryOperatorNode.Operators[op];
-            }
-            catch (KeyNotFoundException)
-            {
-                throw new ParseException("Unkown operator '" + op + "'");
-            }
+            BinaryOperatorNodeType type = BinaryOperatorNode.Operators[op];
             instance.LeftOperand = left;
             instance.RightOperand = right;
             instance.BinaryOperatorType = type;

@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             var op = parser.ValueOf(lexerNode.Children[1]);
             if (op != "=")
-                right = BinaryOperatorNode.Parse(op.Remove(op.Length - 1), left, right);
+                right = BinaryOperatorNode.Parse(parser, op.Remove(op.Length - 1), left, right);
 
             if (!right.ReturnType.IsAssignableTo(left.ReturnType))
                 throw new TypeException(String.Format("Assigned {0} to {1}", instance.RightOperand.ReturnType, instance.LeftOperand.ReturnType));
