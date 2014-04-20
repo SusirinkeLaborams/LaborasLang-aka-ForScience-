@@ -133,7 +133,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var right = instance.RightOperand;
             instance.ReturnType = left.ReturnType;
 
-            if (left.ReturnType.IsIntegerType() && right.ReturnType.IsIntegerType())
+            if (!(left.ReturnType.IsIntegerType() && right.ReturnType.IsIntegerType()))
                 throw new TypeException(String.Format("Binary operations only allowed on equal length integers, operands: {0}, {1}",
                     left.ReturnType, right.ReturnType));
 
@@ -143,7 +143,13 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private static void ParseLogical(Parser parser, BinaryOperatorNode instance)
         {
-            throw new NotImplementedException();
+            var left = instance.LeftOperand;
+            var right = instance.RightOperand;
+            instance.ReturnType = parser.Primitives[Parser.Bool];
+
+            if (!(left.ReturnType.IsBooleanType() && right.ReturnType.IsBooleanType()))
+                throw new TypeException(String.Format("Logical operations only allowed on booleans, operands: {0}, {1}",
+                    left.ReturnType, right.ReturnType));
         }
         public override string ToString()
         {
