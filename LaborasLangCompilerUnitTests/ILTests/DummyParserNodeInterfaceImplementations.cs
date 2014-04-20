@@ -192,4 +192,13 @@ namespace LaborasLangCompilerUnitTests.ILTests
             }
         }
     }
+
+    class ConditionBlockNode : IConditionBlock
+    {
+        public NodeType Type { get { return NodeType.ConditionBlock; } }
+
+        public IExpressionNode Condition { get; set; }
+        public ICodeBlockNode TrueBlock { get; set; }
+        public ICodeBlockNode FalseBlock { get; set; }
+    }
 }

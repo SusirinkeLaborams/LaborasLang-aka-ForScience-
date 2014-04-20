@@ -427,7 +427,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
-            
+
             var localVariable = new VariableDefinition("myVar", intType);
 
             BodyCodeBlock = new CodeBlockNode()
@@ -863,7 +863,263 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
+        [TestMethod]
+        public void TestCanEmit_ShiftLeftAndRight()
+        {
+            var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
+            var ushortType = assemblyEmitter.TypeToTypeReference(typeof(ushort));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+
+            var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, ushortType);
+            typeEmitter.AddField(field);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        ReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = field
+                            },
+                            RightOperand = new BinaryOperatorNode()
+                            {
+                                ReturnType = uintType,
+                                BinaryOperatorType = BinaryOperatorNodeType.ShiftLeft,
+                                LeftOperand = new BinaryOperatorNode()
+                                {
+                                    ReturnType = uintType,
+                                    BinaryOperatorType = BinaryOperatorNodeType.ShiftRight,
+                                    LeftOperand = new LiteralNode()
+                                    {
+                                        ReturnType = uintType,
+                                        Value = 15
+                                    },
+                                    RightOperand = new LiteralNode()
+                                    {
+                                        ReturnType = ushortType,
+                                        Value = 2
+                                    }
+                                },
+                                RightOperand = new LiteralNode()
+                                {
+                                    ReturnType = uintType,
+                                    Value = 3
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_ShiftLeftAndRight.il";
+            Test();
+        }
+
         #endregion
+
+        #region Comparison operators
+
+        [TestMethod]
+        public void TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals()
+        {
+            var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
+            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var outputMethod = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<string>()
+            {
+                "System.String",
+                "System.Int32",
+                "System.Int32"
+            });
+
+            var localA = new VariableDefinition("a", intType);
+            var localB = new VariableDefinition("b", intType);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        DeclaredSymbol = new LocalVariableNode()
+                        {
+                            LocalVariable = localA
+                        },
+                        Initializer = new LiteralNode()
+                        {
+                            ReturnType = intType,
+                            Value = 5
+                        }
+                    },
+                    new SymbolDeclarationNode()
+                    {
+                        DeclaredSymbol = new LocalVariableNode()
+                        {
+                            LocalVariable = localB
+                        },
+                        Initializer = new LiteralNode()
+                        {
+                            ReturnType = intType,
+                            Value = 6
+                        }
+                    },
+                    new ConditionBlockNode()
+                    {
+                        Condition = new BinaryOperatorNode()
+                        {
+                            ReturnType = boolType,
+                            BinaryOperatorType = BinaryOperatorNodeType.GreaterThan,
+                            LeftOperand = new LocalVariableNode()
+                            {
+                                LocalVariable = localA
+                            },
+                            RightOperand = new LocalVariableNode()
+                            {
+                                LocalVariable = localB
+                            },
+                        },
+                        TrueBlock = new CodeBlockNode()
+                        {
+                            Nodes = new List<IParserNode>()
+                            {
+                                new MethodCallNode()
+                                {
+                                    ReturnType = voidType,
+                                    Function = new FunctionNode()
+                                    {
+                                        Function = outputMethod,
+                                    },
+                                    Arguments = new List<IExpressionNode>()
+                                    {
+                                        new LiteralNode()
+                                        {
+                                            ReturnType = stringType,
+                                            Value = "{0} is greater than {1}."
+                                        },
+                                        new LocalVariableNode()
+                                        {
+                                            LocalVariable = localA
+                                        },
+                                        new LocalVariableNode()
+                                        {
+                                            LocalVariable = localB
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        FalseBlock = new CodeBlockNode()
+                        {
+                            Nodes = new List<IParserNode>()
+                            {
+                                new ConditionBlockNode()
+                                {
+                                    Condition = new BinaryOperatorNode()
+                                    {
+                                        ReturnType = boolType,
+                                        BinaryOperatorType = BinaryOperatorNodeType.LessThan,
+                                        LeftOperand = new LocalVariableNode()
+                                        {
+                                            LocalVariable = localA
+                                        },
+                                        RightOperand = new LocalVariableNode()
+                                        {
+                                            LocalVariable = localB
+                                        },
+                                    },
+                                    TrueBlock = new CodeBlockNode()
+                                    {
+                                        Nodes = new List<IParserNode>()
+                                        {
+                                            new MethodCallNode()
+                                            {
+                                                ReturnType = voidType,
+                                                Function = new FunctionNode()
+                                                {
+                                                    Function = outputMethod,
+                                                },
+                                                Arguments = new List<IExpressionNode>()
+                                                {
+                                                    new LiteralNode()
+                                                    {
+                                                        ReturnType = stringType,
+                                                        Value = "{0} is less than {1}."
+                                                    },
+                                                    new LocalVariableNode()
+                                                    {
+                                                        LocalVariable = localA
+                                                    },
+                                                    new LocalVariableNode()
+                                                    {
+                                                        LocalVariable = localB
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    FalseBlock = new CodeBlockNode()
+                                    {
+                                        Nodes = new List<IParserNode>()
+                                        {
+                                            new MethodCallNode()
+                                            {
+                                                ReturnType = voidType,
+                                                Function = new FunctionNode()
+                                                {
+                                                    Function = outputMethod,
+                                                },
+                                                Arguments = new List<IExpressionNode>()
+                                                {
+                                                    new LiteralNode()
+                                                    {
+                                                        ReturnType = stringType,
+                                                        Value = "{0} and {1} are equal."
+                                                    },
+                                                    new LocalVariableNode()
+                                                    {
+                                                        LocalVariable = localA
+                                                    },
+                                                    new LocalVariableNode()
+                                                    {
+                                                        LocalVariable = localB
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals.il";
+            Test();
+        }
+
+        #endregion
+
+        /* Missing tests for binary operators:
+            BinaryAnd
+            BinaryOr
+            BinaryXor
+
+            NotEquals
+
+            LogicalAnd
+            LogicalOr
+
+            GreaterEqualThan
+            LessEqualThan
+        */
 
         #endregion
 
