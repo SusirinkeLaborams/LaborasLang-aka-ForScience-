@@ -49,8 +49,8 @@ namespace LaborasLangCompiler.Parser
             primitives.Add(Byte, Assembly.TypeToTypeReference(typeof(sbyte)));
             primitives.Add(UByte, Assembly.TypeToTypeReference(typeof(byte)));
 
-            primitives.Add(Word, Assembly.TypeToTypeReference(typeof(Int16)));
-            primitives.Add(UWord, Assembly.TypeToTypeReference(typeof(UInt16)));
+            primitives.Add(Word, Assembly.TypeToTypeReference(typeof(short)));
+            primitives.Add(UWord, Assembly.TypeToTypeReference(typeof(ushort)));
 
             primitives.Add(Int, Assembly.TypeToTypeReference(typeof(int)));
             primitives.Add(UInt, Assembly.TypeToTypeReference(typeof(uint)));
