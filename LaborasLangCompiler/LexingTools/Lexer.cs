@@ -70,7 +70,7 @@ namespace LaborasLangCompiler.LexingTools
                 
                 (?<PrefixOperator>): '++' / '--' / '-' / '!' / '~';
                 (?<SuffixOperator>): '++' / '--';
-                (?<MultiplicationOperator>): '/' / '*';
+                (?<MultiplicationOperator>): '/' / '*' / '%';
                 (?<SumOperator>): '+' / '-';
 
                 (?<PrefixNode>): (PrefixOperator Ws?)* ('(' Sum ')' / FunctionCall / Literal / Symbol);
