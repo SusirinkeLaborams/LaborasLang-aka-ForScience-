@@ -1649,12 +1649,13 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         #endregion
 
         /* Missing tests:         
-         * unary operators!!
+         * Logical not operator
          * while
          * if without else
          * return
          * object creation
          * assign functor property to delegate
+         * call with default parameters
          */
 
         #region Functor tests
