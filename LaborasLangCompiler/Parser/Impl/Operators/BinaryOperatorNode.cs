@@ -39,25 +39,25 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.BinaryOperatorType = Operators[op];
             instance.LeftOperand = left;
             instance.RightOperand = right;
-            switch (op)
+            switch (instance.BinaryOperatorType)
             {
-                case "+":
-                case "-":
-                case "*":
-                case "/":
-                case "%":
+                case BinaryOperatorNodeType.Addition:
+                case BinaryOperatorNodeType.Subtraction:
+                case BinaryOperatorNodeType.Multiplication:
+                case BinaryOperatorNodeType.Division:
+                case BinaryOperatorNodeType.Modulus:
                     ParseArithmetic(parser, instance);
                     break;
-                case ">":
-                case "<":
-                case ">=":
-                case "<=":
-                case "==":
-                case "!=":
+                case BinaryOperatorNodeType.GreaterThan:
+                case BinaryOperatorNodeType.LessThan:
+                case BinaryOperatorNodeType.GreaterEqualThan:
+                case BinaryOperatorNodeType.LessEqualThan:
+                case BinaryOperatorNodeType.Equals:
+                case BinaryOperatorNodeType.NotEquals:
                     ParseComparison(parser, instance);
                     break;
-                case "<<":
-                case ">>":
+                case BinaryOperatorNodeType.ShiftLeft:
+                case BinaryOperatorNodeType.ShiftRight:
                     ParseShift(parser, instance);
                     break;
                 default:
