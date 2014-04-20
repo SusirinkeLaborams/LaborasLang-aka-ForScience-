@@ -89,7 +89,8 @@
     <Compile Include="ILTests\ILTestBase.cs" />
     <Compile Include="ILTests\MethodBodyTests\ConstructorTests.cs" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_AddStrings.il" />
-    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Numerals.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Strings.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_Multiplication.il" />
     <Compile Include="ILTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="ILTests\ILHelpersTests.cs" />

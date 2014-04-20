@@ -20,7 +20,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
     [TestClass]
     public class MethodBodyTests : ILTestBase
     {
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_EmptyMethod()
         {
             BodyCodeBlock = new CodeBlockNode
@@ -32,7 +32,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_HelloWorld()
         {
             BodyCodeBlock = new CodeBlockNode
@@ -78,7 +78,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
         #region Load/Store lvalues and load literals tests
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_VariableDeclarationAndInitialization_LoadFloatLiteral()
         {
             BodyCodeBlock = new CodeBlockNode()
@@ -104,7 +104,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_StoreField_LoadIntLiteral()
         {
             var field = new FieldDefinition("intField", FieldAttributes.Static, assemblyEmitter.TypeToTypeReference(typeof(int)));
@@ -138,7 +138,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_StoreLocalVariable_LoadField()
         {
             var field = new FieldDefinition("intField", FieldAttributes.Static, assemblyEmitter.TypeToTypeReference(typeof(int)));
@@ -166,7 +166,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_StoreProperty_LoadLocalVariable_LoadArgument_LoadDoubleLiteral()
         {
             var property = new PropertyDefinition("doubleProperty", PropertyAttributes.HasDefault, assemblyEmitter.TypeToTypeReference(typeof(double)));
@@ -247,7 +247,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_StoreArgument_LoadProperty_LoadStringLiteral()
         {
             var property = new PropertyDefinition("stringProperty", PropertyAttributes.HasDefault, assemblyEmitter.TypeToTypeReference(typeof(string)));
@@ -324,7 +324,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral()
         {
             var callableMethod = new MethodEmitter(typeEmitter, "Test", assemblyEmitter.TypeToTypeReference(typeof(void)),
@@ -366,7 +366,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
         #region Operator tests
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_MultipleNestedAssignments()
         {
             var assignmentNode = new AssignmentOperatorNode()
@@ -422,7 +422,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
         #region Arithmetic operators
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_AddIntegers()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
@@ -474,7 +474,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_AddFloatAndInteger()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
@@ -528,7 +528,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_AddStrings()
         {
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
@@ -575,7 +575,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_Subtraction()
         {
             var doubleType = assemblyEmitter.TypeToTypeReference(typeof(double));
@@ -623,7 +623,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_Multiplication()
         {
             var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
@@ -671,7 +671,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_SignedDivision()
         {
             var doubleType = assemblyEmitter.TypeToTypeReference(typeof(double));
@@ -719,7 +719,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_UnsignedDivision()
         {
             var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
@@ -767,7 +767,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_SignedRemainder()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
@@ -815,7 +815,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_UnsignedRemainder()
         {
             var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
@@ -863,7 +863,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_ShiftLeftAndRight()
         {
             var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
@@ -925,12 +925,10 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
         #region Comparison operators
 
-        [TestMethod]
-        public void TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals()
+        public void TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(TypeReference literalType, dynamic value1, dynamic value2)
         {
             var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
             var outputMethod = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<string>()
             {
@@ -939,8 +937,8 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 "System.Int32"
             });
 
-            var localA = new VariableDefinition("a", intType);
-            var localB = new VariableDefinition("b", intType);
+            var localA = new VariableDefinition("a", literalType);
+            var localB = new VariableDefinition("b", literalType);
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -954,8 +952,8 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         },
                         Initializer = new LiteralNode()
                         {
-                            ReturnType = intType,
-                            Value = 5
+                            ReturnType = literalType,
+                            Value = value1
                         }
                     },
                     new SymbolDeclarationNode()
@@ -966,8 +964,8 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         },
                         Initializer = new LiteralNode()
                         {
-                            ReturnType = intType,
-                            Value = 6
+                            ReturnType = literalType,
+                            Value = value2
                         }
                     },
                     new ConditionBlockNode()
@@ -1100,8 +1098,23 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     }
                 }
             };
+        }
 
-            ExpectedILFilePath = "TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals.il";
+        [TestMethod, TestCategory("Method Emitter Tests")]
+        public void TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Numerals()
+        {
+            TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(assemblyEmitter.TypeToTypeReference(typeof(int)), 5, 6);
+
+            ExpectedILFilePath = "TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Numerals.il";
+            Test();
+        }
+
+        [TestMethod, TestCategory("Method Emitter Tests")]
+        public void TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Strings()
+        {
+            TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(assemblyEmitter.TypeToTypeReference(typeof(string)), "hi", "bye");
+
+            ExpectedILFilePath = "TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Strings.il";
             Test();
         }
 
@@ -1127,7 +1140,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
         #region Functor tests
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_FunctorDefinition()
         {
             FunctorTypeEmitter.Create(assemblyEmitter, assemblyEmitter.TypeToTypeReference(typeof(void)), new List<TypeReference>());
@@ -1141,7 +1154,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_FunctorWithReturnTypeAndArguments()
         {
             FunctorTypeEmitter.Create(assemblyEmitter, assemblyEmitter.TypeToTypeReference(typeof(int)),
@@ -1161,7 +1174,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_FunctionAssignmentToFunctorWithoutArgs()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
@@ -1181,7 +1194,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_FunctionAssignmentToFunctorWithArgs()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
@@ -1206,7 +1219,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_FunctorAssignmentToDelegate()
         {
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
@@ -1255,7 +1268,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_FunctionAssignmentToDelegate()
         {
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
@@ -1299,7 +1312,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Method Emitter Tests")]
         public void TestCanEmit_CallFunctor_PassReturnValueAsArgument()
         {
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));

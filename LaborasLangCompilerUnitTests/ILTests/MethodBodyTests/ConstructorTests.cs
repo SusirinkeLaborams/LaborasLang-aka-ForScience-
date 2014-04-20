@@ -13,7 +13,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
     [TestClass]
     public class ConstructorTests : ILTestBase
     {
-        [TestMethod]
+        [TestMethod, TestCategory("Constructor Tests")]
         public void TestCanEmit_InstanceFieldInitializer()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
@@ -32,7 +32,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Constructor Tests")]
         public void TestCanEmit_StaticFieldInitializer()
         {
             var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
@@ -51,7 +51,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Constructor Tests")]
         public void TestCanEmit_InstancePropertyInitializer()
         {
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
@@ -104,7 +104,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Constructor Tests")]
         public void TestCanEmit_StaticPropertyInitializer()
         {
             var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
