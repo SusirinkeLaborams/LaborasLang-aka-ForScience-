@@ -1183,7 +1183,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
             var booleanType = assemblyEmitter.TypeToTypeReference(typeof(bool));
-            
+
             var literal1 = new LiteralNode()
             {
                 ReturnType = literalType,
@@ -1299,13 +1299,254 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
         #endregion
 
+        [TestMethod, TestCategory("IL Tests")]
+        public void TestCanEmit_LogicalAnd_LogicalOr()
+        {
+            var outputMethod = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<string>()
+            {
+                "System.String",
+                "System.Boolean",                
+                "System.Boolean",
+                "System.Boolean"
+            });
+
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var booleanType = assemblyEmitter.TypeToTypeReference(typeof(bool));
+
+            var variable1 = new LocalVariableNode()
+            {
+                LocalVariable = new VariableDefinition("a", booleanType)
+            };
+
+            var variable2 = new LocalVariableNode()
+            {
+                LocalVariable = new VariableDefinition("b", booleanType)
+            };
+
+            var literal1 = new LiteralNode()
+            {
+                ReturnType = booleanType,
+                Value = true
+            };
+
+            var literal2 = new LiteralNode()
+            {
+                ReturnType = booleanType,
+                Value = false
+            };
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        DeclaredSymbol = variable1,
+                        Initializer = literal1
+                    },
+                    new SymbolDeclarationNode()
+                    {
+                        DeclaredSymbol = variable2,
+                        Initializer = literal2
+                    },
+
+                    new MethodCallNode()
+                    {
+                        ReturnType = voidType,
+                        Function = new FunctionNode()
+                        {
+                            Function = outputMethod
+                        },
+                        Arguments = new List<IExpressionNode>()
+                        {
+                            new LiteralNode()
+                            {
+                                ReturnType = stringType,
+                                Value = "{0} && {1} == {2}."
+                            },
+                            variable1,
+                            variable2,
+                            new BinaryOperatorNode()
+                            {
+                                ReturnType = booleanType,
+                                BinaryOperatorType = BinaryOperatorNodeType.LogicalAnd,
+                                LeftOperand = variable1,
+                                RightOperand = variable2
+                            }
+                        }
+                    },
+                    new MethodCallNode()
+                    {
+                        ReturnType = voidType,
+                        Function = new FunctionNode()
+                        {
+                            Function = outputMethod
+                        },
+                        Arguments = new List<IExpressionNode>()
+                        {
+                            new LiteralNode()
+                            {
+                                ReturnType = stringType,
+                                Value = "{0} || {1} == {2}."
+                            },
+                            variable1,
+                            variable2,
+                            new BinaryOperatorNode()
+                            {
+                                ReturnType = booleanType,
+                                BinaryOperatorType = BinaryOperatorNodeType.LogicalOr,
+                                LeftOperand = variable1,
+                                RightOperand = variable2
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_LogicalAnd_LogicalOr.il";
+            Test();
+        }
+
+        [TestMethod, TestCategory("IL Tests")]
+        public void TestCanEmit_BinaryAnd_BinaryOr_BinaryXor()
+        {
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
+
+            var outputMethod = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<TypeReference>()
+            {
+                stringType,
+                uintType,
+                uintType,
+                uintType
+            });
+
+
+            var variable1 = new LocalVariableNode()
+            {
+                LocalVariable = new VariableDefinition("a", uintType)
+            };
+
+            var variable2 = new LocalVariableNode()
+            {
+                LocalVariable = new VariableDefinition("b", uintType)
+            };
+
+            var literal1 = new LiteralNode()
+            {
+                ReturnType = uintType,
+                Value = 0x156
+            };
+
+            var literal2 = new LiteralNode()
+            {
+                ReturnType = uintType,
+                Value = 0x841
+            };
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        DeclaredSymbol = variable1,
+                        Initializer = literal1
+                    },
+                    new SymbolDeclarationNode()
+                    {
+                        DeclaredSymbol = variable2,
+                        Initializer = literal2
+                    },
+
+                    new MethodCallNode()
+                    {
+                        ReturnType = voidType,
+                        Function = new FunctionNode()
+                        {
+                            Function = outputMethod
+                        },
+                        Arguments = new List<IExpressionNode>()
+                        {
+                            new LiteralNode()
+                            {
+                                ReturnType = stringType,
+                                Value = "{0} & {1} == {2}."
+                            },
+                            variable1,
+                            variable2,
+                            new BinaryOperatorNode()
+                            {
+                                ReturnType = uintType,
+                                BinaryOperatorType = BinaryOperatorNodeType.BinaryAnd,
+                                LeftOperand = variable1,
+                                RightOperand = variable2
+                            }
+                        }
+                    },
+                    new MethodCallNode()
+                    {
+                        ReturnType = voidType,
+                        Function = new FunctionNode()
+                        {
+                            Function = outputMethod
+                        },
+                        Arguments = new List<IExpressionNode>()
+                        {
+                            new LiteralNode()
+                            {
+                                ReturnType = stringType,
+                                Value = "{0} | {1} == {2}."
+                            },
+                            variable1,
+                            variable2,
+                            new BinaryOperatorNode()
+                            {
+                                ReturnType = uintType,
+                                BinaryOperatorType = BinaryOperatorNodeType.BinaryOr,
+                                LeftOperand = variable1,
+                                RightOperand = variable2
+                            }
+                        }
+                    },
+                    new MethodCallNode()
+                    {
+                        ReturnType = voidType,
+                        Function = new FunctionNode()
+                        {
+                            Function = outputMethod
+                        },
+                        Arguments = new List<IExpressionNode>()
+                        {
+                            new LiteralNode()
+                            {
+                                ReturnType = stringType,
+                                Value = "{0} ^ {1} == {2}."
+                            },
+                            variable1,
+                            variable2,
+                            new BinaryOperatorNode()
+                            {
+                                ReturnType = uintType,
+                                BinaryOperatorType = BinaryOperatorNodeType.BinaryXor,
+                                LeftOperand = variable1,
+                                RightOperand = variable2
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_BinaryAnd_BinaryOr_BinaryXor.il";
+            Test();
+        }
+
         /* Missing tests for binary operators:
             BinaryAnd
             BinaryOr
             BinaryXor
-        
-            LogicalAnd
-            LogicalOr
         */
 
         #endregion
