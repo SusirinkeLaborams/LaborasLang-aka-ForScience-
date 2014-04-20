@@ -3,8 +3,9 @@
 	System.Console.WriteLine("Func called");
 };
 
-auto Main = void()
+auto Main = int()
 {
 	Func();
 	System.Console.ReadKey();
+	return 0;
 };
