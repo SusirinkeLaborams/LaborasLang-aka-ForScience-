@@ -1542,16 +1542,19 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             ExpectedILFilePath = "TestCanEmit_BinaryAnd_BinaryOr_BinaryXor.il";
             Test();
         }
-
-        /* Missing tests for binary operators:
-            BinaryAnd
-            BinaryOr
-            BinaryXor
-        */
-
+        
         #endregion
 
         #endregion
+
+        /* Missing tests:         
+         * unary operators!!
+         * while
+         * if without else
+         * return
+         * object creation
+         * assign functor property to delegate
+         */
 
         #region Functor tests
 
