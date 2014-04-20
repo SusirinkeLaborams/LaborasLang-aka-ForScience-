@@ -77,19 +77,46 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return ParseUnary(parser, expression, ops);
         }
-        private static ExpressionNode ParseUnary(Parser parser, IExpressionNode expression, List<UnaryOperatorNodeType> ops)
+        private static ExpressionNode ParseUnary(Parser parser, ExpressionNode expression, List<UnaryOperatorNodeType> ops)
+        {
+            if (ops.Count > 0)
+            {
+                return expression;
+            }
+            else
+            {
+                var otherOps = ops.GetRange(0, ops.Count - 1);
+                var op = ops[ops.Count - 1];
+                return ParseUnary(parser, ParseUnary(parser, expression, otherOps), op);
+            }
+        }
+        private static ExpressionNode ParseUnary(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
+        {
+            switch(op)
+            {
+                case UnaryOperatorNodeType.BinaryNot:
+                    return ParseBinary(parser, expression, op);
+                case UnaryOperatorNodeType.LogicalNot:
+                    return ParseLogical(parser, expression, op);
+                case UnaryOperatorNodeType.Negation:
+                case UnaryOperatorNodeType.PostDecrement:
+                case UnaryOperatorNodeType.PostIncrement:
+                case UnaryOperatorNodeType.PreDecrement:
+                case UnaryOperatorNodeType.PreIncrement:
+                    return ParseArithmetic(parser, expression, op);
+                default:
+                    throw new ParseException("Unary op expected, " + op + " received");
+            }
+        }
+        private static UnaryOperatorNode ParseArithmetic(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
         {
             throw new NotImplementedException();
         }
-        private static UnaryOperatorNode ParseArithmetic(Parser parser, IExpressionNode expression, UnaryOperatorNodeType op)
+        private static UnaryOperatorNode ParseLogical(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
         {
             throw new NotImplementedException();
         }
-        private static UnaryOperatorNode ParseLogical(Parser parser, IExpressionNode expression, UnaryOperatorNodeType op)
-        {
-            throw new NotImplementedException();
-        }
-        private static UnaryOperatorNode ParseBinary(Parser parser, IExpressionNode expression, UnaryOperatorNodeType op)
+        private static UnaryOperatorNode ParseBinary(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
         {
             throw new NotImplementedException();
         }
