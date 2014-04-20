@@ -510,13 +510,13 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                 ReturnType = floatType,
                                 LeftOperand = new LiteralNode()
                                 {
-                                    ReturnType = intType,
-                                    Value = 2
+                                    ReturnType = floatType,
+                                    Value = 3.2f
                                 },
                                 RightOperand = new LiteralNode()
                                 {
-                                    ReturnType = floatType,
-                                    Value = 3.2f
+                                    ReturnType = intType,
+                                    Value = 2
                                 },
                             }
                         }
@@ -605,13 +605,13 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                 BinaryOperatorType = BinaryOperatorNodeType.Subtraction,
                                 LeftOperand = new LiteralNode()
                                 {
-                                    ReturnType = floatType,
-                                    Value = 5.5f
+                                    ReturnType = doubleType,
+                                    Value = 3.4
                                 },
                                 RightOperand = new LiteralNode()
                                 {
-                                    ReturnType = doubleType,
-                                    Value = 3.4
+                                    ReturnType = floatType,
+                                    Value = 5.5f
                                 }
                             }
                         }
@@ -745,7 +745,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new BinaryOperatorNode()
                             {
-                                ReturnType = ushortType,
+                                ReturnType = uintType,
                                 BinaryOperatorType = BinaryOperatorNodeType.Division,
                                 LeftOperand = new LiteralNode()
                                 {
@@ -841,7 +841,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new BinaryOperatorNode()
                             {
-                                ReturnType = ushortType,
+                                ReturnType = uintType,
                                 BinaryOperatorType = BinaryOperatorNodeType.Modulus,
                                 LeftOperand = new LiteralNode()
                                 {

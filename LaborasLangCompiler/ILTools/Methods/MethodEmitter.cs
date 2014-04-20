@@ -72,7 +72,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             Emit(tree);
 
-            if (body.Instructions.Last().OpCode != OpCodes.Ret)
+            if (body.Instructions.Count == 0 || body.Instructions.Last().OpCode != OpCodes.Ret)
             {
                 Ret();
             }
