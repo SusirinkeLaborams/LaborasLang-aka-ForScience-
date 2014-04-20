@@ -142,7 +142,9 @@ namespace LaborasLangCompiler.Parser
         Equals,
         NotEquals,
         LogicalOr,
-        LogicalAnd
+        LogicalAnd,
+        ShiftRight,
+        ShiftLeft
     }
 
     interface IBinaryOperatorNode : IRValueNode
