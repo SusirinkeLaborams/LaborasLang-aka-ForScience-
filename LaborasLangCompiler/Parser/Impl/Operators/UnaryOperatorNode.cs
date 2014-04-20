@@ -21,7 +21,6 @@ namespace LaborasLangCompiler.Parser.Impl
             Operand = operand;
             UnaryOperatorType = type;
         }
-        private UnaryOperatorNode() { }
         public static new ExpressionNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             if(lexerNode.Children.Count == 1)
@@ -41,7 +40,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
-        private static UnaryOperatorNode ParseSuffix(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        private static ExpressionNode ParseSuffix(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             var expression = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
             var ops = new List<UnaryOperatorNodeType>();
@@ -59,7 +58,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return ParseUnary(parser, expression, ops);
         }
-        private static UnaryOperatorNode ParsePrefix(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        private static ExpressionNode ParsePrefix(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
         {
             var count = lexerNode.Children.Count;
             var expression = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[count - 1]);
@@ -78,7 +77,19 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return ParseUnary(parser, expression, ops);
         }
-        private static UnaryOperatorNode ParseUnary(Parser parser, IExpressionNode expression, List<UnaryOperatorNodeType> ops)
+        private static ExpressionNode ParseUnary(Parser parser, IExpressionNode expression, List<UnaryOperatorNodeType> ops)
+        {
+            throw new NotImplementedException();
+        }
+        private static UnaryOperatorNode ParseArithmetic(Parser parser, IExpressionNode expression, UnaryOperatorNodeType op)
+        {
+            throw new NotImplementedException();
+        }
+        private static UnaryOperatorNode ParseLogical(Parser parser, IExpressionNode expression, UnaryOperatorNodeType op)
+        {
+            throw new NotImplementedException();
+        }
+        private static UnaryOperatorNode ParseBinary(Parser parser, IExpressionNode expression, UnaryOperatorNodeType op)
         {
             throw new NotImplementedException();
         }
