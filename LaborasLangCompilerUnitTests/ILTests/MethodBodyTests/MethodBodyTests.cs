@@ -1545,6 +1545,107 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         
         #endregion
 
+        #region Unary operators
+
+        [TestMethod, TestCategory("IL Tests")]
+        public void TestCanEmit_Negation_BinaryNot_Increment_Decrement()
+        {
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<TypeReference>()
+            {
+                stringType,
+                intType,
+                intType,
+                intType,
+                intType,
+                intType,
+                intType,
+                intType
+            });
+
+            var variables = new List<LocalVariableNode>();
+
+            for (int i = 0; i < 7; i++)
+            {
+                variables.Add(new LocalVariableNode()
+                {
+                    LocalVariable = new VariableDefinition(((char)i + 'a').ToString(), intType)
+                });
+            }
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        DeclaredSymbol = variables[0],
+                        Initializer = new LiteralNode()
+                        {
+                            ReturnType = intType,
+                            Value = 5
+                        }
+                    }
+                }
+            };
+
+            var nodes = (List<IParserNode>)BodyCodeBlock.Nodes;
+            var operators = new UnaryOperatorNodeType[]
+            {
+                UnaryOperatorNodeType.BinaryNot,
+                UnaryOperatorNodeType.Negation,
+                UnaryOperatorNodeType.PostDecrement,
+                UnaryOperatorNodeType.PostIncrement,
+                UnaryOperatorNodeType.PreDecrement,
+                UnaryOperatorNodeType.PreIncrement
+            };
+
+            for (int i = 1; i < 7; i++)
+            {
+                nodes.Add(new SymbolDeclarationNode()
+                {
+                    DeclaredSymbol = variables[i],
+                    Initializer = new UnaryOperatorNode()
+                    {
+                        UnaryOperatorType = operators[i - 1],
+                        ReturnType = intType,
+                        Operand = variables[0]
+                    }
+                });
+            }
+
+            nodes.Add(new MethodCallNode()
+            {
+                ReturnType = voidType,
+                Function = new FunctionNode()
+                {
+                    Function = consoleWriteLine
+                },
+                Arguments = new List<IExpressionNode>()
+                {
+                    new LiteralNode()
+                    {
+                        ReturnType = stringType,
+                        Value = "Results: \r\n{0}\r\n{1}\r\n{2}\r\n{3}\r\n{4}\r\n{5}\r\n{6}\r\n"
+                    },
+                    variables[0],
+                    variables[1],
+                    variables[2],
+                    variables[3],
+                    variables[4],
+                    variables[5],
+                    variables[6]
+                }
+            });
+
+            ExpectedILFilePath = "TestCanEmit_Negation_BinaryNot_Increment_Decrement.il";
+            Test();
+        }
+
+        #endregion
+
         #endregion
 
         /* Missing tests:         

@@ -147,7 +147,7 @@ namespace LaborasLangCompiler.ILTools
 
         public static bool MatchesArgumentList(this MethodReference method, IReadOnlyList<TypeReference> desiredParameters)
         {
-            var methodParameters = method.Parameters;
+            var methodParameters = method.Resolve().Parameters; // Resolve is needed or otherwise we will not know methods parameter attributes
 
             if (methodParameters.Count != desiredParameters.Count && (methodParameters.Count == 0 ||
                 methodParameters.Last().CustomAttributes.All(x => x.AttributeType.FullName != "System.ParamArrayAttribute")))

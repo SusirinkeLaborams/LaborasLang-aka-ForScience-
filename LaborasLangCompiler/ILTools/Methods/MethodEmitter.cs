@@ -771,13 +771,52 @@ namespace LaborasLangCompiler.ILTools.Methods
                     throw new ArgumentException("Method is static but there is an object instance set!", "functionCall.Function.ObjectInstance");
                 }
 
-                for (int i = 0; i < functionCall.Arguments.Count; i++)
-                {
-                    Emit(functionCall.Arguments[i], false);
+                var arguments = functionCall.Arguments;
+                var methodParameters = functionNode.Function.Parameters;
 
-                    if (functionCall.Arguments[i].ReturnType.IsValueType && !functionNode.Function.Parameters[i].ParameterType.IsValueType)
+                if (arguments.Count > methodParameters.Count && methodParameters.Count > 0 &&    // Params call
+                    functionNode.Function.Resolve().Parameters.Last().CustomAttributes.Any(x => x.AttributeType.FullName == "System.ParamArrayAttribute"))
+                {
+                    for (int i = 0; i < methodParameters.Count - 1; i++)
                     {
-                        Box(functionCall.Arguments[i].ReturnType);
+                        EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
+                    }
+
+                    var arrayVariable = AcquireTempVariable(methodParameters.Last().ParameterType);
+                    var arrayType = methodParameters.Last().ParameterType.GetElementType();
+
+                    Ldc_I4(arguments.Count - methodParameters.Count + 1);
+                    Newarr(arrayType);
+                    Stloc(arrayVariable.Index);
+                    
+                    for (int i = methodParameters.Count - 1; i < arguments.Count; i++)
+                    {
+                        Ldloc(arrayVariable.Index);
+                        Ldc_I4(i - methodParameters.Count + 1);
+                        EmitArgumentForCall(arguments[i], arrayType);
+
+                        if (arrayType.IsValueType)
+                        {
+                            Stelem_Any(arrayType);
+                        }
+                        else
+                        {
+                            Stelem_Ref();
+                        }
+                    }
+
+                    Ldloc(arrayVariable.Index);
+                    ReleaseTempVariable(arrayVariable);
+                }
+                else if (methodParameters.Count > arguments.Count)    // Default parameters call
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    for (int i = 0; i < arguments.Count; i++)
+                    {
+                        EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
                     }
                 }
 
@@ -802,6 +841,16 @@ namespace LaborasLangCompiler.ILTools.Methods
                 }
 
                 Call(invokeMethod);
+            }
+        }
+
+        private void EmitArgumentForCall(IExpressionNode argument, TypeReference targetParameterType)
+        {
+            Emit(argument, false);
+
+            if (argument.ReturnType.IsValueType && !targetParameterType.IsValueType)
+            {
+                Box(argument.ReturnType);
             }
         }
 
@@ -1638,11 +1687,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else if (index < 256)
             {
-                ilProcessor.Emit(OpCodes.Ldarg_S, index);
+                ilProcessor.Emit(OpCodes.Ldarg_S, methodDefinition.Parameters[index]);
             }
             else
             {
-                ilProcessor.Emit(OpCodes.Ldarg, index);
+                ilProcessor.Emit(OpCodes.Ldarg, methodDefinition.Parameters[index]);
             }
         }
 
@@ -1650,11 +1699,11 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             if (index < 256)
             {
-                ilProcessor.Emit(OpCodes.Ldarga_S, index);
+                ilProcessor.Emit(OpCodes.Ldarga_S, methodDefinition.Parameters[index]);
             }
             else
             {
-                ilProcessor.Emit(OpCodes.Ldarga, index);
+                ilProcessor.Emit(OpCodes.Ldarga, methodDefinition.Parameters[index]);
             }
         }
 
@@ -1770,11 +1819,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else if (index < 256)
             {
-                ilProcessor.Emit(OpCodes.Ldloc_S, index);
+                ilProcessor.Emit(OpCodes.Ldloc_S, body.Variables[index]);
             }
             else
             {
-                ilProcessor.Emit(OpCodes.Ldloc, index);
+                ilProcessor.Emit(OpCodes.Ldloc, body.Variables[index]);
             }
         }
 
@@ -1782,11 +1831,11 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             if (index < 256)
             {
-                ilProcessor.Emit(OpCodes.Ldloca_S, (byte)index);
+                ilProcessor.Emit(OpCodes.Ldloca_S, body.Variables[index]);
             }
             else
             {
-                ilProcessor.Emit(OpCodes.Ldloca, index);
+                ilProcessor.Emit(OpCodes.Ldloca, body.Variables[index]);
             }
         }
 
@@ -1825,14 +1874,14 @@ namespace LaborasLangCompiler.ILTools.Methods
             ilProcessor.Emit(OpCodes.Newobj, method);
         }
 
-        protected void Or()
-        {
-            ilProcessor.Emit(OpCodes.Or);
-        }
-
         protected void Neg()
         {
             ilProcessor.Emit(OpCodes.Neg);
+        }
+
+        protected void Newarr(TypeReference arrayType)
+        {
+            ilProcessor.Emit(OpCodes.Newarr, arrayType);
         }
 
         protected void Nop()
@@ -1843,6 +1892,11 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Not()
         {
             ilProcessor.Emit(OpCodes.Not);
+        }
+
+        protected void Or()
+        {
+            ilProcessor.Emit(OpCodes.Or);
         }
 
         protected void Pop()
@@ -1892,6 +1946,16 @@ namespace LaborasLangCompiler.ILTools.Methods
             ilProcessor.Emit(OpCodes.Stfld, field);
         }
 
+        protected void Stelem_Any(TypeReference valueType)
+        {
+            ilProcessor.Emit(OpCodes.Stelem_Any, valueType);
+        }
+
+        protected void Stelem_Ref()
+        {
+            ilProcessor.Emit(OpCodes.Stelem_Ref);
+        }
+
         protected void Stloc(int index)
         {
             if (index < 4)
@@ -1917,7 +1981,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else if (index < 256)
             {
-                ilProcessor.Emit(OpCodes.Stloc_S, index);
+                ilProcessor.Emit(OpCodes.Stloc_S, (byte)index);
             }
             else
             {
