@@ -1,6 +1,6 @@
 ﻿System.Void klass::dummy()
 // Method begins at RVA 0x2050
-// Code size 91 (0x5b)
+// Code size 123 (0x7b)
 .maxstack 3
 .entrypoint
 .locals (
@@ -23,7 +23,7 @@ IL_0010: box [mscorlib]System.Int32
 IL_0015: ldloc.1
 IL_0016: box [mscorlib]System.Int32
 IL_001b: call void [mscorlib]System.Console::WriteLine(string, object, object)
-IL_0020: br.s IL_0059
+IL_0020: br.s IL_0079
 
 IL_0022: nop
 IL_0023: ldloc.0
@@ -37,17 +37,33 @@ IL_002f: box [mscorlib]System.Int32
 IL_0034: ldloc.1
 IL_0035: box [mscorlib]System.Int32
 IL_003a: call void [mscorlib]System.Console::WriteLine(string, object, object)
-IL_003f: br.s IL_0058
+IL_003f: br.s IL_0078
 
 IL_0041: nop
-IL_0042: ldstr "{0} and {1} are equal."
-IL_0047: ldloc.0
-IL_0048: box [mscorlib]System.Int32
-IL_004d: ldloc.1
+IL_0042: ldloc.0
+IL_0043: ldloc.1
+IL_0044: ceq
+IL_0046: brfalse.s IL_0060
+
+IL_0048: ldstr "{0} and {1} are equal."
+IL_004d: ldloc.0
 IL_004e: box [mscorlib]System.Int32
-IL_0053: call void [mscorlib]System.Console::WriteLine(string, object, object)
+IL_0053: ldloc.1
+IL_0054: box [mscorlib]System.Int32
+IL_0059: call void [mscorlib]System.Console::WriteLine(string, object, object)
+IL_005e: br.s IL_0077
 
-IL_0058: nop
+IL_0060: nop
+IL_0061: ldstr "We're screwed."
+IL_0066: ldloc.0
+IL_0067: box [mscorlib]System.Int32
+IL_006c: ldloc.1
+IL_006d: box [mscorlib]System.Int32
+IL_0072: call void [mscorlib]System.Console::WriteLine(string, object, object)
 
-IL_0059: nop
-IL_005a: ret
+IL_0077: nop
+
+IL_0078: nop
+
+IL_0079: nop
+IL_007a: ret

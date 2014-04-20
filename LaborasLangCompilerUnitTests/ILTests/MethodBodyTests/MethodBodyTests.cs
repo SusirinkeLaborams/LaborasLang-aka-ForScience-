@@ -1097,7 +1097,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                                                 new LiteralNode()
                                                                 {
                                                                     ReturnType = stringType,
-                                                                    Value = "{0} is less than {1}."
+                                                                    Value = "{0} and {1} are equal."
                                                                 },
                                                                 new LocalVariableNode()
                                                                 {
@@ -1127,7 +1127,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                                                 new LiteralNode()
                                                                 {
                                                                     ReturnType = stringType,
-                                                                    Value = "{0} and {1} are equal."
+                                                                    Value = "We're screwed."
                                                                 },
                                                                 new LocalVariableNode()
                                                                 {

@@ -1,6 +1,6 @@
 ﻿System.Void klass::dummy()
 // Method begins at RVA 0x2050
-// Code size 81 (0x51)
+// Code size 103 (0x67)
 .maxstack 3
 .entrypoint
 .locals (
@@ -23,7 +23,7 @@ IL_0018: ldstr "{0} is greater than {1}."
 IL_001d: ldloc.0
 IL_001e: ldloc.1
 IL_001f: call void [mscorlib]System.Console::WriteLine(string, object, object)
-IL_0024: br.s IL_004f
+IL_0024: br.s IL_0065
 
 IL_0026: nop
 IL_0027: ldloc.0
@@ -37,15 +37,29 @@ IL_0033: ldstr "{0} is less than {1}."
 IL_0038: ldloc.0
 IL_0039: ldloc.1
 IL_003a: call void [mscorlib]System.Console::WriteLine(string, object, object)
-IL_003f: br.s IL_004e
+IL_003f: br.s IL_0064
 
 IL_0041: nop
-IL_0042: ldstr "{0} and {1} are equal."
-IL_0047: ldloc.0
-IL_0048: ldloc.1
-IL_0049: call void [mscorlib]System.Console::WriteLine(string, object, object)
+IL_0042: ldloc.0
+IL_0043: ldloc.1
+IL_0044: ceq
+IL_0046: brfalse.s IL_0056
 
-IL_004e: nop
+IL_0048: ldstr "{0} and {1} are equal."
+IL_004d: ldloc.0
+IL_004e: ldloc.1
+IL_004f: call void [mscorlib]System.Console::WriteLine(string, object, object)
+IL_0054: br.s IL_0063
 
-IL_004f: nop
-IL_0050: ret
+IL_0056: nop
+IL_0057: ldstr "We're screwed."
+IL_005c: ldloc.0
+IL_005d: ldloc.1
+IL_005e: call void [mscorlib]System.Console::WriteLine(string, object, object)
+
+IL_0063: nop
+
+IL_0064: nop
+
+IL_0065: nop
+IL_0066: ret
