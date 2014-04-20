@@ -20,9 +20,18 @@ namespace LaborasLangCompiler.Parser
         public IReadOnlyDictionary<string, TypeReference> Primitives { get; private set; }
         public bool Testing { get; private set; }
         public const string Bool   = "bool";
+        public const string Char   = "char";
+        public const string Byte   = "byte";
+        public const string UByte  = "ubyte";
+        public const string Word   = "word";
+        public const string UWord  = "uword";
         public const string Int    = "int";
+        public const string UInt   = "uint";
         public const string Long   = "long";
+        public const string ULong  = "ulong";
         public const string Float  = "float";
+        public const string Double = "double";
+        public const string Decimal = "decimal";
         public const string String = "string";
         public const string Void   = "void";
         public const string Auto   = "auto";
@@ -35,12 +44,29 @@ namespace LaborasLangCompiler.Parser
 
             var primitives = new Dictionary<string, TypeReference>();
             primitives.Add(Bool, Assembly.TypeToTypeReference(typeof(bool)));
+
+            primitives.Add(Char, Assembly.TypeToTypeReference(typeof(char)));
+            primitives.Add(Byte, Assembly.TypeToTypeReference(typeof(sbyte)));
+            primitives.Add(UByte, Assembly.TypeToTypeReference(typeof(byte)));
+
+            primitives.Add(Word, Assembly.TypeToTypeReference(typeof(Int16)));
+            primitives.Add(UWord, Assembly.TypeToTypeReference(typeof(UInt16)));
+
             primitives.Add(Int, Assembly.TypeToTypeReference(typeof(int)));
-            primitives.Add(Float, Assembly.TypeToTypeReference(typeof(float)));
-            primitives.Add(String, Assembly.TypeToTypeReference(typeof(string)));
-            primitives.Add(Void, Assembly.TypeToTypeReference(typeof(void)));
+            primitives.Add(UInt, Assembly.TypeToTypeReference(typeof(uint)));
+
             primitives.Add(Long, Assembly.TypeToTypeReference(typeof(long)));
+            primitives.Add(ULong, Assembly.TypeToTypeReference(typeof(ulong)));
+
+            primitives.Add(Float, Assembly.TypeToTypeReference(typeof(float)));
+            primitives.Add(Double, Assembly.TypeToTypeReference(typeof(double)));
+            primitives.Add(Decimal, Assembly.TypeToTypeReference(typeof(decimal)));
+
+            primitives.Add(String, Assembly.TypeToTypeReference(typeof(string)));
+
+            primitives.Add(Void, Assembly.TypeToTypeReference(typeof(void)));
             primitives.Add(Auto, null);
+
             Primitives = primitives;
 
             ClassNode.Parse(this, null, null, tree);
