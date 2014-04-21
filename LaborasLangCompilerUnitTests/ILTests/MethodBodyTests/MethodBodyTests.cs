@@ -1896,7 +1896,6 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         #endregion
 
         /* Missing tests:
-         * return
          * object creation
          * assign functor property to delegate
          * call with default parameters
