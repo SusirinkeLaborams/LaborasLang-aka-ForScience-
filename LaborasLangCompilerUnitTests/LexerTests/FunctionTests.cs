@@ -16,7 +16,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             AstNode tree = lexer.MakeTree(source);
 
             Assert.IsNotNull(tree);
-            string expected = "Root: Sentence: (Declaration: (FunctionType: (Type: Symbol, ArgumentTypes: (Type: Symbol, Type: Symbol)), Symbol), EndOfSentence)";
+            string expected = "Root: Sentence: (Declaration: (FunctionType: Type: (Symbol, FunctionTypeArgs: (Type: Symbol, Type: Symbol)), Symbol), EndOfSentence)";
             string actual = AstHelper.Stringify(tree);
             Assert.AreEqual(expected, actual);
         }
@@ -28,7 +28,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             AstNode tree = lexer.MakeTree(source);
 
             Assert.IsNotNull(tree);
-            string expected = "Root: Sentence: (Assignment: (Symbol, AssignmentOperator, Function: (NamedFunctionType: Type: Symbol, CodeBlock: Sentence: (FunctionCall: FullSymbol: Symbol, EndOfSentence))), EndOfSentence)";
+            string expected = "Root: Sentence: (Assignment: (Symbol, AssignmentOperator, Function: (NamedFunctionType: Type: (Symbol, FunctionTypeArgs), CodeBlock: Sentence: (FunctionCall: FullSymbol: Symbol, EndOfSentence))), EndOfSentence)";
             string actual = AstHelper.Stringify(tree);
             Assert.AreEqual(expected, actual);
         }
@@ -82,7 +82,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             AstNode tree = lexer.MakeTree(source);
 
             Assert.IsNotNull(tree);
-            string expected = "Root: Sentence: (DeclarationAndAssignment: (Type: Symbol, Symbol, Function: (NamedFunctionType: Type: Symbol, CodeBlock: (Sentence: (FunctionCall: (FullSymbol: (Symbol, Symbol, Symbol), FunctionArgument: Value: Sum: Product: SuffixNode: PrefixNode: Literal: StringLiteral), EndOfSentence), Sentence: (FunctionCall: FullSymbol: (Symbol, Symbol, Symbol), EndOfSentence), Sentence: (ReturnSentence: Value: Sum: Product: SuffixNode: PrefixNode: Literal: IntegerLiteral, EndOfSentence)))), EndOfSentence)";
+            string expected = "Root: Sentence: (DeclarationAndAssignment: (FunctionType: Type: Symbol, Symbol, Function: (NamedFunctionType: Type: (Symbol, FunctionTypeArgs), CodeBlock: (Sentence: (FunctionCall: (FullSymbol: (Symbol, Symbol, Symbol), FunctionArgument: Value: Comparison: BooleanNode: Sum: Product: BinaryOperationNode: SuffixNode: PrefixNode: Literal: StringLiteral), EndOfSentence), Sentence: (FunctionCall: FullSymbol: (Symbol, Symbol, Symbol), EndOfSentence), Sentence: (ReturnSentence: Value: Comparison: BooleanNode: Sum: Product: BinaryOperationNode: SuffixNode: PrefixNode: Literal: IntegerLiteral, EndOfSentence)))), EndOfSentence)";
             string actual = AstHelper.Stringify(tree);
             Assert.AreEqual(expected, actual);
         }
