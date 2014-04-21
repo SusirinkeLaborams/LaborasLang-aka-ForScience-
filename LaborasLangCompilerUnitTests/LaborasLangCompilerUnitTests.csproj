@@ -137,6 +137,7 @@
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_InstancePropertyInitializer.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_MultipleNestedAssignments.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_Negation_BinaryNot_Increment_Decrement.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_Return.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_ShiftLeftAndRight.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_SignedDivision.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_SignedRemainder.il" />

@@ -209,4 +209,11 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public IExpressionNode Condition { get; set; }
         public ICodeBlockNode ExecutedBlock { get; set; }
     }
+
+    class ReturnNode : IReturnNode
+    {
+        public NodeType Type { get { return NodeType.ReturnNode; } }
+
+        public IExpressionNode Expression { get; set; }
+    }
 }

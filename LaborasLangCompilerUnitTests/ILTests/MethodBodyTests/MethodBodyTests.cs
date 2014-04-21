@@ -1823,6 +1823,76 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
+        [TestMethod, TestCategory("IL Tests")]
+        public void TestCanEmit_Return()
+        {
+            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+
+            var consoleReadLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "ReadLine", new List<TypeReference>());
+            var consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<TypeReference>()
+            {
+                stringType,
+                stringType
+            });
+
+            var readInputMethod = new MethodEmitter(typeEmitter, "ReadInput", stringType, MethodAttributes.Static | MethodAttributes.Private);
+
+            readInputMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new ReturnNode()
+                    {
+                        Expression = new MethodCallNode()
+                        {
+                            ReturnType = stringType,
+                            Function = new FunctionNode()
+                            {
+                                Function = consoleReadLine
+                            },
+                            Arguments = new List<IExpressionNode>()
+                        },
+                    }
+                }
+            });
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new MethodCallNode()
+                    {
+                        ReturnType = voidType,
+                        Function = new FunctionNode()
+                        {
+                            Function = consoleWriteLine
+                        },
+                        Arguments = new List<IExpressionNode>()
+                        {
+                            new LiteralNode()
+                            {
+                                ReturnType = stringType,
+                                Value = "Your input is: \"{0}\"."
+                            },
+                            new MethodCallNode()
+                            {
+                                ReturnType = stringType,
+                                Function = new FunctionNode()
+                                {
+                                    Function = readInputMethod.Get()
+                                },
+                                Arguments = new List<IExpressionNode>()
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_Return.il";
+            Test();
+        }
+
         #endregion
 
         /* Missing tests:
