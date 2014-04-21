@@ -52,7 +52,8 @@ namespace LaborasLangCompiler.LexingTools
         public const string PrefixOperator = "PrefixOperator";
         public const string ReturnSentence = "ReturnSentence";
         public const string BooleanLiteral = "BooleanLiteral";
-
+        public const string Comparison = "Comparison";
+        public const string FunctionTypeArgs = "FunctionTypeArgs";
         private AExpression GrammarTree;
         private static string Grammar = @"
  
@@ -70,33 +71,41 @@ namespace LaborasLangCompiler.LexingTools
                 
                 (?<PrefixOperator>): '++' / '--' / '-' / '!' / '~';
                 (?<SuffixOperator>): '++' / '--';
+                (?<BinaryOperator>): '^' / '&' / '|';
                 (?<MultiplicationOperator>): '/' / '*';
+                (?<BooleanOperator>): '&&' / '||';
                 (?<SumOperator>): '+' / '-';
+                (?<RelationOperator>): '==' / '!=' / '<=' / '>=' / '<' / '>';
 
                 (?<PrefixNode>): (PrefixOperator Ws?)* ('(' Sum ')' / FunctionCall / Literal / Symbol);
                 (?<SuffixNode>): PrefixNode (Ws? SuffixOperator)*;
-                (?<Product>): SuffixNode (Ws? MultiplicationOperator Ws? SuffixNode)*;
+                (?<BinaryOperationNode>): SuffixNode (Ws? BinaryOperator Ws? SuffixNode)*;
+                (?<Product>): BinaryOperationNode (Ws? MultiplicationOperator Ws? BinaryOperationNode)*;
                 (?<Sum>): Product (Ws? SumOperator  Ws? Product)*;
+                (?<BooleanNode>): Sum (Ws? BooleanOperator  Ws? Sum)*;
+                (?<Comparison>): BooleanNode (Ws? RelationOperator Ws? BooleanNode)*;
+                (?<Value>): Comparison;
 
                 (?<AssignmentOperator>): '+=' / '-=' / '*=' / '/=' / '%=' / '&=' / '|=' / '^=' / '<<=' / '>>=' / '=';                
-                (?<RelationOperator>): '==' / '!=' / '<=' / '>=' / '<' / '>';
+
                 (?<ShiftOperator>): '>>' / '<<';     
                 (?<UnaryOperator>): '!' / '++' / '--';           
-                
-                (?<Type>): Symbol;
-                
-                (?<Value>):  Sum;
+                                
+                (?<FunctionTypeArgs>): '(' Ws? (Type (Ws? ',' Ws? Type)* Ws?)? ')';
+                (?<Type>): (Symbol (Ws? FunctionTypeArgs)+) / Symbol;
                 
                 (?<ReturnSentence>): 'return' Ws Value;
-                (?<FunctionType>): Type Ws? (?<ArgumentTypes> '(' Ws? (Type Ws? (',' Ws? Type Ws?)*)? ')');
+                (?<FunctionType>): Type;
                 (?<FunctionArgument>): Value;
                 (?<FunctionCall>): (FullSymbol) Ws? 
                     '('
                         Ws?
                         (FunctionArgument Ws? (',' Ws? FunctionArgument Ws?)*)?
                     ')';
+                
                 (?<FunctionArgumentDeclaration>): Type Ws Symbol;
-                (?<NamedFunctionType>): (Type Ws? ('(' Ws? (FunctionArgumentDeclaration Ws? (',' Ws? FunctionArgumentDeclaration Ws?)*)? ')'));
+                (?<NamedFunctionType>): Type Ws? ('(' Ws? (FunctionArgumentDeclaration Ws? (',' Ws? FunctionArgumentDeclaration Ws?)*)? ')')?;
+
                 (?<Function>): NamedFunctionType Ws? CodeBlock;
                 (?<Declaration>): (FunctionType / Type) Ws Symbol;
                 (?<DeclarationAndAssignment>): (FunctionType / Type) Ws Symbol Ws? '=' Ws? (Function / Value);
