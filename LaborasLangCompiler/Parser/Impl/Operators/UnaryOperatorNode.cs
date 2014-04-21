@@ -99,18 +99,26 @@ namespace LaborasLangCompiler.Parser.Impl
                     instance.ParseLogical(parser);
                     break;
                 case UnaryOperatorNodeType.Negation:
+                    instance.ParseNegation(parser);
+                    break;
                 case UnaryOperatorNodeType.PostDecrement:
                 case UnaryOperatorNodeType.PostIncrement:
                 case UnaryOperatorNodeType.PreDecrement:
                 case UnaryOperatorNodeType.PreIncrement:
-                    instance.ParseArithmetic(parser);
+                    instance.ParseInc(parser);
                     break;
                 default:
                     throw new ParseException("Unary op expected, " + op + " received");
             }
             return instance;
         }
-        private void ParseArithmetic(Parser parser)
+        private void ParseInc(Parser parser)
+        {
+            if (!ReturnType.IsNumericType() || Operand is LiteralNode)
+                throw new TypeException(String.Format("Increment/Decrement ops only allowed on numeric typed variables, {0} received",
+                    ReturnType));
+        }
+        private void ParseNegation(Parser parser)
         {
             if (!ReturnType.IsNumericType())
                 throw new TypeException(String.Format("Arithmetic ops only allowed on numeric types, {0} received",
