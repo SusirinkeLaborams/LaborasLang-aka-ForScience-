@@ -20,6 +20,9 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ReturnType { get; set; }
         private CodeBlockNode body;
         private MethodEmitter emitter;
+        public TypeReference FunctionReturnType { get; private set; }
+        public ClassNode ParentClass { get; private set; }
+        public IReadOnlyList<FunctionArgumentNode> Args;
         public void Emit(bool entry = false)
         {
             emitter.ParseTree(body);
@@ -34,6 +37,9 @@ namespace LaborasLangCompiler.Parser.Impl
             var header = FunctionHeader.Parse(parser, parentClass, null, lexerNode.Children[0]);
             instance.body = CodeBlockNode.Parse(parser, parentClass, null, lexerNode.Children[1], header.Args);
             instance.ReturnType = header.FunctionType;
+            instance.FunctionReturnType = header.ReturnType;
+            instance.ParentClass = parentClass;
+            instance.Args = header.Args;
             instance.emitter = new MethodEmitter(parentClass.TypeEmitter, "$" + name, header.ReturnType, MethodAttributes.Static | MethodAttributes.Private);
             foreach (var arg in header.Args)
                 instance.emitter.AddArgument(arg.Param);
