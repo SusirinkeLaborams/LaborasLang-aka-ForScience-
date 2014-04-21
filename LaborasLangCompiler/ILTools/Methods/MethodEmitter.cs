@@ -679,10 +679,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     return;
             }
 
-            Emit(binaryOperator.LeftOperand, false);
-
-            Emit(binaryOperator.RightOperand, false);
-            EmitConversionIfNeeded(binaryOperator.RightOperand.ReturnType, binaryOperator.LeftOperand.ReturnType);
+            EmitOperandsAndConvertIfNeeded(binaryOperator.LeftOperand, binaryOperator.RightOperand);
 
             switch (binaryOperator.BinaryOperatorType)
             {
@@ -1056,11 +1053,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitAddNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
-            Emit(left, false);
-
-            Emit(right, false);
-            EmitConversionIfNeeded(right.ReturnType, left.ReturnType);
-
+            EmitOperandsAndConvertIfNeeded(left, right);
             Add();
         }
 
@@ -1164,10 +1157,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
-            Emit(left, false);
-
-            Emit(right, false);
-            EmitConversionIfNeeded(right.ReturnType, left.ReturnType);
+            EmitOperandsAndConvertIfNeeded(left, right);
 
             Clt();
             Ldc_I4(0);
@@ -1210,11 +1200,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
-            Emit(left, false);
-
-            Emit(right, false);
-            EmitConversionIfNeeded(right.ReturnType, left.ReturnType);
-
+            EmitOperandsAndConvertIfNeeded(left, right);
             Cgt();
         }
 
@@ -1257,10 +1243,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
-            Emit(left, false);
-
-            Emit(right, false);
-            EmitConversionIfNeeded(right.ReturnType, left.ReturnType);
+            EmitOperandsAndConvertIfNeeded(left, right);
 
             Cgt();
             Ldc_I4(0);
@@ -1303,10 +1286,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitLessThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
-            Emit(left, false);
-
-            Emit(right, false);
-            EmitConversionIfNeeded(right.ReturnType, left.ReturnType);
+            EmitOperandsAndConvertIfNeeded(left, right);
 
             Clt();
         }
@@ -1382,6 +1362,33 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Emit(Instruction instruction)
         {
             body.Instructions.Add(instruction);
+        }
+
+        protected void EmitOperandsAndConvertIfNeeded(IExpressionNode left, IExpressionNode right)
+        {
+            bool conversionNeeded = left.ReturnType.FullName != right.ReturnType.FullName;
+
+            if (!conversionNeeded)
+            {
+                Emit(left, false);
+                Emit(right, false);
+            }
+            else if (left.ReturnType.IsAssignableTo(right.ReturnType))
+            {
+                Emit(left, false);
+                EmitConversionIfNeeded(left.ReturnType, right.ReturnType);
+                Emit(right, false);
+            }
+            else if (right.ReturnType.IsAssignableTo(right.ReturnType))
+            {
+                Emit(left, false);
+                Emit(right, false);
+                EmitConversionIfNeeded(right.ReturnType, left.ReturnType);
+            }
+            else
+            {
+                throw new ArgumentException(string.Format("{0} and {1} cannot be cast to each other!", left.ReturnType.FullName, right.ReturnType.FullName));
+            }
         }
 
         protected void EmitConversionIfNeeded(TypeReference sourceType, TypeReference targetType)
