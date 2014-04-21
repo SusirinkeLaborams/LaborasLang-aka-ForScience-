@@ -98,6 +98,11 @@ namespace LaborasLangCompiler.ILTools.Types
             }
         }
 
+        public void AddDefaultConstructor()
+        {
+            GetInstanceConstructor();
+        }
+
         private void CheckForDuplicates(string name)
         {
             if (typeDefinition.Fields.Any(x => x.Name == name))
