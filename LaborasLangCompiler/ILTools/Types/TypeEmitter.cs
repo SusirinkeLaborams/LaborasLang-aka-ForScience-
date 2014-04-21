@@ -50,7 +50,7 @@ namespace LaborasLangCompiler.ILTools.Types
 
         public void AddMethod(MethodDefinition method)
         {
-            CheckForDuplicates(method.Name);
+            CheckForDuplicates(method.Name, method.Parameters);
             typeDefinition.Methods.Add(method);
         }
 
@@ -82,11 +82,11 @@ namespace LaborasLangCompiler.ILTools.Types
             CheckForDuplicates(property.Name);
             typeDefinition.Properties.Add(property);
 
+            bool isStatic = (property.SetMethod != null && property.SetMethod.IsStatic) ||
+                (property.GetMethod != null && property.GetMethod.IsStatic);
+
             if (initializer != null)
             {
-                bool isStatic = (property.SetMethod != null && property.SetMethod.IsStatic) || 
-                    (property.GetMethod != null && property.GetMethod.IsStatic);
-
                 if (isStatic)
                 {
                     GetStaticConstructor().AddPropertyInitializer(property, initializer);
@@ -100,17 +100,22 @@ namespace LaborasLangCompiler.ILTools.Types
 
         private void CheckForDuplicates(string name)
         {
-            if (typeDefinition.Methods.Any(x => x.Name == name))
-            {
-                throw new InvalidOperationException(string.Format("A method with same name already exists in type {0}.", typeDefinition.FullName));
-            }
-            else if (typeDefinition.Fields.Any(x => x.Name == name))
+            if (typeDefinition.Fields.Any(x => x.Name == name))
             {
                 throw new InvalidOperationException(string.Format("A field with same name already exists in type {0}.", typeDefinition.FullName));
             }
             else if (typeDefinition.Methods.Any(x => x.Name == name))
             {
                 throw new InvalidOperationException(string.Format("A method with same name already exists in type {0}.", typeDefinition.FullName));
+            }
+        }
+
+        private void CheckForDuplicates(string name, IList<ParameterDefinition> parameters)
+        {
+            if (typeDefinition.Methods.Any(x => x.Name == name && 
+                x.Parameters.Select(y => y.ParameterType.FullName).SequenceEqual(parameters.Select(y => y.ParameterType.FullName))))
+            {
+                throw new InvalidOperationException(string.Format("A method with same name and parameters already exists in type {0}.", typeDefinition.FullName));
             }
         }
 
