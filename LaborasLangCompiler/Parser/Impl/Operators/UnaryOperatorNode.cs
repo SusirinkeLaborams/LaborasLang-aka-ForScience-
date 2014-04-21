@@ -80,16 +80,11 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private static ExpressionNode ParseUnary(Parser parser, ExpressionNode expression, List<UnaryOperatorNodeType> ops)
         {
-            if (ops.Count == 0)
+            foreach(var op in ops)
             {
-                return expression;
+                expression = ParseUnary(parser, expression, op);
             }
-            else
-            {
-                var otherOps = ops.GetRange(0, ops.Count - 1);
-                var op = ops[ops.Count - 1];
-                return ParseUnary(parser, ParseUnary(parser, expression, otherOps), op);
-            }
+            return expression;
         }
         private static UnaryOperatorNode ParseUnary(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
         {
