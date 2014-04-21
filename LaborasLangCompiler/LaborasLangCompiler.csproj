@@ -80,7 +80,6 @@
     <Compile Include="Parser\Impl\ConditionBlockNode.cs" />
     <Compile Include="Parser\Impl\MethodCallNode.cs" />
     <Compile Include="Parser\Impl\MethodNode.cs" />
-    <Compile Include="Parser\Impl\Operators\ArithmeticOperatorNode.cs" />
     <Compile Include="Parser\Impl\Operators\AssignmentOperatorNode.cs" />
     <Compile Include="Parser\Impl\Operators\BinaryOperatorNode.cs" />
     <Compile Include="Parser\Impl\ClassNode.cs" />
@@ -90,8 +89,6 @@
     <Compile Include="Parser\Impl\FunctionHeader.cs" />
     <Compile Include="Parser\Impl\LiteralNode.cs" />
     <Compile Include="Parser\Impl\LValueNode.cs" />
-    <Compile Include="Parser\Impl\Operators\ComparisonOperatorNode.cs" />
-    <Compile Include="Parser\Impl\Operators\ShiftOperatorNode.cs" />
     <Compile Include="Parser\Impl\ParserNode.cs" />
     <Compile Include="Parser\Impl\ReturnNode.cs" />
     <Compile Include="Parser\Impl\RValueNode.cs" />

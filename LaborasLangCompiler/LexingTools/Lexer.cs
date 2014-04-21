@@ -72,7 +72,7 @@ namespace LaborasLangCompiler.LexingTools
                 (?<PrefixOperator>): '++' / '--' / '-' / '!' / '~';
                 (?<SuffixOperator>): '++' / '--';
                 (?<BinaryOperator>): '^' / '&' / '|';
-                (?<MultiplicationOperator>): '/' / '*';
+                (?<MultiplicationOperator>): '/' / '*'/ '%';
                 (?<BooleanOperator>): '&&' / '||';
                 (?<SumOperator>): '+' / '-';
                 (?<RelationOperator>): '==' / '!=' / '<=' / '>=' / '<' / '>';

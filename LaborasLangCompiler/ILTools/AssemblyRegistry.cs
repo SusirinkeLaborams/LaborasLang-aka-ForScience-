@@ -167,20 +167,11 @@ namespace LaborasLangCompiler.ILTools
             string methodName, IReadOnlyList<TypeReference> arguments)
         {
             var methods = GetMethods(assembly, type, methodName).Where(x => x.MatchesArgumentList(arguments)).ToList();
-
+            
             if (methods.Count > 1)
             {
                 // More than one is compatible, so one must match exactly, or we have ambiguity
-
-                foreach (var method in methods)
-                {
-                    if (method.Parameters.Select(x => x.ParameterType.FullName).SequenceEqual(arguments.Select(x => x.FullName)))
-                    {
-                        return method;
-                    }
-                }
-
-                throw new Exception(string.Format("Method is ambigous. Could be: \r\n{0}", string.Join("\r\n", methods)));
+                return GetBestMatch(arguments, methods);
             }
             else if (methods.Count == 0)
             {
@@ -287,6 +278,107 @@ namespace LaborasLangCompiler.ILTools
             }
 
             return null;
+        }
+
+        private static MethodReference GetBestMatch(IReadOnlyList<TypeReference> arguments, List<MethodReference> methods)
+        {
+            var best = methods[0];
+
+            for (int i = 1; i < methods.Count; i++)
+            {
+                best = GetBetterMatch(arguments, best, methods[i]);
+            }
+
+            return best;
+        }
+
+        private static MethodReference GetBetterMatch(IReadOnlyList<TypeReference> arguments, MethodReference a, MethodReference b)
+        {
+            if (a.Parameters.Select(x => x.ParameterType.FullName).SequenceEqual(arguments.Select(x => x.FullName)))
+            {
+                return a;
+            }
+
+            if (b.Parameters.Select(x => x.ParameterType.FullName).SequenceEqual(arguments.Select(x => x.FullName)))
+            {
+                return b;
+            }
+
+            List<TypeReference> aParameters, bParameters;
+            
+            var aIsParamsMethod = a.Resolve().Parameters.Last().CustomAttributes.Any(x => x.AttributeType.FullName == "System.ParamArrayAttribute");
+            if (aIsParamsMethod)
+            {
+                aParameters = a.Parameters.Take(a.Parameters.Count - 1).Select(x => x.ParameterType).ToList();
+
+                var paramsType = a.Parameters.Last().ParameterType;
+                for (int i = 0; i < arguments.Count - a.Parameters.Count + 1; i++)
+                {
+                    aParameters.Add(paramsType);
+                }
+            }
+            else
+            {
+                aParameters = a.Parameters.Select(x => x.ParameterType).ToList();
+            }
+
+            var bIsParamsMethod = b.Resolve().Parameters.Last().CustomAttributes.Any(x => x.AttributeType.FullName == "System.ParamArrayAttribute");
+            if (bIsParamsMethod)
+            {
+                bParameters = b.Parameters.Take(b.Parameters.Count - 1).Select(x => x.ParameterType).ToList();
+
+                var paramsType = b.Parameters.Last().ParameterType.GetElementType();
+                for (int i = 0; i < arguments.Count - b.Parameters.Count + 1; i++)
+                {
+                    bParameters.Add(paramsType);
+                }
+            }
+            else
+            {
+                bParameters = b.Parameters.Select(x => x.ParameterType).ToList();
+            }
+
+            for (int i = 0; i < arguments.Count; i++)
+            {
+                var argument = arguments[i];
+                var aParameter = aParameters[i];
+                var bParameter = bParameters[i];
+
+                while (argument != null)
+                {
+                    if (argument.FullName == aParameter.FullName || argument.FullName == bParameter.FullName)
+                    {
+                        if (aParameter.FullName != bParameter.FullName)
+                        {
+                            if (argument.FullName == aParameter.FullName)
+                            {
+                                return a;
+                            }
+                            else
+                            {
+                                return b;
+                            }
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                    
+                    argument = argument.Resolve().BaseType;
+                }
+            }
+            
+            if (aIsParamsMethod && !bIsParamsMethod)
+            {
+                return b;
+            }
+            else if (!aIsParamsMethod && bIsParamsMethod)
+            {
+                return a;
+            }
+            
+            throw new Exception(string.Format("Method is ambigous. Could be: \r\n{0}", string.Join("\r\n", a, b)));
         }
 
         private static TypeReference ScopeToAssembly(AssemblyEmitter assemblyScope, TypeReference reference)

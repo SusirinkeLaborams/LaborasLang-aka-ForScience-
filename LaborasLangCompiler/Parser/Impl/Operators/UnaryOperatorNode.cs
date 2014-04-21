@@ -1,10 +1,13 @@
-﻿using Mono.Cecil;
+﻿using LaborasLangCompiler.LexingTools;
+using LaborasLangCompiler.Parser.Exceptions;
+using Mono.Cecil;
 using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.ILTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -27,8 +30,111 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                throw new NotImplementedException();
+                switch(lexerNode.Token.Name)
+                {
+                    case Lexer.SuffixNode:
+                        return ParseSuffix(parser, parentClass, parentBlock, lexerNode);
+                    case Lexer.PrefixNode:
+                        return ParsePrefix(parser, parentClass, parentBlock, lexerNode);
+                    default:
+                        throw new ParseException("Unary op node expected, " + lexerNode.Token.Name + " received");
+                }
             }
+        }
+        private static ExpressionNode ParseSuffix(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        {
+            var expression = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
+            var ops = new List<UnaryOperatorNodeType>();
+            for (int i = 1; i < lexerNode.Children.Count; i++ )
+            {
+                string op = parser.ValueOf(lexerNode.Children[i]);
+                try
+                {
+                    ops.Add(SuffixOperators[op]);
+                }
+                catch(KeyNotFoundException)
+                {
+                    throw new ParseException(String.Format("Suffix op expected, '{0}' received", op));
+                }
+            }
+            return ParseUnary(parser, expression, ops);
+        }
+        private static ExpressionNode ParsePrefix(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        {
+            var count = lexerNode.Children.Count;
+            var expression = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[count - 1]);
+            var ops = new List<UnaryOperatorNodeType>();
+            for (int i = count - 2; i >= 0; i--)
+            {
+                string op = parser.ValueOf(lexerNode.Children[i]);
+                try
+                {
+                    ops.Add(PrefixOperators[op]);
+                }
+                catch (KeyNotFoundException)
+                {
+                    throw new ParseException(String.Format("Prefix op expected, '{0}' received", op));
+                }
+            }
+            return ParseUnary(parser, expression, ops);
+        }
+        private static ExpressionNode ParseUnary(Parser parser, ExpressionNode expression, List<UnaryOperatorNodeType> ops)
+        {
+            foreach(var op in ops)
+            {
+                expression = ParseUnary(parser, expression, op);
+            }
+            return expression;
+        }
+        private static UnaryOperatorNode ParseUnary(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
+        {
+            var instance = new UnaryOperatorNode(op, expression);
+            instance.ReturnType = expression.ReturnType;
+            switch(op)
+            {
+                case UnaryOperatorNodeType.BinaryNot:
+                    instance.ParseBinary(parser);
+                    break;
+                case UnaryOperatorNodeType.LogicalNot:
+                    instance.ParseLogical(parser);
+                    break;
+                case UnaryOperatorNodeType.Negation:
+                    instance.ParseNegation(parser);
+                    break;
+                case UnaryOperatorNodeType.PostDecrement:
+                case UnaryOperatorNodeType.PostIncrement:
+                case UnaryOperatorNodeType.PreDecrement:
+                case UnaryOperatorNodeType.PreIncrement:
+                    instance.ParseInc(parser);
+                    break;
+                default:
+                    throw new ParseException("Unary op expected, " + op + " received");
+            }
+            return instance;
+        }
+        private void ParseInc(Parser parser)
+        {
+            if (!ReturnType.IsNumericType() || Operand is LiteralNode)
+                throw new TypeException(String.Format("Increment/Decrement ops only allowed on numeric typed variables, {0} received",
+                    ReturnType));
+        }
+        private void ParseNegation(Parser parser)
+        {
+            if (!ReturnType.IsNumericType())
+                throw new TypeException(String.Format("Arithmetic ops only allowed on numeric types, {0} received",
+                    ReturnType));
+        }
+        private void ParseLogical(Parser parser)
+        {
+            if (!ReturnType.IsBooleanType())
+                throw new TypeException(String.Format("Logical ops only allowed on boolean types, {0} received",
+                    ReturnType));
+        }
+        private void ParseBinary(Parser parser)
+        {
+            if (!ReturnType.IsIntegerType())
+                throw new TypeException(String.Format("Binary ops only allowed on integer types, {0} received",
+                    ReturnType));
         }
         public static UnaryOperatorNode Void(ExpressionNode expression)
         {
@@ -37,6 +143,22 @@ namespace LaborasLangCompiler.Parser.Impl
         public override string ToString()
         {
             return String.Format("(UnaryOp: {0} {1})", UnaryOperatorType, Operand);
+        }
+        public static Dictionary<string, UnaryOperatorNodeType> SuffixOperators;
+        public static Dictionary<string, UnaryOperatorNodeType> PrefixOperators;
+        static UnaryOperatorNode()
+        {
+            SuffixOperators = new Dictionary<string, UnaryOperatorNodeType>();
+            PrefixOperators = new Dictionary<string, UnaryOperatorNodeType>();
+
+            SuffixOperators["++"] = UnaryOperatorNodeType.PostIncrement;
+            SuffixOperators["--"] = UnaryOperatorNodeType.PostDecrement;
+
+            PrefixOperators["++"] = UnaryOperatorNodeType.PreIncrement;
+            PrefixOperators["--"] = UnaryOperatorNodeType.PreDecrement;
+            PrefixOperators["-"] = UnaryOperatorNodeType.Negation;
+            PrefixOperators["!"] = UnaryOperatorNodeType.LogicalNot;
+            PrefixOperators["~"] = UnaryOperatorNodeType.BinaryNot;
         }
     }
 }

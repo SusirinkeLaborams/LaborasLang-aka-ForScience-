@@ -4,9 +4,9 @@
 .maxstack 8
 .entrypoint
 
-IL_0000: ldc.r4 5.5
-IL_0005: conv.r8
-IL_0006: ldc.r8 3.4
+IL_0000: ldc.r8 3.4
+IL_0009: ldc.r4 5.5
+IL_000e: conv.r8
 IL_000f: sub
 IL_0010: stsfld float64 klass::myField
 IL_0015: ret

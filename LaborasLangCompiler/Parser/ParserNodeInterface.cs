@@ -134,7 +134,7 @@ namespace LaborasLangCompiler.Parser
         Modulus,
         BinaryOr,
         BinaryAnd,
-        Xor,
+        BinaryXor,
         GreaterThan,
         GreaterEqualThan,
         LessThan,
@@ -142,7 +142,9 @@ namespace LaborasLangCompiler.Parser
         Equals,
         NotEquals,
         LogicalOr,
-        LogicalAnd
+        LogicalAnd,
+        ShiftRight,
+        ShiftLeft
     }
 
     interface IBinaryOperatorNode : IRValueNode

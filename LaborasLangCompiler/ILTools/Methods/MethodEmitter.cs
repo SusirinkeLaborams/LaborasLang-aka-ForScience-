@@ -72,7 +72,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             Emit(tree);
 
-            if (body.Instructions.Last().OpCode != OpCodes.Ret)
+            if (body.Instructions.Count == 0 || body.Instructions.Last().OpCode != OpCodes.Ret)
             {
                 Ret();
             }
@@ -672,12 +672,14 @@ namespace LaborasLangCompiler.ILTools.Methods
                 case BinaryOperatorNodeType.LessThan:
                     EmitLessThan(binaryOperator);
                     return;
+
+                case BinaryOperatorNodeType.ShiftLeft:
+                case BinaryOperatorNodeType.ShiftRight:
+                    EmitShift(binaryOperator);
+                    return;
             }
 
-            Emit(binaryOperator.LeftOperand, false);
-
-            Emit(binaryOperator.RightOperand, false);
-            EmitConversionIfNeeded(binaryOperator.RightOperand.ReturnType, binaryOperator.LeftOperand.ReturnType);
+            EmitOperandsAndConvertIfNeeded(binaryOperator.LeftOperand, binaryOperator.RightOperand);
 
             switch (binaryOperator.BinaryOperatorType)
             {
@@ -715,7 +717,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Sub();
                     return;
 
-                case BinaryOperatorNodeType.Xor:
+                case BinaryOperatorNodeType.BinaryXor:
                     Xor();
                     return;
 
@@ -746,7 +748,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             var function = functionCall.Function;
 
             if (function.ExpressionType == ExpressionNodeType.RValue && ((IRValueNode)function).RValueType == RValueNodeType.Function)
-            {
+            {   // Direct call
                 var functionNode = (IFunctionNode)function;
                 bool isStatic = functionNode.Function.Resolve().IsStatic;
 
@@ -766,15 +768,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     throw new ArgumentException("Method is static but there is an object instance set!", "functionCall.Function.ObjectInstance");
                 }
 
-                for (int i = 0; i < functionCall.Arguments.Count; i++)
-                {
-                    Emit(functionCall.Arguments[i], false);
-
-                    if (functionCall.Arguments[i].ReturnType.IsValueType && !functionNode.Function.Parameters[i].ParameterType.IsValueType)
-                    {
-                        Box(functionCall.Arguments[i].ReturnType);
-                    }
-                }
+                EmitArgumentsForCall(functionCall.Arguments, functionNode.Function);
 
                 if (functionNode.Function.Resolve().IsVirtual)
                 {
@@ -786,17 +780,132 @@ namespace LaborasLangCompiler.ILTools.Methods
                 }
             }
             else
-            {
+            {   // Functor Call
                 var invokeMethod = AssemblyRegistry.GetMethods(Assembly, function.ReturnType, "Invoke").Single();
 
                 Emit(function, true);
-
-                foreach (var argument in functionCall.Arguments)
-                {
-                    Emit(argument, false);
-                }
+                EmitArgumentsForCall(functionCall.Arguments, invokeMethod);
 
                 Call(invokeMethod);
+            }
+        }
+
+        private void EmitArgumentsForCall(IReadOnlyList<IExpressionNode> arguments, MethodReference method)
+        {
+            var methodParameters = method.Parameters;
+            var resolvedMethod = method.Resolve();
+
+            if (methodParameters.Count > 0 &&    // Params call
+                resolvedMethod.Parameters.Last().CustomAttributes.Any(x => x.AttributeType.FullName == "System.ParamArrayAttribute"))
+            {
+                #region Params Call
+
+                for (int i = 0; i < methodParameters.Count - 1; i++)
+                {
+                    EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
+                }
+
+                var arrayVariable = AcquireTempVariable(methodParameters.Last().ParameterType);
+                var arrayType = methodParameters.Last().ParameterType.GetElementType();
+
+                Ldc_I4(arguments.Count - methodParameters.Count + 1);
+                Newarr(arrayType);
+                Stloc(arrayVariable.Index);
+
+                for (int i = methodParameters.Count - 1; i < arguments.Count; i++)
+                {
+                    Ldloc(arrayVariable.Index);
+                    Ldc_I4(i - methodParameters.Count + 1);
+                    EmitArgumentForCall(arguments[i], arrayType);
+
+                    if (arrayType.IsValueType)
+                    {
+                        Stelem_Any(arrayType);
+                    }
+                    else
+                    {
+                        Stelem_Ref();
+                    }
+                }
+
+                Ldloc(arrayVariable.Index);
+                ReleaseTempVariable(arrayVariable);
+
+                #endregion
+            }
+            else if (methodParameters.Count > arguments.Count)    // Method with optional parameters call
+            {
+                #region Optional Parameters Call
+
+                for (int i = 0; i < arguments.Count; i++)
+                {
+                    EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
+                }
+
+                for (int i = arguments.Count; i < methodParameters.Count; i++)
+                {
+                    var defaultValue = resolvedMethod.Parameters[i].Constant;
+
+                    switch (defaultValue.GetType().FullName)
+                    {
+                        case "System.SByte":
+                        case "System.Byte":
+                        case "System.Int16":
+                        case "System.UInt16":
+                        case "System.Int32":
+                        case "System.UInt32":
+                            Ldc_I4((int)defaultValue);
+                            break;
+
+                        case "System.Int64":
+                        case "System.UInt64":
+                            Ldc_I8((long)defaultValue);
+                            break;
+
+                        case "System.Single":
+                            Ldc_R4((float)defaultValue);
+                            break;
+
+                        case "System.Double":
+                            Ldc_R8((double)defaultValue);
+                            break;
+
+                        case "System.String":
+                            Ldstr((string)defaultValue);
+                            break;
+
+                        default:
+                            if (defaultValue == null)
+                            {
+                                Ldnull();
+                            }
+                            else
+                            {
+                                throw new NotSupportedException(string.Format("Unknown default value literal: {0} with value of {1}.",
+                                    defaultValue.GetType().FullName, defaultValue));
+                            }
+                            break;
+                    }
+                }
+
+                #endregion
+            }
+            else
+            {
+                for (int i = 0; i < arguments.Count; i++)
+                {
+                    EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
+                }
+            }
+        }
+
+        private void EmitArgumentForCall(IExpressionNode argument, TypeReference targetParameterType)
+        {
+            Emit(argument, false);
+
+            if (argument.ReturnType.IsValueType && !targetParameterType.IsValueType)
+            {
+                Box(argument.ReturnType);
             }
         }
 
@@ -944,11 +1053,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitAddNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
-            Emit(left, false);
-
-            Emit(right, false);
-            EmitConversionIfNeeded(right.ReturnType, left.ReturnType);
-
+            EmitOperandsAndConvertIfNeeded(left, right);
             Add();
         }
 
@@ -1052,10 +1157,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
-            Emit(left, false);
-
-            Emit(right, false);
-            EmitConversionIfNeeded(right.ReturnType, left.ReturnType);
+            EmitOperandsAndConvertIfNeeded(left, right);
 
             Clt();
             Ldc_I4(0);
@@ -1098,11 +1200,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
-            Emit(left, false);
-
-            Emit(right, false);
-            EmitConversionIfNeeded(right.ReturnType, left.ReturnType);
-
+            EmitOperandsAndConvertIfNeeded(left, right);
             Cgt();
         }
 
@@ -1145,10 +1243,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
-            Emit(left, false);
-
-            Emit(right, false);
-            EmitConversionIfNeeded(right.ReturnType, left.ReturnType);
+            EmitOperandsAndConvertIfNeeded(left, right);
 
             Cgt();
             Ldc_I4(0);
@@ -1191,10 +1286,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitLessThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
-            Emit(left, false);
-
-            Emit(right, false);
-            EmitConversionIfNeeded(right.ReturnType, left.ReturnType);
+            EmitOperandsAndConvertIfNeeded(left, right);
 
             Clt();
         }
@@ -1231,6 +1323,26 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #endregion
 
+        private void EmitShift(IBinaryOperatorNode binaryOperator)
+        {
+            Emit(binaryOperator.LeftOperand, false);
+            Emit(binaryOperator.RightOperand, false);
+
+            switch (binaryOperator.BinaryOperatorType)
+            {
+                case BinaryOperatorNodeType.ShiftLeft:
+                    Shl();
+                    break;
+
+                case BinaryOperatorNodeType.ShiftRight:
+                    Shr();
+                    break;
+
+                default:
+                    throw new NotSupportedException(string.Format("Unknown shift operator: {0}.", binaryOperator.BinaryOperatorType));
+            }
+        }
+
         protected void EmitVoidOperator(IUnaryOperatorNode binaryOperator)
         {
             if (binaryOperator.Operand.ExpressionType == ExpressionNodeType.RValue &&
@@ -1250,6 +1362,33 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Emit(Instruction instruction)
         {
             body.Instructions.Add(instruction);
+        }
+
+        protected void EmitOperandsAndConvertIfNeeded(IExpressionNode left, IExpressionNode right)
+        {
+            bool conversionNeeded = left.ReturnType.FullName != right.ReturnType.FullName;
+
+            if (!conversionNeeded)
+            {
+                Emit(left, false);
+                Emit(right, false);
+            }
+            else if (left.ReturnType.IsAssignableTo(right.ReturnType))
+            {
+                Emit(left, false);
+                EmitConversionIfNeeded(left.ReturnType, right.ReturnType);
+                Emit(right, false);
+            }
+            else if (right.ReturnType.IsAssignableTo(right.ReturnType))
+            {
+                Emit(left, false);
+                Emit(right, false);
+                EmitConversionIfNeeded(right.ReturnType, left.ReturnType);
+            }
+            else
+            {
+                throw new ArgumentException(string.Format("{0} and {1} cannot be cast to each other!", left.ReturnType.FullName, right.ReturnType.FullName));
+            }
         }
 
         protected void EmitConversionIfNeeded(TypeReference sourceType, TypeReference targetType)
@@ -1429,7 +1568,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void And()
         {
-            ilProcessor.Emit(OpCodes.Add);
+            ilProcessor.Emit(OpCodes.And);
         }
 
         protected void Box(TypeReference type)
@@ -1613,11 +1752,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else if (index < 256)
             {
-                ilProcessor.Emit(OpCodes.Ldarg_S, index);
+                ilProcessor.Emit(OpCodes.Ldarg_S, methodDefinition.Parameters[index]);
             }
             else
             {
-                ilProcessor.Emit(OpCodes.Ldarg, index);
+                ilProcessor.Emit(OpCodes.Ldarg, methodDefinition.Parameters[index]);
             }
         }
 
@@ -1625,11 +1764,11 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             if (index < 256)
             {
-                ilProcessor.Emit(OpCodes.Ldarga_S, index);
+                ilProcessor.Emit(OpCodes.Ldarga_S, methodDefinition.Parameters[index]);
             }
             else
             {
-                ilProcessor.Emit(OpCodes.Ldarga, index);
+                ilProcessor.Emit(OpCodes.Ldarga, methodDefinition.Parameters[index]);
             }
         }
 
@@ -1745,11 +1884,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else if (index < 256)
             {
-                ilProcessor.Emit(OpCodes.Ldloc_S, index);
+                ilProcessor.Emit(OpCodes.Ldloc_S, body.Variables[index]);
             }
             else
             {
-                ilProcessor.Emit(OpCodes.Ldloc, index);
+                ilProcessor.Emit(OpCodes.Ldloc, body.Variables[index]);
             }
         }
 
@@ -1757,11 +1896,11 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             if (index < 256)
             {
-                ilProcessor.Emit(OpCodes.Ldloca_S, (byte)index);
+                ilProcessor.Emit(OpCodes.Ldloca_S, body.Variables[index]);
             }
             else
             {
-                ilProcessor.Emit(OpCodes.Ldloca, index);
+                ilProcessor.Emit(OpCodes.Ldloca, body.Variables[index]);
             }
         }
 
@@ -1800,14 +1939,14 @@ namespace LaborasLangCompiler.ILTools.Methods
             ilProcessor.Emit(OpCodes.Newobj, method);
         }
 
-        protected void Or()
-        {
-            ilProcessor.Emit(OpCodes.Or);
-        }
-
         protected void Neg()
         {
             ilProcessor.Emit(OpCodes.Neg);
+        }
+
+        protected void Newarr(TypeReference arrayType)
+        {
+            ilProcessor.Emit(OpCodes.Newarr, arrayType);
         }
 
         protected void Nop()
@@ -1818,6 +1957,11 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Not()
         {
             ilProcessor.Emit(OpCodes.Not);
+        }
+
+        protected void Or()
+        {
+            ilProcessor.Emit(OpCodes.Or);
         }
 
         protected void Pop()
@@ -1840,6 +1984,16 @@ namespace LaborasLangCompiler.ILTools.Methods
             ilProcessor.Emit(OpCodes.Ret);
         }
 
+        protected void Shl()
+        {
+            ilProcessor.Emit(OpCodes.Shl);
+        }
+
+        protected void Shr()
+        {
+            ilProcessor.Emit(OpCodes.Shr);
+        }
+
         protected void Starg(int index)
         {
             if (index < 256)
@@ -1855,6 +2009,16 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Stfld(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Stfld, field);
+        }
+
+        protected void Stelem_Any(TypeReference valueType)
+        {
+            ilProcessor.Emit(OpCodes.Stelem_Any, valueType);
+        }
+
+        protected void Stelem_Ref()
+        {
+            ilProcessor.Emit(OpCodes.Stelem_Ref);
         }
 
         protected void Stloc(int index)
@@ -1882,7 +2046,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else if (index < 256)
             {
-                ilProcessor.Emit(OpCodes.Stloc_S, index);
+                ilProcessor.Emit(OpCodes.Stloc_S, (byte)index);
             }
             else
             {
