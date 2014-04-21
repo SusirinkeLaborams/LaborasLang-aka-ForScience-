@@ -170,6 +170,22 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Int32 Main = (Function: $Functors.$System_Int32$System_Int32(System.Int32 b)(CodeBlock: Symbols: ((LValueNode: FunctionArgument System.Int32) b) Nodes: ((ReturnNode: (LValueNode: FunctionArgument System.Int32))))))";
             TestParser(source, expected, "TestReturnValue", lex);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestUnaryOrder()
+        {
+            string source = @"
+                auto a = ++--1;";
+            string expected = "(ClassNode: Fields: System.Int32 a = (UnaryOp: PreIncrement (UnaryOp: PreDecrement (Literal: System.Int32 1))))";
+            TestParser(source, expected, "TestUnaryOrder", lex);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestSuffixOrder()
+        {
+            string source = @"
+                auto a = 1++--;";
+            string expected = "(ClassNode: Fields: System.Int32 a = (UnaryOp: PostDecrement (UnaryOp: PostIncrement (Literal: System.Int32 1))))";
+            TestParser(source, expected, "TestSuffixOrder", lex);
+        }
         private void TestParser(string source, string expected, string name, bool lex)
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });

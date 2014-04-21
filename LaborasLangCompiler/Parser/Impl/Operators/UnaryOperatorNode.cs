@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.ILTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -63,7 +64,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var count = lexerNode.Children.Count;
             var expression = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[count - 1]);
             var ops = new List<UnaryOperatorNodeType>();
-            for (int i = count - 2; i <= 0; i--)
+            for (int i = count - 2; i >= 0; i--)
             {
                 string op = parser.ValueOf(lexerNode.Children[i]);
                 try
@@ -79,7 +80,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private static ExpressionNode ParseUnary(Parser parser, ExpressionNode expression, List<UnaryOperatorNodeType> ops)
         {
-            if (ops.Count > 0)
+            if (ops.Count == 0)
             {
                 return expression;
             }
@@ -90,35 +91,47 @@ namespace LaborasLangCompiler.Parser.Impl
                 return ParseUnary(parser, ParseUnary(parser, expression, otherOps), op);
             }
         }
-        private static ExpressionNode ParseUnary(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
+        private static UnaryOperatorNode ParseUnary(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
         {
+            var instance = new UnaryOperatorNode(op, expression);
+            instance.ReturnType = expression.ReturnType;
             switch(op)
             {
                 case UnaryOperatorNodeType.BinaryNot:
-                    return ParseBinary(parser, expression, op);
+                    instance.ParseBinary(parser);
+                    break;
                 case UnaryOperatorNodeType.LogicalNot:
-                    return ParseLogical(parser, expression, op);
+                    instance.ParseLogical(parser);
+                    break;
                 case UnaryOperatorNodeType.Negation:
                 case UnaryOperatorNodeType.PostDecrement:
                 case UnaryOperatorNodeType.PostIncrement:
                 case UnaryOperatorNodeType.PreDecrement:
                 case UnaryOperatorNodeType.PreIncrement:
-                    return ParseArithmetic(parser, expression, op);
+                    instance.ParseArithmetic(parser);
+                    break;
                 default:
                     throw new ParseException("Unary op expected, " + op + " received");
             }
+            return instance;
         }
-        private static UnaryOperatorNode ParseArithmetic(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
+        private void ParseArithmetic(Parser parser)
         {
-            throw new NotImplementedException();
+            if (!ReturnType.IsNumericType())
+                throw new TypeException(String.Format("Arithmetic ops only allowed on numeric types, {0} received",
+                    ReturnType));
         }
-        private static UnaryOperatorNode ParseLogical(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
+        private void ParseLogical(Parser parser)
         {
-            throw new NotImplementedException();
+            if (!ReturnType.IsBooleanType())
+                throw new TypeException(String.Format("Logical ops only allowed on boolean types, {0} received",
+                    ReturnType));
         }
-        private static UnaryOperatorNode ParseBinary(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
+        private void ParseBinary(Parser parser)
         {
-            throw new NotImplementedException();
+            if (!ReturnType.IsIntegerType())
+                throw new TypeException(String.Format("Binary ops only allowed on integer types, {0} received",
+                    ReturnType));
         }
         public static UnaryOperatorNode Void(ExpressionNode expression)
         {
