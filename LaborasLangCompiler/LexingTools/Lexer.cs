@@ -54,6 +54,11 @@ namespace LaborasLangCompiler.LexingTools
         public const string BooleanLiteral = "BooleanLiteral";
         public const string Comparison = "Comparison";
         public const string FunctionTypeArgs = "FunctionTypeArgs";
+        public const string BinaryOperationNode = "BinaryOperationNode";
+        public const string BinaryOperator = "BinaryOperator";
+        public const string BooleanOperator = "BooleanOperator";
+        public const string BooleanNode = "BooleanNode";
+
         private AExpression GrammarTree;
         private static string Grammar = @"
  
