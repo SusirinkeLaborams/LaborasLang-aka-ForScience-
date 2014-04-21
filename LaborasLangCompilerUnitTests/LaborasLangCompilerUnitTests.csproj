@@ -92,6 +92,7 @@
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_BinaryAnd_BinaryOr_BinaryXor.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Numerals.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Strings.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_CreateObject.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Numerals.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Strings.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_IfBlockWithoutElse.il" />

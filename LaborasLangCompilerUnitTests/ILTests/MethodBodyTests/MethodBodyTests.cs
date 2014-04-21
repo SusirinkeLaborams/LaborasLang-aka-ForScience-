@@ -1896,10 +1896,43 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         #endregion
 
         /* Missing tests:
-         * object creation
          * assign functor property to delegate
          * call with default parameters
          */
+
+        #region Method Call tests
+
+        [TestMethod, TestCategory("IL Tests")]
+        public void TestCanEmit_CreateObject()
+        {
+            typeEmitter.AddDefaultConstructor();
+            var myType = typeEmitter.Get(assemblyEmitter);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        DeclaredSymbol = new LocalVariableNode()
+                        {
+                            LocalVariable = new VariableDefinition("myInstance", myType)
+                        },
+                        Initializer = new ObjectCreationNode()
+                        {
+                            ReturnType = myType,
+                            Arguments = new List<IExpressionNode>()
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_CreateObject.il";
+            Test();
+        }
+
+        #endregion
+
 
         #region Functor tests
 
