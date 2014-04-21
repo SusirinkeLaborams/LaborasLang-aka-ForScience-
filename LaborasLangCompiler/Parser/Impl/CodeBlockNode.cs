@@ -18,12 +18,14 @@ namespace LaborasLangCompiler.Parser.Impl
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
         protected List<ParserNode> nodes;
         protected Dictionary<string, LValueNode> symbols;
-        private CodeBlockNode parent;
+        public CodeBlockNode ParentBlock { get; private set; }
+        public FunctionDeclarationNode ParentFunction { get; private set; }
+
         protected CodeBlockNode(CodeBlockNode parent)
         {
             nodes = new List<ParserNode>();
             symbols = new Dictionary<string, LValueNode>();
-            this.parent = parent;
+            ParentBlock = parent;
         }
         public LValueNode GetSymbol(string name)
         {
@@ -32,8 +34,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 return symbols[name];
 
             //check parent block table
-            if (parent != null)
-                return parent.GetSymbol(name);
+            if (ParentBlock != null)
+                return ParentBlock.GetSymbol(name);
 
             //symbol not found
             return null;
