@@ -1689,8 +1689,87 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
         #endregion
 
+        #region Control Flow Tests
+
+        [TestMethod, TestCategory("IL Tests")]
+        public void TestCanEmit_WhileLoop()
+        {
+            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
+
+            var consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<TypeReference>()
+            {
+                stringType,
+                intType
+            });
+
+            var localVariable = new LocalVariableNode()
+            {
+                LocalVariable = new VariableDefinition("counter", intType)
+            };
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        DeclaredSymbol = localVariable,
+                        Initializer = new LiteralNode()
+                        {
+                            ReturnType = intType,
+                            Value = 0
+                        }
+                    },
+                    new WhileBlockNode()
+                    {
+                        Condition = new BinaryOperatorNode()
+                        {
+                            ReturnType = boolType,
+                            BinaryOperatorType = BinaryOperatorNodeType.LessThan,
+                            LeftOperand = localVariable,
+                            RightOperand = new LiteralNode()
+                            {
+                                ReturnType = intType,
+                                Value = 10
+                            }
+                        },
+                        ExecutedBlock = new CodeBlockNode()
+                        {
+                            Nodes = new List<IParserNode>()
+                            {
+                                new MethodCallNode()
+                                {
+                                    ReturnType = voidType,
+                                    Function = new FunctionNode()
+                                    {
+                                        Function = consoleWriteLine
+                                    },
+                                    Arguments = new List<IExpressionNode>()
+                                    {
+                                        new LiteralNode()
+                                        {
+                                            ReturnType = stringType,
+                                            Value = "The loop has looped {0} time(s)."
+                                        },
+                                        localVariable
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_WhileLoop.il";
+            Test();
+        }
+
+        #endregion
+
         /* Missing tests:
-         * while
          * if without else
          * return
          * object creation

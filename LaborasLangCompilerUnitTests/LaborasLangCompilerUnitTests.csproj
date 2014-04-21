@@ -148,6 +148,7 @@
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_UnsignedDivision.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_UnsignedRemainder.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_VariableDeclarationAndInitialization_LoadFloatLiteral.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_WhileLoop.il" />
     <None Include="packages.config" />
     <None Include="Properties\packages.config" />
   </ItemGroup>
