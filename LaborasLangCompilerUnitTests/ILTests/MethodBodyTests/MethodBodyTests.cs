@@ -1644,12 +1644,52 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
-        #endregion
+        [TestMethod, TestCategory("IL Tests")]
+        public void TestCanEmit_LogicalNot()
+        {
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
+
+            var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, boolType);
+            typeEmitter.AddField(field);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>() 
+                {
+                    new UnaryOperatorNode()
+                    {
+                        ReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = field
+                            },
+                            RightOperand = new UnaryOperatorNode()
+                            {
+                                ReturnType = boolType,
+                                UnaryOperatorType = UnaryOperatorNodeType.LogicalNot,
+                                Operand = new FieldNode()
+                                {
+                                    Field = field
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_LogicalNot.il";
+            Test();
+        }
 
         #endregion
 
-        /* Missing tests:         
-         * Logical not operator
+        #endregion
+
+        /* Missing tests:
          * while
          * if without else
          * return

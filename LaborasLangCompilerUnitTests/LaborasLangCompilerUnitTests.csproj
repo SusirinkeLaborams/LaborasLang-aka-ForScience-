@@ -95,6 +95,7 @@
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Numerals.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Strings.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_LogicalAnd_LogicalOr.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_LogicalNot.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_Multiplication.il" />
     <Compile Include="ILTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="ILTests\ILHelpersTests.cs" />
