@@ -149,8 +149,9 @@ namespace LaborasLangCompiler.ILTools
         {
             var methodParameters = method.Resolve().Parameters; // Resolve is needed or otherwise we will not know methods parameter attributes
 
-            if (methodParameters.Count != desiredParameters.Count && (methodParameters.Count == 0 ||
-                methodParameters.Last().CustomAttributes.All(x => x.AttributeType.FullName != "System.ParamArrayAttribute")))
+            if (methodParameters.Count != desiredParameters.Count && (methodParameters.Count == 0 || 
+                (methodParameters.Last().CustomAttributes.All(x => x.AttributeType.FullName != "System.ParamArrayAttribute")) &&
+                (methodParameters.Last().Attributes & ParameterAttributes.HasDefault) == 0))
             {
                 return false;
             }

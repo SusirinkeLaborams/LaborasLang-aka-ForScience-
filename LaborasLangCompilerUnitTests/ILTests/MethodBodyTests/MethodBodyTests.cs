@@ -1896,7 +1896,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         #endregion
 
         /* Missing tests:
-         * call with default parameters
+         * Functors with optional parameters and params parameters
          */
 
         #region Method Call tests
@@ -1927,6 +1927,122 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_CreateObject.il";
+            Test();
+        }
+
+        [TestMethod, TestCategory("IL Tests")]
+        public void TestCanEmit_CallFunctionWithOptionalParameter()
+        {
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+
+            var consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<TypeReference>()
+            {
+                stringType,
+                stringType,
+                stringType
+            });
+
+            var testMethod = new MethodEmitter(typeEmitter, "MethodWithDefaultParameter", voidType, MethodAttributes.Private | MethodAttributes.Static);
+            
+            var neededParameter = new ParameterDefinition("neededParameter", ParameterAttributes.None, stringType);
+            testMethod.AddArgument(neededParameter);
+
+            var optionalParameter = new ParameterDefinition("optionalParameter", ParameterAttributes.Optional | ParameterAttributes.HasDefault, stringType);
+            optionalParameter.Constant = "Default value";
+            testMethod.AddArgument(optionalParameter);
+
+            testMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new MethodCallNode()
+                    {
+                        ReturnType = voidType,
+                        Function = new FunctionNode()
+                        {
+                            Function = consoleWriteLine
+                        },
+                        Arguments = new List<IExpressionNode>()
+                        {
+                            new LiteralNode()
+                            {
+                                ReturnType = stringType,
+                                Value = "{0}: {1}"
+                            },
+                            new FunctionArgumentNode()
+                            {
+                                IsFunctionStatic = true,
+                                Param = neededParameter,
+                            },
+                            new FunctionArgumentNode()
+                            {
+                                IsFunctionStatic = true,
+                                Param = optionalParameter,
+                            }
+                        }
+                    }
+                }
+            });
+
+            var callableTestMethod1 = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter),
+                "MethodWithDefaultParameter", new List<TypeReference>()
+            {
+                stringType
+            });
+
+            var callableTestMethod2 = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter),
+                "MethodWithDefaultParameter", new List<TypeReference>()
+            {
+                stringType,
+                stringType
+            });
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new MethodCallNode()
+                    {
+                        ReturnType = voidType,
+                        Function = new FunctionNode()
+                        {
+                            Function = callableTestMethod1
+                        },
+                        Arguments = new List<IExpressionNode>()
+                        {
+                            new LiteralNode()
+                            {
+                                ReturnType = stringType,
+                                Value = "Hi"
+                            }
+                        }
+                    },
+                    new MethodCallNode()
+                    {
+                        ReturnType = voidType,
+                        Function = new FunctionNode()
+                        {
+                            Function = callableTestMethod2
+                        },
+                        Arguments = new List<IExpressionNode>()
+                        {
+                            new LiteralNode()
+                            {
+                                ReturnType = stringType,
+                                Value = "Hi"
+                            },
+                            new LiteralNode()
+                            {
+                                ReturnType = stringType,
+                                Value = "NonOptional"
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_CallFunctionWithOptionalParameter.il";
             Test();
         }
 

@@ -751,7 +751,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             var function = functionCall.Function;
 
             if (function.ExpressionType == ExpressionNodeType.RValue && ((IRValueNode)function).RValueType == RValueNodeType.Function)
-            {
+            {   // Direct call
                 var functionNode = (IFunctionNode)function;
                 bool isStatic = functionNode.Function.Resolve().IsStatic;
 
@@ -771,54 +771,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     throw new ArgumentException("Method is static but there is an object instance set!", "functionCall.Function.ObjectInstance");
                 }
 
-                var arguments = functionCall.Arguments;
-                var methodParameters = functionNode.Function.Parameters;
-
-                if (arguments.Count > methodParameters.Count && methodParameters.Count > 0 &&    // Params call
-                    functionNode.Function.Resolve().Parameters.Last().CustomAttributes.Any(x => x.AttributeType.FullName == "System.ParamArrayAttribute"))
-                {
-                    for (int i = 0; i < methodParameters.Count - 1; i++)
-                    {
-                        EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
-                    }
-
-                    var arrayVariable = AcquireTempVariable(methodParameters.Last().ParameterType);
-                    var arrayType = methodParameters.Last().ParameterType.GetElementType();
-
-                    Ldc_I4(arguments.Count - methodParameters.Count + 1);
-                    Newarr(arrayType);
-                    Stloc(arrayVariable.Index);
-                    
-                    for (int i = methodParameters.Count - 1; i < arguments.Count; i++)
-                    {
-                        Ldloc(arrayVariable.Index);
-                        Ldc_I4(i - methodParameters.Count + 1);
-                        EmitArgumentForCall(arguments[i], arrayType);
-
-                        if (arrayType.IsValueType)
-                        {
-                            Stelem_Any(arrayType);
-                        }
-                        else
-                        {
-                            Stelem_Ref();
-                        }
-                    }
-
-                    Ldloc(arrayVariable.Index);
-                    ReleaseTempVariable(arrayVariable);
-                }
-                else if (methodParameters.Count > arguments.Count)    // Default parameters call
-                {
-                    throw new NotImplementedException();
-                }
-                else
-                {
-                    for (int i = 0; i < arguments.Count; i++)
-                    {
-                        EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
-                    }
-                }
+                EmitArgumentsForCall(functionCall.Arguments, functionNode.Function);
 
                 if (functionNode.Function.Resolve().IsVirtual)
                 {
@@ -830,17 +783,122 @@ namespace LaborasLangCompiler.ILTools.Methods
                 }
             }
             else
-            {
+            {   // Functor Call
                 var invokeMethod = AssemblyRegistry.GetMethods(Assembly, function.ReturnType, "Invoke").Single();
 
                 Emit(function, true);
-
-                foreach (var argument in functionCall.Arguments)
-                {
-                    Emit(argument, false);
-                }
+                EmitArgumentsForCall(functionCall.Arguments, invokeMethod);
 
                 Call(invokeMethod);
+            }
+        }
+
+        private void EmitArgumentsForCall(IReadOnlyList<IExpressionNode> arguments, MethodReference method)
+        {
+            var methodParameters = method.Parameters;
+            var resolvedMethod = method.Resolve();
+
+            if (methodParameters.Count > 0 &&    // Params call
+                resolvedMethod.Parameters.Last().CustomAttributes.Any(x => x.AttributeType.FullName == "System.ParamArrayAttribute"))
+            {
+                #region Params Call
+
+                for (int i = 0; i < methodParameters.Count - 1; i++)
+                {
+                    EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
+                }
+
+                var arrayVariable = AcquireTempVariable(methodParameters.Last().ParameterType);
+                var arrayType = methodParameters.Last().ParameterType.GetElementType();
+
+                Ldc_I4(arguments.Count - methodParameters.Count + 1);
+                Newarr(arrayType);
+                Stloc(arrayVariable.Index);
+
+                for (int i = methodParameters.Count - 1; i < arguments.Count; i++)
+                {
+                    Ldloc(arrayVariable.Index);
+                    Ldc_I4(i - methodParameters.Count + 1);
+                    EmitArgumentForCall(arguments[i], arrayType);
+
+                    if (arrayType.IsValueType)
+                    {
+                        Stelem_Any(arrayType);
+                    }
+                    else
+                    {
+                        Stelem_Ref();
+                    }
+                }
+
+                Ldloc(arrayVariable.Index);
+                ReleaseTempVariable(arrayVariable);
+
+                #endregion
+            }
+            else if (methodParameters.Count > arguments.Count)    // Method with optional parameters call
+            {
+                #region Optional Parameters Call
+
+                for (int i = 0; i < arguments.Count; i++)
+                {
+                    EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
+                }
+
+                for (int i = arguments.Count; i < methodParameters.Count; i++)
+                {
+                    var defaultValue = resolvedMethod.Parameters[i].Constant;
+
+                    switch (defaultValue.GetType().FullName)
+                    {
+                        case "System.SByte":
+                        case "System.Byte":
+                        case "System.Int16":
+                        case "System.UInt16":
+                        case "System.Int32":
+                        case "System.UInt32":
+                            Ldc_I4((int)defaultValue);
+                            break;
+
+                        case "System.Int64":
+                        case "System.UInt64":
+                            Ldc_I8((long)defaultValue);
+                            break;
+
+                        case "System.Single":
+                            Ldc_R4((float)defaultValue);
+                            break;
+
+                        case "System.Double":
+                            Ldc_R8((double)defaultValue);
+                            break;
+
+                        case "System.String":
+                            Ldstr((string)defaultValue);
+                            break;
+
+                        default:
+                            if (defaultValue == null)
+                            {
+                                Ldnull();
+                            }
+                            else
+                            {
+                                throw new NotSupportedException(string.Format("Unknown default value literal: {0} with value of {1}.",
+                                    defaultValue.GetType().FullName, defaultValue));
+                            }
+                            break;
+                    }
+                }
+
+                #endregion
+            }
+            else
+            {
+                for (int i = 0; i < arguments.Count; i++)
+                {
+                    EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
+                }
             }
         }
 
