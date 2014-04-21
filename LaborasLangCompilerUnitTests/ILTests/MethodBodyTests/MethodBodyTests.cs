@@ -1767,10 +1767,65 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
+        [TestMethod, TestCategory("IL Tests")]
+        public void TestCanEmit_IfBlockWithoutElse()
+        {
+            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
+
+            var consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<TypeReference>()
+            {
+                stringType
+            });
+
+            var field = new FieldDefinition("myField", FieldAttributes.Static | FieldAttributes.Private, boolType);
+            typeEmitter.AddField(field);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new ConditionBlockNode()
+                    {
+                        Condition = new FieldNode()
+                        {
+                            Field = field,
+                        },
+                        TrueBlock = new CodeBlockNode()
+                        {
+                            Nodes = new List<IParserNode>()
+                            {
+                                new MethodCallNode()
+                                {
+                                    ReturnType = voidType,
+                                    Function = new FunctionNode()
+                                    {
+                                        Function = consoleWriteLine
+                                    },
+                                    Arguments = new List<IExpressionNode>()
+                                    {
+                                        new LiteralNode()
+                                        {
+                                            ReturnType = stringType,
+                                            Value = "myField is true."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_IfBlockWithoutElse.il";
+            Test();
+        }
+
         #endregion
 
         /* Missing tests:
-         * if without else
          * return
          * object creation
          * assign functor property to delegate
