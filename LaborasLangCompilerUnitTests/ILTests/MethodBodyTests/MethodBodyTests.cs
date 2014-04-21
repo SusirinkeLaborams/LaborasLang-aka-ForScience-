@@ -1896,7 +1896,6 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         #endregion
 
         /* Missing tests:
-         * assign functor property to delegate
          * call with default parameters
          */
 
@@ -1932,7 +1931,6 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         }
 
         #endregion
-
 
         #region Functor tests
 
@@ -2177,6 +2175,175 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_CallFunctor_PassReturnValueAsArgument.il";
+            Test();
+        }
+
+        [TestMethod, TestCategory("IL Tests")]
+        public void TestCanEmit_FunctorPropertyAssignmentToDelegate()
+        {
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var arguments = new List<TypeReference>()
+                {
+                    assemblyEmitter.TypeToTypeReference(typeof(int)),
+                    assemblyEmitter.TypeToTypeReference(typeof(string))
+                };
+
+            #region Functor Property Setup
+
+            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, voidType, arguments);
+
+            var functorField = new FieldDefinition("myFunction_BackingField", FieldAttributes.Public | FieldAttributes.Static, functorType);
+            typeEmitter.AddField(functorField);
+
+            #region Setter
+
+            var functorSetter = new MethodEmitter(typeEmitter, "set_MyFunction", voidType, MethodAttributes.Public | MethodAttributes.Static);
+            var functorSetterArgument = new ParameterDefinition("value", ParameterAttributes.None, functorType);
+            functorSetter.AddArgument(functorSetterArgument);
+
+            functorSetter.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        ReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = functorField,
+                            },
+                            RightOperand = new FunctionArgumentNode()
+                            {
+                                IsFunctionStatic = true,
+                                Param = functorSetterArgument
+                            }
+                        }
+                    }
+                }
+            });
+
+            #endregion
+
+            #region Getter
+
+            var functorGetter = new MethodEmitter(typeEmitter, "get_MyFunction", functorType, MethodAttributes.Public | MethodAttributes.Static);
+            functorGetter.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new ReturnNode()
+                    {
+                        Expression = new FieldNode()
+                        {
+                            Field = functorField
+                        }
+                    }
+                }
+            });
+
+            #endregion
+
+            var functorProperty = new PropertyDefinition("MyFunction", PropertyAttributes.None, functorType);
+            functorProperty.SetMethod = functorSetter.Get().Resolve();
+            functorProperty.GetMethod = functorGetter.Get().Resolve();
+            typeEmitter.AddProperty(functorProperty);
+
+            #endregion
+
+            #region Delegate Property setup
+
+            var declaringType = (TypeDefinition)typeEmitter.Get(assemblyEmitter);
+            var delegateType = DelegateEmitter.Create(assemblyEmitter, declaringType, voidType, arguments);
+            declaringType.NestedTypes.Add(delegateType);
+
+            var delegateField = new FieldDefinition("myDelegate_BackingField", FieldAttributes.Private | FieldAttributes.Static, delegateType);
+            typeEmitter.AddField(delegateField);
+
+            #region Setter
+
+            var delegateSetter = new MethodEmitter(typeEmitter, "set_MyDelegate", voidType, MethodAttributes.Public | MethodAttributes.Static);
+            var delegateSetterArgument = new ParameterDefinition("value", ParameterAttributes.None, delegateType);
+            delegateSetter.AddArgument(delegateSetterArgument);
+
+            delegateSetter.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        ReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = delegateField,
+                            },
+                            RightOperand = new FunctionArgumentNode()
+                            {
+                                IsFunctionStatic = true,
+                                Param = delegateSetterArgument
+                            }
+                        }
+                    }
+                }
+            });
+
+            #endregion
+
+            #region Getter
+
+            var delegateGetter = new MethodEmitter(typeEmitter, "get_MyDelegate", delegateType, MethodAttributes.Public | MethodAttributes.Static);
+            delegateGetter.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new ReturnNode()
+                    {
+                        Expression = new FieldNode()
+                        {
+                            Field = delegateField
+                        }
+                    }
+                }
+            });
+
+            #endregion
+
+            var delegateProperty = new PropertyDefinition("MyDelegate", PropertyAttributes.None, delegateType);
+            delegateProperty.SetMethod = delegateSetter.Get().Resolve();
+            delegateProperty.GetMethod = delegateGetter.Get().Resolve();
+            typeEmitter.AddProperty(delegateProperty);
+
+            #endregion
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        ReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new PropertyNode()
+                            {
+                                Property = delegateProperty
+                            },
+                            RightOperand = new PropertyNode()
+                            {
+                                Property = functorProperty
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_FunctorPropertyAssignmentToDelegate.il";
             Test();
         }
 
