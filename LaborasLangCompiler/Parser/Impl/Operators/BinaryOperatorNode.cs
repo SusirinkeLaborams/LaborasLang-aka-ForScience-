@@ -19,17 +19,17 @@ namespace LaborasLangCompiler.Parser.Impl
         public override RValueNodeType RValueType { get { return RValueNodeType.BinaryOperator; } }
         public BinaryOperatorNodeType BinaryOperatorType { get; set; }
         public override TypeReference ReturnType { get; set; }
-        public static new ExpressionNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static new ExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             if (lexerNode.Children.Count == 1)
             {
-                return ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
+                return ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
             }
             else
             {
                 var op = parser.ValueOf(lexerNode.Children[1]);
-                var left = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
-                var right = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
+                var left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
+                var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
                 return Parse(parser, op, left, right);
             }
         }

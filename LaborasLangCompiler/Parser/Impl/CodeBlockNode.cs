@@ -12,21 +12,21 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class CodeBlockNode : ParserNode, ICodeBlockNode
+    class CodeBlockNode : ParserNode, ICodeBlockNode, IContainerNode
     {
         public override NodeType Type { get { return NodeType.CodeBlockNode; } }
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
         protected List<ParserNode> nodes;
         protected Dictionary<string, LValueNode> symbols;
-        public CodeBlockNode ParentBlock { get; private set; }
-        public FunctionDeclarationNode ParentFunction { get; private set; }
-
-        protected CodeBlockNode(CodeBlockNode parent)
+        private IContainerNode parent;
+        protected CodeBlockNode(IContainerNode parent)
         {
             nodes = new List<ParserNode>();
             symbols = new Dictionary<string, LValueNode>();
-            ParentBlock = parent;
+            this.parent = parent;
         }
+        public ClassNode GetClass() { return parent.GetClass(); }
+        public FunctionDeclarationNode GetFunction() { return parent.GetFunction(); }
         public LValueNode GetSymbol(string name)
         {
             //check node table
@@ -34,13 +34,13 @@ namespace LaborasLangCompiler.Parser.Impl
                 return symbols[name];
 
             //check parent block table
-            if (ParentBlock != null)
-                return ParentBlock.GetSymbol(name);
+            if (parent != null)
+                return parent.GetSymbol(name);
 
             //symbol not found
             return null;
         }
-        public virtual ILValueNode AddVariable(TypeReference type, string name)
+        public virtual LValueNode AddVariable(TypeReference type, string name)
         {
             if (symbols.ContainsKey(name))
                 throw new SymbolAlreadyDeclaredException(String.Format("Var {0} already declared", name));
@@ -58,12 +58,13 @@ namespace LaborasLangCompiler.Parser.Impl
             else
                 AddNode(UnaryOperatorNode.Void(node));
         }
-        public static CodeBlockNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode, IReadOnlyList<FunctionArgumentNode> args = null)
+        public static CodeBlockNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
-            var instance = new CodeBlockNode(parentBlock);
-            if (args != null)
+            var instance = new CodeBlockNode(parent);
+            if (parent is FunctionDeclarationNode)
             {
-                foreach (var arg in args)
+                var function = (FunctionDeclarationNode)parent;
+                foreach (var arg in function.Args)
                 {
                     instance.symbols.Add(arg.Param.Name, arg);
                 }
@@ -79,25 +80,25 @@ namespace LaborasLangCompiler.Parser.Impl
                             throw new ParseException("Imports only allowed in classes");
                         case Lexer.Declaration:
                         case Lexer.DeclarationAndAssignment:
-                            instance.AddNode(SymbolDeclarationNode.Parse(parser, parentClass, instance, sentence));
+                            instance.AddNode(SymbolDeclarationNode.Parse(parser, instance, sentence));
                             break;
                         case Lexer.Assignment:
-                            instance.AddExpression(AssignmentOperatorNode.Parse(parser, parentClass, instance, sentence), parser);
+                            instance.AddExpression(AssignmentOperatorNode.Parse(parser, instance, sentence), parser);
                             break;
                         case Lexer.FunctionCall:
-                            instance.AddExpression(MethodCallNode.Parse(parser, parentClass, instance, sentence), parser);
+                            instance.AddExpression(MethodCallNode.Parse(parser, instance, sentence), parser);
                             break;
                         case Lexer.Loop:
-                            instance.AddNode(WhileBlock.Parse(parser, parentClass, instance, sentence));
+                            instance.AddNode(WhileBlock.Parse(parser, instance, sentence));
                             break;
                         case Lexer.ConditionalSentence:
-                            instance.AddNode(ConditionBlockNode.Parse(parser, parentClass, instance, sentence));
+                            instance.AddNode(ConditionBlockNode.Parse(parser, instance, sentence));
                             break;
                         case Lexer.CodeBlock:
-                            instance.AddNode(CodeBlockNode.Parse(parser, parentClass, instance, sentence));
+                            instance.AddNode(CodeBlockNode.Parse(parser, instance, sentence));
                             break;
                         case Lexer.ReturnSentence:
-                            instance.AddNode(ReturnNode.Parse(parser, parentClass, instance, sentence));
+                            instance.AddNode(ReturnNode.Parse(parser, instance, sentence));
                             break;
                         default:
                             throw new ParseException("Node " + sentence.Token.Name + " in sentence, dafuq");

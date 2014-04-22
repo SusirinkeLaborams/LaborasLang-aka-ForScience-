@@ -17,13 +17,13 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ReturnType { get; set; }
         public IReadOnlyList<IExpressionNode> Arguments { get; private set; }
         public IExpressionNode Function { get; private set; }
-        public static new MethodCallNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static new MethodCallNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var instance = new MethodCallNode();
             var args = new List<IExpressionNode>();
             for (int i = 1; i < lexerNode.Children.Count; i++)
             {
-                args.Add(ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[i]));
+                args.Add(ExpressionNode.Parse(parser, parent, lexerNode.Children[i]));
             }
             var argTypes = new List<TypeReference>();
             foreach(var arg in args)
@@ -31,10 +31,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 argTypes.Add(arg.ReturnType);
             }
             instance.Arguments = args;
-            instance.ParseMethod(parser, parentClass, parentBlock, lexerNode.Children[0], argTypes);
+            instance.ParseMethod(parser, parent, lexerNode.Children[0], argTypes);
             return instance;
         }
-        private void ParseMethod(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode, List<TypeReference> args)
+        private void ParseMethod(Parser parser, IContainerNode parent, AstNode lexerNode, List<TypeReference> args)
         {
             string type = lexerNode.Token.Name;
             ExpressionNode method;
@@ -42,16 +42,16 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if (lexerNode.Children.Count == 1)
                 {
-                    method = LValueNode.Parse(parser, parentClass, parentBlock, lexerNode);
+                    method = LValueNode.Parse(parser, parent, lexerNode);
                 }
                 else
                 {
-                    method = MethodNode.Parse(parser, parentClass, parentBlock, lexerNode, args);
+                    method = MethodNode.Parse(parser, parent, lexerNode, args);
                 }
             }
             else
             {
-                method = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode);
+                method = ExpressionNode.Parse(parser, parent, lexerNode);
             }
 
             if (!method.ReturnType.IsFunctorType())

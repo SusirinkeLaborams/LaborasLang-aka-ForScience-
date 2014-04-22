@@ -22,7 +22,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Function = method;
             ReturnType = type;
         }
-        public static MethodNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode, List<TypeReference> args)
+        public static MethodNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode, List<TypeReference> args)
         {
             var full = parser.ValueOf(lexerNode);
             var index = full.LastIndexOf('.');

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class FunctionDeclarationNode : RValueNode, IFunctionNode
+    class FunctionDeclarationNode : RValueNode, IFunctionNode, IContainerNode
     {
         public IExpressionNode ObjectInstance { get { return null; } }
         public MethodReference Function { get; private set; }
@@ -21,7 +21,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private CodeBlockNode body;
         private MethodEmitter emitter;
         public TypeReference FunctionReturnType { get; private set; }
-        public ClassNode ParentClass { get; private set; }
+        private ClassNode parent;
         public IReadOnlyList<FunctionArgumentNode> Args;
         public void Emit(bool entry = false)
         {
@@ -29,26 +29,32 @@ namespace LaborasLangCompiler.Parser.Impl
             if(entry)
                 emitter.SetAsEntryPoint();
         }
-        public static FunctionDeclarationNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode, string name = null)
+        private FunctionDeclarationNode(IContainerNode parent)
         {
+            this.parent = parent.GetClass();
+        }
+        public FunctionDeclarationNode GetFunction() { return this; }
+        public ClassNode GetClass() { return parent.GetClass(); }
+        public LValueNode GetSymbol(string name) { return parent.GetSymbol(name); }
+        public static FunctionDeclarationNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode, string name = null)
+        {
+            var instance = new FunctionDeclarationNode(parent);
+            var header = FunctionHeader.Parse(parser, parent, lexerNode.Children[0]);
             if (name == null)
-                name = parentClass.NewFunctionName();
-            var instance = new FunctionDeclarationNode();
-            var header = FunctionHeader.Parse(parser, parentClass, null, lexerNode.Children[0]);
-            instance.body = CodeBlockNode.Parse(parser, parentClass, null, lexerNode.Children[1], header.Args);
+                name = instance.parent.NewFunctionName();
             instance.ReturnType = header.FunctionType;
             instance.FunctionReturnType = header.ReturnType;
-            instance.ParentClass = parentClass;
             instance.Args = header.Args;
-            instance.emitter = new MethodEmitter(parentClass.TypeEmitter, "$" + name, header.ReturnType, MethodAttributes.Static | MethodAttributes.Private);
+            instance.body = CodeBlockNode.Parse(parser, instance, lexerNode.Children[1]);
+            instance.emitter = new MethodEmitter(instance.parent.TypeEmitter, "$" + name, header.ReturnType, MethodAttributes.Static | MethodAttributes.Private);
             foreach (var arg in header.Args)
                 instance.emitter.AddArgument(arg.Param);
             instance.Function = instance.emitter.Get();
             return instance;
         }
-        public static TypeReference ParseType(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static TypeReference ParseType(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
-            return FunctionHeader.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]).FunctionType;
+            return FunctionHeader.Parse(parser, parent, lexerNode.Children[0]).FunctionType;
         }
         public override string ToString()
         {

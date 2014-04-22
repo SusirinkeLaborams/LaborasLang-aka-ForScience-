@@ -14,7 +14,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeReference FunctionType { get; private set; }
         public IReadOnlyList<FunctionArgumentNode> Args { get; private set; }
         public TypeReference ReturnType { get; private set; }
-        public static FunctionHeader Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static FunctionHeader Parse(Parser parser, IContainerNode parentBlock, AstNode lexerNode)
         {
             var instance = new FunctionHeader();
             instance.ReturnType = parser.ParseType(lexerNode.Children[0]);

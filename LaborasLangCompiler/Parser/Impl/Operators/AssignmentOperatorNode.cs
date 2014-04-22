@@ -16,11 +16,11 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ReturnType { get; set; }
         public ILValueNode LeftOperand { get; private set; }
         public IExpressionNode RightOperand { get; private set; }
-        public static new AssignmentOperatorNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static new AssignmentOperatorNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var instance = new AssignmentOperatorNode();
-            var left = LValueNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
-            var right = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
+            var left = LValueNode.Parse(parser, parent, lexerNode.Children[0]);
+            var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
             instance.ReturnType = left.ReturnType;
 
             var op = parser.ValueOf(lexerNode.Children[1]);

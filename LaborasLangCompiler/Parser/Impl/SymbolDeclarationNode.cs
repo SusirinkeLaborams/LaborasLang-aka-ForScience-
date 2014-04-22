@@ -21,7 +21,7 @@ namespace LaborasLangCompiler.Parser.Impl
             DeclaredSymbol = symbol;
             Initializer = init;
         }
-        public static SymbolDeclarationNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static SymbolDeclarationNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             ILValueNode symbol = null;
             IExpressionNode initializer = null;
@@ -31,7 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var name = parser.ValueOf(lexerNode.Children[1]);
 
             if (type == Lexer.DeclarationAndAssignment)
-                initializer = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[2]);
+                initializer = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
 
             if (declaredType == null && initializer == null)
                 throw new TypeException("Type inference requires initialization");
@@ -42,12 +42,15 @@ namespace LaborasLangCompiler.Parser.Impl
                     declaredType = initializer.ReturnType;
                 else if (!ILHelpers.IsAssignableTo(initializer.ReturnType, declaredType))
                     throw new TypeException("Type mismatch, type " + declaredType.FullName + " initialized with " + initializer.ReturnType.FullName);
-                if(initializer is FunctionDeclarationNode && parentClass != null)
+                if(initializer is FunctionDeclarationNode)
                 {
-                    parentClass.AddMethod((FunctionDeclarationNode)initializer, name + "_local");
+                    parent.GetClass().AddMethod((FunctionDeclarationNode)initializer, name + "_local");
                 }
             }
-            symbol = parentBlock.AddVariable(declaredType, name);
+            if (parent is CodeBlockNode)
+                symbol = ((CodeBlockNode)parent).AddVariable(declaredType, name);
+            else
+                throw new ParseException("SymbolDeclarationNode somehow parsed in a class");
 
             return new SymbolDeclarationNode(symbol, initializer);
         }

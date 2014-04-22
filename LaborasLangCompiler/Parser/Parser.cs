@@ -69,7 +69,7 @@ namespace LaborasLangCompiler.Parser
 
             Primitives = primitives;
 
-            ClassNode.Parse(this, null, null, tree);
+            ClassNode.Parse(this, null, tree);
         }
         public string ValueOf(AstNode node)
         {

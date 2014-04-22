@@ -16,28 +16,28 @@ namespace LaborasLangCompiler.Parser.Impl
         public override NodeType Type { get { return NodeType.Expression; } }
         public abstract ExpressionNodeType ExpressionType { get; }
         public abstract TypeReference ReturnType { get; set; }
-        public static ExpressionNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static ExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             switch (lexerNode.Token.Name)
             {
                 case Lexer.Symbol:
                 case Lexer.FullSymbol:
-                    return LValueNode.Parse(parser, parentClass, parentBlock, lexerNode);
+                    return LValueNode.Parse(parser, parent, lexerNode);
                 case Lexer.Literal:
-                    return LiteralNode.Parse(parser, parentClass, parentBlock, lexerNode);
+                    return LiteralNode.Parse(parser, parent, lexerNode);
                 case Lexer.Value:
                 case Lexer.FunctionArgument:
-                    return ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
+                    return ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
                 case Lexer.Sum:
                 case Lexer.Product:
-                    return BinaryOperatorNode.Parse(parser, parentClass, parentBlock, lexerNode);
+                    return BinaryOperatorNode.Parse(parser, parent, lexerNode);
                 case Lexer.Function:
-                    return FunctionDeclarationNode.Parse(parser, parentClass, parentBlock, lexerNode);
+                    return FunctionDeclarationNode.Parse(parser, parent, lexerNode);
                 case Lexer.PrefixNode:
                 case Lexer.SuffixNode:
-                    return UnaryOperatorNode.Parse(parser, parentClass, parentBlock, lexerNode);
+                    return UnaryOperatorNode.Parse(parser, parent, lexerNode);
                 case Lexer.FunctionCall:
-                    return MethodCallNode.Parse(parser, parentClass, parentBlock, lexerNode);
+                    return MethodCallNode.Parse(parser, parent, lexerNode);
                 default:
                     throw new NotImplementedException();
             }

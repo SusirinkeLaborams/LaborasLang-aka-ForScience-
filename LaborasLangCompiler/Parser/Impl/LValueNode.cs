@@ -16,14 +16,12 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
         public abstract LValueNodeType LValueType { get; }
-        public static new LValueNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static new LValueNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var value = parser.ValueOf(lexerNode);
             LValueNode instance = null;
-            if (parentBlock != null)
-                instance = parentBlock.GetSymbol(value);
-            if (instance == null)
-                instance = parentClass.GetField(value);
+            if (parent != null)
+                instance = parent.GetSymbol(value);
             if (instance == null)
                 throw new SymbolNotFoundException("Symbol " + value + " not found");
             if (instance.ReturnType == null)

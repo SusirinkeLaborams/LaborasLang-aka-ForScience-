@@ -22,28 +22,28 @@ namespace LaborasLangCompiler.Parser.Impl
             Operand = operand;
             UnaryOperatorType = type;
         }
-        public static new ExpressionNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static new ExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             if(lexerNode.Children.Count == 1)
             {
-                return ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
+                return ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
             }
             else
             {
                 switch(lexerNode.Token.Name)
                 {
                     case Lexer.SuffixNode:
-                        return ParseSuffix(parser, parentClass, parentBlock, lexerNode);
+                        return ParseSuffix(parser, parent, lexerNode);
                     case Lexer.PrefixNode:
-                        return ParsePrefix(parser, parentClass, parentBlock, lexerNode);
+                        return ParsePrefix(parser, parent, lexerNode);
                     default:
                         throw new ParseException("Unary op node expected, " + lexerNode.Token.Name + " received");
                 }
             }
         }
-        private static ExpressionNode ParseSuffix(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        private static ExpressionNode ParseSuffix(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
-            var expression = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
+            var expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
             var ops = new List<UnaryOperatorNodeType>();
             for (int i = 1; i < lexerNode.Children.Count; i++ )
             {
@@ -59,10 +59,10 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return ParseUnary(parser, expression, ops);
         }
-        private static ExpressionNode ParsePrefix(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        private static ExpressionNode ParsePrefix(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var count = lexerNode.Children.Count;
-            var expression = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[count - 1]);
+            var expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[count - 1]);
             var ops = new List<UnaryOperatorNodeType>();
             for (int i = count - 2; i >= 0; i--)
             {

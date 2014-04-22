@@ -13,7 +13,7 @@ using LaborasLangCompiler.LexingTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ClassNode : ParserNode
+    class ClassNode : ParserNode, IContainerNode
     {
         public override NodeType Type { get { return NodeType.ClassNode; } }
         private Dictionary<string, FieldDeclarationNode> fields;
@@ -35,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             methods.Add(Tuple.Create(name, method));
         }
-        public FieldNode GetField(string name)
+        private FieldNode GetField(string name)
         {
             if (fields.ContainsKey(name))
                 return fields[name];
@@ -45,21 +45,24 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return null;
         }
+        public ClassNode GetClass() { return this; }
+        public FunctionDeclarationNode GetFunction() { return null; }
+        public LValueNode GetSymbol(string name)
+        {
+            return GetField(name);
+        }
         private void AddFieldToEmitter(Parser parser, FieldDefinition field, IExpressionNode init)
         {
             if (!parser.Testing)
                 TypeEmitter.AddField(field, init);
         }
-        public static ClassNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static ClassNode Parse(Parser parser, ClassNode parentClass, AstNode lexerNode)
         {
             var instance = new ClassNode(parser, parentClass);
             AstNode sentence;
 
             if (parser.Root == null)
                 parser.Root = instance;
-
-            if (parentBlock != null)
-                throw new ParseException("WhatIsThisIDontEven: Class defined inside a code block");
 
             //symbols
             foreach (var node in lexerNode.Children)
@@ -97,9 +100,9 @@ namespace LaborasLangCompiler.Parser.Impl
                         ExpressionNode init = null;
                         var field = instance.fields[parser.ValueOf(sentence.Children[1])];
                         if (sentence.Children[2].Token.Name == Lexer.Function)
-                            init = FunctionDeclarationNode.Parse(parser, instance, null, sentence.Children[2], field.Name);
+                            init = FunctionDeclarationNode.Parse(parser, instance, sentence.Children[2], field.Name);
                         else
-                            init = ExpressionNode.Parse(parser, instance, null, sentence.Children[2]);
+                            init = ExpressionNode.Parse(parser, instance, sentence.Children[2]);
                         field.Initializer = init;
                         if (field.ReturnType == null)
                         {
@@ -161,7 +164,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 //tipas reikalingas rekursijai
                 if (declaredType == null && lexerNode.Children[2].Token.Name == Lexer.Function)
                 {
-                    declaredType = FunctionDeclarationNode.ParseType(parser, klass, null, lexerNode.Children[2]);
+                    declaredType = FunctionDeclarationNode.ParseType(parser, klass, lexerNode.Children[2]);
                     klass.AddField(name, declaredType);
                 }
                 else

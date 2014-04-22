@@ -11,11 +11,11 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.ReturnNode; } }
         public IExpressionNode Expression { get; private set; }
-        public static ReturnNode Parse(Parser parser, ClassNode parentClass, CodeBlockNode parentBlock, AstNode lexerNode)
+        public static ReturnNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var instance = new ReturnNode();
             if(lexerNode.Children.Count > 0)
-                instance.Expression = ExpressionNode.Parse(parser, parentClass, parentBlock, lexerNode.Children[0]);
+                instance.Expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
             return instance;
         }
         public override string ToString()
