@@ -182,7 +182,11 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Emit(IReturnNode returnNode)
         {
-            Emit(returnNode.Expression, false);
+            if (returnNode.Expression != null)
+            {
+                Emit(returnNode.Expression, false);
+            }
+
             Ret();
         }
 
