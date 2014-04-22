@@ -9,10 +9,11 @@ using LaborasLangCompiler.Parser.Exceptions;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ReturnNode : ParserNode, IReturnNode
+    class ReturnNode : ParserNode, IReturnNode, IReturning
     {
         public override NodeType Type { get { return NodeType.ReturnNode; } }
         public IExpressionNode Expression { get; private set; }
+        public bool Returns { get { return Expression != null; } }
         public static ReturnNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var instance = new ReturnNode();

@@ -46,6 +46,8 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.FunctionReturnType = header.ReturnType;
             instance.Args = header.Args;
             instance.body = CodeBlockNode.Parse(parser, instance, lexerNode.Children[1]);
+            if (instance.FunctionReturnType.FullName != "System.Void" && !instance.body.Returns)
+                throw new ParseException("Not all control paths return a value");
             instance.emitter = new MethodEmitter(instance.parent.TypeEmitter, "$" + name, header.ReturnType, MethodAttributes.Static | MethodAttributes.Private);
             foreach (var arg in header.Args)
                 instance.emitter.AddArgument(arg.Param);

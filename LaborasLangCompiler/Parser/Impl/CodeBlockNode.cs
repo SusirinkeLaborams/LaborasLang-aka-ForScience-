@@ -12,10 +12,11 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class CodeBlockNode : ParserNode, ICodeBlockNode, IContainerNode
+    class CodeBlockNode : ParserNode, ICodeBlockNode, IContainerNode, IReturning
     {
         public override NodeType Type { get { return NodeType.CodeBlockNode; } }
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
+        public bool Returns { get; private set; }
         protected List<ParserNode> nodes;
         protected Dictionary<string, LValueNode> symbols;
         private IContainerNode parent;
@@ -24,6 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
             nodes = new List<ParserNode>();
             symbols = new Dictionary<string, LValueNode>();
             this.parent = parent;
+            Returns = false;
         }
         public ClassNode GetClass() { return parent.GetClass(); }
         public FunctionDeclarationNode GetFunction() { return parent.GetFunction(); }
@@ -49,6 +51,9 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private void AddNode(ParserNode node)
         {
+            if (node is IReturning)
+                if (((IReturning)node).Returns)
+                    Returns = true;
             nodes.Add(node);
         }
         private void AddExpression(ExpressionNode node, Parser parser)
