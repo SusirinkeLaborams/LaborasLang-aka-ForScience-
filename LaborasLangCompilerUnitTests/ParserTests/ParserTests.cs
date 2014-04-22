@@ -216,6 +216,36 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: System.Int32 i = (Literal: System.Int32 1), System.Int32 a = (UnaryOp: PostDecrement (UnaryOp: Negation (UnaryOp: PreIncrement (LValueNode: Field System.Int32)))))";
             TestParser(source, expected, "TestMixedSuffixPrefix", lex);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestBinaryOps()
+        {
+            string source = @"
+                auto i = 1 ^ 2;
+                auto a = i & i;
+                int c = i | a;";
+            string expected = "(ClassNode: Fields: System.Int32 i = (BinaryOp: (Literal: System.Int32 1) BinaryXor (Literal: System.Int32 2)), System.Int32 a = (BinaryOp: (LValueNode: Field System.Int32) BinaryAnd (LValueNode: Field System.Int32)), System.Int32 c = (BinaryOp: (LValueNode: Field System.Int32) BinaryOr (LValueNode: Field System.Int32)))";
+            TestParser(source, expected, "TestBinaryOps", lex);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestLogicalOps()
+        {
+            string source = @"
+                auto i = true && false;
+                auto a = i || true;";
+            string expected = "";
+            TestParser(source, expected, "TestLogicalOps", true);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestComparison()
+        {
+            string source = @"
+                auto i = true == false;
+                auto a = i != true;
+                auto c = 5 > 6;
+                auto b = 8 <= 10;";
+            string expected = "(ClassNode: Fields: System.Boolean i = (BinaryOp: (Literal: System.Boolean True) Equals (Literal: System.Boolean False)), System.Boolean a = (BinaryOp: (LValueNode: Field System.Boolean) NotEquals (Literal: System.Boolean True)), System.Boolean c = (BinaryOp: (Literal: System.Int32 5) GreaterThan (Literal: System.Int32 6)), System.Boolean b = (BinaryOp: (Literal: System.Int32 8) LessEqualThan (Literal: System.Int32 10)))";
+            TestParser(source, expected, "TestComparison", lex);
+        }
         private void TestParser(string source, string expected, string name, bool lex)
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
