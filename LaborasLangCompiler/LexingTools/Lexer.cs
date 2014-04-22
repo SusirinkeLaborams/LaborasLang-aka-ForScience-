@@ -121,7 +121,7 @@ namespace LaborasLangCompiler.LexingTools
                 (?<Loop>):  'while' Ws? '(' Ws? (?<Condition> Value) Ws? ')' Ws? CodeBlock;
                 (?<EndOfSentence>): ';';                
                 (?<CodeBlock>): Ws? '{' Ws? (Sentence Ws?)* Ws? '}'  Ws? ;
-                (?<Sentence>): ((ReturnSentence / NamespaceImport / DeclarationAndAssignment / Assignment / Declaration / FunctionCall) Ws? EndOfSentence) /
+                (?<Sentence>): ((ReturnSentence / NamespaceImport / DeclarationAndAssignment / Assignment / Declaration / FunctionCall / Value) Ws? EndOfSentence) /
                                 Loop /
                                 ConditionalSentence /
                                 CodeBlock;
