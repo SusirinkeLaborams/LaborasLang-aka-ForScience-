@@ -76,7 +76,7 @@ namespace LaborasLangCompiler.LexingTools
                 
                 (?<PrefixOperator>): '++' / '--' / '-' / '!' / '~';
                 (?<SuffixOperator>): '++' / '--';
-                (?<BinaryOperator>): '^' / '&' / '|' / '>>' / '<<';
+                (?<BinaryOperator>): '^' / (!'&&' '&') / (!'||' '|') / '>>' / '<<';
                 (?<MultiplicationOperator>): '/' / '*'/ '%';
                 (?<BooleanOperator>): '&&' / '||';
                 (?<SumOperator>): '+' / '-';
@@ -96,7 +96,7 @@ namespace LaborasLangCompiler.LexingTools
                 (?<UnaryOperator>): '!' / '++' / '--';           
                                 
                 (?<FunctionTypeArgs>): '(' Ws? (Type (Ws? ',' Ws? Type)* Ws?)? ')';
-                (?<Type>): Symbol / (Symbol (Ws? FunctionTypeArgs)+);
+                (?<Type>): (Symbol (Ws? FunctionTypeArgs)+) / Symbol;
                 
                 (?<ReturnSentence>): 'return' Ws Value;
                 (?<FunctionType>): Type;

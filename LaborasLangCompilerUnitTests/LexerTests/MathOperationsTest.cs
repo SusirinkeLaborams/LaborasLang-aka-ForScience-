@@ -35,6 +35,30 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         }
 
         [TestMethod]
+        public void TestBinaryAnd()
+        {
+            var source = @"foo = 1 & bar;";
+            AstNode tree = lexer.MakeTree(source);
+
+            Assert.IsNotNull(tree);
+            string expected = "Root: Sentence: (Assignment: (Symbol, AssignmentOperator, Value: Comparison: BooleanNode: Sum: Product: BinaryOperationNode: (SuffixNode: PrefixNode: Literal: IntegerLiteral, BinaryOperator, SuffixNode: PrefixNode: Symbol)), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestBinaryOr()
+        {
+            var source = @"foo = 1 | bar;";
+            AstNode tree = lexer.MakeTree(source);
+
+            Assert.IsNotNull(tree);
+            string expected = "Root: Sentence: (Assignment: (Symbol, AssignmentOperator, Value: Comparison: BooleanNode: Sum: Product: BinaryOperationNode: (SuffixNode: PrefixNode: Literal: IntegerLiteral, BinaryOperator, SuffixNode: PrefixNode: Symbol)), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
         public void TestSubtraction()
         {
             var source = @"foo = bar - 1;";

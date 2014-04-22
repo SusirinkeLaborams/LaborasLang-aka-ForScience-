@@ -22,6 +22,55 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         }
 
         [TestMethod]
+        public void DeclareFunctionTestNoParameters()
+        {
+            var source = @"int() foo;";
+            AstNode tree = lexer.MakeTree(source);
+
+            Assert.IsNotNull(tree);
+            string expected = "Root: Sentence: (Declaration: (FunctionType: Type: (Symbol, FunctionTypeArgs), Symbol), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void DeclareVariable()
+        {
+            var source = @"int foo;";
+            AstNode tree = lexer.MakeTree(source);
+
+            Assert.IsNotNull(tree);
+            string expected = "Root: Sentence: (Declaration: (FunctionType: Type: Symbol, Symbol), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestBooleanAnd()
+        {
+            var source = @"auto i = i && false;";
+            AstNode tree = lexer.MakeTree(source);
+
+            Assert.IsNotNull(tree);
+            string expected = "Root: Sentence: (DeclarationAndAssignment: (FunctionType: Type: Symbol, Symbol, Value: Comparison: BooleanNode: (Sum: Product: BinaryOperationNode: SuffixNode: PrefixNode: Symbol, BooleanOperator, Sum: Product: BinaryOperationNode: SuffixNode: PrefixNode: Literal: BooleanLiteral)), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void TestBooleanOr()
+        {
+            var source = @"auto a = i || true;";
+            AstNode tree = lexer.MakeTree(source);
+
+            Assert.IsNotNull(tree);
+            string expected = "Root: Sentence: (DeclarationAndAssignment: (FunctionType: Type: Symbol, Symbol, Value: Comparison: BooleanNode: (Sum: Product: BinaryOperationNode: SuffixNode: PrefixNode: Symbol, BooleanOperator, Sum: Product: BinaryOperationNode: SuffixNode: PrefixNode: Literal: BooleanLiteral)), EndOfSentence)";
+            string actual = AstHelper.Stringify(tree);
+            Assert.AreEqual(expected, actual);
+        }
+
+
+        [TestMethod]
         public void AssignFunctionTest_NoArguments()
         {
             var source = @"foo = int() { bar(); };";
@@ -73,7 +122,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         public void HelloWorldTest()
         {
             var source = @"
-                auto Main = int()
+                auto Main = void()
                 {
                     System.Console.WriteLine('Hello, world');
                     System.Console.ReadKey();
