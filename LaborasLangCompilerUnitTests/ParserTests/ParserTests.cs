@@ -246,6 +246,30 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: System.Boolean i = (BinaryOp: (Literal: System.Boolean True) Equals (Literal: System.Boolean False)), System.Boolean a = (BinaryOp: (LValueNode: Field System.Boolean) NotEquals (Literal: System.Boolean True)), System.Boolean c = (BinaryOp: (Literal: System.Int32 5) GreaterThan (Literal: System.Int32 6)), System.Boolean b = (BinaryOp: (Literal: System.Int32 8) LessEqualThan (Literal: System.Int32 10)))";
             TestParser(source, expected, "TestComparison", lex);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestReturnTypeFailure()
+        {
+            string source = @"
+                auto Main = int(){return 4.0;};";
+            string expected = "";
+            try
+            {
+                TestParser(source, expected, "TestReturnTypeFailure", true);
+            }
+            catch(TypeException)
+            {
+                return;
+            }
+            Assert.Fail("Tried to return float instead of int, should've failed");
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestReturnTypeSuccess()
+        {
+            string source = @"
+                auto Main = int(){return 4;};";
+            string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (Function: $Functors.$System_Int32()(CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 4))))))";
+            TestParser(source, expected, "TestReturnTypeSuccess", true);
+        }
         private void TestParser(string source, string expected, string name, bool lex)
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
