@@ -82,7 +82,7 @@ namespace LaborasLangCompiler.LexingTools
                 (?<SumOperator>): '+' / '-';
                 (?<RelationOperator>): '==' / '!=' / '<=' / '>=' / '<' / '>';
 
-                (?<PrefixNode>): (PrefixOperator Ws?)* ('(' Sum ')' / FunctionCall / Literal / Symbol);
+                (?<PrefixNode>): (PrefixOperator Ws?)* ('(' Sum ')' / FunctionCall / Literal / FullSymbol);
                 (?<SuffixNode>): PrefixNode (Ws? SuffixOperator)*;
                 (?<BinaryOperationNode>): SuffixNode (Ws? BinaryOperator Ws? SuffixNode)*;
                 (?<Product>): BinaryOperationNode (Ws? MultiplicationOperator Ws? BinaryOperationNode)*;
@@ -96,11 +96,11 @@ namespace LaborasLangCompiler.LexingTools
                 (?<UnaryOperator>): '!' / '++' / '--';           
                                 
                 (?<FunctionTypeArgs>): '(' Ws? (Type (Ws? ',' Ws? Type)* Ws?)? ')';
-                (?<Type>): (Symbol (Ws? FunctionTypeArgs)+) / Symbol;
+                (?<Type>): (FullSymbol (Ws? FunctionTypeArgs)+) / FullSymbol;
                 
-                (?<ReturnSentence>): 'return' Ws (Value / Symbol / Function)?;
+                (?<ReturnSentence>): 'return' Ws (Value / FullSymbol / Function)?;
                 (?<FunctionType>): Type;
-                (?<FunctionArgument>): Value;
+                (?<FunctionArgument>): Value / FunctionCall;
                 (?<FunctionCall>): (FullSymbol) Ws? 
                     '('
                         Ws?
@@ -114,10 +114,10 @@ namespace LaborasLangCompiler.LexingTools
                 (?<Declaration>): (FunctionType / Type) Ws Symbol;
                 (?<DeclarationAndAssignment>): (FunctionType / Type) Ws Symbol Ws? '=' Ws? (Function / Value);
 
-                (?<Assignment>): Symbol Ws? AssignmentOperator Ws? (Function / Value);
+                (?<Assignment>): FullSymbol Ws? AssignmentOperator Ws? (Function / Value);
             
-                (?<ConditionalSentence>): 'if' Ws? '(' Ws? (?<Condition> Value) Ws? ')' (?<TrueBlock> CodeBlock) 'else' (?<FalseBlock> CodeBlock) /
-                                            'if' Ws? '(' Ws? (?<Condition> Value) Ws? ')' (?<TrueBlock> CodeBlock);
+                (?<ConditionalSentence>): 'if' Ws? '(' Ws? (?<Condition> (Value / FunctionCall)) Ws? ')' (?<TrueBlock> CodeBlock) 'else' (?<FalseBlock> CodeBlock) /
+                                            'if' Ws? '(' Ws? (?<Condition> (Value / FunctionCall)) Ws? ')' (?<TrueBlock> CodeBlock);
                 (?<Loop>):  'while' Ws? '(' Ws? (?<Condition> Value) Ws? ')' Ws? CodeBlock;
                 (?<EndOfSentence>): ';';                
                 (?<CodeBlock>): Ws? '{' Ws? (Sentence Ws?)* Ws? '}'  Ws? ;
