@@ -30,6 +30,9 @@ namespace LaborasLangCompiler.Parser.Impl
                     return ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
                 case Lexer.Sum:
                 case Lexer.Product:
+                case Lexer.BinaryOperationNode:
+                case Lexer.BooleanNode:
+                case Lexer.Comparison:
                     return BinaryOperatorNode.Parse(parser, parent, lexerNode);
                 case Lexer.Function:
                     return FunctionDeclarationNode.Parse(parser, parent, lexerNode);

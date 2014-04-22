@@ -96,7 +96,7 @@ namespace LaborasLangCompiler.LexingTools
                 (?<UnaryOperator>): '!' / '++' / '--';           
                                 
                 (?<FunctionTypeArgs>): '(' Ws? (Type (Ws? ',' Ws? Type)* Ws?)? ')';
-                (?<Type>): (Symbol (Ws? FunctionTypeArgs)+) / Symbol;
+                (?<Type>): Symbol / (Symbol (Ws? FunctionTypeArgs)+);
                 
                 (?<ReturnSentence>): 'return' Ws Value;
                 (?<FunctionType>): Type;
