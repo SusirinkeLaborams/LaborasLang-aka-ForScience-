@@ -98,7 +98,7 @@ namespace LaborasLangCompiler.LexingTools
                 (?<FunctionTypeArgs>): '(' Ws? (Type (Ws? ',' Ws? Type)* Ws?)? ')';
                 (?<Type>): (Symbol (Ws? FunctionTypeArgs)+) / Symbol;
                 
-                (?<ReturnSentence>): 'return' Ws Value;
+                (?<ReturnSentence>): 'return' Ws (Value / Symbol / Function)?;
                 (?<FunctionType>): Type;
                 (?<FunctionArgument>): Value;
                 (?<FunctionCall>): (FullSymbol) Ws? 
