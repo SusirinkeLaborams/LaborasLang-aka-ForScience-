@@ -218,6 +218,14 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             TestParser(source, expected, "TestMixedSuffixPrefix", lex);
         }
         [TestMethod, TestCategory("Parser")]
+        public void TestStringPlusNumber()
+        {
+            string source = @"
+                auto a = 5 + ""something"";";
+            string expected = "(ClassNode: Fields: System.String a = (BinaryOp: (Literal: System.Int32 5) Addition (Literal: System.String something)))";
+            TestParser(source, expected, "TestStringPlusNumber", lex);
+        }
+        [TestMethod, TestCategory("Parser")]
         public void TestBinaryOps()
         {
             string source = @"

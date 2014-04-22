@@ -78,9 +78,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var left = instance.LeftOperand;
             var right = instance.RightOperand;
-            if ((left.ReturnType.IsStringType() && right.ReturnType.IsStringType() && instance.BinaryOperatorType == BinaryOperatorNodeType.Addition)
-                ||
-                (left.ReturnType.IsNumericType() && right.ReturnType.IsNumericType()))
+            if (left.ReturnType.IsNumericType() && right.ReturnType.IsNumericType())
             {
                 if (left.ReturnType.IsAssignableTo(right.ReturnType))
                     instance.ReturnType = right.ReturnType;
@@ -89,6 +87,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 else
                     throw new TypeException(String.Format("Incompatible operand types, {0} and {1} received", 
                         left.ReturnType.FullName, right.ReturnType.FullName));
+            }
+            else if ((left.ReturnType.IsStringType() || right.ReturnType.IsStringType()) && instance.BinaryOperatorType == BinaryOperatorNodeType.Addition)
+            {
+                instance.ReturnType = parser.Primitives[Parser.String];
             }
             else
             {
