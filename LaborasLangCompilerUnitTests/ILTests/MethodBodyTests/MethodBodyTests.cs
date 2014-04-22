@@ -1,6 +1,5 @@
 ﻿using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.ILTools;
-using LaborasLangCompiler.Misc;
 using LaborasLangCompiler.Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;

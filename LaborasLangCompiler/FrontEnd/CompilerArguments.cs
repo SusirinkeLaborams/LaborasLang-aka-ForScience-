@@ -1,5 +1,4 @@
-﻿using LaborasLangCompiler.Misc;
-using Mono.Cecil;
+﻿using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -139,7 +138,7 @@ namespace LaborasLangCompiler.FrontEnd
 
         private static IEnumerable<string> GetDefaultReferences()
         {
-            var referenceAssembliesPath = Utils.CombinePaths(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), 
+            var referenceAssembliesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), 
                 "Reference Assemblies", "Microsoft", "Framework", ".NETFramework", "v4.5");
 
             var references = new List<string>
