@@ -95,7 +95,7 @@ namespace LaborasLangCompiler.LexingTools
 
                 (?<UnaryOperator>): '!' / '++' / '--';           
                                 
-                (?<FunctionTypeArgs>): '(' Ws? (Type (Ws? ',' Ws? Type)* Ws?)? ')';
+                (?<FunctionTypeArgs>): !('(' Ws? (Type (Ws? ',' Ws? Type)* Ws?)? ')' Ws? '{') ('(' Ws? (Type (Ws? ',' Ws? Type)* Ws?)? ')');
                 (?<Type>): (FullSymbol (Ws? FunctionTypeArgs)+) / FullSymbol;
                 
                 (?<ReturnSentence>): 'return' Ws (Value / FullSymbol / Function)?;
@@ -108,7 +108,7 @@ namespace LaborasLangCompiler.LexingTools
                     ')';
                 
                 (?<FunctionArgumentDeclaration>): Type Ws Symbol;
-                (?<NamedFunctionType>): Type Ws? ('(' Ws? (FunctionArgumentDeclaration Ws? (',' Ws? FunctionArgumentDeclaration Ws?)*)? ')')?;
+                (?<NamedFunctionType>): Type Ws? ('(' Ws? (FunctionArgumentDeclaration Ws? (',' Ws? FunctionArgumentDeclaration Ws?)*)? ')');
 
                 (?<Function>): NamedFunctionType Ws? CodeBlock;
                 (?<Declaration>): (FunctionType / Type) Ws Symbol;
