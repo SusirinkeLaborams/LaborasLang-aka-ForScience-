@@ -35,29 +35,31 @@ IL_000e: ret
 
 System.Int32 $Functors.$System_Int32::Invoke()
 // Method begins at RVA 0x2078
-// Code size 35 (0x23)
+// Code size 39 (0x27)
 .maxstack 8
 
 IL_0000: ldarg.0
 IL_0001: ldfld object $Functors.$System_Int32::objectInstance
 IL_0006: dup
-IL_0007: brtrue.s IL_0016
+IL_0007: brtrue.s IL_0018
 
 IL_0009: pop
 IL_000a: ldarg.0
 IL_000b: ldfld native int $Functors.$System_Int32::functionPtr
-IL_0010: calli System.Int32()
-IL_0015: ret
+IL_0010: tail.
+IL_0012: calli System.Int32()
+IL_0017: ret
 
-IL_0016: nop
-IL_0017: ldarg.0
-IL_0018: ldfld native int $Functors.$System_Int32::functionPtr
-IL_001d: calli System.Int32()
-IL_0022: ret
+IL_0018: nop
+IL_0019: ldarg.0
+IL_001a: ldfld native int $Functors.$System_Int32::functionPtr
+IL_001f: tail.
+IL_0021: calli System.Int32()
+IL_0026: ret
 
 
 $Functors.$System_Int32/$Delegate$System_Int32 $Functors.$System_Int32::AsDelegate()
-// Method begins at RVA 0x209c
+// Method begins at RVA 0x20a0
 // Code size 18 (0x12)
 .maxstack 8
 

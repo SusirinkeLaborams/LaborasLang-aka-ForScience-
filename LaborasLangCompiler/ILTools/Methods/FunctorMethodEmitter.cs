@@ -96,6 +96,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Ldarg(0);
                 Ldfld(functionPtrField);
 
+                Tail();
                 Calli(staticCallsite);
                 Ret();
             }
@@ -111,6 +112,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Ldarg(0);
                 Ldfld(functionPtrField);
 
+                Tail();
                 Calli(instanceCallsite);
                 Ret();
             }

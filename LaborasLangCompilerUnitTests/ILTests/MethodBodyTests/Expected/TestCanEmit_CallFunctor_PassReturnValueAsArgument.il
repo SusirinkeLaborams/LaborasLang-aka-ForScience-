@@ -37,33 +37,35 @@ IL_000e: ret
 
 System.Int32 $Functors.$System_Int32$System_String$System_Single::Invoke(System.String,System.Single)
 // Method begins at RVA 0x2080
-// Code size 39 (0x27)
+// Code size 43 (0x2b)
 .maxstack 8
 
 IL_0000: ldarg.0
 IL_0001: ldfld object $Functors.$System_Int32$System_String$System_Single::objectInstance
 IL_0006: dup
-IL_0007: brtrue.s IL_0018
+IL_0007: brtrue.s IL_001a
 
 IL_0009: pop
 IL_000a: ldarg.1
 IL_000b: ldarg.2
 IL_000c: ldarg.0
 IL_000d: ldfld native int $Functors.$System_Int32$System_String$System_Single::functionPtr
-IL_0012: calli System.Int32(System.String,System.Single)
-IL_0017: ret
+IL_0012: tail.
+IL_0014: calli System.Int32(System.String,System.Single)
+IL_0019: ret
 
-IL_0018: nop
-IL_0019: ldarg.1
-IL_001a: ldarg.2
-IL_001b: ldarg.0
-IL_001c: ldfld native int $Functors.$System_Int32$System_String$System_Single::functionPtr
-IL_0021: calli System.Int32(System.String,System.Single)
-IL_0026: ret
+IL_001a: nop
+IL_001b: ldarg.1
+IL_001c: ldarg.2
+IL_001d: ldarg.0
+IL_001e: ldfld native int $Functors.$System_Int32$System_String$System_Single::functionPtr
+IL_0023: tail.
+IL_0025: calli System.Int32(System.String,System.Single)
+IL_002a: ret
 
 
 $Functors.$System_Int32$System_String$System_Single/$Delegate$System_Int32$System_String$System_Single $Functors.$System_Int32$System_String$System_Single::AsDelegate()
-// Method begins at RVA 0x20a8
+// Method begins at RVA 0x20ac
 // Code size 18 (0x12)
 .maxstack 8
 

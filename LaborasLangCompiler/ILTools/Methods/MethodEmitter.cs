@@ -2068,6 +2068,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             ilProcessor.Emit(OpCodes.Sub);
         }
 
+        protected void Tail()
+        {
+            ilProcessor.Emit(OpCodes.Tail);
+        }
+
         protected void Unbox(TypeReference targetType)
         {
             ilProcessor.Emit(OpCodes.Unbox, targetType);
