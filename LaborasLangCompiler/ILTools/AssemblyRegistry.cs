@@ -282,26 +282,42 @@ namespace LaborasLangCompiler.ILTools
 
         private static MethodReference GetBestMatch(IReadOnlyList<TypeReference> arguments, List<MethodReference> methods)
         {
-            var best = methods[0];
-
-            for (int i = 1; i < methods.Count; i++)
+            if (methods.Count > 1)
             {
-                best = GetBetterMatch(arguments, best, methods[i]);
+                methods.Sort((x, y) => CompareMatches(arguments, y, x));
+
+                if (CompareMatches(arguments, methods[0], methods[1]) != 1)
+                {
+                    var matches = new List<string>
+                    {
+                        methods[0].FullName,
+                        methods[1].FullName
+                    };
+
+                    int i = 2;
+                    while (i < methods.Count && CompareMatches(arguments, methods[i - 1], methods[i]) == 0)
+                    {
+                        matches.Add(methods[i].FullName);
+                    }
+
+                    throw new Exception(string.Format("Method is ambigous. Could be: \r\n{0}", string.Join("\r\n", matches)));
+                }
+
             }
 
-            return best;
+            return methods[0];
         }
 
-        private static MethodReference GetBetterMatch(IReadOnlyList<TypeReference> arguments, MethodReference a, MethodReference b)
+        private static int CompareMatches(IReadOnlyList<TypeReference> arguments, MethodReference a, MethodReference b)
         {
             if (a.Parameters.Select(x => x.ParameterType.FullName).SequenceEqual(arguments.Select(x => x.FullName)))
             {
-                return a;
+                return 1;
             }
 
             if (b.Parameters.Select(x => x.ParameterType.FullName).SequenceEqual(arguments.Select(x => x.FullName)))
             {
-                return b;
+                return -1;
             }
 
             List<TypeReference> aParameters, bParameters;
@@ -352,11 +368,11 @@ namespace LaborasLangCompiler.ILTools
                         {
                             if (argument.FullName == aParameter.FullName)
                             {
-                                return a;
+                                return 1;
                             }
                             else
                             {
-                                return b;
+                                return -1;
                             }
                         }
                         else
@@ -371,14 +387,14 @@ namespace LaborasLangCompiler.ILTools
             
             if (aIsParamsMethod && !bIsParamsMethod)
             {
-                return b;
+                return -1;
             }
             else if (!aIsParamsMethod && bIsParamsMethod)
             {
-                return a;
+                return 1;
             }
-            
-            throw new Exception(string.Format("Method is ambigous. Could be: \r\n{0}", string.Join("\r\n", a, b)));
+
+            return 0;
         }
 
         private static TypeReference ScopeToAssembly(AssemblyEmitter assemblyScope, TypeReference reference)
