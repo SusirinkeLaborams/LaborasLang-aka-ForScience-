@@ -10,6 +10,8 @@ namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
 {
     interface IOptimizer
     {
+        bool ReleaseOnlyOpmization { get; }
+
         void Execute(MethodBody body);
     }
 
@@ -25,13 +27,16 @@ namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
             };
         }
 
-        public static void Optimize(MethodBody body)
+        public static void Optimize(MethodBody body, bool debugBuild)
         {
             body.SimplifyMacros();
 
             foreach (var step in optimizers)
             {
-                step.Execute(body);
+                if (!debugBuild || step.ReleaseOnlyOpmization)
+                {
+                    step.Execute(body);
+                }
             }
 
             body.OptimizeMacros();

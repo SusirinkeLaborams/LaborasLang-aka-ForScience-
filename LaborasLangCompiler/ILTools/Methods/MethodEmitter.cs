@@ -78,7 +78,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Ret();
             }
 
-            MethodBodyOptimizerBootstraper.Optimize(body);
+            MethodBodyOptimizerBootstraper.Optimize(body, Assembly.DebugBuild);
             Parsed = true;
         }
 

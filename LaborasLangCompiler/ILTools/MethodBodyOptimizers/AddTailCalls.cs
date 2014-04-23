@@ -9,6 +9,8 @@ namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
 {
     internal class AddTailCalls : IOptimizer
     {
+        public bool ReleaseOnlyOpmization { get { return false; } }
+
         public void Execute(MethodBody body)
         {
             var instructions = body.Instructions;
@@ -37,7 +39,7 @@ namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
                 }
             }
         }
-        
+
         private static bool IsCall(Instruction instruction)
         {
             return instruction.OpCode == OpCodes.Call || instruction.OpCode == OpCodes.Callvirt || instruction.OpCode == OpCodes.Calli;

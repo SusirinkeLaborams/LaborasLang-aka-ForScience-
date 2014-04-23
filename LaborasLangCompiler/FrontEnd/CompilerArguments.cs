@@ -14,15 +14,17 @@ namespace LaborasLangCompiler.FrontEnd
         public readonly string[] References;
         public readonly string OutputPath;
         public readonly ModuleKind ModuleKind;
+        public readonly bool DebugBuild;
 
         public static CompilerArguments Parse(string[] args)
         {
             var sourceFiles = args.Where(x => !x.StartsWith("/", StringComparison.InvariantCultureIgnoreCase));
             var references = args.Where(x => x.StartsWith("/ref:", StringComparison.InvariantCultureIgnoreCase));
             var outputPaths = args.Where(x => x.StartsWith("/out:", StringComparison.InvariantCultureIgnoreCase));
-            var moduleKinds = args.Where(x => x.StartsWith("/console", StringComparison.InvariantCultureIgnoreCase) ||
-                                            x.StartsWith("/windows", StringComparison.InvariantCultureIgnoreCase) ||
-                                            x.StartsWith("/dll", StringComparison.InvariantCultureIgnoreCase));
+            var debugBuild = args.Any(x => x.Equals("/debug", StringComparison.InvariantCultureIgnoreCase));
+            var moduleKinds = args.Where(x => x.Equals("/console", StringComparison.InvariantCultureIgnoreCase) ||
+                                            x.Equals("/windows", StringComparison.InvariantCultureIgnoreCase) ||
+                                            x.Equals("/dll", StringComparison.InvariantCultureIgnoreCase));
 
             var unknownOptions = args.Except(sourceFiles.Union(references).Union(outputPaths).Union(moduleKinds));
             ParseUnknownOptions(unknownOptions);
@@ -35,7 +37,8 @@ namespace LaborasLangCompiler.FrontEnd
             var moduleKind = ParseModuleKinds(moduleKinds);
             var outputPath = ParseOutputPaths(outputPaths, sourceFiles, moduleKind);
 
-            return new CompilerArguments(sourceFiles, references.Select(x => x.Substring(5)).Union(GetDefaultReferences()), outputPath, moduleKind);
+            return new CompilerArguments(sourceFiles, references.Select(x => x.Substring(5)).Union(GetDefaultReferences()), outputPath,
+                moduleKind, debugBuild);
         }
 
         private static void ParseUnknownOptions(IEnumerable<string> unknownOptions)
@@ -149,12 +152,14 @@ namespace LaborasLangCompiler.FrontEnd
             return references;
         }
 
-        private CompilerArguments(IEnumerable<string> sourceFiles, IEnumerable<string> references, string outputPath, ModuleKind moduleKind)
+        private CompilerArguments(IEnumerable<string> sourceFiles, IEnumerable<string> references, string outputPath, 
+            ModuleKind moduleKind, bool debugBuild)
         {
             SourceFiles = sourceFiles.ToArray();
             References = references.ToArray();
             OutputPath = outputPath;
             ModuleKind = moduleKind;
+            DebugBuild = debugBuild;
         }
     }
 }

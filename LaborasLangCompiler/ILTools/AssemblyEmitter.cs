@@ -17,6 +17,7 @@ namespace LaborasLangCompiler.ILTools
 
         public string OutputPath { get { return outputPath; } }
         public ModuleDefinition MainModule { get { return assemblyDefinition.MainModule; } }
+        public bool DebugBuild { get; private set; }
 
         public AssemblyEmitter(CompilerArguments compilerArgs, Version version = null)
         {
@@ -35,6 +36,7 @@ namespace LaborasLangCompiler.ILTools
             assemblyDefinition = AssemblyDefinition.CreateAssembly(assemblyName, Path.GetFileName(compilerArgs.OutputPath), moduleParameters);
             AssemblyRegistry.RegisterAssembly(assemblyDefinition);
             outputPath = compilerArgs.OutputPath;
+            DebugBuild = compilerArgs.DebugBuild;
         }
 
         public void AddType(TypeDefinition type)
