@@ -241,8 +241,8 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 auto i = true && false;
                 auto a = i || true;";
-            string expected = "";
-            TestParser(source, expected, "TestLogicalOps", true);
+            string expected = "(ClassNode: Fields: System.Boolean i = (BinaryOp: (Literal: System.Boolean True) LogicalAnd (Literal: System.Boolean False)), System.Boolean a = (BinaryOp: (LValueNode: Field System.Boolean) LogicalOr (Literal: System.Boolean True)))";
+            TestParser(source, expected, "TestLogicalOps", lex);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestComparison()
@@ -277,7 +277,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 auto Main = int(){return 4;};";
             string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (Function: $Functors.$System_Int32()(CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 4))))))";
-            TestParser(source, expected, "TestReturnTypeSuccess", lex);
+            TestParser(source, expected, "TestReturnTypeSuccess", true);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestEnforceReturn1()
