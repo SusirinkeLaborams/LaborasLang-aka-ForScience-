@@ -27,10 +27,16 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                var op = parser.ValueOf(lexerNode.Children[1]);
-                var left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
-                var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
-                return Parse(parser, op, left, right);
+                ExpressionNode left, right;
+                string op;
+                left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
+                for (int i = 1; i < lexerNode.Children.Count; i += 2)
+                {
+                    op = parser.ValueOf(lexerNode.Children[i]);
+                    right = ExpressionNode.Parse(parser, parent, lexerNode.Children[i + 1]);
+                    left = Parse(parser, op, left, right);
+                }
+                return left;
             }
         }
         public static BinaryOperatorNode Parse(Parser parser, string op, IExpressionNode left, IExpressionNode right)

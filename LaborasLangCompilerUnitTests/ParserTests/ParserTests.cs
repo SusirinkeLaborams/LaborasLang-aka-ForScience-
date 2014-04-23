@@ -347,6 +347,14 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (Function: $Functors.$System_Int32()(CodeBlock: Symbols: () Nodes: ((CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 500))))))))";
             TestParser(source, expected, "TestEnforceReturn4", lex);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestScaryOperators()
+        {
+            string source = @"
+                auto a = 1 * 2 / 3 * 4 % 5;";
+            string expected = "(ClassNode: Fields: System.Int32 a = (BinaryOp: (BinaryOp: (BinaryOp: (BinaryOp: (Literal: System.Int32 1) Multiplication (Literal: System.Int32 2)) Division (Literal: System.Int32 3)) Multiplication (Literal: System.Int32 4)) Modulus (Literal: System.Int32 5)))";
+            TestParser(source, expected, "TestScaryOperators", lex);
+        }
         private void TestParser(string source, string expected, string name, bool lex)
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
