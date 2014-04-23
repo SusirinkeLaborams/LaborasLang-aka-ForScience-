@@ -7,25 +7,33 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
 {
-    internal class RemoveRedundantBranches : IOptimizer
+    internal class RemoveRedundantBranches : ModifierBase
     {
-        public bool ReleaseOnlyOpmization { get { return true; } }
+        public override bool ReleaseOnlyOpmization { get { return true; } }
 
-        public void Execute(MethodBody body)
+        protected override bool MatchesPredicate(IList<Instruction> instructions, int instructionIndex)
         {
-            var instructions = body.Instructions;
+            var instruction = instructions[instructionIndex];
 
-            for (int i = 0; i < instructions.Count; i++)
+            if (instruction.OpCode != OpCodes.Ret && instruction.Next != null &&
+                instruction.Next.OpCode != OpCodes.Ret && LeadsToRet(instruction.Next))
             {
-                var instruction = instructions[i];
-
-                if (instruction.OpCode != OpCodes.Ret && instruction.Next != null && 
-                    instruction.Next.OpCode != OpCodes.Ret && LeadsToRet(instruction.Next))
-                {
-                    instructions.Insert(i + 1, Instruction.Create(OpCodes.Ret));
-                    i++;
-                }
+                return true;
             }
+            else
+            {
+                return false;
+            }
+        }
+
+        protected override ModifierBase.InstructionOperation GetOperation()
+        {
+            return InstructionOperation.InsertAfter;
+        }
+
+        protected override Instruction GetReplacementInstruction()
+        {
+            return Instruction.Create(OpCodes.Ret);
         }
 
         public bool LeadsToRet(Instruction instruction)
