@@ -14,6 +14,7 @@ namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
         public void Execute(MethodBody body)
         {
             var instructions = body.Instructions;
+            var replacementMap = new Dictionary<Instruction, Instruction>();
 
             for (int i = 1; i < instructions.Count; i++)
             {
@@ -28,14 +29,17 @@ namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
                     var call = instructions[i - 1];
 
                     instructions.Insert(i - 1, tail);
+                    replacementMap[instructions[i - 1]] = tail;
+                }
+            }
 
-                    foreach (var instruction in instructions)
-                    {
-                        if (instruction.Operand == call)
-                        {
-                            instruction.Operand = tail;
-                        }
-                    }
+            foreach (var instruction in instructions)
+            {
+                var operand = instruction.Operand as Instruction;
+
+                if (operand != null && replacementMap.ContainsKey(operand))
+                {
+                    instruction.Operand = replacementMap[operand];
                 }
             }
         }
