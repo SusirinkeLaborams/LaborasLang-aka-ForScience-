@@ -23,6 +23,7 @@ namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
         {
             optimizers = new IOptimizer[]
             {
+                new RemoveNOPs(),
                 new AddTailCalls()
             };
         }

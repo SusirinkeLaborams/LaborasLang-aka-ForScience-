@@ -1,6 +1,6 @@
 ﻿System.Void klass::dummy()
 // Method begins at RVA 0x2050
-// Code size 77 (0x4d)
+// Code size 75 (0x4b)
 .maxstack 4
 .entrypoint
 .locals (
@@ -25,24 +25,22 @@ IL_0019: br.s IL_001c
 
 IL_001b: ldc.i4.0
 
-IL_001c: nop
-IL_001d: box [mscorlib]System.Boolean
-IL_0022: call void [mscorlib]System.Console::WriteLine(string, object, object, object)
-IL_0027: ldstr "{0} || {1} == {2}."
-IL_002c: ldloc.0
-IL_002d: box [mscorlib]System.Boolean
-IL_0032: ldloc.1
-IL_0033: box [mscorlib]System.Boolean
-IL_0038: ldloc.0
-IL_0039: brtrue.s IL_003e
+IL_001c: box [mscorlib]System.Boolean
+IL_0021: call void [mscorlib]System.Console::WriteLine(string, object, object, object)
+IL_0026: ldstr "{0} || {1} == {2}."
+IL_002b: ldloc.0
+IL_002c: box [mscorlib]System.Boolean
+IL_0031: ldloc.1
+IL_0032: box [mscorlib]System.Boolean
+IL_0037: ldloc.0
+IL_0038: brtrue.s IL_003d
 
-IL_003b: ldloc.1
-IL_003c: br.s IL_003f
+IL_003a: ldloc.1
+IL_003b: br.s IL_003e
 
-IL_003e: ldc.i4.1
+IL_003d: ldc.i4.1
 
-IL_003f: nop
-IL_0040: box [mscorlib]System.Boolean
-IL_0045: tail.
-IL_0047: call void [mscorlib]System.Console::WriteLine(string, object, object, object)
-IL_004c: ret
+IL_003e: box [mscorlib]System.Boolean
+IL_0043: tail.
+IL_0045: call void [mscorlib]System.Console::WriteLine(string, object, object, object)
+IL_004a: ret

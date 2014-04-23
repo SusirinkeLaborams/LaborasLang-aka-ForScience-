@@ -7,41 +7,35 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
 {
-    internal class AddTailCalls : IOptimizer
+    internal class AddTailCalls : ModifierBase
     {
-        public bool ReleaseOnlyOpmization { get { return false; } }
+        public override bool ReleaseOnlyOpmization { get { return false; } }
 
-        public void Execute(MethodBody body)
+        protected override bool MatchesPredicate(IList<Instruction> instructions, int instructionIndex)
         {
-            var instructions = body.Instructions;
-            var replacementMap = new Dictionary<Instruction, Instruction>();
+            var i = instructionIndex;
 
-            for (int i = 1; i < instructions.Count; i++)
+            if (i < instructions.Count - 1 && instructions[i + 1].OpCode == OpCodes.Ret && IsCall(instructions[i]))
             {
-                if (instructions[i].OpCode == OpCodes.Ret && IsCall(instructions[i - 1]))
+                if (i > 0 && instructions[i - 1].OpCode == OpCodes.Tail)
                 {
-                    if (i > 1 && instructions[i - 2].OpCode == OpCodes.Tail)
-                    {
-                        continue;
-                    }
-
-                    var tail = Instruction.Create(OpCodes.Tail);
-                    var call = instructions[i - 1];
-
-                    instructions.Insert(i - 1, tail);
-                    replacementMap[instructions[i - 1]] = tail;
+                    return false;
                 }
+
+                return true;
             }
 
-            foreach (var instruction in instructions)
-            {
-                var operand = instruction.Operand as Instruction;
+            return false;
+        }
 
-                if (operand != null && replacementMap.ContainsKey(operand))
-                {
-                    instruction.Operand = replacementMap[operand];
-                }
-            }
+        protected override InstructionOperation GetOperation()
+        {
+            return InstructionOperation.InsertBefore;
+        }
+
+        protected override Instruction GetReplacementInstruction()
+        {
+            return Instruction.Create(OpCodes.Tail);
         }
 
         private static bool IsCall(Instruction instruction)

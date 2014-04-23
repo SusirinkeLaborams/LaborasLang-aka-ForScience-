@@ -64,6 +64,9 @@
     <Compile Include="ILTools\AssemblyEmitter.cs" />
     <Compile Include="ILTools\AssemblyRegistry.cs" />
     <Compile Include="ILTools\MethodBodyOptimizers\AddTailCalls.cs" />
+    <Compile Include="ILTools\MethodBodyOptimizers\RemoveNOPs.cs" />
+    <Compile Include="ILTools\MethodBodyOptimizers\ModifierBase.cs" />
+    <Compile Include="ILTools\MethodBodyOptimizers\RemoveRedundantBranches.cs" />
     <Compile Include="ILTools\Methods\ConstructorEmitter.cs" />
     <Compile Include="ILTools\MethodBodyOptimizers\MethodBodyOptimizerBootstraper.cs" />
     <Compile Include="ILTools\Types\DelegateEmitter.cs" />

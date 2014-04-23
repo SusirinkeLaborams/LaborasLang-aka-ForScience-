@@ -1,6 +1,6 @@
 ﻿System.Void klass::dummy()
 // Method begins at RVA 0x2050
-// Code size 123 (0x7b)
+// Code size 119 (0x77)
 .maxstack 3
 .entrypoint
 .locals (
@@ -23,47 +23,40 @@ IL_0010: box [mscorlib]System.Int32
 IL_0015: ldloc.1
 IL_0016: box [mscorlib]System.Int32
 IL_001b: call void [mscorlib]System.Console::WriteLine(string, object, object)
-IL_0020: br.s IL_0079
+IL_0020: br.s IL_0076
 
-IL_0022: nop
-IL_0023: ldloc.0
-IL_0024: ldloc.1
-IL_0025: clt
-IL_0027: brfalse.s IL_0041
+IL_0022: ldloc.0
+IL_0023: ldloc.1
+IL_0024: clt
+IL_0026: brfalse.s IL_0040
 
-IL_0029: ldstr "{0} is less than {1}."
-IL_002e: ldloc.0
-IL_002f: box [mscorlib]System.Int32
-IL_0034: ldloc.1
-IL_0035: box [mscorlib]System.Int32
-IL_003a: call void [mscorlib]System.Console::WriteLine(string, object, object)
-IL_003f: br.s IL_0078
+IL_0028: ldstr "{0} is less than {1}."
+IL_002d: ldloc.0
+IL_002e: box [mscorlib]System.Int32
+IL_0033: ldloc.1
+IL_0034: box [mscorlib]System.Int32
+IL_0039: call void [mscorlib]System.Console::WriteLine(string, object, object)
+IL_003e: br.s IL_0076
 
-IL_0041: nop
-IL_0042: ldloc.0
-IL_0043: ldloc.1
-IL_0044: ceq
-IL_0046: brfalse.s IL_0060
+IL_0040: ldloc.0
+IL_0041: ldloc.1
+IL_0042: ceq
+IL_0044: brfalse.s IL_005e
 
-IL_0048: ldstr "{0} and {1} are equal."
-IL_004d: ldloc.0
-IL_004e: box [mscorlib]System.Int32
-IL_0053: ldloc.1
-IL_0054: box [mscorlib]System.Int32
-IL_0059: call void [mscorlib]System.Console::WriteLine(string, object, object)
-IL_005e: br.s IL_0077
+IL_0046: ldstr "{0} and {1} are equal."
+IL_004b: ldloc.0
+IL_004c: box [mscorlib]System.Int32
+IL_0051: ldloc.1
+IL_0052: box [mscorlib]System.Int32
+IL_0057: call void [mscorlib]System.Console::WriteLine(string, object, object)
+IL_005c: br.s IL_0076
 
-IL_0060: nop
-IL_0061: ldstr "We're screwed."
-IL_0066: ldloc.0
-IL_0067: box [mscorlib]System.Int32
-IL_006c: ldloc.1
-IL_006d: box [mscorlib]System.Int32
-IL_0072: call void [mscorlib]System.Console::WriteLine(string, object, object)
+IL_005e: ldstr "We're screwed."
+IL_0063: ldloc.0
+IL_0064: box [mscorlib]System.Int32
+IL_0069: ldloc.1
+IL_006a: box [mscorlib]System.Int32
+IL_006f: tail.
+IL_0071: call void [mscorlib]System.Console::WriteLine(string, object, object)
 
-IL_0077: nop
-
-IL_0078: nop
-
-IL_0079: nop
-IL_007a: ret
+IL_0076: ret
