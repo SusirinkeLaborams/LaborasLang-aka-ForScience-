@@ -63,7 +63,9 @@
     <Compile Include="FrontEnd\Program.cs" />
     <Compile Include="ILTools\AssemblyEmitter.cs" />
     <Compile Include="ILTools\AssemblyRegistry.cs" />
+    <Compile Include="ILTools\MethodBodyOptimizers\AddTailCalls.cs" />
     <Compile Include="ILTools\Methods\ConstructorEmitter.cs" />
+    <Compile Include="ILTools\MethodBodyOptimizers\MethodBodyOptimizerBootstraper.cs" />
     <Compile Include="ILTools\Types\DelegateEmitter.cs" />
     <Compile Include="ILTools\Methods\FunctorMethodEmitter.cs" />
     <Compile Include="ILTools\Types\FunctorTypeEmitter.cs" />

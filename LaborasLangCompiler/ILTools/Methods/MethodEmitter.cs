@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.ILTools.Types;
+﻿using LaborasLangCompiler.ILTools.MethodBodyOptimizers;
+using LaborasLangCompiler.ILTools.Types;
 using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -77,6 +78,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Ret();
             }
 
+            MethodBodyOptimizerBootstraper.Optimize(body);
             Parsed = true;
         }
 

@@ -1,6 +1,6 @@
 ﻿System.Void klass::dummy()
 // Method begins at RVA 0x2050
-// Code size 129 (0x81)
+// Code size 131 (0x83)
 .maxstack 4
 .entrypoint
 .locals (
@@ -86,5 +86,6 @@ IL_0071: ldloc.s 6
 IL_0073: box [mscorlib]System.Int32
 IL_0078: stelem.ref
 IL_0079: ldloc.s 7
-IL_007b: call void [mscorlib]System.Console::WriteLine(string, object[])
-IL_0080: ret
+IL_007b: tail.
+IL_007d: call void [mscorlib]System.Console::WriteLine(string, object[])
+IL_0082: ret

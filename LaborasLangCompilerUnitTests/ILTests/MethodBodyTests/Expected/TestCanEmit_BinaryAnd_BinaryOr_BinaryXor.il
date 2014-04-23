@@ -1,6 +1,6 @@
 ﻿System.Void klass::dummy()
 // Method begins at RVA 0x2050
-// Code size 103 (0x67)
+// Code size 105 (0x69)
 .maxstack 5
 .entrypoint
 .locals (
@@ -41,5 +41,6 @@ IL_0059: ldloc.0
 IL_005a: ldloc.1
 IL_005b: xor
 IL_005c: box [mscorlib]System.UInt32
-IL_0061: call void [mscorlib]System.Console::WriteLine(string, object, object, object)
-IL_0066: ret
+IL_0061: tail.
+IL_0063: call void [mscorlib]System.Console::WriteLine(string, object, object, object)
+IL_0068: ret

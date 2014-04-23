@@ -1,6 +1,6 @@
 ﻿System.Void klass::dummy()
 // Method begins at RVA 0x2050
-// Code size 17 (0x11)
+// Code size 19 (0x13)
 .maxstack 1
 .entrypoint
 .locals (
@@ -10,8 +10,9 @@
 IL_0000: ldc.r8 5.5
 IL_0009: stloc.0
 IL_000a: ldloc.0
-IL_000b: call void klass::set_doubleProperty(float64)
-IL_0010: ret
+IL_000b: tail.
+IL_000d: call void klass::set_doubleProperty(float64)
+IL_0012: ret
 
 
 System.Void klass::set_doubleProperty(System.Double)

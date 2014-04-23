@@ -1,6 +1,6 @@
 ﻿System.Void klass::dummy()
 // Method begins at RVA 0x2050
-// Code size 151 (0x97)
+// Code size 153 (0x99)
 .maxstack 5
 .entrypoint
 
@@ -39,5 +39,6 @@ IL_0087: ceq
 IL_0089: ldc.i4.0
 IL_008a: ceq
 IL_008c: box [mscorlib]System.Boolean
-IL_0091: call void [mscorlib]System.Console::WriteLine(string, object, object, object)
-IL_0096: ret
+IL_0091: tail.
+IL_0093: call void [mscorlib]System.Console::WriteLine(string, object, object, object)
+IL_0098: ret

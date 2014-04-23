@@ -1,6 +1,6 @@
 ﻿System.Void klass::dummy()
 // Method begins at RVA 0x2050
-// Code size 31 (0x1f)
+// Code size 33 (0x21)
 .maxstack 2
 .entrypoint
 .locals (
@@ -14,12 +14,13 @@ IL_0008: ldfld object $Functors.$System_Void$System_Int32$System_String::objectI
 IL_000d: ldloca.s 0
 IL_000f: ldfld native int $Functors.$System_Void$System_Int32$System_String::functionPtr
 IL_0014: newobj instance void klass/$Delegate$System_Void$System_Int32$System_String::.ctor(object, native int)
-IL_0019: call void klass::set_MyDelegate(class klass/$Delegate$System_Void$System_Int32$System_String)
-IL_001e: ret
+IL_0019: tail.
+IL_001b: call void klass::set_MyDelegate(class klass/$Delegate$System_Void$System_Int32$System_String)
+IL_0020: ret
 
 
 System.Void klass::set_MyFunction($Functors.$System_Void$System_Int32$System_String)
-// Method begins at RVA 0x207c
+// Method begins at RVA 0x2080
 // Code size 7 (0x7)
 .maxstack 8
 
@@ -29,7 +30,7 @@ IL_0006: ret
 
 
 $Functors.$System_Void$System_Int32$System_String klass::get_MyFunction()
-// Method begins at RVA 0x2084
+// Method begins at RVA 0x2088
 // Code size 6 (0x6)
 .maxstack 8
 
@@ -38,7 +39,7 @@ IL_0005: ret
 
 
 System.Void klass::set_MyDelegate(klass/$Delegate$System_Void$System_Int32$System_String)
-// Method begins at RVA 0x208c
+// Method begins at RVA 0x2090
 // Code size 7 (0x7)
 .maxstack 8
 
@@ -48,7 +49,7 @@ IL_0006: ret
 
 
 klass/$Delegate$System_Void$System_Int32$System_String klass::get_MyDelegate()
-// Method begins at RVA 0x2094
+// Method begins at RVA 0x2098
 // Code size 6 (0x6)
 .maxstack 8
 
@@ -57,7 +58,7 @@ IL_0005: ret
 
 
 System.Void $Functors.$System_Void$System_Int32$System_String::.ctor(System.Object,System.IntPtr)
-// Method begins at RVA 0x209c
+// Method begins at RVA 0x20a0
 // Code size 15 (0xf)
 .maxstack 8
 
@@ -71,7 +72,7 @@ IL_000e: ret
 
 
 System.Void $Functors.$System_Void$System_Int32$System_String::Invoke(System.Int32,System.String)
-// Method begins at RVA 0x20ac
+// Method begins at RVA 0x20b0
 // Code size 43 (0x2b)
 .maxstack 8
 
@@ -100,7 +101,7 @@ IL_002a: ret
 
 
 $Functors.$System_Void$System_Int32$System_String/$Delegate$System_Void$System_Int32$System_String $Functors.$System_Void$System_Int32$System_String::AsDelegate()
-// Method begins at RVA 0x20d8
+// Method begins at RVA 0x20dc
 // Code size 18 (0x12)
 .maxstack 8
 
