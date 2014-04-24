@@ -18,7 +18,7 @@ auto Func = int()()
 	{
 		System.Console.WriteLine(""Func inner called"");
 		return 5;
-	}
+	};
 };
 
 auto Main = int()
