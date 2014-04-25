@@ -158,7 +158,7 @@ namespace LaborasLangCompiler.ILTools
 
             if (typeRef == null)
             {
-                throw new Exception(string.Format("Could not find type: {0}."));
+                throw new Exception(string.Format("Could not find type: {0}.", type));
             }
 
             return GetCompatibleMethod(assembly, typeRef, methodName, arguments);
