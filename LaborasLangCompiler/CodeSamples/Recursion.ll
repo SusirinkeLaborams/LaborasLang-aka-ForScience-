@@ -1,6 +1,11 @@
-﻿auto Func = void(int i)
+﻿auto IsEven = bool(int number)
 {
-	if (i % 2 == 0)
+    return number % 2 == 0;
+};
+
+auto Func = void(int i)
+{
+	if (IsEven(i))
 	{
 		System.Console.WriteLine("{0} is even", i);
 		Func(i + 3);

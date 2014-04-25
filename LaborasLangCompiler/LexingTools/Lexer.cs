@@ -82,16 +82,16 @@ namespace LaborasLangCompiler.LexingTools
                 (?<SumOperator>): '+' / '-';
                 (?<RelationOperator>): '==' / '!=' / '<=' / '>=' / '<' / '>';
 
+                (?<AssignmentOperator>): '+=' / '-=' / '*=' / '/=' / '%=' / '&=' / '|=' / '^=' / '<<=' / '>>=' / '=';    
+
                 (?<PrefixNode>): (PrefixOperator Ws?)* ('(' Sum ')' / FunctionCall / Literal / FullSymbol);
                 (?<SuffixNode>): PrefixNode (Ws? SuffixOperator)*;
                 (?<BinaryOperationNode>): SuffixNode (Ws? BinaryOperator Ws? SuffixNode)*;
                 (?<Product>): BinaryOperationNode (Ws? MultiplicationOperator Ws? BinaryOperationNode)*;
-                (?<Sum>): Product (Ws? SumOperator  Ws? Product)*;
+                (?<Sum>): Assignment / (Product (Ws? SumOperator  Ws? Product)* );
                 (?<BooleanNode>): Sum (Ws? BooleanOperator  Ws? Sum)*;
                 (?<Comparison>): BooleanNode (Ws? RelationOperator Ws? BooleanNode)*;
-                (?<Value>): Comparison;
-
-                (?<AssignmentOperator>): '+=' / '-=' / '*=' / '/=' / '%=' / '&=' / '|=' / '^=' / '<<=' / '>>=' / '=';                
+                (?<Value>): Comparison;            
 
                 (?<UnaryOperator>): '!' / '++' / '--';           
                                 

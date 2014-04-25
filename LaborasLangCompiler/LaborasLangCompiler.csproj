@@ -107,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="CodeSamples\Bottles.ll" />
     <None Include="CodeSamples\DeepRecursion.ll" />
     <None Include="CodeSamples\HelloWorld.ll" />
     <None Include="CodeSamples\Recursion.ll" />

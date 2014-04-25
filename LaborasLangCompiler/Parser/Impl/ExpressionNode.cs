@@ -41,6 +41,8 @@ namespace LaborasLangCompiler.Parser.Impl
                     return UnaryOperatorNode.Parse(parser, parent, lexerNode);
                 case Lexer.FunctionCall:
                     return MethodCallNode.Parse(parser, parent, lexerNode);
+                case Lexer.Assignment:
+                    return AssignmentOperatorNode.Parse(parser, parent, lexerNode);
                 default:
                     throw new NotImplementedException();
             }
