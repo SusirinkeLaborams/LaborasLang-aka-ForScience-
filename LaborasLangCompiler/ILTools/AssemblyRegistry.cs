@@ -154,7 +154,14 @@ namespace LaborasLangCompiler.ILTools
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, string type,
             string methodName, IReadOnlyList<TypeReference> arguments)
         {
-            return GetCompatibleMethod(assembly, GetTypeInternal(type), methodName, arguments);
+            var typeRef = GetTypeInternal(type);
+
+            if (typeRef == null)
+            {
+                throw new Exception(string.Format("Could not find type: {0}."));
+            }
+
+            return GetCompatibleMethod(assembly, typeRef, methodName, arguments);
         }
 
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeReference type,
