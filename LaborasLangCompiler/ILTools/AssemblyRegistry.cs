@@ -99,6 +99,11 @@ namespace LaborasLangCompiler.ILTools
             return GetTypeInternal(typeName) != null;
         }
 
+        public static bool IsNamespaceKnown(string namespaze)
+        {
+            return instance.assemblies.Any(x => x.MainModule.Types.Any(y => y.Namespace.StartsWith(namespaze)));
+        }
+
         public static TypeReference GetType(AssemblyEmitter assemblyScope, string typeName)
         {
             var type = GetTypeInternal(typeName);
