@@ -1,4 +1,5 @@
 ﻿using Mono.Cecil;
+using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,9 +35,5 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             ReturnType = type;
         }
-    }
-    abstract class SymbolNode
-    {
-
     }
 }
