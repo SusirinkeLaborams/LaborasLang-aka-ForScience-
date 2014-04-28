@@ -100,6 +100,7 @@
     <Compile Include="Parser\Impl\RValueNode.cs" />
     <Compile Include="Parser\Impl\SymbolDeclarationNode.cs" />
     <Compile Include="Parser\Impl\Operators\UnaryOperatorNode.cs" />
+    <Compile Include="Parser\Impl\SymbolNode.cs" />
     <Compile Include="Parser\Impl\WhileBlock.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParserNodeInterface.cs" />
