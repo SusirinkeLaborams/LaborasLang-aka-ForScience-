@@ -15,6 +15,10 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             throw new NotImplementedException();
         }
+        private static IExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode, IExpressionNode left = null, List<TypeReference> args = null)
+        {
+            throw new NotImplementedException();
+        }
         public static TypeNode ParseAsType(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var parsed = Parse(parser, parent, lexerNode);
