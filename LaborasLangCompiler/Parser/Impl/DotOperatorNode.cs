@@ -1,4 +1,5 @@
-﻿using Mono.Cecil;
+﻿using LaborasLangCompiler.Parser.Exceptions;
+using Mono.Cecil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -14,21 +15,21 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             throw new NotImplementedException();
         }
-        public static TypeNode ParseAsType(Parser parser, IContainerNode parent, AstNode lexerNode, ISymbolNode left = null)
+        public static TypeNode ParseAsType(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
-            throw new NotImplementedException();
+            var parsed = Parse(parser, parent, lexerNode);
+            if (!(parsed is TypeNode))
+                throw new ParseException("Type expected");
+            else
+                return (TypeNode)parsed;
         }
-        public static NamespaceNode ParseAsNamespace(Parser parser, IContainerNode parent, AstNode lexerNode, NamespaceNode left = null)
+        public static NamespaceNode ParseAsNamespace(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
-            throw new NotImplementedException();
-        }
-        public static LValueNode ParseAsLValue(Parser parser, IContainerNode parent, AstNode lexerNode, ISymbolNode left = null)
-        {
-            throw new NotImplementedException();
-        }
-        public static IFunctionNode ParseAsMethod(Parser parser, IContainerNode parent, AstNode lexerNode, List<TypeReference> args = null, ISymbolNode left = null)
-        {
-            throw new NotImplementedException();
+            var parsed = Parse(parser, parent, lexerNode);
+            if (!(parsed is NamespaceNode))
+                throw new ParseException("Namespace expected");
+            else
+                return (NamespaceNode)parsed;
         }
     }
 }
