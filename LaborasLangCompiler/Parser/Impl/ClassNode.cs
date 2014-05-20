@@ -51,6 +51,14 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             return GetField(name);
         }
+        public TypeNode FindType(string name)
+        {
+            throw new NotImplementedException();
+        }
+        public NamespaceNode FindNamespace(string name)
+        {
+            throw new NotImplementedException();
+        }
         private void AddFieldToEmitter(Parser parser, FieldDefinition field, IExpressionNode init)
         {
             if (!parser.Testing)

@@ -17,7 +17,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ReturnType { get; set; }
         public IExpressionNode ObjectInstance { get; private set; }
         public MethodReference Function { get; private set; }
-        private MethodNode(MethodReference method, TypeReference type)
+        public MethodNode(MethodReference method, TypeReference type)
         {
             Function = method;
             ReturnType = type;

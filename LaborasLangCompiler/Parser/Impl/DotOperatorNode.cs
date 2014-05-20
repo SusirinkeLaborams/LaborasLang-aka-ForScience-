@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser.Exceptions;
+﻿using LaborasLangCompiler.LexingTools;
+using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
 using NPEG;
 using System;
@@ -15,7 +16,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             throw new NotImplementedException();
         }
-        private static IExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode, IExpressionNode left = null, List<TypeReference> args = null)
+        private static IExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode, List<TypeReference> args = null)
         {
             throw new NotImplementedException();
         }
