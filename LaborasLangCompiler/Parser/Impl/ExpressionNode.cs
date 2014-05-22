@@ -53,5 +53,17 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             return String.Format("(ExpressionNode: {0} {1})", ExpressionType, ReturnType);
         }
+        public static bool IsSettable(this IExpressionNode node)
+        {
+            if (node.ExpressionType != ExpressionNodeType.LValue)
+                return false;
+            return true;
+            //properties vistiek dar neveikia
+        }
+        public static bool IsGettable(this IExpressionNode node)
+        {
+            //kol kas viskas gettable
+            return true;
+        }
     }
 }

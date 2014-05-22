@@ -16,18 +16,6 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
         public abstract LValueNodeType LValueType { get; }
-        public static new LValueNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
-        {
-            var value = parser.ValueOf(lexerNode);
-            LValueNode instance = null;
-            if (parent != null)
-                instance = parent.GetSymbol(value);
-            if (instance == null)
-                throw new SymbolNotFoundException("Symbol " + value + " not found");
-            if (instance.ReturnType == null)
-                throw new TypeException("Cannot reference a typeless symbol");
-            return instance;
-        }
         public override string ToString()
         {
             return String.Format("(LValueNode: {0} {1})", LValueType, ReturnType);
