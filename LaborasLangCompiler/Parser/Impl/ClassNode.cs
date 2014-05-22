@@ -55,6 +55,14 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             throw new NotImplementedException();
         }
+        public TypeNode FindType(TypeNode main, string nested)
+        {
+            throw new NotImplementedException();
+        }
+        public TypeNode FindType(NamespaceNode namespaze, string type)
+        {
+            throw new NotImplementedException();
+        }
         public NamespaceNode FindNamespace(string name)
         {
             throw new NotImplementedException();
