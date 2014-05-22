@@ -30,7 +30,8 @@ namespace LaborasLangCompiler.Parser
     public enum ExpressionNodeType
     {
         LValue,
-        RValue
+        RValue,
+        Intermediate//used by the parser with incompletely parsed node
     }
 
     interface IExpressionNode : IParserNode

@@ -51,6 +51,8 @@ namespace LaborasLangCompiler.Parser.Impl
                     return;
                 if (AppendNamespace(name))
                     return;
+                if (AppendExpression(lexerNode))
+                    return;
                 throw new SymbolNotFoundException(String.Format("Symbol {0} not found", parser.ValueOf(lexerNode)));
             }
         }
@@ -142,7 +144,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if(builtNode is NamespaceNode)
                 {
-                    var found = cls.FindType(((NamespaceNode)builtNode).FullNamespace + "." + name);
+                    var found = cls.FindType(((NamespaceNode)builtNode).Value + "." + name);
                     if(found != null)
                     {
                         builtNode = found;
@@ -180,7 +182,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if(builtNode is NamespaceNode)
                 {
-                    var full = ((NamespaceNode)builtNode).FullNamespace + "." + name;
+                    var full = ((NamespaceNode)builtNode).Value + "." + name;
                     var found = cls.FindNamespace(full);
                     if(found != null)
                     {
@@ -236,7 +238,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (!(builtNode is NamespaceNode))
                 throw new ParseException("Namespace expected");
             else
-                return ((NamespaceNode)builtNode).FullNamespace;
+                return ((NamespaceNode)builtNode).Value;
         }
         public TypeReference ExtractType()
         {

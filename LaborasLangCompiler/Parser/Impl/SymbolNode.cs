@@ -8,34 +8,48 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    enum SymbolNodeType
-    {
-        Namespace,
-        Type,
-        LValue
-    }
-    interface ISymbolNode : IExpressionNode
-    {
-        SymbolNodeType SymbolType { get; }
-    }
-    class NamespaceNode : ISymbolNode
+    class SymbolNode : IExpressionNode
     {
         public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Intermediate; } }
         public TypeReference ReturnType { get { return null; } }
-        public SymbolNodeType SymbolType { get { return SymbolNodeType.Namespace; } }
-        public string FullNamespace { get; private set; }
-        public NamespaceNode(string namespaze)
+        public string Value { get; private set; }
+        protected SymbolNode(string value)
         {
-            FullNamespace = namespaze;
+            Value = value;
+        }
+        public static SymbolNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        {
+            return new SymbolNode(parser.ValueOf(lexerNode));
         }
     }
-    class TypeNode : ISymbolNode
+    class NamespaceNode : SymbolNode
+    {
+        public NamespaceNode(string name) : base(name) { }
+    }
+    class SymbolCallNode : SymbolNode
+    {
+        public List<IExpressionNode> Arguments { get; private set; }
+        protected SymbolCallNode(string name, List<IExpressionNode> args) : base(name)
+        {
+            Arguments = args;
+        }
+        public static new SymbolCallNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        {
+            string name = parser.ValueOf(lexerNode.Children[0]);
+            var args = new List<IExpressionNode>();
+            for(int i = 1; i < lexerNode.Children.Count; i++)
+            {
+                args.Add(ExpressionNode.Parse(parser, parent, lexerNode.Children[i]));
+            }
+            return new SymbolCallNode(name, args);
+        }
+    }
+    class TypeNode : IExpressionNode
     {
         public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Intermediate; } }
         public TypeReference ReturnType { get { return null; } }
-        public SymbolNodeType SymbolType { get { return SymbolNodeType.Type; } }
         public TypeReference ParsedType { get; private set; }
         public TypeNode(TypeReference type)
         {
