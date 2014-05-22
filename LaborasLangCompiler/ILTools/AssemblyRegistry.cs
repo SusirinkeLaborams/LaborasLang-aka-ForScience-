@@ -161,12 +161,12 @@ namespace LaborasLangCompiler.ILTools
             return instance.functorTypes[name];
         }
 
-        public static IList<MethodReference> GetMethods(AssemblyEmitter assembly, string typeName, string methodName)
+        public static List<MethodReference> GetMethods(AssemblyEmitter assembly, string typeName, string methodName)
         {
             return GetMethods(assembly, GetTypeInternal(typeName), methodName);
         }
 
-        public static IList<MethodReference> GetMethods(AssemblyEmitter assembly, TypeReference type, string methodName)
+        public static List<MethodReference> GetMethods(AssemblyEmitter assembly, TypeReference type, string methodName)
         {
             var resolvedType = type.Resolve();
 

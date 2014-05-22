@@ -101,7 +101,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 if(builtNode is LValueNode)
                 {
                     //non-static methods
-                    List<MethodReference> methods = (List<MethodReference>)AssemblyRegistry.GetMethods(parser.Assembly, builtNode.ReturnType.FullName, name);
+                    var methods = AssemblyRegistry.GetMethods(parser.Assembly, builtNode.ReturnType.FullName, name);
+                    methods = methods.Where(m => !m.Resolve().IsStatic).ToList();
                     if (methods != null && methods.Count != 0)
                     {
                         builtNode = new AmbiguousMethodNode(methods, builtNode);
@@ -115,7 +116,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 if(builtNode is TypeNode)
                 {
                     //static methods
-                    List<MethodReference> methods = (List<MethodReference>)AssemblyRegistry.GetMethods(parser.Assembly, ((TypeNode)builtNode).ParsedType, name);
+                    var methods = AssemblyRegistry.GetMethods(parser.Assembly, ((TypeNode)builtNode).ParsedType, name);
+                    methods = methods.Where(m => m.Resolve().IsStatic).ToList();
                     if (methods != null && methods.Count != 0)
                     {
                         builtNode = new AmbiguousMethodNode(methods, null);
