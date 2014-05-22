@@ -22,12 +22,12 @@ namespace LaborasLangCompiler.Parser.Impl
             ReturnType = null;
             ObjectInstance = instance;
         }
-        public static MethodNode RemoveAmbiguity(Parser parser, AmbiguousMethodNode methods, List<TypeReference> argTypes)
+        public MethodNode RemoveAmbiguity(Parser parser, List<TypeReference> argTypes)
         {
             MethodReference method = null;
             try
             {
-                method = AssemblyRegistry.GetBestMatch(argTypes, methods.methods);
+                method = AssemblyRegistry.GetBestMatch(argTypes, methods);
                 //TODO: make this lazy
                 return new MethodNode(method, AssemblyRegistry.GetFunctorType(parser.Assembly, method));
             }

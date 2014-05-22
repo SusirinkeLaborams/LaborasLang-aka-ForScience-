@@ -82,7 +82,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (AppendMethod(parser.ValueOf(lexerNode.Children[0])))
             {
                 var node = (AmbiguousMethodNode)builtNode;
-                var method = AmbiguousMethodNode.RemoveAmbiguity(parser, node, types);
+                var method = node.RemoveAmbiguity(parser, types);
                 builtNode = new MethodCallNode(method, method.Function.ReturnType, args);
                 return true;
             }
