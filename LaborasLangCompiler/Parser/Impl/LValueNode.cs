@@ -81,7 +81,7 @@ namespace LaborasLangCompiler.Parser.Impl
     }
     class FieldDeclarationNode : FieldNode
     {
-        public ExpressionNode Initializer { get; set; }
+        public IExpressionNode Initializer { get; set; }
         public FieldDeclarationNode(string name, TypeReference type) : base(name, type)
         {
         }

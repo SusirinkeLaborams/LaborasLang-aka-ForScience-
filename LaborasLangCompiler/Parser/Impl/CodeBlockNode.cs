@@ -17,12 +17,12 @@ namespace LaborasLangCompiler.Parser.Impl
         public override NodeType Type { get { return NodeType.CodeBlockNode; } }
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
         public bool Returns { get; private set; }
-        protected List<ParserNode> nodes;
+        protected List<IParserNode> nodes;
         protected Dictionary<string, LValueNode> symbols;
         private IContainerNode parent;
         protected CodeBlockNode(IContainerNode parent)
         {
-            nodes = new List<ParserNode>();
+            nodes = new List<IParserNode>();
             symbols = new Dictionary<string, LValueNode>();
             this.parent = parent;
             Returns = false;
@@ -49,14 +49,14 @@ namespace LaborasLangCompiler.Parser.Impl
             symbols.Add(name, new LocalVariableNode(new VariableDefinition(name, type)));
             return symbols[name];
         }
-        private void AddNode(ParserNode node)
+        private void AddNode(IParserNode node)
         {
             if (node is IReturning)
                 if (((IReturning)node).Returns)
                     Returns = true;
             nodes.Add(node);
         }
-        private void AddExpression(ExpressionNode node, Parser parser)
+        private void AddExpression(IExpressionNode node, Parser parser)
         {
             if (node.ReturnType.FullName == parser.Primitives[Parser.Void].FullName)
                 AddNode(node);
@@ -91,7 +91,7 @@ namespace LaborasLangCompiler.Parser.Impl
                             instance.AddExpression(AssignmentOperatorNode.Parse(parser, instance, sentence), parser);
                             break;
                         case Lexer.FunctionCall:
-                            instance.AddExpression(MethodCallNode.Parse(parser, instance, sentence), parser);
+                            instance.AddExpression(DotOperatorNode.Parse(parser, instance, sentence).ExtractExpression(), parser);
                             break;
                         case Lexer.Loop:
                             instance.AddNode(WhileBlock.Parse(parser, instance, sentence));

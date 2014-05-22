@@ -24,54 +24,6 @@ namespace LaborasLangCompiler.Parser.Impl
             Arguments = args;
             ReturnType = returnType;
         }
-        public static new MethodCallNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
-        {
-            var instance = new MethodCallNode();
-            var args = new List<IExpressionNode>();
-            for (int i = 1; i < lexerNode.Children.Count; i++)
-            {
-                args.Add(ExpressionNode.Parse(parser, parent, lexerNode.Children[i]));
-            }
-            var argTypes = new List<TypeReference>();
-            foreach(var arg in args)
-            {
-                argTypes.Add(arg.ReturnType);
-            }
-            instance.Arguments = args;
-            instance.ParseMethod(parser, parent, lexerNode.Children[0], argTypes);
-            return instance;
-        }
-        private void ParseMethod(Parser parser, IContainerNode parent, AstNode lexerNode, List<TypeReference> args)
-        {
-            string type = lexerNode.Token.Name;
-            ExpressionNode method;
-            if (type == Lexer.Symbol || type == Lexer.FullSymbol)
-            {
-                if (lexerNode.Children.Count == 1)
-                {
-                    method = LValueNode.Parse(parser, parent, lexerNode);
-                }
-                else
-                {
-                    method = MethodNode.Parse(parser, parent, lexerNode, args);
-                }
-            }
-            else
-            {
-                method = ExpressionNode.Parse(parser, parent, lexerNode);
-            }
-
-            if (!method.ReturnType.IsFunctorType())
-                throw new TypeException("Type " + method.ReturnType + " cannot be called as a function");
-            List<TypeReference> methodArgs;
-            ReturnType = ILHelpers.GetFunctorReturnTypeAndArguments(parser.Assembly, method.ReturnType, out methodArgs);
-            for (int i = 0; i < args.Count; i++)
-            {
-                if (!args[i].IsAssignableTo(methodArgs[i]))
-                    throw new TypeException(String.Format("Argument {0}, {1} expected, {2} received", i - 1, methodArgs[i], args[i]));
-            }
-            Function = method;
-        }
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder("(MethodCall: Return: ");

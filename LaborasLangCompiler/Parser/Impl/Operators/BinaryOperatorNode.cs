@@ -19,7 +19,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override RValueNodeType RValueType { get { return RValueNodeType.BinaryOperator; } }
         public BinaryOperatorNodeType BinaryOperatorType { get; set; }
         public override TypeReference ReturnType { get; set; }
-        public static new ExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static new IExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             if (lexerNode.Children.Count == 1)
             {
@@ -27,7 +27,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                ExpressionNode left, right;
+                IExpressionNode left, right;
                 string op;
                 left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
                 for (int i = 1; i < lexerNode.Children.Count; i += 2)

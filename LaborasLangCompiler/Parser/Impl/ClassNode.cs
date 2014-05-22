@@ -113,7 +113,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 switch (sentence.Token.Name)
                 {
                     case Lexer.DeclarationAndAssignment:
-                        ExpressionNode init = null;
+                        IExpressionNode init = null;
                         var field = instance.fields[parser.ValueOf(sentence.Children[1])];
                         if (sentence.Children[2].Token.Name == Lexer.Function)
                             init = FunctionDeclarationNode.Parse(parser, instance, sentence.Children[2], field.Name);

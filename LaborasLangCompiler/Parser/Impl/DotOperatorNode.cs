@@ -267,5 +267,12 @@ namespace LaborasLangCompiler.Parser.Impl
             else
                 return ((TypeNode)builtNode).ParsedType;
         }
+        public LValueNode ExtractLValue()
+        {
+            if (!(builtNode is LValueNode))
+                throw new ParseException("LValue expected");
+            else
+                return (LValueNode)builtNode;
+        }
     }
 }
