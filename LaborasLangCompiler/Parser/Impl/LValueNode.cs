@@ -68,7 +68,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public FieldReference Field { get; set; }
         public override TypeReference ReturnType { get; set; }
         public string Name { get; set; }
-        public FieldNode(ExpressionNode instance, FieldReference field)
+        public FieldNode(IExpressionNode instance, FieldReference field)
         {
             ObjectInstance = instance;
             Field = field;

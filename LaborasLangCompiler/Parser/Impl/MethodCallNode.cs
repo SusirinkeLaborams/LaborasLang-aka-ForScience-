@@ -17,6 +17,13 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ReturnType { get; set; }
         public IReadOnlyList<IExpressionNode> Arguments { get; private set; }
         public IExpressionNode Function { get; private set; }
+        public MethodCallNode() { }
+        public MethodCallNode(IExpressionNode function, TypeReference returnType, IReadOnlyList<IExpressionNode> args)
+        {
+            Function = function;
+            Arguments = args;
+            ReturnType = returnType;
+        }
         public static new MethodCallNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var instance = new MethodCallNode();

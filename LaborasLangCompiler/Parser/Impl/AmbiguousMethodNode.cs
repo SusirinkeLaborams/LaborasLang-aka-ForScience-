@@ -9,15 +9,18 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class AmbiguousMethodNode : RValueNode
+    class AmbiguousMethodNode : RValueNode, IFunctionNode
     {
         public override TypeReference ReturnType { get; set; }
         public override RValueNodeType RValueType { get { return RValueNodeType.Function; } }
+        public MethodReference Function { get { return null; } }
+        public IExpressionNode ObjectInstance { get; private set; }
         private List<MethodReference> methods;
-        public AmbiguousMethodNode(List<MethodReference> methods)
+        public AmbiguousMethodNode(List<MethodReference> methods, IExpressionNode instance)
         {
             this.methods = methods;
             ReturnType = null;
+            ObjectInstance = instance;
         }
         public static MethodNode RemoveAmbiguity(Parser parser, AmbiguousMethodNode methods, List<TypeReference> argTypes)
         {
