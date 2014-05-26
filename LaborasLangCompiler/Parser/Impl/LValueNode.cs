@@ -12,10 +12,11 @@ using LaborasLangCompiler.LexingTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    abstract class LValueNode : ExpressionNode, ILValueNode
+    abstract class LValueNode : ExpressionNode, ILValueNode, ISymbolNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
         public abstract LValueNodeType LValueType { get; }
+        public SymbolNodeType SymbolType { get { return SymbolNodeType.LValue; } }
         public static new LValueNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var value = parser.ValueOf(lexerNode);
