@@ -25,6 +25,7 @@ namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
             {
                 new RemoveNOPs(),
                 new RemoveRedundantBranches(),
+                new EliminateDeadCode(),
                 new AddTailCalls()
             };
         }
