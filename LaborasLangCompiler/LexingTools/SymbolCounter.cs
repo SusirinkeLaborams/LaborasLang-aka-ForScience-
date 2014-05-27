@@ -9,7 +9,7 @@ namespace LaborasLangCompiler.LexingTools
 {
     class SymbolCounter
     {
-        public FilePosition[] Positions { get; set; }
+        public FilePosition[] Positions { get; private set; }
 
         public struct FilePosition
         {
@@ -27,12 +27,12 @@ namespace LaborasLangCompiler.LexingTools
         {
             Positions = new FilePosition[file.Length];
             int row = 1, column = 1;
-
-            for (int i = 0; i < file.Length; i++)
+            var bytes = file.Text(0, file.Length - 1);
+            for (int i = 0; i < bytes.Length; i++)
             {
                 Positions[i] = new FilePosition(row, column);
 
-                if (System.Text.Encoding.UTF8.GetString(file.Text(i, i)) == "\n")
+                if (Encoding.UTF8.GetString(bytes, i, 1) == "\n")
                 {
                     row++;
                     column = 1;
