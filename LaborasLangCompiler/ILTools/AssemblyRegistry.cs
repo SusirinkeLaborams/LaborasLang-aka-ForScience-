@@ -247,8 +247,15 @@ namespace LaborasLangCompiler.ILTools
             {
                 return null;
             }
+            
+            var field = resolvedType.Fields.SingleOrDefault(x => x.Name == fieldName);
 
-            return ScopeToAssembly(assembly, resolvedType.Fields.SingleOrDefault(x => x.Name == fieldName));
+            if (field == null)
+            {
+                return null;
+            }
+
+            return ScopeToAssembly(assembly, field);
         }
 
         #endregion
