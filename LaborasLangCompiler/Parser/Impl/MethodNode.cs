@@ -17,23 +17,15 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ReturnType { get; set; }
         public IExpressionNode ObjectInstance { get; private set; }
         public MethodReference Function { get; private set; }
-        public MethodNode(MethodReference method, TypeReference type)
+        public MethodNode(MethodReference method, TypeReference type, IExpressionNode instance)
         {
             Function = method;
             ReturnType = type;
-        }
-        public static MethodNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode, List<TypeReference> args)
-        {
-            var full = parser.ValueOf(lexerNode);
-            var index = full.LastIndexOf('.');
-            var type = full.Substring(0, index);
-            var name = full.Substring(index + 1);
-            var method = AssemblyRegistry.GetCompatibleMethod(parser.Assembly, type.ToString(), name, args);
-            return new MethodNode(method, AssemblyRegistry.GetFunctorType(parser.Assembly, method));
+            ObjectInstance = instance;
         }
         public override string ToString()
         {
-            return String.Format("(Method: {0})", Function.FullName);
+            return String.Format("(Method: Instance: {0}, Name: {1})", ObjectInstance == null ? "null" : ObjectInstance.ToString(), Function.FullName);
         }
     }
 }

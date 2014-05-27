@@ -27,9 +27,9 @@ namespace LaborasLangCompiler.Parser.Impl
             MethodReference method = null;
             try
             {
-                method = AssemblyRegistry.GetBestMatch(argTypes, methods);
+                method = AssemblyRegistry.GetCompatibleMethod(methods, argTypes);
                 //TODO: make this lazy
-                return new MethodNode(method, AssemblyRegistry.GetFunctorType(parser.Assembly, method));
+                return new MethodNode(method, AssemblyRegistry.GetFunctorType(parser.Assembly, method), ObjectInstance);
             }
             catch(Exception e)
             {

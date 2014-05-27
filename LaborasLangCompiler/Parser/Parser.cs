@@ -35,6 +35,7 @@ namespace LaborasLangCompiler.Parser
         public const string String = "string";
         public const string Void   = "void";
         public const string Auto   = "auto";
+        public const string Object = "object";
         public Parser(AssemblyEmitter assembly, AstNode tree, ByteInputIterator source, string filename, bool testing = false)
         {
             Assembly = assembly;

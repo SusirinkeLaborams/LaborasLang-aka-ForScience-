@@ -181,8 +181,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if(builtNode is NamespaceNode)
                 {
-                    var full = ((NamespaceNode)builtNode).Value + "." + node.Value;
-                    var found = cls.FindNamespace(full);
+                    var found = cls.FindNamespace((NamespaceNode)builtNode, node.Value);
                     if(found != null)
                     {
                         builtNode = found;
@@ -215,14 +214,14 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     var type = ((TypeNode)builtNode).ParsedType;
                     field = AssemblyRegistry.GetField(parser.Assembly, type, name);
-                    if (!field.Resolve().IsStatic)
+                    if (field != null && !field.Resolve().IsStatic)
                         field = null;
                 }
                 else
                 {
                     var type = builtNode.ReturnType;
                     field = AssemblyRegistry.GetField(parser.Assembly, type, name);
-                    if (field.Resolve().IsStatic)
+                    if (field != null && field.Resolve().IsStatic)
                         field = null;
                 }
 
@@ -274,7 +273,7 @@ namespace LaborasLangCompiler.Parser.Impl
             else
                 return (LValueNode)builtNode;
         }
-        public MethodNode ExtractMethod(List<TypeReference> types)
+        public IExpressionNode ExtractMethod(List<TypeReference> types)
         {
             if (builtNode is LValueNode)
             {
@@ -283,7 +282,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     var method = AssemblyRegistry.GetMethods(parser.Assembly, builtNode.ReturnType, "Invoke").Single();
                     if (ILHelpers.MatchesArgumentList(method, types))
                     {
-                        return new MethodNode(method, builtNode.ReturnType);
+                        return (IExpressionNode)builtNode;
                     }
                 }
             }

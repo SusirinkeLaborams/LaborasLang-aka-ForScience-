@@ -17,14 +17,18 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.ClassNode; } }
         private Dictionary<string, FieldDeclarationNode> fields;
+        private Dictionary<string, TypeReference> declaredTypes;
         private ClassNode parent;
+        private Parser parser;
         public TypeEmitter TypeEmitter { get; private set; }
         private List<Tuple<string, FunctionDeclarationNode>> methods = new List<Tuple<string,FunctionDeclarationNode>>();
         private int lambdaCounter = 0;
         private ClassNode(Parser parser, ClassNode parent)
         {
             this.parent = parent;
+            this.parser = parser;
             fields = new Dictionary<string, FieldDeclarationNode>();
+            declaredTypes = new Dictionary<string, TypeReference>();
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
         private void AddField(string name, TypeReference type)
@@ -53,19 +57,45 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public TypeNode FindType(string name)
         {
-            throw new NotImplementedException();
+            if (declaredTypes.ContainsKey(name))
+                return new TypeNode(declaredTypes[name]);
+
+            var type = AssemblyRegistry.GetType(parser.Assembly, name);
+            if(type != null)
+                return new TypeNode(type);
+
+            return null;
         }
         public TypeNode FindType(TypeNode main, string nested)
         {
-            throw new NotImplementedException();
+            var type = AssemblyRegistry.GetType(parser.Assembly, main.ParsedType.FullName + "." + nested);
+            if(type != null)
+                return new TypeNode(type);
+
+            return null;
         }
-        public TypeNode FindType(NamespaceNode namespaze, string type)
+        public TypeNode FindType(NamespaceNode namespaze, string name)
         {
-            throw new NotImplementedException();
+            var type = AssemblyRegistry.GetType(parser.Assembly, namespaze.Value + "." + name);
+            if (type != null)
+                return new TypeNode(type);
+
+            return null;
         }
         public NamespaceNode FindNamespace(string name)
         {
-            throw new NotImplementedException();
+            if (AssemblyRegistry.IsNamespaceKnown(name))
+                return new NamespaceNode(name);
+
+            return null;
+        }
+        public NamespaceNode FindNamespace(NamespaceNode left, string right)
+        {
+            var full = left.Value + "." + right;
+            if (AssemblyRegistry.IsNamespaceKnown(full))
+                return new NamespaceNode(full);
+
+            return null;
         }
         private void AddFieldToEmitter(Parser parser, FieldDefinition field, IExpressionNode init)
         {
@@ -78,7 +108,10 @@ namespace LaborasLangCompiler.Parser.Impl
             AstNode sentence;
 
             if (parser.Root == null)
+            {
                 parser.Root = instance;
+                instance.AddDefaultAliases();
+            }
 
             //symbols
             foreach (var node in lexerNode.Children)
@@ -206,6 +239,33 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             
             return builder.Append(")").ToString();
+        }
+        private void AddDefaultAliases()
+        {
+            declaredTypes.Add(Parser.Bool, parser.Assembly.TypeToTypeReference(typeof(bool)));
+
+            declaredTypes.Add(Parser.Char, parser.Assembly.TypeToTypeReference(typeof(char)));
+            declaredTypes.Add(Parser.Byte, parser.Assembly.TypeToTypeReference(typeof(sbyte)));
+            declaredTypes.Add(Parser.UByte, parser.Assembly.TypeToTypeReference(typeof(byte)));
+
+            declaredTypes.Add(Parser.Word, parser.Assembly.TypeToTypeReference(typeof(short)));
+            declaredTypes.Add(Parser.UWord, parser.Assembly.TypeToTypeReference(typeof(ushort)));
+
+            declaredTypes.Add(Parser.Int, parser.Assembly.TypeToTypeReference(typeof(int)));
+            declaredTypes.Add(Parser.UInt, parser.Assembly.TypeToTypeReference(typeof(uint)));
+
+            declaredTypes.Add(Parser.Long, parser.Assembly.TypeToTypeReference(typeof(long)));
+            declaredTypes.Add(Parser.ULong, parser.Assembly.TypeToTypeReference(typeof(ulong)));
+
+            declaredTypes.Add(Parser.Float, parser.Assembly.TypeToTypeReference(typeof(float)));
+            declaredTypes.Add(Parser.Double, parser.Assembly.TypeToTypeReference(typeof(double)));
+            declaredTypes.Add(Parser.Decimal, parser.Assembly.TypeToTypeReference(typeof(decimal)));
+
+            declaredTypes.Add(Parser.String, parser.Assembly.TypeToTypeReference(typeof(string)));
+
+            declaredTypes.Add(Parser.Void, parser.Assembly.TypeToTypeReference(typeof(void)));
+            declaredTypes.Add(Parser.Object, parser.Assembly.TypeToTypeReference(typeof(object)));
+            declaredTypes.Add(Parser.Auto, null);
         }
     }
 }
