@@ -106,6 +106,7 @@
     <Compile Include="Parser\Impl\WhileBlock.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParserNodeInterface.cs" />
+    <Compile Include="Parser\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

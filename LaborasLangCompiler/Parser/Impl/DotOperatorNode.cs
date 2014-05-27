@@ -274,5 +274,25 @@ namespace LaborasLangCompiler.Parser.Impl
             else
                 return (LValueNode)builtNode;
         }
+        public MethodNode ExtractMethod(List<TypeReference> types)
+        {
+            if (builtNode is LValueNode)
+            {
+                if (builtNode.ReturnType.IsFunctorType())
+                {
+                    var method = AssemblyRegistry.GetMethods(parser.Assembly, builtNode.ReturnType, "Invoke").Single();
+                    if (ILHelpers.MatchesArgumentList(method, types))
+                    {
+                        return new MethodNode(method, builtNode.ReturnType);
+                    }
+                }
+            }
+            if (builtNode is AmbiguousMethodNode)
+            {
+                var method = ((AmbiguousMethodNode)builtNode).RemoveAmbiguity(parser, types);
+                return method;
+            }
+            throw new ParseException("Method expected");
+        }
     }
 }

@@ -42,7 +42,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.SuffixNode:
                     return UnaryOperatorNode.Parse(parser, parent, lexerNode);
                 case Lexer.FunctionCall:
-                    return SymbolCallNode.Parse(parser, parent, lexerNode);
+                    return MethodCallNode.Parse(parser, parent, lexerNode);
                 case Lexer.Assignment:
                     return AssignmentOperatorNode.Parse(parser, parent, lexerNode);
                 default:
@@ -52,18 +52,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public override string ToString()
         {
             return String.Format("(ExpressionNode: {0} {1})", ExpressionType, ReturnType);
-        }
-        public static bool IsSettable(this IExpressionNode node)
-        {
-            if (node.ExpressionType != ExpressionNodeType.LValue)
-                return false;
-            return true;
-            //properties vistiek dar neveikia
-        }
-        public static bool IsGettable(this IExpressionNode node)
-        {
-            //kol kas viskas gettable
-            return true;
         }
     }
 }

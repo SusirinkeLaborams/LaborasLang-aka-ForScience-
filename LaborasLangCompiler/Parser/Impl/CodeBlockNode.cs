@@ -91,7 +91,7 @@ namespace LaborasLangCompiler.Parser.Impl
                             instance.AddExpression(AssignmentOperatorNode.Parse(parser, instance, sentence), parser);
                             break;
                         case Lexer.FunctionCall:
-                            instance.AddExpression(DotOperatorNode.Parse(parser, instance, sentence).ExtractExpression(), parser);
+                            instance.AddExpression(MethodCallNode.Parse(parser, instance, sentence), parser);
                             break;
                         case Lexer.Loop:
                             instance.AddNode(WhileBlock.Parse(parser, instance, sentence));
