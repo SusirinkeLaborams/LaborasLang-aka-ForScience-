@@ -59,6 +59,8 @@ namespace LaborasLangCompiler.LexingTools
         public const string BooleanOperator = "BooleanOperator";
         public const string BooleanNode = "BooleanNode";
         public const string Arguments = "Arguments";
+        public const string Create = "Create";
+
         private AExpression GrammarTree;
         private static string Grammar = @"
  
@@ -101,7 +103,7 @@ namespace LaborasLangCompiler.LexingTools
                 (?<ReturnSentence>): 'return' (Ws (Function / Value / FullSymbol))?;
                 (?<FunctionType>): Type;
                 (?<FunctionArgument>): Value / FunctionCall;
-                (?<FunctionCall>): FullSymbol Ws? 
+                (?<FunctionCall>): (?<Create> 'create')? Ws? FullSymbol Ws? 
                     (?<Arguments>
                     '('
                         Ws?
