@@ -1,6 +1,8 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
+using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +18,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public MethodReference Function { get { return null; } }
         public IExpressionNode ObjectInstance { get; private set; }
         private List<MethodReference> methods;
-        public AmbiguousMethodNode(List<MethodReference> methods, IExpressionNode instance)
+        public AmbiguousMethodNode(List<MethodReference> methods, IExpressionNode instance, SequencePoint sequencePoint)
+            : base(sequencePoint)
         {
             this.methods = methods;
             ReturnType = null;
@@ -29,7 +32,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 method = AssemblyRegistry.GetCompatibleMethod(methods, argTypes);
                 //TODO: make this lazy
-                return new MethodNode(method, AssemblyRegistry.GetFunctorType(parser.Assembly, method), ObjectInstance);
+                return new MethodNode(method, AssemblyRegistry.GetFunctorType(parser.Assembly, method), ObjectInstance, SequencePoint);
             }
             catch(Exception e)
             {

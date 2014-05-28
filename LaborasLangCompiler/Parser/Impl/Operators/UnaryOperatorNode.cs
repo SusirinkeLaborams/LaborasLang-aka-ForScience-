@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.ILTools;
+using Mono.Cecil.Cil;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -18,6 +19,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public UnaryOperatorNodeType UnaryOperatorType { get; private set; }
         public IExpressionNode Operand { get; private set; }
         private UnaryOperatorNode(UnaryOperatorNodeType type, IExpressionNode operand)
+            : base(operand.SequencePoint)
         {
             Operand = operand;
             UnaryOperatorType = type;

@@ -1,4 +1,6 @@
 ﻿using LaborasLangCompiler.Parser;
+using Mono.Cecil.Cil;
+using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +13,6 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
         public abstract RValueNodeType RValueType { get; }
+        protected RValueNode(SequencePoint sequencePoint) : base(sequencePoint) { }
     }
 }

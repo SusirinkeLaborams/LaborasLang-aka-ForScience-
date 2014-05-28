@@ -2,6 +2,7 @@
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace LaborasLangCompiler.Parser
         public AssemblyEmitter Assembly { get; private set; }
         public ClassNode Root { get; set; }
         public string Filename { get; private set; }
+        public Document Document { get; private set; }
         private ByteInputIterator source;
         public IReadOnlyDictionary<string, TypeReference> Primitives { get; private set; }
         public bool Testing { get; private set; }
@@ -42,6 +44,10 @@ namespace LaborasLangCompiler.Parser
             Testing = testing;
             this.source = source;
             Filename = filename;
+            Document = new Document(filename);
+            Document.Language = DocumentLanguage.Other;
+            Document.LanguageVendor = DocumentLanguageVendor.Other;
+            Document.Type = DocumentType.Text;
 
             var primitives = new Dictionary<string, TypeReference>();
             primitives.Add(Bool, Assembly.TypeToTypeReference(typeof(bool)));
@@ -75,6 +81,10 @@ namespace LaborasLangCompiler.Parser
         public string ValueOf(AstNode node)
         {
             return Encoding.UTF8.GetString(source.Text(node.Token.Start, node.Token.End));
+        }
+        public SequencePoint GetSequencePoint(AstNode lexerNode)
+        {
+            return new SequencePoint(Document);
         }
     }
 }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.ILTools;
+using Mono.Cecil.Cil;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -19,6 +20,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override RValueNodeType RValueType { get { return RValueNodeType.BinaryOperator; } }
         public BinaryOperatorNodeType BinaryOperatorType { get; set; }
         public override TypeReference ReturnType { get; set; }
+        protected BinaryOperatorNode(SequencePoint point) : base(point) { }
         public static new IExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             if (lexerNode.Children.Count == 1)
@@ -41,7 +43,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static BinaryOperatorNode Parse(Parser parser, string op, IExpressionNode left, IExpressionNode right)
         {
-            var instance = new BinaryOperatorNode();
+            var instance = new BinaryOperatorNode(left.SequencePoint);
             instance.BinaryOperatorType = Operators[op];
             instance.LeftOperand = left;
             instance.RightOperand = right;

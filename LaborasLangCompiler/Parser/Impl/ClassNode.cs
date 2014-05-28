@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.ILTools.Types;
 using LaborasLangCompiler.LexingTools;
+using Mono.Cecil.Cil;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -23,7 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeEmitter TypeEmitter { get; private set; }
         private List<Tuple<string, FunctionDeclarationNode>> methods = new List<Tuple<string,FunctionDeclarationNode>>();
         private int lambdaCounter = 0;
-        private ClassNode(Parser parser, ClassNode parent)
+        private ClassNode(Parser parser, ClassNode parent, SequencePoint point) : base(point)
         {
             this.parent = parent;
             this.parser = parser;
@@ -31,9 +32,9 @@ namespace LaborasLangCompiler.Parser.Impl
             declaredTypes = new Dictionary<string, TypeReference>();
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
-        private void AddField(string name, TypeReference type)
+        private void AddField(string name, TypeReference type, SequencePoint point)
         {
-            fields.Add(name, new FieldDeclarationNode(name, type));
+            fields.Add(name, new FieldDeclarationNode(name, type, point));
         }
         public void AddMethod(FunctionDeclarationNode method, string name)
         {
@@ -55,48 +56,48 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             return GetField(name);
         }
-        public TypeNode FindType(string name)
+        public TypeNode FindType(string name, SequencePoint point)
         {
             if (parser.Primitives.ContainsKey(name))
-                return new TypeNode(parser.Primitives[name]);
+                return new TypeNode(parser.Primitives[name], point);
 
             if (declaredTypes.ContainsKey(name))
-                return new TypeNode(declaredTypes[name]);
+                return new TypeNode(declaredTypes[name], point);
 
             var type = AssemblyRegistry.GetType(parser.Assembly, name);
             if(type != null)
-                return new TypeNode(type);
+                return new TypeNode(type, point);
 
             return null;
         }
-        public TypeNode FindType(TypeNode main, string nested)
+        public TypeNode FindType(TypeNode main, string nested, SequencePoint point)
         {
             var type = AssemblyRegistry.GetType(parser.Assembly, main.ParsedType.FullName + "." + nested);
             if(type != null)
-                return new TypeNode(type);
+                return new TypeNode(type, point);
 
             return null;
         }
-        public TypeNode FindType(NamespaceNode namespaze, string name)
+        public TypeNode FindType(NamespaceNode namespaze, string name, SequencePoint point)
         {
             var type = AssemblyRegistry.GetType(parser.Assembly, namespaze.Value + "." + name);
             if (type != null)
-                return new TypeNode(type);
+                return new TypeNode(type, point);
 
             return null;
         }
-        public NamespaceNode FindNamespace(string name)
+        public NamespaceNode FindNamespace(string name, SequencePoint point)
         {
             if (AssemblyRegistry.IsNamespaceKnown(name))
-                return new NamespaceNode(name);
+                return new NamespaceNode(name, point);
 
             return null;
         }
-        public NamespaceNode FindNamespace(NamespaceNode left, string right)
+        public NamespaceNode FindNamespace(NamespaceNode left, string right, SequencePoint point)
         {
             var full = left.Value + "." + right;
             if (AssemblyRegistry.IsNamespaceKnown(full))
-                return new NamespaceNode(full);
+                return new NamespaceNode(full, point);
 
             return null;
         }
@@ -107,7 +108,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static ClassNode Parse(Parser parser, ClassNode parentClass, AstNode lexerNode)
         {
-            var instance = new ClassNode(parser, parentClass);
+            var instance = new ClassNode(parser, parentClass, parser.GetSequencePoint(lexerNode));
             AstNode sentence;
 
             if (parser.Root == null)
@@ -216,11 +217,11 @@ namespace LaborasLangCompiler.Parser.Impl
                 if (declaredType == null && lexerNode.Children[2].Token.Name == Lexer.Function)
                 {
                     declaredType = FunctionDeclarationNode.ParseType(parser, klass, lexerNode.Children[2]);
-                    klass.AddField(name, declaredType);
+                    klass.AddField(name, declaredType, parser.GetSequencePoint(lexerNode));
                 }
                 else
                 {
-                    klass.AddField(name, declaredType);
+                    klass.AddField(name, declaredType, parser.GetSequencePoint(lexerNode));
                 }
             }
         }

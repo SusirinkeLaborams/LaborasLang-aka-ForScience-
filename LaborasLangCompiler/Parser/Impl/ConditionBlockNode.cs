@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.Parser.Exceptions;
+using Mono.Cecil.Cil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public IExpressionNode Condition { get; private set; }
         public ICodeBlockNode TrueBlock { get; private set; }
         public ICodeBlockNode FalseBlock { get; private set; }
+        protected ConditionBlockNode(SequencePoint sequencePoint) : base(sequencePoint) { }
         public bool Returns
         {
             get
@@ -23,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static ConditionBlockNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
-            var instance = new ConditionBlockNode();
+            var instance = new ConditionBlockNode(parser.GetSequencePoint(lexerNode));
             instance.Condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[0].Children[0]);
             if (instance.Condition.ReturnType.FullName != parser.Primitives[Parser.Bool].FullName)
                 throw new TypeException("Condition must be a boolean expression");

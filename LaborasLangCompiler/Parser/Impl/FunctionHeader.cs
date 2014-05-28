@@ -30,11 +30,11 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.FunctionType = AssemblyRegistry.GetFunctorType(parser.Assembly, instance.ReturnType, types);
             return instance;
         }
-        public static FunctionArgumentNode ParseArgument(Parser parser, IContainerNode parent,  AstNode lexerNode)
+        public static FunctionArgumentNode ParseArgument(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var type = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
             var name = parser.ValueOf(lexerNode.Children[1]);
-            return new FunctionArgumentNode(new ParameterDefinition(name, ParameterAttributes.None, type), true);
+            return new FunctionArgumentNode(new ParameterDefinition(name, ParameterAttributes.None, type), true, parser.GetSequencePoint(lexerNode));
         }
     }
 }

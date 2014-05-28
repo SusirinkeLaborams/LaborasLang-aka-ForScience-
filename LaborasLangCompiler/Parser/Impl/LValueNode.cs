@@ -16,6 +16,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
         public abstract LValueNodeType LValueType { get; }
+        protected LValueNode(SequencePoint point) : base(point) { }
     }
 
     class LocalVariableNode : LValueNode, ILocalVariableNode
@@ -23,7 +24,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public override LValueNodeType LValueType { get { return LValueNodeType.LocalVariable; } }
         public VariableDefinition LocalVariable { get; set; }
         public override TypeReference ReturnType { get; set; }
-        public LocalVariableNode(VariableDefinition variable)
+        public LocalVariableNode(VariableDefinition variable, SequencePoint point)
+            : base(point)
         {
             LocalVariable = variable;
             ReturnType = variable.VariableType;
@@ -40,7 +42,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public ParameterDefinition Param { get; set; }
         public bool IsFunctionStatic { get; set; }
         public override TypeReference ReturnType { get; set; }
-        public FunctionArgumentNode(ParameterDefinition param, bool isFunctionStatic)
+        public FunctionArgumentNode(ParameterDefinition param, bool isFunctionStatic, SequencePoint point)
+            : base(point)
         {
             Param = param;
             IsFunctionStatic = isFunctionStatic;
@@ -59,13 +62,15 @@ namespace LaborasLangCompiler.Parser.Impl
         public FieldReference Field { get; set; }
         public override TypeReference ReturnType { get; set; }
         public string Name { get; set; }
-        public FieldNode(IExpressionNode instance, FieldReference field)
+        public FieldNode(IExpressionNode instance, FieldReference field, SequencePoint point)
+            : base(point)
         {
             ObjectInstance = instance;
             Field = field;
             ReturnType = field.FieldType;
         }
-        public FieldNode(string name, TypeReference type)
+        public FieldNode(string name, TypeReference type, SequencePoint point)
+            : base(point)
         {
             Name = name;
             ReturnType = type;
@@ -78,7 +83,8 @@ namespace LaborasLangCompiler.Parser.Impl
     class FieldDeclarationNode : FieldNode
     {
         public IExpressionNode Initializer { get; set; }
-        public FieldDeclarationNode(string name, TypeReference type) : base(name, type)
+        public FieldDeclarationNode(string name, TypeReference type, SequencePoint point)
+            : base(name, type, point)
         {
         }
         public FieldReference CreateFieldDefinition(FieldAttributes attributes)

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.LexingTools;
+using Mono.Cecil.Cil;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -17,7 +18,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public override RValueNodeType RValueType { get { return RValueNodeType.Literal; } }
         public dynamic Value { get; private set; }
         public override TypeReference ReturnType { get; set; }
-        private LiteralNode(dynamic value, TypeReference type)
+        private LiteralNode(dynamic value, TypeReference type, SequencePoint point)
+            : base(point)
         {
             ReturnType = type;
             Value = value;
@@ -27,19 +29,20 @@ namespace LaborasLangCompiler.Parser.Impl
             lexerNode = lexerNode.Children[0];
             string type = lexerNode.Token.Name;
             string value = parser.ValueOf(lexerNode);
+            var point = parser.GetSequencePoint(lexerNode);
             try
             {
                 switch (type)
                 {
                     case Lexer.StringLiteral:
-                        return new LiteralNode(value.Substring(1, value.Length - 2), parser.Primitives[Parser.String]);
+                        return new LiteralNode(value.Substring(1, value.Length - 2), parser.Primitives[Parser.String], point);
                     case Lexer.IntegerLiteral:
-                        return new LiteralNode(Convert.ToInt32(value), parser.Primitives[Parser.Int]);
+                        return new LiteralNode(Convert.ToInt32(value), parser.Primitives[Parser.Int], point);
                     case Lexer.FloatLiteral:
-                        return new LiteralNode(Convert.ToSingle(value, CultureInfo.InvariantCulture.NumberFormat), parser.Primitives[Parser.Float]);
+                        return new LiteralNode(Convert.ToSingle(value, CultureInfo.InvariantCulture.NumberFormat), parser.Primitives[Parser.Float], point);
                     case Lexer.BooleanLiteral:
                         bool val = value == "true" ? true : false;
-                        return new LiteralNode(val, parser.Primitives[Parser.Bool]);
+                        return new LiteralNode(val, parser.Primitives[Parser.Bool], point);
                     default:
                         throw new ParseException("Literal expected, " + type + " received");
                 }

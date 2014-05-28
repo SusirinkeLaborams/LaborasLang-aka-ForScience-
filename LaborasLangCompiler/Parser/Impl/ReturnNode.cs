@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -15,9 +16,10 @@ namespace LaborasLangCompiler.Parser.Impl
         public override NodeType Type { get { return NodeType.ReturnNode; } }
         public IExpressionNode Expression { get; private set; }
         public bool Returns { get { return true; } }
+        protected ReturnNode(SequencePoint point) : base(point) { }
         public static ReturnNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
-            var instance = new ReturnNode();
+            var instance = new ReturnNode(parser.GetSequencePoint(lexerNode));
             TypeReference retType = parser.Primitives[Parser.Void];
             if (lexerNode.Children.Count > 0)
             {

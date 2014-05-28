@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.LexingTools;
+using Mono.Cecil.Cil;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -16,6 +17,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override NodeType Type { get { return NodeType.Expression; } }
         public abstract ExpressionNodeType ExpressionType { get; }
         public abstract TypeReference ReturnType { get; set; }
+        protected ExpressionNode(SequencePoint sequencePoint) : base(sequencePoint) { }
         public static IExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             switch (lexerNode.Token.Name)
