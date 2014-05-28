@@ -22,7 +22,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Operand = operand;
             UnaryOperatorType = type;
         }
-        public static new ExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static new IExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             if(lexerNode.Children.Count == 1)
             {
@@ -41,7 +41,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
-        private static ExpressionNode ParseSuffix(Parser parser, IContainerNode parent, AstNode lexerNode)
+        private static IExpressionNode ParseSuffix(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
             var ops = new List<UnaryOperatorNodeType>();
@@ -59,7 +59,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return ParseUnary(parser, expression, ops);
         }
-        private static ExpressionNode ParsePrefix(Parser parser, IContainerNode parent, AstNode lexerNode)
+        private static IExpressionNode ParsePrefix(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var count = lexerNode.Children.Count;
             var expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[count - 1]);
@@ -78,7 +78,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return ParseUnary(parser, expression, ops);
         }
-        private static ExpressionNode ParseUnary(Parser parser, ExpressionNode expression, List<UnaryOperatorNodeType> ops)
+        private static IExpressionNode ParseUnary(Parser parser, IExpressionNode expression, List<UnaryOperatorNodeType> ops)
         {
             foreach(var op in ops)
             {
@@ -86,7 +86,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return expression;
         }
-        private static UnaryOperatorNode ParseUnary(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
+        private static UnaryOperatorNode ParseUnary(Parser parser, IExpressionNode expression, UnaryOperatorNodeType op)
         {
             var instance = new UnaryOperatorNode(op, expression);
             instance.ReturnType = expression.ReturnType;
@@ -136,7 +136,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new TypeException(String.Format("Binary ops only allowed on integer types, {0} received",
                     ReturnType));
         }
-        public static UnaryOperatorNode Void(ExpressionNode expression)
+        public static UnaryOperatorNode Void(IExpressionNode expression)
         {
             return new UnaryOperatorNode(UnaryOperatorNodeType.VoidOperator, expression);
         }

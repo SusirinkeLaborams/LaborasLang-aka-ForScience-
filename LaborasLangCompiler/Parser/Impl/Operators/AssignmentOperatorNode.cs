@@ -19,7 +19,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public static new AssignmentOperatorNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var instance = new AssignmentOperatorNode();
-            var left = LValueNode.Parse(parser, parent, lexerNode.Children[0]);
+            var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]).ExtractLValue();
             var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
             instance.ReturnType = left.ReturnType;
 

@@ -92,6 +92,34 @@ namespace LaborasLangCompiler.ILTools
             instance.assemblies.Add(assemblyDefinition);
         }
 
+        private static MethodReference GetBestMatch(IReadOnlyList<TypeReference> arguments, List<MethodReference> methods)
+        {
+            if (methods.Count > 1)
+            {
+                methods.Sort((x, y) => CompareMatches(arguments, y, x));
+
+                if (CompareMatches(arguments, methods[0], methods[1]) != 1)
+                {
+                    var matches = new List<string>
+                    {
+                        methods[0].FullName,
+                        methods[1].FullName
+                    };
+
+                    int i = 2;
+                    while (i < methods.Count && CompareMatches(arguments, methods[i - 1], methods[i]) == 0)
+                    {
+                        matches.Add(methods[i].FullName);
+                    }
+
+                    throw new Exception(string.Format("Method is ambigous. Could be: \r\n{0}", string.Join("\r\n", matches)));
+                }
+
+            }
+
+            return methods[0];
+        }
+
         #region Type/Method/Property/Field getters
 
         public static bool IsTypeKnown(string typeName)
@@ -133,12 +161,12 @@ namespace LaborasLangCompiler.ILTools
             return instance.functorTypes[name];
         }
 
-        public static IList<MethodReference> GetMethods(AssemblyEmitter assembly, string typeName, string methodName)
+        public static List<MethodReference> GetMethods(AssemblyEmitter assembly, string typeName, string methodName)
         {
             return GetMethods(assembly, GetTypeInternal(typeName), methodName);
         }
 
-        public static IList<MethodReference> GetMethods(AssemblyEmitter assembly, TypeReference type, string methodName)
+        public static List<MethodReference> GetMethods(AssemblyEmitter assembly, TypeReference type, string methodName)
         {
             var resolvedType = type.Resolve();
 
@@ -178,19 +206,24 @@ namespace LaborasLangCompiler.ILTools
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeReference type,
             string methodName, IReadOnlyList<TypeReference> arguments)
         {
-            var methods = GetMethods(assembly, type, methodName).Where(x => x.MatchesArgumentList(arguments)).ToList();
+            return GetCompatibleMethod(GetMethods(assembly, type, methodName), arguments);
+        }
             
-            if (methods.Count > 1)
+        public static MethodReference GetCompatibleMethod(IEnumerable<MethodReference> methods, IReadOnlyList<TypeReference> arguments)
+            {
+            var filtered = methods.Where(x => x.MatchesArgumentList(arguments)).ToList();
+
+            if (filtered.Count > 1)
             {
                 // More than one is compatible, so one must match exactly, or we have ambiguity
-                return GetBestMatch(arguments, methods);
+                return GetBestMatch(arguments, filtered);
             }
-            else if (methods.Count == 0)
+            else if (filtered.Count == 0)
             {
                 return null;
             }
 
-            return methods.Single();
+            return filtered.Single();
         }
 
         public static PropertyReference GetProperty(AssemblyEmitter assembly, string typeName, string propertyName)
@@ -247,7 +280,7 @@ namespace LaborasLangCompiler.ILTools
             {
                 return null;
             }
-            
+
             var field = resolvedType.Fields.SingleOrDefault(x => x.Name == fieldName);
 
             if (field == null)
@@ -297,34 +330,6 @@ namespace LaborasLangCompiler.ILTools
             }
 
             return null;
-        }
-
-        private static MethodReference GetBestMatch(IReadOnlyList<TypeReference> arguments, List<MethodReference> methods)
-        {
-            if (methods.Count > 1)
-            {
-                methods.Sort((x, y) => CompareMatches(arguments, y, x));
-
-                if (CompareMatches(arguments, methods[0], methods[1]) != 1)
-                {
-                    var matches = new List<string>
-                    {
-                        methods[0].FullName,
-                        methods[1].FullName
-                    };
-
-                    int i = 2;
-                    while (i < methods.Count && CompareMatches(arguments, methods[i - 1], methods[i]) == 0)
-                    {
-                        matches.Add(methods[i].FullName);
-                    }
-
-                    throw new Exception(string.Format("Method is ambigous. Could be: \r\n{0}", string.Join("\r\n", matches)));
-                }
-
-            }
-
-            return methods[0];
         }
 
         private static int CompareMatches(IReadOnlyList<TypeReference> arguments, MethodReference a, MethodReference b)

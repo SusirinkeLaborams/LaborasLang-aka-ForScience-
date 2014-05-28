@@ -17,53 +17,29 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ReturnType { get; set; }
         public IReadOnlyList<IExpressionNode> Arguments { get; private set; }
         public IExpressionNode Function { get; private set; }
+        public MethodCallNode(IExpressionNode function, TypeReference returnType, IReadOnlyList<IExpressionNode> args)
+        {
+            Function = function;
+            Arguments = args;
+            ReturnType = returnType;
+        }
+        //tmp code kol lexer neveikia su dot
         public static new MethodCallNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
-            var instance = new MethodCallNode();
+            if (lexerNode.Children[0].Token.Name == Lexer.Create)
+                throw new NotImplementedException("Create not implemented");
+            if(lexerNode.Children.Count(x => x.Token.Name == Lexer.Arguments) > 1)
+                throw new NotImplementedException("Calling returned functions not supported");
+            var function = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]);
             var args = new List<IExpressionNode>();
-            for (int i = 1; i < lexerNode.Children.Count; i++)
+            foreach (var node in lexerNode.Children[1].Children)
             {
-                args.Add(ExpressionNode.Parse(parser, parent, lexerNode.Children[i]));
+                args.Add(ExpressionNode.Parse(parser, parent, node));
             }
-            var argTypes = new List<TypeReference>();
-            foreach(var arg in args)
-            {
-                argTypes.Add(arg.ReturnType);
-            }
-            instance.Arguments = args;
-            instance.ParseMethod(parser, parent, lexerNode.Children[0], argTypes);
-            return instance;
-        }
-        private void ParseMethod(Parser parser, IContainerNode parent, AstNode lexerNode, List<TypeReference> args)
-        {
-            string type = lexerNode.Token.Name;
-            ExpressionNode method;
-            if (type == Lexer.Symbol || type == Lexer.FullSymbol)
-            {
-                if (lexerNode.Children.Count == 1)
-                {
-                    method = LValueNode.Parse(parser, parent, lexerNode);
-                }
-                else
-                {
-                    method = MethodNode.Parse(parser, parent, lexerNode, args);
-                }
-            }
-            else
-            {
-                method = ExpressionNode.Parse(parser, parent, lexerNode);
-            }
-
-            if (!method.ReturnType.IsFunctorType())
-                throw new TypeException("Type " + method.ReturnType + " cannot be called as a function");
-            List<TypeReference> methodArgs;
-            ReturnType = ILHelpers.GetFunctorReturnTypeAndArguments(parser.Assembly, method.ReturnType, out methodArgs);
-            for (int i = 0; i < args.Count; i++)
-            {
-                if (!args[i].IsAssignableTo(methodArgs[i]))
-                    throw new TypeException(String.Format("Argument {0}, {1} expected, {2} received", i - 1, methodArgs[i], args[i]));
-            }
-            Function = method;
+            var method = function.ExtractMethod(args.Select(x => x.ReturnType).ToList());
+            var nvm = new List<TypeReference>();
+            var returnType = ILTools.ILHelpers.GetFunctorReturnTypeAndArguments(parser.Assembly, method.ReturnType, out nvm);
+            return new MethodCallNode(method, returnType, args);
         }
         public override string ToString()
         {

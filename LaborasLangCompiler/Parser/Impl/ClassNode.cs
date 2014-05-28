@@ -17,14 +17,18 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.ClassNode; } }
         private Dictionary<string, FieldDeclarationNode> fields;
+        private Dictionary<string, TypeReference> declaredTypes;
         private ClassNode parent;
+        private Parser parser;
         public TypeEmitter TypeEmitter { get; private set; }
         private List<Tuple<string, FunctionDeclarationNode>> methods = new List<Tuple<string,FunctionDeclarationNode>>();
         private int lambdaCounter = 0;
         private ClassNode(Parser parser, ClassNode parent)
         {
             this.parent = parent;
+            this.parser = parser;
             fields = new Dictionary<string, FieldDeclarationNode>();
+            declaredTypes = new Dictionary<string, TypeReference>();
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
         private void AddField(string name, TypeReference type)
@@ -51,6 +55,51 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             return GetField(name);
         }
+        public TypeNode FindType(string name)
+        {
+            if (parser.Primitives.ContainsKey(name))
+                return new TypeNode(parser.Primitives[name]);
+
+            if (declaredTypes.ContainsKey(name))
+                return new TypeNode(declaredTypes[name]);
+
+            var type = AssemblyRegistry.GetType(parser.Assembly, name);
+            if(type != null)
+                return new TypeNode(type);
+
+            return null;
+        }
+        public TypeNode FindType(TypeNode main, string nested)
+        {
+            var type = AssemblyRegistry.GetType(parser.Assembly, main.ParsedType.FullName + "." + nested);
+            if(type != null)
+                return new TypeNode(type);
+
+            return null;
+        }
+        public TypeNode FindType(NamespaceNode namespaze, string name)
+        {
+            var type = AssemblyRegistry.GetType(parser.Assembly, namespaze.Value + "." + name);
+            if (type != null)
+                return new TypeNode(type);
+
+            return null;
+        }
+        public NamespaceNode FindNamespace(string name)
+        {
+            if (AssemblyRegistry.IsNamespaceKnown(name))
+                return new NamespaceNode(name);
+
+            return null;
+        }
+        public NamespaceNode FindNamespace(NamespaceNode left, string right)
+        {
+            var full = left.Value + "." + right;
+            if (AssemblyRegistry.IsNamespaceKnown(full))
+                return new NamespaceNode(full);
+
+            return null;
+        }
         private void AddFieldToEmitter(Parser parser, FieldDefinition field, IExpressionNode init)
         {
             if (!parser.Testing)
@@ -62,7 +111,9 @@ namespace LaborasLangCompiler.Parser.Impl
             AstNode sentence;
 
             if (parser.Root == null)
+            {
                 parser.Root = instance;
+            }
 
             //symbols
             foreach (var node in lexerNode.Children)
@@ -97,7 +148,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 switch (sentence.Token.Name)
                 {
                     case Lexer.DeclarationAndAssignment:
-                        ExpressionNode init = null;
+                        IExpressionNode init = null;
                         var field = instance.fields[parser.ValueOf(sentence.Children[1])];
                         if (sentence.Children[2].Token.Name == Lexer.Function)
                             init = FunctionDeclarationNode.Parse(parser, instance, sentence.Children[2], field.Name);
@@ -150,7 +201,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private static void ParseDeclaration(Parser parser, ClassNode klass, AstNode lexerNode, bool init)
         {
-            var declaredType = parser.ParseType(lexerNode.Children[0]);
+            var declaredType = TypeNode.Parse(parser, klass, lexerNode.Children[0]);
             var name = parser.ValueOf(lexerNode.Children[1]);
             
             if (declaredType == null && !init)

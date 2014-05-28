@@ -16,13 +16,15 @@ namespace LaborasLangCompiler.Parser.Impl
         public override NodeType Type { get { return NodeType.Expression; } }
         public abstract ExpressionNodeType ExpressionType { get; }
         public abstract TypeReference ReturnType { get; set; }
-        public static ExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static IExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             switch (lexerNode.Token.Name)
             {
-                case Lexer.Symbol:
                 case Lexer.FullSymbol:
-                    return LValueNode.Parse(parser, parent, lexerNode);
+                    var tmp = DotOperatorNode.Parse(parser, parent, lexerNode);
+                    return tmp.ExtractExpression();
+                case Lexer.Symbol:
+                    return SymbolNode.Parse(parser, parent, lexerNode);
                 case Lexer.Literal:
                     return LiteralNode.Parse(parser, parent, lexerNode);
                 case Lexer.Value:

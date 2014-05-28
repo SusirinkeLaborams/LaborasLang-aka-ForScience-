@@ -12,27 +12,10 @@ using LaborasLangCompiler.LexingTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    abstract class LValueNode : ExpressionNode, ILValueNode, ISymbolNode
+    abstract class LValueNode : ExpressionNode, ILValueNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
         public abstract LValueNodeType LValueType { get; }
-        public SymbolNodeType SymbolType { get { return SymbolNodeType.LValue; } }
-        public static new LValueNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
-        {
-            var value = parser.ValueOf(lexerNode);
-            LValueNode instance = null;
-            if (parent != null)
-                instance = parent.GetSymbol(value);
-            if (instance == null)
-                throw new SymbolNotFoundException("Symbol " + value + " not found");
-            if (instance.ReturnType == null)
-                throw new TypeException("Cannot reference a typeless symbol");
-            return instance;
-        }
-        public override string ToString()
-        {
-            return String.Format("(LValueNode: {0} {1})", LValueType, ReturnType);
-        }
     }
 
     class LocalVariableNode : LValueNode, ILocalVariableNode
@@ -44,6 +27,10 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             LocalVariable = variable;
             ReturnType = variable.VariableType;
+        }
+        public override string ToString()
+        {
+            return String.Format("(LValueNode: {0} {1} {2})", LValueType, LocalVariable.Name, ReturnType);
         }
     }
 
@@ -59,6 +46,10 @@ namespace LaborasLangCompiler.Parser.Impl
             IsFunctionStatic = isFunctionStatic;
             ReturnType = param.ParameterType;
         }
+        public override string ToString()
+        {
+            return String.Format("(LValueNode: {0} {1} {2})", LValueType, Param.Name, ReturnType);
+        }
     }
 
     class FieldNode : LValueNode, IFieldNode
@@ -68,7 +59,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public FieldReference Field { get; set; }
         public override TypeReference ReturnType { get; set; }
         public string Name { get; set; }
-        public FieldNode(ExpressionNode instance, FieldReference field)
+        public FieldNode(IExpressionNode instance, FieldReference field)
         {
             ObjectInstance = instance;
             Field = field;
@@ -79,10 +70,14 @@ namespace LaborasLangCompiler.Parser.Impl
             Name = name;
             ReturnType = type;
         }
+        public override string ToString()
+        {
+            return String.Format("(LValueNode: {0} {1} {2})", LValueType, Field.Name, ReturnType);
+        }
     }
     class FieldDeclarationNode : FieldNode
     {
-        public ExpressionNode Initializer { get; set; }
+        public IExpressionNode Initializer { get; set; }
         public FieldDeclarationNode(string name, TypeReference type) : base(name, type)
         {
         }

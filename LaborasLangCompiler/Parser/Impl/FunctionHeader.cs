@@ -14,15 +14,15 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeReference FunctionType { get; private set; }
         public IReadOnlyList<FunctionArgumentNode> Args { get; private set; }
         public TypeReference ReturnType { get; private set; }
-        public static FunctionHeader Parse(Parser parser, IContainerNode parentBlock, AstNode lexerNode)
+        public static FunctionHeader Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var instance = new FunctionHeader();
-            instance.ReturnType = parser.ParseType(lexerNode.Children[0]);
+            instance.ReturnType = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
             List<FunctionArgumentNode> args = new List<FunctionArgumentNode>();
             List<TypeReference> types = new List<TypeReference>();
             for(int i = 1; i < lexerNode.Children.Count; i++)
             {
-                var arg = ParseArgument(parser, lexerNode.Children[i]); 
+                var arg = ParseArgument(parser, parent, lexerNode.Children[i]); 
                 args.Add(arg);
                 types.Add(arg.ReturnType);
             }
@@ -30,9 +30,9 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.FunctionType = AssemblyRegistry.GetFunctorType(parser.Assembly, instance.ReturnType, types);
             return instance;
         }
-        public static FunctionArgumentNode ParseArgument(Parser parser, AstNode lexerNode)
+        public static FunctionArgumentNode ParseArgument(Parser parser, IContainerNode parent,  AstNode lexerNode)
         {
-            var type = parser.ParseType(lexerNode.Children[0]);
+            var type = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
             var name = parser.ValueOf(lexerNode.Children[1]);
             return new FunctionArgumentNode(new ParameterDefinition(name, ParameterAttributes.None, type), true);
         }

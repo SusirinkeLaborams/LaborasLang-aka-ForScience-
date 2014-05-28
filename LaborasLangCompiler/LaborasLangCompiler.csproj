@@ -78,10 +78,12 @@
     <Compile Include="ILTools\Types\TypeEmitter.cs" />
     <Compile Include="LexingTools\FileReader.cs" />
     <Compile Include="LexingTools\Lexer.cs" />
+    <Compile Include="LexingTools\SymbolCounter.cs" />
     <Compile Include="Parser\Exceptions\ParseException.cs" />
     <Compile Include="Parser\Exceptions\SymbolAlreadyDeclaredException.cs" />
     <Compile Include="Parser\Exceptions\SymbolNotFoundException.cs" />
     <Compile Include="Parser\Exceptions\TypeException.cs" />
+    <Compile Include="Parser\Impl\AmbiguousMethodNode.cs" />
     <Compile Include="Parser\Impl\ConditionBlockNode.cs" />
     <Compile Include="Parser\Impl\DotOperatorNode.cs" />
     <Compile Include="Parser\Impl\IContainerNode.cs" />
@@ -106,6 +108,7 @@
     <Compile Include="Parser\Impl\WhileBlock.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParserNodeInterface.cs" />
+    <Compile Include="Parser\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

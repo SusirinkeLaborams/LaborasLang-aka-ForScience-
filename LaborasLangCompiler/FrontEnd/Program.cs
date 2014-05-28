@@ -28,6 +28,7 @@ namespace LaborasLangCompiler.FrontEnd
                 foreach (var file in compilerArgs.SourceFiles)
                 {
                     var bytes = FileReader.Read(file);
+                    SymbolCounter.Load(file);
                     var tree = lexer.MakeTree(bytes);
 
 #if DEBUG
