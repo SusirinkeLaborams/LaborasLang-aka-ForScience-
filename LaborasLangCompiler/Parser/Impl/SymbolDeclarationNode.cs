@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.ILTools;
+using Mono.Cecil.Cil;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -16,7 +17,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public override NodeType Type { get { return NodeType.SymbolDeclaration; } }
         public ILValueNode DeclaredSymbol { get; private set; }
         public IExpressionNode Initializer { get; private set; }
-        private SymbolDeclarationNode(ILValueNode symbol, IExpressionNode init)
+        private SymbolDeclarationNode(ILValueNode symbol, IExpressionNode init, SequencePoint point)
+            : base(point)
         {
             DeclaredSymbol = symbol;
             Initializer = init;
@@ -48,11 +50,11 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
             if (parent is CodeBlockNode)
-                symbol = ((CodeBlockNode)parent).AddVariable(declaredType, name);
+                symbol = ((CodeBlockNode)parent).AddVariable(declaredType, name, parser.GetSequencePoint(lexerNode));
             else
                 throw new ParseException("SymbolDeclarationNode somehow parsed in a class");
 
-            return new SymbolDeclarationNode(symbol, initializer);
+            return new SymbolDeclarationNode(symbol, initializer, parser.GetSequencePoint(lexerNode));
         }
         public override string ToString()
         {

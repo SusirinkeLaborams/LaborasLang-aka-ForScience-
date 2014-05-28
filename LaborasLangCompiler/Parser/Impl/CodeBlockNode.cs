@@ -20,7 +20,7 @@ namespace LaborasLangCompiler.Parser.Impl
         protected List<IParserNode> nodes;
         protected Dictionary<string, LValueNode> symbols;
         private IContainerNode parent;
-        protected CodeBlockNode(IContainerNode parent)
+        protected CodeBlockNode(IContainerNode parent, SequencePoint point) : base(point)
         {
             nodes = new List<IParserNode>();
             symbols = new Dictionary<string, LValueNode>();
@@ -42,11 +42,11 @@ namespace LaborasLangCompiler.Parser.Impl
             //symbol not found
             return null;
         }
-        public virtual LValueNode AddVariable(TypeReference type, string name)
+        public virtual LValueNode AddVariable(TypeReference type, string name, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
                 throw new SymbolAlreadyDeclaredException(String.Format("Var {0} already declared", name));
-            symbols.Add(name, new LocalVariableNode(new VariableDefinition(name, type)));
+            symbols.Add(name, new LocalVariableNode(new VariableDefinition(name, type), point));
             return symbols[name];
         }
         private void AddNode(IParserNode node)
@@ -56,7 +56,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     Returns = true;
             nodes.Add(node);
         }
-        private void AddExpression(IExpressionNode node, Parser parser)
+        private void AddExpression(IExpressionNode node, Parser parser, AstNode lexerNode)
         {
             if (node.ReturnType.FullName == parser.Primitives[Parser.Void].FullName)
                 AddNode(node);
@@ -65,7 +65,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static CodeBlockNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
-            var instance = new CodeBlockNode(parent);
+            var instance = new CodeBlockNode(parent, parser.GetSequencePoint(lexerNode));
             if (parent is FunctionDeclarationNode)
             {
                 var function = (FunctionDeclarationNode)parent;
@@ -88,10 +88,10 @@ namespace LaborasLangCompiler.Parser.Impl
                             instance.AddNode(SymbolDeclarationNode.Parse(parser, instance, sentence));
                             break;
                         case Lexer.Assignment:
-                            instance.AddExpression(AssignmentOperatorNode.Parse(parser, instance, sentence), parser);
+                            instance.AddExpression(AssignmentOperatorNode.Parse(parser, instance, sentence), parser, sentence);
                             break;
                         case Lexer.FunctionCall:
-                            instance.AddExpression(MethodCallNode.Parse(parser, instance, sentence), parser);
+                            instance.AddExpression(MethodCallNode.Parse(parser, instance, sentence), parser, sentence);
                             break;
                         case Lexer.Loop:
                             instance.AddNode(WhileBlock.Parse(parser, instance, sentence));

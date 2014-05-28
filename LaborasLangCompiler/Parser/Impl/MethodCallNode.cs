@@ -2,6 +2,7 @@
 using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ReturnType { get; set; }
         public IReadOnlyList<IExpressionNode> Arguments { get; private set; }
         public IExpressionNode Function { get; private set; }
-        public MethodCallNode(IExpressionNode function, TypeReference returnType, IReadOnlyList<IExpressionNode> args)
+        public MethodCallNode(IExpressionNode function, TypeReference returnType, IReadOnlyList<IExpressionNode> args, SequencePoint point)
+            : base(point)
         {
             Function = function;
             Arguments = args;
@@ -39,7 +41,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var method = function.ExtractMethod(args.Select(x => x.ReturnType).ToList());
             var nvm = new List<TypeReference>();
             var returnType = ILTools.ILHelpers.GetFunctorReturnTypeAndArguments(parser.Assembly, method.ReturnType, out nvm);
-            return new MethodCallNode(method, returnType, args);
+            return new MethodCallNode(method, returnType, args, parser.GetSequencePoint(lexerNode));
         }
         public override string ToString()
         {

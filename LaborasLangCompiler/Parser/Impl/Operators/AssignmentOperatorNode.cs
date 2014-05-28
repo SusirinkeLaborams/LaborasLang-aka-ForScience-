@@ -1,6 +1,7 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -16,9 +17,10 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ReturnType { get; set; }
         public ILValueNode LeftOperand { get; private set; }
         public IExpressionNode RightOperand { get; private set; }
+        protected AssignmentOperatorNode(SequencePoint point) : base(point) { }
         public static new AssignmentOperatorNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
-            var instance = new AssignmentOperatorNode();
+            var instance = new AssignmentOperatorNode(parser.GetSequencePoint(lexerNode));
             var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]).ExtractLValue();
             var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
             instance.ReturnType = left.ReturnType;

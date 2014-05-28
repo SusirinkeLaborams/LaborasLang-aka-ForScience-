@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser;
+using Mono.Cecil.Cil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,11 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     abstract class ParserNode : IParserNode
     {
+        public SequencePoint SequencePoint { get; private set; }
         public abstract NodeType Type { get; }
+        protected ParserNode(SequencePoint sequencePoint)
+        {
+            SequencePoint = sequencePoint;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.LexingTools;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -10,29 +11,30 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class SymbolNode : IExpressionNode
+    class SymbolNode : ParserNode, IExpressionNode
     {
-        public NodeType Type { get { return NodeType.Expression; } }
+        public override NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Intermediate; } }
         public TypeReference ReturnType { get { return null; } }
         public string Value { get; private set; }
-        protected SymbolNode(string value)
+        protected SymbolNode(string value, SequencePoint point) : base(point)
         {
             Value = value;
+            
         }
         public static SymbolNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
-            return new SymbolNode(parser.ValueOf(lexerNode));
+            return new SymbolNode(parser.ValueOf(lexerNode), parser.GetSequencePoint(lexerNode));
         }
     }
     class NamespaceNode : SymbolNode
     {
-        public NamespaceNode(string name) : base(name) { }
+        public NamespaceNode(string name, SequencePoint point) : base(name, point) { }
     }
     class SymbolCallNode : SymbolNode
     {
         public List<IExpressionNode> Arguments { get; private set; }
-        protected SymbolCallNode(string name, List<IExpressionNode> args) : base(name)
+        protected SymbolCallNode(string name, List<IExpressionNode> args, SequencePoint point) : base(name, point)
         {
             Arguments = args;
         }
@@ -44,16 +46,16 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 args.Add(ExpressionNode.Parse(parser, parent, node));
             }
-            return new SymbolCallNode(name, args);
+            return new SymbolCallNode(name, args, parser.GetSequencePoint(lexerNode));
         }
     }
-    class TypeNode : IExpressionNode
+    class TypeNode : ParserNode, IExpressionNode
     {
-        public NodeType Type { get { return NodeType.Expression; } }
+        public override NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Intermediate; } }
         public TypeReference ReturnType { get { return null; } }
         public TypeReference ParsedType { get; private set; }
-        public TypeNode(TypeReference type)
+        public TypeNode(TypeReference type, SequencePoint point) : base(point)
         {
             ParsedType = type;
         }

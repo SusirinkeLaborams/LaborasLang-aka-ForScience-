@@ -24,7 +24,6 @@ namespace LaborasLangCompiler.Parser.Impl
             this.parent = parent;
             this.cls = parent.GetClass();
         }
-
         public static DotOperatorNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var instance = new DotOperatorNode(parser, parent);
@@ -72,7 +71,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 var method = AssemblyRegistry.GetMethods(parser.Assembly, builtNode.ReturnType, "Invoke").Single();
                 if(ILHelpers.MatchesArgumentList(method, types))
                 {
-                    builtNode = new MethodCallNode(builtNode, returnType, node.Arguments);
+                    builtNode = new MethodCallNode(builtNode, returnType, node.Arguments, node.SequencePoint);
                     return true;
                 }
                 else
@@ -83,7 +82,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (AppendMethod(node))
             {
                 var method = ((AmbiguousMethodNode)builtNode).RemoveAmbiguity(parser, types);
-                builtNode = new MethodCallNode(method, method.Function.ReturnType, node.Arguments);
+                builtNode = new MethodCallNode(method, method.Function.ReturnType, node.Arguments, node.SequencePoint);
                 return true;
             }
             return false;
@@ -107,7 +106,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     methods = methods.Where(m => m.Resolve().IsStatic).ToList();
                     if (methods != null && methods.Count != 0)
                     {
-                        builtNode = new AmbiguousMethodNode(methods, null);
+                        builtNode = new AmbiguousMethodNode(methods, null, builtNode.SequencePoint);
                         return true;
                     }
                     else
@@ -122,7 +121,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     methods = methods.Where(m => !m.Resolve().IsStatic).ToList();
                     if (methods != null && methods.Count != 0)
                     {
-                        builtNode = new AmbiguousMethodNode(methods, builtNode);
+                        builtNode = new AmbiguousMethodNode(methods, builtNode, builtNode.SequencePoint);
                         return true;
                     }
                     else
@@ -136,14 +135,14 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             if(builtNode == null)
             {
-                builtNode = cls.FindType(node.Value);
+                builtNode = cls.FindType(node.Value, node.SequencePoint);
                 return builtNode != null;
             }
             else
             {
                 if(builtNode is NamespaceNode)
                 {
-                    var found = cls.FindType((NamespaceNode) builtNode, node.Value);
+                    var found = cls.FindType((NamespaceNode) builtNode, node.Value, node.SequencePoint);
                     if(found != null)
                     {
                         builtNode = found;
@@ -156,7 +155,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 if(builtNode is TypeNode)
                 {
-                    var found = cls.FindType((TypeNode)builtNode, node.Value);
+                    var found = cls.FindType((TypeNode)builtNode, node.Value, node.SequencePoint);
                     if (found != null)
                     {
                         builtNode = found;
@@ -174,14 +173,14 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             if (builtNode == null)
             {
-                builtNode = cls.FindNamespace(node.Value);
+                builtNode = cls.FindNamespace(node.Value, node.SequencePoint);
                 return builtNode != null;
             }
             else
             {
                 if(builtNode is NamespaceNode)
                 {
-                    var found = cls.FindNamespace((NamespaceNode)builtNode, node.Value);
+                    var found = cls.FindNamespace((NamespaceNode)builtNode, node.Value, node.SequencePoint);
                     if(found != null)
                     {
                         builtNode = found;
@@ -227,7 +226,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
                 if(field != null)
                 {
-                    builtNode = new FieldNode(builtNode, field);
+                    builtNode = new FieldNode(builtNode, field, builtNode.SequencePoint);
                     return true;
                 }
                 return false;

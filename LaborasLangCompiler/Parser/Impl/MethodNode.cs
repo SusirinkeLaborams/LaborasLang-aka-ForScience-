@@ -2,6 +2,7 @@
 using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ReturnType { get; set; }
         public IExpressionNode ObjectInstance { get; private set; }
         public MethodReference Function { get; private set; }
-        public MethodNode(MethodReference method, TypeReference type, IExpressionNode instance)
+        public MethodNode(MethodReference method, TypeReference type, IExpressionNode instance, SequencePoint point)
+            : base(point)
         {
             Function = method;
             ReturnType = type;

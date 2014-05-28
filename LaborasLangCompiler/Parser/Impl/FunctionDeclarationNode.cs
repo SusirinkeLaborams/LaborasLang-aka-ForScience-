@@ -3,6 +3,7 @@ using LaborasLangCompiler.ILTools.Types;
 using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -29,7 +30,8 @@ namespace LaborasLangCompiler.Parser.Impl
             if(entry)
                 emitter.SetAsEntryPoint();
         }
-        private FunctionDeclarationNode(IContainerNode parent)
+        private FunctionDeclarationNode(IContainerNode parent, SequencePoint point)
+            : base(point)
         {
             this.parent = parent.GetClass();
         }
@@ -38,7 +40,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public LValueNode GetSymbol(string name) { return parent.GetSymbol(name); }
         public static FunctionDeclarationNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode, string name = null)
         {
-            var instance = new FunctionDeclarationNode(parent);
+            var instance = new FunctionDeclarationNode(parent, parser.GetSequencePoint(lexerNode));
             var header = FunctionHeader.Parse(parser, parent, lexerNode.Children[0]);
             if (name == null)
                 name = instance.parent.NewFunctionName();

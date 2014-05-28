@@ -23,6 +23,7 @@ namespace LaborasLangCompiler.Parser
     interface IParserNode
     {
         NodeType Type { get; }
+        SequencePoint SequencePoint { get; }
     }
 
     // Literals, function calls, function arguments, local variables and fields

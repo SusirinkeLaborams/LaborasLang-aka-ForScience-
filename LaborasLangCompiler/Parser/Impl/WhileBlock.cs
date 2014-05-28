@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.Parser.Exceptions;
+using Mono.Cecil.Cil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -13,9 +14,10 @@ namespace LaborasLangCompiler.Parser.Impl
         public override NodeType Type { get { return NodeType.WhileBlock; } }
         public IExpressionNode Condition { get; private set; }
         public ICodeBlockNode ExecutedBlock { get; private set; }
+        protected WhileBlock(SequencePoint point) : base(point) { }
         public static WhileBlock Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
-            var instance = new WhileBlock();
+            var instance = new WhileBlock(parser.GetSequencePoint(lexerNode));
             instance.Condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[0].Children[0]);
             if (instance.Condition.ReturnType.FullName != parser.Primitives[Parser.Bool].FullName)
                 throw new TypeException("Condition must be a boolean expression");
