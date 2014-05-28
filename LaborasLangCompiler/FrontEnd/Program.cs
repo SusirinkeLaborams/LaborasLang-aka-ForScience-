@@ -43,7 +43,11 @@ namespace LaborasLangCompiler.FrontEnd
             {
                 Console.WriteLine(e.Message);
                 Console.WriteLine("Compilation failed. Aborting.");
-                Console.ReadKey();
+
+                if (Debugger.IsAttached)
+                {
+                    Console.ReadKey();
+                }
 
                 return -1;
             }
