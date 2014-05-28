@@ -26,9 +26,15 @@ namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
 
                     if (operation == InstructionOperation.Remove)
                     {
-                        replacementMap[instructions[i]] = instructions[i].Next;
+                        var next = instructions[i].Next;
+                        if (next != null)
+                        {
+                            replacementMap[instructions[i]] = next;
+                        }
+
                         instructions.RemoveAt(i);
                         i--;
+
                         continue;
                     }
 
