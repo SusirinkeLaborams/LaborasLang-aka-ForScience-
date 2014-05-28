@@ -36,9 +36,9 @@ namespace LaborasLangCompiler.FrontEnd
 
             var moduleKind = ParseModuleKinds(moduleKinds);
             var outputPath = ParseOutputPaths(outputPaths, sourceFiles, moduleKind);
+            references = references.Select(x => x.Substring(5)).Select(x => Path.Combine(ReferenceAssembliesPath, x)).Union(GetDefaultReferences());
 
-            return new CompilerArguments(sourceFiles, references.Select(x => x.Substring(5)).Union(GetDefaultReferences()), outputPath,
-                moduleKind, debugBuild);
+            return new CompilerArguments(sourceFiles, references, outputPath, moduleKind, debugBuild);
         }
 
         private static void ParseUnknownOptions(IEnumerable<string> unknownOptions)
@@ -139,14 +139,27 @@ namespace LaborasLangCompiler.FrontEnd
             }
         }
 
+        private static string referenceAssembliesPath;
+        private static string ReferenceAssembliesPath
+        {
+            get
+            {
+                if (referenceAssembliesPath == null)
+                {
+                    referenceAssembliesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86),
+                        "Reference Assemblies", "Microsoft", "Framework", ".NETFramework", "v4.5");
+                }
+
+                return referenceAssembliesPath;
+            }
+        }
+
+
         private static IEnumerable<string> GetDefaultReferences()
         {
-            var referenceAssembliesPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86), 
-                "Reference Assemblies", "Microsoft", "Framework", ".NETFramework", "v4.5");
-
             var references = new List<string>
             {
-                Path.Combine(referenceAssembliesPath, "mscorlib.dll")
+                Path.Combine(ReferenceAssembliesPath, "mscorlib.dll")
             };
 
             return references;
