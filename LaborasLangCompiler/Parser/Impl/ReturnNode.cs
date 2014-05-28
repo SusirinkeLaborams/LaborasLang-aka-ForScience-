@@ -27,10 +27,9 @@ namespace LaborasLangCompiler.Parser.Impl
                 retType = instance.Expression.ReturnType;
             }
             var functionReturn = parent.GetFunction().FunctionReturnType;
-            if(functionReturn.FullName != "System.Void")
-                if (!retType.IsAssignableTo(functionReturn))
-                    throw new TypeException(String.Format("Function returns {0}, cannot return {1}",
-                        functionReturn, retType));
+            if (!retType.IsAssignableTo(functionReturn))
+                throw new TypeException(String.Format("Function returns {0}, cannot return {1}",
+                    functionReturn, retType));
             return instance;
         }
         public override string ToString()

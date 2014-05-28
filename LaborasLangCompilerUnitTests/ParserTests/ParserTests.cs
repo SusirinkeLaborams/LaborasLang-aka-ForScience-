@@ -395,6 +395,25 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Single a = (Function: $Functors.$System_Int32$System_Single(System.Single x)(CodeBlock: Symbols: ((LValueNode: FunctionArgument x System.Single) x) Nodes: ((ReturnNode: (Literal: System.Int32 4))))))";
             TestParser(source, expected, lex);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestReturnVoid()
+        {
+            string source = @"
+                auto Main = void()
+                {  
+                    return 5;
+                };";
+            string expected = "";
+            try
+            {
+                TestParser(source, expected, true);
+            }
+            catch(TypeException)
+            {
+                return;
+            }
+            Assert.Fail("Should've failed, returning 5 in void()");
+        }
         private void TestParser(string source, string expected, bool lex, [CallerMemberName]string name = "")
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
