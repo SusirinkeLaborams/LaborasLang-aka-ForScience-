@@ -7,6 +7,7 @@ using Mono.Cecil.Cil;
 using NPEG;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,13 +41,13 @@ namespace LaborasLangCompiler.Parser
         public const string Void   = "void";
         public const string Auto   = "auto";
         public const string Object = "object";
-        public Parser(AssemblyEmitter assembly, AstNode tree, ByteInputIterator source, string filename, bool testing = false)
+        public Parser(AssemblyEmitter assembly, AstNode tree, ByteInputIterator source, string filePath, bool testing = false)
         {
             Assembly = assembly;
             Testing = testing;
             this.source = source;
-            Filename = filename;
-            Document = new Document(filename);
+            Filename = Path.GetFileNameWithoutExtension(filePath);
+            Document = new Document(filePath);
             Document.Language = DocumentLanguage.Other;
             Document.LanguageVendor = DocumentLanguageVendor.Other;
             Document.Type = DocumentType.Text;

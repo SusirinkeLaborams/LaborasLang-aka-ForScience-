@@ -33,7 +33,7 @@ namespace LaborasLangCompiler.FrontEnd
 #if DEBUG
                     PrintAst(tree, bytes);
 #endif
-                    var parser = new Parser.Parser(assembly, tree, bytes, System.IO.Path.GetFileNameWithoutExtension(file));
+                    var parser = new Parser.Parser(assembly, tree, bytes, file);
                 }
 
                 assembly.Save();

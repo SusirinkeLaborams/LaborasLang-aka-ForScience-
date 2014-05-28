@@ -18,6 +18,8 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected TypeEmitter DeclaringType { get; private set; }
         protected AssemblyEmitter Assembly { get { return DeclaringType.Assembly; } }
 
+        private SequencePoint CurrentSequencePoint;
+
         public bool Parsed { get; protected set; }
 
         public MethodEmitter(TypeEmitter declaringType, string name, TypeReference returnType,
@@ -96,35 +98,44 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Emit(IParserNode node, bool emitReference)
         {
+            var oldSequencePoint = CurrentSequencePoint;
+            
+            if (node.SequencePoint != null)
+            {
+                CurrentSequencePoint = node.SequencePoint;
+            }
+
             switch (node.Type)
             {
                 case NodeType.CodeBlockNode:
                     Emit((ICodeBlockNode)node);
-                    return;
+                    break;
 
                 case NodeType.ConditionBlock:
                     Emit((IConditionBlock)node);
-                    return;
+                    break;
 
                 case NodeType.Expression:
                     Emit((IExpressionNode)node, emitReference);
-                    return;
+                    break;
 
                 case NodeType.ReturnNode:
                     Emit((IReturnNode)node);
-                    return;
+                    break;
 
                 case NodeType.SymbolDeclaration:
                     Emit((ISymbolDeclarationNode)node);
-                    return;
+                    break;
 
                 case NodeType.WhileBlock:
                     Emit((IWhileBlockNode)node);
-                    return;
+                    break;
 
                 default:
                     throw new NotSupportedException(string.Format("Unknown IParserNode type: {0}", node.Type));
             }
+
+            CurrentSequencePoint = oldSequencePoint;
         }
 
         #region Parser node
@@ -1570,16 +1581,19 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Add()
         {
             ilProcessor.Emit(OpCodes.Add);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void And()
         {
             ilProcessor.Emit(OpCodes.And);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Box(TypeReference type)
         {
             ilProcessor.Emit(OpCodes.Box, type);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Brfalse(Instruction target)
@@ -1592,6 +1606,8 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 ilProcessor.Emit(OpCodes.Brfalse, target);
             }
+
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Br(Instruction target)
@@ -1604,6 +1620,8 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 ilProcessor.Emit(OpCodes.Br, target);
             }
+
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Brtrue(Instruction target)
@@ -1616,121 +1634,146 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 ilProcessor.Emit(OpCodes.Brtrue, target);
             }
+
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Call(MethodReference method)
         {
             ilProcessor.Emit(OpCodes.Call, method);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Calli(CallSite callSite)
         {
             ilProcessor.Emit(OpCodes.Calli, callSite);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Callvirt(MethodReference method)
         {
             ilProcessor.Emit(OpCodes.Callvirt, method);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Castclass(TypeReference targetType)
         {
             ilProcessor.Emit(OpCodes.Castclass, targetType);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ceq()
         {
             ilProcessor.Emit(OpCodes.Ceq);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Cgt()
         {
             ilProcessor.Emit(OpCodes.Cgt);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Clt()
         {
             ilProcessor.Emit(OpCodes.Clt);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Conv_I()
         {
             ilProcessor.Emit(OpCodes.Conv_I);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Conv_I1()
         {
             ilProcessor.Emit(OpCodes.Conv_I1);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Conv_I2()
         {
             ilProcessor.Emit(OpCodes.Conv_I2);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Conv_I4()
         {
             ilProcessor.Emit(OpCodes.Conv_I4);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Conv_I8()
         {
             ilProcessor.Emit(OpCodes.Conv_I8);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Conv_R_Un()
         {
             ilProcessor.Emit(OpCodes.Conv_R_Un);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Conv_R4()
         {
             ilProcessor.Emit(OpCodes.Conv_R4);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Conv_R8()
         {
             ilProcessor.Emit(OpCodes.Conv_R8);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Conv_U()
         {
             ilProcessor.Emit(OpCodes.Conv_U);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Conv_U1()
         {
             ilProcessor.Emit(OpCodes.Conv_U1);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Conv_U2()
         {
             ilProcessor.Emit(OpCodes.Conv_U2);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Conv_U4()
         {
             ilProcessor.Emit(OpCodes.Conv_U4);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Conv_U8()
         {
             ilProcessor.Emit(OpCodes.Conv_U8);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Div()
         {
             ilProcessor.Emit(OpCodes.Div);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Div_Un()
         {
             ilProcessor.Emit(OpCodes.Div_Un);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Dup()
         {
             ilProcessor.Emit(OpCodes.Dup);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldarg(int index)
@@ -1741,19 +1784,19 @@ namespace LaborasLangCompiler.ILTools.Methods
                 {
                     case 0:
                         ilProcessor.Emit(OpCodes.Ldarg_0);
-                        return;
+                        break;
 
                     case 1:
                         ilProcessor.Emit(OpCodes.Ldarg_1);
-                        return;
+                        break;
 
                     case 2:
                         ilProcessor.Emit(OpCodes.Ldarg_2);
-                        return;
+                        break;
 
                     case 3:
                         ilProcessor.Emit(OpCodes.Ldarg_3);
-                        return;
+                        break;
                 }
             }
             else if (index < 256)
@@ -1764,6 +1807,8 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 ilProcessor.Emit(OpCodes.Ldarg, methodDefinition.Parameters[index]);
             }
+
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldarga(int index)
@@ -1776,6 +1821,8 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 ilProcessor.Emit(OpCodes.Ldarga, methodDefinition.Parameters[index]);
             }
+
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldc_I4(int value)
@@ -1786,43 +1833,43 @@ namespace LaborasLangCompiler.ILTools.Methods
                 {
                     case -1:
                         ilProcessor.Emit(OpCodes.Ldc_I4_M1);
-                        return;
+                        break;
 
                     case 0:
                         ilProcessor.Emit(OpCodes.Ldc_I4_0);
-                        return;
+                        break;
 
                     case 1:
                         ilProcessor.Emit(OpCodes.Ldc_I4_1);
-                        return;
+                        break;
 
                     case 2:
                         ilProcessor.Emit(OpCodes.Ldc_I4_2);
-                        return;
+                        break;
 
                     case 3:
                         ilProcessor.Emit(OpCodes.Ldc_I4_3);
-                        return;
+                        break;
 
                     case 4:
                         ilProcessor.Emit(OpCodes.Ldc_I4_4);
-                        return;
+                        break;
 
                     case 5:
                         ilProcessor.Emit(OpCodes.Ldc_I4_5);
-                        return;
+                        break;
 
                     case 6:
                         ilProcessor.Emit(OpCodes.Ldc_I4_6);
-                        return;
+                        break;
 
                     case 7:
                         ilProcessor.Emit(OpCodes.Ldc_I4_7);
-                        return;
+                        break;
 
                     case 8:
                         ilProcessor.Emit(OpCodes.Ldc_I4_8);
-                        return;
+                        break;
                 }
             }
             else if (value > -129 && value < 128)
@@ -1833,36 +1880,44 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 ilProcessor.Emit(OpCodes.Ldc_I4, value);
             }
+
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldc_I8(long value)
         {
             ilProcessor.Emit(OpCodes.Ldc_I8, value);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldc_R4(float value)
         {
             ilProcessor.Emit(OpCodes.Ldc_R4, value);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldc_R8(double value)
         {
             ilProcessor.Emit(OpCodes.Ldc_R8, value);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldfld(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Ldfld, field);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldflda(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Ldflda, field);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldftn(MethodReference function)
         {
             ilProcessor.Emit(OpCodes.Ldftn, function);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldloc(int index)
@@ -1873,19 +1928,19 @@ namespace LaborasLangCompiler.ILTools.Methods
                 {
                     case 0:
                         ilProcessor.Emit(OpCodes.Ldloc_0);
-                        return;
+                        break;
 
                     case 1:
                         ilProcessor.Emit(OpCodes.Ldloc_1);
-                        return;
+                        break;
 
                     case 2:
                         ilProcessor.Emit(OpCodes.Ldloc_2);
-                        return;
+                        break;
 
                     case 3:
                         ilProcessor.Emit(OpCodes.Ldloc_3);
-                        return;
+                        break;
                 }
             }
             else if (index < 256)
@@ -1896,6 +1951,8 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 ilProcessor.Emit(OpCodes.Ldloc, body.Variables[index]);
             }
+
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldloca(int index)
@@ -1908,96 +1965,116 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 ilProcessor.Emit(OpCodes.Ldloca, body.Variables[index]);
             }
+
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldnull()
         {
             ilProcessor.Emit(OpCodes.Ldnull);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldobj(TypeReference targetType)
         {
             ilProcessor.Emit(OpCodes.Ldobj);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldsfld(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Ldsfld, field);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldsflda(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Ldsflda, field);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldstr(string str)
         {
             ilProcessor.Emit(OpCodes.Ldstr, str);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Mul()
         {
             ilProcessor.Emit(OpCodes.Mul);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Newobj(MethodReference method)
         {
             ilProcessor.Emit(OpCodes.Newobj, method);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Neg()
         {
             ilProcessor.Emit(OpCodes.Neg);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Newarr(TypeReference arrayType)
         {
             ilProcessor.Emit(OpCodes.Newarr, arrayType);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Nop()
         {
             ilProcessor.Emit(OpCodes.Nop);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Not()
         {
             ilProcessor.Emit(OpCodes.Not);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Or()
         {
             ilProcessor.Emit(OpCodes.Or);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Pop()
         {
             ilProcessor.Emit(OpCodes.Pop);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Rem()
         {
             ilProcessor.Emit(OpCodes.Rem);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Rem_Un()
         {
             ilProcessor.Emit(OpCodes.Rem_Un);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ret()
         {
             ilProcessor.Emit(OpCodes.Ret);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Shl()
         {
             ilProcessor.Emit(OpCodes.Shl);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Shr()
         {
             ilProcessor.Emit(OpCodes.Shr);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Starg(int index)
@@ -2010,21 +2087,26 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 ilProcessor.Emit(OpCodes.Starg, index);
             }
+
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Stfld(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Stfld, field);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Stelem_Any(TypeReference valueType)
         {
             ilProcessor.Emit(OpCodes.Stelem_Any, valueType);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Stelem_Ref()
         {
             ilProcessor.Emit(OpCodes.Stelem_Ref);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Stloc(int index)
@@ -2035,19 +2117,19 @@ namespace LaborasLangCompiler.ILTools.Methods
                 {
                     case 0:
                         ilProcessor.Emit(OpCodes.Stloc_0);
-                        return;
+                        break;
 
                     case 1:
                         ilProcessor.Emit(OpCodes.Stloc_1);
-                        return;
+                        break;
 
                     case 2:
                         ilProcessor.Emit(OpCodes.Stloc_2);
-                        return;
+                        break;
 
                     case 3:
                         ilProcessor.Emit(OpCodes.Stloc_3);
-                        return;
+                        break;
                 }
             }
             else if (index < 256)
@@ -2058,31 +2140,38 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 ilProcessor.Emit(OpCodes.Stloc, index);
             }
+
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Stsfld(FieldReference field)
         {
             ilProcessor.Emit(OpCodes.Stsfld, field);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Sub()
         {
             ilProcessor.Emit(OpCodes.Sub);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Tail()
         {
             ilProcessor.Emit(OpCodes.Tail);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Unbox(TypeReference targetType)
         {
             ilProcessor.Emit(OpCodes.Unbox, targetType);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Xor()
         {
             ilProcessor.Emit(OpCodes.Xor);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         #endregion
