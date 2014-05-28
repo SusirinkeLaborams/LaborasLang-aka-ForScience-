@@ -16,6 +16,8 @@ namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
             var instructions = body.Instructions;
             var replacementMap = new Dictionary<Instruction, Instruction>();
 
+            OnBegin(instructions);
+
             for (int i = 0; i < instructions.Count; i++)
             {
                 if (MatchesPredicate(instructions, i))
@@ -87,5 +89,9 @@ namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
         protected abstract bool MatchesPredicate(IList<Instruction> instructions, int instructionIndex);
         protected abstract InstructionOperation GetOperation();
         protected abstract Instruction GetReplacementInstruction();
+
+        protected virtual void OnBegin(IList<Instruction> instructions)
+        {
+        }
     }
 }

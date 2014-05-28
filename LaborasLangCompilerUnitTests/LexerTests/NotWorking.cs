@@ -100,5 +100,15 @@ auto Main = int()
             var tree = lexer.MakeTree(source);
             Assert.IsTrue(tree != null && tree.Children.Count > 0);
         }
+
+        [TestMethod]
+        public void TestCanLex_Create()
+        {
+            var source =
+@"foo a = create Some.Gigantic.Object(Potato, 5, create five());";
+
+            var tree = lexer.MakeTree(source);
+            Assert.IsTrue(tree != null && tree.Children.Count > 0);
+        }
     }
 }
