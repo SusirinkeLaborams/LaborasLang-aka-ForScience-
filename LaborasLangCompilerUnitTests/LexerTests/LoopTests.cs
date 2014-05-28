@@ -22,7 +22,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             AstNode tree = Lexer.MakeTree(source);
 
             Assert.IsNotNull(tree);
-            string expected = "Root: Sentence: Loop: (Condition: Value: Comparison: BooleanNode: Sum: Product: BinaryOperationNode: SuffixNode: PrefixNode: FullSymbol: Symbol, CodeBlock: Sentence: (FunctionCall: FullSymbol: Symbol, EndOfSentence))";
+            string expected = "Root: Sentence: Loop: (Condition: Value: Comparison: BooleanNode: Sum: Product: BinaryOperationNode: SuffixNode: PrefixNode: FullSymbol: Symbol, CodeBlock: Sentence: (FunctionCall: (FullSymbol: Symbol, Arguments), EndOfSentence))";
             string actual = AstHelper.Stringify(tree);
             Assert.AreEqual(expected, actual);
         }

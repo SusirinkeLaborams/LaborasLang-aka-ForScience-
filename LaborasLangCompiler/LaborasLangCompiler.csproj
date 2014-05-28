@@ -64,6 +64,7 @@
     <Compile Include="ILTools\AssemblyEmitter.cs" />
     <Compile Include="ILTools\AssemblyRegistry.cs" />
     <Compile Include="ILTools\MethodBodyOptimizers\AddTailCalls.cs" />
+    <Compile Include="ILTools\MethodBodyOptimizers\EliminateDeadCode.cs" />
     <Compile Include="ILTools\MethodBodyOptimizers\RemoveNOPs.cs" />
     <Compile Include="ILTools\MethodBodyOptimizers\ModifierBase.cs" />
     <Compile Include="ILTools\MethodBodyOptimizers\RemoveRedundantBranches.cs" />
@@ -77,6 +78,7 @@
     <Compile Include="ILTools\Types\TypeEmitter.cs" />
     <Compile Include="LexingTools\FileReader.cs" />
     <Compile Include="LexingTools\Lexer.cs" />
+    <Compile Include="LexingTools\SymbolCounter.cs" />
     <Compile Include="Parser\Exceptions\ParseException.cs" />
     <Compile Include="Parser\Exceptions\SymbolAlreadyDeclaredException.cs" />
     <Compile Include="Parser\Exceptions\SymbolNotFoundException.cs" />

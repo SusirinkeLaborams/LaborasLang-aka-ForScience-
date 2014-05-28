@@ -25,6 +25,7 @@ namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
             {
                 new RemoveNOPs(),
                 new RemoveRedundantBranches(),
+                new EliminateDeadCode(),
                 new AddTailCalls()
             };
         }
@@ -35,7 +36,7 @@ namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
 
             foreach (var step in optimizers)
             {
-                if (!debugBuild || step.ReleaseOnlyOpmization)
+                if (!debugBuild || !step.ReleaseOnlyOpmization)
                 {
                     step.Execute(body);
                 }

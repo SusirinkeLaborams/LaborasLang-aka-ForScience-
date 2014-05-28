@@ -58,6 +58,8 @@ namespace LaborasLangCompiler.LexingTools
         public const string BinaryOperator = "BinaryOperator";
         public const string BooleanOperator = "BooleanOperator";
         public const string BooleanNode = "BooleanNode";
+        public const string Arguments = "Arguments";
+        public const string Create = "Create";
 
         private AExpression GrammarTree;
         private static string Grammar = @"
@@ -98,14 +100,15 @@ namespace LaborasLangCompiler.LexingTools
                 (?<FunctionTypeArgs>): !('(' Ws? (Type (Ws? ',' Ws? Type)* Ws?)? ')' Ws? '{') ('(' Ws? (Type (Ws? ',' Ws? Type)* Ws?)? ')');
                 (?<Type>): (FullSymbol (Ws? FunctionTypeArgs)+) / FullSymbol;
                 
-                (?<ReturnSentence>): 'return' (Ws (Value / FullSymbol / Function))?;
+                (?<ReturnSentence>): 'return' (Ws (Function / Value / FullSymbol))?;
                 (?<FunctionType>): Type;
                 (?<FunctionArgument>): Value / FunctionCall;
-                (?<FunctionCall>): (FullSymbol) Ws? 
+                (?<FunctionCall>): (?<Create> 'create')? Ws? FullSymbol Ws? 
+                    (?<Arguments>
                     '('
                         Ws?
                         (FunctionArgument Ws? (',' Ws? FunctionArgument Ws?)*)?
-                    ')';
+                    ')')+;
                 
                 (?<FunctionArgumentDeclaration>): Type Ws Symbol;
                 (?<NamedFunctionType>): Type Ws? ('(' Ws? (FunctionArgumentDeclaration Ws? (',' Ws? FunctionArgumentDeclaration Ws?)*)? ')');
