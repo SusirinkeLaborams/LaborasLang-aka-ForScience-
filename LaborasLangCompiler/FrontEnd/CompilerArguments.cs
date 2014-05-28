@@ -26,7 +26,7 @@ namespace LaborasLangCompiler.FrontEnd
                                             x.Equals("/windows", StringComparison.InvariantCultureIgnoreCase) ||
                                             x.Equals("/dll", StringComparison.InvariantCultureIgnoreCase));
 
-            var unknownOptions = args.Except(sourceFiles.Union(references).Union(outputPaths).Union(moduleKinds));
+            var unknownOptions = args.Except(sourceFiles.Union(references).Union(outputPaths).Union(moduleKinds).Union(new string[] { "/debug" }));
             ParseUnknownOptions(unknownOptions);
 
             if (sourceFiles.Count() == 0)
