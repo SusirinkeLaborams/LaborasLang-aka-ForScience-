@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl;
 using Mono.Cecil;
@@ -18,6 +19,7 @@ namespace LaborasLangCompiler.Parser
         public ClassNode Root { get; set; }
         public string Filename { get; private set; }
         public Document Document { get; private set; }
+        public SymbolCounter SymbolCounter { get; private set; }
         private ByteInputIterator source;
         public IReadOnlyDictionary<string, TypeReference> Primitives { get; private set; }
         public bool Testing { get; private set; }
@@ -48,6 +50,7 @@ namespace LaborasLangCompiler.Parser
             Document.Language = DocumentLanguage.Other;
             Document.LanguageVendor = DocumentLanguageVendor.Other;
             Document.Type = DocumentType.Text;
+            SymbolCounter = new SymbolCounter(source);
 
             var primitives = new Dictionary<string, TypeReference>();
             primitives.Add(Bool, Assembly.TypeToTypeReference(typeof(bool)));
@@ -84,7 +87,14 @@ namespace LaborasLangCompiler.Parser
         }
         public SequencePoint GetSequencePoint(AstNode lexerNode)
         {
-            return new SequencePoint(Document);
+            var sequencePoint = new SequencePoint(Document);
+            var start = SymbolCounter.Positions[lexerNode.Token.Start];
+            var end = SymbolCounter.Positions[lexerNode.Token.End];
+            sequencePoint.StartLine = start.row;
+            sequencePoint.StartColumn = start.column;
+            sequencePoint.EndLine = end.row;
+            sequencePoint.EndColumn = end.column;
+            return sequencePoint;
         }
     }
 }
