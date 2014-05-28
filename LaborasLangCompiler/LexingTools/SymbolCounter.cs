@@ -10,7 +10,7 @@ namespace LaborasLangCompiler.LexingTools
 {
     class SymbolCounter
     {
-        private static Dictionary<string, FilePosition[]> m_Positions = new Dictionary<string, FilePosition[]>();
+        public FilePosition[] Positions { get; private set; }
 
         public struct FilePosition
         {
@@ -24,17 +24,14 @@ namespace LaborasLangCompiler.LexingTools
             }
         };
 
-        public static void Load(string file)
+        public SymbolCounter(ByteInputIterator file)
         {
-            var text = File.ReadAllText(file);
-            var bytes = Encoding.UTF8.GetBytes(text);
-            
+            Positions = new FilePosition[file.Length];
             int row = 1, column = 1;
-            FilePosition[] positions = new FilePosition[bytes.Length];
-
+            var bytes = file.Text(0, file.Length - 1);
             for (int i = 0; i < bytes.Length; i++)
             {
-                positions[i] = new FilePosition(row, column);
+                Positions[i] = new FilePosition(row, column);
 
                 if (Encoding.UTF8.GetString(bytes, i, 1) == "\n")
                 {
@@ -45,26 +42,6 @@ namespace LaborasLangCompiler.LexingTools
                 {
                     column++;
                 }
-            }
-
-            m_Positions.Add(file, positions);
-        }
-
-        public static void Unload(string file)
-        {
-            m_Positions.Remove(file);
-        }
-
-        public static FilePosition Get(string file, int symbol)
-        {
-            FilePosition[] positions;
-            if (m_Positions.TryGetValue(file, out positions))
-            {
-                return positions[symbol];
-            }
-            else
-            {
-                return new FilePosition(0, 0);
             }
         }
     }
