@@ -73,6 +73,7 @@ namespace LaborasLangCompiler.Parser
             primitives.Add(Decimal, Assembly.TypeToTypeReference(typeof(decimal)));
 
             primitives.Add(String, Assembly.TypeToTypeReference(typeof(string)));
+            primitives.Add(Object, Assembly.TypeToTypeReference(typeof(object)));
 
             primitives.Add(Void, Assembly.TypeToTypeReference(typeof(void)));
             primitives.Add(Auto, null);
