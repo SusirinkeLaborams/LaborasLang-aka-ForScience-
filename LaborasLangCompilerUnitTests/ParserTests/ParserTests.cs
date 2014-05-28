@@ -406,7 +406,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "";
             try
             {
-                TestParser(source, expected, true);
+                TestParser(source, expected, lex);
             }
             catch(TypeException)
             {
