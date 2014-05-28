@@ -57,6 +57,9 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public TypeNode FindType(string name)
         {
+            if (parser.Primitives.ContainsKey(name))
+                return new TypeNode(parser.Primitives[name]);
+
             if (declaredTypes.ContainsKey(name))
                 return new TypeNode(declaredTypes[name]);
 
@@ -110,7 +113,6 @@ namespace LaborasLangCompiler.Parser.Impl
             if (parser.Root == null)
             {
                 parser.Root = instance;
-                instance.AddDefaultAliases();
             }
 
             //symbols
@@ -199,7 +201,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private static void ParseDeclaration(Parser parser, ClassNode klass, AstNode lexerNode, bool init)
         {
-            var declaredType = parser.ParseType(lexerNode.Children[0]);
+            var declaredType = TypeNode.Parse(parser, klass, lexerNode.Children[0]);
             var name = parser.ValueOf(lexerNode.Children[1]);
             
             if (declaredType == null && !init)
@@ -239,33 +241,6 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             
             return builder.Append(")").ToString();
-        }
-        private void AddDefaultAliases()
-        {
-            declaredTypes.Add(Parser.Bool, parser.Assembly.TypeToTypeReference(typeof(bool)));
-
-            declaredTypes.Add(Parser.Char, parser.Assembly.TypeToTypeReference(typeof(char)));
-            declaredTypes.Add(Parser.Byte, parser.Assembly.TypeToTypeReference(typeof(sbyte)));
-            declaredTypes.Add(Parser.UByte, parser.Assembly.TypeToTypeReference(typeof(byte)));
-
-            declaredTypes.Add(Parser.Word, parser.Assembly.TypeToTypeReference(typeof(short)));
-            declaredTypes.Add(Parser.UWord, parser.Assembly.TypeToTypeReference(typeof(ushort)));
-
-            declaredTypes.Add(Parser.Int, parser.Assembly.TypeToTypeReference(typeof(int)));
-            declaredTypes.Add(Parser.UInt, parser.Assembly.TypeToTypeReference(typeof(uint)));
-
-            declaredTypes.Add(Parser.Long, parser.Assembly.TypeToTypeReference(typeof(long)));
-            declaredTypes.Add(Parser.ULong, parser.Assembly.TypeToTypeReference(typeof(ulong)));
-
-            declaredTypes.Add(Parser.Float, parser.Assembly.TypeToTypeReference(typeof(float)));
-            declaredTypes.Add(Parser.Double, parser.Assembly.TypeToTypeReference(typeof(double)));
-            declaredTypes.Add(Parser.Decimal, parser.Assembly.TypeToTypeReference(typeof(decimal)));
-
-            declaredTypes.Add(Parser.String, parser.Assembly.TypeToTypeReference(typeof(string)));
-
-            declaredTypes.Add(Parser.Void, parser.Assembly.TypeToTypeReference(typeof(void)));
-            declaredTypes.Add(Parser.Object, parser.Assembly.TypeToTypeReference(typeof(object)));
-            declaredTypes.Add(Parser.Auto, null);
         }
     }
 }

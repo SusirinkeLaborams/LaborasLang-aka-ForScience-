@@ -136,8 +136,8 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             if(builtNode == null)
             {
-                var found = cls.FindType(node.Value);
-                return found != null;
+                builtNode = cls.FindType(node.Value);
+                return builtNode != null;
             }
             else
             {

@@ -76,26 +76,5 @@ namespace LaborasLangCompiler.Parser
         {
             return Encoding.UTF8.GetString(source.Text(node.Token.Start, node.Token.End));
         }
-        /// <summary>
-        /// Parses node as a type
-        /// </summary>
-        /// <param name="typeNode">The node to parse</param>
-        /// <returns>Mono.Cecil.TypeReference</returns>
-        /// <exception cref="TypeException">If the type is not a .NET primitive</exception>
-        public TypeReference ParseType(AstNode typeNode)
-        {
-            if(typeNode.Children.Count == 1)
-            {
-                string type = ValueOf(typeNode.Children[0]);
-                if (Primitives.ContainsKey(type))
-                    return Primitives[type];
-                else
-                    throw new TypeException("Type '" + type + "' is not a primitive .NET type");
-            }
-            else
-            {
-                throw new NotImplementedException("Only parsing primitives");
-            }
-        }
     }
 }

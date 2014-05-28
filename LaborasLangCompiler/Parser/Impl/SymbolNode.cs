@@ -1,4 +1,6 @@
-﻿using Mono.Cecil;
+﻿using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.LexingTools;
+using Mono.Cecil;
 using NPEG;
 using System;
 using System.Collections.Generic;
@@ -54,6 +56,27 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeNode(TypeReference type)
         {
             ParsedType = type;
+        }
+        public static TypeReference Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        {
+            if (lexerNode.Token.Name == Lexer.FunctionType)
+                return TypeNode.Parse(parser, parent, lexerNode.Children[0]);
+
+            var ret = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]).ExtractType();
+
+            if (lexerNode.Children.Count == 1)
+            {
+                return ret;
+            }
+            else
+            {
+                var args = new List<TypeReference>();
+                foreach(var arg in lexerNode.Children[1].Children)
+                {
+                    args.Add(TypeNode.Parse(parser, parent, arg));
+                }
+                return AssemblyRegistry.GetFunctorType(parser.Assembly, ret, args);
+            }
         }
     }
 }
