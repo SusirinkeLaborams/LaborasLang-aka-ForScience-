@@ -379,6 +379,22 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: System.Int32 a = (BinaryOp: (BinaryOp: (BinaryOp: (BinaryOp: (Literal: System.Int32 1) Multiplication (Literal: System.Int32 2)) Division (Literal: System.Int32 3)) Multiplication (Literal: System.Int32 4)) Modulus (Literal: System.Int32 5)))";
             TestParser(source, expected, lex);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestFunctionType()
+        {
+            string source = @"
+                void() a = void(){};";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void a = (Function: $Functors.$System_Void()(CodeBlock: Symbols: () Nodes: ())))";
+            TestParser(source, expected, lex);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestFunctionType2()
+        {
+            string source = @"
+                int(float) a = int(float x){return 4;};";
+            string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Single a = (Function: $Functors.$System_Int32$System_Single(System.Single x)(CodeBlock: Symbols: ((LValueNode: FunctionArgument x System.Single) x) Nodes: ((ReturnNode: (Literal: System.Int32 4))))))";
+            TestParser(source, expected, lex);
+        }
         private void TestParser(string source, string expected, bool lex, [CallerMemberName]string name = "")
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
