@@ -38,9 +38,9 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             string name = parser.ValueOf(lexerNode.Children[0]);
             var args = new List<IExpressionNode>();
-            for(int i = 1; i < lexerNode.Children.Count; i++)
+            foreach(var node in lexerNode.Children[1].Children)
             {
-                args.Add(ExpressionNode.Parse(parser, parent, lexerNode.Children[i]));
+                args.Add(ExpressionNode.Parse(parser, parent, node));
             }
             return new SymbolCallNode(name, args);
         }

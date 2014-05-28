@@ -26,11 +26,15 @@ namespace LaborasLangCompiler.Parser.Impl
         //tmp code kol lexer neveikia su dot
         public static new MethodCallNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
+            if (lexerNode.Children[0].Token.Name == Lexer.Create)
+                throw new NotImplementedException("Create not implemented");
+            if(lexerNode.Children.Count(x => x.Token.Name == Lexer.Arguments) > 1)
+                throw new NotImplementedException("Calling returned functions not supported");
             var function = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]);
             var args = new List<IExpressionNode>();
-            for (int i = 1; i < lexerNode.Children.Count; i++)
+            foreach (var node in lexerNode.Children[1].Children)
             {
-                args.Add(ExpressionNode.Parse(parser, parent, lexerNode.Children[i]));
+                args.Add(ExpressionNode.Parse(parser, parent, node));
             }
             var method = function.ExtractMethod(args.Select(x => x.ReturnType).ToList());
             var nvm = new List<TypeReference>();
