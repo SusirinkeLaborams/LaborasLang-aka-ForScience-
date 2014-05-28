@@ -9,7 +9,7 @@ namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
 {
     internal class RemoveRedundantBranches : ModifierBase
     {
-        public override bool ReleaseOnlyOpmization { get { return true; } }
+        public override bool ReleaseOnlyOpmization { get { return false; } }
 
         protected override bool MatchesPredicate(IList<Instruction> instructions, int instructionIndex)
         {
