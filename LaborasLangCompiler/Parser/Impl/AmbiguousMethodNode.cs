@@ -14,6 +14,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class AmbiguousMethodNode : RValueNode, IFunctionNode
     {
         public override TypeReference ReturnType { get; set; }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Intermediate; } }
         public override RValueNodeType RValueType { get { return RValueNodeType.Function; } }
         public MethodReference Function { get { return null; } }
         public IExpressionNode ObjectInstance { get; private set; }
@@ -34,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 //TODO: make this lazy
                 return new MethodNode(method, AssemblyRegistry.GetFunctorType(parser.Assembly, method), ObjectInstance, SequencePoint);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw new TypeException("Ambiguous method result", e);
             }
