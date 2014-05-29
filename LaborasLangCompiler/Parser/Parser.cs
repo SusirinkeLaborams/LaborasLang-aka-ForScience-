@@ -95,8 +95,8 @@ namespace LaborasLangCompiler.Parser
             sequencePoint.StartLine = start.row;
             sequencePoint.StartColumn = start.column;
             sequencePoint.EndLine = end.row;
-            sequencePoint.EndColumn = end.column;
-            return sequencePoint;
+            sequencePoint.EndColumn = end.column + 1;
+            return sequencePoint; 
         }
     }
 }
