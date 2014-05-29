@@ -918,11 +918,27 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         private void EmitArgumentForCall(IExpressionNode argument, TypeReference targetParameterType)
         {
-            Emit(argument, false);
-
-            if (argument.ReturnType.IsValueType && !targetParameterType.IsValueType)
+            if (targetParameterType.IsByReference)
             {
-                Box(argument.ReturnType);
+                if (argument.ExpressionType == ExpressionNodeType.LValue)
+                {
+                    var lvalue = (ILValueNode)argument;
+                    Emit(lvalue, true);
+                }
+                else
+                {
+                    throw new Exception(string.Format("{0}({1},{2},{3},{4}): error: can't pass RValue by reference", argument.SequencePoint.Document.Url,
+                       argument.SequencePoint.StartLine, argument.SequencePoint.StartColumn, argument.SequencePoint.EndLine, argument.SequencePoint.EndColumn));
+                }
+            }
+            else
+            {
+                Emit(argument, false);
+
+                if (argument.ReturnType.IsValueType && !targetParameterType.IsValueType)
+                {
+                    Box(argument.ReturnType);
+                }
             }
         }
 

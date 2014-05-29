@@ -106,6 +106,16 @@ namespace LaborasLangCompiler.ILTools
 
         public static bool IsAssignableTo(this TypeReference right, TypeReference left)
         {
+            if (left.IsByReference)
+            {
+                left = left.GetElementType();
+            }
+
+            if (right.IsByReference)
+            {
+                right = right.GetElementType();
+            }
+
             var leftName = left.FullName;
             var rightName = right.FullName;
 
