@@ -169,17 +169,17 @@ namespace LaborasLangCompiler.Parser.Impl
         static BinaryOperatorNode()
         {
             Operators = new Dictionary<string, BinaryOperatorNodeType>();
-            Operators["+"] = BinaryOperatorNodeType.Addition;
-            Operators["-"] = BinaryOperatorNodeType.Subtraction;
-            Operators["*"] = BinaryOperatorNodeType.Multiplication;
-            Operators["/"] = BinaryOperatorNodeType.Division;
-            Operators["%"] = BinaryOperatorNodeType.Modulus;
-            Operators["|"] = BinaryOperatorNodeType.BinaryOr;
-            Operators["&"] = BinaryOperatorNodeType.BinaryAnd;
-            Operators["^"] = BinaryOperatorNodeType.BinaryXor;
-            Operators[">"] = BinaryOperatorNodeType.GreaterThan;
+            Operators["+"]  = BinaryOperatorNodeType.Addition;
+            Operators["-"]  = BinaryOperatorNodeType.Subtraction;
+            Operators["*"]  = BinaryOperatorNodeType.Multiplication;
+            Operators["/"]  = BinaryOperatorNodeType.Division;
+            Operators["%"]  = BinaryOperatorNodeType.Modulus;
+            Operators["|"]  = BinaryOperatorNodeType.BinaryOr;
+            Operators["&"]  = BinaryOperatorNodeType.BinaryAnd;
+            Operators["^"]  = BinaryOperatorNodeType.BinaryXor;
+            Operators[">"]  = BinaryOperatorNodeType.GreaterThan;
             Operators[">="] = BinaryOperatorNodeType.GreaterEqualThan;
-            Operators["<"] = BinaryOperatorNodeType.LessThan;
+            Operators["<"]  = BinaryOperatorNodeType.LessThan;
             Operators["<="] = BinaryOperatorNodeType.LessEqualThan;
             Operators["=="] = BinaryOperatorNodeType.Equals;
             Operators["!="] = BinaryOperatorNodeType.NotEquals;
