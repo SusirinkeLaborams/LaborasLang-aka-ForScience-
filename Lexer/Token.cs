@@ -8,11 +8,11 @@ namespace Lexer
 {
     public enum TokenType
     {
-        StartOfFile,
         EndOfLine,
-        EndOfFile,
         Comment,
-
+        BitwiseAnd,
+        BitwiseAndEqual,
+        And,
         Dot,
         Plus,
         PlusPlus,
@@ -26,7 +26,31 @@ namespace Lexer
         StringLiteral,
         BitwiseComplementEqual,
         BitwiseComplement,
-
+        BitwiseXor,
+        BitwiseXorEqual,
+        BitwiseOr,
+        Or,
+        BitwiseOrEqual,
+        LeftShiftEqual,
+        LeftShift,
+        LessOrEqual,
+        Less,
+        More,
+        RightShift,
+        RightShiftEqual,
+        MoreOrEqual,
+        Divide,
+        DivideEqual,
+        Multiply,
+        MultiplyEqual,
+        Remainder,
+        RemainderEqual,
+        Assignment,
+        Equal,
+        LeftCurlyBracket,
+        RightCurlyBracket,
+        LeftBracket,
+        RightBracket
     }
 
     public class Token
@@ -34,12 +58,10 @@ namespace Lexer
         public Token()
         {
             Content = "";
-            TrailingContent = "";
         }
 
         public TokenType Type { get; internal set; }
         public string Content { get; internal set; }
-        public string TrailingContent { get; internal set; }
         public Location Start { get; internal set; }
         public Location End { get; internal set; }
     }

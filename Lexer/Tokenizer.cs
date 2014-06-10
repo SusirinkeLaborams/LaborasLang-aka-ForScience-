@@ -11,10 +11,7 @@ namespace Lexer
         public IEnumerable<Token> Tokenize(string file)
         {
             SourceReader Source = new SourceReader(file);
-
-            var Tokens = new Stack<Token>();
-            Tokens.Push(new Token());
-            Tokens.Peek().Type = TokenType.StartOfFile;
+            
             while (Source.Peek() != '\0')
             {
                 switch (Source.Peek())
@@ -23,8 +20,7 @@ namespace Lexer
                     case ' ':
                     case '\t':
                         {
-                            // Whitespaces are just appended to last token, they don't do anything significant
-                            Tokens.Peek().TrailingContent += Source.Pop();
+                            // Whitespaces are ignored
                             break;
                         }
                     #endregion
@@ -34,6 +30,12 @@ namespace Lexer
                             // String literal, scan to next ' that is not going after a \
                             var token = new Token();
                             token.Type = TokenType.StringLiteral;
+                            
+                            // Only peeked at the source, should save location after first pop or just increment collumn
+                            var location = Source.Location;
+                            location.Collumn = location.Collumn + 1;
+                            token.Start = location;
+
                             while(Source.Peek() != '\'')
                             {                        
                                 if (Source.Peek() == '\\')
@@ -42,7 +44,8 @@ namespace Lexer
                                 }
                                 token.Content += Source.Pop();
                             }
-                            Tokens.Push(token);
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     case '"':
@@ -50,6 +53,12 @@ namespace Lexer
                             // Single quote string, scan to next " that is not going after a \
                             var token = new Token();
                             token.Type = TokenType.StringLiteral;
+
+                            // Only peeked at the source, should save location after first pop or just increment collumn
+                            var location = Source.Location;
+                            location.Collumn = location.Collumn + 1;
+                            token.Start = location;
+
                             while (Source.Peek() != '"')
                             {
                                 if (Source.Peek() == '\\')
@@ -58,7 +67,9 @@ namespace Lexer
                                 }
                                 token.Content += Source.Pop();
                             }
-                            Tokens.Push(token);
+
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
@@ -68,6 +79,7 @@ namespace Lexer
                             // ++ += +
                             var token = new Token();
                             token.Content += Source.Pop();
+                            token.Start = Source.Location;
                             switch (Source.Peek())
                             {
                                 case '+':
@@ -88,7 +100,8 @@ namespace Lexer
                                         break;
                                     }
                             }
-                            Tokens.Push(token);
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
@@ -98,6 +111,7 @@ namespace Lexer
                             // -- -= -
                             var token = new Token();
                             token.Content += Source.Pop();
+                            token.Start = Source.Location;
                             switch (Source.Peek())
                             {
                                 case '-':
@@ -118,7 +132,8 @@ namespace Lexer
                                         break;
                                     }
                             }
-                            Tokens.Push(token);
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
@@ -128,6 +143,7 @@ namespace Lexer
                             // ! !=
                             var token = new Token();
                             token.Content += Source.Pop();
+                            token.Start = Source.Location;
                             switch (Source.Peek())
                             {
                                 case '=':
@@ -142,7 +158,8 @@ namespace Lexer
                                         break;
                                     }
                             }
-                            Tokens.Push(token);
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
@@ -152,6 +169,7 @@ namespace Lexer
                             // ~ ~=
                             var token = new Token();
                             token.Content += Source.Pop();
+                            token.Start = Source.Location;
                             switch (Source.Peek())
                             {
                                 case '=':
@@ -166,15 +184,36 @@ namespace Lexer
                                         break;
                                     }
                             }
-                            Tokens.Push(token);
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
                     #region And
                     case '&':
                         {
-                            // & && &= &&=
-                            throw new NotImplementedException();
+                            // & && &=
+                            var token = new Token();
+                            token.Type = TokenType.BitwiseAnd;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            switch (Source.Peek())
+                            {
+                                case '&':
+                                    {
+                                        token.Content += Source.Pop();
+                                        token.Type = TokenType.And;
+                                        break;
+                                    }
+                                case '=':
+                                    {
+                                        token.Content += Source.Pop();
+                                        token.Type = TokenType.BitwiseAndEqual;
+                                        break;
+                                    }
+                            }
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
@@ -182,23 +221,86 @@ namespace Lexer
                     case '^':
                         {
                             // ^ ^=
-                            throw new NotImplementedException();
+                            var token = new Token();
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            switch (Source.Peek())
+                            {
+                                case '=':
+                                    {
+                                        token.Content += Source.Pop();
+                                        token.Type = TokenType.BitwiseXorEqual;
+                                        break;
+                                    }
+                                default:
+                                    {
+                                        token.Type = TokenType.BitwiseXor;
+                                        break;
+                                    }
+                            }
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
                     #region Or
                     case '|':
                         {
-                            // | |= || ||=
-                            throw new NotImplementedException();
+                            // | |= || 
+                            var token = new Token();
+                            token.Type = TokenType.BitwiseOr;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            switch (Source.Peek())
+                            {
+                                case '|':
+                                    {
+                                        token.Content += Source.Pop();
+                                        token.Type = TokenType.Or;
+                                        break;
+                                    }
+                                case '=':
+                                    {
+                                        token.Content += Source.Pop();
+                                        token.Type = TokenType.BitwiseOrEqual;
+                                        break;
+                                    }
+                            }
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
                     #region LessThan
                     case '<':
                         {
-                            // < <= <<
-                            throw new NotImplementedException();
+                            // < <= << <<=
+                            var token = new Token();
+                            token.Type = TokenType.Less;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            switch (Source.Peek())
+                            {
+                                case '<':
+                                    {
+                                        token.Content += Source.Pop();
+                                        token.Type = TokenType.LeftShift;
+                                        if (Source.Peek() == '=')
+                                        {
+                                            token.Type = TokenType.LeftShiftEqual;
+                                            token.Content += Source.Pop();
+                                        }
+                                        break;
+                                    }
+                                case '=':
+                                    {
+                                        token.Content += Source.Pop();
+                                        token.Type = TokenType.LessOrEqual;
+                                        break;
+                                    }
+                            }
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
@@ -206,7 +308,32 @@ namespace Lexer
                     case '>':
                         {
                             // > >= >>
-                            throw new NotImplementedException();
+                            var token = new Token();
+                            token.Type = TokenType.More;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            switch (Source.Peek())
+                            {
+                                case '>':
+                                    {
+                                        token.Content += Source.Pop();
+                                        token.Type = TokenType.RightShift;
+                                        if (Source.Peek() == '=')
+                                        {
+                                            token.Type = TokenType.RightShiftEqual;
+                                            token.Content += Source.Pop();
+                                        }
+                                        break;
+                                    }
+                                case '=':
+                                    {
+                                        token.Content += Source.Pop();
+                                        token.Type = TokenType.MoreOrEqual;
+                                        break;
+                                    }
+                            }
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
@@ -214,63 +341,159 @@ namespace Lexer
                     case '/':
                         {
                             // // / /= /* ... */
-                            throw new NotImplementedException();
+                            var token = new Token();
+                            token.Type = TokenType.Divide;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            switch (Source.Peek())
+                            {
+                                case '=':
+                                    {
+                                        token.Content += Source.Pop();
+                                        token.Type = TokenType.DivideEqual;
+                                        break;
+                                    }
+                                case '/':
+                                    {
+                                        // Single line comment
+                                        while (Source.Pop() != '\n') ;
+                                        // No token to return
+                                        continue; 
+                                    }
+                                case '*':
+                                    {
+                                        /* multiline comment */
+                                        Source.Pop();
+                                        var last = Source.Pop();
+                                        while (true)
+                                        {
+                                            var current = Source.Pop();
+                                            if (last == '*' && current == '/')
+                                            {
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                last = current;
+                                            }
+                                        }
+                                        // No token to return
+                                        continue;
+                                    }
+                            }
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
                     #region Multiplication
                     case '*':
                         {
-                            // * *=
-                            throw new NotImplementedException();
+                            var token = new Token();
+                            token.Type = TokenType.Multiply;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            if (Source.Peek() == '=')
+                            {
+                                token.Content += Source.Pop();
+                                token.Type = TokenType.MultiplyEqual;
+                            }
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
                     #region Remainder
                     case '%':
                         {
-                            // % %=
-                            throw new NotImplementedException();
+                            var token = new Token();
+                            token.Type = TokenType.Remainder;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            if (Source.Peek() == '=')
+                            {
+                                token.Content += Source.Pop();
+                                token.Type = TokenType.RemainderEqual;
+                            }
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
                     #region Equal
                     case '=':
                         {
-                            // == =
-                            throw new NotImplementedException();
+                            var token = new Token();
+                            token.Type = TokenType.Assignment;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            if (Source.Peek() == '=')
+                            {
+                                token.Content += Source.Pop();
+                                token.Type = TokenType.Equal;
+                            }
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
                     #region LeftCurlyBracket
                     case '{':
                         {
-                            // {
-                            throw new NotImplementedException();
+                            var token = new Token();
+                            token.Type = TokenType.LeftCurlyBracket;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
                     #region RightCurlyBracket
                     case '}':
                         {
-                            // }
-                            throw new NotImplementedException();
+                            var token = new Token();
+                            token.Type = TokenType.RightCurlyBracket;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
                     #region LeftBracket
                     case '(':
                         {
-                            // (
-                            throw new NotImplementedException();
+                            var token = new Token();
+                            token.Type = TokenType.LeftBracket;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
                     #region RightBracket
                     case ')':
                         {
-                            // )
-                            throw new NotImplementedException();
+                            var token = new Token();
+                            token.Type = TokenType.RightBracket;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            token.End = Source.Location;
+                            yield return token;
+                            break;
+                        }
+                    #endregion
+                    #region EndOfLine
+                    case ';':
+                        {
+                            var token = new Token();
+                            token.Type = TokenType.EndOfLine;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            token.End = Source.Location;
+                            yield return token;
                             break;
                         }
                     #endregion
@@ -282,8 +505,7 @@ namespace Lexer
                     #endregion
                 }
             }
-
-            throw new NotImplementedException();
+            yield break;
         }
     }
 }
