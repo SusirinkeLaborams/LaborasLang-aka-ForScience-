@@ -31,8 +31,6 @@ namespace Lexer
 
     public class Token
     {
-       
-
         public Token()
         {
             Content = "";
@@ -42,6 +40,8 @@ namespace Lexer
         public TokenType Type { get; internal set; }
         public string Content { get; internal set; }
         public string TrailingContent { get; internal set; }
+        public Location Start { get; internal set; }
+        public Location End { get; internal set; }
     }
 
 

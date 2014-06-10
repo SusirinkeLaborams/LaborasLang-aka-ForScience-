@@ -10,11 +10,15 @@ namespace Lexer
     {
         private string m_Source;
         private int m_Index;
+        private int m_Collumn;
+        private int m_Row;
 
         public SourceReader(string source)
         {
             m_Source = source;
             m_Index = 0;
+            m_Collumn = 1;
+            m_Row = 1;
         }
 
         public string Source
@@ -27,27 +31,47 @@ namespace Lexer
 
         public char Peek()
         {
-            try
+            if (m_Source.Length < m_Index)
             {
                 return m_Source[m_Index];
             }
-            catch
+            else
             {
                 return '\0';
             }
 
         }
 
+        public Location Location
+        {
+            get
+            {
+                return new Location(m_Collumn, m_Row);
+            }
+        }
+
+
         public char Pop()
         {
 
-            try
+            if (m_Source.Length < m_Index)
             {
                 var value = m_Source[m_Index];
                 m_Index++;
+
+                if (value == '\n')
+                {
+                    m_Collumn = 1;
+                    m_Row++;
+                }
+                else
+                {
+                    m_Collumn++;
+                }
+
                 return value;
             }
-            catch
+            else
             {
                 return '\0';
             }
