@@ -33,7 +33,7 @@ namespace Lexer
                             
                             // Only peeked at the source, should save location after first pop or just increment collumn
                             var location = Source.Location;
-                            location.Collumn = location.Collumn + 1;
+                            location.Column = location.Column + 1;
                             token.Start = location;
 
                             while(Source.Peek() != '\'')
@@ -56,7 +56,7 @@ namespace Lexer
 
                             // Only peeked at the source, should save location after first pop or just increment collumn
                             var location = Source.Location;
-                            location.Collumn = location.Collumn + 1;
+                            location.Column = location.Column + 1;
                             token.Start = location;
 
                             while (Source.Peek() != '"')

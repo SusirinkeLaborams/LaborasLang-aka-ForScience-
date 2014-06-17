@@ -8,12 +8,12 @@ namespace Lexer
 {
     public struct Location
     {
-        public int Collumn { get; internal set; }
+        public int Column { get; internal set; }
         public int Row { get; internal set; }
 
-        public Location(int collumn, int row) : this()
+        public Location(int column, int row) : this()
         {
-            Collumn = collumn;
+            Column = column;
             Row = row;
         }
     }
