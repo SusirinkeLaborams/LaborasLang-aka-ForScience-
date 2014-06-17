@@ -8,9 +8,13 @@ namespace Lexer
 {
     class Tokenizer
     {
+        private char[] Symbols = { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.' };
+        private char[] Digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+
         public IEnumerable<Token> Tokenize(string file)
         {
             SourceReader Source = new SourceReader(file);
+            // Required to return from inner loops that handle numbers
             
             while (Source.Peek() != '\0')
             {
@@ -497,10 +501,94 @@ namespace Lexer
                             break;
                         }
                     #endregion
-                    #region Default
+                    #region Number
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                        {
+                            var token = new Token();
+                            token.Start = Source.Location;
+                            token.Type = TokenType.Integer;
+                            // Consume to a symbol. Check for dot is required as it will not stop a number (0.1)
+                            while (!Symbols.Contains(Source.Peek()) || Source.Peek() == '.')
+                            {
+                                char c = Source.Pop();
+                                
+                                token.Content += c;
+                                if(c == 'F' || c == 'f')
+                                {                                    
+                                    if(token.Type == TokenType.Integer || token.Type == TokenType.Double)
+                                    {
+                                       token.Type = TokenType.Float;
+                                    }
+                                    else
+                                    {
+                                        token.Type = TokenType.MalformedToken;
+                                    }
+                                } 
+                                else if(c == 'l' || c == 'L')
+                                {
+                                    if(token.Type == TokenType.Integer)
+                                    {
+                                        token.Type = TokenType.Long;
+                                    }
+                                    else
+                                    {
+                                        token.Type = TokenType.MalformedToken;
+                                    }
+                                }
+                                else if(c == '.')
+                                {
+                                    
+                                    if(token.Type == TokenType.Integer)
+                                    {
+                                        token.Type = TokenType.Double;
+                                    }
+                                    else
+                                    {
+                                        token.Type = TokenType.MalformedToken;
+                                    }
+                                }
+                                else if (!Digits.Contains(c))
+                                {
+                                    token.Type = TokenType.MalformedToken;
+                                }
+                            }
+                            token.End = Source.Location;
+                            yield return token;
+                            break;
+                        }
+                    #endregion
+                    #region Dot
+                    case '.':
+                        {
+                            var token = new Token();
+                            token.Type = TokenType.Dot;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            token.End = Source.Location;
+                            yield return token;
+                            break;
+                        }
+                    #endregion
+                    #region Symbol
                     default:
                         {
-                            throw new NotImplementedException();
+                            var token = new Token();
+                            token.Type = TokenType.Symbol;
+                            while (!Symbols.Contains(Source.Peek()))
+                            {
+                                token.Content += Source.Pop();
+                            }
+                            yield return token;
+                            break;
                         }
                     #endregion
                 }

@@ -50,7 +50,14 @@ namespace Lexer
         LeftCurlyBracket,
         RightCurlyBracket,
         LeftBracket,
-        RightBracket
+        RightBracket,
+        Unknown,
+        Integer,
+        Float,
+        Long,
+        Double,
+        MalformedToken,
+        Symbol,
     }
 
     public class Token
