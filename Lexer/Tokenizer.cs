@@ -6,25 +6,36 @@ using System.Threading.Tasks;
 
 namespace Lexer
 {
-    class Tokenizer
+    public  class Tokenizer
     {
-        private char[] Symbols = { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.' };
-        private char[] Digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        private static char[] Symbols = { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.' };
+        private static char[] Digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
-        public IEnumerable<Token> Tokenize(string file)
+        public static IEnumerable<Token> Tokenize(string file)
         {
             SourceReader Source = new SourceReader(file);
-            // Required to return from inner loops that handle numbers
-            
+            Location lastLocation = new Location(-1, -1);
             while (Source.Peek() != '\0')
             {
+                if (lastLocation == Source.Location)
+                {
+                    throw new Exception(String.Format("infinite loop found at line {} column {} symbol {}", lastLocation.Row, lastLocation.Column, Source.Peek()));
+                }
+                else
+                {
+                    lastLocation = Source.Location;
+                }
+
                 switch (Source.Peek())
                 {
                     #region Whitespace
+                    case '\n':
+                    case '\r':
                     case ' ':
                     case '\t':
                         {
                             // Whitespaces are ignored
+                            Source.Pop();
                             break;
                         }
                     #endregion
@@ -40,14 +51,16 @@ namespace Lexer
                             location.Column = location.Column + 1;
                             token.Start = location;
 
-                            while(Source.Peek() != '\'')
+                            do
                             {                        
                                 if (Source.Peek() == '\\')
                                 {
                                     token.Content += Source.Pop();
                                 }
                                 token.Content += Source.Pop();
-                            }
+                            } while (Source.Peek() != '\'');
+
+                            token.Content += Source.Pop();
                             token.End = Source.Location;
                             yield return token;
                             break;

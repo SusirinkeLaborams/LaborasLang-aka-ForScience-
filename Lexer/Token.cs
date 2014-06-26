@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace Lexer
 {
@@ -60,6 +61,7 @@ namespace Lexer
         Symbol,
     }
 
+    [Serializable]
     public class Token
     {
         public Token()
@@ -71,7 +73,19 @@ namespace Lexer
         public string Content { get; internal set; }
         public Location Start { get; internal set; }
         public Location End { get; internal set; }
+
+
+        public static bool operator ==(Token a, Token b)
+        {
+            return a.Type == b.Type &&
+                a.Content == b.Content &&
+                a.Start == b.Start &&
+                a.End == b.End;
+        }
+
+        public static bool operator !=(Token a, Token b)
+        {
+            return !(a == b);
+        }
     }
-
-
 }

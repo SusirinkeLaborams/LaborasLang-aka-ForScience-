@@ -8,11 +8,11 @@ namespace LaborasLangCompilerUnitTests.LexerTests
     [TestClass]
     public class LoopTests
     {
-        Lexer Lexer;
+        LaborasLangCompiler.LexingTools.Lexer Lexer;
         [TestInitialize]
         public void Initialize()
         {
-            this.Lexer = new Lexer();
+            this.Lexer = new LaborasLangCompiler.LexingTools.Lexer();
         }
 
         [TestMethod]
