@@ -104,17 +104,10 @@
     <Compile Include="ILTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="ILTests\ILHelpersTests.cs" />
     <Compile Include="ILTests\PEVerifyRunner.cs" />
-    <Compile Include="LexerTests\PrefixSuffixTests.cs" />
-    <Compile Include="LexerTests\NotWorking.cs" />
     <Compile Include="LexerTests\UnitTest1.cs" />
     <Compile Include="TestBase.cs" />
-    <Compile Include="LexerTests\ExpectedTree.cs" />
-    <Compile Include="LexerTests\LiteralTokenTest.cs" />
-    <Compile Include="LexerTests\FunctionTests.cs" />
-    <Compile Include="LexerTests\LoopTests.cs" />
     <Compile Include="ParserTests\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LexerTests\MathOperationsTest.cs" />
     <Compile Include="Utilities\SourceReader.cs" />
     <Compile Include="Utilities\TreeSerializer.cs" />
   </ItemGroup>
