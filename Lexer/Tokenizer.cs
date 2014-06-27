@@ -8,7 +8,7 @@ namespace Lexer
 {
     public  class Tokenizer
     {
-        private static char[] Symbols = { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.' };
+        private static char[] Symbols = { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.', '\0' };
         private static char[] Digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
         public static IEnumerable<Token> Tokenize(string file)
@@ -67,7 +67,7 @@ namespace Lexer
                         }
                     case '"':
                         {
-                            // Single quote string, scan to next " that is not going after a \
+                            // Duble quote string, scan to next " that is not going after a \
                             var token = new Token();
                             token.Type = TokenType.StringLiteral;
 
@@ -76,15 +76,16 @@ namespace Lexer
                             location.Column = location.Column + 1;
                             token.Start = location;
 
-                            while (Source.Peek() != '"')
+                            do
                             {
                                 if (Source.Peek() == '\\')
                                 {
                                     token.Content += Source.Pop();
                                 }
                                 token.Content += Source.Pop();
-                            }
+                            } while (Source.Peek() != '"');
 
+                            token.Content += Source.Pop();
                             token.End = Source.Location;
                             yield return token;
                             break;
@@ -234,7 +235,7 @@ namespace Lexer
                             break;
                         }
                     #endregion
-                    #region XOR
+                    #region Xor
                     case '^':
                         {
                             // ^ ^=
