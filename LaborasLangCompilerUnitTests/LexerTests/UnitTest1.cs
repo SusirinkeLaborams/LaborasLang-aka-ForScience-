@@ -26,84 +26,96 @@ namespace LaborasLangCompilerUnitTests.LexerTests
 	System.Console.WriteLine('Hello, world!');
 	System.Console.ReadKey();
 };";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
-        
+        #region Single branch tests
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerStringLiteral1()
         {
             var source = @"'str\'ing'";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerStringLiteral2()
         {
             var source = @"""str\""ing""";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerPlus()
         {
             var source = @"+ += ++";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerMinus()
         {
             var source = @"- -= --";
-            ExecuteTest(source);
-        }        
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
+        }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerNot()
         {
             var source = @"! !=";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerBitwiseComplement()
         {
             var source = @"~ ~=";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerAnd()
         {
             var source = @"& && &=";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerXor()
         {
             var source = @"^ ^=";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerOr()
         {
             var source = @"| |= ||";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerLessThan()
         {
             var source = @"< << <= <<=";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerMoreThan()
         {
             var source = @"> >> >= >>=";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
@@ -111,49 +123,56 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         {
             var source = @"/ /= /* content */ //content
 ";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerMultiplication()
         {
             var source = @"* *=";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerRemainder()
         {
             var source = @"% %=";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerEqual()
         {
             var source = @"= ==";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerCurlyBracket()
         {
             var source = @"{ }";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerBracket()
         {
             var source = @"( )";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerSemicolon()
         {
             var source = @";";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
@@ -161,24 +180,39 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         {
             var source =
 @"1 2 3 4 5 6 7 8 9 0 10 10f 10F 10l 10L 10.5f 10.5F 10..5 10.5L";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsTrue(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerDot()
         {
             var source = @".";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerSymbol()
         {
             var source = @"symbol";
-            ExecuteTest(source);
+            var tokens = ExecuteTest(source);
+            Assert.IsFalse(ContainsMalformedTokens(tokens));
         }
+        #endregion Single branch tests
 
-        void ExecuteTest(string source, [CallerMemberName] string fileName = "")
+        bool ContainsMalformedTokens(IEnumerable<Token> tokens)
+        {
+            foreach (Token token in tokens)
+            {
+                if (token.Type == TokenType.MalformedToken)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        IEnumerable<Token> ExecuteTest(string source, [CallerMemberName] string fileName = "")
         {
             fileName = Path + fileName + ".xml";
             IEnumerable<Token> tokens = null;
@@ -186,8 +220,8 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             {
                 tokens = Tokenizer.Tokenize(source);
                 var serializer = new DataContractSerializer(typeof(IEnumerable<Token>));
-                using (var writer = new XmlTextWriter(fileName , Encoding.UTF8))
-                {                    
+                using (var writer = new XmlTextWriter(fileName, Encoding.UTF8))
+                {
                     serializer.WriteObject(writer, tokens);
                 }
             }
@@ -198,7 +232,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
                 {
                     using (var reader = new XmlTextReader(streamReader))
                     {
-                        tokens = (IEnumerable<Token>) serializer.ReadObject(reader);
+                        tokens = (IEnumerable<Token>)serializer.ReadObject(reader);
                     }
                 }
             }
@@ -209,8 +243,8 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             {
                 Assert.IsTrue(pair.Actual == pair.Expected);
             }
+            return currentTokens;
         }
 
     }
 }
-        
