@@ -69,11 +69,57 @@ namespace Lexer
             Content = "";
         }
 
-        public TokenType Type { get; internal set; }
-        public string Content { get; internal set; }
-        public Location Start { get; internal set; }
-        public Location End { get; internal set; }
+        private TokenType m_Type;
+        private string m_Content;
+        private Location m_Start;
+        private Location m_End;
 
+        #region PublicParameters
+        public TokenType Type
+        {
+            get
+            {
+                return m_Type;
+            }
+            internal set
+            {
+                m_Type = value;
+            }
+        }
+        public string Content
+        {
+            get
+            {
+                return m_Content;
+            }
+            internal set
+            {
+                m_Content = value;
+            }
+        }
+        public Location Start
+        {
+            get
+            {
+                return m_Start;
+            }
+            internal set
+            {
+                m_Start = value;
+            }
+        }
+        public Location End
+        {
+            get
+            {
+                return m_End;
+            }
+            internal set
+            {
+                m_End = value;
+            }
+        }
+        #endregion Public parameters
 
         public static bool operator ==(Token a, Token b)
         {

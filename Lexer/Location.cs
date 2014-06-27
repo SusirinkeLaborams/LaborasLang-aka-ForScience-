@@ -10,9 +10,32 @@ namespace Lexer
     [Serializable]
     public struct Location
     {
-        public int Column { get; internal set; }
-        public int Row { get; internal set; }
-
+        private int m_Column;
+        private int m_Row;
+        #region Public properties
+        public int Column 
+        {
+            get
+            {
+                return m_Column;
+            }
+            internal set
+            {
+                m_Column = value;
+            }
+        }
+        public int Row
+        {
+            get
+            {
+                return m_Row;
+            }
+            internal set
+            {
+                m_Row = value;
+            }
+        }
+        #endregion Public properties
         public Location(int column, int row) : this()
         {
             Column = column;
