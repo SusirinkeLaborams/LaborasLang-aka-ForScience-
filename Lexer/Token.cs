@@ -7,59 +7,7 @@ using System.Xml.Serialization;
 
 namespace Lexer
 {
-    public enum TokenType
-    {
-        EndOfLine,
-        Comment,
-        BitwiseAnd,
-        BitwiseAndEqual,
-        And,
-        Dot,
-        Plus,
-        PlusPlus,
-        Minus,
-        MinusMinus,
-        MinusEqual,
-        NotEqual,
-        Not,
-        Whitespace,
-        PlusEqual,
-        StringLiteral,
-        BitwiseComplementEqual,
-        BitwiseComplement,
-        BitwiseXor,
-        BitwiseXorEqual,
-        BitwiseOr,
-        Or,
-        BitwiseOrEqual,
-        LeftShiftEqual,
-        LeftShift,
-        LessOrEqual,
-        Less,
-        More,
-        RightShift,
-        RightShiftEqual,
-        MoreOrEqual,
-        Divide,
-        DivideEqual,
-        Multiply,
-        MultiplyEqual,
-        Remainder,
-        RemainderEqual,
-        Assignment,
-        Equal,
-        LeftCurlyBracket,
-        RightCurlyBracket,
-        LeftBracket,
-        RightBracket,
-        Unknown,
-        Integer,
-        Float,
-        Long,
-        Double,
-        MalformedToken,
-        Symbol,
-    }
+
 
     [Serializable]
     public class Token
@@ -67,6 +15,7 @@ namespace Lexer
         public Token()
         {
             Content = "";
+            bool a = TokenType.Unknown.IsTerminal();
         }
 
         private TokenType m_Type;
@@ -74,7 +23,7 @@ namespace Lexer
         private Location m_Start;
         private Location m_End;
 
-        #region PublicParameters
+        #region Public parameters
         public TokenType Type
         {
             get
