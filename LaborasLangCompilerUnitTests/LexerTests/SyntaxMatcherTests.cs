@@ -15,6 +15,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             var source = @"
 int a;
 int b;
+a = b;
 ";
             var matcher = new SyntaxMatcher(Tokenizer.Tokenize(source));
             var result = matcher.Match();

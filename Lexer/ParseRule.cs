@@ -8,11 +8,8 @@ namespace Lexer
 {
     public enum ConditionType
     {
-        Optional,
-        Zero,
         One,
         OneOrMore,
-        ZeroOrMore,
     }
 
     struct Condition
