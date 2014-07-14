@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Lexer
 {
     [Serializable]
-    class AstNode
+    public class AstNode
     {
         
         private List<AstNode> m_Childs;
@@ -83,6 +83,11 @@ namespace Lexer
         {
             child.Parent = this;
             Childs.Add(child);
+        }
+
+        internal void AddTerminal(Token child)
+        {
+            AddChild(new AstNode(child, child.Type));
         }
     }
 }

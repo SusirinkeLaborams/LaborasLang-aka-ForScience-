@@ -35,23 +35,17 @@ namespace Lexer
     struct ParseRule
     {
         public TokenType Result;
-        public IEnumerable<IEnumerable<Condition>> RequiredTokens;
-        public ParseRule(TokenType result, IEnumerable<IEnumerable<Condition>> requiredTokens)
+        public IEnumerable<List<Condition>> RequiredTokens;
+        public ParseRule(TokenType result, params List<Condition>[] requiredTokens)
         {
             Result = result;
             RequiredTokens = requiredTokens;
         }
 
-        public ParseRule(TokenType result, IEnumerable<Condition> requiredTokens)
+        public ParseRule(TokenType result, params IEnumerable<Condition>[] requiredTokens)
         {
             Result = result;
-            RequiredTokens = new[] { requiredTokens };
-        }
-
-        private ParseRule()
-        {
-            Result = TokenType.Unknown;
-            RequiredTokens = null;
+            RequiredTokens = requiredTokens.Select(x => x.ToList());
         }
     }
 }

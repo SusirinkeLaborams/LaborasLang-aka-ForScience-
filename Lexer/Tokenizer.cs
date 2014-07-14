@@ -8,7 +8,7 @@ namespace Lexer
 {
     public  class Tokenizer
     {
-        private static char[] Symbols = { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.', '\0' };
+        private static char[] Symbols = { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.', '\0', ';' };
         private static char[] Digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
         public static IEnumerable<Token> Tokenize(string file)

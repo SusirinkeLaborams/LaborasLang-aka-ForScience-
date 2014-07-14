@@ -75,4 +75,5 @@ namespace Lexer
             return ((int)token < 0x10000000);
         }
     }
+    
 }
