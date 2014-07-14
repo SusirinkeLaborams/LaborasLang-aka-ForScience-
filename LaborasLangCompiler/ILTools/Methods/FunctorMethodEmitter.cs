@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.ILTools.Methods
 {
-    internal class FunctorMethodEmitter : MethodEmitterBase
+    internal class FunctorMethodEmitter : MethodEmitter
     {
         #region Factories
 
