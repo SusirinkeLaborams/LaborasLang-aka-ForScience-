@@ -3,16 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Runtime.Serialization;
+
 
 namespace Lexer
 {
     [Serializable]
+    [DataContract(IsReference = true)]
+    
     public class AstNode
     {
-        
+        [DataMember]
         private List<AstNode> m_Childs;
+        [DataMember]
         private AstNode m_Parent;
+        [DataMember]
         private Token m_Content;
+        [DataMember]
         private TokenType m_Type;
 
 #region Public parameters

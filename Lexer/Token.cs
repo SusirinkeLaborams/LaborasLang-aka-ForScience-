@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace Lexer
 {
@@ -17,10 +17,13 @@ namespace Lexer
             Content = "";
             bool a = TokenType.Unknown.IsTerminal();
         }
-
+        [DataMember]
         private TokenType m_Type;
+        [DataMember]
         private string m_Content;
+        [DataMember]
         private Location m_Start;
+        [DataMember]
         private Location m_End;
 
         #region Public parameters
@@ -72,6 +75,16 @@ namespace Lexer
 
         public static bool operator ==(Token a, Token b)
         {
+            if (System.Object.ReferenceEquals(a, b))
+            {
+                return true;
+            }
+
+            if (((object)a == null) || ((object)b == null))
+            {
+                return false;
+            }
+
             return a.Type == b.Type &&
                 a.Content == b.Content &&
                 a.Start == b.Start &&
