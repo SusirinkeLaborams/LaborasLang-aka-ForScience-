@@ -70,10 +70,10 @@ namespace LaborasLangCompiler.FrontEnd
             {
                 switch (moduleKinds.First().ToLowerInvariant())
                 {
-                    case "/console:":
+                    case "/console":
                         return ModuleKind.Console;
 
-                    case "/windows:":
+                    case "/windows":
                         return ModuleKind.Windows;     
 
                     case "/dll":
