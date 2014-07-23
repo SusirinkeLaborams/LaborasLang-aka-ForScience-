@@ -16,7 +16,7 @@ namespace LaborasLangCompiler.FrontEnd
 {
     class Program
     {
-        static int Main(string[] args)
+        internal static int Main(params string[] args)
         {
             try
             {
