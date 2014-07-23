@@ -12,22 +12,34 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
 {
     public class IntegrationTestBase
     {
-        private const int kTimeOutInMilliseconds = 100;
+        private const int kBuildTimeOut = 4000;
+        private const int kRunTimeOut = 500;
 
-        protected static Lexer lexer = new Lexer();
-        
+        protected string IntegrationTestsPath
+        {
+            get
+            {
+                return Path.Combine("..", "..", "IntegrationTests");
+            }
+        }
+
         protected class IntegrationTestInfo
         {
             public string SourceFile { get; private set; }
-            public string ExpectedOutput { get; private set; }
             
             public string[] Arguments { get; set; }
             public string StdIn { get; set; }
+            public string StdOut { get; set; }
+
+            public IntegrationTestInfo(string sourceFile)
+            {
+                SourceFile = sourceFile;
+            }
 
             public IntegrationTestInfo(string sourceFile, string expectedOutput)
             {
                 SourceFile = sourceFile;
-                ExpectedOutput = expectedOutput;
+                StdOut = expectedOutput;
             }
         }
 
@@ -42,7 +54,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             var exePath = temp + ".exe";
             var pdbPath = temp + ".pdb";
 
-            var sourceFile = Path.Combine("..", "..", "IntegrationTests", "SourceFiles", testInfo.SourceFile);
+            var sourceFile = Path.Combine(IntegrationTestsPath, "SourceFiles", testInfo.SourceFile);
             
             try
             {
@@ -58,13 +70,19 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
 
         private void Build(string sourceFile, string outPath)
         {
-            LaborasLangCompiler.FrontEnd.Program.Main(sourceFile, "/console", "/out:" + outPath);
+            CreateProcessAndRun("LaborasLangCompiler.exe", new[] { sourceFile, "/console", "/out:" + outPath }, null, kBuildTimeOut);
         }
 
         private void Run(string path, IntegrationTestInfo testInfo)
         {
-            var argumentLine = testInfo.Arguments != null ? testInfo.Arguments.Aggregate((x, y) => x + y) : string.Empty;
-            var startInfo = new ProcessStartInfo(path, argumentLine);
+            var stdout = CreateProcessAndRun(path, testInfo.Arguments, testInfo.StdIn, kRunTimeOut);
+            Assert.AreEqual(testInfo.StdOut, stdout);
+        }
+
+        private string CreateProcessAndRun(string exePath, string[] arguments, string stdIn, int timeOutInMilliseconds)
+        {
+            var argumentLine = arguments != null ? arguments.Aggregate((x, y) => x + " " + y) : string.Empty;
+            var startInfo = new ProcessStartInfo(exePath, argumentLine);
 
             startInfo.RedirectStandardInput = true;
             startInfo.RedirectStandardOutput = true;
@@ -73,19 +91,34 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
 
             var process = Process.Start(startInfo);
 
-            if (testInfo.StdIn != null)
+            var stdoutTask = process.StandardOutput.ReadToEndAsync();
+            if (stdIn != null)
             {
-                process.StandardInput.Write(testInfo.StdIn);
+                process.StandardInput.Write(stdIn);
             }
 
-            if (!process.WaitForExit(kTimeOutInMilliseconds))
+            bool timedOut = false;
+
+            if (!process.WaitForExit(timeOutInMilliseconds))
             {
                 process.Kill();
-                throw new TimeoutException();
+                timedOut = true;
             }
 
-            var stdout = process.StandardOutput.ReadToEnd();
-            Assert.AreEqual(testInfo.ExpectedOutput, stdout);
+            stdoutTask.Wait();
+            var stdout = stdoutTask.Result;
+
+            if (timedOut)
+            {
+                throw new TimeoutException(stdout);
+            }
+
+            if (process.ExitCode != 0)
+            {
+                throw new Exception(stdout);
+            }
+
+            return stdout;
         }
     }
 }

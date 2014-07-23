@@ -106,6 +106,7 @@
     <Compile Include="ILTests\PEVerifyRunner.cs" />
     <Compile Include="IntegrationTests\IntegrationTestBase.cs" />
     <Compile Include="IntegrationTests\IntegrationTests.cs" />
+    <None Include="IntegrationTests\SourceFiles\StdInWorks.ll" />
     <Compile Include="LexerTests\PrefixSuffixTests.cs" />
     <Compile Include="LexerTests\NotWorking.cs" />
     <Compile Include="TestBase.cs" />
@@ -156,14 +157,18 @@
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_UnsignedRemainder.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_VariableDeclarationAndInitialization_LoadFloatLiteral.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_WhileLoop.il" />
+    <None Include="IntegrationTests\SourceFiles\Bottles.ll" />
     <None Include="IntegrationTests\SourceFiles\HelloWorld.ll" />
+    <None Include="IntegrationTests\SourceFiles\Recursion.ll" />
     <None Include="packages.config" />
     <None Include="Properties\packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_StoreField_LoadIntLiteral.il" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="IntegrationTests\ExpectedOutput\Bottles.txt" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
