@@ -26,14 +26,38 @@ namespace Lexer
                     new Condition[]{TokenType.CodeBlockNode}),
             
                 new ParseRule(TokenType.DeclarationNode,
-                    new Condition[]{TokenType.Symbol, TokenType.Symbol, TokenType.EndOfLine}),
+                    new Condition[]{TokenType.Type, TokenType.LValue, TokenType.EndOfLine}),
             
                 new ParseRule(TokenType.AssignmentNode,
-                    new Condition[]{TokenType.Symbol, TokenType.Assignment, TokenType.Symbol, TokenType.EndOfLine}),
+                    new Condition[]{TokenType.LValue, TokenType.Assignment, TokenType.Value, TokenType.EndOfLine}),
             
                 new ParseRule(TokenType.CodeBlockNode,
                     new Condition[]{TokenType.LeftCurlyBracket, new Condition(TokenType.StatementNode, ConditionType.OneOrMore), TokenType.RightCurlyBracket},
                     new Condition[]{TokenType.LeftCurlyBracket, TokenType.StatementNode, TokenType.RightCurlyBracket}),
+
+                new ParseRule(TokenType.Value,
+                    new Condition[]{TokenType.LValue},
+                    new Condition[]{TokenType.RValue}),
+
+                new ParseRule(TokenType.LValue,
+                    new Condition[]{TokenType.Symbol}),
+ 
+                new ParseRule(TokenType.RValue,
+                    new Condition[]{TokenType.Symbol}),
+
+                new ParseRule(TokenType.FullSymbol,
+                    new Condition[]{TokenType.Symbol, new Condition(TokenType.SubSymbol, ConditionType.OneOrMore)},
+                    new Condition[]{TokenType.Symbol}),
+
+                new ParseRule(TokenType.SubSymbol,
+                    new Condition[]{TokenType.Dot, TokenType.Symbol}),
+
+                new ParseRule(TokenType.Type,
+                    new Condition[]{TokenType.FullSymbol, TokenType.LeftBracket, new Condition(TokenType.Type, ConditionType.OneOrMore), TokenType.RightBracket},
+                    new Condition[]{TokenType.FullSymbol, TokenType.LeftBracket, TokenType.RightBracket},
+                    new Condition[]{TokenType.FullSymbol}
+                    )
+
 
             };
 
@@ -56,7 +80,10 @@ namespace Lexer
                 tokensConsumed += matchedNode.Item2;
             }
 
-            Debug.Assert(tokensConsumed == m_Source.Count);
+            if(tokensConsumed != m_Source.Count)
+            {
+                throw new Exception("Could not match all  tokens");
+            }
             return matchedNode.Item1;            
         }
 

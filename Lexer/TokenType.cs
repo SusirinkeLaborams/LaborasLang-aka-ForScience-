@@ -66,6 +66,15 @@ namespace Lexer
         AssignmentNode,
         RootNode,
 
+        FullSymbol,
+        SubSymbol,
+
+        Value,
+        LValue, 
+        RValue,
+
+        Type,
+
     }
 
     public static class TokenInfo

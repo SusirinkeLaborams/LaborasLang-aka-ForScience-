@@ -95,5 +95,10 @@ namespace Lexer
         {
             return !(a == b);
         }
+
+        public bool Equals(Token other)
+        {
+            return this == other;
+        }
     }
 }
