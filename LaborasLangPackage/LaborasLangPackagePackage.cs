@@ -52,7 +52,6 @@ namespace LaborasLangPackage
         /// </summary>
         protected override void Initialize()
         {
-            Debug.WriteLine (string.Format(CultureInfo.CurrentCulture, "Entering Initialize() of: {0}", this.ToString()));
             base.Initialize();
 
             //Create Editor Factory. Note that the base Package class will call Dispose on it.

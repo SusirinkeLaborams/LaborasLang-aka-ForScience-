@@ -24,8 +24,6 @@ namespace LaborasLangPackage
 
         public EditorFactory(LaborasLangPackagePackage package)
         {
-            Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering {0} constructor", this.ToString()));
-
             this.m_EditorPackage = package;
         }
 
