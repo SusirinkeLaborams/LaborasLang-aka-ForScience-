@@ -131,7 +131,7 @@
     <Compile Include="LaborasLangPreferences.cs" />
     <Compile Include="LaborasLangScanner.cs" />
     <Compile Include="LaborasLangService.cs" />
-    <Content Include="Templates\LaborasLang Source File.ll">
+    <Content Include="Templates\Source.ll">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

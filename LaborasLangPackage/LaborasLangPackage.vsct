@@ -24,114 +24,6 @@
   <!--Defines VK_INSERT -->
   <Extern href="virtkeys.h"/>
   
-
-
-
-  <!--The Commands section is where we the commands, menus and menu groups are defined.
-      This section uses a Guid to identify the package that provides the command defined inside it. -->
-  <Commands package="guidLaborasLangPackagePkg">
-    <!-- Inside this section we have different sub-sections: one for the menus, another  
-    for the menu groups, one for the buttons (the actual commands), one for the combos 
-    and the last one for the bitmaps used. Each element is identified by a command id that  
-    is a unique pair of guid and numeric identifier; the guid part of the identifier is usually  
-    called "command set" and is used to group different command inside a logically related  
-    group; your package should define its own command set in order to avoid collisions  
-    with command ids defined by other packages. -->
-
-    
-    <!--This is the sub-section that defines the menus and toolbars.-->
-    <Menus>
-      <!--  To define an element in this group you need an ID, a parent group, a display priority,
-            a menu type, a name and a default text. -->
-      <!-- Editor Toolbar -->
-      <Menu guid="guidLaborasLangPackageCmdSet" id="IDM_TLB_RTF" priority="0x0000" type="Toolbar">
-        <Parent guid="guidLaborasLangPackageCmdSet" id="0"/>
-        <Strings>
-          <ButtonText>LaborasLangPackage Toolbar</ButtonText>
-        </Strings>
-      </Menu>
-      <!-- Editor Context Menu -->
-      <Menu guid="guidLaborasLangPackageCmdSet" id="IDMX_RTF" priority="0x0000" type="Context">
-        <Parent guid="guidLaborasLangPackageCmdSet" id="0"/>
-        <Strings>
-          <ButtonText>LaborasLangPackage Context Menu</ButtonText>
-        </Strings>
-      </Menu>
-    </Menus>
-    
-    <!-- In this section you can define new menu groups. A menu group is a container for 
-         other menus or buttons (commands); from a visual point of view you can see the 
-         group as the part of a menu contained between two lines. The parent of a group 
-         must be a menu. -->
-    <Groups>
-
-
-      <!--Editor menu group -->
-      <Group guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_EDITOR_CMDS" priority="0xFE00">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_EDIT"/>
-      </Group>
-
-      <!-- Toolbar groups -->
-      <Group guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_FONT1" priority="0x0100">
-        <Parent guid="guidLaborasLangPackageCmdSet" id="IDM_TLB_RTF"/>
-      </Group>
-      <Group guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_FONT2" priority="0x0200">
-        <Parent guid="guidLaborasLangPackageCmdSet" id="IDM_TLB_RTF"/>
-      </Group>
-      <Group guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_INDENT" priority="0x0300">
-        <Parent guid="guidLaborasLangPackageCmdSet" id="IDM_TLB_RTF"/>
-      </Group>
-      <Group guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_BULLET" priority="0x0400">
-        <Parent guid="guidLaborasLangPackageCmdSet" id="IDM_TLB_RTF"/>
-      </Group>
-      <Group guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_FONT_COMBOS" priority="0x0040">
-        <Parent guid="guidLaborasLangPackageCmdSet" id="IDM_TLB_RTF"/>
-      </Group>
-      
-      <!--Context menu groups -->
-      <Group guid="guidSHLMainMenu" id="IDG_VS_EDIT_CUTCOPY" priority="0x0100">
-        <Parent guid="guidLaborasLangPackageCmdSet" id="IDMX_RTF"/>
-      </Group>
-      <Group guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_CTX_PROPS" priority="0x0200">
-        <Parent guid="guidLaborasLangPackageCmdSet" id="IDMX_RTF"/>
-      </Group>
-      <Group guid="guidSharedMenuGroup" id="IDG_VS_FORMAT_FONTFACE" priority="0x0300">
-        <Parent guid="guidLaborasLangPackageCmdSet" id="IDMX_RTF"/>
-      </Group>
-
-    </Groups>
-    
-    <!--Buttons section. -->
-    <!--This section defines the elements the user can interact with, like a menu command or a button 
-        or combo box in a toolbar. -->
-    <Buttons>
-      <!--To define a menu group you have to specify its ID, the parent menu and its display priority. 
-          The command is visible and enabled by default. If you need to change the visibility, status, etc, you can use
-          the CommandFlag node.
-          You can add more than one CommandFlag node e.g.:
-              <CommandFlag>DefaultInvisible</CommandFlag>
-              <CommandFlag>DynamicVisibility</CommandFlag>
-          If you do not want an image next to your command, remove the Icon node /> -->
-
-
-
-      <Button guid="guidLaborasLangPackageCmdSet" id="commandIDStrike" priority="0x0400" type="Button">
-        <Parent guid="guidSharedMenuGroup" id="IDG_VS_FORMAT_FONTFACE"/>
-        <Icon guid="guidImages" id="bmpPicStrikethrough"/>
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <CommandFlag>DefaultDisabled</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
-        <Strings>
-          <ButtonText>&amp;Strike-through</ButtonText>
-          <ToolTipText>Strikes through text</ToolTipText>
-        </Strings>
-      </Button>
-
-    </Buttons>
- 
-  </Commands>
-
-
   <!--  Within this section you can specify the set of commands defined somewhere else that your  
         packages uses; for instance if your package uses the standard 'Copy' command, you don't  
         need to define it, because it is defined by the shell, but you have to use this section  
@@ -171,59 +63,6 @@
     <UsedCommand guid="guidVSStd2K" id="ECMD_BULLETEDLIST"/>
   </UsedCommands>
   
-  <!--Inside this section, we have the ability to place menu groups inside some other menu or 
-      menu / commands inside other groups. 
-      For instance, it is possible to place one of VisualStudio's menus or commands inside one of our  
-      groups or one of our groups inside a menu defined somewhere else. -->
-  <CommandPlacements>
-    <!--Editor Toolbar -->
-    <CommandPlacement guid="guidVSStd97" id="cmdidFontName" priority="0x0100">
-      <Parent guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_FONT_COMBOS"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidVSStd97" id="cmdidFontSize" priority="0x0200">
-      <Parent guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_FONT_COMBOS"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidVSStd97" id="cmdidBold" priority="0x0100">
-      <Parent guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_FONT1"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidVSStd97" id="cmdidItalic" priority="0x0200">
-      <Parent guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_FONT1"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidVSStd97" id="cmdidUnderline" priority="0x0300">
-      <Parent guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_FONT1"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidLaborasLangPackageCmdSet" id="commandIDStrike" priority="0x0400">
-      <Parent guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_FONT1"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidVSStd97" id="cmdidJustifyLeft" priority="0x0100">
-      <Parent guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_INDENT"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidVSStd97" id="cmdidJustifyCenter" priority="0x0200">
-      <Parent guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_INDENT"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidVSStd97" id="cmdidJustifyRight" priority="0x0300">
-      <Parent guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_INDENT"/>
-    </CommandPlacement>
-    <CommandPlacement guid="guidVSStd2K" id="ECMD_BULLETEDLIST" priority="0x0100">
-      <Parent guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_TLB_BULLET"/>
-    </CommandPlacement>
-    
-    <!-- Editor context menu -->
-    <CommandPlacement guid="guidVSStd2K" id="ECMD_BULLETEDLIST" priority="0x0100">
-      <Parent guid="guidLaborasLangPackageCmdSet" id="IDG_RTF_CTX_PROPS"/>
-    </CommandPlacement>
-  </CommandPlacements>
-
-
-
-    <!-- This section is where you can associate a command with a keyboard shortcut; this association is
-      valid within a specific UI context, that is when the shell is inside a specific mode, e.g. during
-      debugging, editing a file or when the user is using a specific designer. -->
-  <VisibilityConstraints>
-
-    <VisibilityItem guid="guidLaborasLangPackageCmdSet" id="IDM_TLB_RTF" context="guidLaborasLangPackageEditorFactory" />
-  </VisibilityConstraints>
-
   <KeyBindings>
      <!--Keybindings 
        To define a binding, you have to specify the sequence of keys to press to activate the command  
@@ -250,26 +89,6 @@
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="guidLaborasLangPackageCmdSet" value="{6d4b9a7d-cebc-409d-afaa-0e9f86f30981}">
 
-      <IDSymbol name="IDM_TLB_RTF" value="0x0001" />
-      <IDSymbol name="IDMX_RTF" value="0x0002" />
-      <IDSymbol name="IDM_RTFMNU_ALIGN" value="0x0004" />
-      <IDSymbol name="IDM_RTFMNU_SIZE" value="0x0005" />
-      
-      <IDSymbol name="IDG_RTF_FMT_FONT1" value="0x1000" />
-      <IDSymbol name="IDG_RTF_FMT_FONT2" value="0x1001" />
-      <IDSymbol name="IDG_RTF_FMT_INDENT" value="0x1002" />
-      <IDSymbol name="IDG_RTF_FMT_BULLET" value="0x1003" />
-      
-      <IDSymbol name="IDG_RTF_TLB_FONT1" value="0x1004" />
-      <IDSymbol name="IDG_RTF_TLB_FONT2" value="0x1005" />
-      <IDSymbol name="IDG_RTF_TLB_INDENT" value="0x1006" />
-      <IDSymbol name="IDG_RTF_TLB_BULLET" value="0x1007" />
-      <IDSymbol name="IDG_RTF_TLB_FONT_COMBOS" value="0x1008" />
-      <IDSymbol name="IDG_RTF_CTX_EDIT" value="0x1009" />
-      <IDSymbol name="IDG_RTF_CTX_PROPS" value="0x100a" />
-      <IDSymbol name="IDG_RTF_EDITOR_CMDS" value="0x100b" />
-      <IDSymbol name="MyMenuGroup" value="0x1020" />
-      <IDSymbol name="commandIDStrike" value="0x0102" />
     </GuidSymbol>
     
     <GuidSymbol name="guidLaborasLangPackageEditorFactory" value="{e37d924b-d43c-4cfd-9701-0dc4892b70c6}" />

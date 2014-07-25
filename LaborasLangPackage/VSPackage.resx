@@ -148,16 +148,16 @@
     <comment>Name of the editor to show for the Keybindings</comment>
   </data>
   <data name="105" xml:space="preserve">
-    <value>LaborasLangPackage Files</value>
+    <value>LaborasLang</value>
   </data>
   <data name="106" xml:space="preserve">
-    <value>LaborasLangPackage</value>
+    <value>LaborasLang File (.ll)</value>
   </data>
   <data name="107" xml:space="preserve">
-    <value>LaborasLang Source File</value>
+    <value>Source</value>
   </data>
   <data name="109" xml:space="preserve">
-    <value>LaborasLangPackage File (ll)</value>
+    <value>Creates a file containing LaborasLang source code</value>
   </data>
   <data name="401" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\File.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
