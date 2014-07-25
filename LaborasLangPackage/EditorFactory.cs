@@ -77,7 +77,6 @@ namespace LaborasLangPackage
         //
         public int MapLogicalView(ref Guid logicalView, out string physicalView)
         {
-            bool isSupported = false;
             physicalView = null;
 
             if (logicalView == VSConstants.LOGVIEWID_Primary ||

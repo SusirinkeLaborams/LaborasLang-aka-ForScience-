@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SusirinkeLaborams.LaborasLangPackage
+namespace LaborasLangPackage
 {
     public sealed class LaborasLangScanner : IScanner
     {
@@ -18,14 +18,14 @@ namespace SusirinkeLaborams.LaborasLangPackage
             m_Buffer = buffer;
         }
 
-        bool IScanner.ScanTokenAndProvideInfoAboutIt(TokenInfo tokenInfo, ref int state)
+        public bool ScanTokenAndProvideInfoAboutIt(TokenInfo tokenInfo, ref int state)
         {
             tokenInfo.Type = TokenType.Unknown;
             tokenInfo.Color = TokenColor.Text;
-            return true;
+            return false;
         }
 
-        void IScanner.SetSource(string source, int offset)
+        public void SetSource(string source, int offset)
         {
             m_Source = source.Substring(offset);
         }
