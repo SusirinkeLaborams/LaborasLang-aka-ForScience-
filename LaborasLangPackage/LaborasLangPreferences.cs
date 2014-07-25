@@ -24,7 +24,7 @@ namespace SusirinkeLaborams.LaborasLangPackage
             base.Init();
 
             // Supported stuff so far
-            this.CutCopyBlankLines = true;
+            this.CutCopyBlankLines = true;new LaborasLangAuthoringScope();
             this.EnableShowMatchingBrace = true;
             this.EnableLeftClickForURLs = true;
             this.EnableMatchBraces = true;
