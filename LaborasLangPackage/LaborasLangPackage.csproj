@@ -126,24 +126,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EditorFactory.cs" />
-    <Compile Include="EditorPane.cs" />
-    <Compile Include="EditorTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="EditorTextBox.designer.cs">
-      <DependentUpon>EditorTextBox.cs</DependentUpon>
-    </Compile>
-    <Compile Include="IEditor.cs" />
     <Compile Include="LaborasLangAuthoringScope.cs" />
     <Compile Include="LaborasLangPreferences.cs" />
     <Compile Include="LaborasLangScanner.cs" />
     <Compile Include="LaborasLangService.cs" />
-    <Compile Include="MyEditor.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MyEditor.designer.cs">
-      <DependentUpon>MyEditor.cs</DependentUpon>
-    </Compile>
     <Compile Include="NativeMethods.cs" />
     <Compile Include="VSMacroRecorder.cs" />
     <Content Include="Templates\LaborasLang Source File.ll">
@@ -166,18 +152,6 @@
     <Compile Include="PkgCmdID.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="EditorPane.resx">
-      <DependentUpon>EditorPane.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="EditorTextBox.resx">
-      <DependentUpon>EditorTextBox.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MyEditor.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>MyEditor.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
