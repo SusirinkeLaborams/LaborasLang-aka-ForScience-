@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.Shell;
 
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
-namespace SusirinkeLaborams.LaborasLangPackage
+namespace LaborasLangPackage
 {
     /// <summary>
     /// Factory for creating our editor object. Extends from the IVsEditoryFactory interface

@@ -1,4 +1,4 @@
-﻿namespace SusirinkeLaborams.LaborasLangPackage
+﻿namespace LaborasLangPackage
 {
     partial class MyEditor
     {
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.richTextBoxCtrl = new SusirinkeLaborams.LaborasLangPackage.EditorTextBox();
+            this.richTextBoxCtrl = new LaborasLangPackage.EditorTextBox();
             this.SuspendLayout();
             // 
             // richTextBoxCtrl

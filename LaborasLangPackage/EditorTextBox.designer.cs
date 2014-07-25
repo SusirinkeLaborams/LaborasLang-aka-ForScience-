@@ -1,5 +1,5 @@
 ﻿
-namespace SusirinkeLaborams.LaborasLangPackage
+namespace LaborasLangPackage
 {
     partial class EditorTextBox
     {

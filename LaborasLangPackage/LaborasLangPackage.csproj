@@ -43,6 +43,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.OLE.Interop" />
+    <Reference Include="Microsoft.VisualStudio.Package.LanguageService.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.8.0" />
     <Reference Include="Microsoft.VisualStudio.Shell.Interop.9.0" />
@@ -132,6 +133,10 @@
       <DependentUpon>EditorTextBox.cs</DependentUpon>
     </Compile>
     <Compile Include="IEditor.cs" />
+    <Compile Include="LaborasLangAuthoringScope.cs" />
+    <Compile Include="LaborasLangPreferences.cs" />
+    <Compile Include="LaborasLangScanner.cs" />
+    <Compile Include="LaborasLangService.cs" />
     <Compile Include="MyEditor.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -2,7 +2,7 @@
 // MUST match PkgCmdID.h
 using System;
 
-namespace SusirinkeLaborams.LaborasLangPackage
+namespace LaborasLangPackage
 {
     static class PkgCmdIDList
     {

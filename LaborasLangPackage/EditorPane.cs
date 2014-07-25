@@ -21,7 +21,7 @@ using ISysServiceProvider = System.IServiceProvider;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using VSStd97CmdID = Microsoft.VisualStudio.VSConstants.VSStd97CmdID;
 
-namespace SusirinkeLaborams.LaborasLangPackage
+namespace LaborasLangPackage
 {
     /// <summary>
     /// This control host the editor (an extended RichTextBox) and is responsible for

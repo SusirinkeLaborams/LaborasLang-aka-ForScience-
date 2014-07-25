@@ -3,7 +3,7 @@ using System;
 using System.Windows.Forms;
 using System.Security.Permissions;
 
-namespace SusirinkeLaborams.LaborasLangPackage
+namespace LaborasLangPackage
 {
     public partial class EditorTextBox : RichTextBox
     {

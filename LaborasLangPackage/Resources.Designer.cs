@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SusirinkeLaborams.LaborasLangPackage {
+namespace LaborasLangPackage {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace SusirinkeLaborams.LaborasLangPackage {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SusirinkeLaborams.LaborasLangPackage.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LaborasLangPackage.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

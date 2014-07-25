@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using EnvDTE;
 using tom;
 
-namespace SusirinkeLaborams.LaborasLangPackage
+namespace LaborasLangPackage
 {
 
     /// <summary>

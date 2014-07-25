@@ -4,7 +4,7 @@ using System.Security.Permissions;
 using System.Runtime.InteropServices;
 using tom;
 
-namespace SusirinkeLaborams.LaborasLangPackage
+namespace LaborasLangPackage
 {
     public partial class MyEditor : UserControl
     {
