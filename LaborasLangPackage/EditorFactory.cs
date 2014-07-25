@@ -8,6 +8,8 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell;
 
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
+using Microsoft.VisualStudio.TextManager.Interop;
+using Microsoft.VisualStudio.OLE.Interop;
 
 namespace LaborasLangPackage
 {
@@ -17,15 +19,14 @@ namespace LaborasLangPackage
     [Guid(GuidList.guidLaborasLangPackageEditorFactoryString)]
     public sealed class EditorFactory : IVsEditorFactory, IDisposable
     {
-        private LaborasLangPackagePackage editorPackage;
-        private ServiceProvider vsServiceProvider;
-
+        private LaborasLangPackagePackage m_EditorPackage;
+        private ServiceProvider m_VSServiceProvider;
 
         public EditorFactory(LaborasLangPackagePackage package)
         {
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering {0} constructor", this.ToString()));
 
-            this.editorPackage = package;
+            this.m_EditorPackage = package;
         }
 
         /// <summary>
@@ -35,9 +36,9 @@ namespace LaborasLangPackage
         /// </summary>
         public void Dispose()
         {
-            if (vsServiceProvider != null)
+            if (m_VSServiceProvider != null)
             {
-                vsServiceProvider.Dispose();
+                m_VSServiceProvider.Dispose();
             }
         }
 
@@ -51,13 +52,13 @@ namespace LaborasLangPackage
         /// <returns></returns>
         public int SetSite(Microsoft.VisualStudio.OLE.Interop.IServiceProvider psp)
         {
-            vsServiceProvider = new ServiceProvider(psp);
+            m_VSServiceProvider = new ServiceProvider(psp);
             return VSConstants.S_OK;
         }
 
         public object GetService(Type serviceType)
         {
-            return vsServiceProvider.GetService(serviceType);
+            return m_VSServiceProvider.GetService(serviceType);
         }
 
         // This method is called by the Environment (inside IVsUIShellOpenDocument::
@@ -132,63 +133,121 @@ namespace LaborasLangPackage
         /// are requested to open document data that is already instantiated in another editor, or even our 
         /// editor, we return a value VS_E_INCOMPATIBLEDOCDATA.
         /// </summary>
-        /// <param name="grfCreateDoc">Flags determining when to create the editor. Only open and silent flags 
+        /// <param name="createEditorFlags">Flags determining when to create the editor. Only open and silent flags 
         /// are valid
         /// </param>
-        /// <param name="pszMkDocument">path to the file to be opened</param>
-        /// <param name="pszPhysicalView">name of the physical view</param>
-        /// <param name="pvHier">pointer to the IVsHierarchy interface</param>
+        /// <param name="documentMoniker">path to the file to be opened</param>
+        /// <param name="physicalView">name of the physical view</param>
+        /// <param name="hierarchy">pointer to the IVsHierarchy interface</param>
         /// <param name="itemid">Item identifier of this editor instance</param>
-        /// <param name="punkDocDataExisting">This parameter is used to determine if a document buffer 
+        /// <param name="docDataExisting">This parameter is used to determine if a document buffer 
         /// (DocData object) has already been created
         /// </param>
-        /// <param name="ppunkDocView">Pointer to the IUnknown interface for the DocView object</param>
-        /// <param name="ppunkDocData">Pointer to the IUnknown interface for the DocData object</param>
-        /// <param name="pbstrEditorCaption">Caption mentioned by the editor for the doc window</param>
-        /// <param name="pguidCmdUI">the Command UI Guid. Any UI element that is visible in the editor has 
+        /// <param name="docView">Pointer to the IUnknown interface for the DocView object</param>
+        /// <param name="docData">Pointer to the IUnknown interface for the DocData object</param>
+        /// <param name="editorCaption">Caption mentioned by the editor for the doc window</param>
+        /// <param name="commandUIGuid">the Command UI Guid. Any UI element that is visible in the editor has 
         /// to use this GUID. This is specified in the .vsct file
         /// </param>
-        /// <param name="pgrfCDW">Flags for CreateDocumentWindow</param>
+        /// <param name="createDocumentWindowFlags">Flags for CreateDocumentWindow</param>
         /// <returns></returns>
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
         public int CreateEditorInstance(
-                        uint grfCreateDoc,
-                        string pszMkDocument,
-                        string pszPhysicalView,
-                        IVsHierarchy pvHier,
+                        uint createEditorFlags,
+                        string documentMoniker,
+                        string physicalView,
+                        IVsHierarchy hierarchy,
                         uint itemid,
-                        System.IntPtr punkDocDataExisting,
-                        out System.IntPtr ppunkDocView,
-                        out System.IntPtr ppunkDocData,
-                        out string pbstrEditorCaption,
-                        out Guid pguidCmdUI,
-                        out int pgrfCDW)
+                        System.IntPtr docDataExisting,
+                        out System.IntPtr docView,
+                        out System.IntPtr docData,
+                        out string editorCaption,
+                        out Guid commandUIGuid,
+                        out int createDocumentWindowFlags)
         {
-            Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering {0} CreateEditorInstace()", this.ToString()));
-
-            // Initialize to null
-            ppunkDocView = IntPtr.Zero;
-            ppunkDocData = IntPtr.Zero;
-            pguidCmdUI = GuidList.guidLaborasLangPackageEditorFactory;
-            pgrfCDW = 0;
-            pbstrEditorCaption = null;
+            docView = IntPtr.Zero;
+            docData = IntPtr.Zero;
+            commandUIGuid = GuidList.guidLaborasLangPackageEditorFactory;
+            createDocumentWindowFlags = 0;
+            editorCaption = null;
 
             // Validate inputs
-            if ((grfCreateDoc & (VSConstants.CEF_OPENFILE | VSConstants.CEF_SILENT)) == 0)
+            if ((createEditorFlags & (VSConstants.CEF_OPENFILE | VSConstants.CEF_SILENT)) == 0)
             {
                 return VSConstants.E_INVALIDARG;
             }
-            if (punkDocDataExisting != IntPtr.Zero)
+            if (docDataExisting != IntPtr.Zero)
             {
                 return VSConstants.VS_E_INCOMPATIBLEDOCDATA;
             }
 
-            // Create the Document (editor)
-            EditorPane NewEditor = new EditorPane(editorPackage);
-            ppunkDocView = Marshal.GetIUnknownForObject(NewEditor);
-            ppunkDocData = Marshal.GetIUnknownForObject(NewEditor);
-            pbstrEditorCaption = "";
+            IVsTextLines textBuffer = GetTextBuffer(docDataExisting);
+
+            Type codeWindowType = typeof(IVsCodeWindow);
+            var interfaceId = codeWindowType.GUID;
+            var classId = typeof(VsCodeWindowClass).GUID;
+            var window = (IVsCodeWindow)m_EditorPackage.CreateInstance(ref classId, ref interfaceId, codeWindowType);
+
+            ErrorHandler.ThrowOnFailure(window.SetBuffer(textBuffer));
+            ErrorHandler.ThrowOnFailure(window.GetEditorCaption(READONLYSTATUS.ROSTATUS_Unknown, out editorCaption));
+
+            docView = Marshal.GetIUnknownForObject(window);
+
+            if (docDataExisting != IntPtr.Zero)
+            {
+                docData = docDataExisting;
+                Marshal.AddRef(docData);
+            }
+            else
+            {
+                docData = Marshal.GetIUnknownForObject(textBuffer);
+            }
+
             return VSConstants.S_OK;
+        }
+
+        #endregion
+
+        #region Helpers
+
+        private IVsTextLines GetTextBuffer(IntPtr docDataExisting)
+        {
+            IVsTextLines textLines;
+
+            if (docDataExisting == IntPtr.Zero)
+            {
+                // Create buffer if data doesn't exist
+                Type textLinesType = typeof(IVsTextLines);
+                Guid riid = textLinesType.GUID;
+                Guid clsid = typeof(VsTextBufferClass).GUID;
+                textLines = (IVsTextLines)m_EditorPackage.CreateInstance(ref clsid, ref riid, textLinesType);
+
+                // set the buffer's site
+                ((IObjectWithSite)textLines).SetSite(m_VSServiceProvider.GetService(typeof(IOleServiceProvider)));
+            }
+            else
+            {
+                // Use the existing text buffer
+                Object dataObject = Marshal.GetObjectForIUnknown(docDataExisting);
+                textLines = dataObject as IVsTextLines;
+
+                if (textLines == null)
+                {
+                    // Try get the text buffer from textbuffer provider
+                    IVsTextBufferProvider textBufferProvider = dataObject as IVsTextBufferProvider;
+                    if (textBufferProvider != null)
+                    {
+                        textBufferProvider.GetTextBuffer(out textLines);
+                    }
+                }
+
+                if (textLines == null)
+                {
+                    ErrorHandler.ThrowOnFailure((int)VSConstants.VS_E_INCOMPATIBLEDOCDATA);
+                }
+            }
+
+            return textLines;
         }
 
         #endregion

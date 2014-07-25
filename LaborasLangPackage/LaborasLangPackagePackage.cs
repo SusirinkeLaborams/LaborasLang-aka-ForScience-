@@ -27,8 +27,6 @@ namespace LaborasLangPackage
     // This attribute is used to register the information needed to show this package
     // in the Help/About dialog of Visual Studio.
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
-    // This attribute is needed to let the shell know that this package exposes some menus.
-    [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideEditorExtension(typeof(EditorFactory), ".ll", 50, 
               ProjectGuid = "{A2FE74E1-B743-11d0-AE1A-00A0C90FFFC3}", 
               TemplateDir = "Templates", 
@@ -39,6 +37,8 @@ namespace LaborasLangPackage
     // This attribute declares that your EditorPane class implements IVsCodeWindow interface
     // used to navigate to find results from a "Find in Files" type of operation.
     [ProvideEditorLogicalView(typeof(EditorFactory), VSConstants.LOGVIEWID.TextView_string)]
+    [ProvideEditorLogicalView(typeof(EditorFactory), VSConstants.LOGVIEWID.Code_string)]
+    [ProvideEditorLogicalView(typeof(EditorFactory), VSConstants.LOGVIEWID.Debugging_string)]
     [Guid(GuidList.guidLaborasLangPackagePkgString)]
     public sealed class LaborasLangPackagePackage : Package
     {
@@ -53,9 +53,7 @@ namespace LaborasLangPackage
         {
             Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
         }
-
-
-
+        
         /////////////////////////////////////////////////////////////////////////////
         // Overridden Package Implementation
         #region Package Members
