@@ -130,8 +130,6 @@
     <Compile Include="LaborasLangPreferences.cs" />
     <Compile Include="LaborasLangScanner.cs" />
     <Compile Include="LaborasLangService.cs" />
-    <Compile Include="NativeMethods.cs" />
-    <Compile Include="VSMacroRecorder.cs" />
     <Content Include="Templates\LaborasLang Source File.ll">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -146,10 +144,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="LaborasLangPackagePackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PkgCmdID.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">

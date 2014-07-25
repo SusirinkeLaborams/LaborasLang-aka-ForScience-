@@ -42,22 +42,10 @@ namespace LaborasLangPackage
     [Guid(GuidList.guidLaborasLangPackagePkgString)]
     public sealed class LaborasLangPackagePackage : Package
     {
-        /// <summary>
-        /// Default constructor of the package.
-        /// Inside this method you can place any initialization code that does not require 
-        /// any Visual Studio service because at this point the package object is created but 
-        /// not sited yet inside Visual Studio environment. The place to do all the other 
-        /// initialization is the Initialize method.
-        /// </summary>
         public LaborasLangPackagePackage()
         {
-            Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
         }
         
-        /////////////////////////////////////////////////////////////////////////////
-        // Overridden Package Implementation
-        #region Package Members
-
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -69,9 +57,6 @@ namespace LaborasLangPackage
 
             //Create Editor Factory. Note that the base Package class will call Dispose on it.
             base.RegisterEditorFactory(new EditorFactory(this));
-
         }
-        #endregion
-
     }
 }

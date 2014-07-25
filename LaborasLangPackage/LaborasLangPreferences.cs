@@ -53,8 +53,6 @@ namespace SusirinkeLaborams.LaborasLangPackage
             this.EnableCommenting = false;
             this.EnableFormatSelection = false;
             this.EnableQuickInfo = false;
-
-
         }
     }
 }

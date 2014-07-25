@@ -16,7 +16,7 @@ namespace SusirinkeLaborams.LaborasLangPackage
 
         public override string GetFormatFilterList()
         {
-            throw new NotImplementedException();
+            return "LL files (*.ll)\n*.ll";
         }
 
         public override LanguagePreferences GetLanguagePreferences()

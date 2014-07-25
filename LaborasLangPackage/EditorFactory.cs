@@ -29,11 +29,6 @@ namespace LaborasLangPackage
             this.m_EditorPackage = package;
         }
 
-        /// <summary>
-        /// Since we create a ServiceProvider which implements IDisposable we
-        /// also need to implement IDisposable to make sure that the ServiceProvider's
-        /// Dispose method gets called.
-        /// </summary>
         public void Dispose()
         {
             if (m_VSServiceProvider != null)
@@ -42,17 +37,9 @@ namespace LaborasLangPackage
             }
         }
 
-        #region IVsEditorFactory Members
-
-        /// <summary>
-        /// Used for initialization of the editor in the environment
-        /// </summary>
-        /// <param name="psp">pointer to the service provider. Can be used to obtain instances of other interfaces
-        /// </param>
-        /// <returns></returns>
-        public int SetSite(Microsoft.VisualStudio.OLE.Interop.IServiceProvider psp)
+        public int SetSite(Microsoft.VisualStudio.OLE.Interop.IServiceProvider serviceProvider)
         {
-            m_VSServiceProvider = new ServiceProvider(psp);
+            m_VSServiceProvider = new ServiceProvider(serviceProvider);
             return VSConstants.S_OK;
         }
 
@@ -90,30 +77,20 @@ namespace LaborasLangPackage
         //                    {...LOGVIEWID_Debugging...} = s ''
         //                    {...LOGVIEWID_Designer...} = s 'Form'
         //
-        public int MapLogicalView(ref Guid rguidLogicalView, out string pbstrPhysicalView)
+        public int MapLogicalView(ref Guid logicalView, out string physicalView)
         {
-            pbstrPhysicalView = null;    // initialize out parameter
+            bool isSupported = false;
+            physicalView = null;
 
-            // we support only a single physical view
-            if (VSConstants.LOGVIEWID_Primary == rguidLogicalView)
+            if (logicalView == VSConstants.LOGVIEWID_Primary ||
+                logicalView == VSConstants.LOGVIEWID_Debugging ||
+                logicalView == VSConstants.LOGVIEWID_Code ||
+                logicalView == VSConstants.LOGVIEWID_TextView)
             {
-                return VSConstants.S_OK;        // primary view uses NULL as pbstrPhysicalView
-            }
-            else if (VSConstants.LOGVIEWID.TextView_guid == rguidLogicalView)
-            {
-                // Our editor supports FindInFiles, therefore we need to declare support for LOGVIEWID_TextView.
-                // In addition our EditorPane implements IVsCodeWindow and we also provide the 
-                // VSSettings (pkgdef) metadata statement that we support LOGVIEWID_TextView via the following
-                // attribute on our Package class:
-                // [ProvideEditorLogicalView(typeof(EditorFactory), VSConstants.LOGVIEWID.TextView_string)]
-
-                pbstrPhysicalView = null; // our primary view implements IVsCodeWindow
                 return VSConstants.S_OK;
             }
-            else
-            {
-                return VSConstants.E_NOTIMPL;   // you must return E_NOTIMPL for any unrecognized rguidLogicalView values
-            }
+
+            return VSConstants.E_NOTIMPL;
         }
 
         public int Close()
@@ -171,11 +148,11 @@ namespace LaborasLangPackage
             createDocumentWindowFlags = 0;
             editorCaption = null;
 
-            // Validate inputs
             if ((createEditorFlags & (VSConstants.CEF_OPENFILE | VSConstants.CEF_SILENT)) == 0)
             {
                 return VSConstants.E_INVALIDARG;
             }
+
             if (docDataExisting != IntPtr.Zero)
             {
                 return VSConstants.VS_E_INCOMPATIBLEDOCDATA;
@@ -206,7 +183,6 @@ namespace LaborasLangPackage
             return VSConstants.S_OK;
         }
 
-        #endregion
 
         #region Helpers
 
@@ -222,7 +198,7 @@ namespace LaborasLangPackage
                 Guid clsid = typeof(VsTextBufferClass).GUID;
                 textLines = (IVsTextLines)m_EditorPackage.CreateInstance(ref clsid, ref riid, textLinesType);
 
-                // set the buffer's site
+                // Set the buffer's site
                 ((IObjectWithSite)textLines).SetSite(m_VSServiceProvider.GetService(typeof(IOleServiceProvider)));
             }
             else
