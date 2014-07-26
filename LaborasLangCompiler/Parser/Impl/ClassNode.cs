@@ -18,7 +18,8 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.ClassNode; } }
         private Dictionary<string, FieldDeclarationNode> fields;
-        private Dictionary<string, TypeReference> declaredTypes;
+        private List<string> globalImports;
+        private Dictionary<string, string> namedImports;
         private ClassNode parent;
         private Parser parser;
         public TypeEmitter TypeEmitter { get; private set; }
@@ -29,7 +30,9 @@ namespace LaborasLangCompiler.Parser.Impl
             this.parent = parent;
             this.parser = parser;
             fields = new Dictionary<string, FieldDeclarationNode>();
-            declaredTypes = new Dictionary<string, TypeReference>();
+            globalImports = new List<string>();
+            globalImports.Add("");
+            namedImports = new Dictionary<string, string>();
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
         private void AddField(string name, TypeReference type, SequencePoint point)
@@ -61,10 +64,25 @@ namespace LaborasLangCompiler.Parser.Impl
             if (parser.Primitives.ContainsKey(name))
                 return new TypeNode(parser.Primitives[name], point);
 
-            if (declaredTypes.ContainsKey(name))
-                return new TypeNode(declaredTypes[name], point);
+            var types = globalImports.Select(namespaze => AssemblyRegistry.GetType(parser.Assembly, namespaze + name)).Where(t => t != null);
+            if(types.Count() == 0)
+                return null;
+            TypeReference type = null;
+            try
+            {
+                type = types.Single();
+            }
+            catch(InvalidOperationException)
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.AppendFormat("Ambigious type {0}\n Could be:\n", name);
+                foreach(var t in types)
+                {
+                    builder.Append(t.FullName);
+                }
+                throw new TypeException(builder.ToString());
+            }
 
-            var type = AssemblyRegistry.GetType(parser.Assembly, name);
             if(type != null)
                 return new TypeNode(type, point);
 
@@ -88,10 +106,28 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public NamespaceNode FindNamespace(string name, SequencePoint point)
         {
-            if (AssemblyRegistry.IsNamespaceKnown(name))
-                return new NamespaceNode(name, point);
+            string namespaze = null;
+            if (namedImports.ContainsKey(name))
+                namespaze = namedImports[name];
+            var namespazes = globalImports.Select(import => AssemblyRegistry.IsNamespaceKnown(import + name) ? import + name : null).Where(n => n != null);
+            if (namespazes.Count() == 0)
+                return null;
+            try
+            {
+                namespaze = namespazes.Single();
+            }
+            catch(InvalidOperationException)
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.AppendFormat("Ambigious namespace {0}\n Could be:\n", name);
+                foreach (var n in namespazes)
+                {
+                    builder.Append(n);
+                }
+                throw new TypeException(builder.ToString());
+            }
 
-            return null;
+            return new NamespaceNode(namespaze, point);
         }
         public NamespaceNode FindNamespace(NamespaceNode left, string right, SequencePoint point)
         {
