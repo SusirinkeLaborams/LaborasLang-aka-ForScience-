@@ -129,10 +129,17 @@
     <Compile Include="Code\LaborasLangScanner.cs" />
     <Compile Include="Code\LaborasLangService.cs" />
     <EmbeddedResource Include="Resources\Project.bmp" />
-    <ZipProject Include="Templates\Projects\Windows Desktop\ConsoleApplication\ConsoleApplication.project" />
-    <ZipProject Include="Templates\Projects\Windows Desktop\ConsoleApplication\ConsoleApplication.ll" />
-    <ZipProject Include="Templates\Projects\Windows Desktop\ConsoleApplication\ConsoleApplication.ico" />
-    <ZipProject Include="Templates\Projects\Windows Desktop\ConsoleApplication\ConsoleApplication.vstemplate">
+    <ZipProject Include="Templates\Projects\Desktop\ConsoleApplication\ConsoleApplication.project">
+      <OutputSubPath>Desktop</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\Desktop\ConsoleApplication\ConsoleApplication.ll">
+      <OutputSubPath>Desktop</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\Desktop\ConsoleApplication\ConsoleApplication.ico">
+      <OutputSubPath>Desktop</OutputSubPath>
+    </ZipProject>
+    <ZipProject Include="Templates\Projects\Desktop\ConsoleApplication\ConsoleApplication.vstemplate">
+      <OutputSubPath>Desktop</OutputSubPath>
       <SubType>Designer</SubType>
     </ZipProject>
     <Content Include="Templates\Source.ll">

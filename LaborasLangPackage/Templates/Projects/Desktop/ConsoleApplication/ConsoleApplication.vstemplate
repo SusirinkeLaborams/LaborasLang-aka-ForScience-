@@ -6,6 +6,7 @@
     <ProjectType>LaborasLang</ProjectType>
     <CreateNewFolder>true</CreateNewFolder>
     <DefaultName>ConsoleApplication</DefaultName>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
     <ProvideDefaultName>true</ProvideDefaultName>
   </TemplateData>
   <TemplateContent>
