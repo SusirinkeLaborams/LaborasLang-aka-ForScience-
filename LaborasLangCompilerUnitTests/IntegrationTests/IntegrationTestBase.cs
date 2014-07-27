@@ -83,6 +83,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
 
         private string CreateProcessAndRun(string exePath, string[] arguments, string stdIn, int timeOutInMilliseconds)
         {
+            timeOutInMilliseconds = Debugger.IsAttached ? Timeout.Infinite : timeOutInMilliseconds;
             stdIn = stdIn != null ? stdIn : string.Empty;
             string stdOut = string.Empty;
 
@@ -117,18 +118,10 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
                 }
             });
 
-            if (Debugger.IsAttached)
+            testThread.Start();
+            if (!testThread.Join(timeOutInMilliseconds))
             {
-                testThread.Start();
-                testThread.Join();
-            }
-            else
-            {
-                using (var timeoutTimer = new Timer(s => testThread.Abort(), null, timeOutInMilliseconds, Timeout.Infinite))
-                {
-                    testThread.Start();
-                    testThread.Join();
-                }
+                testThread.Abort();
             }
 
             if (!testFinished)
