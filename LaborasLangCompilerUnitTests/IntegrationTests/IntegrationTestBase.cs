@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace LaborasLangCompilerUnitTests.IntegrationTests
@@ -81,44 +83,78 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
 
         private string CreateProcessAndRun(string exePath, string[] arguments, string stdIn, int timeOutInMilliseconds)
         {
-            var argumentLine = arguments != null ? arguments.Aggregate((x, y) => x + " " + y) : string.Empty;
-            var startInfo = new ProcessStartInfo(exePath, argumentLine);
+            timeOutInMilliseconds = Debugger.IsAttached ? Timeout.Infinite : timeOutInMilliseconds;
+            stdIn = stdIn != null ? stdIn : string.Empty;
+            string stdOut = string.Empty;
 
-            startInfo.RedirectStandardInput = true;
-            startInfo.RedirectStandardOutput = true;
-            startInfo.UseShellExecute = false;
-            startInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            bool testFinished = false;
+            int exitCode = -1;
 
-            var process = Process.Start(startInfo);
-
-            var stdoutTask = process.StandardOutput.ReadToEndAsync();
-            if (stdIn != null)
+            var testThread = new Thread(() =>
             {
-                process.StandardInput.Write(stdIn);
+                var testDomain = AppDomain.CreateDomain("Test Domain", AppDomain.CurrentDomain.Evidence, AppDomain.CurrentDomain.SetupInformation);
+                var stdOutHelper = (RedirectStdStreamsHelper)testDomain.CreateInstanceAndUnwrap(
+                    typeof(RedirectStdStreamsHelper).Assembly.FullName, 
+                    typeof(RedirectStdStreamsHelper).FullName,
+                    false,
+                    BindingFlags.CreateInstance,
+                    null,
+                    new object[] { stdIn },
+                    null,
+                    null);
+
+                try
+                {
+                    exitCode = testDomain.ExecuteAssembly(exePath, arguments);
+                    testFinished = true;
+                }
+                catch (ThreadAbortException)
+                {
+                }
+                finally
+                {
+                    stdOut = stdOutHelper.GetStdOut();
+                    AppDomain.Unload(testDomain);
+                }
+            });
+
+            testThread.Start();
+            if (!testThread.Join(timeOutInMilliseconds))
+            {
+                testThread.Abort();
             }
 
-            bool timedOut = false;
-
-            if (!process.WaitForExit(timeOutInMilliseconds))
+            if (!testFinished)
             {
-                process.Kill();
-                timedOut = true;
+                throw new TimeoutException(stdOut);
+            }
+            
+            if (exitCode != 0)
+            {
+                throw new Exception(stdOut);
             }
 
-            stdoutTask.Wait();
-            var stdout = stdoutTask.Result;
+            return stdOut;
+        }
 
-            if (timedOut)
+        private class RedirectStdStreamsHelper : MarshalByRefObject
+        {
+            private StringWriter writer;
+            private StringReader reader;
+
+            public RedirectStdStreamsHelper(string stdIn)
             {
-                throw new TimeoutException(stdout);
+                writer = new StringWriter();
+                reader = new StringReader(stdIn);
+
+                Console.SetOut(StreamWriter.Synchronized(writer));                
+                Console.SetIn(StreamReader.Synchronized(reader));
             }
 
-            if (process.ExitCode != 0)
+            public string GetStdOut()
             {
-                throw new Exception(stdout);
+                return writer.ToString();
             }
-
-            return stdout;
         }
     }
 }

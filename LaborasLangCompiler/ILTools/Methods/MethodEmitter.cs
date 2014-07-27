@@ -175,7 +175,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             if (symbolDeclaration.Initializer != null)
             {
-                Emit(symbolDeclaration.Initializer, false);
+                EmitExpressionWithTargetType(symbolDeclaration.Initializer, symbolDeclaration.DeclaredSymbol.ReturnType);
                 EmitStore(symbolDeclaration.DeclaredSymbol);
             }
         }
@@ -509,7 +509,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 }
             }
 
-            EmitRightOperandForAssignment(assignmentOperator);
+            EmitExpressionWithTargetType(assignmentOperator.RightOperand, assignmentOperator.LeftOperand.ReturnType);
 
             if (duplicateValueInStack)
             {
@@ -540,32 +540,40 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        private void EmitRightOperandForAssignment(IAssignmentOperatorNode assignmentOperator)
+        private void EmitExpressionWithTargetType(IExpressionNode expression, TypeReference targetType, bool emitAsReference = false)
         {
-            bool rightIsFunction = assignmentOperator.RightOperand.ExpressionType == ExpressionNodeType.RValue &&
-                ((IRValueNode)assignmentOperator.RightOperand).RValueType == RValueNodeType.Function;
-            bool rightIsFunctor = assignmentOperator.RightOperand.ReturnType.IsFunctorType();
-            bool canEmitRightAsReference = CanEmitAsReference(assignmentOperator.RightOperand);
-            bool leftIsDelegate = assignmentOperator.LeftOperand.ReturnType.Resolve().BaseType.FullName == "System.MulticastDelegate";
+            bool expressionIsFunction = expression.ExpressionType == ExpressionNodeType.RValue &&
+                ((IRValueNode)expression).RValueType == RValueNodeType.Function;
+            bool expressionIsFunctor = expression.ReturnType.IsFunctorType();
+            bool canEmitExpressionAsReference = CanEmitAsReference(expression);
 
-            // We'll want to emit right operand in all cases
-            Emit(assignmentOperator.RightOperand, leftIsDelegate && canEmitRightAsReference);
+            var targetBaseType = targetType.Resolve().BaseType;
+            bool targetIsDelegate = targetBaseType != null && targetType.Resolve().BaseType.FullName == "System.MulticastDelegate";
 
-            if (leftIsDelegate)
+            if (emitAsReference && !canEmitExpressionAsReference)
+            {
+                throw new Exception(string.Format("{0}({1},{2},{3},{4}): error: can't pass RValue by reference", expression.SequencePoint.Document.Url,
+                    expression.SequencePoint.StartLine, expression.SequencePoint.StartColumn, expression.SequencePoint.EndLine, expression.SequencePoint.EndColumn));
+            }
+
+            // We'll want to emit expression in all cases
+            Emit(expression, (targetIsDelegate || emitAsReference) && canEmitExpressionAsReference);
+
+            if (targetIsDelegate)
             {
                 // Sanity check
-                if (rightIsFunction && rightIsFunctor)
+                if (expressionIsFunction && expressionIsFunctor)
                 {
                     throw new ArgumentException("When function is assigned to delegate, its return type should be a delegate, not a functor!");
                 }
-                else if (rightIsFunctor)
+                else if (expressionIsFunctor)
                 {
                     // Here we have a functor object on top of the stack OR its reference,
                     // depending whether we were able to load it
                     // We will just want to construct a delegate from its two fields
 
-                    var delegateType = assignmentOperator.LeftOperand.ReturnType;
-                    var functorType = assignmentOperator.RightOperand.ReturnType;
+                    var delegateType = targetType;
+                    var functorType = expression.ReturnType;
 
                     var objectInstanceField = AssemblyRegistry.GetField(Assembly, functorType, "objectInstance");
                     var functionPtrField = AssemblyRegistry.GetField(Assembly, functorType, "functionPtr");
@@ -575,7 +583,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                         "System.IntPtr"
                     });
 
-                    if (!canEmitRightAsReference)
+                    if (!canEmitExpressionAsReference)
                     {
                         // First, store it to a temp variable, then load its address twice
                         var tempVariable = AcquireTempVariable(functorType);
@@ -595,7 +603,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                         // or field, which means its loading is cheap
                         Ldfld(objectInstanceField);
 
-                        Emit(assignmentOperator.RightOperand, true);
+                        Emit(expression, true);
                         Ldfld(functionPtrField);
                     }
 
@@ -604,7 +612,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitConversionIfNeeded(assignmentOperator.RightOperand.ReturnType, assignmentOperator.LeftOperand.ReturnType);
+                EmitConversionIfNeeded(expression.ReturnType, targetType);
             }
         }
 
@@ -870,28 +878,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         private void EmitArgumentForCall(IExpressionNode argument, TypeReference targetParameterType)
         {
-            if (targetParameterType.IsByReference)
-            {
-                if (argument.ExpressionType == ExpressionNodeType.LValue)
-                {
-                    var lvalue = (ILValueNode)argument;
-                    Emit(lvalue, true);
-                }
-                else
-                {
-                    throw new Exception(string.Format("{0}({1},{2},{3},{4}): error: can't pass RValue by reference", argument.SequencePoint.Document.Url,
-                       argument.SequencePoint.StartLine, argument.SequencePoint.StartColumn, argument.SequencePoint.EndLine, argument.SequencePoint.EndColumn));
-                }
-            }
-            else
-            {
-                Emit(argument, false);
-
-                if (argument.ReturnType.IsValueType && !targetParameterType.IsValueType)
-                {
-                    Box(argument.ReturnType);
-                }
-            }
+            EmitExpressionWithTargetType(argument, targetParameterType, targetParameterType.IsByReference);
         }
 
         protected void Emit(ILiteralNode literal)
@@ -1373,6 +1360,11 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitConversionIfNeeded(TypeReference sourceType, TypeReference targetType)
         {
+            if (targetType.IsByReference)
+            {
+                targetType = ((ByReferenceType)targetType).ElementType;
+            }
+
             if (sourceType.FullName == targetType.FullName)
             {
                 return;
@@ -1392,7 +1384,11 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             if (!sourceType.IsValueType && !targetType.IsValueType)
             {
-                Castclass(targetType);
+                if (!sourceType.DerivesFrom(targetType))
+                {
+                    Castclass(targetType);
+                }
+
                 return;
             }
 

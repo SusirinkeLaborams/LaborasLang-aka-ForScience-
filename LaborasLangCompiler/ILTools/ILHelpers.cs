@@ -155,6 +155,32 @@ namespace LaborasLangCompiler.ILTools
             return false;
         }
 
+        public static bool DerivesFrom(this TypeReference childRef, TypeReference parentRef)
+        {
+            if (childRef.FullName == parentRef.FullName)
+            {
+                return true;
+            }
+
+            var child = childRef.Resolve();
+            var parent = parentRef.Resolve();
+            
+            if (parent.IsInterface)
+            {
+                if (child.Interfaces.Any(x => x.FullName == parent.FullName))
+                {
+                    return true;
+                }
+            }
+
+            if (child.BaseType == null)
+            {
+                return false;
+            }
+
+            return child.BaseType.DerivesFrom(parent);
+        }
+
         public static bool MatchesArgumentList(this MethodReference method, IReadOnlyList<TypeReference> desiredParameters)
         {
             var methodParameters = method.Resolve().Parameters; // Resolve is needed or otherwise we will not know methods parameter attributes
