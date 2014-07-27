@@ -129,7 +129,21 @@ namespace LaborasLangCompiler.ILTools
 
         public static bool IsNamespaceKnown(string namespaze)
         {
-            return instance.assemblies.Any(x => x.MainModule.Types.Any(y => y.Namespace.StartsWith(namespaze)));
+            var altNamespace = namespaze[namespaze.Length - 1] == '.' ? namespaze : namespaze + ".";
+
+            for (int i = 0; i < instance.assemblies.Count; i++)
+            {
+                var types = instance.assemblies[i].MainModule.Types;
+                for (int j = 0; j < types.Count; j++)
+                {
+                    if (types[j].Namespace == namespaze || types[j].Namespace.StartsWith(altNamespace))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         public static TypeReference GetType(AssemblyEmitter assemblyScope, string typeName)
