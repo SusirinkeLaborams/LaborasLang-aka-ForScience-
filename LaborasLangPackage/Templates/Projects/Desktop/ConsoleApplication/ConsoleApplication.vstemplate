@@ -10,7 +10,7 @@
     <ProvideDefaultName>true</ProvideDefaultName>
   </TemplateData>
   <TemplateContent>
-    <Project File="ConsoleApplication.project" TargetFileName="$safeprojectname$.llproj" ReplaceParameters="true">
+    <Project File="ConsoleApplication.llproj" TargetFileName="$safeprojectname$.llproj" ReplaceParameters="true">
       <ProjectItem ReplaceParameters="true" OpenInEditor="true" TargetFileName="$safeprojectname$.ll">ConsoleApplication.ll</ProjectItem>
     </Project>
   </TemplateContent>

@@ -129,8 +129,9 @@
     <Compile Include="Code\LaborasLangScanner.cs" />
     <Compile Include="Code\LaborasLangService.cs" />
     <EmbeddedResource Include="Resources\Project.bmp" />
-    <ZipProject Include="Templates\Projects\Desktop\ConsoleApplication\ConsoleApplication.project">
+    <ZipProject Include="Templates\Projects\Desktop\ConsoleApplication\ConsoleApplication.llproj">
       <OutputSubPath>Desktop</OutputSubPath>
+      <SubType>Designer</SubType>
     </ZipProject>
     <ZipProject Include="Templates\Projects\Desktop\ConsoleApplication\ConsoleApplication.ll">
       <OutputSubPath>Desktop</OutputSubPath>
