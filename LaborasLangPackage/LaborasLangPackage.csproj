@@ -136,9 +136,9 @@
     <ZipProject Include="Templates\Projects\Desktop\ConsoleApplication\ConsoleApplication.ll">
       <OutputSubPath>Desktop</OutputSubPath>
     </ZipProject>
-    <ZipProject Include="Templates\Projects\Desktop\ConsoleApplication\ConsoleApplication.ico">
+    <Content Include="Resources\ConsoleApplication.ico">
       <OutputSubPath>Desktop</OutputSubPath>
-    </ZipProject>
+    </Content>
     <ZipProject Include="Templates\Projects\Desktop\ConsoleApplication\ConsoleApplication.vstemplate">
       <OutputSubPath>Desktop</OutputSubPath>
       <SubType>Designer</SubType>

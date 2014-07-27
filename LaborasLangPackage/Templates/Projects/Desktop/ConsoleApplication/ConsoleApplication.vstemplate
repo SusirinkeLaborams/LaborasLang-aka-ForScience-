@@ -2,7 +2,7 @@
   <TemplateData>
     <Name>Console Application</Name>
     <Description>A project for creating a command-line application</Description>
-    <Icon>ConsoleApplication.ico</Icon>
+    <Icon Package="{643e7116-ca4e-459e-8323-4f89c3958f82}" ID="402" />
     <ProjectType>LaborasLang</ProjectType>
     <CreateNewFolder>true</CreateNewFolder>
     <DefaultName>ConsoleApplication</DefaultName>
