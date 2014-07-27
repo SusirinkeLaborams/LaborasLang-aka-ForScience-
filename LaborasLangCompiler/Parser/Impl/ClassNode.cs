@@ -129,6 +129,23 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return new NamespaceNode(namespaze, point);
         }
+        public void AddImport(string namespaze, string name = null)
+        {
+            if(name == null)
+            {
+                if (globalImports.Contains(namespaze))
+                    throw new ParseException(String.Format("Namespace {0} already imported", namespaze));
+                globalImports.Add(namespaze + ".");
+            }
+            else
+            {
+                if (namedImports.ContainsKey(name))
+                    throw new ParseException(String.Format("Namespace under name {0} already imported", name));
+                if (namedImports.ContainsValue(namespaze))
+                    throw new ParseException(String.Format("Namespace {0} already imported", namespaze));
+                namedImports.Add(name, namespaze + ".");
+            }
+        }
         public NamespaceNode FindNamespace(NamespaceNode left, string right, SequencePoint point)
         {
             var full = left.Value + "." + right;
@@ -161,7 +178,8 @@ namespace LaborasLangCompiler.Parser.Impl
                     switch (sentence.Token.Name)
                     {
                         case Lexer.NamespaceImport:
-                            throw new NotImplementedException();
+                            ImportNode.Parse(parser, instance, sentence);
+                            break;
                         case Lexer.Declaration:
                             ParseDeclaration(parser, instance, sentence, false);
                             break;
