@@ -8,6 +8,8 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
+using System.Diagnostics.CodeAnalysis;
+using Microsoft.VisualStudio.Project;
 
 namespace LaborasLangPackage
 {
@@ -21,9 +23,8 @@ namespace LaborasLangPackage
     /// IVsPackage interface and uses the registration attributes defined in the framework to 
     /// register itself and its components with the shell.
     /// </summary>
-    // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
-    // a package.
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable"), PackageRegistration(UseManagedResourcesOnly = true)]
+    // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is a package.
+    [SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable"), PackageRegistration(UseManagedResourcesOnly = true)]
     // This attribute is used to register the information needed to show this package
     // in the Help/About dialog of Visual Studio.
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)]
@@ -32,7 +33,7 @@ namespace LaborasLangPackage
               TemplateDir = "Templates", 
               NameResourceID = 105,
               DefaultName = "LaborasLangPackage")]
-    [ProvideService(typeof(LaborasLangService),ServiceName = "LaborasLang Service")]
+    [ProvideService(typeof(LaborasLangService), ServiceName = "LaborasLang Service")]
     [ProvideLanguageService(typeof(LaborasLangService), LaborasLangConstants.LanguageName, 106,
                          CodeSense = false,              // Supports IntelliSense (not yet)
                          RequestStockColors = true,
@@ -41,14 +42,21 @@ namespace LaborasLangPackage
                          )]
     [ProvideLanguageExtension(typeof(LaborasLangService), ".ll")]
     [ProvideKeyBindingTable(GuidList.guidLaborasLangPackageEditorFactoryString, 102)]
+    [ProvideProjectFactory(typeof(LaborasLangProjectFactory), null,
+        "LaborasLang Project Files (*.llproj);*.llproj", "llproj", "llproj", ".\\NullPath", LanguageVsTemplate = LaborasLangConstants.LanguageName)]
     [ProvideEditorLogicalView(typeof(EditorFactory), VSConstants.LOGVIEWID.TextView_string)]
     [ProvideEditorLogicalView(typeof(EditorFactory), VSConstants.LOGVIEWID.Code_string)]
     [ProvideEditorLogicalView(typeof(EditorFactory), VSConstants.LOGVIEWID.Debugging_string)]
     [Guid(GuidList.guidLaborasLangPackagePkgString)]
-    public sealed class LaborasLangPackagePackage : Package, IOleComponent
+    public sealed class LaborasLangPackagePackage : ProjectPackage, IOleComponent
     {
         private uint m_ComponentId;
         private LaborasLangService m_LanguageService;
+
+        public override string ProductUserContext
+        {
+            get { return ""; }
+        }
 
         public LaborasLangPackagePackage()
         {
@@ -78,8 +86,8 @@ namespace LaborasLangPackage
             int hr = componentManager.FRegisterComponent(this, crinfo, out m_ComponentId);
             ErrorHandler.ThrowOnFailure(hr);
 
-            // Create Editor Factory. Note that the base Package class will call Dispose on it.
             base.RegisterEditorFactory(new EditorFactory(this));
+            base.RegisterProjectFactory(new LaborasLangProjectFactory(this));
         }
 
         protected override void Dispose(bool disposing)

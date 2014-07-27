@@ -9,11 +9,6 @@ namespace LaborasLangPackage
 {
     public sealed class LaborasLangPreferences : LanguagePreferences
     {
-        public LaborasLangPreferences() :
-            base()
-        {
-        }
-
         public LaborasLangPreferences(IServiceProvider site, Guid langSvc, string name) :
             base(site, langSvc, name)
         {
@@ -24,7 +19,7 @@ namespace LaborasLangPackage
             base.Init();
 
             // Supported stuff so far
-            this.CutCopyBlankLines = true;new LaborasLangAuthoringScope();
+            this.CutCopyBlankLines = true;
             this.EnableShowMatchingBrace = true;
             this.EnableLeftClickForURLs = true;
             this.EnableMatchBraces = true;

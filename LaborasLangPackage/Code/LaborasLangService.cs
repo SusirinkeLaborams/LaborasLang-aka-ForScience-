@@ -23,7 +23,7 @@ namespace LaborasLangPackage
         {
             if (m_LanguagePreferences == null)
             {
-                m_LanguagePreferences = new LaborasLangPreferences();
+                m_LanguagePreferences = new LaborasLangPreferences(this.Site, typeof(LaborasLangService).GUID, this.Name);
                 m_LanguagePreferences.Init();
             }
 
