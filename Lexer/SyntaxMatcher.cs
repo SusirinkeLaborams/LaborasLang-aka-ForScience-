@@ -26,8 +26,18 @@ namespace Lexer
                     new Condition[]{TokenType.CodeBlockNode}),
             
                 new ParseRule(TokenType.DeclarationNode,
-                    new Condition[]{TokenType.Type, TokenType.LValue, TokenType.EndOfLine}),
+                    new Condition[]{new Condition(TokenType.VariableModifier, ConditionType.OneOrMore), TokenType.Type, TokenType.Symbol, TokenType.EndOfLine},
+                    new Condition[]{TokenType.Type, TokenType.Symbol, TokenType.EndOfLine}),
             
+                new ParseRule(TokenType.VariableModifier, 
+                    new Condition[]{TokenType.Const},
+                    new Condition[]{TokenType.Internal},
+                    new Condition[]{TokenType.Private},
+                    new Condition[]{TokenType.Public},
+                    new Condition[]{TokenType.Protected},
+                    new Condition[]{TokenType.Static},
+                    new Condition[]{TokenType.Virtual}),
+
                 new ParseRule(TokenType.AssignmentNode,
                     new Condition[]{TokenType.LValue, TokenType.Assignment, TokenType.Value, TokenType.EndOfLine}),
             
@@ -55,8 +65,9 @@ namespace Lexer
                 new ParseRule(TokenType.Type,
                     new Condition[]{TokenType.FullSymbol, TokenType.LeftBracket, new Condition(TokenType.Type, ConditionType.OneOrMore), TokenType.RightBracket},
                     new Condition[]{TokenType.FullSymbol, TokenType.LeftBracket, TokenType.RightBracket},
-                    new Condition[]{TokenType.FullSymbol}
-                    )
+                    new Condition[]{TokenType.FullSymbol}),
+
+
 
 
             };
