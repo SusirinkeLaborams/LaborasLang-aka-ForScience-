@@ -9,7 +9,7 @@ namespace Lexer
     public enum TokenType
     {
         // Terminals
-        EndOfLine = 0,
+        EndOfLine,
         Comment,
         BitwiseAnd,
         BitwiseAndEqual,
@@ -59,8 +59,13 @@ namespace Lexer
         Double,
         MalformedToken,
         Symbol,
+        
+        
         //Non terminals
-        StatementNode = 0x10000000,
+        NonTerminalToken,
+
+
+        StatementNode,
         CodeBlockNode,
         DeclarationNode,
         AssignmentNode,
@@ -81,7 +86,7 @@ namespace Lexer
     {
         public static bool IsTerminal(this TokenType token)
         {
-            return ((int)token < 0x10000000);
+            return TokenType.NonTerminalToken.CompareTo(token) < 0;
         }
     }
     
