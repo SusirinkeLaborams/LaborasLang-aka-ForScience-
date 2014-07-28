@@ -59,7 +59,53 @@ namespace Lexer
         Double,
         MalformedToken,
         Symbol,
-        
+        Abstract,
+        As,
+        Base,
+        Break,
+        Case,
+        Catch,
+        Class,
+        Const,
+        Continue,
+        Default,
+        Do,
+        Extern,
+        Else,
+        Enum,
+        False,
+        Finally,
+        For,
+        Goto,
+        If,
+        Interface,
+        Internal,
+        Is,
+        New,
+        Null,
+        Namespace,
+        Operator,
+        Out,
+        Override,
+        Protected,
+        Ref,
+        Return,
+        Switch,
+        Sealed,
+        This,
+        Throw,
+        Struct,
+        True,
+        Try,
+        Using,
+        Virtual,
+        While,
+
+
+        Static,
+        Constant,
+        Private,
+        Public,
         
         //Non terminals
         NonTerminalToken,
@@ -79,14 +125,14 @@ namespace Lexer
         RValue,
 
         Type,
-
+        VariableModifier,
     }
 
     public static class TokenInfo
     {
         public static bool IsTerminal(this TokenType token)
         {
-            return TokenType.NonTerminalToken.CompareTo(token) < 0;
+            return token.CompareTo(TokenType.NonTerminalToken) < 0;
         }
     }
     

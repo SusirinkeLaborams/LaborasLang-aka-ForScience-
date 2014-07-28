@@ -596,11 +596,11 @@ namespace Lexer
                     default:
                         {
                             var token = new Token();
-                            token.Type = TokenType.Symbol;
                             while (!Symbols.Contains(Source.Peek()))
                             {
                                 token.Content += Source.Pop();
                             }
+                            token.Type = GetKeywordType(token.Content);
                             yield return token;
                             break;
                         }
@@ -608,6 +608,102 @@ namespace Lexer
                 }
             }
             yield break;
+        }
+
+        public static TokenType GetKeywordType(string symbol)
+        {
+            switch(symbol)
+            {
+                case "abstract":
+                    return TokenType.Abstract;
+                case "as":
+                    return TokenType.As;
+                case "base":
+                    return TokenType.Base;
+                case "break":
+                    return TokenType.Break;
+                case "case":
+                    return TokenType.Case;
+                case "catch":
+                    return TokenType.Catch;
+                case "class":
+                    return TokenType.Class;
+                case "const":
+                    return TokenType.Const;
+                case "continue":
+                    return TokenType.Continue;
+                case "default":
+                    return TokenType.Default;
+                case "do":
+                    return TokenType.Do;
+                case "extern":
+                    return TokenType.Extern;
+                case "else":
+                    return TokenType.Else;
+                case "enum":
+                    return TokenType.Enum;
+                case "false":
+                    return TokenType.False;
+                case "finally":
+                    return TokenType.Finally;
+                case "for":
+                    return TokenType.For;
+                case "goto":
+                    return TokenType.Goto;
+                case "if":
+                    return TokenType.If;
+                case "interface":
+                    return TokenType.Interface;
+                case "internal":
+                    return TokenType.Internal;
+                case "is":
+                    return TokenType.Is;
+                case "new":
+                    return TokenType.New;
+                case "null":
+                    return TokenType.Null;
+                case "namespace":
+                    return TokenType.Namespace;
+                case "operator":
+                    return TokenType.Operator;
+                case "out":
+                    return TokenType.Out;
+                case "override":
+                    return TokenType.Override;
+                case "private":
+                    return TokenType.Private;
+                case "protected":
+                    return TokenType.Protected;
+                case "public":
+                    return TokenType.Public;
+                case "ref":
+                    return TokenType.Ref;
+                case "return":
+                    return TokenType.Return;
+                case "switch":
+                    return TokenType.Switch;
+                case "struct":
+                    return TokenType.Struct;
+                case "sealed":
+                    return TokenType.Sealed;
+                case "static":
+                    return TokenType.Static;
+                case "this":
+                    return TokenType.This;
+                case "throw":
+                    return TokenType.Throw;
+                case "true":
+                    return TokenType.True;
+                case "try":
+                    return TokenType.Try;
+                case "using":
+                    return TokenType.Using;
+                case "virtual":
+                    return TokenType.Virtual;
+                case "while":
+                    return TokenType.While;
+            }
+            return TokenType.Symbol;
         }
     }
 }
