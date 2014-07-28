@@ -366,7 +366,7 @@ a = b;
 
             Assert.IsTrue(expected.Content == actual.Content);
 
-            var childs = expected.Childs.Zip(actual.Childs, (actualValue, expectedValue) => new { Actual = actualValue, Expected = expectedValue });
+            var childs = expected.Children.Zip(actual.Children, (actualValue, expectedValue) => new { Actual = actualValue, Expected = expectedValue });
             foreach (var child in childs)
             {
                 AssertEqual(child.Expected, child.Actual);

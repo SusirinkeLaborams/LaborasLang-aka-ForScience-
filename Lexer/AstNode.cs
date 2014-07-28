@@ -14,7 +14,7 @@ namespace Lexer
     public class AstNode
     {
         [DataMember]
-        private List<AstNode> m_Childs;
+        private List<AstNode> m_Children;
         [DataMember]
         private AstNode m_Parent;
         [DataMember]
@@ -23,15 +23,15 @@ namespace Lexer
         private TokenType m_Type;
 
 #region Public parameters
-        public List<AstNode> Childs
+        public List<AstNode> Children
         { 
             get
             {
-                return m_Childs;
+                return m_Children;
             }
             internal set
             {
-                m_Childs = value;
+                m_Children = value;
             }
         }
 
@@ -79,7 +79,7 @@ namespace Lexer
         }
         public AstNode()
         {
-            m_Childs = new List<AstNode>();
+            m_Children = new List<AstNode>();
             Parent = null;
 
             Content = null;
@@ -89,7 +89,7 @@ namespace Lexer
         internal void AddChild(AstNode child)
         {
             child.Parent = this;
-            Childs.Add(child);
+            Children.Add(child);
         }
 
         internal void AddTerminal(Token child)
