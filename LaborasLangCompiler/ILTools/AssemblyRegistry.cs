@@ -30,14 +30,14 @@ namespace LaborasLangCompiler.ILTools
         private AssemblyRegistry(IEnumerable<string> references)
             : this()
         {
-            if (!references.Any(x => Path.GetFileName(x) == "mscorlib.dll"))
+            if (!references.Any(reference => Path.GetFileName(reference) == "mscorlib.dll"))
             {
                 throw new ArgumentException("Assembly registry must reference mscorlib!");
             }
 
             RegisterReferences(references);
 
-            mscorlib = assemblies.Single(x => x.Name.Name == "mscorlib");
+            mscorlib = assemblies.Single(assembly => assembly.Name.Name == "mscorlib");
         }
 
         public static void Create(IEnumerable<string> references)
@@ -160,7 +160,8 @@ namespace LaborasLangCompiler.ILTools
 
         public static TypeReference GetFunctorType(AssemblyEmitter assembly, MethodReference containedMethod)
         {
-            return GetFunctorType(assembly, containedMethod.ReturnType, containedMethod.Parameters.Select(x => x.ParameterType).ToList());
+            var parameters = containedMethod.Parameters.Select(parameter => parameter.ParameterType).ToList();
+            return GetFunctorType(assembly, containedMethod.ReturnType, parameters);
         }
 
         public static TypeReference GetFunctorType(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
