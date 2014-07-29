@@ -39,7 +39,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     case Lexer.PrefixNode:
                         return ParsePrefix(parser, parent, lexerNode);
                     default:
-                        throw new ParseException("Unary op node expected, " + lexerNode.Token.Name + " received");
+                        throw new ParseException(parser.GetSequencePoint(lexerNode), "Unary op node expected, " + lexerNode.Token.Name + " received");
                 }
             }
         }
@@ -56,7 +56,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 catch(KeyNotFoundException)
                 {
-                    throw new ParseException(String.Format("Suffix op expected, '{0}' received", op));
+                    throw new ParseException(parser.GetSequencePoint(lexerNode.Children[i]), "Suffix op expected, '{0}' received", op);
                 }
             }
             return ParseUnary(parser, expression, ops);
@@ -75,7 +75,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 catch (KeyNotFoundException)
                 {
-                    throw new ParseException(String.Format("Prefix op expected, '{0}' received", op));
+                    throw new ParseException(parser.GetSequencePoint(lexerNode.Children[i]), "Prefix op expected, '{0}' received", op);
                 }
             }
             return ParseUnary(parser, expression, ops);
@@ -110,33 +110,33 @@ namespace LaborasLangCompiler.Parser.Impl
                     instance.ParseInc(parser);
                     break;
                 default:
-                    throw new ParseException("Unary op expected, " + op + " received");
+                    throw new ParseException(null, "Unary op expected, " + op + " received");
             }
             return instance;
         }
         private void ParseInc(Parser parser)
         {
             if (!ReturnType.IsNumericType() || Operand is LiteralNode)
-                throw new TypeException(String.Format("Increment/Decrement ops only allowed on numeric typed variables, {0} received",
-                    ReturnType));
+                throw new TypeException(SequencePoint, "Increment/Decrement ops only allowed on numeric typed variables, {0} received",
+                    ReturnType);
         }
         private void ParseNegation(Parser parser)
         {
             if (!ReturnType.IsNumericType())
-                throw new TypeException(String.Format("Arithmetic ops only allowed on numeric types, {0} received",
-                    ReturnType));
+                throw new TypeException(SequencePoint, "Arithmetic ops only allowed on numeric types, {0} received",
+                    ReturnType);
         }
         private void ParseLogical(Parser parser)
         {
             if (!ReturnType.IsBooleanType())
-                throw new TypeException(String.Format("Logical ops only allowed on boolean types, {0} received",
-                    ReturnType));
+                throw new TypeException(SequencePoint, "Logical ops only allowed on boolean types, {0} received",
+                    ReturnType);
         }
         private void ParseBinary(Parser parser)
         {
             if (!ReturnType.IsIntegerType())
-                throw new TypeException(String.Format("Binary ops only allowed on integer types, {0} received",
-                    ReturnType));
+                throw new TypeException(SequencePoint, "Binary ops only allowed on integer types, {0} received",
+                    ReturnType);
         }
         public static UnaryOperatorNode Void(IExpressionNode expression)
         {

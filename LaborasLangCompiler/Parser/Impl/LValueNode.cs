@@ -92,7 +92,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (ReturnType != null)
                 return Field = new FieldDefinition(Name, attributes, ReturnType);
             else
-                throw new TypeException("Cannot create a field without a declared type");
+                throw new TypeException(SequencePoint, "Cannot create a field without a declared type");
         }
     }
 

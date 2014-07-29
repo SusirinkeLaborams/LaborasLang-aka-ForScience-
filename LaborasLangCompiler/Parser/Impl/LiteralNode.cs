@@ -44,16 +44,16 @@ namespace LaborasLangCompiler.Parser.Impl
                         bool val = value == "true" ? true : false;
                         return new LiteralNode(val, parser.Primitives[Parser.Bool], point);
                     default:
-                        throw new ParseException("Literal expected, " + type + " received");
+                        throw new ParseException(point, "Literal expected, " + type + " received");
                 }
             }
             catch(FormatException e)
             {
-                throw new ParseException("Could not parse " + value + " as an " + type, e);
+                throw new ParseException(point, "Could not parse " + value + " as an " + type, e);
             }
             catch(OverflowException e)
             {
-                throw new ParseException("Could not fit " + value + " in " + type, e);
+                throw new ParseException(point, "Could not fit " + value + " in " + type, e);
             }
         }
         public override string ToString()

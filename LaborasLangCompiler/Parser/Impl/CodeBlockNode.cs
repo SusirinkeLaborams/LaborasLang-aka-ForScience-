@@ -45,7 +45,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public virtual LValueNode AddVariable(TypeReference type, string name, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
-                throw new SymbolAlreadyDeclaredException(String.Format("Var {0} already declared", name));
+                throw new SymbolAlreadyDeclaredException(point, "Var {0} already declared", name);
             symbols.Add(name, new LocalVariableNode(new VariableDefinition(name, type), point));
             return symbols[name];
         }
@@ -82,7 +82,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     switch (sentence.Token.Name)
                     {
                         case Lexer.NamespaceImport:
-                            throw new ParseException("Imports only allowed in classes");
+                            throw new ParseException(parser.GetSequencePoint(sentence), "Imports only allowed in classes");
                         case Lexer.Declaration:
                         case Lexer.DeclarationAndAssignment:
                             instance.AddNode(SymbolDeclarationNode.Parse(parser, instance, sentence));
@@ -106,12 +106,12 @@ namespace LaborasLangCompiler.Parser.Impl
                             instance.AddNode(ReturnNode.Parse(parser, instance, sentence));
                             break;
                         default:
-                            throw new ParseException("Node " + sentence.Token.Name + " in sentence, dafuq");
+                            throw new ParseException(parser.GetSequencePoint(sentence), "Node " + sentence.Token.Name + " in sentence, dafuq");
                     }
                 }
                 else
                 {
-                    throw new ParseException("Sentence expected, " + node.Token.Name + " received");
+                    throw new ParseException(parser.GetSequencePoint(node), "Sentence expected, " + node.Token.Name + " received");
                 }
             }
             return instance;

@@ -20,7 +20,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var instance = new WhileBlock(parser.GetSequencePoint(lexerNode));
             instance.Condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[0].Children[0]);
             if (instance.Condition.ReturnType.FullName != parser.Primitives[Parser.Bool].FullName)
-                throw new TypeException("Condition must be a boolean expression");
+                throw new TypeException(instance.SequencePoint, "Condition must be a boolean expression");
             instance.ExecutedBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[1]);
             return instance;
         }

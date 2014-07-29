@@ -80,7 +80,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     builder.Append(t.FullName);
                 }
-                throw new TypeException(builder.ToString());
+                throw new TypeException(point, builder.ToString());
             }
 
             if(type != null)
@@ -124,25 +124,25 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     builder.Append(n);
                 }
-                throw new TypeException(builder.ToString());
+                throw new TypeException(point, builder.ToString());
             }
 
             return new NamespaceNode(namespaze, point);
         }
-        public void AddImport(string namespaze, string name = null)
+        public void AddImport(string namespaze, string name, SequencePoint point)
         {
             if(name == null)
             {
                 if (globalImports.Contains(namespaze))
-                    throw new ParseException(String.Format("Namespace {0} already imported", namespaze));
+                    throw new ParseException(point, "Namespace {0} already imported", namespaze);
                 globalImports.Add(namespaze + ".");
             }
             else
             {
                 if (namedImports.ContainsKey(name))
-                    throw new ParseException(String.Format("Namespace under name {0} already imported", name));
+                    throw new ParseException(point, "Namespace under name {0} already imported", name);
                 if (namedImports.ContainsValue(namespaze))
-                    throw new ParseException(String.Format("Namespace {0} already imported", namespaze));
+                    throw new ParseException(point, "Namespace {0} already imported", namespaze);
                 namedImports.Add(name, namespaze + ".");
             }
         }
@@ -187,12 +187,12 @@ namespace LaborasLangCompiler.Parser.Impl
                             ParseDeclaration(parser, instance, sentence, true);
                             break;
                         default:
-                            throw new ParseException("Import or declaration expected " + sentence.Token.Name + " received");
+                            throw new ParseException(parser.GetSequencePoint(sentence), "Import or declaration expected " + sentence.Token.Name + " received");
                     }
                 }
                 else
                 {
-                    throw new ParseException("Node Sentence expected, " + node.Token.Name + " received");
+                    throw new ParseException(parser.GetSequencePoint(node), "Node Sentence expected, " + node.Token.Name + " received");
                 }
             }
 
@@ -217,7 +217,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         else
                         {
                             if (!ILHelpers.IsAssignableTo(init.ReturnType, field.ReturnType))
-                                throw new TypeException("Type mismatch, field " + field.Name + " type " + field.ReturnType.FullName + " initialized with " + init.ReturnType.FullName);
+                                throw new TypeException(parser.GetSequencePoint(sentence), "Type mismatch, field " + field.Name + " type " + field.ReturnType.FullName + " initialized with " + init.ReturnType.FullName);
                         }
                         break;
                     default:
@@ -261,7 +261,7 @@ namespace LaborasLangCompiler.Parser.Impl
             
             if (declaredType == null && !init)
             {
-                throw new TypeException("Type inference requires initialization");
+                throw new TypeException(parser.GetSequencePoint(lexerNode), "Type inference requires initialization");
             }
             else
             {

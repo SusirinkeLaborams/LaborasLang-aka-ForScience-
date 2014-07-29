@@ -21,8 +21,8 @@ namespace LaborasLangCompiler.Parser.Impl
             if (lexerNode.Children.Count != 1)
                 name = parser.ValueOf(lexerNode.Children[1]);
             if (!AssemblyRegistry.IsNamespaceKnown(namespaze))
-                throw new ParseException(String.Format("Unknown namespace {0}", namespaze));
-            parent.GetClass().AddImport(namespaze, name);
+                throw new ParseException(parser.GetSequencePoint(lexerNode), "Unknown namespace {0}", namespaze);
+            parent.GetClass().AddImport(namespaze, name, parser.GetSequencePoint(lexerNode));
         }
     }
 }

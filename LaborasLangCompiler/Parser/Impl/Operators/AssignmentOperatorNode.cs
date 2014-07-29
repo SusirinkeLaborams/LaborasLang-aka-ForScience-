@@ -30,7 +30,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 right = BinaryOperatorNode.Parse(parser, op.Remove(op.Length - 1), left, right);
 
             if (!right.ReturnType.IsAssignableTo(left.ReturnType))
-                throw new TypeException(String.Format("Assigned {0} to {1}", instance.RightOperand.ReturnType, instance.LeftOperand.ReturnType));
+                throw new TypeException(instance.SequencePoint, "Assigned {0} to {1}", instance.RightOperand.ReturnType, instance.LeftOperand.ReturnType);
             instance.RightOperand = right;
             instance.LeftOperand = left;
             return instance;    

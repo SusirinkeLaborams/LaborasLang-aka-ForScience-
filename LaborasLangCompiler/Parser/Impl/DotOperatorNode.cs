@@ -38,12 +38,12 @@ namespace LaborasLangCompiler.Parser.Impl
             if(node is ExpressionNode)
             {
                 if (!AppendExpression((ExpressionNode)node))
-                    throw new ParseException("Expressions only allowed on left of dot operator");
+                    throw new ParseException(node.SequencePoint, "Expressions only allowed on left of dot operator");
             }
             else if (node is SymbolCallNode)
             {
                 if (!AppendCall((SymbolCallNode)node))
-                    throw new SymbolNotFoundException(String.Format("Symbol {0} not found", ((SymbolCallNode)node).Value));
+                    throw new SymbolNotFoundException(node.SequencePoint, "Symbol {0} not found", ((SymbolCallNode)node).Value);
             }
             else if(node is SymbolNode)
             {
@@ -56,7 +56,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     return;
                 if (AppendNamespace(nod))
                     return;
-                throw new SymbolNotFoundException(String.Format("Symbol {0} not found", nod.Value));
+                throw new SymbolNotFoundException(node.SequencePoint, "Symbol {0} not found", nod.Value);
             }
         }
         private bool AppendCall(SymbolCallNode node)
@@ -247,28 +247,28 @@ namespace LaborasLangCompiler.Parser.Impl
         public ExpressionNode ExtractExpression()
         {
             if (builtNode is NamespaceNode || builtNode is TypeNode)
-                throw new ParseException("Expression expected");
+                throw new ParseException(builtNode.SequencePoint, "Expression expected");
             else
                 return (ExpressionNode)builtNode;
         }
         public string ExtractNamespace()
         {
             if (!(builtNode is NamespaceNode))
-                throw new ParseException("Namespace expected");
+                throw new ParseException(builtNode.SequencePoint, "Namespace expected");
             else
                 return ((NamespaceNode)builtNode).Value;
         }
         public TypeReference ExtractType()
         {
             if (!(builtNode is TypeNode))
-                throw new ParseException("Type expected");
+                throw new ParseException(builtNode.SequencePoint, "Type expected");
             else
                 return ((TypeNode)builtNode).ParsedType;
         }
         public LValueNode ExtractLValue()
         {
             if (!(builtNode is LValueNode))
-                throw new ParseException("LValue expected");
+                throw new ParseException(builtNode.SequencePoint, "LValue expected");
             else
                 return (LValueNode)builtNode;
         }
@@ -290,7 +290,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 var method = ((AmbiguousMethodNode)builtNode).RemoveAmbiguity(parser, types);
                 return method;
             }
-            throw new ParseException("Method expected");
+            throw new ParseException(builtNode.SequencePoint, "Method expected");
         }
     }
 }
