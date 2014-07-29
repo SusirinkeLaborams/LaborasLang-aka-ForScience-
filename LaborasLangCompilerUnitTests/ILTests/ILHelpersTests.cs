@@ -153,7 +153,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
                 foreach (var right in types)
                 {
-                    var expected = exceptions.Any(x => x == right.Key);
+                    var expected = exceptions.Any(exception => exception == right.Key);
                     var actual = right.Value.IsAssignableTo(left.Value);
 
                     Assert.IsTrue(expected == actual, 

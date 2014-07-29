@@ -105,11 +105,11 @@ namespace LaborasLangCompiler.ILTools.Types
 
         private void CheckForDuplicates(string name)
         {
-            if (typeDefinition.Fields.Any(x => x.Name == name))
+            if (typeDefinition.Fields.Any(field => field.Name == name))
             {
                 throw new InvalidOperationException(string.Format("A field with same name already exists in type {0}.", typeDefinition.FullName));
             }
-            else if (typeDefinition.Methods.Any(x => x.Name == name))
+            else if (typeDefinition.Methods.Any(method => method.Name == name))
             {
                 throw new InvalidOperationException(string.Format("A method with same name already exists in type {0}.", typeDefinition.FullName));
             }
@@ -117,8 +117,10 @@ namespace LaborasLangCompiler.ILTools.Types
 
         private void CheckForDuplicates(string name, IList<ParameterDefinition> parameters)
         {
-            if (typeDefinition.Methods.Any(x => x.Name == name && 
-                x.Parameters.Select(y => y.ParameterType.FullName).SequenceEqual(parameters.Select(y => y.ParameterType.FullName))))
+            var targetParameterTypes = parameters.Select(parameter => parameter.ParameterType.FullName);
+
+            if (typeDefinition.Methods.Any(method => method.Name == name &&
+                method.Parameters.Select(parameter => parameter.ParameterType.FullName).SequenceEqual(targetParameterTypes)))
             {
                 throw new InvalidOperationException(string.Format("A method with same name and parameters already exists in type {0}.", typeDefinition.FullName));
             }

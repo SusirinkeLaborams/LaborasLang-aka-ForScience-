@@ -197,7 +197,7 @@ namespace LaborasLangCompiler.ILTools
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, string type,
             string methodName, IReadOnlyList<string> arguments)
         {
-            return GetCompatibleMethod(assembly, GetTypeInternal(type), methodName, arguments.Select(x => GetTypeInternal(x)).ToList());
+            return GetCompatibleMethod(assembly, GetTypeInternal(type), methodName, arguments);
         }
 
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, string type,
@@ -216,7 +216,8 @@ namespace LaborasLangCompiler.ILTools
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeReference type,
             string methodName, IReadOnlyList<string> arguments)
         {
-            return GetCompatibleMethod(assembly, type, methodName, arguments.Select(x => GetTypeInternal(x)).ToList());
+            var argumentTypes = arguments.Select(arg => GetTypeInternal(arg)).ToList();
+            return GetCompatibleMethod(assembly, type, methodName, argumentTypes);
         }
 
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeReference type,
@@ -369,7 +370,7 @@ namespace LaborasLangCompiler.ILTools
 
             if (aIsParamsMethod)
             {
-                aParameters = a.Parameters.Take(a.Parameters.Count - 1).Select(x => x.ParameterType).ToList();
+                aParameters = a.Parameters.Take(a.Parameters.Count - 1).Select(parameter => parameter.ParameterType).ToList();
 
                 var paramsType = a.Parameters.Last().ParameterType;
                 for (int i = 0; i < arguments.Count - a.Parameters.Count + 1; i++)
@@ -384,7 +385,7 @@ namespace LaborasLangCompiler.ILTools
             
             if (bIsParamsMethod)
             {
-                bParameters = b.Parameters.Take(b.Parameters.Count - 1).Select(x => x.ParameterType).ToList();
+                bParameters = b.Parameters.Take(b.Parameters.Count - 1).Select(parameter => parameter.ParameterType).ToList();
 
                 var paramsType = b.Parameters.Last().ParameterType.GetElementType();
                 for (int i = 0; i < arguments.Count - b.Parameters.Count + 1; i++)

@@ -71,17 +71,17 @@ namespace LaborasLangCompiler.ILTools
 
         public static bool IsSignedInteger(this TypeReference type)
         {
-            return SignedIntegerTypes.Any(x => x == type.FullName);
+            return SignedIntegerTypes.Any(signedIntType => signedIntType == type.FullName);
         }
 
         public static bool IsIntegerType(this TypeReference type)
         {
-            return IntegerTypes.Any(x => x == type.FullName);
+            return IntegerTypes.Any(intType => intType == type.FullName);
         }
 
         public static bool IsFloatingPointType(this TypeReference type)
         {
-            return FloatingPointTypes.Any(x => x == type.FullName);
+            return FloatingPointTypes.Any(floatType => floatType == type.FullName);
         }
 
         public static bool IsNumericType(this TypeReference type)
@@ -126,7 +126,7 @@ namespace LaborasLangCompiler.ILTools
 
             if (left.IsPrimitive && right.IsPrimitive)
             {
-                return assignmentMap[leftName].Any(x => x == rightName);
+                return assignmentMap[leftName].Any(assignableType => assignableType == rightName);
             }
 
             var leftType = left.Resolve();
@@ -139,7 +139,7 @@ namespace LaborasLangCompiler.ILTools
 
             if (leftType.IsInterface)
             {
-                return rightType.Interfaces.Any(x => x.FullName == leftName);
+                return rightType.Interfaces.Any(interfaze => interfaze.FullName == leftName);
             }
                         
             while (rightType.BaseType != null)
@@ -167,7 +167,7 @@ namespace LaborasLangCompiler.ILTools
             
             if (parent.IsInterface)
             {
-                if (child.Interfaces.Any(x => x.FullName == parent.FullName))
+                if (child.Interfaces.Any(interfaze => interfaze.FullName == parent.FullName))
                 {
                     return true;
                 }
@@ -185,9 +185,9 @@ namespace LaborasLangCompiler.ILTools
         {
             var methodParameters = method.Resolve().Parameters; // Resolve is needed or otherwise we will not know methods parameter attributes
 
-            if (methodParameters.Count != desiredParameters.Count && (methodParameters.Count == 0 || 
-                (methodParameters.Last().CustomAttributes.All(x => x.AttributeType.FullName != "System.ParamArrayAttribute")) &&
-                (methodParameters.Last().Attributes & ParameterAttributes.HasDefault) == 0))
+            // Doesn't match if parameter count doesn't match and either method has no parameters, or last parameter is neither params, not default one.
+            if (methodParameters.Count != desiredParameters.Count &&
+                (!method.HasParameters || (!method.IsParamsMethod() && (methodParameters.Last().Attributes & ParameterAttributes.HasDefault) == 0)))
             {
                 return false;
             }
@@ -276,7 +276,7 @@ namespace LaborasLangCompiler.ILTools
             
             var invokeMethod = AssemblyRegistry.GetMethods(assemblyScope, functorType, "Invoke").Single();
             
-            arguments = invokeMethod.Parameters.Select(x => x.ParameterType).ToList();
+            arguments = invokeMethod.Parameters.Select(parameter => parameter.ParameterType).ToList();
             return invokeMethod.ReturnType;
         }
 

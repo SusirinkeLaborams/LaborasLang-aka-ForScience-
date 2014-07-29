@@ -72,7 +72,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
         private static void DisassembleType(TypeDefinition type, MethodBodyDisassembler disassembler, StringWriter writer)
         {
-            foreach (var method in type.Methods.Where(x => x.HasBody))
+            foreach (var method in type.Methods.Where(method => method.HasBody))
             {
                 writer.WriteLine(method.FullName.ToString());
                 disassembler.Disassemble(method.Body, null);

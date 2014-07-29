@@ -46,7 +46,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public static void Run(string targetAssembly)
         {
             var arguments = string.Format(@"/verbose /hresult /ignore={1} ""{0}""", targetAssembly,
-                string.Join(",", CodesToIgnore.Select(x => x.ToString("X"))));
+                string.Join(",", CodesToIgnore.Select(errorCode => errorCode.ToString("X"))));
 
             var startInfo = new ProcessStartInfo(PEVerifyPath, arguments);
             startInfo.UseShellExecute = false;
@@ -64,7 +64,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
                 // First 2 lines are logos, last one is conclusion
                 var errorLines = lines.Skip(2).Take(lines.Length - 3) // This error happens when using ldftn and passing the native int 
-                    .Where(x => !x.Contains("[expected Native Int] Unexpected type on the stack.")).ToArray(); // to functor ctor
+                    .Where(line => !line.Contains("[expected Native Int] Unexpected type on the stack.")).ToArray(); // to functor ctor
 
                 if (errorLines.Length > 0)
                 {

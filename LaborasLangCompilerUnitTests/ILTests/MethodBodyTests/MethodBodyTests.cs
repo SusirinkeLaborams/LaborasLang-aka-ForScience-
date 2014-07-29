@@ -2184,7 +2184,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var myMethod = methodEmitter.Get();
             var methodReturnType = myMethod.ReturnType;
-            var methodArguments = myMethod.Parameters.Select(x => x.ParameterType).ToList();
+            var methodArguments = myMethod.Parameters.Select(parameter => parameter.ParameterType).ToList();
 
             var declaringType = (TypeDefinition)typeEmitter.Get(assemblyEmitter);
             var delegateType = DelegateEmitter.Create(assemblyEmitter, declaringType, methodReturnType, methodArguments);
