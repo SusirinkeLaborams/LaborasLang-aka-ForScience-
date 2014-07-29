@@ -19,8 +19,9 @@ namespace Lexer
             
             ParseRule[] AllRules = 
             {
-
-                new ParseRule(TokenType.StatementNode,
+                #region Syntax rules
+                new ParseRule(TokenType.StatementNode,                    
+                    new Condition[]{TokenType.RValue, TokenType.EndOfLine},
                     new Condition[]{TokenType.DeclarationNode},
                     new Condition[]{TokenType.AssignmentNode},
                     new Condition[]{TokenType.CodeBlockNode}),
@@ -50,26 +51,33 @@ namespace Lexer
                     new Condition[]{TokenType.RValue}),
 
                 new ParseRule(TokenType.LValue,
-                    new Condition[]{TokenType.Symbol}),
+                    new Condition[]{TokenType.FullSymbol}),
  
-                new ParseRule(TokenType.RValue,
-                    new Condition[]{TokenType.Symbol}),
+                new ParseRule(TokenType.RValue,                    
+                    new Condition[]{TokenType.FunctionCall},
+                    new Condition[]{TokenType.FullSymbol}),
+
+                new ParseRule(TokenType.FunctionCall,
+                    new Condition[]{TokenType.FullSymbol, TokenType.LeftBracket, TokenType.RightBracket},
+                    new Condition[]{TokenType.FullSymbol, TokenType.LeftBracket, TokenType.Value, new Condition(TokenType.FunctionArgument, ConditionType.OneOrMore), TokenType.RightBracket},
+                    new Condition[]{TokenType.FullSymbol, TokenType.LeftBracket, TokenType.Value, TokenType.RightBracket}),
+
+                new ParseRule(TokenType.FunctionArgument,
+                    new Condition[]{TokenType.Comma, TokenType.Value}),
 
                 new ParseRule(TokenType.FullSymbol,
                     new Condition[]{TokenType.Symbol, new Condition(TokenType.SubSymbol, ConditionType.OneOrMore)},
                     new Condition[]{TokenType.Symbol}),
 
                 new ParseRule(TokenType.SubSymbol,
-                    new Condition[]{TokenType.Dot, TokenType.Symbol}),
+                    new Condition[]{TokenType.Period, TokenType.Symbol}),
 
                 new ParseRule(TokenType.Type,
                     new Condition[]{TokenType.FullSymbol, TokenType.LeftBracket, new Condition(TokenType.Type, ConditionType.OneOrMore), TokenType.RightBracket},
                     new Condition[]{TokenType.FullSymbol, TokenType.LeftBracket, TokenType.RightBracket},
                     new Condition[]{TokenType.FullSymbol}),
 
-
-
-
+                #endregion
             };
 
             foreach(var rule in AllRules)

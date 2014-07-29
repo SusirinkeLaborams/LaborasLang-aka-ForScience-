@@ -10,11 +10,12 @@ namespace Lexer
     {
         // Terminals
         EndOfLine,
+        Comma,
+        Period,
         Comment,
         BitwiseAnd,
         BitwiseAndEqual,
         And,
-        Dot,
         Plus,
         PlusPlus,
         Minus,
@@ -126,6 +127,12 @@ namespace Lexer
 
         Type,
         VariableModifier,
+
+        FunctionCall,
+        FunctionArgument,
+        FunctionDeclarationArgument,
+        FunctionBody,
+
     }
 
     public static class TokenInfo

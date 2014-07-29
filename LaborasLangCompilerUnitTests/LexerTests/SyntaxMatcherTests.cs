@@ -40,6 +40,13 @@ a = b;
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void FunctionCall()
+        {
+            var source = @"foo();";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void DeclareFunctionTestNoParameters()
         {
             var source = @"int() foo;";

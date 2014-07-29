@@ -404,6 +404,30 @@ namespace Lexer
                             break;
                         }
                     #endregion
+                    #region Period
+                    case '.':
+                        {
+                            var token = new Token();
+                            token.Type = TokenType.Period;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            token.End = Source.Location;
+                            yield return token;
+                            break;
+                        }
+                    #endregion
+                    #region Comma
+                    case ',':
+                        {
+                            var token = new Token();
+                            token.Type = TokenType.Comma;
+                            token.Content += Source.Pop();
+                            token.Start = Source.Location;
+                            token.End = Source.Location;
+                            yield return token;
+                            break;
+                        }
+                    #endregion
                     #region Multiplication
                     case '*':
                         {
@@ -575,18 +599,6 @@ namespace Lexer
                                     token.Type = TokenType.MalformedToken;
                                 }
                             }
-                            token.End = Source.Location;
-                            yield return token;
-                            break;
-                        }
-                    #endregion
-                    #region Dot
-                    case '.':
-                        {
-                            var token = new Token();
-                            token.Type = TokenType.Dot;
-                            token.Content += Source.Pop();
-                            token.Start = Source.Location;
                             token.End = Source.Location;
                             yield return token;
                             break;
