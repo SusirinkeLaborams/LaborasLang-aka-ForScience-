@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
+using System.Diagnostics;
 
 namespace Lexer
 {
-
-
-    [Serializable]
+    [Serializable, DebuggerDisplay("Token, type = {m_Type}")]
     public class Token
     {
         public Token()
