@@ -253,6 +253,19 @@ namespace LaborasLangCompiler.ILTools
             return false;
         }
 
+        public static bool IsParamsMethod(this MethodReference method)
+        {
+            var parameters = method.Resolve().Parameters;
+
+            if (parameters.Count == 0)
+            {
+                return false;
+            }
+
+            var lastParameterAttributes = parameters[parameters.Count - 1].CustomAttributes;
+            return lastParameterAttributes.Any(attribute => attribute.AttributeType.FullName == "System.ParamArrayAttribute");
+        }
+
         public static TypeReference GetFunctorReturnTypeAndArguments(AssemblyEmitter assemblyScope, TypeReference functorType, 
             out List<TypeReference> arguments)
         {

@@ -189,7 +189,8 @@ namespace LaborasLangCompiler.ILTools
                 return new List<MethodReference>();
             }
 
-            return resolvedType.Methods.Where(x => x.Name == methodName).Select(x => ScopeToAssembly(assembly, x)).ToList<MethodReference>();
+            return resolvedType.Methods.Where(methodDef => methodDef.Name == methodName)
+                                       .Select(methodDef => ScopeToAssembly(assembly, methodDef)).ToList<MethodReference>();
         }
 
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, string type,
@@ -224,8 +225,8 @@ namespace LaborasLangCompiler.ILTools
         }
             
         public static MethodReference GetCompatibleMethod(IEnumerable<MethodReference> methods, IReadOnlyList<TypeReference> arguments)
-            {
-            var filtered = methods.Where(x => x.MatchesArgumentList(arguments)).ToList();
+        {
+            var filtered = methods.Where(methodRef => methodRef.MatchesArgumentList(arguments)).ToList();
 
             if (filtered.Count > 1)
             {
@@ -254,7 +255,7 @@ namespace LaborasLangCompiler.ILTools
                 return null;
             }
 
-            return resolvedType.Properties.SingleOrDefault(x => x.Name == propertyName);
+            return resolvedType.Properties.SingleOrDefault(property => property.Name == propertyName);
         }
 
         public static MethodReference GetPropertyGetter(AssemblyEmitter assembly, PropertyReference property)
@@ -295,7 +296,7 @@ namespace LaborasLangCompiler.ILTools
                 return null;
             }
 
-            var field = resolvedType.Fields.SingleOrDefault(x => x.Name == fieldName);
+            var field = resolvedType.Fields.SingleOrDefault(fieldDef => fieldDef.Name == fieldName);
 
             if (field == null)
             {
@@ -348,19 +349,23 @@ namespace LaborasLangCompiler.ILTools
 
         private static int CompareMatches(IReadOnlyList<TypeReference> arguments, MethodReference a, MethodReference b)
         {
-            if (a.Parameters.Select(x => x.ParameterType.FullName).SequenceEqual(arguments.Select(x => x.FullName)))
+            var argumentNames = arguments.Select(arg => arg.FullName);
+
+            if (a.Parameters.Select(parameter => parameter.ParameterType.FullName).SequenceEqual(argumentNames))
             {
                 return 1;
             }
 
-            if (b.Parameters.Select(x => x.ParameterType.FullName).SequenceEqual(arguments.Select(x => x.FullName)))
+            if (b.Parameters.Select(parameter => parameter.ParameterType.FullName).SequenceEqual(argumentNames))
             {
                 return -1;
             }
 
             List<TypeReference> aParameters, bParameters;
-            
-            var aIsParamsMethod = a.Resolve().Parameters.Last().CustomAttributes.Any(x => x.AttributeType.FullName == "System.ParamArrayAttribute");
+
+            var aIsParamsMethod = a.IsParamsMethod();
+            var bIsParamsMethod = b.IsParamsMethod();
+
             if (aIsParamsMethod)
             {
                 aParameters = a.Parameters.Take(a.Parameters.Count - 1).Select(x => x.ParameterType).ToList();
@@ -373,10 +378,9 @@ namespace LaborasLangCompiler.ILTools
             }
             else
             {
-                aParameters = a.Parameters.Select(x => x.ParameterType).ToList();
+                aParameters = a.Parameters.Select(parameter => parameter.ParameterType).ToList();
             }
-
-            var bIsParamsMethod = b.Resolve().Parameters.Last().CustomAttributes.Any(x => x.AttributeType.FullName == "System.ParamArrayAttribute");
+            
             if (bIsParamsMethod)
             {
                 bParameters = b.Parameters.Take(b.Parameters.Count - 1).Select(x => x.ParameterType).ToList();
@@ -389,7 +393,7 @@ namespace LaborasLangCompiler.ILTools
             }
             else
             {
-                bParameters = b.Parameters.Select(x => x.ParameterType).ToList();
+                bParameters = b.Parameters.Select(parameter => parameter.ParameterType).ToList();
             }
 
             for (int i = 0; i < arguments.Count; i++)
