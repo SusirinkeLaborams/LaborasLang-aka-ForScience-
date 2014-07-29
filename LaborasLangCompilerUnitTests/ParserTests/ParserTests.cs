@@ -414,6 +414,41 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             }
             Assert.Fail("Should've failed, returning 5 in void()");
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestImport()
+        {
+            string source = @"
+                use System;";
+            //System.Console.WriteLine(""Hello, World!"");
+            string expected = "(ClassNode: Fields: )";
+            TestParser(source, expected, lex);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestUseImport()
+        {
+            string source = @"
+                use System;
+                auto Main = void()
+                {
+	                Console.WriteLine(""Hello, World!"");
+                };";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (Function: $Functors.$System_Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!) Function: (Method: Instance: null, Name: System.Void System.Console::WriteLine(System.String)))))))";
+            TestParser(source, expected, lex);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestMultipleImport()
+        {
+            string source = @"
+                use System;
+                use System.IO;
+                auto Main = void()
+                {
+	                Console.WriteLine(""Hello, World!"");
+                    File.Exists("""");
+                };";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (Function: $Functors.$System_Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!) Function: (Method: Instance: null, Name: System.Void System.Console::WriteLine(System.String))), (UnaryOp: VoidOperator (MethodCall: Return: System.Boolean Args: (Literal: System.String ) Function: (Method: Instance: null, Name: System.Boolean System.IO.File::Exists(System.String))))))))";
+            TestParser(source, expected, lex);
+        }
         private void TestParser(string source, string expected, bool lex, [CallerMemberName]string name = "")
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });

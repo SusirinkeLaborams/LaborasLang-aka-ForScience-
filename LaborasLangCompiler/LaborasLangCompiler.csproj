@@ -80,6 +80,7 @@
     <Compile Include="LexingTools\FileReader.cs" />
     <Compile Include="LexingTools\Lexer.cs" />
     <Compile Include="LexingTools\SymbolCounter.cs" />
+    <Compile Include="Parser\Exceptions\CompilerException.cs" />
     <Compile Include="Parser\Exceptions\ParseException.cs" />
     <Compile Include="Parser\Exceptions\SymbolAlreadyDeclaredException.cs" />
     <Compile Include="Parser\Exceptions\SymbolNotFoundException.cs" />
@@ -88,6 +89,7 @@
     <Compile Include="Parser\Impl\ConditionBlockNode.cs" />
     <Compile Include="Parser\Impl\DotOperatorNode.cs" />
     <Compile Include="Parser\Impl\IContainerNode.cs" />
+    <Compile Include="Parser\Impl\ImportNode.cs" />
     <Compile Include="Parser\Impl\IReturning.cs" />
     <Compile Include="Parser\Impl\MethodCallNode.cs" />
     <Compile Include="Parser\Impl\MethodNode.cs" />

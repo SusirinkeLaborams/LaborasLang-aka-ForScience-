@@ -35,9 +35,9 @@ namespace LaborasLangCompiler.Parser.Impl
                 //TODO: make this lazy
                 return new MethodNode(method, AssemblyRegistry.GetFunctorType(parser.Assembly, method), ObjectInstance, SequencePoint);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw new TypeException("Ambiguous method result", e);
+                throw new TypeException(SequencePoint, "Ambiguous method result");
             }
         }
     }

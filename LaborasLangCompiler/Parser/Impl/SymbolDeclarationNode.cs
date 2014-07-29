@@ -36,14 +36,14 @@ namespace LaborasLangCompiler.Parser.Impl
                 initializer = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
 
             if (declaredType == null && initializer == null)
-                throw new TypeException("Type inference requires initialization");
+                throw new TypeException(parser.GetSequencePoint(lexerNode), "Type inference requires initialization");
 
             if (initializer != null)
             {
                 if (declaredType == null)
                     declaredType = initializer.ReturnType;
                 else if (!ILHelpers.IsAssignableTo(initializer.ReturnType, declaredType))
-                    throw new TypeException("Type mismatch, type " + declaredType.FullName + " initialized with " + initializer.ReturnType.FullName);
+                    throw new TypeException(parser.GetSequencePoint(lexerNode), "Type mismatch, type " + declaredType.FullName + " initialized with " + initializer.ReturnType.FullName);
                 if(initializer is FunctionDeclarationNode)
                 {
                     parent.GetClass().AddMethod((FunctionDeclarationNode)initializer, name + "_local");
@@ -52,7 +52,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (parent is CodeBlockNode)
                 symbol = ((CodeBlockNode)parent).AddVariable(declaredType, name, parser.GetSequencePoint(lexerNode));
             else
-                throw new ParseException("SymbolDeclarationNode somehow parsed in a class");
+                throw new ParseException(parser.GetSequencePoint(lexerNode), "SymbolDeclarationNode somehow parsed in a class");
 
             return new SymbolDeclarationNode(symbol, initializer, parser.GetSequencePoint(lexerNode));
         }

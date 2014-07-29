@@ -28,8 +28,8 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             var functionReturn = parent.GetFunction().FunctionReturnType;
             if (!retType.IsAssignableTo(functionReturn))
-                throw new TypeException(String.Format("Function returns {0}, cannot return {1}",
-                    functionReturn, retType));
+                throw new TypeException(instance.SequencePoint, "Function returns {0}, cannot return {1}",
+                    functionReturn, retType);
             return instance;
         }
         public override string ToString()
