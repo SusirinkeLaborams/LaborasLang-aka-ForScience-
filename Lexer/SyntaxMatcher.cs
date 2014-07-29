@@ -46,9 +46,9 @@ namespace Lexer
                     new Condition[]{TokenType.LeftCurlyBracket, new Condition(TokenType.StatementNode, ConditionType.OneOrMore), TokenType.RightCurlyBracket},
                     new Condition[]{TokenType.LeftCurlyBracket, TokenType.StatementNode, TokenType.RightCurlyBracket}),
 
-                new ParseRule(TokenType.Value,
-                    new Condition[]{TokenType.LValue},
-                    new Condition[]{TokenType.RValue}),
+                new ParseRule(TokenType.Value,                    
+                    new Condition[]{TokenType.RValue},
+                    new Condition[]{TokenType.LValue}),
 
                 new ParseRule(TokenType.LValue,
                     new Condition[]{TokenType.FullSymbol}),

@@ -42,7 +42,11 @@ a = b;
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void FunctionCall()
         {
-            var source = @"foo();";
+            var source =
+            @"
+            foo();
+            foo(bar);
+            foo(foo(), bar);";
             ExecuteTest(source);
         }
 
