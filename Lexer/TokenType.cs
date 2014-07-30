@@ -133,6 +133,8 @@ namespace Lexer
         FunctionDeclarationArgument,
         FunctionBody,
 
+        WhileLoop
+
     }
 
     public static class TokenInfo

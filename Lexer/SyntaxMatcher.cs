@@ -24,7 +24,8 @@ namespace Lexer
                     new Condition[]{TokenType.RValue, TokenType.EndOfLine},
                     new Condition[]{TokenType.DeclarationNode},
                     new Condition[]{TokenType.AssignmentNode},
-                    new Condition[]{TokenType.CodeBlockNode}),
+                    new Condition[]{TokenType.CodeBlockNode},
+                    new Condition[]{TokenType.WhileLoop}),
             
                 new ParseRule(TokenType.DeclarationNode,
                     new Condition[]{new Condition(TokenType.VariableModifier, ConditionType.OneOrMore), TokenType.Type, TokenType.Symbol, TokenType.EndOfLine},
@@ -44,7 +45,7 @@ namespace Lexer
             
                 new ParseRule(TokenType.CodeBlockNode,
                     new Condition[]{TokenType.LeftCurlyBracket, new Condition(TokenType.StatementNode, ConditionType.OneOrMore), TokenType.RightCurlyBracket},
-                    new Condition[]{TokenType.LeftCurlyBracket, TokenType.StatementNode, TokenType.RightCurlyBracket}),
+                    new Condition[]{TokenType.LeftCurlyBracket, TokenType.RightCurlyBracket}),
 
                 new ParseRule(TokenType.Value,                    
                     new Condition[]{TokenType.RValue},
@@ -77,6 +78,9 @@ namespace Lexer
                     new Condition[]{TokenType.FullSymbol, TokenType.LeftBracket, TokenType.RightBracket},
                     new Condition[]{TokenType.FullSymbol}),
 
+
+                new ParseRule(TokenType.WhileLoop,
+                    new Condition[]{TokenType.While, TokenType.LeftBracket, TokenType.Value, TokenType.RightBracket, TokenType.StatementNode})
                 #endregion
             };
 

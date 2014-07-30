@@ -188,7 +188,9 @@ a = b;
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestWhileLoop()
         {
-            string source = "while(condition){function();}";
+            string source =
+          @"while(condition) function();
+            while(condition()) {function();}";
             ExecuteTest(source);
         }
 
