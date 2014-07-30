@@ -24,6 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeReference FunctionReturnType { get; private set; }
         private ClassNode parent;
         public IReadOnlyList<FunctionArgumentNode> Args;
+        private Dictionary<string, ParameterDefinition> symbols;
         public void Emit(bool entry = false)
         {
             emitter.ParseTree(body);
@@ -34,10 +35,17 @@ namespace LaborasLangCompiler.Parser.Impl
             : base(point)
         {
             this.parent = parent.GetClass();
+            this.symbols = new Dictionary<string, ParameterDefinition>();
         }
         public FunctionDeclarationNode GetFunction() { return this; }
         public ClassNode GetClass() { return parent.GetClass(); }
-        public LValueNode GetSymbol(string name) { return parent.GetSymbol(name); }
+        public LValueNode GetSymbol(string name, SequencePoint point)
+        {
+            if (symbols.ContainsKey(name))
+                return new FunctionArgumentNode(symbols[name], true, point);
+
+            return parent.GetSymbol(name, point); 
+        }
         public static FunctionDeclarationNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode, string name = null)
         {
             var instance = new FunctionDeclarationNode(parent, parser.GetSequencePoint(lexerNode));
@@ -47,6 +55,7 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.ReturnType = header.FunctionType;
             instance.FunctionReturnType = header.ReturnType;
             instance.Args = header.Args;
+            instance.symbols = instance.Args.Select(a => a.Param).ToDictionary(arg => arg.Name);
             instance.body = CodeBlockNode.Parse(parser, instance, lexerNode.Children[1]);
             if (instance.FunctionReturnType.FullName != "System.Void" && !instance.body.Returns)
                 throw new ParseException(instance.SequencePoint, "Not all control paths return a value");

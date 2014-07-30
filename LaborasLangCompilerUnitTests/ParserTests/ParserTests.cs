@@ -61,7 +61,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
 	                Main(4);
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void$System_Int32 Main = (Function: $Functors.$System_Void$System_Int32(System.Int32 arg)(CodeBlock: Symbols: ((LValueNode: FunctionArgument arg System.Int32) arg) Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.Int32 4) Function: (LValueNode: Field Main $Functors.$System_Void$System_Int32))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void$System_Int32 Main = (Function: $Functors.$System_Void$System_Int32(System.Int32 arg)(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.Int32 4) Function: (LValueNode: Field Main $Functors.$System_Void$System_Int32))))))";
             TestParser(source, expected, lex);
         }
         [TestMethod, TestCategory("Parser")]
@@ -102,7 +102,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 	                auto a = 5;
                     auto str = a.ToString();
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (Function: $Functors.$System_Void()(CodeBlock: Symbols: ((LValueNode: LocalVariable a System.Int32) a, (LValueNode: LocalVariable str System.String) str) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 5)), (Declaration: (LValueNode: LocalVariable str System.String) = (MethodCall: Return: System.String Args:  Function: (Method: Instance: (LValueNode: LocalVariable a System.Int32), Name: System.String System.Int32::ToString())))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (Function: $Functors.$System_Void()(CodeBlock: Symbols: (System.Int32 a, System.String str) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 5)), (Declaration: (LValueNode: LocalVariable str System.String) = (MethodCall: Return: System.String Args:  Function: (Method: Instance: (LValueNode: LocalVariable a System.Int32), Name: System.String System.Int32::ToString())))))))";
             TestParser(source, expected, lex);
         }
         [TestMethod, TestCategory("Parser")]
@@ -118,7 +118,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                         c += 1;
                     }
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (Function: $Functors.$System_Void()(CodeBlock: Symbols: ((LValueNode: LocalVariable a System.Boolean) a, (LValueNode: LocalVariable c System.Int32) c) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Boolean) = ), (Declaration: (LValueNode: LocalVariable c System.Int32) = (Literal: System.Int32 5)), (WhileBlock: Condition: (LValueNode: LocalVariable a System.Boolean), Block: (CodeBlock: Symbols: () Nodes: ((UnaryOp: VoidOperator (Assignment: (LValueNode: LocalVariable c System.Int32) = (BinaryOp: (LValueNode: LocalVariable c System.Int32) Addition (Literal: System.Int32 1))))))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (Function: $Functors.$System_Void()(CodeBlock: Symbols: (System.Boolean a, System.Int32 c) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Boolean) = ), (Declaration: (LValueNode: LocalVariable c System.Int32) = (Literal: System.Int32 5)), (WhileBlock: Condition: (LValueNode: LocalVariable a System.Boolean), Block: (CodeBlock: Symbols: () Nodes: ((UnaryOp: VoidOperator (Assignment: (LValueNode: LocalVariable c System.Int32) = (BinaryOp: (LValueNode: LocalVariable c System.Int32) Addition (Literal: System.Int32 1))))))))))";
             TestParser(source, expected, lex);
         }
         [TestMethod, TestCategory("Parser")]
@@ -140,7 +140,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                         int c;
                     }
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (Function: $Functors.$System_Void()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: ((LValueNode: LocalVariable a System.Int32) a) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = ))), False: (CodeBlock: Symbols: ((LValueNode: LocalVariable b System.Int32) b) Nodes: ((Declaration: (LValueNode: LocalVariable b System.Int32) = ))), (ConditionBlock: Condition: (Literal: System.Boolean False), True: (CodeBlock: Symbols: ((LValueNode: LocalVariable c System.Int32) c) Nodes: ((Declaration: (LValueNode: LocalVariable c System.Int32) = ))), False: ))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (Function: $Functors.$System_Void()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: (System.Int32 a) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = ))), False: (CodeBlock: Symbols: (System.Int32 b) Nodes: ((Declaration: (LValueNode: LocalVariable b System.Int32) = ))), (ConditionBlock: Condition: (Literal: System.Boolean False), True: (CodeBlock: Symbols: (System.Int32 c) Nodes: ((Declaration: (LValueNode: LocalVariable c System.Int32) = ))), False: ))))";
             TestParser(source, expected, lex);
         }
         [TestMethod, TestCategory("Parser")]
@@ -160,7 +160,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                         return a;
 	                };
                 };";
-            string expected = @"(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b = (LValueNode: Field a System.Int32), $Functors.$System_Void$System_Int32 Main = (Function: $Functors.$System_Void$System_Int32(System.Int32 arg)(CodeBlock: Symbols: ((LValueNode: FunctionArgument arg System.Int32) arg, (LValueNode: LocalVariable a System.Int32) a, (LValueNode: LocalVariable f $Functors.$System_Int32$System_Int32$System_Single) f) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 20)), (UnaryOp: VoidOperator (Assignment: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 10))), (Declaration: (LValueNode: LocalVariable f $Functors.$System_Int32$System_Int32$System_Single) = (Function: $Functors.$System_Int32$System_Int32$System_Single(System.Int32 a, System.Single b)(CodeBlock: Symbols: ((LValueNode: FunctionArgument a System.Int32) a, (LValueNode: FunctionArgument b System.Single) b, (LValueNode: LocalVariable c System.Single) c) Nodes: ((Declaration: (LValueNode: LocalVariable c System.Single) = (BinaryOp: (LValueNode: FunctionArgument a System.Int32) Multiplication (LValueNode: FunctionArgument b System.Single))), (ReturnNode: (LValueNode: FunctionArgument a System.Int32))))))))))";
+            string expected = @"(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b = (LValueNode: Field a System.Int32), $Functors.$System_Void$System_Int32 Main = (Function: $Functors.$System_Void$System_Int32(System.Int32 arg)(CodeBlock: Symbols: (System.Int32 a, $Functors.$System_Int32$System_Int32$System_Single f) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 20)), (UnaryOp: VoidOperator (Assignment: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 10))), (Declaration: (LValueNode: LocalVariable f $Functors.$System_Int32$System_Int32$System_Single) = (Function: $Functors.$System_Int32$System_Int32$System_Single(System.Int32 a, System.Single b)(CodeBlock: Symbols: (System.Single c) Nodes: ((Declaration: (LValueNode: LocalVariable c System.Single) = (BinaryOp: (LValueNode: FunctionArgument a System.Int32) Multiplication (LValueNode: FunctionArgument b System.Single))), (ReturnNode: (LValueNode: FunctionArgument a System.Int32))))))))))";
             TestParser(source, expected, lex);
         }
         [TestMethod, TestCategory("Parser")]
@@ -175,7 +175,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     a /= 5;
                     a -= 8;
                 };";
-            string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), $Functors.$System_Void$System_Int32 Main = (Function: $Functors.$System_Void$System_Int32(System.Int32 b)(CodeBlock: Symbols: ((LValueNode: FunctionArgument b System.Int32) b) Nodes: ((UnaryOp: VoidOperator (Assignment: (LValueNode: Field a System.Int32) = (BinaryOp: (LValueNode: Field a System.Int32) Addition (LValueNode: FunctionArgument b System.Int32)))), (UnaryOp: VoidOperator (Assignment: (LValueNode: FunctionArgument b System.Int32) = (BinaryOp: (LValueNode: FunctionArgument b System.Int32) Multiplication (LValueNode: Field a System.Int32)))), (UnaryOp: VoidOperator (Assignment: (LValueNode: Field a System.Int32) = (BinaryOp: (LValueNode: Field a System.Int32) Division (Literal: System.Int32 5)))), (UnaryOp: VoidOperator (Assignment: (LValueNode: Field a System.Int32) = (BinaryOp: (LValueNode: Field a System.Int32) Subtraction (Literal: System.Int32 8))))))))";
+            string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), $Functors.$System_Void$System_Int32 Main = (Function: $Functors.$System_Void$System_Int32(System.Int32 b)(CodeBlock: Symbols: () Nodes: ((UnaryOp: VoidOperator (Assignment: (LValueNode: Field a System.Int32) = (BinaryOp: (LValueNode: Field a System.Int32) Addition (LValueNode: FunctionArgument b System.Int32)))), (UnaryOp: VoidOperator (Assignment: (LValueNode: FunctionArgument b System.Int32) = (BinaryOp: (LValueNode: FunctionArgument b System.Int32) Multiplication (LValueNode: Field a System.Int32)))), (UnaryOp: VoidOperator (Assignment: (LValueNode: Field a System.Int32) = (BinaryOp: (LValueNode: Field a System.Int32) Division (Literal: System.Int32 5)))), (UnaryOp: VoidOperator (Assignment: (LValueNode: Field a System.Int32) = (BinaryOp: (LValueNode: Field a System.Int32) Subtraction (Literal: System.Int32 8))))))))";
             TestParser(source, expected, lex);
         }
         [TestMethod, TestCategory("Parser")]
@@ -192,7 +192,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     return b;
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Int32 Main = (Function: $Functors.$System_Int32$System_Int32(System.Int32 b)(CodeBlock: Symbols: ((LValueNode: FunctionArgument b System.Int32) b) Nodes: ((ReturnNode: (LValueNode: FunctionArgument b System.Int32))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Int32 Main = (Function: $Functors.$System_Int32$System_Int32(System.Int32 b)(CodeBlock: Symbols: () Nodes: ((ReturnNode: (LValueNode: FunctionArgument b System.Int32))))))";
             TestParser(source, expected, lex);
         }
         [TestMethod, TestCategory("Parser")]
@@ -392,7 +392,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string source = @"
                 int(float) a = int(float x){return 4;};";
-            string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Single a = (Function: $Functors.$System_Int32$System_Single(System.Single x)(CodeBlock: Symbols: ((LValueNode: FunctionArgument x System.Single) x) Nodes: ((ReturnNode: (Literal: System.Int32 4))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Single a = (Function: $Functors.$System_Int32$System_Single(System.Single x)(CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 4))))))";
             TestParser(source, expected, lex);
         }
         [TestMethod, TestCategory("Parser")]

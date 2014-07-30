@@ -202,7 +202,7 @@ namespace LaborasLangCompiler.Parser.Impl
             string name = node.Value;
             if(builtNode == null)
             {
-                return (builtNode = parent.GetSymbol(name)) != null;
+                return (builtNode = parent.GetSymbol(name, node.SequencePoint)) != null;
             }
             else
             {

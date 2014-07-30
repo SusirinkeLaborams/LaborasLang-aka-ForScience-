@@ -24,7 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override LValueNodeType LValueType { get { return LValueNodeType.LocalVariable; } }
         public VariableDefinition LocalVariable { get; set; }
         public override TypeReference ReturnType { get; set; }
-        public LocalVariableNode(VariableDefinition variable, SequencePoint point)
+        public LocalVariableNode(SequencePoint point, VariableDefinition variable)
             : base(point)
         {
             LocalVariable = variable;

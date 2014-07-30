@@ -109,6 +109,9 @@
     <Compile Include="Parser\Impl\Operators\UnaryOperatorNode.cs" />
     <Compile Include="Parser\Impl\SymbolNode.cs" />
     <Compile Include="Parser\Impl\WhileBlock.cs" />
+    <Compile Include="Parser\Impl\Wrappers\ExternalField.cs" />
+    <Compile Include="Parser\Impl\Wrappers\FieldWrapper.cs" />
+    <Compile Include="Parser\Impl\Wrappers\InternalField.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParserNodeInterface.cs" />
     <Compile Include="Parser\Utils.cs" />

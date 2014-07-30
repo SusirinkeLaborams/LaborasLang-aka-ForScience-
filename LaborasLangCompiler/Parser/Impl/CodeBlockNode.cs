@@ -18,36 +18,30 @@ namespace LaborasLangCompiler.Parser.Impl
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
         public bool Returns { get; private set; }
         protected List<IParserNode> nodes;
-        protected Dictionary<string, LValueNode> symbols;
+        protected Dictionary<string, VariableDefinition> symbols;
         private IContainerNode parent;
         protected CodeBlockNode(IContainerNode parent, SequencePoint point) : base(point)
         {
             nodes = new List<IParserNode>();
-            symbols = new Dictionary<string, LValueNode>();
+            symbols = new Dictionary<string, VariableDefinition>();
             this.parent = parent;
             Returns = false;
         }
         public ClassNode GetClass() { return parent.GetClass(); }
         public FunctionDeclarationNode GetFunction() { return parent.GetFunction(); }
-        public LValueNode GetSymbol(string name)
+        public LValueNode GetSymbol(string name, SequencePoint point)
         {
-            //check node table
             if (symbols.ContainsKey(name))
-                return symbols[name];
+                return new LocalVariableNode(point, symbols[name]);
 
-            //check parent block table
-            if (parent != null)
-                return parent.GetSymbol(name);
-
-            //symbol not found
-            return null;
+            return parent.GetSymbol(name, point);
         }
         public virtual LValueNode AddVariable(TypeReference type, string name, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
                 throw new SymbolAlreadyDeclaredException(point, "Var {0} already declared", name);
-            symbols.Add(name, new LocalVariableNode(new VariableDefinition(name, type), point));
-            return symbols[name];
+            symbols.Add(name, new VariableDefinition(name, type));
+            return new LocalVariableNode(point, symbols[name]);
         }
         private void AddNode(IParserNode node)
         {
@@ -66,14 +60,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public static CodeBlockNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var instance = new CodeBlockNode(parent, parser.GetSequencePoint(lexerNode));
-            if (parent is FunctionDeclarationNode)
-            {
-                var function = (FunctionDeclarationNode)parent;
-                foreach (var arg in function.Args)
-                {
-                    instance.symbols.Add(arg.Param.Name, arg);
-                }
-            }
             foreach (var node in lexerNode.Children)
             {
                 if (node.Token.Name == Lexer.Sentence)
@@ -122,7 +108,7 @@ namespace LaborasLangCompiler.Parser.Impl
             string delim = "";
             foreach(var symbol in symbols)
             {
-                builder.Append(String.Format("{0}{1} {2}", delim, symbol.Value.ToString(), symbol.Key));
+                builder.Append(String.Format("{0}{1} {2}", delim, symbol.Value.VariableType, symbol.Key));
                 delim = ", ";
             }
             delim = "";

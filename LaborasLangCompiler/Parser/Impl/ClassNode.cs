@@ -43,21 +43,21 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             methods.Add(Tuple.Create(name, method));
         }
-        private FieldNode GetField(string name)
+        private FieldNode GetField(string name, SequencePoint point)
         {
             if (fields.ContainsKey(name))
                 return fields[name];
 
             if (parent != null)
-                return parent.GetField(name);
+                return parent.GetField(name, point);
 
             return null;
         }
         public ClassNode GetClass() { return this; }
         public FunctionDeclarationNode GetFunction() { return null; }
-        public LValueNode GetSymbol(string name)
+        public LValueNode GetSymbol(string name, SequencePoint point)
         {
-            return GetField(name);
+            return GetField(name, point);
         }
         public TypeNode FindType(string name, SequencePoint point)
         {
