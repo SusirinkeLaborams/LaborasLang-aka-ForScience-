@@ -141,7 +141,7 @@ namespace LaborasLangCompiler.ILTools.Types
 
         public TypeReference Get(AssemblyEmitter assembly)
         {
-            return AssemblyRegistry.GetType(assembly, typeDefinition.FullName);
+            return AssemblyRegistry.FindType(assembly, typeDefinition.FullName);
         }
 
         private ConstructorEmitter GetInstanceConstructor()

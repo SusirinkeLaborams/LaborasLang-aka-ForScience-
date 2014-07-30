@@ -17,7 +17,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public void TestIsAssignableTo()
         {
             var types = new Dictionary<string, TypeReference>();
-            Action<string, string> addType = (tag, typeName) => types[tag] = AssemblyRegistry.GetType(assembly, typeName);
+            Action<string, string> addType = (tag, typeName) => types[tag] = AssemblyRegistry.FindType(assembly, typeName);
 
             addType("int8", "System.SByte");
             addType("int16", "System.Int16");

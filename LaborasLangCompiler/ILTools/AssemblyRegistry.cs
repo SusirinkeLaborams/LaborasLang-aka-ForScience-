@@ -124,7 +124,7 @@ namespace LaborasLangCompiler.ILTools
 
         public static bool IsTypeKnown(string typeName)
         {
-            return GetTypeInternal(typeName) != null;
+            return FindTypeInternal(typeName) != null;
         }
 
         public static bool IsNamespaceKnown(string namespaze)
@@ -146,9 +146,9 @@ namespace LaborasLangCompiler.ILTools
             return false;
         }
 
-        public static TypeReference GetType(AssemblyEmitter assemblyScope, string typeName)
+        public static TypeReference FindType(AssemblyEmitter assemblyScope, string typeName)
         {
-            var type = GetTypeInternal(typeName);
+            var type = FindTypeInternal(typeName);
 
             if (type == null)
             {
@@ -178,7 +178,7 @@ namespace LaborasLangCompiler.ILTools
 
         public static List<MethodReference> GetMethods(AssemblyEmitter assembly, string typeName, string methodName)
         {
-            return GetMethods(assembly, GetTypeInternal(typeName), methodName);
+            return GetMethods(assembly, FindTypeInternal(typeName), methodName);
         }
 
         public static List<MethodReference> GetMethods(AssemblyEmitter assembly, TypeReference type, string methodName)
@@ -197,13 +197,13 @@ namespace LaborasLangCompiler.ILTools
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, string type,
             string methodName, IReadOnlyList<string> arguments)
         {
-            return GetCompatibleMethod(assembly, GetTypeInternal(type), methodName, arguments);
+            return GetCompatibleMethod(assembly, FindTypeInternal(type), methodName, arguments);
         }
 
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, string type,
             string methodName, IReadOnlyList<TypeReference> arguments)
         {
-            var typeRef = GetTypeInternal(type);
+            var typeRef = FindTypeInternal(type);
 
             if (typeRef == null)
             {
@@ -216,7 +216,7 @@ namespace LaborasLangCompiler.ILTools
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeReference type,
             string methodName, IReadOnlyList<string> arguments)
         {
-            var argumentTypes = arguments.Select(arg => GetTypeInternal(arg)).ToList();
+            var argumentTypes = arguments.Select(arg => FindTypeInternal(arg)).ToList();
             return GetCompatibleMethod(assembly, type, methodName, argumentTypes);
         }
 
@@ -245,7 +245,7 @@ namespace LaborasLangCompiler.ILTools
 
         public static PropertyReference GetProperty(AssemblyEmitter assembly, string typeName, string propertyName)
         {
-            return GetProperty(assembly, GetTypeInternal(typeName), propertyName);
+            return GetProperty(assembly, FindTypeInternal(typeName), propertyName);
         }
 
         public static PropertyReference GetProperty(AssemblyEmitter assembly, TypeReference type, string propertyName)
@@ -286,7 +286,7 @@ namespace LaborasLangCompiler.ILTools
 
         public static FieldReference GetField(AssemblyEmitter assembly, string typeName, string fieldName)
         {
-            return GetField(assembly, GetTypeInternal(fieldName), fieldName);
+            return GetField(assembly, FindTypeInternal(fieldName), fieldName);
         }
 
         public static FieldReference GetField(AssemblyEmitter assembly, TypeReference type, string fieldName)
@@ -312,7 +312,7 @@ namespace LaborasLangCompiler.ILTools
 
         #region Privates
 
-        private TypeDefinition GetTypeInternal(IList<TypeDefinition> types, string typeName)
+        private TypeDefinition FindTypeInternal(IList<TypeDefinition> types, string typeName)
         {
             foreach (var type in types)
             {
@@ -323,7 +323,7 @@ namespace LaborasLangCompiler.ILTools
 
                 if (type.HasNestedTypes)
                 {
-                    var nestedType = GetTypeInternal(type.NestedTypes, typeName);
+                    var nestedType = FindTypeInternal(type.NestedTypes, typeName);
                     if (nestedType != null)
                     {
                         return nestedType;
@@ -334,11 +334,11 @@ namespace LaborasLangCompiler.ILTools
             return null;
         }
 
-        private static TypeDefinition GetTypeInternal(string typeName)
+        private static TypeDefinition FindTypeInternal(string typeName)
         {
             foreach (var assembly in instance.assemblies)
             {
-                var type = instance.GetTypeInternal(assembly.MainModule.Types, typeName);
+                var type = instance.FindTypeInternal(assembly.MainModule.Types, typeName);
 
                 if (type != null)
                 {
