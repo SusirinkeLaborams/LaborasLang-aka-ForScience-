@@ -16,7 +16,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.Expression; } }
         public abstract ExpressionNodeType ExpressionType { get; }
-        public abstract TypeReference ReturnType { get; set; }
+        public abstract TypeReference ReturnType { get; }
         protected ExpressionNode(SequencePoint sequencePoint) : base(sequencePoint) { }
         public static IExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {

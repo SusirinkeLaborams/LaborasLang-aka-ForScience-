@@ -18,13 +18,14 @@ namespace LaborasLangCompiler.Parser.Impl
         public IExpressionNode ObjectInstance { get { return null; } }
         public MethodReference Function { get; private set; }
         public override RValueNodeType RValueType { get { return RValueNodeType.Function; } }
-        public override TypeReference ReturnType { get; set; }
+        public override TypeReference ReturnType { get { return header.ReturnType; } }
         private CodeBlockNode body;
         private MethodEmitter emitter;
-        public TypeReference FunctionReturnType { get; private set; }
+        public TypeReference FunctionReturnType { get { return header.FunctorReturnType; } }
         private ClassNode parent;
-        public IReadOnlyList<FunctionArgumentNode> Args;
+        public IReadOnlyList<FunctionArgumentNode> Args { get { return header.Args; } }
         private Dictionary<string, ParameterDefinition> symbols;
+        private FunctionHeader header;
         public void Emit(bool entry = false)
         {
             emitter.ParseTree(body);
@@ -52,22 +53,21 @@ namespace LaborasLangCompiler.Parser.Impl
             var header = FunctionHeader.Parse(parser, parent, lexerNode.Children[0]);
             if (name == null)
                 name = instance.parent.NewFunctionName();
-            instance.ReturnType = header.FunctionType;
-            instance.FunctionReturnType = header.ReturnType;
-            instance.Args = header.Args;
+            instance.header = header;
             instance.symbols = instance.Args.Select(a => a.Param).ToDictionary(arg => arg.Name);
             instance.body = CodeBlockNode.Parse(parser, instance, lexerNode.Children[1]);
             if (instance.FunctionReturnType.FullName != "System.Void" && !instance.body.Returns)
                 throw new ParseException(instance.SequencePoint, "Not all control paths return a value");
-            instance.emitter = new MethodEmitter(instance.parent.TypeEmitter, "$" + name, header.ReturnType, MethodAttributes.Static | MethodAttributes.Private);
+            instance.emitter = new MethodEmitter(instance.parent.TypeEmitter, "$" + name, header.FunctorReturnType, MethodAttributes.Static | MethodAttributes.Private);
             foreach (var arg in header.Args)
                 instance.emitter.AddArgument(arg.Param);
             instance.Function = instance.emitter.Get();
+            instance.parent.AddMethod(instance, name);
             return instance;
         }
         public static TypeReference ParseType(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
-            return FunctionHeader.Parse(parser, parent, lexerNode.Children[0]).FunctionType;
+            return FunctionHeader.Parse(parser, parent, lexerNode.Children[0]).ReturnType;
         }
         public override string ToString()
         {

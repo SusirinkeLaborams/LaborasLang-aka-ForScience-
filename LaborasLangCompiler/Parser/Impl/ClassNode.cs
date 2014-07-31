@@ -11,42 +11,43 @@ using System.Threading.Tasks;
 using LaborasLangCompiler.ILTools.Types;
 using LaborasLangCompiler.LexingTools;
 using Mono.Cecil.Cil;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
     class ClassNode : ParserNode, IContainerNode
     {
         public override NodeType Type { get { return NodeType.ClassNode; } }
-        private Dictionary<string, FieldDeclarationNode> fields;
+        private Dictionary<string, InternalField> fields;
         private List<string> globalImports;
-        private Dictionary<string, string> namedImports;
         private ClassNode parent;
         private Parser parser;
         public TypeEmitter TypeEmitter { get; private set; }
-        private List<Tuple<string, FunctionDeclarationNode>> methods = new List<Tuple<string,FunctionDeclarationNode>>();
+        private Dictionary<string, FunctionDeclarationNode> methods = new Dictionary<string, FunctionDeclarationNode>();
         private int lambdaCounter = 0;
-        private ClassNode(Parser parser, ClassNode parent, SequencePoint point) : base(point)
+        public ClassNode(Parser parser, ClassNode parent, SequencePoint point) : base(point)
         {
+            if (parser.Root == null)
+                parser.Root = this;
             this.parent = parent;
             this.parser = parser;
-            fields = new Dictionary<string, FieldDeclarationNode>();
+            fields = new Dictionary<string, InternalField>();
             globalImports = new List<string>();
             globalImports.Add("");
-            namedImports = new Dictionary<string, string>();
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
-        private void AddField(string name, TypeReference type, SequencePoint point)
+        private void AddField(string name, TypeReference type)
         {
-            fields.Add(name, new FieldDeclarationNode(name, type, point));
+            fields.Add(name, new InternalField(type, name));
         }
         public void AddMethod(FunctionDeclarationNode method, string name)
         {
-            methods.Add(Tuple.Create(name, method));
+            methods.Add(name, method);
         }
         private FieldNode GetField(string name, SequencePoint point)
         {
             if (fields.ContainsKey(name))
-                return fields[name];
+                return new FieldNode(null, fields[name], point);
 
             if (parent != null)
                 return parent.GetField(name, point);
@@ -107,8 +108,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public NamespaceNode FindNamespace(string name, SequencePoint point)
         {
             string namespaze = null;
-            if (namedImports.ContainsKey(name))
-                namespaze = namedImports[name];
             var namespazes = globalImports.Select(import => AssemblyRegistry.IsNamespaceKnown(import + name) ? import + name : null).Where(n => n != null);
             if (namespazes.Count() == 0)
                 return null;
@@ -129,22 +128,11 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return new NamespaceNode(namespaze, point);
         }
-        public void AddImport(string namespaze, string name, SequencePoint point)
+        public void AddImport(string namespaze, SequencePoint point)
         {
-            if(name == null)
-            {
-                if (globalImports.Contains(namespaze))
-                    throw new ParseException(point, "Namespace {0} already imported", namespaze);
-                globalImports.Add(namespaze + ".");
-            }
-            else
-            {
-                if (namedImports.ContainsKey(name))
-                    throw new ParseException(point, "Namespace under name {0} already imported", name);
-                if (namedImports.ContainsValue(namespaze))
-                    throw new ParseException(point, "Namespace {0} already imported", namespaze);
-                namedImports.Add(name, namespaze + ".");
-            }
+            if (globalImports.Contains(namespaze))
+                throw new ParseException(point, "Namespace {0} already imported", namespaze);
+            globalImports.Add(namespaze + ".");
         }
         public NamespaceNode FindNamespace(NamespaceNode left, string right, SequencePoint point)
         {
@@ -154,37 +142,26 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return null;
         }
-        private void AddFieldToEmitter(Parser parser, FieldDefinition field, IExpressionNode init)
+        private void AddFieldToEmitter(InternalField field)
         {
             if (!parser.Testing)
-                TypeEmitter.AddField(field, init);
+                TypeEmitter.AddField(field.FieldDefinition, field.Initializer);
         }
-        public static ClassNode Parse(Parser parser, ClassNode parentClass, AstNode lexerNode)
+        public void ParseDeclarations(AstNode lexerNode)
         {
-            var instance = new ClassNode(parser, parentClass, parser.GetSequencePoint(lexerNode));
-            AstNode sentence;
-
-            if (parser.Root == null)
-            {
-                parser.Root = instance;
-            }
-
-            //symbols
             foreach (var node in lexerNode.Children)
             {
                 if (node.Token.Name == Lexer.Sentence)
                 {
-                    sentence = node.Children[0];
+                    AstNode sentence = node.Children[0];
                     switch (sentence.Token.Name)
                     {
                         case Lexer.NamespaceImport:
-                            ImportNode.Parse(parser, instance, sentence);
+                            ImportNode.Parse(parser, this, sentence);
                             break;
                         case Lexer.Declaration:
-                            ParseDeclaration(parser, instance, sentence, false);
-                            break;
                         case Lexer.DeclarationAndAssignment:
-                            ParseDeclaration(parser, instance, sentence, true);
+                            ParseDeclaration(sentence);
                             break;
                         default:
                             throw new ParseException(parser.GetSequencePoint(sentence), "Import or declaration expected " + sentence.Token.Name + " received");
@@ -195,20 +172,21 @@ namespace LaborasLangCompiler.Parser.Impl
                     throw new ParseException(parser.GetSequencePoint(node), "Node Sentence expected, " + node.Token.Name + " received");
                 }
             }
-
-            //init
+        }
+        public void ParseBody(AstNode lexerNode)
+        {
             foreach (var node in lexerNode.Children)
             {
-                sentence = node.Children[0];
+                AstNode sentence = node.Children[0];
                 switch (sentence.Token.Name)
                 {
                     case Lexer.DeclarationAndAssignment:
                         IExpressionNode init = null;
-                        var field = instance.fields[parser.ValueOf(sentence.Children[1])];
+                        var field = fields[parser.ValueOf(sentence.Children[1])];
                         if (sentence.Children[2].Token.Name == Lexer.Function)
-                            init = FunctionDeclarationNode.Parse(parser, instance, sentence.Children[2], field.Name);
+                            init = FunctionDeclarationNode.Parse(parser, this, sentence.Children[2], field.Name);
                         else
-                            init = ExpressionNode.Parse(parser, instance, sentence.Children[2]);
+                            init = ExpressionNode.Parse(parser, this, sentence.Children[2]);
                         field.Initializer = init;
                         if (field.ReturnType == null)
                         {
@@ -224,60 +202,37 @@ namespace LaborasLangCompiler.Parser.Impl
                         break;
                 }
             }
-
-            //field declarations
-            foreach(var node in lexerNode.Children)
-            {
-                sentence = node.Children[0];
-                switch (sentence.Token.Name)
-                {
-                    case Lexer.Declaration:
-                    case Lexer.DeclarationAndAssignment:
-                        var field = instance.fields[parser.ValueOf(sentence.Children[1])];
-                        field.CreateFieldDefinition(FieldAttributes.Static | FieldAttributes.Private);
-                        if(field.Initializer is FunctionDeclarationNode)
-                        {
-                            instance.AddMethod((FunctionDeclarationNode)field.Initializer, field.Name);
-                        }
-                        instance.AddFieldToEmitter(parser, (FieldDefinition)field.Field, field.Initializer);
-                        break;
-                    default:
-                        break;
-                }
-            }
-            if (!parser.Testing)
-            {
-                foreach (var method in instance.methods)
-                {
-                    method.Item2.Emit(method.Item1 == "Main");
-                }
-            }
-            return instance;
         }
-        private static void ParseDeclaration(Parser parser, ClassNode klass, AstNode lexerNode, bool init)
+        public void DeclareMembers()
         {
-            var declaredType = TypeNode.Parse(parser, klass, lexerNode.Children[0]);
+            foreach(var f in fields)
+            {
+                var field = f.Value;
+                field.FieldDefinition = new FieldDefinition(field.Name, FieldAttributes.Private | FieldAttributes.Static, field.ReturnType);
+                AddFieldToEmitter(field);
+            }
+            foreach(var m in methods.Values)
+            {
+                //later
+            }
+        }
+        public void Emit()
+        {
+            foreach(var m in methods)
+            {
+                m.Value.Emit(m.Key == "Main");
+            }
+        }
+        private void ParseDeclaration(AstNode lexerNode)
+        {
+            var type = TypeNode.Parse(parser, this, lexerNode.Children[0]);
             var name = parser.ValueOf(lexerNode.Children[1]);
-            
-            if (declaredType == null && !init)
+            //nera tipo, deklaruojam funkcija
+            if(type == null && lexerNode.Children.Count > 2 && lexerNode.Children[2].Token.Name == Lexer.Function)
             {
-                throw new TypeException(parser.GetSequencePoint(lexerNode), "Type inference requires initialization");
+                type = FunctionDeclarationNode.ParseType(parser, this, lexerNode.Children[2]);
             }
-            else
-            {
-                //worst special case ever
-                //jei deklaruojam funkcija be tipo, jos tipas isparsinamas
-                //tipas reikalingas rekursijai
-                if (declaredType == null && lexerNode.Children[2].Token.Name == Lexer.Function)
-                {
-                    declaredType = FunctionDeclarationNode.ParseType(parser, klass, lexerNode.Children[2]);
-                    klass.AddField(name, declaredType, parser.GetSequencePoint(lexerNode));
-                }
-                else
-                {
-                    klass.AddField(name, declaredType, parser.GetSequencePoint(lexerNode));
-                }
-            }
+            AddField(name, type);
         }
         public string NewFunctionName()
         {

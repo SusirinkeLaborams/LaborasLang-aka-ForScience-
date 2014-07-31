@@ -15,17 +15,18 @@ namespace LaborasLangCompiler.Parser.Impl
     class MethodCallNode : RValueNode, IMethodCallNode
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.Call; } }
-        public override TypeReference ReturnType { get; set; }
+        public override TypeReference ReturnType { get { return returnType; } }
         public IReadOnlyList<IExpressionNode> Arguments { get; private set; }
         public IExpressionNode Function { get; private set; }
+
+        private TypeReference returnType;
         public MethodCallNode(IExpressionNode function, TypeReference returnType, IReadOnlyList<IExpressionNode> args, SequencePoint point)
             : base(point)
         {
             Function = function;
             Arguments = args;
-            ReturnType = returnType;
+            this.returnType = returnType;
         }
-        //tmp code kol lexer neveikia su dot
         public static new MethodCallNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             if (lexerNode.Children[0].Token.Name == Lexer.Create)

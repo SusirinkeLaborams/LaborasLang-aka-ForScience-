@@ -9,11 +9,12 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
     class ExternalField : FieldWrapper
     {
-        public FieldReference Field { get; private set; }
-        public TypeReference ReturnType { get { return Field.FieldType; } }
+        public FieldReference FieldReference { get; private set; }
+        public TypeReference ReturnType { get { return FieldReference.FieldType; } }
+        public string Name { get { return FieldReference.Name; } }
         public ExternalField(FieldReference field)
         {
-            this.Field = field;
+            this.FieldReference = field;
         }
     }
 }

@@ -9,11 +9,15 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
     class InternalField : FieldWrapper
     {
-        public FieldReference Field { get; set; }
+        public FieldReference FieldReference { get { return FieldDefinition; } }
+        public FieldDefinition FieldDefinition { get; set; }
         public TypeReference ReturnType { get; set; }
-        public InternalField(TypeReference returnType)
+        public string Name { get; private set; }
+        public IExpressionNode Initializer { get; set; }
+        public InternalField(TypeReference returnType, string name)
         {
             this.ReturnType = returnType;
+            this.Name = name;
         }
     }
 }

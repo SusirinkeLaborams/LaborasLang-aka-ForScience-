@@ -81,7 +81,11 @@ namespace LaborasLangCompiler.Parser
 
             Primitives = primitives;
 
-            ClassNode.Parse(this, null, tree);
+            Root = new ClassNode(this, null, GetSequencePoint(tree));
+            Root.ParseDeclarations(tree);
+            Root.ParseBody(tree);
+            Root.DeclareMembers();
+            Root.Emit();
         }
         public string ValueOf(AstNode node)
         {

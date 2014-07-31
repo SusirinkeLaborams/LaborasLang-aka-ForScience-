@@ -11,13 +11,13 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class FunctionHeader
     {
-        public TypeReference FunctionType { get; private set; }
-        public IReadOnlyList<FunctionArgumentNode> Args { get; private set; }
         public TypeReference ReturnType { get; private set; }
+        public IReadOnlyList<FunctionArgumentNode> Args { get; private set; }
+        public TypeReference FunctorReturnType { get; private set; }
         public static FunctionHeader Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var instance = new FunctionHeader();
-            instance.ReturnType = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
+            instance.FunctorReturnType = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
             List<FunctionArgumentNode> args = new List<FunctionArgumentNode>();
             List<TypeReference> types = new List<TypeReference>();
             for(int i = 1; i < lexerNode.Children.Count; i++)
@@ -27,7 +27,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 types.Add(arg.ReturnType);
             }
             instance.Args = args;
-            instance.FunctionType = AssemblyRegistry.GetFunctorType(parser.Assembly, instance.ReturnType, types);
+            instance.ReturnType = AssemblyRegistry.GetFunctorType(parser.Assembly, instance.FunctorReturnType, types);
             return instance;
         }
         public static FunctionArgumentNode ParseArgument(Parser parser, IContainerNode parent, AstNode lexerNode)

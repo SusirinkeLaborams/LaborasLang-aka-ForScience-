@@ -15,7 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class UnaryOperatorNode : RValueNode, IUnaryOperatorNode
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.UnaryOperator; } }
-        public override TypeReference ReturnType  { get; set; }
+        public override TypeReference ReturnType { get { return Operand.ReturnType; } }
         public UnaryOperatorNodeType UnaryOperatorType { get; private set; }
         public IExpressionNode Operand { get; private set; }
         private UnaryOperatorNode(UnaryOperatorNodeType type, IExpressionNode operand)
@@ -91,7 +91,6 @@ namespace LaborasLangCompiler.Parser.Impl
         private static UnaryOperatorNode ParseUnary(Parser parser, IExpressionNode expression, UnaryOperatorNodeType op)
         {
             var instance = new UnaryOperatorNode(op, expression);
-            instance.ReturnType = expression.ReturnType;
             switch(op)
             {
                 case UnaryOperatorNodeType.BinaryNot:
