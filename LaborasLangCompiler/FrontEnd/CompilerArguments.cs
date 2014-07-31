@@ -18,13 +18,13 @@ namespace LaborasLangCompiler.FrontEnd
 
         public static CompilerArguments Parse(string[] args)
         {
-            var sourceFiles = args.Where(x => !x.StartsWith("/", StringComparison.InvariantCultureIgnoreCase));
-            var references = args.Where(x => x.StartsWith("/ref:", StringComparison.InvariantCultureIgnoreCase));
-            var outputPaths = args.Where(x => x.StartsWith("/out:", StringComparison.InvariantCultureIgnoreCase));
-            var debugBuild = args.Any(x => x.Equals("/debug", StringComparison.InvariantCultureIgnoreCase));
-            var moduleKinds = args.Where(x => x.Equals("/console", StringComparison.InvariantCultureIgnoreCase) ||
-                                            x.Equals("/windows", StringComparison.InvariantCultureIgnoreCase) ||
-                                            x.Equals("/dll", StringComparison.InvariantCultureIgnoreCase));
+            var sourceFiles = args.Where(arg => !arg.StartsWith("/", StringComparison.InvariantCultureIgnoreCase));
+            var references = args.Where(arg => arg.StartsWith("/ref:", StringComparison.InvariantCultureIgnoreCase));
+            var outputPaths = args.Where(arg => arg.StartsWith("/out:", StringComparison.InvariantCultureIgnoreCase));
+            var debugBuild = args.Any(arg => arg.Equals("/debug", StringComparison.InvariantCultureIgnoreCase));
+            var moduleKinds = args.Where(arg => arg.Equals("/console", StringComparison.InvariantCultureIgnoreCase) ||
+                                            arg.Equals("/windows", StringComparison.InvariantCultureIgnoreCase) ||
+                                            arg.Equals("/dll", StringComparison.InvariantCultureIgnoreCase));
 
             var unknownOptions = args.Except(sourceFiles.Union(references).Union(outputPaths).Union(moduleKinds).Union(new string[] { "/debug" }));
             ParseUnknownOptions(unknownOptions);
@@ -36,7 +36,9 @@ namespace LaborasLangCompiler.FrontEnd
 
             var moduleKind = ParseModuleKinds(moduleKinds);
             var outputPath = ParseOutputPaths(outputPaths, sourceFiles, moduleKind);
-            references = references.Select(x => x.Substring(5)).Select(x => Path.Combine(ReferenceAssembliesPath, x)).Union(GetDefaultReferences());
+            references = references.Select(reference => reference.Substring(5))
+                                   .Select(dllName => Path.Combine(ReferenceAssembliesPath, dllName))
+                                   .Union(GetDefaultReferences());
 
             return new CompilerArguments(sourceFiles, references, outputPath, moduleKind, debugBuild);
         }

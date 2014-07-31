@@ -772,8 +772,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             var methodParameters = method.Parameters;
             var resolvedMethod = method.Resolve();
 
-            if (methodParameters.Count > 0 &&    // Params call
-                resolvedMethod.Parameters.Last().CustomAttributes.Any(x => x.AttributeType.FullName == "System.ParamArrayAttribute"))
+            if (method.IsParamsMethod())
             {
                 #region Params Call
 
@@ -941,7 +940,7 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Emit(IObjectCreationNode objectCreation)
         {
             var ctor = AssemblyRegistry.GetCompatibleMethod(Assembly, objectCreation.ReturnType, ".ctor",
-                objectCreation.Arguments.Select(x => x.ReturnType).ToList());
+                objectCreation.Arguments.Select(argument => argument.ReturnType).ToList());
 
             foreach (var argument in objectCreation.Arguments)
             {

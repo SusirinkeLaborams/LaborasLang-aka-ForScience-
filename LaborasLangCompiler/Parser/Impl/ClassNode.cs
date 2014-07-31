@@ -65,7 +65,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (parser.Primitives.ContainsKey(name))
                 return new TypeNode(parser.Primitives[name], point);
 
-            var types = globalImports.Select(namespaze => AssemblyRegistry.GetType(parser.Assembly, namespaze + name)).Where(t => t != null);
+            var types = globalImports.Select(namespaze => AssemblyRegistry.FindType(parser.Assembly, namespaze + name)).Where(t => t != null);
             if(types.Count() == 0)
                 return null;
             TypeReference type = null;
@@ -91,7 +91,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public TypeNode FindType(TypeNode main, string nested, SequencePoint point)
         {
-            var type = AssemblyRegistry.GetType(parser.Assembly, main.ParsedType.FullName + "." + nested);
+            var type = AssemblyRegistry.FindType(parser.Assembly, main.ParsedType.FullName + "." + nested);
             if(type != null)
                 return new TypeNode(type, point);
 
@@ -99,7 +99,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public TypeNode FindType(NamespaceNode namespaze, string name, SequencePoint point)
         {
-            var type = AssemblyRegistry.GetType(parser.Assembly, namespaze.Value + "." + name);
+            var type = AssemblyRegistry.FindType(parser.Assembly, namespaze.Value + "." + name);
             if (type != null)
                 return new TypeNode(type, point);
 

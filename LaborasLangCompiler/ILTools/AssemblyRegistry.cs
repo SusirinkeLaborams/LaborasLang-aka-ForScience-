@@ -30,14 +30,14 @@ namespace LaborasLangCompiler.ILTools
         private AssemblyRegistry(IEnumerable<string> references)
             : this()
         {
-            if (!references.Any(x => Path.GetFileName(x) == "mscorlib.dll"))
+            if (!references.Any(reference => Path.GetFileName(reference) == "mscorlib.dll"))
             {
                 throw new ArgumentException("Assembly registry must reference mscorlib!");
             }
 
             RegisterReferences(references);
 
-            mscorlib = assemblies.Single(x => x.Name.Name == "mscorlib");
+            mscorlib = assemblies.Single(assembly => assembly.Name.Name == "mscorlib");
         }
 
         public static void Create(IEnumerable<string> references)
@@ -124,7 +124,7 @@ namespace LaborasLangCompiler.ILTools
 
         public static bool IsTypeKnown(string typeName)
         {
-            return GetTypeInternal(typeName) != null;
+            return FindTypeInternal(typeName) != null;
         }
 
         public static bool IsNamespaceKnown(string namespaze)
@@ -146,9 +146,9 @@ namespace LaborasLangCompiler.ILTools
             return false;
         }
 
-        public static TypeReference GetType(AssemblyEmitter assemblyScope, string typeName)
+        public static TypeReference FindType(AssemblyEmitter assemblyScope, string typeName)
         {
-            var type = GetTypeInternal(typeName);
+            var type = FindTypeInternal(typeName);
 
             if (type == null)
             {
@@ -160,7 +160,8 @@ namespace LaborasLangCompiler.ILTools
 
         public static TypeReference GetFunctorType(AssemblyEmitter assembly, MethodReference containedMethod)
         {
-            return GetFunctorType(assembly, containedMethod.ReturnType, containedMethod.Parameters.Select(x => x.ParameterType).ToList());
+            var parameters = containedMethod.Parameters.Select(parameter => parameter.ParameterType).ToList();
+            return GetFunctorType(assembly, containedMethod.ReturnType, parameters);
         }
 
         public static TypeReference GetFunctorType(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
@@ -177,7 +178,7 @@ namespace LaborasLangCompiler.ILTools
 
         public static List<MethodReference> GetMethods(AssemblyEmitter assembly, string typeName, string methodName)
         {
-            return GetMethods(assembly, GetTypeInternal(typeName), methodName);
+            return GetMethods(assembly, FindTypeInternal(typeName), methodName);
         }
 
         public static List<MethodReference> GetMethods(AssemblyEmitter assembly, TypeReference type, string methodName)
@@ -189,19 +190,20 @@ namespace LaborasLangCompiler.ILTools
                 return new List<MethodReference>();
             }
 
-            return resolvedType.Methods.Where(x => x.Name == methodName).Select(x => ScopeToAssembly(assembly, x)).ToList<MethodReference>();
+            return resolvedType.Methods.Where(methodDef => methodDef.Name == methodName)
+                                       .Select(methodDef => ScopeToAssembly(assembly, methodDef)).ToList<MethodReference>();
         }
 
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, string type,
             string methodName, IReadOnlyList<string> arguments)
         {
-            return GetCompatibleMethod(assembly, GetTypeInternal(type), methodName, arguments.Select(x => GetTypeInternal(x)).ToList());
+            return GetCompatibleMethod(assembly, FindTypeInternal(type), methodName, arguments);
         }
 
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, string type,
             string methodName, IReadOnlyList<TypeReference> arguments)
         {
-            var typeRef = GetTypeInternal(type);
+            var typeRef = FindTypeInternal(type);
 
             if (typeRef == null)
             {
@@ -214,7 +216,8 @@ namespace LaborasLangCompiler.ILTools
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeReference type,
             string methodName, IReadOnlyList<string> arguments)
         {
-            return GetCompatibleMethod(assembly, type, methodName, arguments.Select(x => GetTypeInternal(x)).ToList());
+            var argumentTypes = arguments.Select(arg => FindTypeInternal(arg)).ToList();
+            return GetCompatibleMethod(assembly, type, methodName, argumentTypes);
         }
 
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeReference type,
@@ -224,8 +227,8 @@ namespace LaborasLangCompiler.ILTools
         }
             
         public static MethodReference GetCompatibleMethod(IEnumerable<MethodReference> methods, IReadOnlyList<TypeReference> arguments)
-            {
-            var filtered = methods.Where(x => x.MatchesArgumentList(arguments)).ToList();
+        {
+            var filtered = methods.Where(methodRef => methodRef.MatchesArgumentList(arguments)).ToList();
 
             if (filtered.Count > 1)
             {
@@ -242,7 +245,7 @@ namespace LaborasLangCompiler.ILTools
 
         public static PropertyReference GetProperty(AssemblyEmitter assembly, string typeName, string propertyName)
         {
-            return GetProperty(assembly, GetTypeInternal(typeName), propertyName);
+            return GetProperty(assembly, FindTypeInternal(typeName), propertyName);
         }
 
         public static PropertyReference GetProperty(AssemblyEmitter assembly, TypeReference type, string propertyName)
@@ -254,7 +257,7 @@ namespace LaborasLangCompiler.ILTools
                 return null;
             }
 
-            return resolvedType.Properties.SingleOrDefault(x => x.Name == propertyName);
+            return resolvedType.Properties.SingleOrDefault(property => property.Name == propertyName);
         }
 
         public static MethodReference GetPropertyGetter(AssemblyEmitter assembly, PropertyReference property)
@@ -283,7 +286,7 @@ namespace LaborasLangCompiler.ILTools
 
         public static FieldReference GetField(AssemblyEmitter assembly, string typeName, string fieldName)
         {
-            return GetField(assembly, GetTypeInternal(fieldName), fieldName);
+            return GetField(assembly, FindTypeInternal(fieldName), fieldName);
         }
 
         public static FieldReference GetField(AssemblyEmitter assembly, TypeReference type, string fieldName)
@@ -295,7 +298,7 @@ namespace LaborasLangCompiler.ILTools
                 return null;
             }
 
-            var field = resolvedType.Fields.SingleOrDefault(x => x.Name == fieldName);
+            var field = resolvedType.Fields.SingleOrDefault(fieldDef => fieldDef.Name == fieldName);
 
             if (field == null)
             {
@@ -309,7 +312,7 @@ namespace LaborasLangCompiler.ILTools
 
         #region Privates
 
-        private TypeDefinition GetTypeInternal(IList<TypeDefinition> types, string typeName)
+        private TypeDefinition FindTypeInternal(IList<TypeDefinition> types, string typeName)
         {
             foreach (var type in types)
             {
@@ -320,7 +323,7 @@ namespace LaborasLangCompiler.ILTools
 
                 if (type.HasNestedTypes)
                 {
-                    var nestedType = GetTypeInternal(type.NestedTypes, typeName);
+                    var nestedType = FindTypeInternal(type.NestedTypes, typeName);
                     if (nestedType != null)
                     {
                         return nestedType;
@@ -331,11 +334,11 @@ namespace LaborasLangCompiler.ILTools
             return null;
         }
 
-        private static TypeDefinition GetTypeInternal(string typeName)
+        private static TypeDefinition FindTypeInternal(string typeName)
         {
             foreach (var assembly in instance.assemblies)
             {
-                var type = instance.GetTypeInternal(assembly.MainModule.Types, typeName);
+                var type = instance.FindTypeInternal(assembly.MainModule.Types, typeName);
 
                 if (type != null)
                 {
@@ -348,22 +351,26 @@ namespace LaborasLangCompiler.ILTools
 
         private static int CompareMatches(IReadOnlyList<TypeReference> arguments, MethodReference a, MethodReference b)
         {
-            if (a.Parameters.Select(x => x.ParameterType.FullName).SequenceEqual(arguments.Select(x => x.FullName)))
+            var argumentNames = arguments.Select(arg => arg.FullName);
+
+            if (a.Parameters.Select(parameter => parameter.ParameterType.FullName).SequenceEqual(argumentNames))
             {
                 return 1;
             }
 
-            if (b.Parameters.Select(x => x.ParameterType.FullName).SequenceEqual(arguments.Select(x => x.FullName)))
+            if (b.Parameters.Select(parameter => parameter.ParameterType.FullName).SequenceEqual(argumentNames))
             {
                 return -1;
             }
 
             List<TypeReference> aParameters, bParameters;
-            
-            var aIsParamsMethod = a.Resolve().Parameters.Last().CustomAttributes.Any(x => x.AttributeType.FullName == "System.ParamArrayAttribute");
+
+            var aIsParamsMethod = a.IsParamsMethod();
+            var bIsParamsMethod = b.IsParamsMethod();
+
             if (aIsParamsMethod)
             {
-                aParameters = a.Parameters.Take(a.Parameters.Count - 1).Select(x => x.ParameterType).ToList();
+                aParameters = a.Parameters.Take(a.Parameters.Count - 1).Select(parameter => parameter.ParameterType).ToList();
 
                 var paramsType = a.Parameters.Last().ParameterType;
                 for (int i = 0; i < arguments.Count - a.Parameters.Count + 1; i++)
@@ -373,13 +380,12 @@ namespace LaborasLangCompiler.ILTools
             }
             else
             {
-                aParameters = a.Parameters.Select(x => x.ParameterType).ToList();
+                aParameters = a.Parameters.Select(parameter => parameter.ParameterType).ToList();
             }
-
-            var bIsParamsMethod = b.Resolve().Parameters.Last().CustomAttributes.Any(x => x.AttributeType.FullName == "System.ParamArrayAttribute");
+            
             if (bIsParamsMethod)
             {
-                bParameters = b.Parameters.Take(b.Parameters.Count - 1).Select(x => x.ParameterType).ToList();
+                bParameters = b.Parameters.Take(b.Parameters.Count - 1).Select(parameter => parameter.ParameterType).ToList();
 
                 var paramsType = b.Parameters.Last().ParameterType.GetElementType();
                 for (int i = 0; i < arguments.Count - b.Parameters.Count + 1; i++)
@@ -389,7 +395,7 @@ namespace LaborasLangCompiler.ILTools
             }
             else
             {
-                bParameters = b.Parameters.Select(x => x.ParameterType).ToList();
+                bParameters = b.Parameters.Select(parameter => parameter.ParameterType).ToList();
             }
 
             for (int i = 0; i < arguments.Count; i++)

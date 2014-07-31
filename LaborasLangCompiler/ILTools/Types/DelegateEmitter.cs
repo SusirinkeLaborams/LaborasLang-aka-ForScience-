@@ -28,7 +28,7 @@ namespace LaborasLangCompiler.ILTools
         }
 
         private DelegateEmitter(AssemblyEmitter assembly, TypeDefinition declaringType, TypeReference returnType, IReadOnlyList<TypeReference> arguments) :
-            base(assembly, ComputeName(returnType, arguments), "", DelegateTypeAttributes, AssemblyRegistry.GetType(assembly, "System.MulticastDelegate"), false)
+            base(assembly, ComputeName(returnType, arguments), "", DelegateTypeAttributes, AssemblyRegistry.FindType(assembly, "System.MulticastDelegate"), false)
         {
             if (declaringType == null)
             {
