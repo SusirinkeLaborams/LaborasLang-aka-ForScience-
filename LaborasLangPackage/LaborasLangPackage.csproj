@@ -121,13 +121,13 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Code\EditorFactory.cs" />
-    <Compile Include="Code\LaborasLangAuthoringScope.cs" />
-    <Compile Include="Code\LaborasLangConstants.cs" />
-    <Compile Include="Code\LaborasLangPreferences.cs" />
-    <Compile Include="Code\LaborasLangProjectNode.cs" />
-    <Compile Include="Code\LaborasLangScanner.cs" />
-    <Compile Include="Code\LaborasLangService.cs" />
+    <Compile Include="Code\CoreExtension\EditorFactory.cs" />
+    <Compile Include="Code\CoreExtension\LaborasLangAuthoringScope.cs" />
+    <Compile Include="Code\CoreExtension\LaborasLangConstants.cs" />
+    <Compile Include="Code\CoreExtension\LaborasLangPreferences.cs" />
+    <Compile Include="Code\CoreExtension\LaborasLangProjectNode.cs" />
+    <Compile Include="Code\CoreExtension\LaborasLangScanner.cs" />
+    <Compile Include="Code\CoreExtension\LaborasLangService.cs" />
     <EmbeddedResource Include="Resources\Project.bmp" />
     <ZipProject Include="Templates\Projects\Desktop\ConsoleApplication\ConsoleApplication.llproj">
       <OutputSubPath>Desktop</OutputSubPath>
@@ -151,14 +151,15 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Compile Include="Code\Guids.cs" />
-    <Compile Include="Code\LaborasLangProjectFactory.cs" />
+    <Compile Include="Code\CoreExtension\Guids.cs" />
+    <Compile Include="Code\CoreExtension\LaborasLangProjectFactory.cs" />
+    <Compile Include="Code\MSBuildTasks\BuildTask.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Code\LaborasLangPackagePackage.cs" />
+    <Compile Include="Code\CoreExtension\LaborasLangPackagePackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +175,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="BuildTargets\LaborasLang.Build.targets">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -205,6 +210,12 @@
   <ItemGroup>
     <Content Include="Resources\File.ico" />
     <Content Include="Resources\Package.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LaborasLangCompiler\LaborasLangCompiler.csproj">
+      <Project>{977bd47d-3ed4-499a-b9ba-89aec2eb0f7a}</Project>
+      <Name>LaborasLangCompiler</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>

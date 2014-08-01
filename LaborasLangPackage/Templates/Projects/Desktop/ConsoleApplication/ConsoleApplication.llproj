@@ -4,22 +4,28 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>$guid1$</ProjectGuid>
     <OutputType>Console</OutputType>
-    <OutputPath>bin\$(Configuration)</OutputPath>
     <AssemblyName>$safeprojectname$</AssemblyName>
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <OutputPath>bin\Debug\</OutputPath>
+    <EnableOptimizations>false</EnableOptimizations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <OutputPath>bin\Release\</OutputPath>
+    <EnableOptimizations>true</EnableOptimizations>
   </PropertyGroup>
+  
   <ItemGroup>
-    <Reference Include="mscorlib" />
+    <Reference Include="mscorlib.dll" />
   </ItemGroup>
+  
   <ItemGroup>
     <Compile Include="$safeprojectname$.ll" />
   </ItemGroup>
+
+  <Import Project="$(LaborasLangPackagePath)\BuildTargets\LaborasLang.Build.targets" />
+
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">

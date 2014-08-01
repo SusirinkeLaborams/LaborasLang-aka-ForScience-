@@ -2,7 +2,7 @@
 // MUST match guids.h
 using System;
 
-namespace LaborasLangPackage
+namespace LaborasLangPackage.CoreExtension
 {
     static class GuidList
     {
