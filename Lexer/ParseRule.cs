@@ -10,6 +10,7 @@ namespace Lexer
     {
         One,
         OneOrMore,
+        ZeroOrMore,
     }
 
     struct Condition

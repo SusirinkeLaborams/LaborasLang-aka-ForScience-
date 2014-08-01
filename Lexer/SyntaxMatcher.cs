@@ -212,7 +212,7 @@ namespace Lexer
         {
             var tokensConsumed = 0;
 
-            Tuple<AstNode, int> matchedNode = Match(tokensConsumed, new Condition[]{new Condition(TokenType.StatementNode, ConditionType.OneOrMore)}.ToList());
+            Tuple<AstNode, int> matchedNode = Match(tokensConsumed, new Condition[]{new Condition(TokenType.StatementNode, ConditionType.ZeroOrMore)}.ToList());
             if (matchedNode.Item1 != null)
             {
                 matchedNode.Item1.Type = TokenType.RootNode;
@@ -233,7 +233,6 @@ namespace Lexer
             int tokensConsumed = 0;
             foreach(var token in rule)
             {
-                // First match is required
                 if(token.Token.IsTerminal())
                 {
                     if (m_Source[sourceOffset + tokensConsumed].Type == token.Token)
@@ -243,7 +242,10 @@ namespace Lexer
                     }
                     else
                     {
-                        return new Tuple<AstNode, int>(null, 0);
+                        if (token.Type != ConditionType.ZeroOrMore)
+                        {
+                            return new Tuple<AstNode, int>(null, 0);
+                        }
                     }
                 }
                 else
@@ -271,12 +273,15 @@ namespace Lexer
                     }
                     if(!matchFound)
                     {
-                        return new Tuple<AstNode, int>(null, 0);
+                        if (token.Type != ConditionType.ZeroOrMore)
+                        {
+                            return new Tuple<AstNode, int>(null, 0);
+                        }
                     }
                 }
                 
                 // Second match for same token is optional, it should not return return on failure as it would discard first result, just stop matching
-                if (token.Type == ConditionType.OneOrMore)
+                if (token.Type == ConditionType.OneOrMore || token.Type == ConditionType.ZeroOrMore)
                 {
                     while (sourceOffset + tokensConsumed < m_Source.Count)
                     {
@@ -329,6 +334,11 @@ namespace Lexer
         private Condition OneOrMore(Condition c)
         {
             return new Condition(c, ConditionType.OneOrMore);
+        }
+
+        private Condition ZeroOrMore(Condition c)
+        {
+            return new Condition(c, ConditionType.ZeroOrMore);
         }
     }
 }
