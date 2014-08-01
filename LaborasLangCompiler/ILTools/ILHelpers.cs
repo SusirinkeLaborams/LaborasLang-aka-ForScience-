@@ -185,7 +185,7 @@ namespace LaborasLangCompiler.ILTools
         {
             var methodParameters = method.Resolve().Parameters; // Resolve is needed or otherwise we will not know methods parameter attributes
 
-            // Doesn't match if parameter count doesn't match and either method has no parameters, or last parameter is neither params, not default one.
+            // Doesn't match if parameter count doesn't match and either method has no parameters, or last parameter is neither params, nor default one.
             if (methodParameters.Count != desiredParameters.Count &&
                 (!method.HasParameters || (!method.IsParamsMethod() && (methodParameters.Last().Attributes & ParameterAttributes.HasDefault) == 0)))
             {
