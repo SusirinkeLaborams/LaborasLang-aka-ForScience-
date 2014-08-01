@@ -207,10 +207,6 @@ namespace LaborasLangCompiler.Parser.Impl
                 field.FieldDefinition = new FieldDefinition(field.Name, FieldAttributes.Private | FieldAttributes.Static, field.ReturnType);
                 AddFieldToEmitter(field);
             }
-            foreach(var m in methods.Values)
-            {
-                //later
-            }
         }
         public void Emit()
         {
