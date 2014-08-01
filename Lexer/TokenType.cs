@@ -85,7 +85,6 @@ namespace Lexer
         New,
         Null,
         Namespace,
-        Operator,
         Out,
         Override,
         Protected,
@@ -133,7 +132,11 @@ namespace Lexer
         FunctionDeclarationArgument,
         FunctionBody,
 
-        WhileLoop
+        WhileLoop,
+
+        Operator,
+        ArithmeticSubnode,
+        ArithmeticNode,
 
     }
 

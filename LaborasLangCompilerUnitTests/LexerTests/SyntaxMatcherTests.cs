@@ -26,6 +26,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
 int a;
 int b;
 a = b;
+a = 5;
 ";
             ExecuteTest(source);
         }

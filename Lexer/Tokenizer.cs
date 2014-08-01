@@ -676,8 +676,6 @@ namespace Lexer
                     return TokenType.Null;
                 case "namespace":
                     return TokenType.Namespace;
-                case "operator":
-                    return TokenType.Operator;
                 case "out":
                     return TokenType.Out;
                 case "override":

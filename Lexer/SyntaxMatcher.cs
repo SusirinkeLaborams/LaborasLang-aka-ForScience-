@@ -127,6 +127,8 @@ namespace Lexer
         private Condition FunctionDeclarationArgument { get { return TokenType.FunctionDeclarationArgument; } }
         private Condition FunctionBody { get { return TokenType.FunctionBody; } }
         private Condition WhileLoop { get { return TokenType.WhileLoop; } }
+        private Condition ArithmeticNode { get { return TokenType.ArithmeticNode; } }
+        private Condition ArithmeticSubnode { get { return TokenType.ArithmeticSubnode; } }
         #endregion
 
         public SyntaxMatcher(IEnumerable<Token> sourceTokens)
@@ -163,16 +165,21 @@ namespace Lexer
                     LeftCurlyBracket + OneOrMore(StatementNode) + RightCurlyBracket,
                     LeftCurlyBracket + RightCurlyBracket),
 
-                new ParseRule(Value,                    
+                new ParseRule(Value,  
                     RValue,
-                    LValue),
+                    LValue,                                      
+                    ArithmeticNode),
 
                 new ParseRule(LValue,
                     FullSymbol),
  
                 new ParseRule(RValue,                    
                     FunctionCall,
-                    FullSymbol),
+                    FullSymbol,
+                    Float,
+                    Integer,
+                    Double,
+                    Long),
 
                 new ParseRule(FunctionCall,
                     FullSymbol + LeftBracket + RightBracket,
@@ -196,7 +203,16 @@ namespace Lexer
 
 
                 new ParseRule(WhileLoop,
-                    While + LeftBracket + Value + RightBracket + StatementNode)
+                    While + LeftBracket + Value + RightBracket + StatementNode),
+
+                new ParseRule(Operator,
+                    Plus, Minus, PlusPlus, MinusMinus, Multiply, Divide, Remainder, BitwiseXor, BitwiseOr, BitwiseComplement, BitwiseXor, Or, And, BitwiseAnd, Not, LeftBracket, RightBracket, LeftShift, RightShift),
+
+                new ParseRule(ArithmeticNode,
+                    OneOrMore(ArithmeticSubnode)),
+
+                new ParseRule(ArithmeticSubnode,
+                     ZeroOrMore(Operator) + RValue + ZeroOrMore(Operator)),
                 #endregion
             };
 
