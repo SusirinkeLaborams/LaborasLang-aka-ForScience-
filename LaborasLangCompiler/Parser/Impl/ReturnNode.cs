@@ -26,7 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 instance.Expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
                 retType = instance.Expression.ReturnType;
             }
-            var functionReturn = parent.GetFunction().FunctionReturnType;
+            var functionReturn = parent.GetFunction().MethodReturnType;
             if (!retType.IsAssignableTo(functionReturn))
                 throw new TypeException(instance.SequencePoint, "Function returns {0}, cannot return {1}",
                     functionReturn, retType);

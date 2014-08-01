@@ -14,10 +14,11 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         public TypeReference ReturnType { get; set; }
         public string Name { get; private set; }
         public IExpressionNode Initializer { get; set; }
-        public InternalField(TypeReference returnType, string name)
+        public InternalField(TypeReference returnType, string name, IExpressionNode init = null)
         {
             this.ReturnType = returnType;
             this.Name = name;
+            this.Initializer = init;
         }
     }
 }

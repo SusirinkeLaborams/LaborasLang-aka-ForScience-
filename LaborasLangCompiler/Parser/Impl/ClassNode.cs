@@ -36,10 +36,6 @@ namespace LaborasLangCompiler.Parser.Impl
             globalImports.Add("");
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
-        private void AddField(string name, TypeReference type)
-        {
-            fields.Add(name, new InternalField(type, name));
-        }
         public void AddMethod(FunctionDeclarationNode method, string name)
         {
             methods.Add(name, method);
@@ -181,10 +177,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 switch (sentence.Token.Name)
                 {
                     case Lexer.DeclarationAndAssignment:
-                        IExpressionNode init = null;
                         var field = fields[parser.ValueOf(sentence.Children[1])];
+                        var init = field.Initializer;
                         if (sentence.Children[2].Token.Name == Lexer.Function)
-                            init = FunctionDeclarationNode.Parse(parser, this, sentence.Children[2], field.Name);
+                            ((FunctionDeclarationNode)field.Initializer).ParseBody(sentence.Children[2].Children[1]);
                         else
                             init = ExpressionNode.Parse(parser, this, sentence.Children[2]);
                         field.Initializer = init;
@@ -220,23 +216,27 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             foreach(var m in methods)
             {
-                m.Value.Emit(m.Key == "Main");
+                m.Value.Emit(m.Key == "$Main");
             }
         }
         private void ParseDeclaration(AstNode lexerNode)
         {
             var type = TypeNode.Parse(parser, this, lexerNode.Children[0]);
             var name = parser.ValueOf(lexerNode.Children[1]);
+            IExpressionNode init = null;
             //nera tipo, deklaruojam funkcija
-            if(type == null && lexerNode.Children.Count > 2 && lexerNode.Children[2].Token.Name == Lexer.Function)
+            if(lexerNode.Children.Count > 2 && lexerNode.Children[2].Token.Name == Lexer.Function)
             {
-                type = FunctionDeclarationNode.ParseType(parser, this, lexerNode.Children[2]);
+                var initNode = lexerNode.Children[2];
+                init = new FunctionDeclarationNode(parser, this, parser.GetSequencePoint(initNode), initNode.Children[0], "$" + name);
+                if (type == null)
+                    type = init.ReturnType;
             }
-            AddField(name, type);
+            fields.Add(name, new InternalField(type, name, init));
         }
         public string NewFunctionName()
         {
-            return "Lambda_" + lambdaCounter++.ToString();
+            return "$Lambda_" + lambdaCounter++.ToString();
         }
         public override string ToString()
         {
