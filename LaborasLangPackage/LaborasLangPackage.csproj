@@ -154,6 +154,7 @@
     <Compile Include="Code\CoreExtension\Guids.cs" />
     <Compile Include="Code\CoreExtension\LaborasLangProjectFactory.cs" />
     <Compile Include="Code\MSBuildTasks\BuildTask.cs" />
+    <Compile Include="Code\MSBuildTasks\CleanTask.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

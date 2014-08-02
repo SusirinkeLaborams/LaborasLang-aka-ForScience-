@@ -31,12 +31,19 @@ namespace LaborasLangPackage.MSBuildTasks
         [Required]
         public bool EnableOptimizations { get; set; }
 
+        private string TargetExtension { get; set; }
+
         public override bool Execute()
         {
-            string compilerOutput;
             var compilerPath = Path.Combine(ToolsetPath, "LaborasLangCompiler.exe");
+            bool success = RunExecutable(compilerPath, GetCompilerArgs());
 
-            return RunExecutable(compilerPath, GetCompilerArgs());
+            if (success)
+            {
+                Log.LogMessage(MessageImportance.High, "{0} -> {1}", AssemblyName, Path.Combine(OutputPath, AssemblyName + TargetExtension));
+            }
+
+            return success;
         }
 
         private bool RunExecutable(string exe, IEnumerable<string> args)
@@ -75,8 +82,8 @@ namespace LaborasLangPackage.MSBuildTasks
                 args.Add("/ref:" + reference);
             }
 
-            var extension = OutputType.ToLowerInvariant() == "library" ? ".dll" : ".exe";
-            args.Add("/out:" + Path.Combine(OutputPath, AssemblyName + extension));
+            TargetExtension = OutputType.ToLowerInvariant() == "library" ? ".dll" : ".exe";
+            args.Add("/out:" + Path.Combine(OutputPath, AssemblyName + TargetExtension));
             args.Add("/" + OutputType);
 
             if (!EnableOptimizations)
