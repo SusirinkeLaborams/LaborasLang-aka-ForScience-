@@ -42,8 +42,17 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
         public static void Run(string targetAssembly)
         {
-            var arguments = string.Format(@"/verbose /hresult /ignore={1} ""{0}""", targetAssembly,
-                string.Join(",", CodesToIgnore.Select(errorCode => errorCode.ToString("X"))));
+            string arguments;
+
+            if (CodesToIgnore.Length > 0)
+            {
+                arguments = string.Format(@"/verbose /hresult /ignore={1} ""{0}""", targetAssembly,
+                    string.Join(",", CodesToIgnore.Select(errorCode => errorCode.ToString("X"))));
+            }
+            else
+            {
+                arguments = string.Format(@"/verbose /hresult ""{0}""", targetAssembly);
+            }
 
             var startInfo = new ProcessStartInfo(PEVerifyPath, arguments);
             startInfo.UseShellExecute = false;
