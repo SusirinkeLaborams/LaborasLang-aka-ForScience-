@@ -131,6 +131,7 @@ namespace Lexer
         private Condition ArithmeticSubnode { get { return TokenType.ArithmeticSubnode; } }
         private Condition TypeArgument { get { return TokenType.TypeArgument; } }
         private Condition Function { get { return TokenType.Function; } }
+        private Condition ConditionalSentence { get { return TokenType.ConditionalSentence; } }
         #endregion
 
         public SyntaxMatcher(IEnumerable<Token> sourceTokens)
@@ -145,7 +146,10 @@ namespace Lexer
                     DeclarationNode,
                     AssignmentNode,
                     CodeBlockNode,
-                    WhileLoop),
+                    WhileLoop,
+                    Return + Value + EndOfLine,
+                    ConditionalSentence
+                    ),
             
                 new ParseRule(DeclarationNode,
                     OneOrMore(VariableModifier) + Type + FullSymbol + EndOfLine,
@@ -231,6 +235,10 @@ namespace Lexer
                 new ParseRule(ArithmeticSubnode,
                     RValue,
                     Operator),
+
+                new ParseRule(ConditionalSentence,
+                    If + LeftBracket + Value + RightBracket + StatementNode + Else + StatementNode,
+                    If + LeftBracket + Value + RightBracket + StatementNode),
                 #endregion
             };
 
@@ -269,7 +277,14 @@ namespace Lexer
             {
                 if(token.Token.IsTerminal())
                 {
-                    if (m_Source[sourceOffset + tokensConsumed].Type == token.Token)
+                    if(sourceOffset + tokensConsumed >= m_Source.Count)
+                    {
+                        if (token.Type != ConditionType.ZeroOrMore)
+                        {
+                            return new Tuple<AstNode, int>(null, 0);
+                        }
+                    }
+                    else if (m_Source[sourceOffset + tokensConsumed].Type == token.Token)
                     {
                         node.AddTerminal(m_Source[sourceOffset + tokensConsumed]);
                         tokensConsumed++; 

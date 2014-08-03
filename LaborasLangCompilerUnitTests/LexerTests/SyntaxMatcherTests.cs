@@ -134,6 +134,27 @@ a = 5;
             };";
             ExecuteTest(source);
         }
+        
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void IfTest()
+        {
+            var source = @"
+            if(somehting) 
+            {
+                stuff();
+            }
+            else 
+            {
+            stuff2();
+            }
+
+            if(something)
+            {
+                stuff();
+            }
+            ";
+            ExecuteTest(source);
+        }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestIntegerLiteralToken()

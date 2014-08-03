@@ -140,6 +140,8 @@ namespace Lexer
         ArithmeticNode,
 
         Function,
+
+        ConditionalSentence,
     }
 
     public static class TokenInfo
