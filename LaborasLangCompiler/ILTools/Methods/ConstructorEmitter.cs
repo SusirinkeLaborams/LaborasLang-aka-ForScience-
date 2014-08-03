@@ -12,15 +12,19 @@ namespace LaborasLangCompiler.ILTools.Methods
 {
     internal class ConstructorEmitter : MethodEmitter
     {
-        private const MethodAttributes InstanceAttributes = MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
+        private const MethodAttributes InstanceAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
         private const MethodAttributes StaticAttributes = MethodAttributes.Private | MethodAttributes.Static | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
         private readonly bool isStatic;
 
         private List<Instruction> epilogue = new List<Instruction>();
         
         public ConstructorEmitter(TypeEmitter declaringType, bool isStatic) :
-            base(declaringType, isStatic ? ".cctor" : ".ctor",
-            declaringType.Assembly.TypeToTypeReference(typeof(void)), isStatic ? StaticAttributes : InstanceAttributes)
+            this(declaringType, isStatic, isStatic ? StaticAttributes : InstanceAttributes)
+        {
+        }
+
+        public ConstructorEmitter(TypeEmitter declaringType, bool isStatic, MethodAttributes attributes) :
+            base(declaringType, isStatic ? ".cctor" : ".ctor", declaringType.Assembly.TypeToTypeReference(typeof(void)), attributes)
         {
             this.isStatic = isStatic;
 

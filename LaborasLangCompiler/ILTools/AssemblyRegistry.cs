@@ -16,6 +16,7 @@ namespace LaborasLangCompiler.ILTools
         private HashSet<string> assemblyPaths;             // Keep assembly paths to prevent from registering single assembly twice
         private List<AssemblyDefinition> assemblies;
         private Dictionary<string, TypeDefinition> functorTypes;
+        private Dictionary<KeyValuePair<TypeReference, MethodReference>, TypeDefinition> functorImplementationTypes;
         private AssemblyDefinition mscorlib;
 
         private AssemblyRegistry()
@@ -25,6 +26,7 @@ namespace LaborasLangCompiler.ILTools
             assemblyPaths = new HashSet<string>();
             assemblies = new List<AssemblyDefinition>();
             functorTypes = new Dictionary<string, TypeDefinition>();
+            functorImplementationTypes = new Dictionary<KeyValuePair<TypeReference, MethodReference>, TypeDefinition>();
         }
 
         private AssemblyRegistry(IEnumerable<string> references)
@@ -170,15 +172,51 @@ namespace LaborasLangCompiler.ILTools
 
             if (!instance.functorTypes.ContainsKey(name))
             {
-                instance.functorTypes.Add(name, FunctorTypeEmitter.Create(assembly, returnType, arguments));
+                instance.functorTypes.Add(name, FunctorBaseTypeEmitter.Create(assembly, returnType, arguments));
             }
 
             return instance.functorTypes[name];
         }
 
+        public static TypeReference GetImplementationFunctorType(AssemblyEmitter assembly, TypeEmitter declaringType, MethodReference targetMethod)
+        {
+            return GetImplementationFunctorType(assembly, declaringType.Get(assembly), targetMethod);
+        }
+
+        public static TypeReference GetImplementationFunctorType(AssemblyEmitter assembly, TypeReference declaringType, MethodReference targetMethod)
+        {
+            var key = new KeyValuePair<TypeReference, MethodReference>(declaringType, targetMethod);
+
+            if (!instance.functorImplementationTypes.ContainsKey(key))
+            {
+                instance.functorImplementationTypes.Add(key, FunctorImplementationTypeEmitter.Create(assembly, declaringType, targetMethod));
+            }
+
+            return instance.functorImplementationTypes[key];
+        }
+
+        public static MethodReference GetMethod(AssemblyEmitter assembly, string typeName, string methodName)
+        {
+            return GetMethods(assembly, FindTypeInternal(typeName), methodName).Single();
+        }
+
+        public static MethodReference GetMethod(AssemblyEmitter assembly, TypeEmitter type, string methodName)
+        {
+            return GetMethods(assembly, type.Get(assembly), methodName).Single();
+        }
+
+        public static MethodReference GetMethod(AssemblyEmitter assembly, TypeReference type, string methodName)
+        {
+            return GetMethods(assembly, type, methodName).Single();
+        }
+
         public static List<MethodReference> GetMethods(AssemblyEmitter assembly, string typeName, string methodName)
         {
             return GetMethods(assembly, FindTypeInternal(typeName), methodName);
+        }
+        public static List<MethodReference> GetMethods(AssemblyEmitter assembly, TypeEmitter type, string methodName)
+        {
+            return GetMethods(assembly, type.Get(assembly), methodName);
         }
 
         public static List<MethodReference> GetMethods(AssemblyEmitter assembly, TypeReference type, string methodName)
@@ -200,6 +238,12 @@ namespace LaborasLangCompiler.ILTools
             return GetCompatibleMethod(assembly, FindTypeInternal(type), methodName, arguments);
         }
 
+        public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeEmitter type,
+            string methodName, IReadOnlyList<string> arguments)
+        {
+            return GetCompatibleMethod(assembly, type.Get(assembly), methodName, arguments);
+        }
+
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, string type,
             string methodName, IReadOnlyList<TypeReference> arguments)
         {
@@ -211,6 +255,11 @@ namespace LaborasLangCompiler.ILTools
             }
 
             return GetCompatibleMethod(assembly, typeRef, methodName, arguments);
+        }
+        public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeEmitter type,
+            string methodName, IReadOnlyList<TypeReference> arguments)
+        {
+            return GetCompatibleMethod(assembly, type.Get(assembly), methodName, arguments);
         }
 
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeReference type,
@@ -246,6 +295,11 @@ namespace LaborasLangCompiler.ILTools
         public static PropertyReference GetProperty(AssemblyEmitter assembly, string typeName, string propertyName)
         {
             return GetProperty(assembly, FindTypeInternal(typeName), propertyName);
+        }
+
+        public static PropertyReference GetProperty(AssemblyEmitter assembly, TypeEmitter type, string propertyName)
+        {
+            return GetProperty(assembly, type.Get(assembly), propertyName);
         }
 
         public static PropertyReference GetProperty(AssemblyEmitter assembly, TypeReference type, string propertyName)
@@ -287,6 +341,10 @@ namespace LaborasLangCompiler.ILTools
         public static FieldReference GetField(AssemblyEmitter assembly, string typeName, string fieldName)
         {
             return GetField(assembly, FindTypeInternal(fieldName), fieldName);
+        }
+        public static FieldReference GetField(AssemblyEmitter assembly, TypeEmitter type, string fieldName)
+        {
+            return GetField(assembly, type.Get(assembly), fieldName);
         }
 
         public static FieldReference GetField(AssemblyEmitter assembly, TypeReference type, string fieldName)

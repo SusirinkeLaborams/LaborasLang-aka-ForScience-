@@ -2052,7 +2052,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         [TestMethod, TestCategory("IL Tests")]
         public void TestCanEmit_FunctorDefinition()
         {
-            FunctorTypeEmitter.Create(assemblyEmitter, assemblyEmitter.TypeToTypeReference(typeof(void)), new List<TypeReference>());
+            FunctorBaseTypeEmitter.Create(assemblyEmitter, assemblyEmitter.TypeToTypeReference(typeof(void)), new List<TypeReference>());
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -2066,13 +2066,32 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         [TestMethod, TestCategory("IL Tests")]
         public void TestCanEmit_FunctorWithReturnTypeAndArguments()
         {
-            FunctorTypeEmitter.Create(assemblyEmitter, assemblyEmitter.TypeToTypeReference(typeof(int)),
-                new List<TypeReference>()
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
+            var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
+            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+
+            var targetMethod = new MethodEmitter(typeEmitter, "MethodWithArgs", intType, MethodAttributes.Static | MethodAttributes.Private);
+            targetMethod.AddArgument(boolType, "boolArg");
+            targetMethod.AddArgument(floatType, "floatArg");
+            targetMethod.AddArgument(stringType, "stringArg");
+
+            targetMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
                 {
-                    assemblyEmitter.TypeToTypeReference(typeof(bool)),
-                    assemblyEmitter.TypeToTypeReference(typeof(float)),
-                    assemblyEmitter.TypeToTypeReference(typeof(string)),
-                });
+                    new ReturnNode()
+                    {
+                        Expression = new LiteralNode()
+                        {
+                            ReturnType = intType,
+                            Value = -1
+                        }
+                    }
+                }
+            });
+            
+            FunctorImplementationTypeEmitter.Create(assemblyEmitter, typeEmitter.Get(assemblyEmitter), targetMethod.Get());
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -2086,7 +2105,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         [TestMethod, TestCategory("IL Tests")]
         public void TestCanEmit_FunctionAssignmentToFunctorWithoutArgs()
         {
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(void));
 
             var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, intType, new List<TypeReference>());
             var field = new FieldDefinition("myFunction", FieldAttributes.Public | FieldAttributes.Static, functorType);
@@ -2107,18 +2126,39 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
         public void TestCanEmit_FunctionAssignmentToFunctorWithArgs()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var doubleType = assemblyEmitter.TypeToTypeReference(typeof(double));
+            var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
 
             var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, intType,
                 new List<TypeReference>()
                 {
-                    assemblyEmitter.TypeToTypeReference(typeof(double)),
-                    assemblyEmitter.TypeToTypeReference(typeof(float))
+                    doubleType,
+                    floatType
                 });
             var field = new FieldDefinition("myFunction", FieldAttributes.Public | FieldAttributes.Static, functorType);
 
+            var targetMethod = new MethodEmitter(typeEmitter, "FunctionWithArgs", intType, MethodAttributes.Private | MethodAttributes.Static);
+            targetMethod.AddArgument(doubleType, "d");
+            targetMethod.AddArgument(floatType, "f");
+
+            targetMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new ReturnNode()
+                    {
+                        Expression = new LiteralNode()
+                        {
+                            ReturnType = intType,
+                            Value = 5
+                        }
+                    }
+                }
+            });
+
             var initializer = new FunctionNode()
             {
-                Function = methodEmitter.Get(),
+                Function = targetMethod.Get(),
                 ReturnType = functorType
             };
 
@@ -2187,7 +2227,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             var methodArguments = myMethod.Parameters.Select(parameter => parameter.ParameterType).ToList();
 
             var declaringType = (TypeDefinition)typeEmitter.Get(assemblyEmitter);
-            var delegateType = DelegateEmitter.Create(assemblyEmitter, declaringType, methodReturnType, methodArguments);
+            var delegateType = DelegateEmitter.Create(assemblyEmitter, "MyDelegate", declaringType, methodReturnType, methodArguments);
             declaringType.NestedTypes.Add(delegateType);
 
             var delegateField = new FieldDefinition("myDelegate", FieldAttributes.Public | FieldAttributes.Static, delegateType);

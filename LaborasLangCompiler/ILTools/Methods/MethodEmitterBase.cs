@@ -163,12 +163,6 @@ namespace LaborasLangCompiler.ILTools.Methods
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
-        protected void Calli(CallSite callSite)
-        {
-            ilProcessor.Emit(OpCodes.Calli, callSite);
-            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
-        }
-
         protected void Callvirt(MethodReference method)
         {
             ilProcessor.Emit(OpCodes.Callvirt, method);

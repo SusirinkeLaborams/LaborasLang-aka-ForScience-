@@ -13,126 +13,112 @@ namespace LaborasLangCompiler.ILTools.Methods
     {
         #region Factories
 
-        static public void EmitConstructor(TypeEmitter declaringType, FieldReference objectInstanceField,
-            FieldReference functionPtrField)
+        static public void EmitConstructor(TypeEmitter declaringType, MethodReference targetMethod)
         {
             var definition = new FunctorMethodEmitter(declaringType, ".ctor", declaringType.Assembly.TypeToTypeReference(typeof(void)),
-                MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName);
-
-            definition.EmitConstructorBody(objectInstanceField, functionPtrField);
+                MethodAttributes.Assembly | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName);
+            
+            definition.EmitConstructorBody(targetMethod);
         }
 
-        static public void EmitInvoke(TypeEmitter declaringType, FieldReference objectInstanceField,
-            FieldReference functionPtrField, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
+        static public void EmitInvoke(TypeEmitter declaringType, MethodReference targetMethod)
         {
-            var definition = new FunctorMethodEmitter(declaringType, "Invoke", returnType, MethodAttributes.Public);
+            var definition = new FunctorMethodEmitter(declaringType, "Invoke", targetMethod.ReturnType, 
+                MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig);
 
-            definition.EmitInvokeBody(objectInstanceField, functionPtrField, returnType, arguments);
+            definition.EmitInvokeBody(targetMethod);
         }
 
-        static public void EmitAsDelegate(TypeEmitter declaringType, TypeReference delegateType,
-            FieldReference objectInstanceField, FieldReference functionPtrField)
+        static public void EmitAsDelegate(TypeEmitter declaringType, TypeReference delegateType, MethodReference targetMethod)
         {
-            var definition = new FunctorMethodEmitter(declaringType, "AsDelegate", delegateType, MethodAttributes.Public);
+            var definition = new FunctorMethodEmitter(declaringType, "AsDelegate", delegateType,
+                MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig);
 
-            definition.EmitAsDelegate(objectInstanceField, functionPtrField, delegateType);
+            definition.EmitAsDelegate(delegateType, targetMethod);
         }
 
         #endregion
+
+        private FieldReference ThisField
+        {
+            get
+            {
+                return AssemblyRegistry.GetField(Assembly, DeclaringType, "$this");
+            }
+        }
 
         private FunctorMethodEmitter(TypeEmitter declaringType, string name, TypeReference returnType, MethodAttributes methodAttributes) :
             base(declaringType, name, returnType, methodAttributes)
         {
         }
 
-        private void EmitConstructorBody(FieldReference objectInstanceField, FieldReference functionPtrField)
+        private void EmitConstructorBody(MethodReference targetMethod)
         {
-            var objectInstanceArgument = AddArgument(Assembly.TypeToTypeReference(typeof(object)), "objectInstance");
-            var functionPtrArgument = AddArgument(Assembly.TypeToTypeReference(typeof(System.IntPtr)), "functionPtr");
+            var baseCtor = AssemblyRegistry.GetMethod(Assembly, DeclaringType.BaseType, ".ctor");
 
             Ldarg(0);
-            Ldarg(objectInstanceArgument.Index + 1);
-            Stfld(objectInstanceField);
-            
-            Ldarg(0);
-            Ldarg(functionPtrArgument.Index + 1);
-            Stfld(functionPtrField);
+            Call(baseCtor);
+
+            if (targetMethod.HasThis)
+            {
+                AddArgument(targetMethod.DeclaringType, "$this");
+
+                var thisField = new FieldDefinition("$this", FieldAttributes.Private, targetMethod.DeclaringType);
+                DeclaringType.AddField(thisField);
+
+                Ldarg(0);
+                Ldarg(1);
+                Stfld(thisField);
+            }
 
             Ret();
         }
 
-        private void EmitInvokeBody(FieldReference objectInstanceField, FieldReference functionPtrField, TypeReference returnType,
-            IReadOnlyList<TypeReference> arguments)
+        private void EmitInvokeBody(MethodReference targetMethod)
         {
-            var staticCallsite = new CallSite(returnType);
-            var instanceCallsite = new CallSite(returnType);
-
-            foreach (var parameterType in arguments)
+            if (targetMethod.HasThis)
             {
-                AddArgument(parameterType);
-                staticCallsite.Parameters.Add(new ParameterDefinition(parameterType));
-                instanceCallsite.Parameters.Add(new ParameterDefinition(parameterType));
-            }
-
-            staticCallsite.HasThis = false;
-            instanceCallsite.HasThis = true;
-
-            var labelAfterConditionalBlock = CreateLabel();
-
-            // if (objectInstance != 0)
-            Ldarg(0);
-            Ldfld(objectInstanceField);
-            Dup();
-            Brtrue(labelAfterConditionalBlock);
-
-            {
-                Pop();  // This pops earlier-duplicated objectInstance field
-
-                for (int i = 0; i < arguments.Count; i++)
-                {
-                    Ldarg(i + 1);
-                }
-
                 Ldarg(0);
-                Ldfld(functionPtrField);
-
-                Tail();
-                Calli(staticCallsite);
-                Ret();
+                Ldfld(ThisField);
             }
-            // else
+
+            for (int i = 0; i < targetMethod.Parameters.Count; i++)
             {
-                Emit(labelAfterConditionalBlock);
-
-                for (int i = 0; i < arguments.Count; i++)
-                {
-                    Ldarg(i + 1);
-                }
-
-                Ldarg(0);
-                Ldfld(functionPtrField);
-
-                Tail();
-                Calli(instanceCallsite);
-                Ret();
+                AddArgument(targetMethod.Parameters[i]);
+                Ldarg(i + 1);
             }
+
+            Tail();
+
+            if (targetMethod.Resolve().IsVirtual)
+            {
+                Callvirt(targetMethod);
+            }
+            else
+            {
+                Call(targetMethod);
+            }
+
+            Ret();
         }
 
-        private void EmitAsDelegate(FieldReference objectInstanceField, FieldReference functionPtrField, TypeReference delegateType)
+        private void EmitAsDelegate(TypeReference delegateType, MethodReference targetMethod)
         {
-            var ctor = AssemblyRegistry.GetCompatibleMethod(Assembly, delegateType, ".ctor", new List<string>()
+            var ctor = AssemblyRegistry.GetMethod(Assembly, delegateType, ".ctor");
+
+            if (targetMethod.HasThis)
             {
-                "System.Object",
-                "System.IntPtr"
-            });
+                Ldarg(0);
+                Ldfld(ThisField);
+            }
+            else
+            {
+                Ldnull();
+            }
 
-            Ldarg(0);
-            Ldfld(objectInstanceField);
-
-            Ldarg(0);
-            Ldfld(functionPtrField);
-
+            Ldftn(targetMethod);
             Newobj(ctor);
+
             Ret();
         }
     }

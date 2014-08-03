@@ -18,6 +18,7 @@ namespace LaborasLangCompiler.ILTools.Types
         protected TypeDefinition typeDefinition;
 
         public AssemblyEmitter Assembly { get; private set; }
+        public TypeReference BaseType { get { return typeDefinition.BaseType; } }
 
         public TypeEmitter(AssemblyEmitter assembly, string className, string @namespace = "",
                             TypeAttributes typeAttributes = DefaultTypeAttributes, TypeReference baseType = null) :
@@ -129,6 +130,19 @@ namespace LaborasLangCompiler.ILTools.Types
         public static string ComputeNameFromReturnAndArgumentTypes(TypeReference returnType, IReadOnlyList<TypeReference> arguments)
         {
             var name = new StringBuilder("$" + returnType.FullName);
+
+            foreach (var argument in arguments)
+            {
+                name.Append("$" + argument.FullName);
+            }
+
+            name.Replace('.', '_');
+            return name.ToString();
+        }
+
+        public static string ComputeNameArgumentTypes(IReadOnlyList<TypeReference> arguments)
+        {
+            var name = new StringBuilder();
 
             foreach (var argument in arguments)
             {

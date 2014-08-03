@@ -548,7 +548,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             bool canEmitExpressionAsReference = CanEmitAsReference(expression);
 
             var targetBaseType = targetType.Resolve().BaseType;
-            bool targetIsDelegate = targetBaseType != null && targetType.Resolve().BaseType.FullName == "System.MulticastDelegate";
+            bool targetIsDelegate = targetBaseType != null && targetBaseType.FullName == "System.MulticastDelegate";
 
             if (emitAsReference && !canEmitExpressionAsReference)
             {
@@ -557,7 +557,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
 
             // We'll want to emit expression in all cases
-            Emit(expression, (targetIsDelegate || emitAsReference) && canEmitExpressionAsReference);
+            Emit(expression, emitAsReference && canEmitExpressionAsReference);
 
             if (targetIsDelegate)
             {
@@ -568,45 +568,17 @@ namespace LaborasLangCompiler.ILTools.Methods
                 }
                 else if (expressionIsFunctor)
                 {
-                    // Here we have a functor object on top of the stack OR its reference,
-                    // depending whether we were able to load it
-                    // We will just want to construct a delegate from its two fields
-
+                    // Here we have a functor object on top of the stack
+                    
                     var delegateType = targetType;
                     var functorType = expression.ReturnType;
 
-                    var objectInstanceField = AssemblyRegistry.GetField(Assembly, functorType, "objectInstance");
-                    var functionPtrField = AssemblyRegistry.GetField(Assembly, functorType, "functionPtr");
-                    var delegateCtor = AssemblyRegistry.GetCompatibleMethod(Assembly, delegateType, ".ctor", new List<string>()
-                    {
-                        "System.Object",
-                        "System.IntPtr"
-                    });
+                    var asDelegateMethod = AssemblyRegistry.GetMethod(Assembly, functorType, "AsDelegate");
+                    var delegateInvokeMethod = AssemblyRegistry.GetMethod(Assembly, asDelegateMethod.ReturnType, "Invoke");
+                    var delegateCtor = AssemblyRegistry.GetMethod(Assembly, delegateType, ".ctor");
 
-                    if (!canEmitExpressionAsReference)
-                    {
-                        // First, store it to a temp variable, then load its address twice
-                        var tempVariable = AcquireTempVariable(functorType);
-
-                        Stloc(tempVariable.Index);
-
-                        Ldloca(tempVariable.Index);
-                        Ldfld(objectInstanceField);
-
-                        Ldloca(tempVariable.Index);
-                        Ldfld(functionPtrField);
-
-                        ReleaseTempVariable(tempVariable);
-                    }
-                    else
-                    {   // If we were able to load address once, it means it's either an argument, local variable
-                        // or field, which means its loading is cheap
-                        Ldfld(objectInstanceField);
-
-                        Emit(expression, true);
-                        Ldfld(functionPtrField);
-                    }
-
+                    Callvirt(asDelegateMethod);
+                    Ldftn(delegateInvokeMethod);
                     Newobj(delegateCtor);
                 }
             }
@@ -705,19 +677,36 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Emit(IFunctionNode function)
         {
-            var ctor = AssemblyRegistry.GetMethods(Assembly, function.ReturnType, ".ctor").Single();
+            var returnTypeIsDelegate = function.ReturnType.Resolve().BaseType.FullName == "System.MulticastDelegate";
 
-            if (function.ObjectInstance != null)
+            if (!returnTypeIsDelegate)
             {
-                Emit(function.ObjectInstance, true);
+                var functorType = AssemblyRegistry.GetImplementationFunctorType(Assembly, DeclaringType, function.Function);
+                var ctor = AssemblyRegistry.GetMethod(Assembly, functorType, ".ctor");
+
+                if (function.Function.HasThis)
+                {
+                    Emit(function.ObjectInstance, false);
+                }
+
+                Newobj(ctor);
             }
             else
             {
-                Ldnull();
-            }
+                var ctor = AssemblyRegistry.GetMethod(Assembly, function.ReturnType, ".ctor");
 
-            Ldftn(function.Function);
-            Newobj(ctor);
+                if (function.Function.HasThis)
+                {
+                    Emit(function.ObjectInstance, false);
+                }
+                else
+                {
+                    Ldnull();
+                }
+
+                Ldftn(function.Function);
+                Newobj(ctor);
+            }
         }
 
         protected void Emit(IMethodCallNode functionCall)
@@ -758,12 +747,12 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {   // Functor Call
-                var invokeMethod = AssemblyRegistry.GetMethods(Assembly, function.ReturnType, "Invoke").Single();
+                var invokeMethod = AssemblyRegistry.GetMethod(Assembly, function.ReturnType, "Invoke");
 
                 Emit(function, true);
                 EmitArgumentsForCall(functionCall.Arguments, invokeMethod);
 
-                Call(invokeMethod);
+                Callvirt(invokeMethod);
             }
         }
 

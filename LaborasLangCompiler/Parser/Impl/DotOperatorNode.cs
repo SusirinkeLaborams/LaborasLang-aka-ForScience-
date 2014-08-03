@@ -68,7 +68,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     return false;
                 var nvm = new List<TypeReference>();
                 var returnType = ILTools.ILHelpers.GetFunctorReturnTypeAndArguments(parser.Assembly, builtNode.ReturnType, out nvm);
-                var method = AssemblyRegistry.GetMethods(parser.Assembly, builtNode.ReturnType, "Invoke").Single();
+                var method = AssemblyRegistry.GetMethod(parser.Assembly, builtNode.ReturnType, "Invoke");
                 if(ILHelpers.MatchesArgumentList(method, types))
                 {
                     builtNode = new MethodCallNode(builtNode, returnType, node.Arguments, node.SequencePoint);
@@ -278,7 +278,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if (builtNode.ReturnType.IsFunctorType())
                 {
-                    var method = AssemblyRegistry.GetMethods(parser.Assembly, builtNode.ReturnType, "Invoke").Single();
+                    var method = AssemblyRegistry.GetMethod(parser.Assembly, builtNode.ReturnType, "Invoke");
                     if (ILHelpers.MatchesArgumentList(method, types))
                     {
                         return (IExpressionNode)builtNode;
