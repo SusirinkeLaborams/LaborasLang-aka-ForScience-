@@ -11,6 +11,18 @@ namespace Lexer
     {
         private Dictionary<TokenType, ParseRule> m_ParseRules;
         private List<Token> m_Source;
+        private int m_LastMatched = 0;
+        private int LastMatched
+        {
+            get
+            {
+                return m_LastMatched;
+            }
+            set
+            {
+                m_LastMatched = m_LastMatched < value ? value : m_LastMatched;
+            }
+        }
 
         #region TokenProperties
         private Condition EndOfLine { get { return TokenType.EndOfLine; } }
@@ -132,6 +144,7 @@ namespace Lexer
         private Condition TypeArgument { get { return TokenType.TypeArgument; } }
         private Condition Function { get { return TokenType.Function; } }
         private Condition ConditionalSentence { get { return TokenType.ConditionalSentence; } }
+        private Condition AssignmentOperator { get { return TokenType.AssignmentOperator; } }
         #endregion
 
         public SyntaxMatcher(IEnumerable<Token> sourceTokens)
@@ -144,7 +157,7 @@ namespace Lexer
                 new ParseRule(StatementNode,                    
                     FunctionCall + EndOfLine,
                     DeclarationNode,
-                    AssignmentNode,
+                    AssignmentNode + EndOfLine,
                     CodeBlockNode,
                     WhileLoop,
                     Return + Value + EndOfLine,
@@ -167,21 +180,41 @@ namespace Lexer
                     Virtual),
 
                 new ParseRule(AssignmentNode,
-                    LValue + Assignment + Value + EndOfLine),
+                    LValue + AssignmentOperator + Value),
+
             
+                new ParseRule(AssignmentOperator,
+                    Assignment,
+                    BitwiseAndEqual,
+                    MinusEqual,
+                    NotEqual,
+                    PlusEqual,
+                    BitwiseComplementEqual,
+                    BitwiseXorEqual,
+                    BitwiseOrEqual,
+                    LeftShiftEqual,
+                    LessOrEqual,
+                    RightShiftEqual,
+                    MoreOrEqual,
+                    DivideEqual,
+                    MultiplyEqual,
+                    RemainderEqual,
+                    Equal),
+
                 new ParseRule(CodeBlockNode,
                     LeftCurlyBracket + OneOrMore(StatementNode) + RightCurlyBracket,
                     LeftCurlyBracket + RightCurlyBracket),
 
-                new ParseRule(Value,                                                                                                   
-                    ArithmeticNode,                    
+                new ParseRule(Value,                                                                               
+                    OneOrMore(ArithmeticNode),                    
                     RValue,           
                     LValue),
 
                 new ParseRule(LValue,
                     FullSymbol),
  
-                new ParseRule(RValue, 
+                new ParseRule(RValue,                     
+                    AssignmentNode,
                     Function,
                     FunctionCall,
                     FullSymbol,
@@ -226,7 +259,7 @@ namespace Lexer
                     While + LeftBracket + Value + RightBracket + StatementNode),
 
                 new ParseRule(Operator,
-                    Plus, Minus, PlusPlus, MinusMinus, Multiply, Divide, Remainder, BitwiseXor, BitwiseOr, BitwiseComplement, BitwiseXor, Or, And, BitwiseAnd, Not, LeftShift, RightShift),
+                    Plus, Minus, PlusPlus, MinusMinus, Multiply, Divide, Remainder, BitwiseXor, BitwiseOr, BitwiseComplement, BitwiseXor, Or, And, BitwiseAnd, Not, LeftShift, RightShift, Equal, NotEqual, More, MoreOrEqual, Less, LessOrEqual),
 
                 new ParseRule(ArithmeticNode,
                     LeftBracket + OneOrMore(ArithmeticNode) + RightBracket,
@@ -263,7 +296,7 @@ namespace Lexer
 
             if(tokensConsumed != m_Source.Count)
             {
-                throw new Exception("Could not match all  tokens");
+                throw new Exception(String.Format("Could not match all  tokens, last matched token {0} - {1}, line {2}, column {3}", LastMatched, m_Source[LastMatched - 1].Content, m_Source[LastMatched - 1].Start.Row, m_Source[LastMatched - 1].Start.Column));
             }
             return matchedNode.Item1;            
         }
@@ -287,7 +320,8 @@ namespace Lexer
                     else if (m_Source[sourceOffset + tokensConsumed].Type == token.Token)
                     {
                         node.AddTerminal(m_Source[sourceOffset + tokensConsumed]);
-                        tokensConsumed++; 
+                        tokensConsumed++;
+                        LastMatched = sourceOffset + tokensConsumed;
                     }
                     else
                     {
@@ -315,6 +349,7 @@ namespace Lexer
                             subnode.Type = token.Token;
                             node.AddChild(subnode);
                             tokensConsumed += consumed;
+                            LastMatched = tokensConsumed;
                             matchFound = true;
                             break;
                         }
@@ -340,6 +375,7 @@ namespace Lexer
                             {
                                 node.AddTerminal(m_Source[sourceOffset + tokensConsumed]);
                                 tokensConsumed++;
+                                LastMatched = tokensConsumed;
                             }
                             else
                             {
@@ -364,6 +400,7 @@ namespace Lexer
                                     subnode.Type = token.Token;
                                     node.AddChild(subnode);
                                     tokensConsumed += consumed;
+                                    LastMatched = tokensConsumed;
                                     matchFound = true;
                                     break;
                                 }
@@ -389,5 +426,6 @@ namespace Lexer
         {
             return new Condition(c, ConditionType.ZeroOrMore);
         }
+
     }
 }

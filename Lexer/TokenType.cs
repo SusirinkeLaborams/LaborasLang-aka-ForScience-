@@ -142,6 +142,8 @@ namespace Lexer
         Function,
 
         ConditionalSentence,
+        AssignmentOperator,
+
     }
 
     public static class TokenInfo
