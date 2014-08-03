@@ -126,6 +126,7 @@ namespace Lexer
 
         Type,
         VariableModifier,
+        TypeArgument,
 
         FunctionCall,
         FunctionArgument,
@@ -138,6 +139,7 @@ namespace Lexer
         ArithmeticSubnode,
         ArithmeticNode,
 
+        Function,
     }
 
     public static class TokenInfo

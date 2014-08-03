@@ -129,6 +129,8 @@ namespace Lexer
         private Condition WhileLoop { get { return TokenType.WhileLoop; } }
         private Condition ArithmeticNode { get { return TokenType.ArithmeticNode; } }
         private Condition ArithmeticSubnode { get { return TokenType.ArithmeticSubnode; } }
+        private Condition TypeArgument { get { return TokenType.TypeArgument; } }
+        private Condition Function { get { return TokenType.Function; } }
         #endregion
 
         public SyntaxMatcher(IEnumerable<Token> sourceTokens)
@@ -139,15 +141,17 @@ namespace Lexer
             {
                 #region Syntax rules
                 new ParseRule(StatementNode,                    
-                    RValue + EndOfLine,
+                    FunctionCall + EndOfLine,
                     DeclarationNode,
                     AssignmentNode,
                     CodeBlockNode,
                     WhileLoop),
             
                 new ParseRule(DeclarationNode,
-                    OneOrMore(VariableModifier) + Type + Symbol + EndOfLine,
-                    Type + Symbol + EndOfLine),
+                    OneOrMore(VariableModifier) + Type + FullSymbol + EndOfLine,
+                    OneOrMore(VariableModifier) + Type + FullSymbol + Assignment + Value + EndOfLine,
+                    Type + FullSymbol + EndOfLine,
+                    Type + FullSymbol + Assignment + Value + EndOfLine ),
             
                 new ParseRule(VariableModifier, 
                     Const,
@@ -173,7 +177,8 @@ namespace Lexer
                 new ParseRule(LValue,
                     FullSymbol),
  
-                new ParseRule(RValue,                    
+                new ParseRule(RValue, 
+                    Function,
                     FunctionCall,
                     FullSymbol,
                     Float,
@@ -200,9 +205,17 @@ namespace Lexer
                     Period + Symbol),
 
                 new ParseRule(Type,
-                    FullSymbol + LeftBracket + OneOrMore(Type) + RightBracket,
+                    FullSymbol + LeftBracket + Type + ZeroOrMore(TypeArgument) + RightBracket,
+                    FullSymbol + LeftBracket + Type + FullSymbol + ZeroOrMore(TypeArgument) + RightBracket,
                     FullSymbol + LeftBracket + RightBracket,
                     FullSymbol),
+
+                new ParseRule(TypeArgument,
+                    Comma + Type + FullSymbol,
+                    Comma + Type),
+
+                new ParseRule(Function,
+                    Type + CodeBlockNode),
                     
 
                 new ParseRule(WhileLoop,
