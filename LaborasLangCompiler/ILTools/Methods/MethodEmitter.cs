@@ -697,7 +697,14 @@ namespace LaborasLangCompiler.ILTools.Methods
 
                 if (function.Function.HasThis)
                 {
-                    Emit(function.ObjectInstance, false);
+                    if (function.ObjectInstance != null)
+                    {
+                        Emit(function.ObjectInstance, false);
+                    }
+                    else
+                    {
+                        Ldarg(0);
+                    }
                 }
                 else
                 {
