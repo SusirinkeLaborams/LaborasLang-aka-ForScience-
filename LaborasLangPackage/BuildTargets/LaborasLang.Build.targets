@@ -33,5 +33,11 @@
   <Target Name="GetFrameworkPaths">
     <!-- do nothing -->
   </Target>
-  
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <DefaultLanguageSourceExtension>.ll</DefaultLanguageSourceExtension>
+    <Language>LaborasLang</Language>
+    <TargetRuntime>Managed</TargetRuntime>
+  </PropertyGroup>
 </Project>
