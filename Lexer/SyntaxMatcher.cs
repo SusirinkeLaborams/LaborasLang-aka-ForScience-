@@ -212,7 +212,7 @@ namespace Lexer
                     Plus, Minus, PlusPlus, MinusMinus, Multiply, Divide, Remainder, BitwiseXor, BitwiseOr, BitwiseComplement, BitwiseXor, Or, And, BitwiseAnd, Not, LeftShift, RightShift),
 
                 new ParseRule(ArithmeticNode,
-                    LeftBracket + OneOrMore(ArithmeticSubnode) + RightBracket,
+                    LeftBracket + OneOrMore(ArithmeticNode) + RightBracket,
                     OneOrMore(ArithmeticSubnode)),
 
                 new ParseRule(ArithmeticSubnode,

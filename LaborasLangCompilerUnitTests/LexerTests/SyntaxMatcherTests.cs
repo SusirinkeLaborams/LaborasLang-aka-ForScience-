@@ -301,6 +301,13 @@ a = 5;
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestBrackets()
+        {
+            var source = "foo = ((1 + 2) + 3 + bar(2 + 3));";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestPrefixSuffix()
         {
             var source = "foo = ++i++;";
