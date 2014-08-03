@@ -3,7 +3,7 @@
 // Code size 105 (0x69)
 .maxstack 5
 .entrypoint
-.locals (
+.locals init (
 	[0] uint32,
 	[1] uint32
 )

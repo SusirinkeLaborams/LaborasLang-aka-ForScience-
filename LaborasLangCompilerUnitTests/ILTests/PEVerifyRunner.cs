@@ -15,9 +15,6 @@ namespace LaborasLangCompilerUnitTests.ILTests
     {
         private static uint[] CodesToIgnore = new uint[]
         {
-            0x80131861,     // Expected pointer to function on a stack, found native int (happens in Functor.AsDelegate when constructing a delegate
-            0x8013186E,     // Instruction cannot be verified (calli)
-            0x801318BD,     // initlocals must be set for verifiable methods with one or more local variables.
         };
 
         private static string _peverifyPath;
@@ -63,8 +60,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
                 var lines = output.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
                 // First 2 lines are logos, last one is conclusion
-                var errorLines = lines.Skip(2).Take(lines.Length - 3) // This error happens when using ldftn and passing the native int 
-                    .Where(line => !line.Contains("[expected Native Int] Unexpected type on the stack.")).ToArray(); // to functor ctor
+                var errorLines = lines.Skip(2).Take(lines.Length - 3).ToArray();
 
                 if (errorLines.Length > 0)
                 {

@@ -32,6 +32,11 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Ret();
             }
 
+            if (body.Variables.Count > 0)
+            {
+                body.InitLocals = true;
+            }
+
             MethodBodyOptimizerBootstraper.Optimize(body, Assembly.DebugBuild);
             Parsed = true;
         }

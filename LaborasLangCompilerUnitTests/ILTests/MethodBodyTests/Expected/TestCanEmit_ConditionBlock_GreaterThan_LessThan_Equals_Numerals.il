@@ -3,7 +3,7 @@
 // Code size 122 (0x7a)
 .maxstack 3
 .entrypoint
-.locals (
+.locals init (
 	[0] int32,
 	[1] int32
 )

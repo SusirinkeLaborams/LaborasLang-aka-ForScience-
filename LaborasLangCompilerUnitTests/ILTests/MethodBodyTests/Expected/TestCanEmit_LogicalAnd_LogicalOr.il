@@ -3,7 +3,7 @@
 // Code size 75 (0x4b)
 .maxstack 4
 .entrypoint
-.locals (
+.locals init (
 	[0] bool,
 	[1] bool
 )
