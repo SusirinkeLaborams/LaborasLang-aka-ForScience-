@@ -82,14 +82,14 @@ a = 5;
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestBooleanAnd()
         {
-            var source = @"auto i = i && false;";
+            var source = @"i = i && false;";
             ExecuteTest(source);
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestBooleanOr()
         {
-            var source = @"auto a = i || true;";
+            var source = @"a = i || true;";
             ExecuteTest(source);
         }
 

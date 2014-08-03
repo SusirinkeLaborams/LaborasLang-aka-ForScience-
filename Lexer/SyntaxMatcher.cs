@@ -165,10 +165,10 @@ namespace Lexer
                     LeftCurlyBracket + OneOrMore(StatementNode) + RightCurlyBracket,
                     LeftCurlyBracket + RightCurlyBracket),
 
-                new ParseRule(Value,  
-                    RValue,
-                    LValue,                                      
-                    ArithmeticNode),
+                new ParseRule(Value,                                                                                                   
+                    ArithmeticNode,                    
+                    RValue,           
+                    LValue),
 
                 new ParseRule(LValue,
                     FullSymbol),
@@ -179,7 +179,10 @@ namespace Lexer
                     Float,
                     Integer,
                     Double,
-                    Long),
+                    Long,
+                    StringLiteral,
+                    True,
+                    False),
 
                 new ParseRule(FunctionCall,
                     FullSymbol + LeftBracket + RightBracket,
@@ -200,19 +203,21 @@ namespace Lexer
                     FullSymbol + LeftBracket + OneOrMore(Type) + RightBracket,
                     FullSymbol + LeftBracket + RightBracket,
                     FullSymbol),
-
+                    
 
                 new ParseRule(WhileLoop,
                     While + LeftBracket + Value + RightBracket + StatementNode),
 
                 new ParseRule(Operator,
-                    Plus, Minus, PlusPlus, MinusMinus, Multiply, Divide, Remainder, BitwiseXor, BitwiseOr, BitwiseComplement, BitwiseXor, Or, And, BitwiseAnd, Not, LeftBracket, RightBracket, LeftShift, RightShift),
+                    Plus, Minus, PlusPlus, MinusMinus, Multiply, Divide, Remainder, BitwiseXor, BitwiseOr, BitwiseComplement, BitwiseXor, Or, And, BitwiseAnd, Not, LeftShift, RightShift),
 
                 new ParseRule(ArithmeticNode,
+                    LeftBracket + OneOrMore(ArithmeticSubnode) + RightBracket,
                     OneOrMore(ArithmeticSubnode)),
 
                 new ParseRule(ArithmeticSubnode,
-                     ZeroOrMore(Operator) + RValue + ZeroOrMore(Operator)),
+                    RValue,
+                    Operator),
                 #endregion
             };
 
@@ -228,7 +233,7 @@ namespace Lexer
         {
             var tokensConsumed = 0;
 
-            Tuple<AstNode, int> matchedNode = Match(tokensConsumed, new Condition[]{new Condition(TokenType.StatementNode, ConditionType.ZeroOrMore)}.ToList());
+            Tuple<AstNode, int> matchedNode = Match(tokensConsumed, new Condition[]{new Condition(TokenType.StatementNode, ConditionType.OneOrMore)}.ToList());
             if (matchedNode.Item1 != null)
             {
                 matchedNode.Item1.Type = TokenType.RootNode;
