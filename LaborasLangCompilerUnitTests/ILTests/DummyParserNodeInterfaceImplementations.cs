@@ -9,6 +9,16 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompilerUnitTests.ILTests
 {
+    class ThisNode : IRValueNode
+    {
+        public SequencePoint SequencePoint { get { return null; } }
+        public NodeType Type { get { return NodeType.Expression; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
+        public RValueNodeType RValueType { get { return RValueNodeType.This; } }
+
+        public TypeReference ReturnType { get; set; }
+    }
+
     class LiteralNode : ILiteralNode
     {
         public SequencePoint SequencePoint { get { return null; } }
