@@ -59,7 +59,7 @@ namespace Lexer
     struct ParseRule
     {
         public TokenType Result;
-        public IEnumerable<Condition[]> RequiredTokens { get; private set; }
+        public Condition[][] RequiredTokens { get; private set; }
 
         public ParseRule(Condition result, params Condition[][] requiredTokens) : this()
         {

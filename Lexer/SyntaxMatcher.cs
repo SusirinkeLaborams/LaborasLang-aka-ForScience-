@@ -323,7 +323,7 @@ namespace Lexer
         {
             var tokensConsumed = 0;
 
-            MatchResult matchedNode = Match(tokensConsumed, new Condition[] { new Condition(TokenType.StatementNode, ConditionType.OneOrMore) }.ToList());
+            MatchResult matchedNode = Match(tokensConsumed, new Condition[] { new Condition(TokenType.StatementNode, ConditionType.OneOrMore) });
             if (matchedNode.MatchedTokens != null)
             {
                 matchedNode.MatchedTokens.Type = TokenType.RootNode;
@@ -338,7 +338,7 @@ namespace Lexer
         }
 
 
-        private MatchResult MatchWithLookup(int sourceOffset, IEnumerable<Condition> rule)
+        private MatchResult MatchWithLookup(int sourceOffset, Condition[] rule)
         {
 #if !USE_LOOKUP
             return Match(sourceOffset, rule);
@@ -358,14 +358,16 @@ namespace Lexer
         }
 
 
-        private MatchResult Match(int sourceOffset, IEnumerable<Condition> rule)
+        private MatchResult Match(int sourceOffset, Condition[] rule)
         {
             var node = new AstNode();
 
             int tokensConsumed = 0;
-            foreach (var token in rule)
+
+            // PERF: use normal loop instead of foreach
+            for (int i = 0; i < rule.Length; i++)
             {
-                if (MatchRule(node, token, sourceOffset, ref tokensConsumed))
+                if (MatchRule(node, rule[i], sourceOffset, ref tokensConsumed))
                 {
                     return new MatchResult(null, 0);
                 }
