@@ -11,6 +11,10 @@ namespace Lexer
     {
         private Dictionary<TokenType, ParseRule> m_ParseRules;
         private List<Token> m_Source;
+        private Dictionary<Tuple<List<Condition>, int>, Tuple<AstNode, int>> m_ParsingResults;
+
+        private static bool UseLookup = false;
+
         private int m_LastMatched = 0;
         private int LastMatched
         {
@@ -23,6 +27,26 @@ namespace Lexer
                 m_LastMatched = m_LastMatched < value ? value : m_LastMatched;
             }
         }
+
+        class ConditionListComparer : IEqualityComparer<Tuple<List<Condition>, int>>
+        {
+
+            public bool Equals(Tuple<List<Condition>, int> x, Tuple<List<Condition>, int> y)
+            {
+                return x.Item2 == y.Item2 && x.Item1.SequenceEqual(y.Item1);
+            }
+
+            public int GetHashCode(Tuple<List<Condition>, int> obj)
+            {
+                int hashcode = obj.Item2;
+                foreach (Condition t in obj.Item1)
+                {
+                    hashcode ^= t.GetHashCode();
+                }
+                return hashcode;        
+            }
+        }
+
 
         #region TokenProperties
         private Condition EndOfLine { get { return TokenType.EndOfLine; } }
@@ -149,6 +173,7 @@ namespace Lexer
 
         public SyntaxMatcher(IEnumerable<Token> sourceTokens)
         {
+            m_ParsingResults = new Dictionary<Tuple<List<Condition>, int>, Tuple<AstNode, int>>(new ConditionListComparer());
             m_ParseRules = new Dictionary<TokenType, ParseRule>();
             
             ParseRule[] AllRules = 
@@ -301,6 +326,26 @@ namespace Lexer
             return matchedNode.Item1;            
         }
 
+
+        private Tuple<AstNode, int> MatchWithLookup(int sourceOffset, List<Condition> rule)
+        {
+            if (!UseLookup)
+                return Match(sourceOffset, rule);
+
+            Tuple<AstNode, int> value = new Tuple<AstNode,int>(new AstNode(null, Unknown.Token), 0);
+            if(m_ParsingResults.TryGetValue(new Tuple<List<Condition>, int>(rule, sourceOffset), out value))
+            {
+                return value;
+            }
+            else
+            {
+                var result = Match(sourceOffset, rule);
+                m_ParsingResults[new Tuple<List<Condition>, int>(rule, sourceOffset)] = result;
+                return result;
+            }
+        }
+    
+
         private Tuple<AstNode, int> Match(int sourceOffset, List<Condition> rule)
         {
             var node = new AstNode();
@@ -336,8 +381,8 @@ namespace Lexer
                     bool matchFound = false;
                     foreach (var alternative in m_ParseRules[token.Token].RequiredTokens)
                     {
-                                                
-                        Tuple<AstNode, int> matchedNode = Match(sourceOffset + tokensConsumed, alternative);
+
+                        Tuple<AstNode, int> matchedNode = MatchWithLookup(sourceOffset + tokensConsumed, alternative);
                         var subnode = matchedNode.Item1;
                         var consumed = matchedNode.Item2;
                         if(subnode == null)
@@ -388,7 +433,7 @@ namespace Lexer
                             foreach (var alternative in m_ParseRules[token.Token].RequiredTokens)
                             {
 
-                                Tuple<AstNode, int> matchedNode = Match(sourceOffset + tokensConsumed, alternative);
+                                Tuple<AstNode, int> matchedNode = MatchWithLookup(sourceOffset + tokensConsumed, alternative);
                                 var subnode = matchedNode.Item1;
                                 var consumed = matchedNode.Item2;
                                 if (subnode == null)
