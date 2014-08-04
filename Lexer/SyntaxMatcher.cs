@@ -11,9 +11,9 @@ namespace Lexer
     {
         private Dictionary<TokenType, ParseRule> m_ParseRules;
         private List<Token> m_Source;
-        private Dictionary<Tuple<IEnumerable<Condition>, int>, Tuple<AstNode, int>> m_ParsingResults;
+        private Dictionary<Tuple<IEnumerable<Condition>, int>, MatchResult> m_ParsingResults;
 
-        private static bool UseLookup = false;
+        private const bool UseLookup = false;
 
         private int m_LastMatched = 0;
         private int LastMatched
@@ -43,10 +43,21 @@ namespace Lexer
                 {
                     hashcode ^= t.GetHashCode();
                 }
-                return hashcode;        
+                return hashcode;
             }
         }
 
+        class MatchResult
+        {
+            public AstNode MatchedTokens { get; private set; }
+            public int ConsumedTokenCount { get; private set; }
+
+            public MatchResult(AstNode matchedTokens, int consumedTokenCount)
+            {
+                MatchedTokens = matchedTokens;
+                ConsumedTokenCount = consumedTokenCount;
+            }
+        }
 
         #region TokenProperties
         private Condition EndOfLine { get { return TokenType.EndOfLine; } }
@@ -173,9 +184,9 @@ namespace Lexer
 
         public SyntaxMatcher(IEnumerable<Token> sourceTokens)
         {
-            m_ParsingResults = new Dictionary<Tuple<IEnumerable<Condition>, int>, Tuple<AstNode, int>>(new ConditionListComparer());
+            m_ParsingResults = new Dictionary<Tuple<IEnumerable<Condition>, int>, MatchResult>(new ConditionListComparer());
             m_ParseRules = new Dictionary<TokenType, ParseRule>();
-            
+
             ParseRule[] AllRules = 
             {
                 #region Syntax rules
@@ -300,7 +311,7 @@ namespace Lexer
                 #endregion
             };
 
-            foreach(var rule in AllRules)
+            foreach (var rule in AllRules)
             {
                 m_ParseRules.Add(rule.Result, rule);
             }
@@ -312,28 +323,28 @@ namespace Lexer
         {
             var tokensConsumed = 0;
 
-            Tuple<AstNode, int> matchedNode = Match(tokensConsumed, new Condition[]{new Condition(TokenType.StatementNode, ConditionType.OneOrMore)}.ToList());
-            if (matchedNode.Item1 != null)
+            MatchResult matchedNode = Match(tokensConsumed, new Condition[] { new Condition(TokenType.StatementNode, ConditionType.OneOrMore) }.ToList());
+            if (matchedNode.MatchedTokens != null)
             {
-                matchedNode.Item1.Type = TokenType.RootNode;
-                tokensConsumed += matchedNode.Item2;
+                matchedNode.MatchedTokens.Type = TokenType.RootNode;
+                tokensConsumed += matchedNode.ConsumedTokenCount;
             }
 
-            if(tokensConsumed != m_Source.Count)
+            if (tokensConsumed != m_Source.Count)
             {
                 throw new Exception(String.Format("Could not match all  tokens, last matched token {0} - {1}, line {2}, column {3}", LastMatched, m_Source[LastMatched - 1].Content, m_Source[LastMatched - 1].Start.Row, m_Source[LastMatched - 1].Start.Column));
             }
-            return matchedNode.Item1;            
+            return matchedNode.MatchedTokens;
         }
 
 
-        private Tuple<AstNode, int> MatchWithLookup(int sourceOffset, IEnumerable<Condition> rule)
+        private MatchResult MatchWithLookup(int sourceOffset, IEnumerable<Condition> rule)
         {
             if (!UseLookup)
                 return Match(sourceOffset, rule);
 
-            Tuple<AstNode, int> value = new Tuple<AstNode,int>(new AstNode(null, Unknown.Token), 0);
-            if(m_ParsingResults.TryGetValue(new Tuple<IEnumerable<Condition>, int>(rule, sourceOffset), out value))
+            MatchResult value = new MatchResult(new AstNode(null, Unknown.Token), 0);
+            if (m_ParsingResults.TryGetValue(new Tuple<IEnumerable<Condition>, int>(rule, sourceOffset), out value))
             {
                 return value;
             }
@@ -344,22 +355,22 @@ namespace Lexer
                 return result;
             }
         }
-    
 
-        private Tuple<AstNode, int> Match(int sourceOffset, IEnumerable<Condition> rule)
+
+        private MatchResult Match(int sourceOffset, IEnumerable<Condition> rule)
         {
             var node = new AstNode();
-            
+
             int tokensConsumed = 0;
-            foreach(var token in rule)
+            foreach (var token in rule)
             {
-                if(token.Token.IsTerminal())
+                if (token.Token.IsTerminal())
                 {
-                    if(sourceOffset + tokensConsumed >= m_Source.Count)
+                    if (sourceOffset + tokensConsumed >= m_Source.Count)
                     {
                         if (token.Type != ConditionType.ZeroOrMore)
                         {
-                            return new Tuple<AstNode, int>(null, 0);
+                            return new MatchResult(null, 0);
                         }
                     }
                     else if (m_Source[sourceOffset + tokensConsumed].Type == token.Token)
@@ -372,7 +383,7 @@ namespace Lexer
                     {
                         if (token.Type != ConditionType.ZeroOrMore)
                         {
-                            return new Tuple<AstNode, int>(null, 0);
+                            return new MatchResult(null, 0);
                         }
                     }
                 }
@@ -382,10 +393,10 @@ namespace Lexer
                     foreach (var alternative in m_ParseRules[token.Token].RequiredTokens)
                     {
 
-                        Tuple<AstNode, int> matchedNode = MatchWithLookup(sourceOffset + tokensConsumed, alternative);
-                        var subnode = matchedNode.Item1;
-                        var consumed = matchedNode.Item2;
-                        if(subnode == null)
+                        MatchResult matchedNode = MatchWithLookup(sourceOffset + tokensConsumed, alternative);
+                        var subnode = matchedNode.MatchedTokens;
+                        var consumed = matchedNode.ConsumedTokenCount;
+                        if (subnode == null)
                         {
                             continue;
                         }
@@ -398,17 +409,17 @@ namespace Lexer
                             matchFound = true;
                             break;
                         }
-                        
+
                     }
-                    if(!matchFound)
+                    if (!matchFound)
                     {
                         if (token.Type != ConditionType.ZeroOrMore)
                         {
-                            return new Tuple<AstNode, int>(null, 0);
+                            return new MatchResult(null, 0);
                         }
                     }
                 }
-                
+
                 // Second match for same token is optional, it should not return return on failure as it would discard first result, just stop matching
                 if (token.Type == ConditionType.OneOrMore || token.Type == ConditionType.ZeroOrMore)
                 {
@@ -433,9 +444,9 @@ namespace Lexer
                             foreach (var alternative in m_ParseRules[token.Token].RequiredTokens)
                             {
 
-                                Tuple<AstNode, int> matchedNode = MatchWithLookup(sourceOffset + tokensConsumed, alternative);
-                                var subnode = matchedNode.Item1;
-                                var consumed = matchedNode.Item2;
+                                MatchResult matchedNode = MatchWithLookup(sourceOffset + tokensConsumed, alternative);
+                                var subnode = matchedNode.MatchedTokens;
+                                var consumed = matchedNode.ConsumedTokenCount;
                                 if (subnode == null)
                                 {
                                     continue;
@@ -459,8 +470,8 @@ namespace Lexer
                     }
                 }
             }
-            return new Tuple<AstNode, int>(node, tokensConsumed);
-        } 
+            return new MatchResult(node, tokensConsumed);
+        }
 
         private Condition OneOrMore(Condition c)
         {
