@@ -144,13 +144,15 @@ namespace Lexer
         ConditionalSentence,
         AssignmentOperator,
 
+        TokenTypeCount
     }
 
     public static class TokenInfo
     {
         public static bool IsTerminal(this TokenType token)
         {
-            return token.CompareTo(TokenType.NonTerminalToken) < 0;
+            // PERF: CompareTo is expensive
+            return (int)token < (int)TokenType.NonTerminalToken;
         }
     }
     

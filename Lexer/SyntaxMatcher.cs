@@ -11,8 +11,8 @@ namespace Lexer
 {
     public class SyntaxMatcher
     {
-        private Dictionary<TokenType, ParseRule> m_ParseRules;
-        private List<Token> m_Source;
+        private ParseRule[] m_ParseRules;
+        private Token[] m_Source;
         private Dictionary<Tuple<IEnumerable<Condition>, int>, MatchResult> m_ParsingResults;
 
         private int m_LastMatched = 0;
@@ -185,7 +185,7 @@ namespace Lexer
         public SyntaxMatcher(IEnumerable<Token> sourceTokens)
         {
             m_ParsingResults = new Dictionary<Tuple<IEnumerable<Condition>, int>, MatchResult>(new ConditionListComparer());
-            m_ParseRules = new Dictionary<TokenType, ParseRule>();
+            m_ParseRules = new ParseRule[(int)TokenType.TokenTypeCount];
 
             ParseRule[] AllRules = 
             {
@@ -313,10 +313,10 @@ namespace Lexer
 
             foreach (var rule in AllRules)
             {
-                m_ParseRules.Add(rule.Result, rule);
+                m_ParseRules[(int)rule.Result] = rule;
             }
 
-            m_Source = sourceTokens.ToList();
+            m_Source = sourceTokens.ToArray();
         }
 
         public AstNode Match()
@@ -330,7 +330,7 @@ namespace Lexer
                 tokensConsumed += matchedNode.ConsumedTokenCount;
             }
 
-            if (tokensConsumed != m_Source.Count)
+            if (tokensConsumed != m_Source.Length)
             {
                 throw new Exception(String.Format("Could not match all  tokens, last matched token {0} - {1}, line {2}, column {3}", LastMatched, m_Source[LastMatched - 1].Content, m_Source[LastMatched - 1].Start.Row, m_Source[LastMatched - 1].Start.Column));
             }
@@ -390,7 +390,7 @@ namespace Lexer
 
         private bool MatchNonTerminal(AstNode node, Condition token, int sourceOffset, ref int tokensConsumed)
         {
-            foreach (var alternative in m_ParseRules[token.Token].RequiredTokens)
+            foreach (var alternative in m_ParseRules[(int)token.Token].RequiredTokens)
             {
                 if (MatchCondition(sourceOffset, node, token, alternative, ref tokensConsumed))
                 {
@@ -407,7 +407,7 @@ namespace Lexer
             {
                 if (token.Token.IsTerminal())
                 {
-                    if (sourceOffset + tokensConsumed >= m_Source.Count || !MatchTerminal(node, token, sourceOffset, ref tokensConsumed))
+                    if (sourceOffset + tokensConsumed >= m_Source.Length || !MatchTerminal(node, token, sourceOffset, ref tokensConsumed))
                     {
                         return true;
                     }
@@ -427,7 +427,7 @@ namespace Lexer
             }
 
             // Second match for same token is optional, it should not return return on failure as it would discard first result, just stop matching
-            while (sourceOffset + tokensConsumed < m_Source.Count)
+            while (sourceOffset + tokensConsumed < m_Source.Length)
             {
                 if (token.Token.IsTerminal() && !MatchTerminal(node, token, sourceOffset, ref tokensConsumed))
                 {
