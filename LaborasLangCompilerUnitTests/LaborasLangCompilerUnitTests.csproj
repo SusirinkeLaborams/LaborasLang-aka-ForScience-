@@ -100,6 +100,7 @@
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_IfBlockWithoutElse.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_LogicalAnd_LogicalOr.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_LogicalNot.il" />
+    <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_MultipleNestedInstanceFieldAssignments.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_Multiplication.il" />
     <Compile Include="ILTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="ILTests\ILHelpersTests.cs" />

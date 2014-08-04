@@ -437,7 +437,6 @@ namespace LaborasLangCompiler.ILTools.Methods
         // If left side is a non static field:
         //  - Emit object instance
         //  - Emit right side
-        //  - Dup (*)
         //  - Stfld left side
         //  - Ldfld left side (*)
         // Else if left side is a non static property:
@@ -501,27 +500,31 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             if (duplicateValueInStack)
             {
-                Dup();
-
-                if (memberHasThis && isProperty)
+                if (!memberHasThis)
                 {
-                    // Right operand could be functor and left could be delegate
-                    // In that case, a delegate reference is on top of the stack
+                    Dup();
+                }
+                else if (isProperty)    // HasThis and IsProperty
+                {
+                    // Right operand could be a different type, 
+                    // so it will get casted to left operand type
                     tempVariable = AcquireTempVariable(assignmentOperator.LeftOperand.ReturnType);
+
+                    Dup();
                     Stloc(tempVariable.Index);
                 }
             }
 
             EmitStore(assignmentOperator.LeftOperand);
 
-            if (duplicateValueInStack)
+            if (duplicateValueInStack && memberHasThis)
             {
-                if (memberHasThis && isProperty)
+                if (isProperty)
                 {
                     Ldloc(tempVariable.Index);
                     ReleaseTempVariable(tempVariable);
                 }
-                else if (memberHasThis)
+                else
                 {
                     Emit(assignmentOperator.LeftOperand, false);
                 }
