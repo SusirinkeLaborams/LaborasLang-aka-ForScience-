@@ -49,13 +49,31 @@ namespace Lexer
 
         class MatchResult
         {
-            public AstNode MatchedTokens { get; private set; }
+            private AstNode m_MatchedTokens;
+
+            public bool Matched { get; private set; }
+            public AstNode MatchedTokens { get { return m_MatchedTokens; } }
             public int ConsumedTokenCount { get; private set; }
+
+            public static MatchResult Fail()
+            {
+                return new MatchResult();
+            }
+
+            private MatchResult()
+            {
+            }
 
             public MatchResult(AstNode matchedTokens, int consumedTokenCount)
             {
-                MatchedTokens = matchedTokens;
+                m_MatchedTokens = matchedTokens;
                 ConsumedTokenCount = consumedTokenCount;
+                Matched = true;
+            }
+
+            public void SetAsRootNode()
+            {
+                m_MatchedTokens.Type = TokenType.RootNode;
             }
         }
 
@@ -324,9 +342,9 @@ namespace Lexer
             var tokensConsumed = 0;
 
             MatchResult matchedNode = Match(tokensConsumed, new Condition[] { new Condition(TokenType.StatementNode, ConditionType.OneOrMore) });
-            if (matchedNode.MatchedTokens != null)
+            if (matchedNode.Matched)
             {
-                matchedNode.MatchedTokens.Type = TokenType.RootNode;
+                matchedNode.SetAsRootNode();
                 tokensConsumed += matchedNode.ConsumedTokenCount;
             }
 
@@ -367,16 +385,16 @@ namespace Lexer
             // PERF: use normal loop instead of foreach
             for (int i = 0; i < rule.Length; i++)
             {
-                if (MatchRule(node, rule[i], sourceOffset, ref tokensConsumed))
+                if (MatchRule(rule[i], sourceOffset, ref node, ref tokensConsumed))
                 {
-                    return new MatchResult(null, 0);
+                    return MatchResult.Fail();
                 }
             }
 
             return new MatchResult(node, tokensConsumed);
         }
 
-        private bool MatchTerminal(AstNode node, Condition token, int sourceOffset, ref int tokensConsumed)
+        private bool MatchTerminal(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)
         {
             if (m_Source[sourceOffset + tokensConsumed].Type == token.Token)
             {
@@ -390,11 +408,11 @@ namespace Lexer
             return false;
         }
 
-        private bool MatchNonTerminal(AstNode node, Condition token, int sourceOffset, ref int tokensConsumed)
+        private bool MatchNonTerminal(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)
         {
             foreach (var alternative in m_ParseRules[(int)token.Token].RequiredTokens)
             {
-                if (MatchCondition(sourceOffset, node, token, alternative, ref tokensConsumed))
+                if (MatchCondition(token, sourceOffset, alternative, ref node, ref tokensConsumed))
                 {
                     return true;
                 }
@@ -403,20 +421,20 @@ namespace Lexer
             return false;
         }
 
-        private bool MatchRule(AstNode node, Condition token, int sourceOffset, ref int tokensConsumed)
+        private bool MatchRule(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)
         {
             if (token.Type != ConditionType.ZeroOrMore)
             {
                 if (token.Token.IsTerminal())
                 {
-                    if (sourceOffset + tokensConsumed >= m_Source.Length || !MatchTerminal(node, token, sourceOffset, ref tokensConsumed))
+                    if (sourceOffset + tokensConsumed >= m_Source.Length || !MatchTerminal(token, sourceOffset, ref node, ref tokensConsumed))
                     {
                         return true;
                     }
                 }
                 else
                 {
-                    if (!MatchNonTerminal(node, token, sourceOffset, ref tokensConsumed))
+                    if (!MatchNonTerminal(token, sourceOffset, ref node, ref tokensConsumed))
                     {
                         return true;
                     }
@@ -431,11 +449,11 @@ namespace Lexer
             // Second match for same token is optional, it should not return return on failure as it would discard first result, just stop matching
             while (sourceOffset + tokensConsumed < m_Source.Length)
             {
-                if (token.Token.IsTerminal() && !MatchTerminal(node, token, sourceOffset, ref tokensConsumed))
+                if (token.Token.IsTerminal() && !MatchTerminal(token, sourceOffset, ref node, ref tokensConsumed))
                 {
                     break;
                 }
-                else if (!MatchNonTerminal(node, token, sourceOffset, ref tokensConsumed))
+                else if (!MatchNonTerminal(token, sourceOffset, ref node, ref tokensConsumed))
                 {
                     break;
                 }
@@ -444,17 +462,18 @@ namespace Lexer
             return false;
         }
 
-        private bool MatchCondition(int sourceOffset, AstNode node, Condition token, Condition[] alternative, ref int tokensConsumed)
+        private bool MatchCondition(Condition token, int sourceOffset, Condition[] alternative, ref AstNode node, ref int tokensConsumed)
         {
             MatchResult matchedNode = MatchWithLookup(sourceOffset + tokensConsumed, alternative);
-            var subnode = matchedNode.MatchedTokens;
-            var consumed = matchedNode.ConsumedTokenCount;
-            if (subnode == null)
+            if (!matchedNode.Matched)
             {
                 return false;
             }
             else
             {
+                var subnode = matchedNode.MatchedTokens;
+                var consumed = matchedNode.ConsumedTokenCount;
+
                 subnode.Type = token.Token;
                 node.AddChild(subnode);
                 tokensConsumed += consumed;

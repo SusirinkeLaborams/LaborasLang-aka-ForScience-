@@ -8,6 +8,8 @@ namespace Lexer
 { 
     public enum TokenType
     {
+        Unknown = 0,
+
         // Terminals
         EndOfLine,
         Comma,
@@ -53,7 +55,6 @@ namespace Lexer
         RightCurlyBracket,
         LeftBracket,
         RightBracket,
-        Unknown,
         Integer,
         Float,
         Long,

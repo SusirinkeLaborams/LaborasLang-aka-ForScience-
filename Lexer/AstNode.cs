@@ -9,14 +9,14 @@ using System.Runtime.Serialization;
 namespace Lexer
 {
     [Serializable]
-    [DataContract(IsReference = true)]
+    [DataContract(IsReference = false)]
     
-    public class AstNode
+    public struct AstNode
     {
         [DataMember]
         private List<AstNode> m_Children;
-        [DataMember]
-        private AstNode m_Parent;
+        //[DataMember]
+        //private AstNode m_Parent;
         [DataMember]
         private Token m_Content;
         [DataMember]
@@ -35,7 +35,7 @@ namespace Lexer
             }
         }
 
-        public AstNode Parent
+        /*public AstNode Parent
         {
             get
             {
@@ -45,7 +45,7 @@ namespace Lexer
             {
                 m_Parent = value;
             }
-        }
+        }*/
 
         public Token Content
         {
@@ -77,12 +77,6 @@ namespace Lexer
             Content = content;
             Type = type;
         }
-        public AstNode()
-        {
-            Parent = null;
-            Content = null;
-            Type = TokenType.Unknown;
-        }
 
         internal void AddChild(AstNode child)
         {
@@ -92,7 +86,7 @@ namespace Lexer
                 m_Children = new List<AstNode>();
             }
 
-            child.Parent = this;
+            //child.Parent = this;
             Children.Add(child);
         }
 

@@ -609,7 +609,7 @@ auto Main = int()
             var tokenizedSource = Path + fileName + "_tokens.xml";
             var serializedTree = Path + fileName + "_tree.xml";
             IEnumerable<Token> tokens = null;
-            AstNode tree = null;
+            AstNode tree = default(AstNode);
             if (Tokenize)
             {
                 tokens = Tokenizer.Tokenize(source);
