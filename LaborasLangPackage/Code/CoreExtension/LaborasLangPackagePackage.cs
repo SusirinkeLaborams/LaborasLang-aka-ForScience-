@@ -1,17 +1,15 @@
-﻿using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using System.ComponentModel.Design;
-using Microsoft.Win32;
+﻿using Microsoft.Build.Evaluation;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.OLE.Interop;
-using Microsoft.VisualStudio.Shell;
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.VisualStudio.Project;
+using Microsoft.VisualStudio.Shell;
+using System;
+using System.ComponentModel.Design;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Runtime.InteropServices;
 
-namespace LaborasLangPackage
+namespace LaborasLangPackage.CoreExtension
 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.
@@ -70,11 +68,24 @@ namespace LaborasLangPackage
         {
             base.Initialize();
 
+            CreateService();
+            RegisterToComponentManager();
+            SetEnvironmentVariables();
+
+            base.RegisterEditorFactory(new EditorFactory(this));
+            base.RegisterProjectFactory(new LaborasLangProjectFactory(this));
+        }
+
+        private void CreateService()
+        {
             var serviceContainer = (IServiceContainer)this;
             m_LanguageService = new LaborasLangService();
             m_LanguageService.SetSite(this);
             serviceContainer.AddService(typeof(LaborasLangService), m_LanguageService, true);
+        }
 
+        private void RegisterToComponentManager()
+        {
             var componentManager = (IOleComponentManager)GetService(typeof(SOleComponentManager));
 
             OLECRINFO[] crinfo = new OLECRINFO[1];
@@ -85,9 +96,16 @@ namespace LaborasLangPackage
 
             int hr = componentManager.FRegisterComponent(this, crinfo, out m_ComponentId);
             ErrorHandler.ThrowOnFailure(hr);
+        }
 
-            base.RegisterEditorFactory(new EditorFactory(this));
-            base.RegisterProjectFactory(new LaborasLangProjectFactory(this));
+        private void SetEnvironmentVariables()
+        {
+            var projectCollection = ProjectCollection.GlobalProjectCollection;
+
+            var laborasLangPackageDll = this.GetType().Assembly.Location;
+            var laborasLangPackagePath = Path.GetDirectoryName(laborasLangPackageDll);
+
+            projectCollection.SetGlobalProperty("LaborasLangPackagePath", laborasLangPackagePath);
         }
 
         protected override void Dispose(bool disposing)

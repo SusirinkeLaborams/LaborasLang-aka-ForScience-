@@ -1,11 +1,9 @@
 ﻿using Microsoft.VisualStudio.Project;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Flavor;
 using System;
 using System.Runtime.InteropServices;
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
-namespace LaborasLangPackage
+namespace LaborasLangPackage.CoreExtension
 {
     [Guid(GuidList.guidLaborasLangProjectFactoryString)]
     internal sealed class LaborasLangProjectFactory : ProjectFactory

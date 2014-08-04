@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.LexingTools;
+using LaborasLangCompilerUnitTests.ILTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -61,6 +62,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             try
             {
                 Build(sourceFile, exePath);
+                PEVerifyRunner.Run(exePath);
                 Run(exePath, testInfo);
             }
             finally

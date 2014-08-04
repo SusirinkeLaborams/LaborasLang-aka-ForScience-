@@ -3,7 +3,7 @@
 // Code size 19 (0x13)
 .maxstack 1
 .entrypoint
-.locals (
+.locals init (
 	[0] float64
 )
 

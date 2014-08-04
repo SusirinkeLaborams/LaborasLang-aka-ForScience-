@@ -7,53 +7,11 @@
 IL_0000: ret
 
 
-System.Void $Functors.$System_Void::.ctor(System.Object,System.IntPtr)
+System.Void $Functors.$System_Void::.ctor()
 // Method begins at RVA 0x2054
-// Code size 15 (0xf)
+// Code size 7 (0x7)
 .maxstack 8
 
 IL_0000: ldarg.0
-IL_0001: ldarg.1
-IL_0002: stfld object $Functors.$System_Void::objectInstance
-IL_0007: ldarg.0
-IL_0008: ldarg.2
-IL_0009: stfld native int $Functors.$System_Void::functionPtr
-IL_000e: ret
-
-
-System.Void $Functors.$System_Void::Invoke()
-// Method begins at RVA 0x2064
-// Code size 39 (0x27)
-.maxstack 8
-
-IL_0000: ldarg.0
-IL_0001: ldfld object $Functors.$System_Void::objectInstance
-IL_0006: dup
-IL_0007: brtrue.s IL_0018
-
-IL_0009: pop
-IL_000a: ldarg.0
-IL_000b: ldfld native int $Functors.$System_Void::functionPtr
-IL_0010: tail.
-IL_0012: calli System.Void()
-IL_0017: ret
-
-IL_0018: nop
-IL_0019: ldarg.0
-IL_001a: ldfld native int $Functors.$System_Void::functionPtr
-IL_001f: tail.
-IL_0021: calli System.Void()
-IL_0026: ret
-
-
-$Functors.$System_Void/$Delegate$System_Void $Functors.$System_Void::AsDelegate()
-// Method begins at RVA 0x208c
-// Code size 18 (0x12)
-.maxstack 8
-
-IL_0000: ldarg.0
-IL_0001: ldfld object $Functors.$System_Void::objectInstance
-IL_0006: ldarg.0
-IL_0007: ldfld native int $Functors.$System_Void::functionPtr
-IL_000c: newobj instance void $Functors.$System_Void/$Delegate$System_Void::.ctor(object, native int)
-IL_0011: ret
+IL_0001: call instance void [mscorlib]System.Object::.ctor()
+IL_0006: ret

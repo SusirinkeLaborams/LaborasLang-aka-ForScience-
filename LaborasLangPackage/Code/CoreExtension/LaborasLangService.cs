@@ -1,12 +1,7 @@
 ﻿using Microsoft.VisualStudio.Package;
 using Microsoft.VisualStudio.TextManager.Interop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LaborasLangPackage
+namespace LaborasLangPackage.CoreExtension
 {
     class LaborasLangService : LanguageService
     {

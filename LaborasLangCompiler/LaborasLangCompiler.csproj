@@ -73,9 +73,10 @@
     <Compile Include="ILTools\Methods\MethodEmitterBase.cs" />
     <Compile Include="ILTools\Types\DelegateEmitter.cs" />
     <Compile Include="ILTools\Methods\FunctorMethodEmitter.cs" />
-    <Compile Include="ILTools\Types\FunctorTypeEmitter.cs" />
+    <Compile Include="ILTools\Types\FunctorBaseTypeEmitter.cs" />
     <Compile Include="ILTools\ILHelpers.cs" />
     <Compile Include="ILTools\Methods\MethodEmitter.cs" />
+    <Compile Include="ILTools\Types\FunctorImplementationTypeEmitter.cs" />
     <Compile Include="ILTools\Types\TypeEmitter.cs" />
     <Compile Include="LexingTools\FileReader.cs" />
     <Compile Include="LexingTools\Lexer.cs" />

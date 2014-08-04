@@ -1,17 +1,15 @@
-﻿using System;
-using System.Diagnostics;
-using System.Globalization;
+﻿using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.OLE.Interop;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.TextManager.Interop;
+using System;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Shell;
 
 using IOleServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.OLE.Interop;
 
-namespace LaborasLangPackage
+namespace LaborasLangPackage.CoreExtension
 {
     /// <summary>
     /// Factory for creating our editor object. Extends from the IVsEditoryFactory interface

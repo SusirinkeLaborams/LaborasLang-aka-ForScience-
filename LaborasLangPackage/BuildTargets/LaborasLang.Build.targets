@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="All" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <UsingTask AssemblyFile="$(LaborasLangPackagePath)\LaborasLangPackage.dll" TaskName="LaborasLangPackage.MSBuildTasks.BuildTask"/>
+  <UsingTask AssemblyFile="$(LaborasLangPackagePath)\LaborasLangPackage.dll" TaskName="LaborasLangPackage.MSBuildTasks.CleanTask"/>
+
+  <Target Name="Build">
+    <BuildTask 
+      ToolsetPath="$(LaborasLangPackagePath)"
+      SourceFiles="@(Compile)"
+      References="@(Reference)"
+      OutputType="$(OutputType)"
+      OutputPath="$(OutputPath)"
+      AssemblyName="$(AssemblyName)"
+      EnableOptimizations="$(EnableOptimizations)"
+    />
+  </Target>
+
+  <Target Name="Clean">
+    <CleanTask
+      OutputPath="$(OutputPath)"
+    />
+  </Target>
+
+  <Target Name="ReBuild">
+    <CallTarget Targets="Clean;Build" />
+  </Target>
+  
+  <Target Name="ResolveAssemblyReferences">
+    <!-- do nothing -->
+  </Target>
+  
+  <Target Name="GetFrameworkPaths">
+    <!-- do nothing -->
+  </Target>
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <DefaultLanguageSourceExtension>.ll</DefaultLanguageSourceExtension>
+    <Language>LaborasLang</Language>
+    <TargetRuntime>Managed</TargetRuntime>
+  </PropertyGroup>
+</Project>

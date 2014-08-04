@@ -10,10 +10,10 @@ namespace LaborasLangCompiler.ILTools
 {
     internal class DelegateEmitter : TypeEmitter
     {
-        private const TypeAttributes DelegateTypeAttributes = TypeAttributes.NestedPublic | TypeAttributes.Public | TypeAttributes.Sealed;
+        private const TypeAttributes DelegateTypeAttributes = TypeAttributes.NestedPublic | TypeAttributes.Sealed;
 
-        private const MethodAttributes ConstructorAttributes = MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
-        private const MethodAttributes DelegateMethodAttributes = MethodAttributes.FamANDAssem | MethodAttributes.Family | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.VtableLayoutMask;
+        private const MethodAttributes ConstructorAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
+        private const MethodAttributes DelegateMethodAttributes = MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.VtableLayoutMask;
 
         private TypeReference voidType;
         private TypeReference objectType;
@@ -21,14 +21,20 @@ namespace LaborasLangCompiler.ILTools
         private TypeReference asyncResultType;
         private TypeReference asyncCallbackType;
 
-        public static TypeDefinition Create(AssemblyEmitter assembly, TypeDefinition declaringType, 
-            TypeReference returnType, IReadOnlyList<TypeReference> arguments) 
+        public static TypeDefinition Create(AssemblyEmitter assembly, TypeDefinition declaringType,
+            TypeReference returnType, IReadOnlyList<TypeReference> arguments)
         {
-            return new DelegateEmitter(assembly, declaringType, returnType, arguments).typeDefinition;
+            return new DelegateEmitter(assembly, "Delegate", declaringType, returnType, arguments).typeDefinition;
         }
-
-        private DelegateEmitter(AssemblyEmitter assembly, TypeDefinition declaringType, TypeReference returnType, IReadOnlyList<TypeReference> arguments) :
-            base(assembly, ComputeName(returnType, arguments), "", DelegateTypeAttributes, AssemblyRegistry.FindType(assembly, "System.MulticastDelegate"), false)
+        public static TypeDefinition Create(AssemblyEmitter assembly, string delegateName, TypeDefinition declaringType,
+            TypeReference returnType, IReadOnlyList<TypeReference> arguments)
+        {
+            return new DelegateEmitter(assembly, delegateName, declaringType, returnType, arguments).typeDefinition;
+        }
+        
+        private DelegateEmitter(AssemblyEmitter assembly, string delegateName, TypeDefinition declaringType, TypeReference returnType,
+            IReadOnlyList<TypeReference> arguments) :
+            base(assembly, delegateName, "", DelegateTypeAttributes, AssemblyRegistry.FindType(assembly, "System.MulticastDelegate"), false)
         {
             if (declaringType == null)
             {
@@ -99,11 +105,6 @@ namespace LaborasLangCompiler.ILTools
 
             invoke.ImplAttributes = MethodImplAttributes.Runtime;
             AddMethod(invoke);
-        }
-
-        private static string ComputeName(TypeReference returnType, IReadOnlyList<TypeReference> arguments)
-        {
-            return "$Delegate" + ComputeNameFromReturnAndArgumentTypes(returnType, arguments);
         }
     }
 }

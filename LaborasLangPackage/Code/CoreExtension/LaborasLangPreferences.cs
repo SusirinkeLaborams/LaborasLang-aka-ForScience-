@@ -1,11 +1,7 @@
 ﻿using Microsoft.VisualStudio.Package;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LaborasLangPackage
+namespace LaborasLangPackage.CoreExtension
 {
     public sealed class LaborasLangPreferences : LanguagePreferences
     {

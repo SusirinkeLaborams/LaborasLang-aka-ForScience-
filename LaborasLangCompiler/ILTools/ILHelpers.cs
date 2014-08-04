@@ -273,8 +273,8 @@ namespace LaborasLangCompiler.ILTools
             {
                 throw new ArgumentException("functorType isn't a functor type!");
             }
-            
-            var invokeMethod = AssemblyRegistry.GetMethods(assemblyScope, functorType, "Invoke").Single();
+
+            var invokeMethod = AssemblyRegistry.GetMethod(assemblyScope, functorType, "Invoke");
             
             arguments = invokeMethod.Parameters.Select(parameter => parameter.ParameterType).ToList();
             return invokeMethod.ReturnType;
