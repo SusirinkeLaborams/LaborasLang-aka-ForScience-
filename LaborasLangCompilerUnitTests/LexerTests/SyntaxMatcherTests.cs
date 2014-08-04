@@ -16,8 +16,8 @@ namespace LaborasLangCompilerUnitTests.LexerTests
     {
         private const int timeout = 0;
         private const string Path = @"..\..\LexerTests\Tokens\";
-        private const bool Tokenize = true;
-        private const bool Rematch = true;
+        private const bool Tokenize = false;
+        private const bool Rematch = false;
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestMethod1()
         {
@@ -666,11 +666,19 @@ auto Main = int()
             Assert.AreEqual(expected.Type, actual.Type);
 
             Assert.IsTrue(expected.Content == actual.Content);
-
-            var childs = expected.Children.Zip(actual.Children, (actualValue, expectedValue) => new { Actual = actualValue, Expected = expectedValue });
-            foreach (var child in childs)
+            
+            if (actual.Children != null)
             {
-                AssertEqual(child.Expected, child.Actual);
+                Assert.AreEqual(expected.Children.Count, actual.Children.Count);
+
+                for (int i = 0; i < expected.Children.Count; i++)
+                {
+                    AssertEqual(expected.Children[i], actual.Children[i]);
+                }
+            }
+            else
+            {
+                Assert.IsNull(expected.Children);
             }
         }
     }
