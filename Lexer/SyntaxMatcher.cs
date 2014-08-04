@@ -11,7 +11,7 @@ namespace Lexer
     {
         private Dictionary<TokenType, ParseRule> m_ParseRules;
         private List<Token> m_Source;
-        private Dictionary<Tuple<List<Condition>, int>, Tuple<AstNode, int>> m_ParsingResults;
+        private Dictionary<Tuple<IEnumerable<Condition>, int>, Tuple<AstNode, int>> m_ParsingResults;
 
         private static bool UseLookup = false;
 
@@ -28,15 +28,15 @@ namespace Lexer
             }
         }
 
-        class ConditionListComparer : IEqualityComparer<Tuple<List<Condition>, int>>
+        class ConditionListComparer : IEqualityComparer<Tuple<IEnumerable<Condition>, int>>
         {
 
-            public bool Equals(Tuple<List<Condition>, int> x, Tuple<List<Condition>, int> y)
+            public bool Equals(Tuple<IEnumerable<Condition>, int> x, Tuple<IEnumerable<Condition>, int> y)
             {
                 return x.Item2 == y.Item2 && x.Item1.SequenceEqual(y.Item1);
             }
 
-            public int GetHashCode(Tuple<List<Condition>, int> obj)
+            public int GetHashCode(Tuple<IEnumerable<Condition>, int> obj)
             {
                 int hashcode = obj.Item2;
                 foreach (Condition t in obj.Item1)
@@ -173,7 +173,7 @@ namespace Lexer
 
         public SyntaxMatcher(IEnumerable<Token> sourceTokens)
         {
-            m_ParsingResults = new Dictionary<Tuple<List<Condition>, int>, Tuple<AstNode, int>>(new ConditionListComparer());
+            m_ParsingResults = new Dictionary<Tuple<IEnumerable<Condition>, int>, Tuple<AstNode, int>>(new ConditionListComparer());
             m_ParseRules = new Dictionary<TokenType, ParseRule>();
             
             ParseRule[] AllRules = 
@@ -327,26 +327,26 @@ namespace Lexer
         }
 
 
-        private Tuple<AstNode, int> MatchWithLookup(int sourceOffset, List<Condition> rule)
+        private Tuple<AstNode, int> MatchWithLookup(int sourceOffset, IEnumerable<Condition> rule)
         {
             if (!UseLookup)
                 return Match(sourceOffset, rule);
 
             Tuple<AstNode, int> value = new Tuple<AstNode,int>(new AstNode(null, Unknown.Token), 0);
-            if(m_ParsingResults.TryGetValue(new Tuple<List<Condition>, int>(rule, sourceOffset), out value))
+            if(m_ParsingResults.TryGetValue(new Tuple<IEnumerable<Condition>, int>(rule, sourceOffset), out value))
             {
                 return value;
             }
             else
             {
                 var result = Match(sourceOffset, rule);
-                m_ParsingResults[new Tuple<List<Condition>, int>(rule, sourceOffset)] = result;
+                m_ParsingResults[new Tuple<IEnumerable<Condition>, int>(rule, sourceOffset)] = result;
                 return result;
             }
         }
     
 
-        private Tuple<AstNode, int> Match(int sourceOffset, List<Condition> rule)
+        private Tuple<AstNode, int> Match(int sourceOffset, IEnumerable<Condition> rule)
         {
             var node = new AstNode();
             

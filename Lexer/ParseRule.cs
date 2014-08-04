@@ -41,14 +41,14 @@ namespace Lexer
         {
             return new Condition[] { token };
         }
-        
-        public static Condition[] operator + (Condition a, Condition b)
+
+        public static Condition[] operator +(Condition a, Condition b)
         {
             var array = new Condition[] { a, b };
             return array;
         }
 
-        public static Condition[] operator + (Condition[] a, Condition b)
+        public static Condition[] operator +(Condition[] a, Condition b)
         {
             var array = new Condition[a.Length + 1];
             a.CopyTo(array, 0);
@@ -59,17 +59,18 @@ namespace Lexer
     struct ParseRule
     {
         public TokenType Result;
-        public IEnumerable<List<Condition>> RequiredTokens;
-        public ParseRule(Condition result, params Condition[][] requiredTokens)
+        public IEnumerable<Condition[]> RequiredTokens { get; private set; }
+
+        public ParseRule(Condition result, params Condition[][] requiredTokens) : this()
         {
             Result = result.Token;
-            RequiredTokens = requiredTokens.Select(x => x.ToList());
+            RequiredTokens = requiredTokens;
         }
 
-        public ParseRule(TokenType result, params Condition[][] requiredTokens)
+        public ParseRule(TokenType result, params Condition[][] requiredTokens) : this()
         {
             Result = result;
-            RequiredTokens = requiredTokens.Select(x => x.ToList());
+            RequiredTokens = requiredTokens;
         }
     }
 }

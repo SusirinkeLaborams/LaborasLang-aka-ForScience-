@@ -79,15 +79,19 @@ namespace Lexer
         }
         public AstNode()
         {
-            m_Children = new List<AstNode>();
             Parent = null;
-
             Content = null;
             Type = TokenType.Unknown;
         }
 
         internal void AddChild(AstNode child)
         {
+            // PERF: Many AstNodes end up empty, so don't create children List until it's needed
+            if (m_Children == null)
+            {
+                m_Children = new List<AstNode>();
+            }
+
             child.Parent = this;
             Children.Add(child);
         }
