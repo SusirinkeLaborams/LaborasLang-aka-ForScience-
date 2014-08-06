@@ -8,12 +8,18 @@ namespace Lexer
 {
     public class Tokenizer
     {
-        private static char[] Symbols = { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.', '\0', ';' };
-        private static char[] Digits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-
+        private static readonly char[] Symbols;
+        
+        static Tokenizer()
+        {
+            Symbols = new char[] { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.', '\0', ';' };
+            Array.Sort<char>(Symbols);
+        }
+       
         public static IEnumerable<Token> Tokenize(string file)
         {
             SourceReader Source = new SourceReader(file);
+            var builder = new StringBuilder();
             Location lastLocation = new Location(-1, -1);
             while (Source.Peek() != '\0')
             {
@@ -44,7 +50,7 @@ namespace Lexer
                         {
                             // String literal, scan to next ' that is not going after a \
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
 
                             token.Type = TokenType.StringLiteral;
 
@@ -72,7 +78,7 @@ namespace Lexer
                         {
                             // Duble quote string, scan to next " that is not going after a \
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.StringLiteral;
 
                             // Only peeked at the source, should save location after first pop or just increment collumn
@@ -101,7 +107,7 @@ namespace Lexer
                         {
                             // ++ += +
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             switch (Source.Peek())
@@ -135,7 +141,7 @@ namespace Lexer
                         {
                             // -- -= -
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             switch (Source.Peek())
@@ -169,7 +175,7 @@ namespace Lexer
                         {
                             // ! !=
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             switch (Source.Peek())
@@ -197,7 +203,7 @@ namespace Lexer
                         {
                             // ~ ~=
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             switch (Source.Peek())
@@ -225,7 +231,7 @@ namespace Lexer
                         {
                             // & && &=
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.BitwiseAnd;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -255,7 +261,7 @@ namespace Lexer
                         {
                             // ^ ^=
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             switch (Source.Peek())
@@ -283,7 +289,7 @@ namespace Lexer
                         {
                             // | |= || 
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.BitwiseOr;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -313,7 +319,7 @@ namespace Lexer
                         {
                             // < <= << <<=
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.Less;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -348,7 +354,7 @@ namespace Lexer
                         {
                             // > >= >>
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.More;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -383,7 +389,7 @@ namespace Lexer
                         {
                             // // / /= /* ... */
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.Divide;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -433,7 +439,7 @@ namespace Lexer
                     case '.':
                         {
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.Period;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -447,7 +453,7 @@ namespace Lexer
                     case ',':
                         {
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.Comma;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -461,7 +467,7 @@ namespace Lexer
                     case '*':
                         {
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.Multiply;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -480,7 +486,7 @@ namespace Lexer
                     case '%':
                         {
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.Remainder;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -499,7 +505,7 @@ namespace Lexer
                     case '=':
                         {
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.Assignment;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -518,7 +524,7 @@ namespace Lexer
                     case '{':
                         {
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.LeftCurlyBracket;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -532,7 +538,7 @@ namespace Lexer
                     case '}':
                         {
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.RightCurlyBracket;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -546,7 +552,7 @@ namespace Lexer
                     case '(':
                         {
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.LeftBracket;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -560,7 +566,7 @@ namespace Lexer
                     case ')':
                         {
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.RightBracket;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -574,7 +580,7 @@ namespace Lexer
                     case ';':
                         {
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Type = TokenType.EndOfLine;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -597,11 +603,11 @@ namespace Lexer
                     case '9':
                         {
                             var token = new Token();
-                            var builder = new StringBuilder();
+                            builder.Clear();
                             token.Start = Source.Location;
                             token.Type = TokenType.Integer;
                             // Consume to a symbol. Check for dot is required as it will not stop a number (0.1)
-                            while (!Symbols.Contains(Source.Peek()) || Source.Peek() == '.')
+                            while (!IsSymbol(Source.Peek()) || Source.Peek() == '.')
                             {
                                 char c = Source.Pop();
 
@@ -640,7 +646,7 @@ namespace Lexer
                                         token.Type = TokenType.MalformedToken;
                                     }
                                 }
-                                else if (!Digits.Contains(c))
+                                else if (!IsDigit(c))
                                 {
                                     token.Type = TokenType.MalformedToken;
                                 }
@@ -655,13 +661,14 @@ namespace Lexer
                     default:
                         {
                             var token = new Token();
-                            var builder = new StringBuilder();
-                            while (!Symbols.Contains(Source.Peek()))
+                            builder.Clear();
+                            while (!IsSymbol(Source.Peek()))
                             {
                                 builder.Append(Source.Pop());
                             }
-                            token.Type = GetKeywordType(token.Content);
+
                             token.Content = builder.ToString();
+                            token.Type = GetKeywordType(token.Content);
                             yield return token;
                             break;
                         }
@@ -669,6 +676,16 @@ namespace Lexer
                 }
             }
             yield break;
+        }
+
+        public static bool IsDigit(char c)
+        {
+            return c >= '0' && c <= '9';
+        }
+
+        public static bool IsSymbol(char c)
+        {
+            return !(Array.BinarySearch<char>(Symbols, c) < 0);
         }
 
         public static TokenType GetKeywordType(string symbol)
