@@ -14,11 +14,11 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class FunctionDeclarationNode : RValueNode, IContainerNode, MethodWrapper
+    class FunctionDeclarationNode : ParserNode, IContainerNode, MethodWrapper
     {
         public MethodReference MethodReference { get { return emitter.Get(); } }
-        public override RValueNodeType RValueType { get { return RValueNodeType.Function; } }
-        public override TypeReference ReturnType { get { return ILTools.AssemblyRegistry.GetFunctorType(parser.Assembly, MethodReference); } }
+        public override NodeType Type { get { return NodeType.ParserInternal; } }
+        public TypeReference ReturnType { get { return ILTools.AssemblyRegistry.GetFunctorType(parser.Assembly, MethodReference); } }
         public IEnumerable<TypeReference> ArgumentTypes { get { return MethodReference.Parameters.Select(p => p.ParameterType); } }
         private CodeBlockNode body;
         private MethodEmitter emitter;

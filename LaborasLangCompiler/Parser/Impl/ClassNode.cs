@@ -17,7 +17,7 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class ClassNode : ParserNode, IContainerNode
     {
-        public override NodeType Type { get { return NodeType.ClassNode; } }
+        public override NodeType Type { get { return NodeType.ParserInternal; } }
         private Dictionary<string, InternalField> fields;
         private List<string> globalImports;
         private ClassNode parent;

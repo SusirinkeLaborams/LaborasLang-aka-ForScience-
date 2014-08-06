@@ -14,7 +14,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class SymbolNode : ParserNode, IExpressionNode
     {
         public override NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Intermediate; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
         public TypeReference ReturnType { get { return null; } }
         public string Value { get; private set; }
         protected SymbolNode(string value, SequencePoint point) : base(point)
@@ -52,7 +52,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class TypeNode : ParserNode, IExpressionNode
     {
         public override NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Intermediate; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
         public TypeReference ReturnType { get { return null; } }
         public TypeReference ParsedType { get; private set; }
         public TypeNode(TypeReference type, SequencePoint point) : base(point)

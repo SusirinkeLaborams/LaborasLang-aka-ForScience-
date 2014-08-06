@@ -12,7 +12,7 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class ImportNode : ParserNode
     {
-        public override NodeType Type { get { return NodeType.ImportNode; } }
+        public override NodeType Type { get { return NodeType.ParserInternal; } }
         protected ImportNode(SequencePoint point) : base(point) { }
         public static void Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {

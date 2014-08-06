@@ -16,9 +16,8 @@ namespace LaborasLangCompiler.Parser
         CodeBlockNode,
         ConditionBlock,
         WhileBlock,
-        ImportNode,
-        ClassNode,
-        ReturnNode
+        ReturnNode,
+        ParserInternal
     }
     interface IParserNode
     {
@@ -32,7 +31,7 @@ namespace LaborasLangCompiler.Parser
     {
         LValue,
         RValue,
-        Intermediate//used by the parser with incompletely parsed node
+        ParserInternal//used by the parser with incompletely parsed node
     }
 
     interface IExpressionNode : IParserNode
