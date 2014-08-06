@@ -417,6 +417,73 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             Test();
         }
 
+        [TestMethod, TestCategory("IL Tests")]
+        public void TestCanEmit_MultipleNestedInstanceFieldAssignments()
+        {
+            var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+
+            var testMethod = new MethodEmitter(typeEmitter, "TestNestedInstanceFieldAssignment", voidType);
+
+            var assignmentNode = new AssignmentOperatorNode()
+            {
+                RightOperand = new LiteralNode()
+                {
+                    ReturnType = floatType,
+                    Value = 110
+                }
+            };
+
+            const int count = 10;
+            for (int i = 0; i < count; i++)
+            {
+                var field = new FieldDefinition("intField" + i.ToString(), FieldAttributes.Private, floatType);
+                typeEmitter.AddField(field);
+
+                assignmentNode.LeftOperand = new FieldNode()
+                {
+                    ObjectInstance = new ThisNode
+                    {
+                        ReturnType = field.DeclaringType
+                    },
+                    Field = field
+                };
+
+                if (i != count - 1)
+                {
+                    var newNode = new AssignmentOperatorNode()
+                    {
+                        RightOperand = assignmentNode
+                    };
+
+                    assignmentNode = newNode;
+                }
+            }
+
+            testMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new UnaryOperatorNode()
+                    {
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        ReturnType = voidType,
+                        Operand = assignmentNode
+                    }
+                }
+            });
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                }
+            };
+
+            ExpectedILFilePath = "TestCanEmit_MultipleNestedInstanceFieldAssignments.il";
+            Test();
+        }
+
         #region Binary operators
 
         #region Arithmetic operators
@@ -2501,7 +2568,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             ExpectedILFilePath = "TestCanEmit_FunctorPropertyAssignmentToDelegate.il";
             Test();
         }
-
+        
         #endregion
     }
 }

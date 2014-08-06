@@ -283,6 +283,10 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Emit((IObjectCreationNode)rvalue);
                     return;
 
+                case RValueNodeType.This:
+                    EmitThis();
+                    return;
+
                 case RValueNodeType.UnaryOperator:
                     Emit((IUnaryOperatorNode)rvalue);
                     return;
@@ -304,14 +308,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             if (!field.Field.Resolve().IsStatic)
             {
-                if (field.ObjectInstance != null)
-                {
-                    Emit(field.ObjectInstance, true);
-                }
-                else
-                {
-                    Ldarg(0);
-                }
+                Emit(field.ObjectInstance, true);
 
                 if (emitReference)
                 {
@@ -373,16 +370,9 @@ namespace LaborasLangCompiler.ILTools.Methods
                 throw new ArgumentException(string.Format("Property {0} has no getter.", property.Property.FullName));
             }
 
-            if (!getter.Resolve().IsStatic)
+            if (getter.HasThis)
             {
-                if (property.ObjectInstance != null)
-                {
-                    Emit(property.ObjectInstance, true);
-                }
-                else
-                {
-                    Ldarg(0);
-                }
+                Emit(property.ObjectInstance, true);
             }
 
             Call(getter);
@@ -447,7 +437,6 @@ namespace LaborasLangCompiler.ILTools.Methods
         // If left side is a non static field:
         //  - Emit object instance
         //  - Emit right side
-        //  - Dup (*)
         //  - Stfld left side
         //  - Ldfld left side (*)
         // Else if left side is a non static property:
@@ -473,7 +462,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             IExpressionNode objectInstance = null;
             VariableDefinition tempVariable = null;
 
-            bool isNonStaticMember = false;
+            bool memberHasThis = false;
 
             if (isField)
             {
@@ -481,7 +470,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
                 if (!fieldNode.Field.Resolve().IsStatic)
                 {
-                    isNonStaticMember = true;
+                    memberHasThis = true;
                     objectInstance = fieldNode.ObjectInstance;
                 }
             }
@@ -495,50 +484,47 @@ namespace LaborasLangCompiler.ILTools.Methods
                     throw new ArgumentException(string.Format("Property {0} has no setter!", property.FullName));
                 }
 
-                if (!property.SetMethod.IsStatic)
+                if (property.SetMethod.HasThis)
                 {
-                    isNonStaticMember = true;
+                    memberHasThis = true;
                     objectInstance = propertyNode.ObjectInstance;
                 }
             }
 
-            if (isNonStaticMember)
+            if (memberHasThis)
             {
-                if (objectInstance != null)
-                {
-                    Emit(objectInstance, true);
-                }
-                else
-                {
-                    Ldarg(0);
-                }
+                Emit(objectInstance, true);
             }
 
             EmitExpressionWithTargetType(assignmentOperator.RightOperand, assignmentOperator.LeftOperand.ReturnType);
 
             if (duplicateValueInStack)
             {
-                Dup();
-
-                if (isNonStaticMember && isProperty)
+                if (!memberHasThis)
                 {
-                    // Right operand could be functor and left could be delegate
-                    // In that case, a delegate reference is on top of the stack
+                    Dup();
+                }
+                else if (isProperty)    // HasThis and IsProperty
+                {
+                    // Right operand could be a different type, 
+                    // so it will get casted to left operand type
                     tempVariable = AcquireTempVariable(assignmentOperator.LeftOperand.ReturnType);
+
+                    Dup();
                     Stloc(tempVariable.Index);
                 }
             }
 
             EmitStore(assignmentOperator.LeftOperand);
 
-            if (duplicateValueInStack)
+            if (duplicateValueInStack && memberHasThis)
             {
-                if (isNonStaticMember && isProperty)
+                if (isProperty)
                 {
                     Ldloc(tempVariable.Index);
                     ReleaseTempVariable(tempVariable);
                 }
-                else if (isNonStaticMember)
+                else
                 {
                     Emit(assignmentOperator.LeftOperand, false);
                 }
@@ -702,14 +688,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
                 if (function.Function.HasThis)
                 {
-                    if (function.ObjectInstance != null)
-                    {
-                        Emit(function.ObjectInstance, false);
-                    }
-                    else
-                    {
-                        Ldarg(0);
-                    }
+                    Emit(function.ObjectInstance, false);
                 }
                 else
                 {
@@ -728,22 +707,10 @@ namespace LaborasLangCompiler.ILTools.Methods
             if (function.ExpressionType == ExpressionNodeType.RValue && ((IRValueNode)function).RValueType == RValueNodeType.Function)
             {   // Direct call
                 var functionNode = (IFunctionNode)function;
-                bool isStatic = functionNode.Function.Resolve().IsStatic;
 
-                if (!isStatic)
+                if (functionNode.Function.HasThis)
                 {
-                    if (functionNode.ObjectInstance != null)
-                    {
-                        Emit(functionNode.ObjectInstance, true);
-                    }
-                    else
-                    {
-                        Ldarg(0);
-                    }
-                }
-                else if (functionNode.ObjectInstance != null)
-                {
-                    throw new ArgumentException("Method is static but there is an object instance set!", "functionCall.Function.ObjectInstance");
+                    Emit(functionNode.ObjectInstance, true);
                 }
 
                 EmitArgumentsForCall(functionCall.Arguments, functionNode.Function);
@@ -949,6 +916,16 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
 
             Newobj(ctor);
+        }
+
+        protected void EmitThis()
+        {
+            if (methodDefinition.IsStatic)
+            {
+                throw new NotSupportedException("Can't emit this in a static method!");
+            }
+
+            Ldarg(0);
         }
 
         protected void Emit(IUnaryOperatorNode unaryOperator)

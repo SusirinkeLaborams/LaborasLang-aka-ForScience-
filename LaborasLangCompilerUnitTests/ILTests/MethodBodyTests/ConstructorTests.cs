@@ -80,6 +80,10 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             LeftOperand = new FieldNode()
                             {
+                                ObjectInstance = new ThisNode()
+                                {
+                                    ReturnType = backingField.DeclaringType
+                                },
                                 Field = backingField
                             },
                             RightOperand = new FunctionArgumentNode()
