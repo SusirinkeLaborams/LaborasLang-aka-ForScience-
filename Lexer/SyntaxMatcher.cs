@@ -13,7 +13,9 @@ namespace Lexer
     {
         private ParseRule[] m_ParseRules;
         private Token[] m_Source;
+#if USE_LOOKUP
         private Dictionary<Tuple<IEnumerable<Condition>, int>, MatchResult> m_ParsingResults;
+#endif
 
         private int m_LastMatched = 0;
         private int LastMatched
@@ -51,24 +53,13 @@ namespace Lexer
         {
             private AstNode m_MatchedTokens;
 
-            public bool Matched { get; private set; }
             public AstNode MatchedTokens { get { return m_MatchedTokens; } }
             public int ConsumedTokenCount { get; private set; }
-
-            public static MatchResult Fail()
-            {
-                return new MatchResult();
-            }
-
-            private MatchResult()
-            {
-            }
 
             public MatchResult(AstNode matchedTokens, int consumedTokenCount)
             {
                 m_MatchedTokens = matchedTokens;
                 ConsumedTokenCount = consumedTokenCount;
-                Matched = true;
             }
 
             public void SetAsRootNode()
@@ -77,6 +68,7 @@ namespace Lexer
             }
         }
 
+        
         #region TokenProperties
         private Condition EndOfLine { get { return TokenType.EndOfLine; } }
         private Condition Comma { get { return TokenType.Comma; } }
@@ -202,7 +194,9 @@ namespace Lexer
 
         public SyntaxMatcher(IEnumerable<Token> sourceTokens)
         {
+#if USE_LOOKUP
             m_ParsingResults = new Dictionary<Tuple<IEnumerable<Condition>, int>, MatchResult>(new ConditionListComparer());
+#endif
             m_ParseRules = new ParseRule[(int)TokenType.TokenTypeCount];
 
             ParseRule[] AllRules = 
@@ -342,16 +336,12 @@ namespace Lexer
             var tokensConsumed = 0;
 
             MatchResult matchedNode = Match(tokensConsumed, new Condition[] { new Condition(TokenType.StatementNode, ConditionType.OneOrMore) });
-            if (matchedNode.Matched)
-            {
-                matchedNode.SetAsRootNode();
-                tokensConsumed += matchedNode.ConsumedTokenCount;
-            }
-
-            if (tokensConsumed != m_Source.Length)
+            
+            if (matchedNode == null || matchedNode.ConsumedTokenCount != m_Source.Length)
             {
                 throw new Exception(String.Format("Could not match all  tokens, last matched token {0} - {1}, line {2}, column {3}", LastMatched, m_Source[LastMatched - 1].Content, m_Source[LastMatched - 1].Start.Row, m_Source[LastMatched - 1].Start.Column));
             }
+            matchedNode.SetAsRootNode();
             return matchedNode.MatchedTokens;
         }
 
@@ -385,9 +375,9 @@ namespace Lexer
             // PERF: use normal loop instead of foreach
             for (int i = 0; i < rule.Length; i++)
             {
-                if (MatchRule(rule[i], sourceOffset, ref node, ref tokensConsumed))
+                if (!MatchRule(rule[i], sourceOffset, ref node, ref tokensConsumed))
                 {
-                    return MatchResult.Fail();
+                    return default(MatchResult);
                 }
             }
 
@@ -423,49 +413,52 @@ namespace Lexer
 
         private bool MatchRule(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)
         {
-            if (token.Type != ConditionType.ZeroOrMore)
+            if (token.Type == ConditionType.One)
             {
-                if (token.Token.IsTerminal())
-                {
-                    if (sourceOffset + tokensConsumed >= m_Source.Length || !MatchTerminal(token, sourceOffset, ref node, ref tokensConsumed))
-                    {
-                        return true;
-                    }
-                }
-                else
-                {
-                    if (!MatchNonTerminal(token, sourceOffset, ref node, ref tokensConsumed))
-                    {
-                        return true;
-                    }
-                }
+                return sourceOffset + tokensConsumed < m_Source.Length
+                    && (token.Token.IsTerminal()
+                        ? MatchTerminal(token, sourceOffset, ref node, ref tokensConsumed)
+                        : MatchNonTerminal(token, sourceOffset, ref node, ref tokensConsumed));
             }
 
-            if (token.Type != ConditionType.OneOrMore && token.Type != ConditionType.ZeroOrMore)
-            {
-                return false;
-            }
-
-            // Second match for same token is optional, it should not return return on failure as it would discard first result, just stop matching
-            while (sourceOffset + tokensConsumed < m_Source.Length)
-            {
-                if (token.Token.IsTerminal() && !MatchTerminal(token, sourceOffset, ref node, ref tokensConsumed))
-                {
-                    break;
-                }
-                else if (!MatchNonTerminal(token, sourceOffset, ref node, ref tokensConsumed))
-                {
-                    break;
-                }
-            }
-
-            return false;
+            return token.Token.IsTerminal()
+                ? MatchTerminals(token, sourceOffset, ref node, ref tokensConsumed)
+                : MatchNonTerminals(token, sourceOffset, ref node, ref tokensConsumed);
         }
+
+
+        private bool MatchTerminals(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)
+        {
+            bool success = token.Type == ConditionType.ZeroOrMore;
+
+            while (sourceOffset + tokensConsumed < m_Source.Length
+                && MatchTerminal(token, sourceOffset, ref node, ref tokensConsumed))
+            {
+                success = true;
+            }
+
+            return success;
+        }
+
+
+        private bool MatchNonTerminals(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)
+        {
+            bool success = token.Type == ConditionType.ZeroOrMore;
+
+            while (sourceOffset + tokensConsumed < m_Source.Length
+                && MatchNonTerminal(token, sourceOffset, ref node, ref tokensConsumed))
+            {
+                success = true;
+            }
+
+            return success;
+        }
+
 
         private bool MatchCondition(Condition token, int sourceOffset, Condition[] alternative, ref AstNode node, ref int tokensConsumed)
         {
             MatchResult matchedNode = MatchWithLookup(sourceOffset + tokensConsumed, alternative);
-            if (!matchedNode.Matched)
+            if (matchedNode == null)
             {
                 return false;
             }
