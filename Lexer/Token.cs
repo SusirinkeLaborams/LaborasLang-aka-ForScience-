@@ -11,11 +11,6 @@ namespace Lexer
     [Serializable, DebuggerDisplay("Token, type = {m_Type}")]
     public class Token
     {
-        public Token()
-        {
-            Content = "";
-            bool a = TokenType.Unknown.IsTerminal();
-        }
         [DataMember]
         private TokenType m_Type;
         [DataMember]

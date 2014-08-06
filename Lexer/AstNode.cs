@@ -15,8 +15,6 @@ namespace Lexer
     {
         [DataMember]
         private List<AstNode> m_Children;
-        //[DataMember]
-        //private AstNode m_Parent;
         [DataMember]
         private Token m_Content;
         [DataMember]
@@ -34,18 +32,6 @@ namespace Lexer
                 m_Children = value;
             }
         }
-
-        /*public AstNode Parent
-        {
-            get
-            {
-                return m_Parent;
-            }
-            internal set
-            {
-                m_Parent = value;
-            }
-        }*/
 
         public Token Content
         {
@@ -86,7 +72,6 @@ namespace Lexer
                 m_Children = new List<AstNode>();
             }
 
-            //child.Parent = this;
             Children.Add(child);
         }
 
