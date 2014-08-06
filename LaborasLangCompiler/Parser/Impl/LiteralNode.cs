@@ -43,7 +43,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     case Lexer.FloatLiteral:
                         return new LiteralNode(Convert.ToSingle(value, CultureInfo.InvariantCulture.NumberFormat), parser.Primitives[Parser.Float], point);
                     case Lexer.BooleanLiteral:
-                        bool val = value == "true" ? true : false;
+                        bool val = value == "true";
                         return new LiteralNode(val, parser.Primitives[Parser.Bool], point);
                     default:
                         throw new ParseException(point, "Literal expected, " + type + " received");
