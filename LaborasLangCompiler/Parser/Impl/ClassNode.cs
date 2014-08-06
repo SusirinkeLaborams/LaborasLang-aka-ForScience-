@@ -178,20 +178,24 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     case Lexer.DeclarationAndAssignment:
                         var field = fields[parser.ValueOf(sentence.Children[1])];
-                        var init = field.Initializer;
+                        var init = sentence.Children[2];
+
                         if (sentence.Children[2].Token.Name == Lexer.Function)
-                            ((FunctionDeclarationNode)field.Initializer).ParseBody(sentence.Children[2].Children[1]);
-                        else
-                            init = ExpressionNode.Parse(parser, this, sentence.Children[2]);
-                        field.Initializer = init;
-                        if (field.ReturnType == null)
                         {
-                            field.ReturnType = init.ReturnType;
+                            field.Initializer = MethodNode.Parse(parser, this, init, "$" + field.Name);
                         }
                         else
                         {
-                            if (!ILHelpers.IsAssignableTo(init.ReturnType, field.ReturnType))
-                                throw new TypeException(parser.GetSequencePoint(sentence), "Type mismatch, field " + field.Name + " type " + field.ReturnType.FullName + " initialized with " + init.ReturnType.FullName);
+                            field.Initializer = ExpressionNode.Parse(parser, this, init);
+                        }
+                        if (field.ReturnType == null)
+                        {
+                            field.ReturnType = field.Initializer.ReturnType;
+                        }
+                        else
+                        {
+                            if (!ILHelpers.IsAssignableTo(field.Initializer.ReturnType, field.ReturnType))
+                                throw new TypeException(parser.GetSequencePoint(sentence), "Type mismatch, field " + field.Name + " type " + field.ReturnType.FullName + " initialized with " + field.Initializer.ReturnType.FullName);
                         }
                         break;
                     default:
@@ -221,12 +225,9 @@ namespace LaborasLangCompiler.Parser.Impl
             var name = parser.ValueOf(lexerNode.Children[1]);
             IExpressionNode init = null;
             //nera tipo, deklaruojam funkcija
-            if(lexerNode.Children.Count > 2 && lexerNode.Children[2].Token.Name == Lexer.Function)
+            if(lexerNode.Children.Count > 2 && lexerNode.Children[2].Token.Name == Lexer.Function && type == null)
             {
-                var initNode = lexerNode.Children[2];
-                init = new FunctionDeclarationNode(parser, this, parser.GetSequencePoint(initNode), initNode.Children[0], "$" + name);
-                if (type == null)
-                    type = init.ReturnType;
+                type = FunctionDeclarationNode.ParseFunctorType(parser, this, lexerNode.Children[2]);
             }
             fields.Add(name, new InternalField(type, name, init));
         }
@@ -243,6 +244,14 @@ namespace LaborasLangCompiler.Parser.Impl
                 builder.Append(String.Format("{0}{1} {2}", delim, field.Value.ReturnType.FullName, field.Key));
                 if (field.Value.Initializer != null)
                     builder.Append(" = ").Append(field.Value.Initializer.ToString());
+                delim = ", ";
+            }
+
+            builder.Append(" Methods: ");
+            delim = "";
+            foreach(var method in methods.Values)
+            {
+                builder.Append(method);
                 delim = ", ";
             }
             

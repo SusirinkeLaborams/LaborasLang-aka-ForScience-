@@ -10,7 +10,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     interface MethodWrapper
     {
         MethodReference MethodReference { get; }
-        TypeReference ResultType { get; }
+        TypeReference ReturnType { get; }
         TypeReference MethodReturnType { get; }
         IEnumerable<TypeReference> ArgumentTypes { get; }
     }

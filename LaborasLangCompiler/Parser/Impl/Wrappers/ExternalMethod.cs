@@ -11,7 +11,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     class ExternalMethod : MethodWrapper
     {
         public MethodReference MethodReference { get; private set; }
-        public TypeReference ResultType { get { return ILTools.AssemblyRegistry.GetFunctorType(assembly, MethodReference); } }
+        public TypeReference ReturnType { get { return ILTools.AssemblyRegistry.GetFunctorType(assembly, MethodReference); } }
         public TypeReference MethodReturnType { get { return MethodReference.ReturnType; } }
         public IEnumerable<TypeReference> ArgumentTypes { get { return MethodReference.Parameters.Select(p => p.ParameterType); } }
 

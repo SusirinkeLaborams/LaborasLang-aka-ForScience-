@@ -14,15 +14,12 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class FunctionDeclarationNode : RValueNode, IFunctionNode, IContainerNode, MethodWrapper
+    class FunctionDeclarationNode : RValueNode, IContainerNode, MethodWrapper
     {
-        public IExpressionNode ObjectInstance { get { return null; } }
-        public MethodReference Function { get { return emitter.Get(); } }
         public MethodReference MethodReference { get { return emitter.Get(); } }
         public override RValueNodeType RValueType { get { return RValueNodeType.Function; } }
         public override TypeReference ReturnType { get { return ILTools.AssemblyRegistry.GetFunctorType(parser.Assembly, MethodReference); } }
         public IEnumerable<TypeReference> ArgumentTypes { get { return MethodReference.Parameters.Select(p => p.ParameterType); } }
-        public TypeReference ResultType { get { return ReturnType; } }
         private CodeBlockNode body;
         private MethodEmitter emitter;
         public TypeReference MethodReturnType { get; private set; }
@@ -84,16 +81,29 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder("(Function: ");
-            builder.Append(ReturnType).Append("(");
+            StringBuilder builder = new StringBuilder("(Method: ");
+            builder.Append(MethodReference.Name).Append(" ");
+            builder.Append(MethodReturnType).Append("(");
             string delim = "";
             foreach(var arg in emitter.Get().Parameters)
             {
-                builder.Append(String.Format("{0}{1} {2}", delim, arg.ParameterType, arg.Name));
+                builder.AppendFormat("{0}{1} {2}", delim, arg.ParameterType, arg.Name);
                 delim = ", ";
             }
             builder.Append(")").Append(body.ToString()).Append(")");
             return builder.ToString();
+        }
+        public static TypeReference ParseFunctorType(Parser parser, IContainerNode parent, AstNode lexerNode)
+        {
+            var header = lexerNode.Children[0];
+            var ret = TypeNode.Parse(parser, parent, header.Children[0]);
+            var args = new List<TypeReference>();
+            for (int i = 1; i < header.Children.Count; i++)
+            {
+                var arg = header.Children[i];
+                args.Add(TypeNode.Parse(parser, parent, arg.Children[0]));
+            }
+            return ILTools.AssemblyRegistry.GetFunctorType(parser.Assembly, ret, args);
         }
     }
 }

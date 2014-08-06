@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NPEG;
@@ -32,7 +33,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 method = AssemblyRegistry.GetCompatibleMethod(methods, argTypes);
                 //TODO: make this lazy
-                return new MethodNode(method, AssemblyRegistry.GetFunctorType(parser.Assembly, method), ObjectInstance, SequencePoint);
+                return new MethodNode(new ExternalMethod(method, parser.Assembly), ObjectInstance, SequencePoint);
             }
             catch (Exception)
             {

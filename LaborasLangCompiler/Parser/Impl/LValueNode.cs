@@ -70,7 +70,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public override string ToString()
         {
-            return String.Format("(LValueNode: {0} {1} {2})", LValueType, Field.Name, ReturnType);
+            return String.Format("(LValueNode: {0} {1} {2})", LValueType, field.Name, ReturnType);
         }
     }
     /*

@@ -39,7 +39,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.Comparison:
                     return BinaryOperatorNode.Parse(parser, parent, lexerNode);
                 case Lexer.Function:
-                    return FunctionDeclarationNode.Parse(parser, parent, lexerNode);
+                    return MethodNode.Parse(parser, parent, lexerNode);
                 case Lexer.PrefixNode:
                 case Lexer.SuffixNode:
                     return UnaryOperatorNode.Parse(parser, parent, lexerNode);
