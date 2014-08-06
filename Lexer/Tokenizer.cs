@@ -49,7 +49,7 @@ namespace Lexer
                     case '\'':
                         {
                             // String literal, scan to next ' that is not going after a \
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
 
                             token.Type = TokenType.StringLiteral;
@@ -77,7 +77,7 @@ namespace Lexer
                     case '"':
                         {
                             // Duble quote string, scan to next " that is not going after a \
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.StringLiteral;
 
@@ -106,7 +106,7 @@ namespace Lexer
                     case '+':
                         {
                             // ++ += +
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -140,7 +140,7 @@ namespace Lexer
                     case '-':
                         {
                             // -- -= -
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -174,7 +174,7 @@ namespace Lexer
                     case '!':
                         {
                             // ! !=
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -202,7 +202,7 @@ namespace Lexer
                     case '~':
                         {
                             // ~ ~=
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -230,7 +230,7 @@ namespace Lexer
                     case '&':
                         {
                             // & && &=
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.BitwiseAnd;
                             builder.Append(Source.Pop());
@@ -260,7 +260,7 @@ namespace Lexer
                     case '^':
                         {
                             // ^ ^=
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -288,7 +288,7 @@ namespace Lexer
                     case '|':
                         {
                             // | |= || 
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.BitwiseOr;
                             builder.Append(Source.Pop());
@@ -318,7 +318,7 @@ namespace Lexer
                     case '<':
                         {
                             // < <= << <<=
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Less;
                             builder.Append(Source.Pop());
@@ -353,7 +353,7 @@ namespace Lexer
                     case '>':
                         {
                             // > >= >>
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.More;
                             builder.Append(Source.Pop());
@@ -388,7 +388,7 @@ namespace Lexer
                     case '/':
                         {
                             // // / /= /* ... */
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Divide;
                             builder.Append(Source.Pop());
@@ -438,7 +438,7 @@ namespace Lexer
                     #region Period
                     case '.':
                         {
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Period;
                             builder.Append(Source.Pop());
@@ -452,7 +452,7 @@ namespace Lexer
                     #region Comma
                     case ',':
                         {
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Comma;
                             builder.Append(Source.Pop());
@@ -466,7 +466,7 @@ namespace Lexer
                     #region Multiplication
                     case '*':
                         {
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Multiply;
                             builder.Append(Source.Pop());
@@ -485,7 +485,7 @@ namespace Lexer
                     #region Remainder
                     case '%':
                         {
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Remainder;
                             builder.Append(Source.Pop());
@@ -504,7 +504,7 @@ namespace Lexer
                     #region Equal
                     case '=':
                         {
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Assignment;
                             builder.Append(Source.Pop());
@@ -523,7 +523,7 @@ namespace Lexer
                     #region LeftCurlyBracket
                     case '{':
                         {
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.LeftCurlyBracket;
                             builder.Append(Source.Pop());
@@ -537,7 +537,7 @@ namespace Lexer
                     #region RightCurlyBracket
                     case '}':
                         {
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.RightCurlyBracket;
                             builder.Append(Source.Pop());
@@ -551,7 +551,7 @@ namespace Lexer
                     #region LeftBracket
                     case '(':
                         {
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.LeftBracket;
                             builder.Append(Source.Pop());
@@ -565,7 +565,7 @@ namespace Lexer
                     #region RightBracket
                     case ')':
                         {
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.RightBracket;
                             builder.Append(Source.Pop());
@@ -579,7 +579,7 @@ namespace Lexer
                     #region EndOfLine
                     case ';':
                         {
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.EndOfLine;
                             builder.Append(Source.Pop());
@@ -602,7 +602,7 @@ namespace Lexer
                     case '8':
                     case '9':
                         {
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             token.Start = Source.Location;
                             token.Type = TokenType.Integer;
@@ -660,7 +660,7 @@ namespace Lexer
                     #region Symbol
                     default:
                         {
-                            var token = new Token();
+                            var token = TokenPool.ProvideToken();
                             builder.Clear();
                             while (!IsSymbol(Source.Peek()))
                             {

@@ -8,30 +8,28 @@ using System.Diagnostics;
 
 namespace Lexer
 {
-    [Serializable, DebuggerDisplay("Token, type = {m_Type}")]
-    public class Token
+    public unsafe struct Token
     {
-        [DataMember]
-        private TokenType m_Type;
-        [DataMember]
+        private int m_Index;
         private string m_Content;
-        [DataMember]
-        private Location m_Start;
-        [DataMember]
-        private Location m_End;
 
-        #region Public parameters
+        internal Token(int index) : this()
+        {
+            m_Index = index;
+        }
+
         public TokenType Type
         {
             get
             {
-                return m_Type;
+                return (TokenPool.Ptr + m_Index)->type;
             }
             internal set
             {
-                m_Type = value;
+                (TokenPool.Ptr + m_Index)->type = value;
             }
         }
+
         public string Content
         {
             get
@@ -43,29 +41,30 @@ namespace Lexer
                 m_Content = value;
             }
         }
+
         public Location Start
         {
             get
             {
-                return m_Start;
+                return (TokenPool.Ptr + m_Index)->start;
             }
             internal set
             {
-                m_Start = value;
+                (TokenPool.Ptr + m_Index)->start = value;
             }
         }
+
         public Location End
         {
             get
             {
-                return m_End;
+                return (TokenPool.Ptr + m_Index)->end;
             }
             internal set
             {
-                m_End = value;
+                (TokenPool.Ptr + m_Index)->end = value;
             }
         }
-        #endregion Public parameters
 
         public static bool operator ==(Token a, Token b)
         {
@@ -93,6 +92,17 @@ namespace Lexer
         public bool Equals(Token other)
         {
             return this == other;
+        }
+
+        [Serializable, DebuggerDisplay("Token, type = {m_Type}")]
+        internal struct InternalToken
+        {
+            [DataMember]
+            public TokenType type;
+            [DataMember]
+            public Location start;
+            [DataMember]
+            public Location end;
         }
     }
 }

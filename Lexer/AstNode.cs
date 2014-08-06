@@ -69,7 +69,7 @@ namespace Lexer
             // PERF: Many AstNodes end up empty, so don't create children List until it's needed
             if (m_Children == null)
             {
-                m_Children = new List<AstNode>();
+                m_Children = new List<AstNode>(3);
             }
 
             Children.Add(child);
