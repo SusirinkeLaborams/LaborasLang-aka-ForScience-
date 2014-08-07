@@ -29,11 +29,13 @@ namespace Lexer
             Location lastLocation = new Location(-1, -1);
             while (Source.Peek() != '\0')
             {
+#if DEBUG
                 if (lastLocation == Source.Location)
                 {
                     throw new Exception(String.Format("infinite loop found at line {} column {} symbol {}", lastLocation.Row, lastLocation.Column, Source.Peek()));
                 }
                 else
+#endif
                 {
                     lastLocation = Source.Location;
                 }
