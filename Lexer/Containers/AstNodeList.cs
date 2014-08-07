@@ -30,10 +30,10 @@ namespace Lexer.Containers
         internal void Add(RootNode rootNode, AstNode child)
         {
             EnsureThereIsSpace(rootNode);
-
-            var dst = m_Nodes + m_Count;
-            dst->children = child.Children;
-            dst->content = child.Content;
+            
+            var dst = m_Nodes + m_Count; // PERF: this is really hot path, so don't use accessors
+            dst->children = ((AstNode.InternalNode*)&child)->children;  // that copy the whole struct
+            dst->content = ((AstNode.InternalNode*)&child)->content;
             dst->type = child.Type;
 
             m_Count++;
