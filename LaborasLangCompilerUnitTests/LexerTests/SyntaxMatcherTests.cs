@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using System.Xml;
 using System.Text;
 using System.IO;
+using Lexer.Containers;
 
 namespace LaborasLangCompilerUnitTests.LexerTests
 {
@@ -18,6 +19,8 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         private const string Path = @"..\..\LexerTests\Tokens\";
         private const bool Tokenize = false;
         private const bool Rematch = false;
+        private RootNode rootNode = new RootNode();
+
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestMethod1()
         {
@@ -612,7 +615,7 @@ auto Main = int()
             AstNode tree = default(AstNode);
             if (Tokenize)
             {
-                tokens = Tokenizer.Tokenize(source);
+                tokens = Tokenizer.Tokenize(source, rootNode);
                 var serializer = new DataContractSerializer(typeof(IEnumerable<Token>));
                 using (var writer = new XmlTextWriter(tokenizedSource, Encoding.UTF8))
                 {
@@ -633,7 +636,7 @@ auto Main = int()
             
             if(Rematch)
             {
-                var matcher = new SyntaxMatcher(tokens);
+                var matcher = new SyntaxMatcher(tokens, rootNode);
                 tree = matcher.Match();
                 var serializer = new DataContractSerializer(typeof(AstNode));
                 using (var writer = new XmlTextWriter(serializedTree, Encoding.UTF8))
@@ -654,7 +657,7 @@ auto Main = int()
             }
 
             Assert.IsNotNull(tree);
-            var syntaxMatcher = new SyntaxMatcher(tokens);
+            var syntaxMatcher = new SyntaxMatcher(tokens, rootNode);
 
             AstNode actualTree = syntaxMatcher.Match();
             Assert.IsNotNull(actualTree);
@@ -665,20 +668,12 @@ auto Main = int()
         {
             Assert.AreEqual(expected.Type, actual.Type);
 
-            Assert.IsTrue(expected.Content == actual.Content);
-            
-            if (actual.Children != null)
-            {
-                Assert.AreEqual(expected.Children.Count, actual.Children.Count);
+            Assert.IsTrue(expected.Content == actual.Content);            
+            Assert.AreEqual(expected.Children.Count, actual.Children.Count);
 
-                for (int i = 0; i < expected.Children.Count; i++)
-                {
-                    AssertEqual(expected.Children[i], actual.Children[i]);
-                }
-            }
-            else
+            for (int i = 0; i < expected.Children.Count; i++)
             {
-                Assert.IsNull(expected.Children);
+                AssertEqual(expected.Children[i], actual.Children[i]);
             }
         }
     }

@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
 using System.Xml;
 using System.Linq;
+using Lexer.Containers;
 
 namespace LaborasLangCompilerUnitTests.LexerTests
 {
@@ -16,6 +17,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
     {
         private const string Path = @"..\..\LexerTests\Tokens\";
         private const bool Tokenize = false;
+        private RootNode rootNode = new RootNode();
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizer()
@@ -218,7 +220,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             IEnumerable<Token> tokens = null;
             if (Tokenize)
             {
-                tokens = Tokenizer.Tokenize(source);
+                tokens = Tokenizer.Tokenize(source, rootNode);
                 var serializer = new DataContractSerializer(typeof(IEnumerable<Token>));
                 using (var writer = new XmlTextWriter(fileName, Encoding.UTF8))
                 {
@@ -237,7 +239,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
                 }
             }
             Assert.IsNotNull(tokens);
-            IEnumerable<Token> currentTokens = Tokenizer.Tokenize(source);
+            IEnumerable<Token> currentTokens = Tokenizer.Tokenize(source, rootNode);
             var pairs = currentTokens.Zip(tokens, (actual, expected) => new { Actual = actual, Expected = expected });
             foreach (var pair in pairs)
             {
