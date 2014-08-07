@@ -10,7 +10,7 @@ namespace Lexer.Containers
     {
         private static readonly int kTokenSize = sizeof(Token.InternalToken);
         private AstNode m_Node;
-        private bool m_Disposed = true;
+        private bool m_Disposed = false;
 
         internal PermanentAllocator Allocator { get; private set; }
         internal AstNodePool NodePool { get; private set; }
