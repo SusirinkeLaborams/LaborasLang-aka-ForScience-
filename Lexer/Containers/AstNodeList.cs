@@ -18,7 +18,7 @@ namespace Lexer.Containers
 
         public AstNode this[int index] 
         {
-            get 
+            get
             {
 #if DEBUG
                 m_Capacity = -1;

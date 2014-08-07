@@ -75,5 +75,10 @@ namespace Lexer.Containers
             [DataMember]
             public TokenType type;
         }
+
+        internal bool IsNull()
+        {
+            return m_NodePtr == null;
+        }
     }
 }

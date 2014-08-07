@@ -52,26 +52,7 @@ namespace Lexer
             }
         }
 #endif
-
-        class MatchResult
-        {
-            private AstNode m_MatchedTokens;
-
-            public AstNode MatchedTokens { get { return m_MatchedTokens; } }
-            public int ConsumedTokenCount { get; private set; }
-
-            public MatchResult(AstNode matchedTokens, int consumedTokenCount)
-            {
-                m_MatchedTokens = matchedTokens;
-                ConsumedTokenCount = consumedTokenCount;
-            }
-
-            public void SetAsRootNode()
-            {
-                m_MatchedTokens.Type = TokenType.RootNode;
-            }
-        }
-                
+                        
         #region TokenProperties
         private Condition EndOfLine { get { return TokenType.EndOfLine; } }
         private Condition Comma { get { return TokenType.Comma; } }
@@ -339,20 +320,21 @@ namespace Lexer
         {
             var tokensConsumed = 0;
 
-            MatchResult matchedNode = Match(tokensConsumed, new Condition[] { new Condition(TokenType.StatementNode, ConditionType.OneOrMore) });
-            
-            if (matchedNode == null || matchedNode.ConsumedTokenCount != m_Source.Length)
+            AstNode matchedNode = Match(0, new Condition[] { new Condition(TokenType.StatementNode, ConditionType.OneOrMore) }, ref tokensConsumed);
+
+            if (matchedNode.IsNull() || tokensConsumed != m_Source.Length)
             {
                 throw new Exception(String.Format("Could not match all  tokens, last matched token {0} - {1}, line {2}, column {3}", LastMatched, m_Source[LastMatched - 1].Content, m_Source[LastMatched - 1].Start.Row, m_Source[LastMatched - 1].Start.Column));
             }
-            matchedNode.SetAsRootNode();
-            return matchedNode.MatchedTokens;
+
+            matchedNode.Type = TokenType.RootNode;
+            return matchedNode;
         }
 
-        private MatchResult MatchWithLookup(int sourceOffset, Condition[] rule)
+        private AstNode MatchWithLookup(int sourceOffset, Condition[] rule, ref int tokensConsumed)
         {
 #if !USE_LOOKUP
-            return Match(sourceOffset, rule);
+            return Match(sourceOffset, rule, ref tokensConsumed);
 #else
             MatchResult value = new MatchResult(new AstNode(null, Unknown.Token), 0);
             if (m_ParsingResults.TryGetValue(new Tuple<IEnumerable<Condition>, int>(rule, sourceOffset), out value))
@@ -368,10 +350,9 @@ namespace Lexer
 #endif
         }
 
-        private MatchResult Match(int sourceOffset, Condition[] rule)
+        private AstNode Match(int sourceOffset, Condition[] rule, ref int tokensConsumed)
         {
             var node = m_RootNode.NodePool.ProvideNode();
-            int tokensConsumed = 0;
 
             // PERF: use normal loop instead of foreach
             for (int i = 0; i < rule.Length; i++)
@@ -379,11 +360,11 @@ namespace Lexer
                 if (!MatchRule(rule[i], sourceOffset, ref node, ref tokensConsumed))
                 {
                     node.Cleanup(m_RootNode);
-                    return default(MatchResult);
+                    return default(AstNode);
                 }
             }
 
-            return new MatchResult(node, tokensConsumed);
+            return node;
         }
 
         private bool MatchTerminal(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)
@@ -459,19 +440,18 @@ namespace Lexer
 
         private bool MatchCondition(Condition token, int sourceOffset, Condition[] alternative, ref AstNode node, ref int tokensConsumed)
         {
-            MatchResult matchedNode = MatchWithLookup(sourceOffset + tokensConsumed, alternative);
-            if (matchedNode == null)
+            var lookupTokensConsumed = 0;
+            AstNode matchedNode = MatchWithLookup(sourceOffset + tokensConsumed, alternative, ref lookupTokensConsumed);
+
+            if (matchedNode.IsNull())
             {
                 return false;
             }
             else
             {
-                var subnode = matchedNode.MatchedTokens;
-                var consumed = matchedNode.ConsumedTokenCount;
-
-                subnode.Type = token.Token;
-                node.AddChild(m_RootNode, subnode);
-                tokensConsumed += consumed;
+                matchedNode.Type = token.Token;
+                node.AddChild(m_RootNode, matchedNode);
+                tokensConsumed += lookupTokensConsumed;
                 LastMatched = tokensConsumed;
                 return true;
             }
