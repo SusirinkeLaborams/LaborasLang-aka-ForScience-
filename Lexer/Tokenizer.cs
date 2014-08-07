@@ -9,12 +9,17 @@ namespace Lexer
 {
     public class Tokenizer
     {
-        private static readonly char[] Symbols;
+        private static readonly bool[] SymbolMap;
         
         static Tokenizer()
         {
-            Symbols = new char[] { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.', '\0', ';' };
-            Array.Sort<char>(Symbols);
+            var symbols = new char[] { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.', '\0', ';' };
+            SymbolMap = new bool[char.MaxValue];
+
+            for (int i = 0; i < symbols.Length; i++)
+            {
+                SymbolMap[symbols[i]] = true;
+            }
         }
        
         public static IEnumerable<Token> Tokenize(string file, RootNode rootNode)
@@ -687,7 +692,7 @@ namespace Lexer
 
         public static bool IsSymbol(char c)
         {
-            return !(Array.BinarySearch<char>(Symbols, c) < 0);
+            return SymbolMap[c];
         }
 
         public static TokenType GetKeywordType(string symbol)
