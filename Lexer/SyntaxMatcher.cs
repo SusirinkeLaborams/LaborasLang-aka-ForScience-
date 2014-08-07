@@ -1,5 +1,6 @@
 ﻿//#define USE_LOOKUP
 
+using Lexer.Containers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,10 +10,12 @@ using System.Threading.Tasks;
 
 namespace Lexer
 {
-    public class SyntaxMatcher
+    internal class SyntaxMatcher
     {
         private ParseRule[] m_ParseRules;
         private Token[] m_Source;
+        private RootNode m_RootNode;
+
 #if USE_LOOKUP
         private Dictionary<Tuple<IEnumerable<Condition>, int>, MatchResult> m_ParsingResults;
 #endif
@@ -29,10 +32,10 @@ namespace Lexer
                 m_LastMatched = m_LastMatched < value ? value : m_LastMatched;
             }
         }
-
+        
+#if USE_LOOKUP
         class ConditionListComparer : IEqualityComparer<Tuple<IEnumerable<Condition>, int>>
         {
-
             public bool Equals(Tuple<IEnumerable<Condition>, int> x, Tuple<IEnumerable<Condition>, int> y)
             {
                 return x.Item2 == y.Item2 && x.Item1.SequenceEqual(y.Item1);
@@ -48,6 +51,7 @@ namespace Lexer
                 return hashcode;
             }
         }
+#endif
 
         class MatchResult
         {
@@ -67,8 +71,7 @@ namespace Lexer
                 m_MatchedTokens.Type = TokenType.RootNode;
             }
         }
-
-        
+                
         #region TokenProperties
         private Condition EndOfLine { get { return TokenType.EndOfLine; } }
         private Condition Comma { get { return TokenType.Comma; } }
@@ -192,12 +195,13 @@ namespace Lexer
         private Condition AssignmentOperator { get { return TokenType.AssignmentOperator; } }
         #endregion
 
-        public SyntaxMatcher(IEnumerable<Token> sourceTokens)
+        public SyntaxMatcher(IEnumerable<Token> sourceTokens, RootNode rootNode)
         {
 #if USE_LOOKUP
             m_ParsingResults = new Dictionary<Tuple<IEnumerable<Condition>, int>, MatchResult>(new ConditionListComparer());
 #endif
             m_ParseRules = new ParseRule[(int)TokenType.TokenTypeCount];
+            m_RootNode = rootNode;
 
             ParseRule[] AllRules = 
             {
@@ -345,7 +349,6 @@ namespace Lexer
             return matchedNode.MatchedTokens;
         }
 
-
         private MatchResult MatchWithLookup(int sourceOffset, Condition[] rule)
         {
 #if !USE_LOOKUP
@@ -365,11 +368,9 @@ namespace Lexer
 #endif
         }
 
-
         private MatchResult Match(int sourceOffset, Condition[] rule)
         {
-            var node = new AstNode();
-
+            var node = m_RootNode.NodePool.ProvideNode();
             int tokensConsumed = 0;
 
             // PERF: use normal loop instead of foreach
@@ -377,6 +378,7 @@ namespace Lexer
             {
                 if (!MatchRule(rule[i], sourceOffset, ref node, ref tokensConsumed))
                 {
+                    node.Cleanup(m_RootNode);
                     return default(MatchResult);
                 }
             }
@@ -388,7 +390,7 @@ namespace Lexer
         {
             if (m_Source[sourceOffset + tokensConsumed].Type == token.Token)
             {
-                node.AddTerminal(m_Source[sourceOffset + tokensConsumed]);
+                node.AddTerminal(m_RootNode, m_Source[sourceOffset + tokensConsumed]);
                 tokensConsumed++;
                 LastMatched = sourceOffset + tokensConsumed;
 
@@ -468,7 +470,7 @@ namespace Lexer
                 var consumed = matchedNode.ConsumedTokenCount;
 
                 subnode.Type = token.Token;
-                node.AddChild(subnode);
+                node.AddChild(m_RootNode, subnode);
                 tokensConsumed += consumed;
                 LastMatched = tokensConsumed;
                 return true;
@@ -484,6 +486,5 @@ namespace Lexer
         {
             return new Condition(c, ConditionType.ZeroOrMore);
         }
-
     }
 }

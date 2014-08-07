@@ -53,7 +53,6 @@ namespace Lexer
 
         public char Pop()
         {
-
             if (m_Source.Length > m_Index)
             {
                 var value = m_Source[m_Index];

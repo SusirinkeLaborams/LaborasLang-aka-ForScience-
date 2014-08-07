@@ -51,5 +51,20 @@ namespace Lexer
         {
             return !(a == b);
         }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Location)
+            {
+                return this == (Location)obj;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return m_Row << 16 + m_Column;
+        }
     }
 }

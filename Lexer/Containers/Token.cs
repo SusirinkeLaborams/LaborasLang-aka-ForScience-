@@ -6,39 +6,38 @@ using System.Threading.Tasks;
 using System.Runtime.Serialization;
 using System.Diagnostics;
 
-namespace Lexer
+namespace Lexer.Containers
 {
     public unsafe struct Token
     {
-        private int m_Index;
-        private string m_Content;
+        private InternalToken* m_TokenPtr;
 
-        internal Token(int index) : this()
+        internal Token(InternalToken* tokenPtr) : this()
         {
-            m_Index = index;
+            m_TokenPtr = tokenPtr;
         }
 
         public TokenType Type
         {
             get
             {
-                return (TokenPool.Ptr + m_Index)->type;
+                return m_TokenPtr->type;
             }
             internal set
             {
-                (TokenPool.Ptr + m_Index)->type = value;
+                m_TokenPtr->type = value;
             }
         }
 
-        public string Content
+        public FastString Content
         {
             get
             {
-                return m_Content;
+                return m_TokenPtr->content;
             }
             internal set
             {
-                m_Content = value;
+                m_TokenPtr->content = value;
             }
         }
 
@@ -46,11 +45,11 @@ namespace Lexer
         {
             get
             {
-                return (TokenPool.Ptr + m_Index)->start;
+                return m_TokenPtr->start;
             }
             internal set
             {
-                (TokenPool.Ptr + m_Index)->start = value;
+                m_TokenPtr->start = value;
             }
         }
 
@@ -58,26 +57,16 @@ namespace Lexer
         {
             get
             {
-                return (TokenPool.Ptr + m_Index)->end;
+                return m_TokenPtr->end;
             }
             internal set
             {
-                (TokenPool.Ptr + m_Index)->end = value;
+                m_TokenPtr->end = value;
             }
         }
 
         public static bool operator ==(Token a, Token b)
         {
-            if (System.Object.ReferenceEquals(a, b))
-            {
-                return true;
-            }
-
-            if (((object)a == null) || ((object)b == null))
-            {
-                return false;
-            }
-
             return a.Type == b.Type &&
                 a.Content == b.Content &&
                 a.Start == b.Start &&
@@ -89,9 +78,24 @@ namespace Lexer
             return !(a == b);
         }
 
-        public bool Equals(Token other)
+        public override bool Equals(object obj)
         {
-            return this == other;
+            if (obj is Token)
+            {
+                return this == (Token)obj;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            var typeHash = (int)m_TokenPtr->type;
+            var contentHash = m_TokenPtr->content.GetHashCode();
+            var startHash = m_TokenPtr->start.GetHashCode();
+            var endHash = m_TokenPtr->end.GetHashCode();
+            
+            return (typeHash << 24) ^ (contentHash << 16) + (startHash ^ endHash);
         }
 
         [Serializable, DebuggerDisplay("Token, type = {m_Type}")]
@@ -103,6 +107,8 @@ namespace Lexer
             public Location start;
             [DataMember]
             public Location end;
+            [DataMember]
+            public FastString content;
         }
     }
 }
