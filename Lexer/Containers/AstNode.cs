@@ -8,9 +8,6 @@ using System.Runtime.Serialization;
 
 namespace Lexer.Containers
 {
-    [Serializable]
-    [DataContract(IsReference = false)]
-
     public unsafe struct AstNode
     {
         private InternalNode* m_NodePtr;

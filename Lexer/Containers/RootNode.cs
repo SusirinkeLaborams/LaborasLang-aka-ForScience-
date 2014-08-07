@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lexer.Containers
 {
-    public unsafe class RootNode : IDisposable
+    public unsafe sealed class RootNode : IDisposable
     {
         private static readonly int kTokenSize = sizeof(Token.InternalToken);
         private AstNode m_Node;
@@ -32,23 +32,23 @@ namespace Lexer.Containers
         {
             m_Node = node;
         }
-        
+
         public void Dispose()
         {
-            m_Disposed = true;
-            Allocator.Cleanup();
-            NodePool.Cleanup();
+            if (!m_Disposed)
+            {
+                m_Disposed = true;
+                Allocator.Cleanup();
+                NodePool.Cleanup();
 
-            Allocator = null;
-            NodePool = null;
+                Allocator = null;
+                NodePool = null;
+            }
         }
 
         ~RootNode()
         {
-            if (!m_Disposed)
-            {
-                Dispose();
-            }
+            Dispose();
         }
     }
 }
