@@ -217,11 +217,11 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         IEnumerable<Token> ExecuteTest(string source, [CallerMemberName] string fileName = "")
         {
             fileName = Path + fileName + ".xml";
-            IEnumerable<Token> tokens = null;
+            Token[] tokens = null;
             if (Tokenize)
             {
                 tokens = Tokenizer.Tokenize(source, rootNode);
-                var serializer = new DataContractSerializer(typeof(IEnumerable<Token>));
+                var serializer = new DataContractSerializer(typeof(Token[]));
                 using (var writer = new XmlTextWriter(fileName, Encoding.UTF8))
                 {
                     serializer.WriteObject(writer, tokens);
@@ -234,12 +234,12 @@ namespace LaborasLangCompilerUnitTests.LexerTests
                 {
                     using (var reader = new XmlTextReader(streamReader))
                     {
-                        tokens = (IEnumerable<Token>)serializer.ReadObject(reader);
+                        tokens = (Token[])serializer.ReadObject(reader);
                     }
                 }
             }
             Assert.IsNotNull(tokens);
-            IEnumerable<Token> currentTokens = Tokenizer.Tokenize(source, rootNode);
+            Token[] currentTokens = Tokenizer.Tokenize(source, rootNode);
             var pairs = currentTokens.Zip(tokens, (actual, expected) => new { Actual = actual, Expected = expected });
             foreach (var pair in pairs)
             {

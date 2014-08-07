@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Lexer
 {
-    public class Tokenizer
+    internal class Tokenizer
     {
         private static readonly bool[] SymbolMap;
         
@@ -22,11 +22,13 @@ namespace Lexer
             }
         }
        
-        public static IEnumerable<Token> Tokenize(string file, RootNode rootNode)
+        public static Token[] Tokenize(string file, RootNode rootNode)
         {
-            SourceReader Source = new SourceReader(file);
+            var tokens = new List<Token>();
+            var Source = new SourceReader(file);
             var builder = new StringBuilder();
-            Location lastLocation = new Location(-1, -1);
+            var lastLocation = new Location(-1, -1);
+
             while (Source.Peek() != '\0')
             {
 #if DEBUG
@@ -78,8 +80,8 @@ namespace Lexer
 
                             builder.Append(Source.Pop());
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     case '"':
@@ -105,8 +107,8 @@ namespace Lexer
 
                             builder.Append(Source.Pop());
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -139,8 +141,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -173,8 +175,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -201,8 +203,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -229,8 +231,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -259,8 +261,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -287,8 +289,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -317,8 +319,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -352,8 +354,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -387,8 +389,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -438,8 +440,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -452,8 +454,8 @@ namespace Lexer
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -466,8 +468,8 @@ namespace Lexer
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -485,8 +487,8 @@ namespace Lexer
                                 token.Type = TokenType.MultiplyEqual;
                             }
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -504,8 +506,8 @@ namespace Lexer
                                 token.Type = TokenType.RemainderEqual;
                             }
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -523,8 +525,8 @@ namespace Lexer
                                 token.Type = TokenType.Equal;
                             }
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -537,8 +539,8 @@ namespace Lexer
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -551,8 +553,8 @@ namespace Lexer
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -565,8 +567,8 @@ namespace Lexer
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -579,8 +581,8 @@ namespace Lexer
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -593,8 +595,8 @@ namespace Lexer
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -660,8 +662,8 @@ namespace Lexer
                                 }
                             }
                             token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            yield return token;
+                            token.Content.Set(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -676,15 +678,18 @@ namespace Lexer
                             }
 
                             var str = builder.ToString();
-                            token.Content = new FastString(rootNode, builder);
+                            token.Content.Set(rootNode, builder);
                             token.Type = GetKeywordType(str);
-                            yield return token;
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
                 }
             }
-            yield break;
+
+            var tokenArray = new Token[tokens.Count];
+            tokens.CopyTo(tokenArray);
+            return tokenArray;
         }
 
         public static bool IsDigit(char c)

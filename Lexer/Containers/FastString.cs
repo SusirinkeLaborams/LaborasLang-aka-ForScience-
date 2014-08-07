@@ -12,14 +12,14 @@ namespace Lexer.Containers
         private const int charSize = sizeof(char);
         private char* buffer;
 
-        public FastString(RootNode rootNode, char character) : this()
+        public void Set(RootNode rootNode, char character)
         {
             buffer = (char*)rootNode.Allocator.ProvideMemory(2 * charSize);
             buffer[0] = character;
             buffer[1] = '\0';
         }
 
-        public FastString(RootNode rootNode, StringBuilder str) : this()
+        public void Set(RootNode rootNode, StringBuilder str)
         {
             buffer = (char*)rootNode.Allocator.ProvideMemory((str.Length + 1) * charSize);
 

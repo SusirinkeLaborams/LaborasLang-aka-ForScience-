@@ -176,7 +176,7 @@ namespace Lexer
         private Condition AssignmentOperator { get { return TokenType.AssignmentOperator; } }
         #endregion
 
-        public SyntaxMatcher(IEnumerable<Token> sourceTokens, RootNode rootNode)
+        public SyntaxMatcher(Token[] sourceTokens, RootNode rootNode)
         {
 #if USE_LOOKUP
             m_ParsingResults = new Dictionary<Tuple<IEnumerable<Condition>, int>, MatchResult>(new ConditionListComparer());
@@ -313,7 +313,7 @@ namespace Lexer
                 m_ParseRules[(int)rule.Result] = rule;
             }
 
-            m_Source = sourceTokens.ToArray();
+            m_Source = sourceTokens;
         }
 
         public AstNode Match()

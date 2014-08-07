@@ -611,12 +611,12 @@ auto Main = int()
         {
             var tokenizedSource = Path + fileName + "_tokens.xml";
             var serializedTree = Path + fileName + "_tree.xml";
-            IEnumerable<Token> tokens = null;
+            Token[] tokens = null;
             AstNode tree = default(AstNode);
             if (Tokenize)
             {
                 tokens = Tokenizer.Tokenize(source, rootNode);
-                var serializer = new DataContractSerializer(typeof(IEnumerable<Token>));
+                var serializer = new DataContractSerializer(typeof(Token[]));
                 using (var writer = new XmlTextWriter(tokenizedSource, Encoding.UTF8))
                 {
                     serializer.WriteObject(writer, tokens);
@@ -629,7 +629,7 @@ auto Main = int()
                 {
                     using (var reader = new XmlTextReader(streamReader))
                     {
-                        tokens = (IEnumerable<Token>)serializer.ReadObject(reader);
+                        tokens = (Token[])serializer.ReadObject(reader);
                     }
                 }
             }
