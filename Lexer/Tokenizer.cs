@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Lexer
 {
-    internal class Tokenizer
+    internal static class Tokenizer
     {
         private static readonly bool[] SymbolMap;
         private static readonly Dictionary<string, int> KeywordTypeMap;

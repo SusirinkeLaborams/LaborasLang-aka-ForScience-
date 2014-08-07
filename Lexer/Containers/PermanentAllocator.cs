@@ -9,7 +9,7 @@ namespace Lexer.Containers
 {
     // The point of this class is to provide a fast, GC-free memory allocator
     // which would last for the duration of the root lexer object
-    class PermanentAllocator
+    internal sealed class PermanentAllocator
     {
         private const int kInitialCapacity = 10000;
         private MemoryContainer[] m_MemoryContainers;
@@ -49,7 +49,7 @@ namespace Lexer.Containers
             m_MemoryContainers = null;
         }
 
-        private unsafe class MemoryContainer
+        private unsafe sealed class MemoryContainer
         {
             private int m_Capacity;
             private int m_Index;

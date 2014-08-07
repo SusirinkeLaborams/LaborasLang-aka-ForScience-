@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lexer
 {
-    class SourceReader
+    internal sealed class SourceReader
     {
         private string m_Source;
         private int m_Index;

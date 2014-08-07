@@ -13,7 +13,7 @@ namespace Lexer.Containers
     // The lexer itself allocates root node, then tries to figure out its children,
     // and if it fails, discarting everything up to the root node works as all children are allocated
     // after the root node.
-    internal class AstNodePool
+    internal sealed class AstNodePool
     {
         private const int kInitialCapacity = 10000;
         private AstNodeContainer[] m_AstNodeContainers;

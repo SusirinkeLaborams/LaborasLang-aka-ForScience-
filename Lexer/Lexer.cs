@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Lexer
 {
-    public class Lexer
+    public sealed class Lexer
     {
         public static RootNode Lex(string source)
         {

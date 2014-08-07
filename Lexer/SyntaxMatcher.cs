@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Lexer
 {
-    internal class SyntaxMatcher
+    internal sealed class SyntaxMatcher
     {
         private ParseRule[] m_ParseRules;
         private Token[] m_Source;
