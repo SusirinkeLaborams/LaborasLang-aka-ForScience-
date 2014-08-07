@@ -10,7 +10,8 @@ namespace Lexer
     internal class Tokenizer
     {
         private static readonly bool[] SymbolMap;
-        
+        private static readonly Dictionary<string, int> KeywordTypeMap;
+
         static Tokenizer()
         {
             var symbols = new char[] { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.', '\0', ';' };
@@ -20,8 +21,10 @@ namespace Lexer
             {
                 SymbolMap[symbols[i]] = true;
             }
+            
+            SetupTokenTypeMap(out KeywordTypeMap);
         }
-       
+
         public static Token[] Tokenize(string file, RootNode rootNode)
         {
             var tokens = new List<Token>();
@@ -692,108 +695,75 @@ namespace Lexer
             return tokenArray;
         }
 
-        public static bool IsDigit(char c)
+        private static bool IsDigit(char c)
         {
             return c >= '0' && c <= '9';
         }
 
-        public static bool IsSymbol(char c)
+        private static bool IsSymbol(char c)
         {
             return SymbolMap[c];
         }
 
-        public static TokenType GetKeywordType(string symbol)
+        private static TokenType GetKeywordType(string symbol)
         {
-            switch (symbol)
+            int tokenType;
+
+            if (KeywordTypeMap.TryGetValue(symbol, out tokenType))
             {
-                case "abstract":
-                    return TokenType.Abstract;
-                case "as":
-                    return TokenType.As;
-                case "base":
-                    return TokenType.Base;
-                case "break":
-                    return TokenType.Break;
-                case "case":
-                    return TokenType.Case;
-                case "catch":
-                    return TokenType.Catch;
-                case "class":
-                    return TokenType.Class;
-                case "const":
-                    return TokenType.Const;
-                case "continue":
-                    return TokenType.Continue;
-                case "default":
-                    return TokenType.Default;
-                case "do":
-                    return TokenType.Do;
-                case "extern":
-                    return TokenType.Extern;
-                case "else":
-                    return TokenType.Else;
-                case "enum":
-                    return TokenType.Enum;
-                case "false":
-                    return TokenType.False;
-                case "finally":
-                    return TokenType.Finally;
-                case "for":
-                    return TokenType.For;
-                case "goto":
-                    return TokenType.Goto;
-                case "if":
-                    return TokenType.If;
-                case "interface":
-                    return TokenType.Interface;
-                case "internal":
-                    return TokenType.Internal;
-                case "is":
-                    return TokenType.Is;
-                case "new":
-                    return TokenType.New;
-                case "null":
-                    return TokenType.Null;
-                case "namespace":
-                    return TokenType.Namespace;
-                case "out":
-                    return TokenType.Out;
-                case "override":
-                    return TokenType.Override;
-                case "private":
-                    return TokenType.Private;
-                case "protected":
-                    return TokenType.Protected;
-                case "public":
-                    return TokenType.Public;
-                case "ref":
-                    return TokenType.Ref;
-                case "return":
-                    return TokenType.Return;
-                case "switch":
-                    return TokenType.Switch;
-                case "struct":
-                    return TokenType.Struct;
-                case "sealed":
-                    return TokenType.Sealed;
-                case "static":
-                    return TokenType.Static;
-                case "this":
-                    return TokenType.This;
-                case "throw":
-                    return TokenType.Throw;
-                case "true":
-                    return TokenType.True;
-                case "try":
-                    return TokenType.Try;
-                case "using":
-                    return TokenType.Using;
-                case "virtual":
-                    return TokenType.Virtual;
-                case "while":
-                    return TokenType.While;
+                return (TokenType)tokenType;
             }
+
             return TokenType.Symbol;
+        }
+
+        public static void SetupTokenTypeMap(out Dictionary<string, int> keywordTypeMap)
+        {
+            keywordTypeMap = new Dictionary<string, int>();
+
+            keywordTypeMap["abstract"] = (int)TokenType.Abstract;
+            keywordTypeMap["as"] = (int)TokenType.As;
+            keywordTypeMap["base"] = (int)TokenType.Base;
+            keywordTypeMap["break"] = (int)TokenType.Break;
+            keywordTypeMap["case"] = (int)TokenType.Case;
+            keywordTypeMap["catch"] = (int)TokenType.Catch;
+            keywordTypeMap["class"] = (int)TokenType.Class;
+            keywordTypeMap["const"] = (int)TokenType.Const;
+            keywordTypeMap["continue"] = (int)TokenType.Continue;
+            keywordTypeMap["default"] = (int)TokenType.Default;
+            keywordTypeMap["do"] = (int)TokenType.Do;
+            keywordTypeMap["extern"] = (int)TokenType.Extern;
+            keywordTypeMap["else"] = (int)TokenType.Else;
+            keywordTypeMap["enum"] = (int)TokenType.Enum;
+            keywordTypeMap["false"] = (int)TokenType.False;
+            keywordTypeMap["finally"] = (int)TokenType.Finally;
+            keywordTypeMap["for"] = (int)TokenType.For;
+            keywordTypeMap["goto"] = (int)TokenType.Goto;
+            keywordTypeMap["if"] = (int)TokenType.If;
+            keywordTypeMap["interface"] = (int)TokenType.Interface;
+            keywordTypeMap["internal"] = (int)TokenType.Internal;
+            keywordTypeMap["is"] = (int)TokenType.Is;
+            keywordTypeMap["new"] = (int)TokenType.New;
+            keywordTypeMap["null"] = (int)TokenType.Null;
+            keywordTypeMap["namespace"] = (int)TokenType.Namespace;
+            keywordTypeMap["out"] = (int)TokenType.Out;
+            keywordTypeMap["override"] = (int)TokenType.Override;
+            keywordTypeMap["private"] = (int)TokenType.Private;
+            keywordTypeMap["protected"] = (int)TokenType.Protected;
+            keywordTypeMap["public"] = (int)TokenType.Public;
+            keywordTypeMap["ref"] = (int)TokenType.Ref;
+            keywordTypeMap["return"] = (int)TokenType.Return;
+            keywordTypeMap["switch"] = (int)TokenType.Switch;
+            keywordTypeMap["struct"] = (int)TokenType.Struct;
+            keywordTypeMap["sealed"] = (int)TokenType.Sealed;
+            keywordTypeMap["static"] = (int)TokenType.Static;
+            keywordTypeMap["this"] = (int)TokenType.This;
+            keywordTypeMap["throw"] = (int)TokenType.Throw;
+            keywordTypeMap["true"] = (int)TokenType.True;
+            keywordTypeMap["try"] = (int)TokenType.Try;
+            keywordTypeMap["using"] = (int)TokenType.Using;
+            keywordTypeMap["virtual"] = (int)TokenType.Virtual;
+            keywordTypeMap["while"] = (int)TokenType.While;
         }
     }
 }
