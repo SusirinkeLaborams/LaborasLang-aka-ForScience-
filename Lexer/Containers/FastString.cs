@@ -9,23 +9,25 @@ namespace Lexer.Containers
 {
     public unsafe struct FastString
     {
-        private const int charSize = sizeof(char);
+        private const int kSizeOfChar = sizeof(char);
         private char* buffer;
 
-        public void Set(RootNode rootNode, char character)
+        internal void Set(RootNode rootNode, char character)
         {
-            buffer = (char*)rootNode.Allocator.ProvideMemory(2 * charSize);
+            buffer = (char*)rootNode.Allocator.ProvideMemory(2 * kSizeOfChar);
             buffer[0] = character;
             buffer[1] = '\0';
         }
 
-        public void Set(RootNode rootNode, StringBuilder str)
+        internal void Set(RootNode rootNode, FastStringBuilder str)
         {
-            buffer = (char*)rootNode.Allocator.ProvideMemory((str.Length + 1) * charSize);
+            var strLength = str.Length;
+            var strPtr = str.Ptr;
+            buffer = (char*)rootNode.Allocator.ProvideMemory((strLength + 1) * kSizeOfChar);
 
-            for (int i = 0; i < str.Length; i++)
+            for (int i = 0; i < strLength; i++)
             {
-                buffer[i] = str[i];
+                buffer[i] = strPtr[i];
             }
 
             buffer[str.Length] = '\0';
@@ -73,6 +75,147 @@ namespace Lexer.Containers
             }
 
             return hash;
+        }
+    }
+    
+    internal unsafe class FastStringBuilder
+    {
+        private const int kSizeOfChar = sizeof(char);
+        private const int kInitialCapacity = 20;
+        private char* m_Ptr;
+        private int m_Length;
+        private int m_Capacity;
+
+        public char* Ptr { get { return m_Ptr; } }
+        public int Length { get { return m_Length; } }
+
+        public FastStringBuilder()
+        {
+            m_Capacity = kInitialCapacity;
+            m_Ptr = (char*)Marshal.AllocHGlobal(kSizeOfChar * m_Capacity); //(char*)m_RootNode.Allocator.ProvideMemory(kSizeOfChar * m_Capacity);
+        }
+
+        public FastStringBuilder(string str)
+        {
+            var strLength = str.Length;
+            m_Capacity = m_Length = strLength;
+            m_Ptr = (char*)Marshal.AllocHGlobal(kSizeOfChar * m_Capacity);
+
+            fixed (char* src = str)
+            {
+                for (int i = 0; i < strLength; i++)
+                {
+                    m_Ptr[i] = src[i];
+                }
+            }
+        }
+        
+        public void Append(char c)
+        {
+            if (m_Length == m_Capacity)
+            {
+                Grow();
+            }
+
+            m_Ptr[m_Length++] = c;
+        }
+
+        public void Append(string str)
+        {
+            if (m_Length + str.Length > m_Capacity)
+            {
+                Grow(m_Length + str.Length);
+            }
+
+            fixed (char* strPtr = str)
+            {
+                for (int i = 0; i < str.Length; i++)
+                {
+                    m_Ptr[m_Length++] = strPtr[i];
+                }
+            }
+        }
+
+        public void Clear()
+        {
+            m_Length = 0;
+        }
+
+        public override string ToString()
+        {
+            throw new NotSupportedException();
+        }
+
+        public override int GetHashCode()
+        {            
+            int hash = 0;
+
+            for (int i = 0; i < m_Length; i++)
+            {
+                hash = (hash << kSizeOfChar) + (hash ^ m_Ptr[i]);
+            }
+
+            return hash;
+        }
+       
+        public override bool Equals(object obj)
+        {
+            var other = obj as FastStringBuilder;
+
+            if (other != null)
+            {
+                if (other.m_Length != m_Length)
+                {
+                    return false;
+                }
+
+                for (int i = 0; i < m_Length; i++)
+                {
+                    if (m_Ptr[i] != other.m_Ptr[i])
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public static explicit operator FastStringBuilder(string str)
+        {
+            return new FastStringBuilder(str);
+        }
+
+        private void Grow()
+        {
+            m_Capacity *= 2;
+            Reallocate();
+        }
+
+        private void Grow(int targetSize)
+        {
+            do
+            {
+                m_Capacity *= 2;
+            }
+            while (targetSize > m_Capacity);
+
+            Reallocate();
+        }
+
+        private void Reallocate()
+        {
+            var oldPtr = m_Ptr;
+            m_Ptr = (char*)Marshal.AllocHGlobal(kSizeOfChar * m_Capacity);//(char*)m_RootNode.Allocator.ProvideMemory(kSizeOfChar * m_Capacity);
+
+            for (int i = 0; i < m_Length; i++)
+            {
+                m_Ptr[i] = oldPtr[i];
+            }
+
+            Marshal.FreeHGlobal((IntPtr)oldPtr);
         }
     }
 }

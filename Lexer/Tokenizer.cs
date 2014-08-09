@@ -10,7 +10,7 @@ namespace Lexer
     internal static class Tokenizer
     {
         private static readonly bool[] SymbolMap;
-        private static readonly Dictionary<string, int> KeywordTypeMap;
+        private static readonly Dictionary<FastStringBuilder, int> KeywordTypeMap;
 
         static Tokenizer()
         {
@@ -29,7 +29,7 @@ namespace Lexer
         {
             var tokens = new List<Token>();
             var Source = new SourceReader(file);
-            var builder = new StringBuilder();
+            var builder = ClaimFreeStringBuilder();
             var lastLocation = new Location(-1, -1);
 
             while (Source.Peek() != '\0')
@@ -680,15 +680,16 @@ namespace Lexer
                                 builder.Append(Source.Pop());
                             }
 
-                            var str = builder.ToString();
                             token.Content.Set(rootNode, builder);
-                            token.Type = GetKeywordType(str);
+                            token.Type = GetKeywordType(builder);
                             tokens.Add(token);
                             break;
                         }
                     #endregion
                 }
             }
+
+            YieldStringBuilder(builder);
 
             var tokenArray = new Token[tokens.Count];
             tokens.CopyTo(tokenArray);
@@ -705,7 +706,7 @@ namespace Lexer
             return SymbolMap[c];
         }
 
-        private static TokenType GetKeywordType(string symbol)
+        private static TokenType GetKeywordType(FastStringBuilder symbol)
         {
             int tokenType;
 
@@ -717,53 +718,103 @@ namespace Lexer
             return TokenType.Symbol;
         }
 
-        public static void SetupTokenTypeMap(out Dictionary<string, int> keywordTypeMap)
+        private static void SetupTokenTypeMap(out Dictionary<FastStringBuilder, int> keywordTypeMap)
         {
-            keywordTypeMap = new Dictionary<string, int>();
+            keywordTypeMap = new Dictionary<FastStringBuilder, int>();
 
-            keywordTypeMap["abstract"] = (int)TokenType.Abstract;
-            keywordTypeMap["as"] = (int)TokenType.As;
-            keywordTypeMap["base"] = (int)TokenType.Base;
-            keywordTypeMap["break"] = (int)TokenType.Break;
-            keywordTypeMap["case"] = (int)TokenType.Case;
-            keywordTypeMap["catch"] = (int)TokenType.Catch;
-            keywordTypeMap["class"] = (int)TokenType.Class;
-            keywordTypeMap["const"] = (int)TokenType.Const;
-            keywordTypeMap["continue"] = (int)TokenType.Continue;
-            keywordTypeMap["default"] = (int)TokenType.Default;
-            keywordTypeMap["do"] = (int)TokenType.Do;
-            keywordTypeMap["extern"] = (int)TokenType.Extern;
-            keywordTypeMap["else"] = (int)TokenType.Else;
-            keywordTypeMap["enum"] = (int)TokenType.Enum;
-            keywordTypeMap["false"] = (int)TokenType.False;
-            keywordTypeMap["finally"] = (int)TokenType.Finally;
-            keywordTypeMap["for"] = (int)TokenType.For;
-            keywordTypeMap["goto"] = (int)TokenType.Goto;
-            keywordTypeMap["if"] = (int)TokenType.If;
-            keywordTypeMap["interface"] = (int)TokenType.Interface;
-            keywordTypeMap["internal"] = (int)TokenType.Internal;
-            keywordTypeMap["is"] = (int)TokenType.Is;
-            keywordTypeMap["new"] = (int)TokenType.New;
-            keywordTypeMap["null"] = (int)TokenType.Null;
-            keywordTypeMap["namespace"] = (int)TokenType.Namespace;
-            keywordTypeMap["out"] = (int)TokenType.Out;
-            keywordTypeMap["override"] = (int)TokenType.Override;
-            keywordTypeMap["private"] = (int)TokenType.Private;
-            keywordTypeMap["protected"] = (int)TokenType.Protected;
-            keywordTypeMap["public"] = (int)TokenType.Public;
-            keywordTypeMap["ref"] = (int)TokenType.Ref;
-            keywordTypeMap["return"] = (int)TokenType.Return;
-            keywordTypeMap["switch"] = (int)TokenType.Switch;
-            keywordTypeMap["struct"] = (int)TokenType.Struct;
-            keywordTypeMap["sealed"] = (int)TokenType.Sealed;
-            keywordTypeMap["static"] = (int)TokenType.Static;
-            keywordTypeMap["this"] = (int)TokenType.This;
-            keywordTypeMap["throw"] = (int)TokenType.Throw;
-            keywordTypeMap["true"] = (int)TokenType.True;
-            keywordTypeMap["try"] = (int)TokenType.Try;
-            keywordTypeMap["using"] = (int)TokenType.Using;
-            keywordTypeMap["virtual"] = (int)TokenType.Virtual;
-            keywordTypeMap["while"] = (int)TokenType.While;
+            keywordTypeMap[(FastStringBuilder)"abstract"] = (int)TokenType.Abstract;
+            keywordTypeMap[(FastStringBuilder)"as"] = (int)TokenType.As;
+            keywordTypeMap[(FastStringBuilder)"base"] = (int)TokenType.Base;
+            keywordTypeMap[(FastStringBuilder)"break"] = (int)TokenType.Break;
+            keywordTypeMap[(FastStringBuilder)"case"] = (int)TokenType.Case;
+            keywordTypeMap[(FastStringBuilder)"catch"] = (int)TokenType.Catch;
+            keywordTypeMap[(FastStringBuilder)"class"] = (int)TokenType.Class;
+            keywordTypeMap[(FastStringBuilder)"const"] = (int)TokenType.Const;
+            keywordTypeMap[(FastStringBuilder)"continue"] = (int)TokenType.Continue;
+            keywordTypeMap[(FastStringBuilder)"default"] = (int)TokenType.Default;
+            keywordTypeMap[(FastStringBuilder)"do"] = (int)TokenType.Do;
+            keywordTypeMap[(FastStringBuilder)"extern"] = (int)TokenType.Extern;
+            keywordTypeMap[(FastStringBuilder)"else"] = (int)TokenType.Else;
+            keywordTypeMap[(FastStringBuilder)"enum"] = (int)TokenType.Enum;
+            keywordTypeMap[(FastStringBuilder)"false"] = (int)TokenType.False;
+            keywordTypeMap[(FastStringBuilder)"finally"] = (int)TokenType.Finally;
+            keywordTypeMap[(FastStringBuilder)"for"] = (int)TokenType.For;
+            keywordTypeMap[(FastStringBuilder)"goto"] = (int)TokenType.Goto;
+            keywordTypeMap[(FastStringBuilder)"if"] = (int)TokenType.If;
+            keywordTypeMap[(FastStringBuilder)"interface"] = (int)TokenType.Interface;
+            keywordTypeMap[(FastStringBuilder)"internal"] = (int)TokenType.Internal;
+            keywordTypeMap[(FastStringBuilder)"is"] = (int)TokenType.Is;
+            keywordTypeMap[(FastStringBuilder)"new"] = (int)TokenType.New;
+            keywordTypeMap[(FastStringBuilder)"null"] = (int)TokenType.Null;
+            keywordTypeMap[(FastStringBuilder)"namespace"] = (int)TokenType.Namespace;
+            keywordTypeMap[(FastStringBuilder)"out"] = (int)TokenType.Out;
+            keywordTypeMap[(FastStringBuilder)"override"] = (int)TokenType.Override;
+            keywordTypeMap[(FastStringBuilder)"private"] = (int)TokenType.Private;
+            keywordTypeMap[(FastStringBuilder)"protected"] = (int)TokenType.Protected;
+            keywordTypeMap[(FastStringBuilder)"public"] = (int)TokenType.Public;
+            keywordTypeMap[(FastStringBuilder)"ref"] = (int)TokenType.Ref;
+            keywordTypeMap[(FastStringBuilder)"return"] = (int)TokenType.Return;
+            keywordTypeMap[(FastStringBuilder)"switch"] = (int)TokenType.Switch;
+            keywordTypeMap[(FastStringBuilder)"struct"] = (int)TokenType.Struct;
+            keywordTypeMap[(FastStringBuilder)"sealed"] = (int)TokenType.Sealed;
+            keywordTypeMap[(FastStringBuilder)"static"] = (int)TokenType.Static;
+            keywordTypeMap[(FastStringBuilder)"this"] = (int)TokenType.This;
+            keywordTypeMap[(FastStringBuilder)"throw"] = (int)TokenType.Throw;
+            keywordTypeMap[(FastStringBuilder)"true"] = (int)TokenType.True;
+            keywordTypeMap[(FastStringBuilder)"try"] = (int)TokenType.Try;
+            keywordTypeMap[(FastStringBuilder)"using"] = (int)TokenType.Using;
+            keywordTypeMap[(FastStringBuilder)"virtual"] = (int)TokenType.Virtual;
+            keywordTypeMap[(FastStringBuilder)"while"] = (int)TokenType.While;
+        }
+
+        class StringBuilderCacheField
+        {
+            public FastStringBuilder stringBuilder;
+            public bool isTaken;
+        }
+
+        private static List<StringBuilderCacheField> s_StringBuilderCache = new List<StringBuilderCacheField>();
+
+        // FastStringBuilder allocates memory each time it needs to grow its buffer,
+        // which will not be more than log(N) where N is max length
+        // However, if we create a new instance every time we tokenize something,
+        // we're gonna be doing it all over again every time, so we cache it instead
+        private static FastStringBuilder ClaimFreeStringBuilder()
+        {
+            lock (s_StringBuilderCache)
+            {
+                for (int i = 0; i < s_StringBuilderCache.Count; i++)
+                {
+                    if (!s_StringBuilderCache[i].isTaken)
+                    {
+                        return s_StringBuilderCache[i].stringBuilder;
+                    }
+                }
+
+                var newBuilder = new FastStringBuilder();
+                s_StringBuilderCache.Add(new StringBuilderCacheField()
+                    {
+                        stringBuilder = newBuilder,
+                        isTaken = true
+                    });
+
+                return newBuilder;
+            }
+        }
+
+        private static unsafe void YieldStringBuilder(FastStringBuilder strBuilder)
+        {
+            lock (s_StringBuilderCache)
+            {
+                for (int i = 0; i < s_StringBuilderCache.Count; i++)
+                {
+                    if (strBuilder.Ptr == s_StringBuilderCache[i].stringBuilder.Ptr)
+                    {
+                        s_StringBuilderCache[i].isTaken = false;
+                        return;
+                    }
+                }
+            }
         }
     }
 }
