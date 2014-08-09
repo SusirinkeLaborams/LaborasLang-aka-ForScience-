@@ -1,1 +1,1 @@
-Type: Symbol, Start: 0, 0, End: 0, 0, Content: "symbol" 
+Type: Symbol, Start: 1, 1, End: 1, 7, Content: "symbol" 

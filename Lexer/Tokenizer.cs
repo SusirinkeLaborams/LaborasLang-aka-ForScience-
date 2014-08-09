@@ -21,7 +21,7 @@ namespace Lexer
             {
                 SymbolMap[symbols[i]] = true;
             }
-            
+
             SetupTokenTypeMap(out KeywordTypeMap);
         }
 
@@ -676,7 +676,9 @@ namespace Lexer
                     default:
                         {
                             var token = rootNode.ProvideToken();
+                            token.Start = Source.Location;
                             builder.Clear();
+
                             while (!IsSymbol(Source.Peek()))
                             {
                                 builder.Append(Source.Pop());
@@ -684,6 +686,8 @@ namespace Lexer
 
                             token.Content = new FastString(rootNode, builder);
                             token.Type = GetKeywordType(builder);
+                            token.End = Source.Location;
+
                             tokens.Add(token);
                             break;
                         }
