@@ -19,7 +19,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
     {
         private const int timeout = 0;
         private const string Path = @"..\..\LexerTests\Tokens\";
-        private const bool Rematch = true;
+
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestMethod1()
         {
@@ -34,7 +34,8 @@ a = 5;
         }
 
 
-        #region tests
+        #region Tests
+
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void DeclareFunctionTest()
         {
@@ -442,7 +443,6 @@ auto bottles = string(int count)
             ExecuteTest(source);
         }
 
-
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestCodeSampleRecursion()
         {
@@ -601,10 +601,7 @@ auto Main = int()
             ExecuteTest(source);
         }
 
-
         #endregion tests
-
-
 
         private void ExecuteTest(string source, [CallerMemberName] string fileName = "")
         {

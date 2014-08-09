@@ -18,7 +18,6 @@ namespace LaborasLangCompilerUnitTests.LexerTests
     public class TokenizerTests
     {
         private const string Path = @"..\..\LexerTests\Tokens\";
-        private const bool Tokenize = false;
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizer()
@@ -31,7 +30,9 @@ namespace LaborasLangCompilerUnitTests.LexerTests
 };";
             ExecuteTest(source);
         }
+
         #region Single branch tests
+
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerStringLiteral1()
         {
@@ -213,6 +214,5 @@ namespace LaborasLangCompilerUnitTests.LexerTests
                 Assert.AreEqual(tokenString, builder.ToString());
             }
         }
-
     }
 }
