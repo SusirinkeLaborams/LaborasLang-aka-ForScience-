@@ -65,15 +65,27 @@ namespace Lexer.Containers
             }
         }
 
-        public static bool operator ==(Token a, Token b)
+        public static bool operator ==(Token a, object b)
         {
-            return a.Type == b.Type &&
-                a.Content == b.Content &&
-                a.Start == b.Start &&
-                a.End == b.End;
+            if (object.ReferenceEquals(b, null))
+            {
+                return a.m_TokenPtr == null;
+            }
+
+            var bToken = (b as Token?).GetValueOrDefault();
+
+            if (bToken != null)
+            {
+                return a.Type == bToken.Type &&
+                    a.Content == bToken.Content &&
+                    a.Start == bToken.Start &&
+                    a.End == bToken.End;
+            }
+
+            return false;
         }
 
-        public static bool operator !=(Token a, Token b)
+        public static bool operator !=(Token a, object b)
         {
             return !(a == b);
         }
@@ -85,12 +97,7 @@ namespace Lexer.Containers
 
         public override bool Equals(object obj)
         {
-            if (obj is Token)
-            {
-                return this == (Token)obj;
-            }
-
-            return false;
+            return this == obj;
         }
 
         public override int GetHashCode()
