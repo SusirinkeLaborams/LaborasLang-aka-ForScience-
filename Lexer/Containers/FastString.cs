@@ -11,36 +11,36 @@ namespace Lexer.Containers
     {
         private const int kSizeOfChar = sizeof(char);
         private const int kSizeOfIntOverChar = sizeof(int) / sizeof(char);
-        private char* buffer;
+        private char* m_Buffer;
 
-        internal void Set(RootNode rootNode, char character)
+        internal FastString(RootNode rootNode, char character)
         {
-            buffer = (char*)rootNode.Allocator.ProvideMemory(2 * kSizeOfChar);
-            buffer[0] = character;
-            buffer[1] = '\0';
+            m_Buffer = (char*)rootNode.Allocator.ProvideMemory(2 * kSizeOfChar);
+            m_Buffer[0] = character;
+            m_Buffer[1] = '\0';
         }
 
-        internal void Set(RootNode rootNode, FastStringBuilder str)
+        internal FastString(RootNode rootNode, FastStringBuilder str)
         {
             var strLength = str.Length;
-            buffer = (char*)rootNode.Allocator.ProvideMemory((strLength + 2) * kSizeOfChar);
+            m_Buffer = (char*)rootNode.Allocator.ProvideMemory((strLength + 2) * kSizeOfChar);
 
             var count = (strLength + 1) / kSizeOfIntOverChar;
             var src = (int*)str.Ptr;
-            var dst = (int*)buffer;
+            var dst = (int*)m_Buffer;
 
             for (int i = 0; i < count; i++)
             {
                 dst[i] = src[i];
             }
 
-            buffer[str.Length] = '\0';
+            m_Buffer[str.Length] = '\0';
         }
         
         public static bool operator ==(FastString a, FastString b)
         {
-            var aBuffer = a.buffer;
-            var bBuffer = b.buffer;
+            var aBuffer = a.m_Buffer;
+            var bBuffer = b.m_Buffer;
 
             while (*aBuffer != '\0' || *bBuffer != '\0')
             {
@@ -71,7 +71,7 @@ namespace Lexer.Containers
         public override int GetHashCode()
         {
             int hash = 0;
-            var ptr = buffer;
+            var ptr = m_Buffer;
 
             while (*ptr != '\0')
             {
@@ -79,6 +79,11 @@ namespace Lexer.Containers
             }
 
             return hash;
+        }
+
+        public override string ToString()
+        {
+            return new string(m_Buffer);
         }
     }
     

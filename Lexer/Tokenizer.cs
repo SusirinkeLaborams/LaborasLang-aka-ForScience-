@@ -85,7 +85,7 @@ namespace Lexer
 
                             builder.Append(Source.Pop());
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -112,7 +112,7 @@ namespace Lexer
 
                             builder.Append(Source.Pop());
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -146,7 +146,7 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -180,7 +180,7 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -208,7 +208,7 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -236,7 +236,7 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -266,7 +266,7 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -294,7 +294,7 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -324,7 +324,7 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -359,7 +359,7 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -394,7 +394,7 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -445,7 +445,7 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -459,7 +459,7 @@ namespace Lexer
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -473,7 +473,7 @@ namespace Lexer
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -492,7 +492,7 @@ namespace Lexer
                                 token.Type = TokenType.MultiplyEqual;
                             }
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -511,7 +511,7 @@ namespace Lexer
                                 token.Type = TokenType.RemainderEqual;
                             }
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -530,7 +530,7 @@ namespace Lexer
                                 token.Type = TokenType.Equal;
                             }
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -544,7 +544,7 @@ namespace Lexer
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -558,7 +558,7 @@ namespace Lexer
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -572,7 +572,7 @@ namespace Lexer
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -586,7 +586,7 @@ namespace Lexer
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -600,7 +600,7 @@ namespace Lexer
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -667,7 +667,7 @@ namespace Lexer
                                 }
                             }
                             token.End = Source.Location;
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
                             break;
                         }
@@ -682,7 +682,7 @@ namespace Lexer
                                 builder.Append(Source.Pop());
                             }
 
-                            token.Content.Set(rootNode, builder);
+                            token.Content = new FastString(rootNode, builder);
                             token.Type = GetKeywordType(builder);
                             tokens.Add(token);
                             break;
