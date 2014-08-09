@@ -8,7 +8,7 @@ namespace Lexer.Containers
 {
     public unsafe struct AstNodeList
     {
-        private const int kInitialCapacity = 12; // Must be multiple of 4
+        private const int kInitialCapacity = 6;
 
         private AstNode* m_Nodes;
         private int m_Count;
@@ -55,10 +55,11 @@ namespace Lexer.Containers
 
                 m_Capacity *= 2;
                 m_Nodes = (AstNode*)rootNode.NodePool.ProvideNodeArrayPtr(m_Capacity);
+                var dst = m_Nodes;
 
                 for (int i = 0; i < m_Count; i++)
                 {
-                    *m_Nodes++ = *oldNodes++;
+                    *dst++ = *oldNodes++;
                 }
             }
         }
