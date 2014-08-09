@@ -1,16 +1,16 @@
-Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+Content: Type: RootNode, Start: 1, 1, End: 1, 11, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+	Content: Type: StatementNode, Start: 1, 1, End: 1, 11, Content: ""
 	Type: StatementNode
 	Children:
-		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+		Content: Type: DeclarationNode, Start: 1, 1, End: 1, 11, Content: ""
 		Type: DeclarationNode
 		Children:
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: Type, Start: 1, 1, End: 1, 6, Content: ""
 			Type: Type
 			Children:
-				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
 				Type: FullSymbol
 				Children:
 					Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "int"
@@ -25,7 +25,7 @@ Children:
 				Type: RightBracket
 				Children:
 
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: FullSymbol, Start: 1, 7, End: 1, 10, Content: ""
 			Type: FullSymbol
 			Children:
 				Content: Type: Symbol, Start: 1, 7, End: 1, 10, Content: "foo"

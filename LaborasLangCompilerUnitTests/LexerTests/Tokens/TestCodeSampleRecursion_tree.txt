@@ -1,23 +1,23 @@
-Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+Content: Type: RootNode, Start: 2, 1, End: 25, 3, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+	Content: Type: StatementNode, Start: 2, 1, End: 5, 3, Content: ""
 	Type: StatementNode
 	Children:
-		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+		Content: Type: DeclarationNode, Start: 2, 1, End: 5, 3, Content: ""
 		Type: DeclarationNode
 		Children:
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: Type, Start: 2, 1, End: 2, 5, Content: ""
 			Type: Type
 			Children:
-				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Content: Type: FullSymbol, Start: 2, 1, End: 2, 5, Content: ""
 				Type: FullSymbol
 				Children:
 					Content: Type: Symbol, Start: 2, 1, End: 2, 5, Content: "auto"
 					Type: Symbol
 					Children:
 
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: FullSymbol, Start: 2, 6, End: 2, 12, Content: ""
 			Type: FullSymbol
 			Children:
 				Content: Type: Symbol, Start: 2, 6, End: 2, 12, Content: "IsEven"
@@ -28,25 +28,25 @@ Children:
 			Type: Assignment
 			Children:
 
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: Value, Start: 2, 15, End: 5, 2, Content: ""
 			Type: Value
 			Children:
-				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Content: Type: ArithmeticNode, Start: 2, 15, End: 5, 2, Content: ""
 				Type: ArithmeticNode
 				Children:
-					Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+					Content: Type: ArithmeticSubnode, Start: 2, 15, End: 5, 2, Content: ""
 					Type: ArithmeticSubnode
 					Children:
-						Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+						Content: Type: RValue, Start: 2, 15, End: 5, 2, Content: ""
 						Type: RValue
 						Children:
-							Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+							Content: Type: Function, Start: 2, 15, End: 5, 2, Content: ""
 							Type: Function
 							Children:
-								Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+								Content: Type: Type, Start: 2, 15, End: 2, 31, Content: ""
 								Type: Type
 								Children:
-									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Content: Type: FullSymbol, Start: 2, 15, End: 2, 19, Content: ""
 									Type: FullSymbol
 									Children:
 										Content: Type: Symbol, Start: 2, 15, End: 2, 19, Content: "bool"
@@ -57,17 +57,17 @@ Children:
 									Type: LeftBracket
 									Children:
 
-									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Content: Type: Type, Start: 2, 20, End: 2, 23, Content: ""
 									Type: Type
 									Children:
-										Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+										Content: Type: FullSymbol, Start: 2, 20, End: 2, 23, Content: ""
 										Type: FullSymbol
 										Children:
 											Content: Type: Symbol, Start: 2, 20, End: 2, 23, Content: "int"
 											Type: Symbol
 											Children:
 
-									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Content: Type: FullSymbol, Start: 2, 24, End: 2, 30, Content: ""
 									Type: FullSymbol
 									Children:
 										Content: Type: Symbol, Start: 2, 24, End: 2, 30, Content: "number"
@@ -78,73 +78,73 @@ Children:
 									Type: RightBracket
 									Children:
 
-								Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+								Content: Type: CodeBlockNode, Start: 3, 2, End: 5, 2, Content: ""
 								Type: CodeBlockNode
 								Children:
 									Content: Type: LeftCurlyBracket, Start: 3, 2, End: 3, 2, Content: "{"
 									Type: LeftCurlyBracket
 									Children:
 
-									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Content: Type: StatementNode, Start: 4, 5, End: 4, 28, Content: ""
 									Type: StatementNode
 									Children:
 										Content: Type: Return, Start: 4, 5, End: 4, 11, Content: "return"
 										Type: Return
 										Children:
 
-										Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+										Content: Type: Value, Start: 4, 12, End: 4, 27, Content: ""
 										Type: Value
 										Children:
-											Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+											Content: Type: ArithmeticNode, Start: 4, 12, End: 4, 27, Content: ""
 											Type: ArithmeticNode
 											Children:
-												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Content: Type: ArithmeticSubnode, Start: 4, 12, End: 4, 18, Content: ""
 												Type: ArithmeticSubnode
 												Children:
-													Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+													Content: Type: RValue, Start: 4, 12, End: 4, 18, Content: ""
 													Type: RValue
 													Children:
-														Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+														Content: Type: FullSymbol, Start: 4, 12, End: 4, 18, Content: ""
 														Type: FullSymbol
 														Children:
 															Content: Type: Symbol, Start: 4, 12, End: 4, 18, Content: "number"
 															Type: Symbol
 															Children:
 
-												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Content: Type: ArithmeticSubnode, Start: 4, 20, End: 4, 20, Content: ""
 												Type: ArithmeticSubnode
 												Children:
-													Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+													Content: Type: Operator, Start: 4, 20, End: 4, 20, Content: ""
 													Type: Operator
 													Children:
 														Content: Type: Remainder, Start: 4, 20, End: 4, 20, Content: "%"
 														Type: Remainder
 														Children:
 
-												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Content: Type: ArithmeticSubnode, Start: 4, 21, End: 4, 22, Content: ""
 												Type: ArithmeticSubnode
 												Children:
-													Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+													Content: Type: RValue, Start: 4, 21, End: 4, 22, Content: ""
 													Type: RValue
 													Children:
 														Content: Type: Integer, Start: 4, 21, End: 4, 22, Content: "2"
 														Type: Integer
 														Children:
 
-												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Content: Type: ArithmeticSubnode, Start: 4, 24, End: 4, 25, Content: ""
 												Type: ArithmeticSubnode
 												Children:
-													Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+													Content: Type: Operator, Start: 4, 24, End: 4, 25, Content: ""
 													Type: Operator
 													Children:
 														Content: Type: Equal, Start: 4, 24, End: 4, 25, Content: "=="
 														Type: Equal
 														Children:
 
-												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Content: Type: ArithmeticSubnode, Start: 4, 26, End: 4, 27, Content: ""
 												Type: ArithmeticSubnode
 												Children:
-													Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+													Content: Type: RValue, Start: 4, 26, End: 4, 27, Content: ""
 													Type: RValue
 													Children:
 														Content: Type: Integer, Start: 4, 26, End: 4, 27, Content: "0"
@@ -163,23 +163,23 @@ Children:
 			Type: EndOfLine
 			Children:
 
-	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+	Content: Type: StatementNode, Start: 7, 1, End: 19, 3, Content: ""
 	Type: StatementNode
 	Children:
-		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+		Content: Type: DeclarationNode, Start: 7, 1, End: 19, 3, Content: ""
 		Type: DeclarationNode
 		Children:
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: Type, Start: 7, 1, End: 7, 5, Content: ""
 			Type: Type
 			Children:
-				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Content: Type: FullSymbol, Start: 7, 1, End: 7, 5, Content: ""
 				Type: FullSymbol
 				Children:
 					Content: Type: Symbol, Start: 7, 1, End: 7, 5, Content: "auto"
 					Type: Symbol
 					Children:
 
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: FullSymbol, Start: 7, 6, End: 7, 10, Content: ""
 			Type: FullSymbol
 			Children:
 				Content: Type: Symbol, Start: 7, 6, End: 7, 10, Content: "Func"
@@ -190,25 +190,25 @@ Children:
 			Type: Assignment
 			Children:
 
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: Value, Start: 7, 13, End: 19, 2, Content: ""
 			Type: Value
 			Children:
-				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Content: Type: ArithmeticNode, Start: 7, 13, End: 19, 2, Content: ""
 				Type: ArithmeticNode
 				Children:
-					Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+					Content: Type: ArithmeticSubnode, Start: 7, 13, End: 19, 2, Content: ""
 					Type: ArithmeticSubnode
 					Children:
-						Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+						Content: Type: RValue, Start: 7, 13, End: 19, 2, Content: ""
 						Type: RValue
 						Children:
-							Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+							Content: Type: Function, Start: 7, 13, End: 19, 2, Content: ""
 							Type: Function
 							Children:
-								Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+								Content: Type: Type, Start: 7, 13, End: 7, 24, Content: ""
 								Type: Type
 								Children:
-									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Content: Type: FullSymbol, Start: 7, 13, End: 7, 17, Content: ""
 									Type: FullSymbol
 									Children:
 										Content: Type: Symbol, Start: 7, 13, End: 7, 17, Content: "void"
@@ -219,17 +219,17 @@ Children:
 									Type: LeftBracket
 									Children:
 
-									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Content: Type: Type, Start: 7, 18, End: 7, 21, Content: ""
 									Type: Type
 									Children:
-										Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+										Content: Type: FullSymbol, Start: 7, 18, End: 7, 21, Content: ""
 										Type: FullSymbol
 										Children:
 											Content: Type: Symbol, Start: 7, 18, End: 7, 21, Content: "int"
 											Type: Symbol
 											Children:
 
-									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Content: Type: FullSymbol, Start: 7, 22, End: 7, 23, Content: ""
 									Type: FullSymbol
 									Children:
 										Content: Type: Symbol, Start: 7, 22, End: 7, 23, Content: "i"
@@ -240,17 +240,17 @@ Children:
 									Type: RightBracket
 									Children:
 
-								Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+								Content: Type: CodeBlockNode, Start: 8, 2, End: 19, 2, Content: ""
 								Type: CodeBlockNode
 								Children:
 									Content: Type: LeftCurlyBracket, Start: 8, 2, End: 8, 2, Content: "{"
 									Type: LeftCurlyBracket
 									Children:
 
-									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Content: Type: StatementNode, Start: 9, 2, End: 18, 3, Content: ""
 									Type: StatementNode
 									Children:
-										Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+										Content: Type: ConditionalSentence, Start: 9, 2, End: 18, 3, Content: ""
 										Type: ConditionalSentence
 										Children:
 											Content: Type: If, Start: 9, 2, End: 9, 4, Content: "if"
@@ -261,22 +261,22 @@ Children:
 											Type: LeftBracket
 											Children:
 
-											Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+											Content: Type: Value, Start: 9, 6, End: 9, 15, Content: ""
 											Type: Value
 											Children:
-												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Content: Type: ArithmeticNode, Start: 9, 6, End: 9, 15, Content: ""
 												Type: ArithmeticNode
 												Children:
-													Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+													Content: Type: ArithmeticSubnode, Start: 9, 6, End: 9, 15, Content: ""
 													Type: ArithmeticSubnode
 													Children:
-														Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+														Content: Type: RValue, Start: 9, 6, End: 9, 15, Content: ""
 														Type: RValue
 														Children:
-															Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+															Content: Type: FunctionCall, Start: 9, 6, End: 9, 15, Content: ""
 															Type: FunctionCall
 															Children:
-																Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																Content: Type: FullSymbol, Start: 9, 6, End: 9, 12, Content: ""
 																Type: FullSymbol
 																Children:
 																	Content: Type: Symbol, Start: 9, 6, End: 9, 12, Content: "IsEven"
@@ -287,19 +287,19 @@ Children:
 																Type: LeftBracket
 																Children:
 
-																Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																Content: Type: Value, Start: 9, 13, End: 9, 14, Content: ""
 																Type: Value
 																Children:
-																	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																	Content: Type: ArithmeticNode, Start: 9, 13, End: 9, 14, Content: ""
 																	Type: ArithmeticNode
 																	Children:
-																		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																		Content: Type: ArithmeticSubnode, Start: 9, 13, End: 9, 14, Content: ""
 																		Type: ArithmeticSubnode
 																		Children:
-																			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																			Content: Type: RValue, Start: 9, 13, End: 9, 14, Content: ""
 																			Type: RValue
 																			Children:
-																				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																				Content: Type: FullSymbol, Start: 9, 13, End: 9, 14, Content: ""
 																				Type: FullSymbol
 																				Children:
 																					Content: Type: Symbol, Start: 9, 13, End: 9, 14, Content: "i"
@@ -314,30 +314,30 @@ Children:
 											Type: RightBracket
 											Children:
 
-											Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+											Content: Type: StatementNode, Start: 10, 3, End: 13, 3, Content: ""
 											Type: StatementNode
 											Children:
-												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Content: Type: CodeBlockNode, Start: 10, 3, End: 13, 3, Content: ""
 												Type: CodeBlockNode
 												Children:
 													Content: Type: LeftCurlyBracket, Start: 10, 3, End: 10, 3, Content: "{"
 													Type: LeftCurlyBracket
 													Children:
 
-													Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+													Content: Type: StatementNode, Start: 11, 3, End: 11, 46, Content: ""
 													Type: StatementNode
 													Children:
-														Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+														Content: Type: FunctionCall, Start: 11, 3, End: 11, 45, Content: ""
 														Type: FunctionCall
 														Children:
-															Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+															Content: Type: FullSymbol, Start: 11, 3, End: 11, 27, Content: ""
 															Type: FullSymbol
 															Children:
 																Content: Type: Symbol, Start: 11, 3, End: 11, 9, Content: "System"
 																Type: Symbol
 																Children:
 
-																Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																Content: Type: SubSymbol, Start: 11, 10, End: 11, 17, Content: ""
 																Type: SubSymbol
 																Children:
 																	Content: Type: Period, Start: 11, 10, End: 11, 10, Content: "."
@@ -348,7 +348,7 @@ Children:
 																	Type: Symbol
 																	Children:
 
-																Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																Content: Type: SubSymbol, Start: 11, 18, End: 11, 27, Content: ""
 																Type: SubSymbol
 																Children:
 																	Content: Type: Period, Start: 11, 18, End: 11, 18, Content: "."
@@ -363,42 +363,42 @@ Children:
 															Type: LeftBracket
 															Children:
 
-															Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+															Content: Type: Value, Start: 11, 29, End: 11, 41, Content: ""
 															Type: Value
 															Children:
-																Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																Content: Type: ArithmeticNode, Start: 11, 29, End: 11, 41, Content: ""
 																Type: ArithmeticNode
 																Children:
-																	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																	Content: Type: ArithmeticSubnode, Start: 11, 29, End: 11, 41, Content: ""
 																	Type: ArithmeticSubnode
 																	Children:
-																		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																		Content: Type: RValue, Start: 11, 29, End: 11, 41, Content: ""
 																		Type: RValue
 																		Children:
 																			Content: Type: StringLiteral, Start: 11, 29, End: 11, 41, Content: ""{0} is even""
 																			Type: StringLiteral
 																			Children:
 
-															Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+															Content: Type: FunctionArgument, Start: 11, 42, End: 11, 44, Content: ""
 															Type: FunctionArgument
 															Children:
 																Content: Type: Comma, Start: 11, 42, End: 11, 42, Content: ","
 																Type: Comma
 																Children:
 
-																Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																Content: Type: Value, Start: 11, 43, End: 11, 44, Content: ""
 																Type: Value
 																Children:
-																	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																	Content: Type: ArithmeticNode, Start: 11, 43, End: 11, 44, Content: ""
 																	Type: ArithmeticNode
 																	Children:
-																		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																		Content: Type: ArithmeticSubnode, Start: 11, 43, End: 11, 44, Content: ""
 																		Type: ArithmeticSubnode
 																		Children:
-																			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																			Content: Type: RValue, Start: 11, 43, End: 11, 44, Content: ""
 																			Type: RValue
 																			Children:
-																				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																				Content: Type: FullSymbol, Start: 11, 43, End: 11, 44, Content: ""
 																				Type: FullSymbol
 																				Children:
 																					Content: Type: Symbol, Start: 11, 43, End: 11, 44, Content: "i"
@@ -413,13 +413,13 @@ Children:
 														Type: EndOfLine
 														Children:
 
-													Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+													Content: Type: StatementNode, Start: 12, 3, End: 12, 15, Content: ""
 													Type: StatementNode
 													Children:
-														Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+														Content: Type: FunctionCall, Start: 12, 3, End: 12, 14, Content: ""
 														Type: FunctionCall
 														Children:
-															Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+															Content: Type: FullSymbol, Start: 12, 3, End: 12, 7, Content: ""
 															Type: FullSymbol
 															Children:
 																Content: Type: Symbol, Start: 12, 3, End: 12, 7, Content: "Func"
@@ -430,39 +430,39 @@ Children:
 															Type: LeftBracket
 															Children:
 
-															Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+															Content: Type: Value, Start: 12, 8, End: 12, 13, Content: ""
 															Type: Value
 															Children:
-																Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																Content: Type: ArithmeticNode, Start: 12, 8, End: 12, 13, Content: ""
 																Type: ArithmeticNode
 																Children:
-																	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																	Content: Type: ArithmeticSubnode, Start: 12, 8, End: 12, 9, Content: ""
 																	Type: ArithmeticSubnode
 																	Children:
-																		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																		Content: Type: RValue, Start: 12, 8, End: 12, 9, Content: ""
 																		Type: RValue
 																		Children:
-																			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																			Content: Type: FullSymbol, Start: 12, 8, End: 12, 9, Content: ""
 																			Type: FullSymbol
 																			Children:
 																				Content: Type: Symbol, Start: 12, 8, End: 12, 9, Content: "i"
 																				Type: Symbol
 																				Children:
 
-																	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																	Content: Type: ArithmeticSubnode, Start: 12, 11, End: 12, 11, Content: ""
 																	Type: ArithmeticSubnode
 																	Children:
-																		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																		Content: Type: Operator, Start: 12, 11, End: 12, 11, Content: ""
 																		Type: Operator
 																		Children:
 																			Content: Type: Plus, Start: 12, 11, End: 12, 11, Content: "+"
 																			Type: Plus
 																			Children:
 
-																	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																	Content: Type: ArithmeticSubnode, Start: 12, 12, End: 12, 13, Content: ""
 																	Type: ArithmeticSubnode
 																	Children:
-																		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																		Content: Type: RValue, Start: 12, 12, End: 12, 13, Content: ""
 																		Type: RValue
 																		Children:
 																			Content: Type: Integer, Start: 12, 12, End: 12, 13, Content: "3"
@@ -485,30 +485,30 @@ Children:
 											Type: Else
 											Children:
 
-											Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+											Content: Type: StatementNode, Start: 15, 3, End: 18, 3, Content: ""
 											Type: StatementNode
 											Children:
-												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Content: Type: CodeBlockNode, Start: 15, 3, End: 18, 3, Content: ""
 												Type: CodeBlockNode
 												Children:
 													Content: Type: LeftCurlyBracket, Start: 15, 3, End: 15, 3, Content: "{"
 													Type: LeftCurlyBracket
 													Children:
 
-													Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+													Content: Type: StatementNode, Start: 16, 3, End: 16, 45, Content: ""
 													Type: StatementNode
 													Children:
-														Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+														Content: Type: FunctionCall, Start: 16, 3, End: 16, 44, Content: ""
 														Type: FunctionCall
 														Children:
-															Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+															Content: Type: FullSymbol, Start: 16, 3, End: 16, 27, Content: ""
 															Type: FullSymbol
 															Children:
 																Content: Type: Symbol, Start: 16, 3, End: 16, 9, Content: "System"
 																Type: Symbol
 																Children:
 
-																Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																Content: Type: SubSymbol, Start: 16, 10, End: 16, 17, Content: ""
 																Type: SubSymbol
 																Children:
 																	Content: Type: Period, Start: 16, 10, End: 16, 10, Content: "."
@@ -519,7 +519,7 @@ Children:
 																	Type: Symbol
 																	Children:
 
-																Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																Content: Type: SubSymbol, Start: 16, 18, End: 16, 27, Content: ""
 																Type: SubSymbol
 																Children:
 																	Content: Type: Period, Start: 16, 18, End: 16, 18, Content: "."
@@ -534,42 +534,42 @@ Children:
 															Type: LeftBracket
 															Children:
 
-															Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+															Content: Type: Value, Start: 16, 29, End: 16, 40, Content: ""
 															Type: Value
 															Children:
-																Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																Content: Type: ArithmeticNode, Start: 16, 29, End: 16, 40, Content: ""
 																Type: ArithmeticNode
 																Children:
-																	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																	Content: Type: ArithmeticSubnode, Start: 16, 29, End: 16, 40, Content: ""
 																	Type: ArithmeticSubnode
 																	Children:
-																		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																		Content: Type: RValue, Start: 16, 29, End: 16, 40, Content: ""
 																		Type: RValue
 																		Children:
 																			Content: Type: StringLiteral, Start: 16, 29, End: 16, 40, Content: ""{0} is odd""
 																			Type: StringLiteral
 																			Children:
 
-															Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+															Content: Type: FunctionArgument, Start: 16, 41, End: 16, 43, Content: ""
 															Type: FunctionArgument
 															Children:
 																Content: Type: Comma, Start: 16, 41, End: 16, 41, Content: ","
 																Type: Comma
 																Children:
 
-																Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																Content: Type: Value, Start: 16, 42, End: 16, 43, Content: ""
 																Type: Value
 																Children:
-																	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																	Content: Type: ArithmeticNode, Start: 16, 42, End: 16, 43, Content: ""
 																	Type: ArithmeticNode
 																	Children:
-																		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																		Content: Type: ArithmeticSubnode, Start: 16, 42, End: 16, 43, Content: ""
 																		Type: ArithmeticSubnode
 																		Children:
-																			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																			Content: Type: RValue, Start: 16, 42, End: 16, 43, Content: ""
 																			Type: RValue
 																			Children:
-																				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																				Content: Type: FullSymbol, Start: 16, 42, End: 16, 43, Content: ""
 																				Type: FullSymbol
 																				Children:
 																					Content: Type: Symbol, Start: 16, 42, End: 16, 43, Content: "i"
@@ -584,13 +584,13 @@ Children:
 														Type: EndOfLine
 														Children:
 
-													Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+													Content: Type: StatementNode, Start: 17, 3, End: 17, 15, Content: ""
 													Type: StatementNode
 													Children:
-														Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+														Content: Type: FunctionCall, Start: 17, 3, End: 17, 14, Content: ""
 														Type: FunctionCall
 														Children:
-															Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+															Content: Type: FullSymbol, Start: 17, 3, End: 17, 7, Content: ""
 															Type: FullSymbol
 															Children:
 																Content: Type: Symbol, Start: 17, 3, End: 17, 7, Content: "Func"
@@ -601,39 +601,39 @@ Children:
 															Type: LeftBracket
 															Children:
 
-															Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+															Content: Type: Value, Start: 17, 8, End: 17, 13, Content: ""
 															Type: Value
 															Children:
-																Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																Content: Type: ArithmeticNode, Start: 17, 8, End: 17, 13, Content: ""
 																Type: ArithmeticNode
 																Children:
-																	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																	Content: Type: ArithmeticSubnode, Start: 17, 8, End: 17, 9, Content: ""
 																	Type: ArithmeticSubnode
 																	Children:
-																		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																		Content: Type: RValue, Start: 17, 8, End: 17, 9, Content: ""
 																		Type: RValue
 																		Children:
-																			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																			Content: Type: FullSymbol, Start: 17, 8, End: 17, 9, Content: ""
 																			Type: FullSymbol
 																			Children:
 																				Content: Type: Symbol, Start: 17, 8, End: 17, 9, Content: "i"
 																				Type: Symbol
 																				Children:
 
-																	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																	Content: Type: ArithmeticSubnode, Start: 17, 11, End: 17, 11, Content: ""
 																	Type: ArithmeticSubnode
 																	Children:
-																		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																		Content: Type: Operator, Start: 17, 11, End: 17, 11, Content: ""
 																		Type: Operator
 																		Children:
 																			Content: Type: Plus, Start: 17, 11, End: 17, 11, Content: "+"
 																			Type: Plus
 																			Children:
 
-																	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																	Content: Type: ArithmeticSubnode, Start: 17, 12, End: 17, 13, Content: ""
 																	Type: ArithmeticSubnode
 																	Children:
-																		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+																		Content: Type: RValue, Start: 17, 12, End: 17, 13, Content: ""
 																		Type: RValue
 																		Children:
 																			Content: Type: Integer, Start: 17, 12, End: 17, 13, Content: "5"
@@ -660,23 +660,23 @@ Children:
 			Type: EndOfLine
 			Children:
 
-	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+	Content: Type: StatementNode, Start: 21, 1, End: 25, 3, Content: ""
 	Type: StatementNode
 	Children:
-		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+		Content: Type: DeclarationNode, Start: 21, 1, End: 25, 3, Content: ""
 		Type: DeclarationNode
 		Children:
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: Type, Start: 21, 1, End: 21, 5, Content: ""
 			Type: Type
 			Children:
-				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Content: Type: FullSymbol, Start: 21, 1, End: 21, 5, Content: ""
 				Type: FullSymbol
 				Children:
 					Content: Type: Symbol, Start: 21, 1, End: 21, 5, Content: "auto"
 					Type: Symbol
 					Children:
 
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: FullSymbol, Start: 21, 6, End: 21, 10, Content: ""
 			Type: FullSymbol
 			Children:
 				Content: Type: Symbol, Start: 21, 6, End: 21, 10, Content: "Main"
@@ -687,25 +687,25 @@ Children:
 			Type: Assignment
 			Children:
 
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: Value, Start: 21, 13, End: 25, 2, Content: ""
 			Type: Value
 			Children:
-				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Content: Type: ArithmeticNode, Start: 21, 13, End: 25, 2, Content: ""
 				Type: ArithmeticNode
 				Children:
-					Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+					Content: Type: ArithmeticSubnode, Start: 21, 13, End: 25, 2, Content: ""
 					Type: ArithmeticSubnode
 					Children:
-						Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+						Content: Type: RValue, Start: 21, 13, End: 25, 2, Content: ""
 						Type: RValue
 						Children:
-							Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+							Content: Type: Function, Start: 21, 13, End: 25, 2, Content: ""
 							Type: Function
 							Children:
-								Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+								Content: Type: Type, Start: 21, 13, End: 21, 18, Content: ""
 								Type: Type
 								Children:
-									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Content: Type: FullSymbol, Start: 21, 13, End: 21, 16, Content: ""
 									Type: FullSymbol
 									Children:
 										Content: Type: Symbol, Start: 21, 13, End: 21, 16, Content: "int"
@@ -720,20 +720,20 @@ Children:
 									Type: RightBracket
 									Children:
 
-								Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+								Content: Type: CodeBlockNode, Start: 22, 2, End: 25, 2, Content: ""
 								Type: CodeBlockNode
 								Children:
 									Content: Type: LeftCurlyBracket, Start: 22, 2, End: 22, 2, Content: "{"
 									Type: LeftCurlyBracket
 									Children:
 
-									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Content: Type: StatementNode, Start: 23, 2, End: 23, 10, Content: ""
 									Type: StatementNode
 									Children:
-										Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+										Content: Type: FunctionCall, Start: 23, 2, End: 23, 9, Content: ""
 										Type: FunctionCall
 										Children:
-											Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+											Content: Type: FullSymbol, Start: 23, 2, End: 23, 6, Content: ""
 											Type: FullSymbol
 											Children:
 												Content: Type: Symbol, Start: 23, 2, End: 23, 6, Content: "Func"
@@ -744,16 +744,16 @@ Children:
 											Type: LeftBracket
 											Children:
 
-											Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+											Content: Type: Value, Start: 23, 7, End: 23, 8, Content: ""
 											Type: Value
 											Children:
-												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Content: Type: ArithmeticNode, Start: 23, 7, End: 23, 8, Content: ""
 												Type: ArithmeticNode
 												Children:
-													Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+													Content: Type: ArithmeticSubnode, Start: 23, 7, End: 23, 8, Content: ""
 													Type: ArithmeticSubnode
 													Children:
-														Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+														Content: Type: RValue, Start: 23, 7, End: 23, 8, Content: ""
 														Type: RValue
 														Children:
 															Content: Type: Integer, Start: 23, 7, End: 23, 8, Content: "0"
@@ -768,23 +768,23 @@ Children:
 										Type: EndOfLine
 										Children:
 
-									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Content: Type: StatementNode, Start: 24, 2, End: 24, 11, Content: ""
 									Type: StatementNode
 									Children:
 										Content: Type: Return, Start: 24, 2, End: 24, 8, Content: "return"
 										Type: Return
 										Children:
 
-										Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+										Content: Type: Value, Start: 24, 9, End: 24, 10, Content: ""
 										Type: Value
 										Children:
-											Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+											Content: Type: ArithmeticNode, Start: 24, 9, End: 24, 10, Content: ""
 											Type: ArithmeticNode
 											Children:
-												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Content: Type: ArithmeticSubnode, Start: 24, 9, End: 24, 10, Content: ""
 												Type: ArithmeticSubnode
 												Children:
-													Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+													Content: Type: RValue, Start: 24, 9, End: 24, 10, Content: ""
 													Type: RValue
 													Children:
 														Content: Type: Integer, Start: 24, 9, End: 24, 10, Content: "0"

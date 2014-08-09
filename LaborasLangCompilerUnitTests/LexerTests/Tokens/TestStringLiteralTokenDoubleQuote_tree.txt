@@ -1,39 +1,39 @@
-Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+Content: Type: RootNode, Start: 1, 1, End: 1, 13, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+	Content: Type: StatementNode, Start: 1, 1, End: 1, 13, Content: ""
 	Type: StatementNode
 	Children:
-		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+		Content: Type: AssignmentNode, Start: 1, 1, End: 1, 12, Content: ""
 		Type: AssignmentNode
 		Children:
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: LValue, Start: 1, 1, End: 1, 4, Content: ""
 			Type: LValue
 			Children:
-				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
 				Type: FullSymbol
 				Children:
 					Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
 					Type: Symbol
 					Children:
 
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: AssignmentOperator, Start: 1, 6, End: 1, 6, Content: ""
 			Type: AssignmentOperator
 			Children:
 				Content: Type: Assignment, Start: 1, 6, End: 1, 6, Content: "="
 				Type: Assignment
 				Children:
 
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: Value, Start: 1, 8, End: 1, 12, Content: ""
 			Type: Value
 			Children:
-				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Content: Type: ArithmeticNode, Start: 1, 8, End: 1, 12, Content: ""
 				Type: ArithmeticNode
 				Children:
-					Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+					Content: Type: ArithmeticSubnode, Start: 1, 8, End: 1, 12, Content: ""
 					Type: ArithmeticSubnode
 					Children:
-						Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+						Content: Type: RValue, Start: 1, 8, End: 1, 12, Content: ""
 						Type: RValue
 						Children:
 							Content: Type: StringLiteral, Start: 1, 8, End: 1, 12, Content: ""bar""

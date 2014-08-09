@@ -1,23 +1,23 @@
-Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+Content: Type: RootNode, Start: 1, 1, End: 1, 27, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+	Content: Type: StatementNode, Start: 1, 1, End: 1, 27, Content: ""
 	Type: StatementNode
 	Children:
-		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+		Content: Type: DeclarationNode, Start: 1, 1, End: 1, 27, Content: ""
 		Type: DeclarationNode
 		Children:
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: Type, Start: 1, 1, End: 1, 5, Content: ""
 			Type: Type
 			Children:
-				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Content: Type: FullSymbol, Start: 1, 1, End: 1, 5, Content: ""
 				Type: FullSymbol
 				Children:
 					Content: Type: Symbol, Start: 1, 1, End: 1, 5, Content: "auto"
 					Type: Symbol
 					Children:
 
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: FullSymbol, Start: 1, 6, End: 1, 9, Content: ""
 			Type: FullSymbol
 			Children:
 				Content: Type: Symbol, Start: 1, 6, End: 1, 9, Content: "foo"
@@ -28,25 +28,25 @@ Children:
 			Type: Assignment
 			Children:
 
-			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Content: Type: Value, Start: 1, 12, End: 1, 26, Content: ""
 			Type: Value
 			Children:
-				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Content: Type: ArithmeticNode, Start: 1, 12, End: 1, 26, Content: ""
 				Type: ArithmeticNode
 				Children:
-					Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+					Content: Type: ArithmeticSubnode, Start: 1, 12, End: 1, 26, Content: ""
 					Type: ArithmeticSubnode
 					Children:
-						Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+						Content: Type: RValue, Start: 1, 12, End: 1, 26, Content: ""
 						Type: RValue
 						Children:
-							Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+							Content: Type: Function, Start: 1, 12, End: 1, 26, Content: ""
 							Type: Function
 							Children:
-								Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+								Content: Type: Type, Start: 1, 12, End: 1, 17, Content: ""
 								Type: Type
 								Children:
-									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Content: Type: FullSymbol, Start: 1, 12, End: 1, 15, Content: ""
 									Type: FullSymbol
 									Children:
 										Content: Type: Symbol, Start: 1, 12, End: 1, 15, Content: "int"
@@ -61,20 +61,20 @@ Children:
 									Type: RightBracket
 									Children:
 
-								Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+								Content: Type: CodeBlockNode, Start: 1, 19, End: 1, 26, Content: ""
 								Type: CodeBlockNode
 								Children:
 									Content: Type: LeftCurlyBracket, Start: 1, 19, End: 1, 19, Content: "{"
 									Type: LeftCurlyBracket
 									Children:
 
-									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Content: Type: StatementNode, Start: 1, 19, End: 1, 25, Content: ""
 									Type: StatementNode
 									Children:
-										Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+										Content: Type: FunctionCall, Start: 1, 19, End: 1, 24, Content: ""
 										Type: FunctionCall
 										Children:
-											Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+											Content: Type: FullSymbol, Start: 1, 19, End: 1, 22, Content: ""
 											Type: FullSymbol
 											Children:
 												Content: Type: Symbol, Start: 1, 19, End: 1, 22, Content: "foo"
