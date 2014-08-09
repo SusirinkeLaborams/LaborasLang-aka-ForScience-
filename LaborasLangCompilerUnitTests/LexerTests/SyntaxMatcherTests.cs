@@ -622,9 +622,9 @@ auto Main = int()
 #endif
 
                 var syntaxMatcher = new SyntaxMatcher(tokens, rootNode);
-
-                string actualTree = syntaxMatcher.Match().ToString();
-                Assert.AreEqual(tree, actualTree);
+                var actualTree = syntaxMatcher.Match();
+                var actualTreeString = actualTree.ToString();
+                Assert.AreEqual(tree, actualTreeString);
             }
         }
     }

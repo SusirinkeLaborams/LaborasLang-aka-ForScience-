@@ -1,1 +1,58 @@
-Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: RootNode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: StatementNode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: AssignmentNode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: LValue, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: FullSymbol, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo", Type: Symbol, Children: []]], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: AssignmentOperator, Children: [Content: Type: Assignment, Start: 1, 6, End: 1, 6, Content: "=", Type: Assignment, Children: []], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: Value, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: ArithmeticNode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: ArithmeticSubnode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: Operator, Children: [Content: Type: PlusPlus, Start: 1, 8, End: 1, 9, Content: "++", Type: PlusPlus, Children: []]], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: ArithmeticSubnode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: RValue, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: FullSymbol, Children: [Content: Type: Symbol, Start: 1, 9, End: 1, 10, Content: "i", Type: Symbol, Children: []]]]]]], Content: Type: EndOfLine, Start: 1, 11, End: 1, 11, Content: ";", Type: EndOfLine, Children: []]]
+Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+Type: RootNode
+Children:
+	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+	Type: StatementNode
+	Children:
+		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+		Type: AssignmentNode
+		Children:
+			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Type: LValue
+			Children:
+				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Type: FullSymbol
+				Children:
+					Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+					Type: Symbol
+					Children:
+
+			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Type: AssignmentOperator
+			Children:
+				Content: Type: Assignment, Start: 1, 6, End: 1, 6, Content: "="
+				Type: Assignment
+				Children:
+
+			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Type: Value
+			Children:
+				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Type: ArithmeticNode
+				Children:
+					Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+					Type: ArithmeticSubnode
+					Children:
+						Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+						Type: Operator
+						Children:
+							Content: Type: PlusPlus, Start: 1, 8, End: 1, 9, Content: "++"
+							Type: PlusPlus
+							Children:
+
+					Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+					Type: ArithmeticSubnode
+					Children:
+						Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+						Type: RValue
+						Children:
+							Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+							Type: FullSymbol
+							Children:
+								Content: Type: Symbol, Start: 1, 9, End: 1, 10, Content: "i"
+								Type: Symbol
+								Children:
+
+		Content: Type: EndOfLine, Start: 1, 11, End: 1, 11, Content: ";"
+		Type: EndOfLine
+		Children:

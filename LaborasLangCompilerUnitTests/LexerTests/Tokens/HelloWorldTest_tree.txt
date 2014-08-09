@@ -1,1 +1,214 @@
-Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: RootNode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: StatementNode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: DeclarationNode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: Type, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: FullSymbol, Children: [Content: Type: Symbol, Start: 2, 13, End: 2, 17, Content: "auto", Type: Symbol, Children: []]], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: FullSymbol, Children: [Content: Type: Symbol, Start: 2, 18, End: 2, 22, Content: "Main", Type: Symbol, Children: []], Content: Type: Assignment, Start: 2, 24, End: 2, 24, Content: "=", Type: Assignment, Children: [], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: Value, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: ArithmeticNode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: ArithmeticSubnode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: RValue, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: Function, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: Type, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: FullSymbol, Children: [Content: Type: Symbol, Start: 2, 25, End: 2, 29, Content: "void", Type: Symbol, Children: []], Content: Type: LeftBracket, Start: 2, 30, End: 2, 30, Content: "(", Type: LeftBracket, Children: [], Content: Type: RightBracket, Start: 2, 31, End: 2, 31, Content: ")", Type: RightBracket, Children: []], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: CodeBlockNode, Children: [Content: Type: LeftCurlyBracket, Start: 3, 14, End: 3, 14, Content: "{", Type: LeftCurlyBracket, Children: [], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: StatementNode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: FunctionCall, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: FullSymbol, Children: [Content: Type: Symbol, Start: 4, 17, End: 4, 23, Content: "System", Type: Symbol, Children: [], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: SubSymbol, Children: [Content: Type: Period, Start: 4, 24, End: 4, 24, Content: ".", Type: Period, Children: [], Content: Type: Symbol, Start: 4, 24, End: 4, 31, Content: "Console", Type: Symbol, Children: []], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: SubSymbol, Children: [Content: Type: Period, Start: 4, 32, End: 4, 32, Content: ".", Type: Period, Children: [], Content: Type: Symbol, Start: 4, 32, End: 4, 41, Content: "WriteLine", Type: Symbol, Children: []]], Content: Type: LeftBracket, Start: 4, 42, End: 4, 42, Content: "(", Type: LeftBracket, Children: [], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: Value, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: ArithmeticNode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: ArithmeticSubnode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: RValue, Children: [Content: Type: StringLiteral, Start: 4, 43, End: 4, 56, Content: "'Hello, world'", Type: StringLiteral, Children: []]]]], Content: Type: RightBracket, Start: 4, 57, End: 4, 57, Content: ")", Type: RightBracket, Children: []], Content: Type: EndOfLine, Start: 4, 58, End: 4, 58, Content: ";", Type: EndOfLine, Children: []], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: StatementNode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: FunctionCall, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: FullSymbol, Children: [Content: Type: Symbol, Start: 5, 17, End: 5, 23, Content: "System", Type: Symbol, Children: [], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: SubSymbol, Children: [Content: Type: Period, Start: 5, 24, End: 5, 24, Content: ".", Type: Period, Children: [], Content: Type: Symbol, Start: 5, 24, End: 5, 31, Content: "Console", Type: Symbol, Children: []], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: SubSymbol, Children: [Content: Type: Period, Start: 5, 32, End: 5, 32, Content: ".", Type: Period, Children: [], Content: Type: Symbol, Start: 5, 32, End: 5, 39, Content: "ReadKey", Type: Symbol, Children: []]], Content: Type: LeftBracket, Start: 5, 40, End: 5, 40, Content: "(", Type: LeftBracket, Children: [], Content: Type: RightBracket, Start: 5, 41, End: 5, 41, Content: ")", Type: RightBracket, Children: []], Content: Type: EndOfLine, Start: 5, 42, End: 5, 42, Content: ";", Type: EndOfLine, Children: []], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: StatementNode, Children: [Content: Type: Return, Start: 6, 17, End: 6, 23, Content: "return", Type: Return, Children: [], Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: Value, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: ArithmeticNode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: ArithmeticSubnode, Children: [Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "", Type: RValue, Children: [Content: Type: Integer, Start: 6, 24, End: 6, 25, Content: "0", Type: Integer, Children: []]]]], Content: Type: EndOfLine, Start: 6, 26, End: 6, 26, Content: ";", Type: EndOfLine, Children: []], Content: Type: RightCurlyBracket, Start: 7, 14, End: 7, 14, Content: "}", Type: RightCurlyBracket, Children: []]]]]]], Content: Type: EndOfLine, Start: 7, 15, End: 7, 15, Content: ";", Type: EndOfLine, Children: []]]]
+Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+Type: RootNode
+Children:
+	Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+	Type: StatementNode
+	Children:
+		Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+		Type: DeclarationNode
+		Children:
+			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Type: Type
+			Children:
+				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Type: FullSymbol
+				Children:
+					Content: Type: Symbol, Start: 2, 13, End: 2, 17, Content: "auto"
+					Type: Symbol
+					Children:
+
+			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Type: FullSymbol
+			Children:
+				Content: Type: Symbol, Start: 2, 18, End: 2, 22, Content: "Main"
+				Type: Symbol
+				Children:
+
+			Content: Type: Assignment, Start: 2, 24, End: 2, 24, Content: "="
+			Type: Assignment
+			Children:
+
+			Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+			Type: Value
+			Children:
+				Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+				Type: ArithmeticNode
+				Children:
+					Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+					Type: ArithmeticSubnode
+					Children:
+						Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+						Type: RValue
+						Children:
+							Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+							Type: Function
+							Children:
+								Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+								Type: Type
+								Children:
+									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Type: FullSymbol
+									Children:
+										Content: Type: Symbol, Start: 2, 25, End: 2, 29, Content: "void"
+										Type: Symbol
+										Children:
+
+									Content: Type: LeftBracket, Start: 2, 30, End: 2, 30, Content: "("
+									Type: LeftBracket
+									Children:
+
+									Content: Type: RightBracket, Start: 2, 31, End: 2, 31, Content: ")"
+									Type: RightBracket
+									Children:
+
+								Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+								Type: CodeBlockNode
+								Children:
+									Content: Type: LeftCurlyBracket, Start: 3, 14, End: 3, 14, Content: "{"
+									Type: LeftCurlyBracket
+									Children:
+
+									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Type: StatementNode
+									Children:
+										Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+										Type: FunctionCall
+										Children:
+											Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+											Type: FullSymbol
+											Children:
+												Content: Type: Symbol, Start: 4, 17, End: 4, 23, Content: "System"
+												Type: Symbol
+												Children:
+
+												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Type: SubSymbol
+												Children:
+													Content: Type: Period, Start: 4, 24, End: 4, 24, Content: "."
+													Type: Period
+													Children:
+
+													Content: Type: Symbol, Start: 4, 24, End: 4, 31, Content: "Console"
+													Type: Symbol
+													Children:
+
+												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Type: SubSymbol
+												Children:
+													Content: Type: Period, Start: 4, 32, End: 4, 32, Content: "."
+													Type: Period
+													Children:
+
+													Content: Type: Symbol, Start: 4, 32, End: 4, 41, Content: "WriteLine"
+													Type: Symbol
+													Children:
+
+											Content: Type: LeftBracket, Start: 4, 42, End: 4, 42, Content: "("
+											Type: LeftBracket
+											Children:
+
+											Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+											Type: Value
+											Children:
+												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Type: ArithmeticNode
+												Children:
+													Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+													Type: ArithmeticSubnode
+													Children:
+														Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+														Type: RValue
+														Children:
+															Content: Type: StringLiteral, Start: 4, 43, End: 4, 56, Content: "'Hello, world'"
+															Type: StringLiteral
+															Children:
+
+											Content: Type: RightBracket, Start: 4, 57, End: 4, 57, Content: ")"
+											Type: RightBracket
+											Children:
+
+										Content: Type: EndOfLine, Start: 4, 58, End: 4, 58, Content: ";"
+										Type: EndOfLine
+										Children:
+
+									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Type: StatementNode
+									Children:
+										Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+										Type: FunctionCall
+										Children:
+											Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+											Type: FullSymbol
+											Children:
+												Content: Type: Symbol, Start: 5, 17, End: 5, 23, Content: "System"
+												Type: Symbol
+												Children:
+
+												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Type: SubSymbol
+												Children:
+													Content: Type: Period, Start: 5, 24, End: 5, 24, Content: "."
+													Type: Period
+													Children:
+
+													Content: Type: Symbol, Start: 5, 24, End: 5, 31, Content: "Console"
+													Type: Symbol
+													Children:
+
+												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Type: SubSymbol
+												Children:
+													Content: Type: Period, Start: 5, 32, End: 5, 32, Content: "."
+													Type: Period
+													Children:
+
+													Content: Type: Symbol, Start: 5, 32, End: 5, 39, Content: "ReadKey"
+													Type: Symbol
+													Children:
+
+											Content: Type: LeftBracket, Start: 5, 40, End: 5, 40, Content: "("
+											Type: LeftBracket
+											Children:
+
+											Content: Type: RightBracket, Start: 5, 41, End: 5, 41, Content: ")"
+											Type: RightBracket
+											Children:
+
+										Content: Type: EndOfLine, Start: 5, 42, End: 5, 42, Content: ";"
+										Type: EndOfLine
+										Children:
+
+									Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+									Type: StatementNode
+									Children:
+										Content: Type: Return, Start: 6, 17, End: 6, 23, Content: "return"
+										Type: Return
+										Children:
+
+										Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+										Type: Value
+										Children:
+											Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+											Type: ArithmeticNode
+											Children:
+												Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+												Type: ArithmeticSubnode
+												Children:
+													Content: Type: Not, Start: 1, 2, End: 1, 2, Content: ""
+													Type: RValue
+													Children:
+														Content: Type: Integer, Start: 6, 24, End: 6, 25, Content: "0"
+														Type: Integer
+														Children:
+
+										Content: Type: EndOfLine, Start: 6, 26, End: 6, 26, Content: ";"
+										Type: EndOfLine
+										Children:
+
+									Content: Type: RightCurlyBracket, Start: 7, 14, End: 7, 14, Content: "}"
+									Type: RightCurlyBracket
+									Children:
+
+			Content: Type: EndOfLine, Start: 7, 15, End: 7, 15, Content: ";"
+			Type: EndOfLine
+			Children:
