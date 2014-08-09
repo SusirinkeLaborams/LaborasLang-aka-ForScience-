@@ -32,8 +32,8 @@ namespace Lexer.Containers
 
         public TokenType Type
         {
-            get { return m_NodePtr->type; }
-            internal set { m_NodePtr->type = value; }
+            get { return m_NodePtr->content.Type; }
+            internal set { m_NodePtr->content.Type = value; }
         }
 
         #endregion
@@ -70,12 +70,8 @@ namespace Lexer.Containers
 
         internal struct InternalNode
         {
-            [DataMember]
             public AstNodeList children;
-            [DataMember]
             public Token content;
-            [DataMember]
-            public TokenType type;
         }
 
         internal bool IsNull()
