@@ -30,7 +30,9 @@ namespace Lexer
             var tokens = new List<Token>();
             var Source = new SourceReader(file);
             var builder = ClaimFreeStringBuilder();
+#if DEBUG
             var lastLocation = new Location(-1, -1);
+#endif
 
             while (Source.Peek() != '\0')
             {
@@ -40,10 +42,10 @@ namespace Lexer
                     throw new Exception(String.Format("infinite loop found at line {} column {} symbol {}", lastLocation.Row, lastLocation.Column, Source.Peek()));
                 }
                 else
-#endif
                 {
                     lastLocation = Source.Location;
                 }
+#endif
 
                 switch (Source.Peek())
                 {
