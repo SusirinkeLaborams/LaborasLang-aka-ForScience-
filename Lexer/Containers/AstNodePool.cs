@@ -30,7 +30,6 @@ namespace Lexer.Containers
             m_AstNodeContainers = new AstNodeContainer[15];
             
             m_AstNodeContainers[0] = m_CurrentContainer = new AstNodeContainer(m_AllocationCapacity);
-            m_AllocationCapacity *= 2;
 
             m_CurrentContainerIndex = 0;
             m_ContainerCount = 1;
@@ -42,8 +41,8 @@ namespace Lexer.Containers
 
             if (m_ContainerCount == m_CurrentContainerIndex)
             {
-                m_AstNodeContainers[m_ContainerCount++] = m_CurrentContainer = new AstNodeContainer(m_AllocationCapacity);
                 m_AllocationCapacity *= 2;
+                m_AstNodeContainers[m_ContainerCount++] = m_CurrentContainer = new AstNodeContainer(m_AllocationCapacity);
             }
             else
             {

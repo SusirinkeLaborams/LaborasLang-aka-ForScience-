@@ -13,30 +13,32 @@ namespace Lexer.Containers
     {
         private const int kInitialCapacity = 10000;
         private MemoryContainer[] m_MemoryContainers;
+        private MemoryContainer m_CurrentContainer; // PERF: Cache current container
+
         private int m_ContainerCount;
+        private int m_AllocationCapacity = kInitialCapacity;
 
         public PermanentAllocator()
         {
             // Filling 15th container would mean having tokens occupy over 4 GB RAM at 20 bytes per item
             m_MemoryContainers = new MemoryContainer[15];
-            m_MemoryContainers[0] = new MemoryContainer(kInitialCapacity);
+            m_MemoryContainers[0] = m_CurrentContainer = new MemoryContainer(m_AllocationCapacity);
             m_ContainerCount = 1;
         }
 
         private void EnsureMemoryIsAvailable(int size)
         {
-            var currentContainer = m_MemoryContainers[m_ContainerCount - 1];
-
-            if (!currentContainer.HasFreeSpace(size))
+            if (!m_CurrentContainer.HasFreeSpace(size))
             {
-                m_MemoryContainers[m_ContainerCount++] = new MemoryContainer(2 * currentContainer.Capacity);
+                m_AllocationCapacity *= 2;
+                m_MemoryContainers[m_ContainerCount++] = m_CurrentContainer = new MemoryContainer(m_AllocationCapacity);
             }
         }
 
         public unsafe byte* ProvideMemory(int size)
         {
             EnsureMemoryIsAvailable(size);
-            return m_MemoryContainers[m_ContainerCount - 1].GetMemory(size);
+            return m_CurrentContainer.GetMemory(size);
         }
 
         public void Cleanup()
@@ -49,30 +51,28 @@ namespace Lexer.Containers
             m_MemoryContainers = null;
         }
 
-        private unsafe sealed class MemoryContainer
+        private unsafe struct MemoryContainer
         {
-            private int m_Capacity;
-            private int m_Index;
             private byte* m_Memory;
-
-            public int Capacity { get { return m_Capacity; } }
+            private byte* m_Current;
+            private byte* m_End;
 
             public MemoryContainer(int capacity)
             {
-                m_Capacity = capacity;
-                m_Memory = (byte*)Marshal.AllocHGlobal(capacity).ToPointer();
+                m_Current = m_Memory = (byte*)Marshal.AllocHGlobal(capacity).ToPointer();
+                m_End = m_Current + capacity;
             }
 
             public bool HasFreeSpace(int size)
             {
-                return m_Index + size < m_Capacity;
+                return m_Current + size < m_End;
             }
 
             public byte* GetMemory(int size)
             {
-                var ptr = m_Memory + m_Index;
-                m_Index += size;
-                return ptr;
+                var ptr = m_Current;
+                m_Current += size;
+                return m_Current;
             }
 
             public void Cleanup()
