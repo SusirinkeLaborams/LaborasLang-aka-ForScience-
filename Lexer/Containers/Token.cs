@@ -78,6 +78,11 @@ namespace Lexer.Containers
             return !(a == b);
         }
 
+        public override string ToString()
+        {
+            return string.Format("Type: {0}, Start: {1}, End: {2}, Content: \"{3}\"", Type, Start, End, Content);
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is Token)

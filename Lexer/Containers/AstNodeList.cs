@@ -23,7 +23,7 @@ namespace Lexer.Containers
 #if DEBUG
                 m_Capacity = -1;
 #endif
-                return new AstNode(m_Nodes + index, false); 
+                return *(AstNode*)(m_Nodes + index); 
             } 
         }
 

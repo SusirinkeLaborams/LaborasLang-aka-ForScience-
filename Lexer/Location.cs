@@ -13,7 +13,7 @@ namespace Lexer
         private int m_Column;
         private int m_Row;
         #region Public properties
-        public int Column 
+        public int Column
         {
             get
             {
@@ -36,7 +36,9 @@ namespace Lexer
             }
         }
         #endregion Public properties
-        public Location(int column, int row) : this()
+
+        public Location(int column, int row)
+            : this()
         {
             Column = column;
             Row = row;
@@ -65,6 +67,11 @@ namespace Lexer
         public override int GetHashCode()
         {
             return m_Row << 16 + m_Column;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{0}, {1}", Row, Column);
         }
     }
 }

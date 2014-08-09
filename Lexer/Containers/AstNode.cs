@@ -33,7 +33,7 @@ namespace Lexer.Containers
 
         #endregion
 
-        internal AstNode(InternalNode* nodePtr, bool initialize = true)
+        internal AstNode(InternalNode* nodePtr)
         {
             m_NodePtr = nodePtr;
             m_NodePtr->children.Initialize();
@@ -76,6 +76,22 @@ namespace Lexer.Containers
         internal bool IsNull()
         {
             return m_NodePtr == null;
+        }
+
+        public override string ToString()
+        {
+            var builder = new StringBuilder();
+            builder.AppendFormat("Content: {0}, Type: {1}, Children: [", Content, Type);
+
+            for (int i = 0; i < Children.Count - 1; i++)
+            {
+                builder.Append(Children[i].ToString());
+                builder.Append(", ");
+            }
+            builder.Append(Children[Children.Count - 1].ToString());
+
+            builder.Append("]");
+            return builder.ToString();
         }
     }
 }
