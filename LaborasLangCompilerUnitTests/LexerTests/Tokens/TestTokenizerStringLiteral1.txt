@@ -1,0 +1,1 @@
+Type: StringLiteral, Start: 1, 2, End: 1, 11, Content: "'str\'ing'" 
