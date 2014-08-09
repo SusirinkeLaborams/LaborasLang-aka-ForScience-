@@ -9,9 +9,21 @@ namespace Lexer.Containers
 {
     public unsafe struct FastString
     {
+        private static readonly char* kPointerToNullChar;
+        private static readonly FastString kEmpty;
+
         private const int kSizeOfChar = sizeof(char);
         private const int kSizeOfIntOverChar = sizeof(int) / sizeof(char);
         private char* m_Buffer;
+
+        internal static FastString Empty { get { return kEmpty; } }
+
+        static FastString()
+        {
+            kPointerToNullChar = (char*)Marshal.AllocHGlobal(1);
+            *kPointerToNullChar = '\0';
+            kEmpty.m_Buffer = kPointerToNullChar;
+        }
 
         internal FastString(RootNode rootNode, char character)
         {
