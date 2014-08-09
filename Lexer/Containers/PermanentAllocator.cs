@@ -72,7 +72,7 @@ namespace Lexer.Containers
             {
                 var ptr = m_Current;
                 m_Current += size;
-                return m_Current;
+                return ptr;
             }
 
             public void Cleanup()
