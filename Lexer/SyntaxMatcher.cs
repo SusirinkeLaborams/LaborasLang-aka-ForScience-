@@ -328,6 +328,7 @@ namespace Lexer
             }
 
             matchedNode.Type = TokenType.RootNode;
+            m_RootNode.SetNode(matchedNode);
             return matchedNode;
         }
 
@@ -352,6 +353,10 @@ namespace Lexer
 
         private AstNode Match(int sourceOffset, Condition[] rule, ref int tokensConsumed)
         {
+#if DEBUG
+            Debug.Assert(rule.Length > 0, "Rule count must be more than 0!");
+#endif
+
             var node = m_RootNode.NodePool.ProvideNode();
 
             // PERF: use normal loop instead of foreach
@@ -363,6 +368,11 @@ namespace Lexer
                     return default(AstNode);
                 }
             }
+
+            var token = m_RootNode.ProvideToken();
+            token.Start = node.Children[0].Content.Start;
+            token.End = node.Children[node.ChildrenCount - 1].Content.End;
+            node.Content = token;
 
             return node;
         }
