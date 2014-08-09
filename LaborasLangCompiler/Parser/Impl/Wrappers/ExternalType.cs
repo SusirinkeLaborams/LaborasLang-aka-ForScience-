@@ -12,6 +12,8 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     {
         public TypeReference TypeReference { get; private set; }
 
+        public string FullName { get { return TypeReference.FullName; } }
+
         private AssemblyEmitter assembly;
 
         public ExternalType(AssemblyEmitter assembly, TypeReference type)

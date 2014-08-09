@@ -10,6 +10,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     interface TypeWrapper
     {
         TypeReference TypeReference { get; }
+        string FullName { get; }
         FieldWrapper GetField(string name);
         TypeWrapper GetContainedType(string name);
         MethodWrapper GetMethod(string name);

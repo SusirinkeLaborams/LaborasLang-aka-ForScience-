@@ -15,7 +15,7 @@ using LaborasLangCompiler.Parser.Impl.Wrappers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ClassNode : ParserNode, IContainerNode
+    class ClassNode : ParserNode, IContainerNode, TypeWrapper
     {
         public override NodeType Type { get { return NodeType.ParserInternal; } }
         private Dictionary<string, InternalField> fields;
@@ -23,6 +23,8 @@ namespace LaborasLangCompiler.Parser.Impl
         private ClassNode parent;
         private Parser parser;
         public TypeEmitter TypeEmitter { get; private set; }
+        public string FullName { get; private set; }
+        public TypeReference TypeReference { get { return TypeEmitter.Get(parser.Assembly); } }
         private Dictionary<string, FunctionDeclarationNode> methods = new Dictionary<string, FunctionDeclarationNode>();
         private int lambdaCounter = 0;
         public ClassNode(Parser parser, ClassNode parent, SequencePoint point) : base(point)
@@ -34,27 +36,51 @@ namespace LaborasLangCompiler.Parser.Impl
             fields = new Dictionary<string, InternalField>();
             globalImports = new List<string>();
             globalImports.Add("");
+            FullName = parser.Filename;
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
         public void AddMethod(FunctionDeclarationNode method, string name)
         {
             methods.Add(name, method);
         }
-        private FieldNode GetField(string name, SequencePoint point)
+        public FieldWrapper GetField(string name)
         {
             if (fields.ContainsKey(name))
-                return new FieldNode(null, fields[name], point);
-
-            if (parent != null)
-                return parent.GetField(name, point);
+                return fields[name];
 
             return null;
         }
+        public MethodWrapper GetMethod(string name)
+        {
+            if (methods.ContainsKey(name))
+                return methods[name];
+            else
+                return null;
+        }
+        public IEnumerable<MethodWrapper> GetMethods(string name)
+        {
+            var ret = new List<MethodWrapper>(1);
+            if (methods.ContainsKey(name))
+                ret.Add(methods[name]);
+            return ret;
+        }
+        public bool IsAssignableTo(TypeWrapper other)
+        {
+            return FullName == other.FullName;
+        }
+        public TypeWrapper GetContainedType(string name) { return null; }
         public ClassNode GetClass() { return this; }
         public FunctionDeclarationNode GetFunction() { return null; }
         public LValueNode GetSymbol(string name, SequencePoint point)
         {
-            return GetField(name, point);
+            var field = GetField(name);
+            if (field != null)
+                return new FieldNode(null, field, point);
+
+            if (parent != null)
+                return parent.GetSymbol(name, point);
+
+            return null;
         }
         public TypeNode FindType(string name, SequencePoint point)
         {
