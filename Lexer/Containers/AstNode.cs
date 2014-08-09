@@ -19,10 +19,15 @@ namespace Lexer.Containers
             get { return m_NodePtr->children; }
         }
 
+        public int ChildrenCount
+        {
+            get { return m_NodePtr->children.Count; }
+        }
+
         public Token Content
         {
             get { return m_NodePtr->content; }
-            private set { m_NodePtr->content = value; }
+            internal set { m_NodePtr->content = value; }
         }
 
         public TokenType Type
@@ -78,20 +83,32 @@ namespace Lexer.Containers
             return m_NodePtr == null;
         }
 
-        public override string ToString()
+        private string ToString(int indentation)
         {
             var builder = new StringBuilder();
-            builder.AppendFormat("Content: {0}, Type: {1}, Children: [", Content, Type);
+            var indentStr = new string('\t', indentation);
 
-            for (int i = 0; i < Children.Count - 1; i++)
+            builder.AppendFormat("{0}Content: {1}\r\n", indentStr, Content != null ? Content.ToString() : string.Empty);
+            builder.AppendFormat("{0}Type: {1}\r\n", indentStr, Type);
+            builder.AppendFormat("{0}Children:\r\n", indentStr);
+
+            for (int i = 0; i < ChildrenCount - 1; i++)
             {
-                builder.Append(Children[i].ToString());
-                builder.Append(", ");
+                builder.Append(Children[i].ToString(indentation + 1));
+                builder.Append("\r\n");
             }
-            builder.Append(Children[Children.Count - 1].ToString());
 
-            builder.Append("]");
+            if (ChildrenCount > 0)
+            {
+                builder.Append(Children[ChildrenCount - 1].ToString(indentation + 1));
+            }
+
             return builder.ToString();
+        }
+
+        public override string ToString()
+        {
+            return ToString(0);
         }
     }
 }
