@@ -9,13 +9,15 @@ namespace Lexer
     internal sealed class SourceReader
     {
         private string m_Source;
+        private int m_OriginalSourceLength;
         private int m_Index;
         private int m_Column;
         private int m_Row;
 
         public SourceReader(string source)
         {
-            m_Source = source;
+            m_OriginalSourceLength = source.Length;
+            m_Source = source + '\0';
             m_Index = 0;
             m_Column = 1;
             m_Row = 1;
@@ -31,15 +33,7 @@ namespace Lexer
 
         public char Peek()
         {
-            if (m_Source.Length > m_Index)
-            {
-                return m_Source[m_Index];
-            }
-            else
-            {
-                return '\0';
-            }
-
+            return m_Source[m_Index];
         }
 
         public Location Location
@@ -53,7 +47,7 @@ namespace Lexer
 
         public char Pop()
         {
-            if (m_Source.Length > m_Index)
+            if (m_Index < m_OriginalSourceLength)
             {
                 var value = m_Source[m_Index];
                 m_Index++;
@@ -75,6 +69,5 @@ namespace Lexer
                 return '\0';
             }
         }
-
     }
 }
