@@ -10,6 +10,7 @@ namespace Lexer.Containers
     public unsafe struct FastString
     {
         private const int kSizeOfChar = sizeof(char);
+        private const int kSizeOfIntOverChar = sizeof(int) / sizeof(char);
         private char* buffer;
 
         internal void Set(RootNode rootNode, char character)
@@ -22,12 +23,15 @@ namespace Lexer.Containers
         internal void Set(RootNode rootNode, FastStringBuilder str)
         {
             var strLength = str.Length;
-            var strPtr = str.Ptr;
-            buffer = (char*)rootNode.Allocator.ProvideMemory((strLength + 1) * kSizeOfChar);
+            buffer = (char*)rootNode.Allocator.ProvideMemory((strLength + 2) * kSizeOfChar);
 
-            for (int i = 0; i < strLength; i++)
+            var count = (strLength + 1) / kSizeOfIntOverChar;
+            var src = (int*)str.Ptr;
+            var dst = (int*)buffer;
+
+            for (int i = 0; i < count; i++)
             {
-                buffer[i] = strPtr[i];
+                dst[i] = src[i];
             }
 
             buffer[str.Length] = '\0';
@@ -92,14 +96,14 @@ namespace Lexer.Containers
         public FastStringBuilder()
         {
             m_Capacity = kInitialCapacity;
-            m_Ptr = (char*)Marshal.AllocHGlobal(kSizeOfChar * m_Capacity); //(char*)m_RootNode.Allocator.ProvideMemory(kSizeOfChar * m_Capacity);
+            m_Ptr = (char*)Marshal.AllocHGlobal(kSizeOfChar * (m_Capacity + 1));
         }
 
         public FastStringBuilder(string str)
         {
             var strLength = str.Length;
             m_Capacity = m_Length = strLength;
-            m_Ptr = (char*)Marshal.AllocHGlobal(kSizeOfChar * m_Capacity);
+            m_Ptr = (char*)Marshal.AllocHGlobal(kSizeOfChar * (m_Capacity + 1));
 
             fixed (char* src = str)
             {
@@ -208,7 +212,7 @@ namespace Lexer.Containers
         private void Reallocate()
         {
             var oldPtr = m_Ptr;
-            m_Ptr = (char*)Marshal.AllocHGlobal(kSizeOfChar * m_Capacity);//(char*)m_RootNode.Allocator.ProvideMemory(kSizeOfChar * m_Capacity);
+            m_Ptr = (char*)Marshal.AllocHGlobal(kSizeOfChar * (m_Capacity + 1));    // +2 part comes so FastString could copy 4 bytes at a time
 
             for (int i = 0; i < m_Length; i++)
             {
