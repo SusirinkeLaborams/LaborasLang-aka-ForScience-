@@ -1,4 +1,6 @@
-﻿using System;
+﻿// #define Rematch
+
+using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Lexer;
@@ -17,10 +19,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
     {
         private const int timeout = 0;
         private const string Path = @"..\..\LexerTests\Tokens\";
-        private const bool Tokenize = false;
-        private const bool Rematch = false;
-        private RootNode rootNode = new RootNode();
-
+        private const bool Rematch = true;
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestMethod1()
         {
@@ -609,71 +608,26 @@ auto Main = int()
 
         private void ExecuteTest(string source, [CallerMemberName] string fileName = "")
         {
-            var tokenizedSource = Path + fileName + "_tokens.xml";
-            var serializedTree = Path + fileName + "_tree.xml";
-            Token[] tokens = null;
-            AstNode tree = default(AstNode);
-            if (Tokenize)
-            {
-                tokens = Tokenizer.Tokenize(source, rootNode);
-                var serializer = new DataContractSerializer(typeof(Token[]));
-                using (var writer = new XmlTextWriter(tokenizedSource, Encoding.UTF8))
-                {
-                    serializer.WriteObject(writer, tokens);
-                }
-            }
-            else
-            {
-                var serializer = new DataContractSerializer(typeof(IEnumerable<Token>));
-                using (var streamReader = new StreamReader(tokenizedSource))
-                {
-                    using (var reader = new XmlTextReader(streamReader))
-                    {
-                        tokens = (Token[])serializer.ReadObject(reader);
-                    }
-                }
-            }
-            
-            if(Rematch)
-            {
-                var matcher = new SyntaxMatcher(tokens, rootNode);
-                tree = matcher.Match();
-                var serializer = new DataContractSerializer(typeof(AstNode));
-                using (var writer = new XmlTextWriter(serializedTree, Encoding.UTF8))
-                {
-                    serializer.WriteObject(writer, tree);
-                }
-            }
-            else
-            {
-                var serializer = new DataContractSerializer(typeof(AstNode));
-                using (var streamReader = new StreamReader(serializedTree))
-                {
-                    using (var reader = new XmlTextReader(streamReader))
-                    {
-                        tree = (AstNode)serializer.ReadObject(reader);
-                    }                    
-                }
-            }
+            var tokenizedSource = Path + fileName + "_tokens.txt";
+            var serializedTree = Path + fileName + "_tree.txt";
 
-            Assert.IsNotNull(tree);
-            var syntaxMatcher = new SyntaxMatcher(tokens, rootNode);
-
-            AstNode actualTree = syntaxMatcher.Match();
-            Assert.IsNotNull(actualTree);
-            AssertEqual(tree, actualTree);
-        }
-
-        private void AssertEqual(AstNode expected, AstNode actual)
-        {
-            Assert.AreEqual(expected.Type, actual.Type);
-
-            Assert.IsTrue(expected.Content == actual.Content);            
-            Assert.AreEqual(expected.Children.Count, actual.Children.Count);
-
-            for (int i = 0; i < expected.Children.Count; i++)
+            using (var rootNode = new RootNode())
             {
-                AssertEqual(expected.Children[i], actual.Children[i]);
+                var tokens = Tokenizer.Tokenize(source, rootNode);
+
+                string tree;
+
+#if REMATCH
+                tree = new SyntaxMatcher(tokens, rootNode).Match().ToString();
+                System.IO.File.WriteAllText(serializedTree, tree);
+#else
+                tree = System.IO.File.ReadAllText(serializedTree);
+#endif
+
+                var syntaxMatcher = new SyntaxMatcher(tokens, rootNode);
+
+                string actualTree = syntaxMatcher.Match().ToString();
+                Assert.AreEqual(tree, actualTree);
             }
         }
     }
