@@ -52,15 +52,15 @@ namespace Lexer.Containers
 
         private void EnsureOneNodeIsAvailable()
         {
-            if (!m_CurrentContainer.HasFreeSpaceForOne())
+            if (!m_CurrentContainer.HasFreeSpaceForOneNode())
             {
                 AddContainer();
             }
         }
 
-        private void EnsureNodeIsAvailable(int count)
+        private void EnsureMemoryIsAvailable(int byteCount)
         {
-            if (!m_CurrentContainer.HasFreeSpace(count))
+            if (!m_CurrentContainer.HasFreeSpace(byteCount))
             {
                 AddContainer();
             }
@@ -77,19 +77,19 @@ namespace Lexer.Containers
             return new AstNode(ProvideNodePtr());
         }
         
-        public unsafe AstNode.InternalNode* ProvideMemory(int count)
+        public unsafe AstNode.InternalNode** ProvideNodeArrayPtr(int count)
         {
-            EnsureNodeIsAvailable(count);
-            return m_CurrentContainer.GetNode();
+            EnsureMemoryIsAvailable(count);
+            return m_CurrentContainer.GetNodeArray(count);
         }
 
         public unsafe void FreeMemory(AstNode.InternalNode* ptr)
         {
             for (; ;)
             {
-                if (m_CurrentContainer.IsMyPtr(ptr))
+                if (m_CurrentContainer.IsMyPtr((byte*)ptr))
                 {
-                    m_CurrentContainer.ResetTo(ptr);
+                    m_CurrentContainer.ResetTo((byte*)ptr);
                     return;
                 }
                 else
@@ -113,44 +113,47 @@ namespace Lexer.Containers
 
         private unsafe struct AstNodeContainer
         {
-            private static readonly int TokenSize = sizeof(Token.InternalToken);
+            private static readonly int kNodeSize = sizeof(Token.InternalToken);
+            private static readonly int kNodePointerSize = sizeof(Token.InternalToken*);
             
-            private AstNode.InternalNode* m_Nodes;
-            private AstNode.InternalNode* m_NextNode;
-            private AstNode.InternalNode* m_End;
+            private byte* m_Nodes;
+            private byte* m_NextNode;
+            private byte* m_End;
 
             public AstNodeContainer(int capacity)
             {
-                var byteCount = capacity * TokenSize;
+                var byteCount = capacity * kNodeSize;
                 var ptr = Marshal.AllocHGlobal(byteCount);
 
-                m_NextNode = m_Nodes = (AstNode.InternalNode*)ptr;
-                m_End = m_Nodes + capacity;
+                m_NextNode = m_Nodes = (byte*)ptr;
+                m_End = m_Nodes + capacity * kNodeSize;
             }
 
             public AstNode.InternalNode* GetNode()
             {
-                return m_NextNode++;
-            }
-
-            public AstNode.InternalNode* GetNodes(int count)
-            {
-                var node = m_NextNode;
-                m_NextNode += count;
+                var node = (AstNode.InternalNode*)m_NextNode;
+                m_NextNode += kNodeSize;
                 return node;
             }
 
-            public bool HasFreeSpace(int count)
+            public AstNode.InternalNode** GetNodeArray(int count)
             {
-                return m_NextNode + count <= m_End;
+                var array = (AstNode.InternalNode**)m_NextNode;
+                m_NextNode += kNodePointerSize * count;
+                return array;
             }
 
-            public bool HasFreeSpaceForOne()
+            public bool HasFreeSpace(int byteCount)
+            {
+                return m_NextNode + byteCount <= m_End;
+            }
+
+            public bool HasFreeSpaceForOneNode()
             {
                 return m_NextNode < m_End;
             }
 
-            public bool IsMyPtr(AstNode.InternalNode* ptr)
+            public bool IsMyPtr(byte* ptr)
             {
                 return !(ptr < m_Nodes || ptr >= m_End);
             }
@@ -160,7 +163,7 @@ namespace Lexer.Containers
                 m_NextNode = m_Nodes;
             }
 
-            public void ResetTo(AstNode.InternalNode* ptr)
+            public void ResetTo(byte* ptr)
             {
                 m_NextNode = ptr;
             }

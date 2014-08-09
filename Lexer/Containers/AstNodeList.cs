@@ -10,7 +10,7 @@ namespace Lexer.Containers
     {
         private const int kInitialCapacity = 12; // Must be multiple of 4
 
-        private AstNode.InternalNode* m_Nodes;
+        private AstNode* m_Nodes;
         private int m_Count;
         private int m_Capacity;
         
@@ -23,7 +23,7 @@ namespace Lexer.Containers
 #if DEBUG
                 m_Capacity = -1;
 #endif
-                return *(AstNode*)(m_Nodes + index); 
+                return m_Nodes[index];
             } 
         }
 
@@ -31,11 +31,7 @@ namespace Lexer.Containers
         {
             EnsureThereIsSpace(rootNode);
             
-            var dst = m_Nodes + m_Count; // PERF: this is really hot path, so don't use accessors
-            dst->children = ((AstNode.InternalNode*)&child)->children;  // that copy the whole struct
-            dst->content = ((AstNode.InternalNode*)&child)->content;
-            dst->type = child.Type;
-
+            m_Nodes[m_Count] = child;
             m_Count++;
         }
 
@@ -51,22 +47,18 @@ namespace Lexer.Containers
             if (m_Capacity == 0)
             {
                 m_Capacity = kInitialCapacity;
-                m_Nodes = rootNode.NodePool.ProvideMemory(kInitialCapacity);
+                m_Nodes = (AstNode*)rootNode.NodePool.ProvideNodeArrayPtr(kInitialCapacity);
             }
             else if (m_Count == m_Capacity)
             {
                 var oldNodes = m_Nodes;
 
                 m_Capacity *= 2;
-                m_Nodes = rootNode.NodePool.ProvideMemory(m_Capacity);
+                m_Nodes = (AstNode*)rootNode.NodePool.ProvideNodeArrayPtr(m_Capacity);
 
-                int* src = (int*)oldNodes;
-                int* dst = (int*)m_Nodes;
-                int count = m_Count * sizeof(AstNode.InternalNode) / 4;
-
-                for (int i = 0; i < count; i++)
+                for (int i = 0; i < m_Count; i++)
                 {
-                    *dst++ = *src++;
+                    *m_Nodes++ = *oldNodes++;
                 }
             }
         }
