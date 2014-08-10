@@ -1,28 +1,38 @@
-﻿using System;
+﻿using Lexer.Containers;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexer
 {
-    public class Tokenizer
+    internal static class Tokenizer
     {
-        private static readonly char[] Symbols;
-        
+        private static readonly bool[] SymbolMap;
+        private static readonly Dictionary<FastStringBuilder, int> KeywordTypeMap;
+
         static Tokenizer()
         {
-            Symbols = new char[] { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.', '\0', ';' };
-            Array.Sort<char>(Symbols);
+            var symbols = new char[] { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.', '\0', ';' };
+            SymbolMap = new bool[char.MaxValue];
+
+            for (int i = 0; i < symbols.Length; i++)
+            {
+                SymbolMap[symbols[i]] = true;
+            }
+
+            SetupTokenTypeMap(out KeywordTypeMap);
         }
-       
-        public static IEnumerable<Token> Tokenize(string file)
+
+        public static Token[] Tokenize(string file, RootNode rootNode)
         {
-            SourceReader Source = new SourceReader(file);
-            var builder = new StringBuilder();
-            Location lastLocation = new Location(-1, -1);
+            var tokens = new List<Token>();
+            var Source = new SourceReader(file);
+            var builder = ClaimFreeStringBuilder();
+#if DEBUG
+            var lastLocation = new Location(-1, -1);
+#endif
+
             while (Source.Peek() != '\0')
             {
+#if DEBUG
                 if (lastLocation == Source.Location)
                 {
                     throw new Exception(String.Format("infinite loop found at line {} column {} symbol {}", lastLocation.Row, lastLocation.Column, Source.Peek()));
@@ -31,6 +41,7 @@ namespace Lexer
                 {
                     lastLocation = Source.Location;
                 }
+#endif
 
                 switch (Source.Peek())
                 {
@@ -49,7 +60,7 @@ namespace Lexer
                     case '\'':
                         {
                             // String literal, scan to next ' that is not going after a \
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
 
                             token.Type = TokenType.StringLiteral;
@@ -70,14 +81,14 @@ namespace Lexer
 
                             builder.Append(Source.Pop());
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     case '"':
                         {
                             // Duble quote string, scan to next " that is not going after a \
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.StringLiteral;
 
@@ -97,8 +108,8 @@ namespace Lexer
 
                             builder.Append(Source.Pop());
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -106,7 +117,7 @@ namespace Lexer
                     case '+':
                         {
                             // ++ += +
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -131,8 +142,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -140,7 +151,7 @@ namespace Lexer
                     case '-':
                         {
                             // -- -= -
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -165,8 +176,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -174,7 +185,7 @@ namespace Lexer
                     case '!':
                         {
                             // ! !=
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -193,8 +204,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -202,7 +213,7 @@ namespace Lexer
                     case '~':
                         {
                             // ~ ~=
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -221,8 +232,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -230,7 +241,7 @@ namespace Lexer
                     case '&':
                         {
                             // & && &=
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.BitwiseAnd;
                             builder.Append(Source.Pop());
@@ -251,8 +262,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -260,7 +271,7 @@ namespace Lexer
                     case '^':
                         {
                             // ^ ^=
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
@@ -279,8 +290,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -288,7 +299,7 @@ namespace Lexer
                     case '|':
                         {
                             // | |= || 
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.BitwiseOr;
                             builder.Append(Source.Pop());
@@ -309,8 +320,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -318,7 +329,7 @@ namespace Lexer
                     case '<':
                         {
                             // < <= << <<=
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Less;
                             builder.Append(Source.Pop());
@@ -344,8 +355,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -353,7 +364,7 @@ namespace Lexer
                     case '>':
                         {
                             // > >= >>
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.More;
                             builder.Append(Source.Pop());
@@ -379,8 +390,8 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -388,7 +399,7 @@ namespace Lexer
                     case '/':
                         {
                             // // / /= /* ... */
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Divide;
                             builder.Append(Source.Pop());
@@ -430,43 +441,43 @@ namespace Lexer
                                     }
                             }
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
                     #region Period
                     case '.':
                         {
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Period;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
                     #region Comma
                     case ',':
                         {
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Comma;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
                     #region Multiplication
                     case '*':
                         {
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Multiply;
                             builder.Append(Source.Pop());
@@ -477,15 +488,15 @@ namespace Lexer
                                 token.Type = TokenType.MultiplyEqual;
                             }
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
                     #region Remainder
                     case '%':
                         {
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Remainder;
                             builder.Append(Source.Pop());
@@ -496,15 +507,15 @@ namespace Lexer
                                 token.Type = TokenType.RemainderEqual;
                             }
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
                     #region Equal
                     case '=':
                         {
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Assignment;
                             builder.Append(Source.Pop());
@@ -515,78 +526,78 @@ namespace Lexer
                                 token.Type = TokenType.Equal;
                             }
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
                     #region LeftCurlyBracket
                     case '{':
                         {
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.LeftCurlyBracket;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
                     #region RightCurlyBracket
                     case '}':
                         {
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.RightCurlyBracket;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
                     #region LeftBracket
                     case '(':
                         {
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.LeftBracket;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
                     #region RightBracket
                     case ')':
                         {
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.RightBracket;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
                     #region EndOfLine
                     case ';':
                         {
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.EndOfLine;
                             builder.Append(Source.Pop());
                             token.Start = Source.Location;
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
@@ -602,7 +613,7 @@ namespace Lexer
                     case '8':
                     case '9':
                         {
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Start = Source.Location;
                             token.Type = TokenType.Integer;
@@ -652,134 +663,160 @@ namespace Lexer
                                 }
                             }
                             token.End = Source.Location;
-                            token.Content = builder.ToString();
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
                     #region Symbol
                     default:
                         {
-                            var token = new Token();
+                            var token = rootNode.ProvideToken();
+                            token.Start = Source.Location;
                             builder.Clear();
+
                             while (!IsSymbol(Source.Peek()))
                             {
                                 builder.Append(Source.Pop());
                             }
 
-                            token.Content = builder.ToString();
-                            token.Type = GetKeywordType(token.Content);
-                            yield return token;
+                            token.Content = new FastString(rootNode, builder);
+                            token.Type = GetKeywordType(builder);
+                            token.End = Source.Location;
+
+                            tokens.Add(token);
                             break;
                         }
                     #endregion
                 }
             }
-            yield break;
+
+            YieldStringBuilder(builder);
+
+            var tokenArray = new Token[tokens.Count];
+            tokens.CopyTo(tokenArray);
+            return tokenArray;
         }
 
-        public static bool IsDigit(char c)
+        private static bool IsDigit(char c)
         {
             return c >= '0' && c <= '9';
         }
 
-        public static bool IsSymbol(char c)
+        private static bool IsSymbol(char c)
         {
-            return !(Array.BinarySearch<char>(Symbols, c) < 0);
+            return SymbolMap[c];
         }
 
-        public static TokenType GetKeywordType(string symbol)
+        private static TokenType GetKeywordType(FastStringBuilder symbol)
         {
-            switch (symbol)
+            int tokenType;
+
+            if (KeywordTypeMap.TryGetValue(symbol, out tokenType))
             {
-                case "abstract":
-                    return TokenType.Abstract;
-                case "as":
-                    return TokenType.As;
-                case "base":
-                    return TokenType.Base;
-                case "break":
-                    return TokenType.Break;
-                case "case":
-                    return TokenType.Case;
-                case "catch":
-                    return TokenType.Catch;
-                case "class":
-                    return TokenType.Class;
-                case "const":
-                    return TokenType.Const;
-                case "continue":
-                    return TokenType.Continue;
-                case "default":
-                    return TokenType.Default;
-                case "do":
-                    return TokenType.Do;
-                case "extern":
-                    return TokenType.Extern;
-                case "else":
-                    return TokenType.Else;
-                case "enum":
-                    return TokenType.Enum;
-                case "false":
-                    return TokenType.False;
-                case "finally":
-                    return TokenType.Finally;
-                case "for":
-                    return TokenType.For;
-                case "goto":
-                    return TokenType.Goto;
-                case "if":
-                    return TokenType.If;
-                case "interface":
-                    return TokenType.Interface;
-                case "internal":
-                    return TokenType.Internal;
-                case "is":
-                    return TokenType.Is;
-                case "new":
-                    return TokenType.New;
-                case "null":
-                    return TokenType.Null;
-                case "namespace":
-                    return TokenType.Namespace;
-                case "out":
-                    return TokenType.Out;
-                case "override":
-                    return TokenType.Override;
-                case "private":
-                    return TokenType.Private;
-                case "protected":
-                    return TokenType.Protected;
-                case "public":
-                    return TokenType.Public;
-                case "ref":
-                    return TokenType.Ref;
-                case "return":
-                    return TokenType.Return;
-                case "switch":
-                    return TokenType.Switch;
-                case "struct":
-                    return TokenType.Struct;
-                case "sealed":
-                    return TokenType.Sealed;
-                case "static":
-                    return TokenType.Static;
-                case "this":
-                    return TokenType.This;
-                case "throw":
-                    return TokenType.Throw;
-                case "true":
-                    return TokenType.True;
-                case "try":
-                    return TokenType.Try;
-                case "using":
-                    return TokenType.Using;
-                case "virtual":
-                    return TokenType.Virtual;
-                case "while":
-                    return TokenType.While;
+                return (TokenType)tokenType;
             }
+
             return TokenType.Symbol;
+        }
+
+        private static void SetupTokenTypeMap(out Dictionary<FastStringBuilder, int> keywordTypeMap)
+        {
+            keywordTypeMap = new Dictionary<FastStringBuilder, int>();
+
+            keywordTypeMap[(FastStringBuilder)"abstract"] = (int)TokenType.Abstract;
+            keywordTypeMap[(FastStringBuilder)"as"] = (int)TokenType.As;
+            keywordTypeMap[(FastStringBuilder)"base"] = (int)TokenType.Base;
+            keywordTypeMap[(FastStringBuilder)"break"] = (int)TokenType.Break;
+            keywordTypeMap[(FastStringBuilder)"case"] = (int)TokenType.Case;
+            keywordTypeMap[(FastStringBuilder)"catch"] = (int)TokenType.Catch;
+            keywordTypeMap[(FastStringBuilder)"class"] = (int)TokenType.Class;
+            keywordTypeMap[(FastStringBuilder)"const"] = (int)TokenType.Const;
+            keywordTypeMap[(FastStringBuilder)"continue"] = (int)TokenType.Continue;
+            keywordTypeMap[(FastStringBuilder)"default"] = (int)TokenType.Default;
+            keywordTypeMap[(FastStringBuilder)"do"] = (int)TokenType.Do;
+            keywordTypeMap[(FastStringBuilder)"extern"] = (int)TokenType.Extern;
+            keywordTypeMap[(FastStringBuilder)"else"] = (int)TokenType.Else;
+            keywordTypeMap[(FastStringBuilder)"enum"] = (int)TokenType.Enum;
+            keywordTypeMap[(FastStringBuilder)"false"] = (int)TokenType.False;
+            keywordTypeMap[(FastStringBuilder)"finally"] = (int)TokenType.Finally;
+            keywordTypeMap[(FastStringBuilder)"for"] = (int)TokenType.For;
+            keywordTypeMap[(FastStringBuilder)"goto"] = (int)TokenType.Goto;
+            keywordTypeMap[(FastStringBuilder)"if"] = (int)TokenType.If;
+            keywordTypeMap[(FastStringBuilder)"interface"] = (int)TokenType.Interface;
+            keywordTypeMap[(FastStringBuilder)"internal"] = (int)TokenType.Internal;
+            keywordTypeMap[(FastStringBuilder)"is"] = (int)TokenType.Is;
+            keywordTypeMap[(FastStringBuilder)"new"] = (int)TokenType.New;
+            keywordTypeMap[(FastStringBuilder)"null"] = (int)TokenType.Null;
+            keywordTypeMap[(FastStringBuilder)"namespace"] = (int)TokenType.Namespace;
+            keywordTypeMap[(FastStringBuilder)"out"] = (int)TokenType.Out;
+            keywordTypeMap[(FastStringBuilder)"override"] = (int)TokenType.Override;
+            keywordTypeMap[(FastStringBuilder)"private"] = (int)TokenType.Private;
+            keywordTypeMap[(FastStringBuilder)"protected"] = (int)TokenType.Protected;
+            keywordTypeMap[(FastStringBuilder)"public"] = (int)TokenType.Public;
+            keywordTypeMap[(FastStringBuilder)"ref"] = (int)TokenType.Ref;
+            keywordTypeMap[(FastStringBuilder)"return"] = (int)TokenType.Return;
+            keywordTypeMap[(FastStringBuilder)"switch"] = (int)TokenType.Switch;
+            keywordTypeMap[(FastStringBuilder)"struct"] = (int)TokenType.Struct;
+            keywordTypeMap[(FastStringBuilder)"sealed"] = (int)TokenType.Sealed;
+            keywordTypeMap[(FastStringBuilder)"static"] = (int)TokenType.Static;
+            keywordTypeMap[(FastStringBuilder)"this"] = (int)TokenType.This;
+            keywordTypeMap[(FastStringBuilder)"throw"] = (int)TokenType.Throw;
+            keywordTypeMap[(FastStringBuilder)"true"] = (int)TokenType.True;
+            keywordTypeMap[(FastStringBuilder)"try"] = (int)TokenType.Try;
+            keywordTypeMap[(FastStringBuilder)"using"] = (int)TokenType.Using;
+            keywordTypeMap[(FastStringBuilder)"virtual"] = (int)TokenType.Virtual;
+            keywordTypeMap[(FastStringBuilder)"while"] = (int)TokenType.While;
+        }
+
+        class StringBuilderCacheField
+        {
+            public FastStringBuilder stringBuilder;
+            public bool isTaken;
+        }
+
+        private static List<StringBuilderCacheField> s_StringBuilderCache = new List<StringBuilderCacheField>();
+
+        // FastStringBuilder allocates memory each time it needs to grow its buffer,
+        // which will not be more than log(N) where N is max length
+        // However, if we create a new instance every time we tokenize something,
+        // we're gonna be doing it all over again every time, so we cache it instead
+        private static FastStringBuilder ClaimFreeStringBuilder()
+        {
+            lock (s_StringBuilderCache)
+            {
+                for (int i = 0; i < s_StringBuilderCache.Count; i++)
+                {
+                    if (!s_StringBuilderCache[i].isTaken)
+                    {
+                        return s_StringBuilderCache[i].stringBuilder;
+                    }
+                }
+
+                var newBuilder = new FastStringBuilder();
+                s_StringBuilderCache.Add(new StringBuilderCacheField()
+                    {
+                        stringBuilder = newBuilder,
+                        isTaken = true
+                    });
+
+                return newBuilder;
+            }
+        }
+
+        private static unsafe void YieldStringBuilder(FastStringBuilder strBuilder)
+        {
+            lock (s_StringBuilderCache)
+            {
+                for (int i = 0; i < s_StringBuilderCache.Count; i++)
+                {
+                    if (strBuilder.Ptr == s_StringBuilderCache[i].stringBuilder.Ptr)
+                    {
+                        s_StringBuilderCache[i].isTaken = false;
+                        return;
+                    }
+                }
+            }
         }
     }
 }

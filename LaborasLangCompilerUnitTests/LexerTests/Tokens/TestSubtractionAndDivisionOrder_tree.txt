@@ -1,0 +1,88 @@
+Content: Type: RootNode, Start: 1, 1, End: 1, 23, Content: ""
+Type: RootNode
+Children:
+	Content: Type: StatementNode, Start: 1, 1, End: 1, 23, Content: ""
+	Type: StatementNode
+	Children:
+		Content: Type: AssignmentNode, Start: 1, 1, End: 1, 22, Content: ""
+		Type: AssignmentNode
+		Children:
+			Content: Type: LValue, Start: 1, 1, End: 1, 4, Content: ""
+			Type: LValue
+			Children:
+				Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
+				Type: FullSymbol
+				Children:
+					Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+					Type: Symbol
+					Children:
+
+			Content: Type: AssignmentOperator, Start: 1, 6, End: 1, 6, Content: ""
+			Type: AssignmentOperator
+			Children:
+				Content: Type: Assignment, Start: 1, 6, End: 1, 6, Content: "="
+				Type: Assignment
+				Children:
+
+			Content: Type: Value, Start: 1, 7, End: 1, 22, Content: ""
+			Type: Value
+			Children:
+				Content: Type: ArithmeticNode, Start: 1, 7, End: 1, 22, Content: ""
+				Type: ArithmeticNode
+				Children:
+					Content: Type: ArithmeticSubnode, Start: 1, 7, End: 1, 10, Content: ""
+					Type: ArithmeticSubnode
+					Children:
+						Content: Type: RValue, Start: 1, 7, End: 1, 10, Content: ""
+						Type: RValue
+						Children:
+							Content: Type: Double, Start: 1, 7, End: 1, 10, Content: "1.5"
+							Type: Double
+							Children:
+
+					Content: Type: ArithmeticSubnode, Start: 1, 13, End: 1, 13, Content: ""
+					Type: ArithmeticSubnode
+					Children:
+						Content: Type: Operator, Start: 1, 13, End: 1, 13, Content: ""
+						Type: Operator
+						Children:
+							Content: Type: Minus, Start: 1, 13, End: 1, 13, Content: "-"
+							Type: Minus
+							Children:
+
+					Content: Type: ArithmeticSubnode, Start: 1, 14, End: 1, 17, Content: ""
+					Type: ArithmeticSubnode
+					Children:
+						Content: Type: RValue, Start: 1, 14, End: 1, 17, Content: ""
+						Type: RValue
+						Children:
+							Content: Type: FullSymbol, Start: 1, 14, End: 1, 17, Content: ""
+							Type: FullSymbol
+							Children:
+								Content: Type: Symbol, Start: 1, 14, End: 1, 17, Content: "bar"
+								Type: Symbol
+								Children:
+
+					Content: Type: ArithmeticSubnode, Start: 1, 19, End: 1, 19, Content: ""
+					Type: ArithmeticSubnode
+					Children:
+						Content: Type: Operator, Start: 1, 19, End: 1, 19, Content: ""
+						Type: Operator
+						Children:
+							Content: Type: Divide, Start: 1, 19, End: 1, 19, Content: "/"
+							Type: Divide
+							Children:
+
+					Content: Type: ArithmeticSubnode, Start: 1, 20, End: 1, 22, Content: ""
+					Type: ArithmeticSubnode
+					Children:
+						Content: Type: RValue, Start: 1, 20, End: 1, 22, Content: ""
+						Type: RValue
+						Children:
+							Content: Type: Integer, Start: 1, 20, End: 1, 22, Content: "15"
+							Type: Integer
+							Children:
+
+		Content: Type: EndOfLine, Start: 1, 23, End: 1, 23, Content: ";"
+		Type: EndOfLine
+		Children:

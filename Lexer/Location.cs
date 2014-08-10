@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 
 namespace Lexer
 {
@@ -13,7 +8,7 @@ namespace Lexer
         private int m_Column;
         private int m_Row;
         #region Public properties
-        public int Column 
+        public int Column
         {
             get
             {
@@ -36,7 +31,9 @@ namespace Lexer
             }
         }
         #endregion Public properties
-        public Location(int column, int row) : this()
+
+        public Location(int column, int row)
+            : this()
         {
             Column = column;
             Row = row;
@@ -50,6 +47,26 @@ namespace Lexer
         public static bool operator !=(Location a, Location b)
         {
             return !(a == b);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Location)
+            {
+                return this == (Location)obj;
+            }
+
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return m_Row << 16 + m_Column;
+        }
+
+        public override string ToString()
+        {
+            return String.Format("{0}, {1}", Row, Column);
         }
     }
 }

@@ -1,0 +1,1 @@
+Type: More, Start: 1, 2, End: 1, 2, Content: ">" Type: RightShift, Start: 1, 4, End: 1, 5, Content: ">>" Type: MoreOrEqual, Start: 1, 7, End: 1, 8, Content: ">=" Type: RightShiftEqual, Start: 1, 10, End: 1, 12, Content: ">>=" 

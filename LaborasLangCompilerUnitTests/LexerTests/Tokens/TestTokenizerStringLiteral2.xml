@@ -1,1 +1,0 @@
-﻿<ArrayOfToken xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/Lexer"><Token><m_Content>"str\"ing"</m_Content><m_End><m_Column>11</m_Column><m_Row>1</m_Row></m_End><m_Start><m_Column>2</m_Column><m_Row>1</m_Row></m_Start><m_Type>StringLiteral</m_Type></Token></ArrayOfToken>

@@ -1,0 +1,151 @@
+Content: Type: RootNode, Start: 1, 1, End: 2, 45, Content: ""
+Type: RootNode
+Children:
+	Content: Type: StatementNode, Start: 1, 1, End: 1, 29, Content: ""
+	Type: StatementNode
+	Children:
+		Content: Type: WhileLoop, Start: 1, 1, End: 1, 29, Content: ""
+		Type: WhileLoop
+		Children:
+			Content: Type: While, Start: 1, 1, End: 1, 6, Content: "while"
+			Type: While
+			Children:
+
+			Content: Type: LeftBracket, Start: 1, 7, End: 1, 7, Content: "("
+			Type: LeftBracket
+			Children:
+
+			Content: Type: Value, Start: 1, 7, End: 1, 16, Content: ""
+			Type: Value
+			Children:
+				Content: Type: ArithmeticNode, Start: 1, 7, End: 1, 16, Content: ""
+				Type: ArithmeticNode
+				Children:
+					Content: Type: ArithmeticSubnode, Start: 1, 7, End: 1, 16, Content: ""
+					Type: ArithmeticSubnode
+					Children:
+						Content: Type: RValue, Start: 1, 7, End: 1, 16, Content: ""
+						Type: RValue
+						Children:
+							Content: Type: FullSymbol, Start: 1, 7, End: 1, 16, Content: ""
+							Type: FullSymbol
+							Children:
+								Content: Type: Symbol, Start: 1, 7, End: 1, 16, Content: "condition"
+								Type: Symbol
+								Children:
+
+			Content: Type: RightBracket, Start: 1, 17, End: 1, 17, Content: ")"
+			Type: RightBracket
+			Children:
+
+			Content: Type: StatementNode, Start: 1, 18, End: 1, 29, Content: ""
+			Type: StatementNode
+			Children:
+				Content: Type: FunctionCall, Start: 1, 18, End: 1, 28, Content: ""
+				Type: FunctionCall
+				Children:
+					Content: Type: FullSymbol, Start: 1, 18, End: 1, 26, Content: ""
+					Type: FullSymbol
+					Children:
+						Content: Type: Symbol, Start: 1, 18, End: 1, 26, Content: "function"
+						Type: Symbol
+						Children:
+
+					Content: Type: LeftBracket, Start: 1, 27, End: 1, 27, Content: "("
+					Type: LeftBracket
+					Children:
+
+					Content: Type: RightBracket, Start: 1, 28, End: 1, 28, Content: ")"
+					Type: RightBracket
+					Children:
+
+				Content: Type: EndOfLine, Start: 1, 29, End: 1, 29, Content: ";"
+				Type: EndOfLine
+				Children:
+
+	Content: Type: StatementNode, Start: 2, 13, End: 2, 45, Content: ""
+	Type: StatementNode
+	Children:
+		Content: Type: WhileLoop, Start: 2, 13, End: 2, 45, Content: ""
+		Type: WhileLoop
+		Children:
+			Content: Type: While, Start: 2, 13, End: 2, 18, Content: "while"
+			Type: While
+			Children:
+
+			Content: Type: LeftBracket, Start: 2, 19, End: 2, 19, Content: "("
+			Type: LeftBracket
+			Children:
+
+			Content: Type: Value, Start: 2, 19, End: 2, 30, Content: ""
+			Type: Value
+			Children:
+				Content: Type: ArithmeticNode, Start: 2, 19, End: 2, 30, Content: ""
+				Type: ArithmeticNode
+				Children:
+					Content: Type: ArithmeticSubnode, Start: 2, 19, End: 2, 30, Content: ""
+					Type: ArithmeticSubnode
+					Children:
+						Content: Type: RValue, Start: 2, 19, End: 2, 30, Content: ""
+						Type: RValue
+						Children:
+							Content: Type: FunctionCall, Start: 2, 19, End: 2, 30, Content: ""
+							Type: FunctionCall
+							Children:
+								Content: Type: FullSymbol, Start: 2, 19, End: 2, 28, Content: ""
+								Type: FullSymbol
+								Children:
+									Content: Type: Symbol, Start: 2, 19, End: 2, 28, Content: "condition"
+									Type: Symbol
+									Children:
+
+								Content: Type: LeftBracket, Start: 2, 29, End: 2, 29, Content: "("
+								Type: LeftBracket
+								Children:
+
+								Content: Type: RightBracket, Start: 2, 30, End: 2, 30, Content: ")"
+								Type: RightBracket
+								Children:
+
+			Content: Type: RightBracket, Start: 2, 31, End: 2, 31, Content: ")"
+			Type: RightBracket
+			Children:
+
+			Content: Type: StatementNode, Start: 2, 33, End: 2, 45, Content: ""
+			Type: StatementNode
+			Children:
+				Content: Type: CodeBlockNode, Start: 2, 33, End: 2, 45, Content: ""
+				Type: CodeBlockNode
+				Children:
+					Content: Type: LeftCurlyBracket, Start: 2, 33, End: 2, 33, Content: "{"
+					Type: LeftCurlyBracket
+					Children:
+
+					Content: Type: StatementNode, Start: 2, 33, End: 2, 44, Content: ""
+					Type: StatementNode
+					Children:
+						Content: Type: FunctionCall, Start: 2, 33, End: 2, 43, Content: ""
+						Type: FunctionCall
+						Children:
+							Content: Type: FullSymbol, Start: 2, 33, End: 2, 41, Content: ""
+							Type: FullSymbol
+							Children:
+								Content: Type: Symbol, Start: 2, 33, End: 2, 41, Content: "function"
+								Type: Symbol
+								Children:
+
+							Content: Type: LeftBracket, Start: 2, 42, End: 2, 42, Content: "("
+							Type: LeftBracket
+							Children:
+
+							Content: Type: RightBracket, Start: 2, 43, End: 2, 43, Content: ")"
+							Type: RightBracket
+							Children:
+
+						Content: Type: EndOfLine, Start: 2, 44, End: 2, 44, Content: ";"
+						Type: EndOfLine
+						Children:
+
+					Content: Type: RightCurlyBracket, Start: 2, 45, End: 2, 45, Content: "}"
+					Type: RightCurlyBracket
+					Children:

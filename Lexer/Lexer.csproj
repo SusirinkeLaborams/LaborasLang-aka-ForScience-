@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -40,15 +42,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AstNode.cs" />
+    <Compile Include="Containers\AstNodeList.cs" />
+    <Compile Include="Containers\AstNodePool.cs" />
+    <Compile Include="Containers\AstNode.cs" />
+    <Compile Include="Containers\FastString.cs" />
+    <Compile Include="Containers\PermanentAllocator.cs" />
+    <Compile Include="Lexer.cs" />
     <Compile Include="ParseRule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Location.cs" />
+    <Compile Include="Containers\RootNode.cs" />
     <Compile Include="SourceReader.cs" />
     <Compile Include="SyntaxMatcher.cs" />
-    <Compile Include="Token.cs" />
+    <Compile Include="Containers\Token.cs" />
     <Compile Include="Tokenizer.cs" />
     <Compile Include="TokenType.cs" />
+    <Compile Include="Utils\NativeFunctions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
