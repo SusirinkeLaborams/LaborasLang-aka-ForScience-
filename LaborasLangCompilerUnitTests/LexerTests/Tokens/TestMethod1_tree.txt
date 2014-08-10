@@ -24,7 +24,7 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: EndOfLine, Start: 2, 7, End: 2, 7, Content: ";"
+			Content: Type: EndOfLine, Start: 2, 6, End: 2, 7, Content: ";"
 			Type: EndOfLine
 			Children:
 
@@ -51,7 +51,7 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: EndOfLine, Start: 3, 7, End: 3, 7, Content: ";"
+			Content: Type: EndOfLine, Start: 3, 6, End: 3, 7, Content: ";"
 			Type: EndOfLine
 			Children:
 
@@ -71,10 +71,10 @@ Children:
 					Type: Symbol
 					Children:
 
-			Content: Type: AssignmentOperator, Start: 4, 4, End: 4, 4, Content: ""
+			Content: Type: AssignmentOperator, Start: 4, 3, End: 4, 4, Content: ""
 			Type: AssignmentOperator
 			Children:
-				Content: Type: Assignment, Start: 4, 4, End: 4, 4, Content: "="
+				Content: Type: Assignment, Start: 4, 3, End: 4, 4, Content: "="
 				Type: Assignment
 				Children:
 
@@ -97,7 +97,7 @@ Children:
 								Type: Symbol
 								Children:
 
-		Content: Type: EndOfLine, Start: 4, 7, End: 4, 7, Content: ";"
+		Content: Type: EndOfLine, Start: 4, 6, End: 4, 7, Content: ";"
 		Type: EndOfLine
 		Children:
 
@@ -117,10 +117,10 @@ Children:
 					Type: Symbol
 					Children:
 
-			Content: Type: AssignmentOperator, Start: 5, 4, End: 5, 4, Content: ""
+			Content: Type: AssignmentOperator, Start: 5, 3, End: 5, 4, Content: ""
 			Type: AssignmentOperator
 			Children:
-				Content: Type: Assignment, Start: 5, 4, End: 5, 4, Content: "="
+				Content: Type: Assignment, Start: 5, 3, End: 5, 4, Content: "="
 				Type: Assignment
 				Children:
 
@@ -140,6 +140,6 @@ Children:
 							Type: Integer
 							Children:
 
-		Content: Type: EndOfLine, Start: 5, 7, End: 5, 7, Content: ";"
+		Content: Type: EndOfLine, Start: 5, 6, End: 5, 7, Content: ";"
 		Type: EndOfLine
 		Children:

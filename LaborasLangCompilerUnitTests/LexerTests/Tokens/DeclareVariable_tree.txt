@@ -24,6 +24,6 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: EndOfLine, Start: 1, 9, End: 1, 9, Content: ";"
+			Content: Type: EndOfLine, Start: 1, 8, End: 1, 9, Content: ";"
 			Type: EndOfLine
 			Children:

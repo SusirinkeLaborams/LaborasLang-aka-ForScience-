@@ -1,1 +1,1 @@
-Type: EndOfLine, Start: 1, 2, End: 1, 2, Content: ";" 
+Type: EndOfLine, Start: 1, 1, End: 1, 2, Content: ";" 

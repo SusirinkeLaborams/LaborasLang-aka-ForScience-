@@ -1,1 +1,1 @@
-Type: BitwiseXor, Start: 1, 2, End: 1, 2, Content: "^" Type: BitwiseXorEqual, Start: 1, 4, End: 1, 5, Content: "^=" 
+Type: BitwiseXor, Start: 1, 1, End: 1, 2, Content: "^" Type: BitwiseXorEqual, Start: 1, 3, End: 1, 5, Content: "^=" 

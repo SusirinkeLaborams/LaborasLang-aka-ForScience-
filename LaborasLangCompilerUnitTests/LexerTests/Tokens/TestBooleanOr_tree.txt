@@ -17,10 +17,10 @@ Children:
 					Type: Symbol
 					Children:
 
-			Content: Type: AssignmentOperator, Start: 1, 4, End: 1, 4, Content: ""
+			Content: Type: AssignmentOperator, Start: 1, 3, End: 1, 4, Content: ""
 			Type: AssignmentOperator
 			Children:
-				Content: Type: Assignment, Start: 1, 4, End: 1, 4, Content: "="
+				Content: Type: Assignment, Start: 1, 3, End: 1, 4, Content: "="
 				Type: Assignment
 				Children:
 
@@ -43,13 +43,13 @@ Children:
 								Type: Symbol
 								Children:
 
-					Content: Type: ArithmeticSubnode, Start: 1, 8, End: 1, 9, Content: ""
+					Content: Type: ArithmeticSubnode, Start: 1, 7, End: 1, 9, Content: ""
 					Type: ArithmeticSubnode
 					Children:
-						Content: Type: Operator, Start: 1, 8, End: 1, 9, Content: ""
+						Content: Type: Operator, Start: 1, 7, End: 1, 9, Content: ""
 						Type: Operator
 						Children:
-							Content: Type: Or, Start: 1, 8, End: 1, 9, Content: "||"
+							Content: Type: Or, Start: 1, 7, End: 1, 9, Content: "||"
 							Type: Or
 							Children:
 
@@ -63,6 +63,6 @@ Children:
 							Type: True
 							Children:
 
-		Content: Type: EndOfLine, Start: 1, 15, End: 1, 15, Content: ";"
+		Content: Type: EndOfLine, Start: 1, 14, End: 1, 15, Content: ";"
 		Type: EndOfLine
 		Children:

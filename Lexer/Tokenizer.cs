@@ -119,8 +119,8 @@ namespace Lexer
                             // ++ += +
                             var token = rootNode.ProvideToken();
                             builder.Clear();
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             switch (Source.Peek())
                             {
                                 case '+':
@@ -153,8 +153,8 @@ namespace Lexer
                             // -- -= -
                             var token = rootNode.ProvideToken();
                             builder.Clear();
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             switch (Source.Peek())
                             {
                                 case '-':
@@ -187,8 +187,8 @@ namespace Lexer
                             // ! !=
                             var token = rootNode.ProvideToken();
                             builder.Clear();
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             switch (Source.Peek())
                             {
                                 case '=':
@@ -215,8 +215,8 @@ namespace Lexer
                             // ~ ~=
                             var token = rootNode.ProvideToken();
                             builder.Clear();
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             switch (Source.Peek())
                             {
                                 case '=':
@@ -244,8 +244,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.BitwiseAnd;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             switch (Source.Peek())
                             {
                                 case '&':
@@ -273,8 +273,8 @@ namespace Lexer
                             // ^ ^=
                             var token = rootNode.ProvideToken();
                             builder.Clear();
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             switch (Source.Peek())
                             {
                                 case '=':
@@ -302,8 +302,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.BitwiseOr;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             switch (Source.Peek())
                             {
                                 case '|':
@@ -332,8 +332,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Less;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             switch (Source.Peek())
                             {
                                 case '<':
@@ -367,8 +367,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.More;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             switch (Source.Peek())
                             {
                                 case '>':
@@ -402,8 +402,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Divide;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             switch (Source.Peek())
                             {
                                 case '=':
@@ -452,8 +452,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Period;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             token.End = Source.Location;
                             token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
@@ -466,8 +466,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Comma;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             token.End = Source.Location;
                             token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
@@ -480,8 +480,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Multiply;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             if (Source.Peek() == '=')
                             {
                                 builder.Append(Source.Pop());
@@ -499,8 +499,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Remainder;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             if (Source.Peek() == '=')
                             {
                                 builder.Append(Source.Pop());
@@ -518,8 +518,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.Assignment;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             if (Source.Peek() == '=')
                             {
                                 builder.Append(Source.Pop());
@@ -537,8 +537,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.LeftCurlyBracket;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             token.End = Source.Location;
                             token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
@@ -551,8 +551,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.RightCurlyBracket;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             token.End = Source.Location;
                             token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
@@ -565,8 +565,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.LeftBracket;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             token.End = Source.Location;
                             token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
@@ -579,8 +579,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.RightBracket;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             token.End = Source.Location;
                             token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
@@ -593,8 +593,8 @@ namespace Lexer
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.EndOfLine;
-                            builder.Append(Source.Pop());
                             token.Start = Source.Location;
+                            builder.Append(Source.Pop());
                             token.End = Source.Location;
                             token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);

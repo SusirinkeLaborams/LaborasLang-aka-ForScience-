@@ -24,7 +24,7 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: Assignment, Start: 2, 12, End: 2, 12, Content: "="
+			Content: Type: Assignment, Start: 2, 11, End: 2, 12, Content: "="
 			Type: Assignment
 			Children:
 
@@ -53,18 +53,18 @@ Children:
 										Type: Symbol
 										Children:
 
-									Content: Type: LeftBracket, Start: 2, 17, End: 2, 17, Content: "("
+									Content: Type: LeftBracket, Start: 2, 16, End: 2, 17, Content: "("
 									Type: LeftBracket
 									Children:
 
-									Content: Type: RightBracket, Start: 2, 18, End: 2, 18, Content: ")"
+									Content: Type: RightBracket, Start: 2, 17, End: 2, 18, Content: ")"
 									Type: RightBracket
 									Children:
 
-								Content: Type: CodeBlockNode, Start: 3, 2, End: 17, 2, Content: ""
+								Content: Type: CodeBlockNode, Start: 3, 1, End: 17, 2, Content: ""
 								Type: CodeBlockNode
 								Children:
-									Content: Type: LeftCurlyBracket, Start: 3, 2, End: 3, 2, Content: "{"
+									Content: Type: LeftCurlyBracket, Start: 3, 1, End: 3, 2, Content: "{"
 									Type: LeftCurlyBracket
 									Children:
 
@@ -91,7 +91,7 @@ Children:
 												Type: Symbol
 												Children:
 
-											Content: Type: Assignment, Start: 4, 14, End: 4, 14, Content: "="
+											Content: Type: Assignment, Start: 4, 13, End: 4, 14, Content: "="
 											Type: Assignment
 											Children:
 
@@ -111,7 +111,7 @@ Children:
 															Type: Integer
 															Children:
 
-											Content: Type: EndOfLine, Start: 4, 18, End: 4, 18, Content: ";"
+											Content: Type: EndOfLine, Start: 4, 17, End: 4, 18, Content: ";"
 											Type: EndOfLine
 											Children:
 
@@ -128,10 +128,10 @@ Children:
 												Type: Symbol
 												Children:
 
-												Content: Type: SubSymbol, Start: 5, 9, End: 5, 16, Content: ""
+												Content: Type: SubSymbol, Start: 5, 8, End: 5, 16, Content: ""
 												Type: SubSymbol
 												Children:
-													Content: Type: Period, Start: 5, 9, End: 5, 9, Content: "."
+													Content: Type: Period, Start: 5, 8, End: 5, 9, Content: "."
 													Type: Period
 													Children:
 
@@ -139,10 +139,10 @@ Children:
 													Type: Symbol
 													Children:
 
-												Content: Type: SubSymbol, Start: 5, 17, End: 5, 26, Content: ""
+												Content: Type: SubSymbol, Start: 5, 16, End: 5, 26, Content: ""
 												Type: SubSymbol
 												Children:
-													Content: Type: Period, Start: 5, 17, End: 5, 17, Content: "."
+													Content: Type: Period, Start: 5, 16, End: 5, 17, Content: "."
 													Type: Period
 													Children:
 
@@ -150,7 +150,7 @@ Children:
 													Type: Symbol
 													Children:
 
-											Content: Type: LeftBracket, Start: 5, 27, End: 5, 27, Content: "("
+											Content: Type: LeftBracket, Start: 5, 26, End: 5, 27, Content: "("
 											Type: LeftBracket
 											Children:
 
@@ -170,10 +170,10 @@ Children:
 															Type: StringLiteral
 															Children:
 
-											Content: Type: FunctionArgument, Start: 5, 51, End: 5, 66, Content: ""
+											Content: Type: FunctionArgument, Start: 5, 50, End: 5, 66, Content: ""
 											Type: FunctionArgument
 											Children:
-												Content: Type: Comma, Start: 5, 51, End: 5, 51, Content: ","
+												Content: Type: Comma, Start: 5, 50, End: 5, 51, Content: ","
 												Type: Comma
 												Children:
 
@@ -199,7 +199,7 @@ Children:
 																		Type: Symbol
 																		Children:
 
-																	Content: Type: LeftBracket, Start: 5, 60, End: 5, 60, Content: "("
+																	Content: Type: LeftBracket, Start: 5, 59, End: 5, 60, Content: "("
 																	Type: LeftBracket
 																	Children:
 
@@ -222,15 +222,15 @@ Children:
 																						Type: Symbol
 																						Children:
 
-																	Content: Type: RightBracket, Start: 5, 66, End: 5, 66, Content: ")"
+																	Content: Type: RightBracket, Start: 5, 65, End: 5, 66, Content: ")"
 																	Type: RightBracket
 																	Children:
 
-											Content: Type: RightBracket, Start: 5, 67, End: 5, 67, Content: ")"
+											Content: Type: RightBracket, Start: 5, 66, End: 5, 67, Content: ")"
 											Type: RightBracket
 											Children:
 
-										Content: Type: EndOfLine, Start: 5, 68, End: 5, 68, Content: ";"
+										Content: Type: EndOfLine, Start: 5, 67, End: 5, 68, Content: ";"
 										Type: EndOfLine
 										Children:
 
@@ -244,17 +244,17 @@ Children:
 											Type: While
 											Children:
 
-											Content: Type: LeftBracket, Start: 7, 9, End: 7, 9, Content: "("
+											Content: Type: LeftBracket, Start: 7, 8, End: 7, 9, Content: "("
 											Type: LeftBracket
 											Children:
 
-											Content: Type: Value, Start: 7, 10, End: 7, 26, Content: ""
+											Content: Type: Value, Start: 7, 9, End: 7, 26, Content: ""
 											Type: Value
 											Children:
-												Content: Type: ArithmeticNode, Start: 7, 10, End: 7, 21, Content: ""
+												Content: Type: ArithmeticNode, Start: 7, 9, End: 7, 21, Content: ""
 												Type: ArithmeticNode
 												Children:
-													Content: Type: LeftBracket, Start: 7, 10, End: 7, 10, Content: "("
+													Content: Type: LeftBracket, Start: 7, 9, End: 7, 10, Content: "("
 													Type: LeftBracket
 													Children:
 
@@ -280,10 +280,10 @@ Children:
 																			Type: Symbol
 																			Children:
 
-																	Content: Type: AssignmentOperator, Start: 7, 17, End: 7, 18, Content: ""
+																	Content: Type: AssignmentOperator, Start: 7, 16, End: 7, 18, Content: ""
 																	Type: AssignmentOperator
 																	Children:
-																		Content: Type: MinusEqual, Start: 7, 17, End: 7, 18, Content: "-="
+																		Content: Type: MinusEqual, Start: 7, 16, End: 7, 18, Content: "-="
 																		Type: MinusEqual
 																		Children:
 
@@ -303,20 +303,20 @@ Children:
 																					Type: Integer
 																					Children:
 
-													Content: Type: RightBracket, Start: 7, 21, End: 7, 21, Content: ")"
+													Content: Type: RightBracket, Start: 7, 20, End: 7, 21, Content: ")"
 													Type: RightBracket
 													Children:
 
-												Content: Type: ArithmeticNode, Start: 7, 23, End: 7, 26, Content: ""
+												Content: Type: ArithmeticNode, Start: 7, 22, End: 7, 26, Content: ""
 												Type: ArithmeticNode
 												Children:
-													Content: Type: ArithmeticSubnode, Start: 7, 23, End: 7, 24, Content: ""
+													Content: Type: ArithmeticSubnode, Start: 7, 22, End: 7, 24, Content: ""
 													Type: ArithmeticSubnode
 													Children:
-														Content: Type: Operator, Start: 7, 23, End: 7, 24, Content: ""
+														Content: Type: Operator, Start: 7, 22, End: 7, 24, Content: ""
 														Type: Operator
 														Children:
-															Content: Type: MoreOrEqual, Start: 7, 23, End: 7, 24, Content: ">="
+															Content: Type: MoreOrEqual, Start: 7, 22, End: 7, 24, Content: ">="
 															Type: MoreOrEqual
 															Children:
 
@@ -330,17 +330,17 @@ Children:
 															Type: Integer
 															Children:
 
-											Content: Type: RightBracket, Start: 7, 27, End: 7, 27, Content: ")"
+											Content: Type: RightBracket, Start: 7, 26, End: 7, 27, Content: ")"
 											Type: RightBracket
 											Children:
 
-											Content: Type: StatementNode, Start: 8, 3, End: 13, 3, Content: ""
+											Content: Type: StatementNode, Start: 8, 2, End: 13, 3, Content: ""
 											Type: StatementNode
 											Children:
-												Content: Type: CodeBlockNode, Start: 8, 3, End: 13, 3, Content: ""
+												Content: Type: CodeBlockNode, Start: 8, 2, End: 13, 3, Content: ""
 												Type: CodeBlockNode
 												Children:
-													Content: Type: LeftCurlyBracket, Start: 8, 3, End: 8, 3, Content: "{"
+													Content: Type: LeftCurlyBracket, Start: 8, 2, End: 8, 3, Content: "{"
 													Type: LeftCurlyBracket
 													Children:
 
@@ -357,10 +357,10 @@ Children:
 																Type: Symbol
 																Children:
 
-																Content: Type: SubSymbol, Start: 9, 10, End: 9, 17, Content: ""
+																Content: Type: SubSymbol, Start: 9, 9, End: 9, 17, Content: ""
 																Type: SubSymbol
 																Children:
-																	Content: Type: Period, Start: 9, 10, End: 9, 10, Content: "."
+																	Content: Type: Period, Start: 9, 9, End: 9, 10, Content: "."
 																	Type: Period
 																	Children:
 
@@ -368,10 +368,10 @@ Children:
 																	Type: Symbol
 																	Children:
 
-																Content: Type: SubSymbol, Start: 9, 18, End: 9, 27, Content: ""
+																Content: Type: SubSymbol, Start: 9, 17, End: 9, 27, Content: ""
 																Type: SubSymbol
 																Children:
-																	Content: Type: Period, Start: 9, 18, End: 9, 18, Content: "."
+																	Content: Type: Period, Start: 9, 17, End: 9, 18, Content: "."
 																	Type: Period
 																	Children:
 
@@ -379,7 +379,7 @@ Children:
 																	Type: Symbol
 																	Children:
 
-															Content: Type: LeftBracket, Start: 9, 28, End: 9, 28, Content: "("
+															Content: Type: LeftBracket, Start: 9, 27, End: 9, 28, Content: "("
 															Type: LeftBracket
 															Children:
 
@@ -399,10 +399,10 @@ Children:
 																			Type: StringLiteral
 																			Children:
 
-															Content: Type: FunctionArgument, Start: 9, 81, End: 9, 96, Content: ""
+															Content: Type: FunctionArgument, Start: 9, 80, End: 9, 96, Content: ""
 															Type: FunctionArgument
 															Children:
-																Content: Type: Comma, Start: 9, 81, End: 9, 81, Content: ","
+																Content: Type: Comma, Start: 9, 80, End: 9, 81, Content: ","
 																Type: Comma
 																Children:
 
@@ -428,7 +428,7 @@ Children:
 																						Type: Symbol
 																						Children:
 
-																					Content: Type: LeftBracket, Start: 9, 90, End: 9, 90, Content: "("
+																					Content: Type: LeftBracket, Start: 9, 89, End: 9, 90, Content: "("
 																					Type: LeftBracket
 																					Children:
 
@@ -451,15 +451,15 @@ Children:
 																										Type: Symbol
 																										Children:
 
-																					Content: Type: RightBracket, Start: 9, 96, End: 9, 96, Content: ")"
+																					Content: Type: RightBracket, Start: 9, 95, End: 9, 96, Content: ")"
 																					Type: RightBracket
 																					Children:
 
-															Content: Type: RightBracket, Start: 9, 97, End: 9, 97, Content: ")"
+															Content: Type: RightBracket, Start: 9, 96, End: 9, 97, Content: ")"
 															Type: RightBracket
 															Children:
 
-														Content: Type: EndOfLine, Start: 9, 98, End: 9, 98, Content: ";"
+														Content: Type: EndOfLine, Start: 9, 97, End: 9, 98, Content: ";"
 														Type: EndOfLine
 														Children:
 
@@ -476,10 +476,10 @@ Children:
 																Type: Symbol
 																Children:
 
-																Content: Type: SubSymbol, Start: 10, 10, End: 10, 17, Content: ""
+																Content: Type: SubSymbol, Start: 10, 9, End: 10, 17, Content: ""
 																Type: SubSymbol
 																Children:
-																	Content: Type: Period, Start: 10, 10, End: 10, 10, Content: "."
+																	Content: Type: Period, Start: 10, 9, End: 10, 10, Content: "."
 																	Type: Period
 																	Children:
 
@@ -487,10 +487,10 @@ Children:
 																	Type: Symbol
 																	Children:
 
-																Content: Type: SubSymbol, Start: 10, 18, End: 10, 27, Content: ""
+																Content: Type: SubSymbol, Start: 10, 17, End: 10, 27, Content: ""
 																Type: SubSymbol
 																Children:
-																	Content: Type: Period, Start: 10, 18, End: 10, 18, Content: "."
+																	Content: Type: Period, Start: 10, 17, End: 10, 18, Content: "."
 																	Type: Period
 																	Children:
 
@@ -498,15 +498,15 @@ Children:
 																	Type: Symbol
 																	Children:
 
-															Content: Type: LeftBracket, Start: 10, 28, End: 10, 28, Content: "("
+															Content: Type: LeftBracket, Start: 10, 27, End: 10, 28, Content: "("
 															Type: LeftBracket
 															Children:
 
-															Content: Type: RightBracket, Start: 10, 29, End: 10, 29, Content: ")"
+															Content: Type: RightBracket, Start: 10, 28, End: 10, 29, Content: ")"
 															Type: RightBracket
 															Children:
 
-														Content: Type: EndOfLine, Start: 10, 30, End: 10, 30, Content: ";"
+														Content: Type: EndOfLine, Start: 10, 29, End: 10, 30, Content: ";"
 														Type: EndOfLine
 														Children:
 
@@ -523,10 +523,10 @@ Children:
 																Type: Symbol
 																Children:
 
-																Content: Type: SubSymbol, Start: 11, 10, End: 11, 17, Content: ""
+																Content: Type: SubSymbol, Start: 11, 9, End: 11, 17, Content: ""
 																Type: SubSymbol
 																Children:
-																	Content: Type: Period, Start: 11, 10, End: 11, 10, Content: "."
+																	Content: Type: Period, Start: 11, 9, End: 11, 10, Content: "."
 																	Type: Period
 																	Children:
 
@@ -534,10 +534,10 @@ Children:
 																	Type: Symbol
 																	Children:
 
-																Content: Type: SubSymbol, Start: 11, 18, End: 11, 27, Content: ""
+																Content: Type: SubSymbol, Start: 11, 17, End: 11, 27, Content: ""
 																Type: SubSymbol
 																Children:
-																	Content: Type: Period, Start: 11, 18, End: 11, 18, Content: "."
+																	Content: Type: Period, Start: 11, 17, End: 11, 18, Content: "."
 																	Type: Period
 																	Children:
 
@@ -545,7 +545,7 @@ Children:
 																	Type: Symbol
 																	Children:
 
-															Content: Type: LeftBracket, Start: 11, 28, End: 11, 28, Content: "("
+															Content: Type: LeftBracket, Start: 11, 27, End: 11, 28, Content: "("
 															Type: LeftBracket
 															Children:
 
@@ -565,10 +565,10 @@ Children:
 																			Type: StringLiteral
 																			Children:
 
-															Content: Type: FunctionArgument, Start: 11, 52, End: 11, 67, Content: ""
+															Content: Type: FunctionArgument, Start: 11, 51, End: 11, 67, Content: ""
 															Type: FunctionArgument
 															Children:
-																Content: Type: Comma, Start: 11, 52, End: 11, 52, Content: ","
+																Content: Type: Comma, Start: 11, 51, End: 11, 52, Content: ","
 																Type: Comma
 																Children:
 
@@ -594,7 +594,7 @@ Children:
 																						Type: Symbol
 																						Children:
 
-																					Content: Type: LeftBracket, Start: 11, 61, End: 11, 61, Content: "("
+																					Content: Type: LeftBracket, Start: 11, 60, End: 11, 61, Content: "("
 																					Type: LeftBracket
 																					Children:
 
@@ -617,19 +617,19 @@ Children:
 																										Type: Symbol
 																										Children:
 
-																					Content: Type: RightBracket, Start: 11, 67, End: 11, 67, Content: ")"
+																					Content: Type: RightBracket, Start: 11, 66, End: 11, 67, Content: ")"
 																					Type: RightBracket
 																					Children:
 
-															Content: Type: RightBracket, Start: 11, 68, End: 11, 68, Content: ")"
+															Content: Type: RightBracket, Start: 11, 67, End: 11, 68, Content: ")"
 															Type: RightBracket
 															Children:
 
-														Content: Type: EndOfLine, Start: 11, 69, End: 11, 69, Content: ";"
+														Content: Type: EndOfLine, Start: 11, 68, End: 11, 69, Content: ";"
 														Type: EndOfLine
 														Children:
 
-													Content: Type: RightCurlyBracket, Start: 13, 3, End: 13, 3, Content: "}"
+													Content: Type: RightCurlyBracket, Start: 13, 2, End: 13, 3, Content: "}"
 													Type: RightCurlyBracket
 													Children:
 
@@ -646,10 +646,10 @@ Children:
 												Type: Symbol
 												Children:
 
-												Content: Type: SubSymbol, Start: 14, 9, End: 14, 16, Content: ""
+												Content: Type: SubSymbol, Start: 14, 8, End: 14, 16, Content: ""
 												Type: SubSymbol
 												Children:
-													Content: Type: Period, Start: 14, 9, End: 14, 9, Content: "."
+													Content: Type: Period, Start: 14, 8, End: 14, 9, Content: "."
 													Type: Period
 													Children:
 
@@ -657,10 +657,10 @@ Children:
 													Type: Symbol
 													Children:
 
-												Content: Type: SubSymbol, Start: 14, 17, End: 14, 26, Content: ""
+												Content: Type: SubSymbol, Start: 14, 16, End: 14, 26, Content: ""
 												Type: SubSymbol
 												Children:
-													Content: Type: Period, Start: 14, 17, End: 14, 17, Content: "."
+													Content: Type: Period, Start: 14, 16, End: 14, 17, Content: "."
 													Type: Period
 													Children:
 
@@ -668,7 +668,7 @@ Children:
 													Type: Symbol
 													Children:
 
-											Content: Type: LeftBracket, Start: 14, 27, End: 14, 27, Content: "("
+											Content: Type: LeftBracket, Start: 14, 26, End: 14, 27, Content: "("
 											Type: LeftBracket
 											Children:
 
@@ -688,10 +688,10 @@ Children:
 															Type: StringLiteral
 															Children:
 
-											Content: Type: FunctionArgument, Start: 14, 81, End: 14, 93, Content: ""
+											Content: Type: FunctionArgument, Start: 14, 80, End: 14, 93, Content: ""
 											Type: FunctionArgument
 											Children:
-												Content: Type: Comma, Start: 14, 81, End: 14, 81, Content: ","
+												Content: Type: Comma, Start: 14, 80, End: 14, 81, Content: ","
 												Type: Comma
 												Children:
 
@@ -717,7 +717,7 @@ Children:
 																		Type: Symbol
 																		Children:
 
-																	Content: Type: LeftBracket, Start: 14, 90, End: 14, 90, Content: "("
+																	Content: Type: LeftBracket, Start: 14, 89, End: 14, 90, Content: "("
 																	Type: LeftBracket
 																	Children:
 
@@ -737,15 +737,15 @@ Children:
 																					Type: Integer
 																					Children:
 
-																	Content: Type: RightBracket, Start: 14, 93, End: 14, 93, Content: ")"
+																	Content: Type: RightBracket, Start: 14, 92, End: 14, 93, Content: ")"
 																	Type: RightBracket
 																	Children:
 
-											Content: Type: RightBracket, Start: 14, 94, End: 14, 94, Content: ")"
+											Content: Type: RightBracket, Start: 14, 93, End: 14, 94, Content: ")"
 											Type: RightBracket
 											Children:
 
-										Content: Type: EndOfLine, Start: 14, 95, End: 14, 95, Content: ";"
+										Content: Type: EndOfLine, Start: 14, 94, End: 14, 95, Content: ";"
 										Type: EndOfLine
 										Children:
 
@@ -762,10 +762,10 @@ Children:
 												Type: Symbol
 												Children:
 
-												Content: Type: SubSymbol, Start: 15, 9, End: 15, 16, Content: ""
+												Content: Type: SubSymbol, Start: 15, 8, End: 15, 16, Content: ""
 												Type: SubSymbol
 												Children:
-													Content: Type: Period, Start: 15, 9, End: 15, 9, Content: "."
+													Content: Type: Period, Start: 15, 8, End: 15, 9, Content: "."
 													Type: Period
 													Children:
 
@@ -773,10 +773,10 @@ Children:
 													Type: Symbol
 													Children:
 
-												Content: Type: SubSymbol, Start: 15, 17, End: 15, 24, Content: ""
+												Content: Type: SubSymbol, Start: 15, 16, End: 15, 24, Content: ""
 												Type: SubSymbol
 												Children:
-													Content: Type: Period, Start: 15, 17, End: 15, 17, Content: "."
+													Content: Type: Period, Start: 15, 16, End: 15, 17, Content: "."
 													Type: Period
 													Children:
 
@@ -784,15 +784,15 @@ Children:
 													Type: Symbol
 													Children:
 
-											Content: Type: LeftBracket, Start: 15, 25, End: 15, 25, Content: "("
+											Content: Type: LeftBracket, Start: 15, 24, End: 15, 25, Content: "("
 											Type: LeftBracket
 											Children:
 
-											Content: Type: RightBracket, Start: 15, 26, End: 15, 26, Content: ")"
+											Content: Type: RightBracket, Start: 15, 25, End: 15, 26, Content: ")"
 											Type: RightBracket
 											Children:
 
-										Content: Type: EndOfLine, Start: 15, 27, End: 15, 27, Content: ";"
+										Content: Type: EndOfLine, Start: 15, 26, End: 15, 27, Content: ";"
 										Type: EndOfLine
 										Children:
 
@@ -819,15 +819,15 @@ Children:
 														Type: Integer
 														Children:
 
-										Content: Type: EndOfLine, Start: 16, 11, End: 16, 11, Content: ";"
+										Content: Type: EndOfLine, Start: 16, 10, End: 16, 11, Content: ";"
 										Type: EndOfLine
 										Children:
 
-									Content: Type: RightCurlyBracket, Start: 17, 2, End: 17, 2, Content: "}"
+									Content: Type: RightCurlyBracket, Start: 17, 1, End: 17, 2, Content: "}"
 									Type: RightCurlyBracket
 									Children:
 
-			Content: Type: EndOfLine, Start: 17, 3, End: 17, 3, Content: ";"
+			Content: Type: EndOfLine, Start: 17, 2, End: 17, 3, Content: ";"
 			Type: EndOfLine
 			Children:
 
@@ -854,7 +854,7 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: Assignment, Start: 19, 15, End: 19, 15, Content: "="
+			Content: Type: Assignment, Start: 19, 14, End: 19, 15, Content: "="
 			Type: Assignment
 			Children:
 
@@ -883,7 +883,7 @@ Children:
 										Type: Symbol
 										Children:
 
-									Content: Type: LeftBracket, Start: 19, 23, End: 19, 23, Content: "("
+									Content: Type: LeftBracket, Start: 19, 22, End: 19, 23, Content: "("
 									Type: LeftBracket
 									Children:
 
@@ -904,14 +904,14 @@ Children:
 										Type: Symbol
 										Children:
 
-									Content: Type: RightBracket, Start: 19, 33, End: 19, 33, Content: ")"
+									Content: Type: RightBracket, Start: 19, 32, End: 19, 33, Content: ")"
 									Type: RightBracket
 									Children:
 
-								Content: Type: CodeBlockNode, Start: 20, 2, End: 43, 2, Content: ""
+								Content: Type: CodeBlockNode, Start: 20, 1, End: 43, 2, Content: ""
 								Type: CodeBlockNode
 								Children:
-									Content: Type: LeftCurlyBracket, Start: 20, 2, End: 20, 2, Content: "{"
+									Content: Type: LeftCurlyBracket, Start: 20, 1, End: 20, 2, Content: "{"
 									Type: LeftCurlyBracket
 									Children:
 
@@ -938,7 +938,7 @@ Children:
 												Type: Symbol
 												Children:
 
-											Content: Type: EndOfLine, Start: 21, 13, End: 21, 13, Content: ";"
+											Content: Type: EndOfLine, Start: 21, 12, End: 21, 13, Content: ";"
 											Type: EndOfLine
 											Children:
 
@@ -952,7 +952,7 @@ Children:
 											Type: If
 											Children:
 
-											Content: Type: LeftBracket, Start: 23, 6, End: 23, 6, Content: "("
+											Content: Type: LeftBracket, Start: 23, 5, End: 23, 6, Content: "("
 											Type: LeftBracket
 											Children:
 
@@ -975,13 +975,13 @@ Children:
 																Type: Symbol
 																Children:
 
-													Content: Type: ArithmeticSubnode, Start: 23, 13, End: 23, 13, Content: ""
+													Content: Type: ArithmeticSubnode, Start: 23, 12, End: 23, 13, Content: ""
 													Type: ArithmeticSubnode
 													Children:
-														Content: Type: Operator, Start: 23, 13, End: 23, 13, Content: ""
+														Content: Type: Operator, Start: 23, 12, End: 23, 13, Content: ""
 														Type: Operator
 														Children:
-															Content: Type: More, Start: 23, 13, End: 23, 13, Content: ">"
+															Content: Type: More, Start: 23, 12, End: 23, 13, Content: ">"
 															Type: More
 															Children:
 
@@ -995,17 +995,17 @@ Children:
 															Type: Integer
 															Children:
 
-											Content: Type: RightBracket, Start: 23, 16, End: 23, 16, Content: ")"
+											Content: Type: RightBracket, Start: 23, 15, End: 23, 16, Content: ")"
 											Type: RightBracket
 											Children:
 
-											Content: Type: StatementNode, Start: 24, 3, End: 35, 3, Content: ""
+											Content: Type: StatementNode, Start: 24, 2, End: 35, 3, Content: ""
 											Type: StatementNode
 											Children:
-												Content: Type: CodeBlockNode, Start: 24, 3, End: 35, 3, Content: ""
+												Content: Type: CodeBlockNode, Start: 24, 2, End: 35, 3, Content: ""
 												Type: CodeBlockNode
 												Children:
-													Content: Type: LeftCurlyBracket, Start: 24, 3, End: 24, 3, Content: "{"
+													Content: Type: LeftCurlyBracket, Start: 24, 2, End: 24, 3, Content: "{"
 													Type: LeftCurlyBracket
 													Children:
 
@@ -1025,10 +1025,10 @@ Children:
 																	Type: Symbol
 																	Children:
 
-															Content: Type: AssignmentOperator, Start: 25, 8, End: 25, 9, Content: ""
+															Content: Type: AssignmentOperator, Start: 25, 7, End: 25, 9, Content: ""
 															Type: AssignmentOperator
 															Children:
-																Content: Type: PlusEqual, Start: 25, 8, End: 25, 9, Content: "+="
+																Content: Type: PlusEqual, Start: 25, 7, End: 25, 9, Content: "+="
 																Type: PlusEqual
 																Children:
 
@@ -1051,7 +1051,7 @@ Children:
 																				Type: Symbol
 																				Children:
 
-														Content: Type: EndOfLine, Start: 25, 16, End: 25, 16, Content: ";"
+														Content: Type: EndOfLine, Start: 25, 15, End: 25, 16, Content: ";"
 														Type: EndOfLine
 														Children:
 
@@ -1065,7 +1065,7 @@ Children:
 															Type: If
 															Children:
 
-															Content: Type: LeftBracket, Start: 27, 7, End: 27, 7, Content: "("
+															Content: Type: LeftBracket, Start: 27, 6, End: 27, 7, Content: "("
 															Type: LeftBracket
 															Children:
 
@@ -1088,13 +1088,13 @@ Children:
 																				Type: Symbol
 																				Children:
 
-																	Content: Type: ArithmeticSubnode, Start: 27, 14, End: 27, 14, Content: ""
+																	Content: Type: ArithmeticSubnode, Start: 27, 13, End: 27, 14, Content: ""
 																	Type: ArithmeticSubnode
 																	Children:
-																		Content: Type: Operator, Start: 27, 14, End: 27, 14, Content: ""
+																		Content: Type: Operator, Start: 27, 13, End: 27, 14, Content: ""
 																		Type: Operator
 																		Children:
-																			Content: Type: More, Start: 27, 14, End: 27, 14, Content: ">"
+																			Content: Type: More, Start: 27, 13, End: 27, 14, Content: ">"
 																			Type: More
 																			Children:
 
@@ -1108,17 +1108,17 @@ Children:
 																			Type: Integer
 																			Children:
 
-															Content: Type: RightBracket, Start: 27, 17, End: 27, 17, Content: ")"
+															Content: Type: RightBracket, Start: 27, 16, End: 27, 17, Content: ")"
 															Type: RightBracket
 															Children:
 
-															Content: Type: StatementNode, Start: 28, 4, End: 30, 4, Content: ""
+															Content: Type: StatementNode, Start: 28, 3, End: 30, 4, Content: ""
 															Type: StatementNode
 															Children:
-																Content: Type: CodeBlockNode, Start: 28, 4, End: 30, 4, Content: ""
+																Content: Type: CodeBlockNode, Start: 28, 3, End: 30, 4, Content: ""
 																Type: CodeBlockNode
 																Children:
-																	Content: Type: LeftCurlyBracket, Start: 28, 4, End: 28, 4, Content: "{"
+																	Content: Type: LeftCurlyBracket, Start: 28, 3, End: 28, 4, Content: "{"
 																	Type: LeftCurlyBracket
 																	Children:
 
@@ -1138,10 +1138,10 @@ Children:
 																					Type: Symbol
 																					Children:
 
-																			Content: Type: AssignmentOperator, Start: 29, 9, End: 29, 10, Content: ""
+																			Content: Type: AssignmentOperator, Start: 29, 8, End: 29, 10, Content: ""
 																			Type: AssignmentOperator
 																			Children:
-																				Content: Type: PlusEqual, Start: 29, 9, End: 29, 10, Content: "+="
+																				Content: Type: PlusEqual, Start: 29, 8, End: 29, 10, Content: "+="
 																				Type: PlusEqual
 																				Children:
 
@@ -1161,11 +1161,11 @@ Children:
 																							Type: StringLiteral
 																							Children:
 
-																		Content: Type: EndOfLine, Start: 29, 23, End: 29, 23, Content: ";"
+																		Content: Type: EndOfLine, Start: 29, 22, End: 29, 23, Content: ";"
 																		Type: EndOfLine
 																		Children:
 
-																	Content: Type: RightCurlyBracket, Start: 30, 4, End: 30, 4, Content: "}"
+																	Content: Type: RightCurlyBracket, Start: 30, 3, End: 30, 4, Content: "}"
 																	Type: RightCurlyBracket
 																	Children:
 
@@ -1173,13 +1173,13 @@ Children:
 															Type: Else
 															Children:
 
-															Content: Type: StatementNode, Start: 32, 4, End: 34, 4, Content: ""
+															Content: Type: StatementNode, Start: 32, 3, End: 34, 4, Content: ""
 															Type: StatementNode
 															Children:
-																Content: Type: CodeBlockNode, Start: 32, 4, End: 34, 4, Content: ""
+																Content: Type: CodeBlockNode, Start: 32, 3, End: 34, 4, Content: ""
 																Type: CodeBlockNode
 																Children:
-																	Content: Type: LeftCurlyBracket, Start: 32, 4, End: 32, 4, Content: "{"
+																	Content: Type: LeftCurlyBracket, Start: 32, 3, End: 32, 4, Content: "{"
 																	Type: LeftCurlyBracket
 																	Children:
 
@@ -1199,10 +1199,10 @@ Children:
 																					Type: Symbol
 																					Children:
 
-																			Content: Type: AssignmentOperator, Start: 33, 9, End: 33, 10, Content: ""
+																			Content: Type: AssignmentOperator, Start: 33, 8, End: 33, 10, Content: ""
 																			Type: AssignmentOperator
 																			Children:
-																				Content: Type: PlusEqual, Start: 33, 9, End: 33, 10, Content: "+="
+																				Content: Type: PlusEqual, Start: 33, 8, End: 33, 10, Content: "+="
 																				Type: PlusEqual
 																				Children:
 
@@ -1222,15 +1222,15 @@ Children:
 																							Type: StringLiteral
 																							Children:
 
-																		Content: Type: EndOfLine, Start: 33, 22, End: 33, 22, Content: ";"
+																		Content: Type: EndOfLine, Start: 33, 21, End: 33, 22, Content: ";"
 																		Type: EndOfLine
 																		Children:
 
-																	Content: Type: RightCurlyBracket, Start: 34, 4, End: 34, 4, Content: "}"
+																	Content: Type: RightCurlyBracket, Start: 34, 3, End: 34, 4, Content: "}"
 																	Type: RightCurlyBracket
 																	Children:
 
-													Content: Type: RightCurlyBracket, Start: 35, 3, End: 35, 3, Content: "}"
+													Content: Type: RightCurlyBracket, Start: 35, 2, End: 35, 3, Content: "}"
 													Type: RightCurlyBracket
 													Children:
 
@@ -1238,13 +1238,13 @@ Children:
 											Type: Else
 											Children:
 
-											Content: Type: StatementNode, Start: 37, 3, End: 39, 3, Content: ""
+											Content: Type: StatementNode, Start: 37, 2, End: 39, 3, Content: ""
 											Type: StatementNode
 											Children:
-												Content: Type: CodeBlockNode, Start: 37, 3, End: 39, 3, Content: ""
+												Content: Type: CodeBlockNode, Start: 37, 2, End: 39, 3, Content: ""
 												Type: CodeBlockNode
 												Children:
-													Content: Type: LeftCurlyBracket, Start: 37, 3, End: 37, 3, Content: "{"
+													Content: Type: LeftCurlyBracket, Start: 37, 2, End: 37, 3, Content: "{"
 													Type: LeftCurlyBracket
 													Children:
 
@@ -1264,10 +1264,10 @@ Children:
 																	Type: Symbol
 																	Children:
 
-															Content: Type: AssignmentOperator, Start: 38, 8, End: 38, 9, Content: ""
+															Content: Type: AssignmentOperator, Start: 38, 7, End: 38, 9, Content: ""
 															Type: AssignmentOperator
 															Children:
-																Content: Type: PlusEqual, Start: 38, 8, End: 38, 9, Content: "+="
+																Content: Type: PlusEqual, Start: 38, 7, End: 38, 9, Content: "+="
 																Type: PlusEqual
 																Children:
 
@@ -1287,11 +1287,11 @@ Children:
 																			Type: StringLiteral
 																			Children:
 
-														Content: Type: EndOfLine, Start: 38, 29, End: 38, 29, Content: ";"
+														Content: Type: EndOfLine, Start: 38, 28, End: 38, 29, Content: ";"
 														Type: EndOfLine
 														Children:
 
-													Content: Type: RightCurlyBracket, Start: 39, 3, End: 39, 3, Content: "}"
+													Content: Type: RightCurlyBracket, Start: 39, 2, End: 39, 3, Content: "}"
 													Type: RightCurlyBracket
 													Children:
 
@@ -1311,10 +1311,10 @@ Children:
 													Type: Symbol
 													Children:
 
-											Content: Type: AssignmentOperator, Start: 41, 7, End: 41, 8, Content: ""
+											Content: Type: AssignmentOperator, Start: 41, 6, End: 41, 8, Content: ""
 											Type: AssignmentOperator
 											Children:
-												Content: Type: PlusEqual, Start: 41, 7, End: 41, 8, Content: "+="
+												Content: Type: PlusEqual, Start: 41, 6, End: 41, 8, Content: "+="
 												Type: PlusEqual
 												Children:
 
@@ -1334,7 +1334,7 @@ Children:
 															Type: StringLiteral
 															Children:
 
-										Content: Type: EndOfLine, Start: 41, 19, End: 41, 19, Content: ";"
+										Content: Type: EndOfLine, Start: 41, 18, End: 41, 19, Content: ";"
 										Type: EndOfLine
 										Children:
 
@@ -1364,14 +1364,14 @@ Children:
 															Type: Symbol
 															Children:
 
-										Content: Type: EndOfLine, Start: 42, 13, End: 42, 13, Content: ";"
+										Content: Type: EndOfLine, Start: 42, 12, End: 42, 13, Content: ";"
 										Type: EndOfLine
 										Children:
 
-									Content: Type: RightCurlyBracket, Start: 43, 2, End: 43, 2, Content: "}"
+									Content: Type: RightCurlyBracket, Start: 43, 1, End: 43, 2, Content: "}"
 									Type: RightCurlyBracket
 									Children:
 
-			Content: Type: EndOfLine, Start: 43, 3, End: 43, 3, Content: ";"
+			Content: Type: EndOfLine, Start: 43, 2, End: 43, 3, Content: ";"
 			Type: EndOfLine
 			Children:

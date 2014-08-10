@@ -17,27 +17,27 @@ Children:
 					Type: Symbol
 					Children:
 
-			Content: Type: AssignmentOperator, Start: 1, 6, End: 1, 6, Content: ""
+			Content: Type: AssignmentOperator, Start: 1, 5, End: 1, 6, Content: ""
 			Type: AssignmentOperator
 			Children:
-				Content: Type: Assignment, Start: 1, 6, End: 1, 6, Content: "="
+				Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
 				Type: Assignment
 				Children:
 
-			Content: Type: Value, Start: 1, 8, End: 1, 33, Content: ""
+			Content: Type: Value, Start: 1, 7, End: 1, 33, Content: ""
 			Type: Value
 			Children:
-				Content: Type: ArithmeticNode, Start: 1, 8, End: 1, 33, Content: ""
+				Content: Type: ArithmeticNode, Start: 1, 7, End: 1, 33, Content: ""
 				Type: ArithmeticNode
 				Children:
-					Content: Type: LeftBracket, Start: 1, 8, End: 1, 8, Content: "("
+					Content: Type: LeftBracket, Start: 1, 7, End: 1, 8, Content: "("
 					Type: LeftBracket
 					Children:
 
-					Content: Type: ArithmeticNode, Start: 1, 9, End: 1, 15, Content: ""
+					Content: Type: ArithmeticNode, Start: 1, 8, End: 1, 15, Content: ""
 					Type: ArithmeticNode
 					Children:
-						Content: Type: LeftBracket, Start: 1, 9, End: 1, 9, Content: "("
+						Content: Type: LeftBracket, Start: 1, 8, End: 1, 9, Content: "("
 						Type: LeftBracket
 						Children:
 
@@ -54,13 +54,13 @@ Children:
 									Type: Integer
 									Children:
 
-							Content: Type: ArithmeticSubnode, Start: 1, 12, End: 1, 12, Content: ""
+							Content: Type: ArithmeticSubnode, Start: 1, 11, End: 1, 12, Content: ""
 							Type: ArithmeticSubnode
 							Children:
-								Content: Type: Operator, Start: 1, 12, End: 1, 12, Content: ""
+								Content: Type: Operator, Start: 1, 11, End: 1, 12, Content: ""
 								Type: Operator
 								Children:
-									Content: Type: Plus, Start: 1, 12, End: 1, 12, Content: "+"
+									Content: Type: Plus, Start: 1, 11, End: 1, 12, Content: "+"
 									Type: Plus
 									Children:
 
@@ -74,20 +74,20 @@ Children:
 									Type: Integer
 									Children:
 
-						Content: Type: RightBracket, Start: 1, 15, End: 1, 15, Content: ")"
+						Content: Type: RightBracket, Start: 1, 14, End: 1, 15, Content: ")"
 						Type: RightBracket
 						Children:
 
-					Content: Type: ArithmeticNode, Start: 1, 17, End: 1, 32, Content: ""
+					Content: Type: ArithmeticNode, Start: 1, 16, End: 1, 32, Content: ""
 					Type: ArithmeticNode
 					Children:
-						Content: Type: ArithmeticSubnode, Start: 1, 17, End: 1, 17, Content: ""
+						Content: Type: ArithmeticSubnode, Start: 1, 16, End: 1, 17, Content: ""
 						Type: ArithmeticSubnode
 						Children:
-							Content: Type: Operator, Start: 1, 17, End: 1, 17, Content: ""
+							Content: Type: Operator, Start: 1, 16, End: 1, 17, Content: ""
 							Type: Operator
 							Children:
-								Content: Type: Plus, Start: 1, 17, End: 1, 17, Content: "+"
+								Content: Type: Plus, Start: 1, 16, End: 1, 17, Content: "+"
 								Type: Plus
 								Children:
 
@@ -101,13 +101,13 @@ Children:
 								Type: Integer
 								Children:
 
-						Content: Type: ArithmeticSubnode, Start: 1, 21, End: 1, 21, Content: ""
+						Content: Type: ArithmeticSubnode, Start: 1, 20, End: 1, 21, Content: ""
 						Type: ArithmeticSubnode
 						Children:
-							Content: Type: Operator, Start: 1, 21, End: 1, 21, Content: ""
+							Content: Type: Operator, Start: 1, 20, End: 1, 21, Content: ""
 							Type: Operator
 							Children:
-								Content: Type: Plus, Start: 1, 21, End: 1, 21, Content: "+"
+								Content: Type: Plus, Start: 1, 20, End: 1, 21, Content: "+"
 								Type: Plus
 								Children:
 
@@ -127,7 +127,7 @@ Children:
 										Type: Symbol
 										Children:
 
-									Content: Type: LeftBracket, Start: 1, 26, End: 1, 26, Content: "("
+									Content: Type: LeftBracket, Start: 1, 25, End: 1, 26, Content: "("
 									Type: LeftBracket
 									Children:
 
@@ -147,13 +147,13 @@ Children:
 													Type: Integer
 													Children:
 
-											Content: Type: ArithmeticSubnode, Start: 1, 29, End: 1, 29, Content: ""
+											Content: Type: ArithmeticSubnode, Start: 1, 28, End: 1, 29, Content: ""
 											Type: ArithmeticSubnode
 											Children:
-												Content: Type: Operator, Start: 1, 29, End: 1, 29, Content: ""
+												Content: Type: Operator, Start: 1, 28, End: 1, 29, Content: ""
 												Type: Operator
 												Children:
-													Content: Type: Plus, Start: 1, 29, End: 1, 29, Content: "+"
+													Content: Type: Plus, Start: 1, 28, End: 1, 29, Content: "+"
 													Type: Plus
 													Children:
 
@@ -167,14 +167,14 @@ Children:
 													Type: Integer
 													Children:
 
-									Content: Type: RightBracket, Start: 1, 32, End: 1, 32, Content: ")"
+									Content: Type: RightBracket, Start: 1, 31, End: 1, 32, Content: ")"
 									Type: RightBracket
 									Children:
 
-					Content: Type: RightBracket, Start: 1, 33, End: 1, 33, Content: ")"
+					Content: Type: RightBracket, Start: 1, 32, End: 1, 33, Content: ")"
 					Type: RightBracket
 					Children:
 
-		Content: Type: EndOfLine, Start: 1, 34, End: 1, 34, Content: ";"
+		Content: Type: EndOfLine, Start: 1, 33, End: 1, 34, Content: ";"
 		Type: EndOfLine
 		Children:

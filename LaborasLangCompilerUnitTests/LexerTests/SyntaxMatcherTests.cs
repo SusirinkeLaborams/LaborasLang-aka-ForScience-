@@ -1,4 +1,4 @@
-﻿// #define Rematch
+﻿//#define REMATCH
 
 using System;
 using System.Linq;

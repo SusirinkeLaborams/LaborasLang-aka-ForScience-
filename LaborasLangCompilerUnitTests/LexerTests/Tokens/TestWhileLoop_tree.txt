@@ -11,7 +11,7 @@ Children:
 			Type: While
 			Children:
 
-			Content: Type: LeftBracket, Start: 1, 7, End: 1, 7, Content: "("
+			Content: Type: LeftBracket, Start: 1, 6, End: 1, 7, Content: "("
 			Type: LeftBracket
 			Children:
 
@@ -34,7 +34,7 @@ Children:
 								Type: Symbol
 								Children:
 
-			Content: Type: RightBracket, Start: 1, 17, End: 1, 17, Content: ")"
+			Content: Type: RightBracket, Start: 1, 16, End: 1, 17, Content: ")"
 			Type: RightBracket
 			Children:
 
@@ -51,15 +51,15 @@ Children:
 						Type: Symbol
 						Children:
 
-					Content: Type: LeftBracket, Start: 1, 27, End: 1, 27, Content: "("
+					Content: Type: LeftBracket, Start: 1, 26, End: 1, 27, Content: "("
 					Type: LeftBracket
 					Children:
 
-					Content: Type: RightBracket, Start: 1, 28, End: 1, 28, Content: ")"
+					Content: Type: RightBracket, Start: 1, 27, End: 1, 28, Content: ")"
 					Type: RightBracket
 					Children:
 
-				Content: Type: EndOfLine, Start: 1, 29, End: 1, 29, Content: ";"
+				Content: Type: EndOfLine, Start: 1, 28, End: 1, 29, Content: ";"
 				Type: EndOfLine
 				Children:
 
@@ -73,7 +73,7 @@ Children:
 			Type: While
 			Children:
 
-			Content: Type: LeftBracket, Start: 2, 19, End: 2, 19, Content: "("
+			Content: Type: LeftBracket, Start: 2, 18, End: 2, 19, Content: "("
 			Type: LeftBracket
 			Children:
 
@@ -99,25 +99,25 @@ Children:
 									Type: Symbol
 									Children:
 
-								Content: Type: LeftBracket, Start: 2, 29, End: 2, 29, Content: "("
+								Content: Type: LeftBracket, Start: 2, 28, End: 2, 29, Content: "("
 								Type: LeftBracket
 								Children:
 
-								Content: Type: RightBracket, Start: 2, 30, End: 2, 30, Content: ")"
+								Content: Type: RightBracket, Start: 2, 29, End: 2, 30, Content: ")"
 								Type: RightBracket
 								Children:
 
-			Content: Type: RightBracket, Start: 2, 31, End: 2, 31, Content: ")"
+			Content: Type: RightBracket, Start: 2, 30, End: 2, 31, Content: ")"
 			Type: RightBracket
 			Children:
 
-			Content: Type: StatementNode, Start: 2, 33, End: 2, 45, Content: ""
+			Content: Type: StatementNode, Start: 2, 32, End: 2, 45, Content: ""
 			Type: StatementNode
 			Children:
-				Content: Type: CodeBlockNode, Start: 2, 33, End: 2, 45, Content: ""
+				Content: Type: CodeBlockNode, Start: 2, 32, End: 2, 45, Content: ""
 				Type: CodeBlockNode
 				Children:
-					Content: Type: LeftCurlyBracket, Start: 2, 33, End: 2, 33, Content: "{"
+					Content: Type: LeftCurlyBracket, Start: 2, 32, End: 2, 33, Content: "{"
 					Type: LeftCurlyBracket
 					Children:
 
@@ -134,18 +134,18 @@ Children:
 								Type: Symbol
 								Children:
 
-							Content: Type: LeftBracket, Start: 2, 42, End: 2, 42, Content: "("
+							Content: Type: LeftBracket, Start: 2, 41, End: 2, 42, Content: "("
 							Type: LeftBracket
 							Children:
 
-							Content: Type: RightBracket, Start: 2, 43, End: 2, 43, Content: ")"
+							Content: Type: RightBracket, Start: 2, 42, End: 2, 43, Content: ")"
 							Type: RightBracket
 							Children:
 
-						Content: Type: EndOfLine, Start: 2, 44, End: 2, 44, Content: ";"
+						Content: Type: EndOfLine, Start: 2, 43, End: 2, 44, Content: ";"
 						Type: EndOfLine
 						Children:
 
-					Content: Type: RightCurlyBracket, Start: 2, 45, End: 2, 45, Content: "}"
+					Content: Type: RightCurlyBracket, Start: 2, 44, End: 2, 45, Content: "}"
 					Type: RightCurlyBracket
 					Children:

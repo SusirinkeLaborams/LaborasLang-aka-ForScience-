@@ -1,1 +1,1 @@
-Type: Period, Start: 1, 2, End: 1, 2, Content: "." 
+Type: Period, Start: 1, 1, End: 1, 2, Content: "." 

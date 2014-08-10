@@ -17,10 +17,10 @@ Children:
 					Type: Symbol
 					Children:
 
-			Content: Type: AssignmentOperator, Start: 1, 6, End: 1, 6, Content: ""
+			Content: Type: AssignmentOperator, Start: 1, 5, End: 1, 6, Content: ""
 			Type: AssignmentOperator
 			Children:
-				Content: Type: Assignment, Start: 1, 6, End: 1, 6, Content: "="
+				Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
 				Type: Assignment
 				Children:
 
@@ -49,7 +49,7 @@ Children:
 										Type: Symbol
 										Children:
 
-									Content: Type: LeftBracket, Start: 1, 11, End: 1, 11, Content: "("
+									Content: Type: LeftBracket, Start: 1, 10, End: 1, 11, Content: "("
 									Type: LeftBracket
 									Children:
 
@@ -70,10 +70,10 @@ Children:
 										Type: Symbol
 										Children:
 
-									Content: Type: TypeArgument, Start: 1, 17, End: 1, 25, Content: ""
+									Content: Type: TypeArgument, Start: 1, 16, End: 1, 25, Content: ""
 									Type: TypeArgument
 									Children:
-										Content: Type: Comma, Start: 1, 17, End: 1, 17, Content: ","
+										Content: Type: Comma, Start: 1, 16, End: 1, 17, Content: ","
 										Type: Comma
 										Children:
 
@@ -94,10 +94,10 @@ Children:
 											Type: Symbol
 											Children:
 
-									Content: Type: TypeArgument, Start: 1, 26, End: 1, 34, Content: ""
+									Content: Type: TypeArgument, Start: 1, 25, End: 1, 34, Content: ""
 									Type: TypeArgument
 									Children:
-										Content: Type: Comma, Start: 1, 26, End: 1, 26, Content: ","
+										Content: Type: Comma, Start: 1, 25, End: 1, 26, Content: ","
 										Type: Comma
 										Children:
 
@@ -118,10 +118,10 @@ Children:
 											Type: Symbol
 											Children:
 
-									Content: Type: TypeArgument, Start: 1, 35, End: 1, 45, Content: ""
+									Content: Type: TypeArgument, Start: 1, 34, End: 1, 45, Content: ""
 									Type: TypeArgument
 									Children:
-										Content: Type: Comma, Start: 1, 35, End: 1, 35, Content: ","
+										Content: Type: Comma, Start: 1, 34, End: 1, 35, Content: ","
 										Type: Comma
 										Children:
 
@@ -142,14 +142,14 @@ Children:
 											Type: Symbol
 											Children:
 
-									Content: Type: RightBracket, Start: 1, 46, End: 1, 46, Content: ")"
+									Content: Type: RightBracket, Start: 1, 45, End: 1, 46, Content: ")"
 									Type: RightBracket
 									Children:
 
-								Content: Type: CodeBlockNode, Start: 1, 48, End: 1, 57, Content: ""
+								Content: Type: CodeBlockNode, Start: 1, 47, End: 1, 57, Content: ""
 								Type: CodeBlockNode
 								Children:
-									Content: Type: LeftCurlyBracket, Start: 1, 48, End: 1, 48, Content: "{"
+									Content: Type: LeftCurlyBracket, Start: 1, 47, End: 1, 48, Content: "{"
 									Type: LeftCurlyBracket
 									Children:
 
@@ -166,22 +166,22 @@ Children:
 												Type: Symbol
 												Children:
 
-											Content: Type: LeftBracket, Start: 1, 53, End: 1, 53, Content: "("
+											Content: Type: LeftBracket, Start: 1, 52, End: 1, 53, Content: "("
 											Type: LeftBracket
 											Children:
 
-											Content: Type: RightBracket, Start: 1, 54, End: 1, 54, Content: ")"
+											Content: Type: RightBracket, Start: 1, 53, End: 1, 54, Content: ")"
 											Type: RightBracket
 											Children:
 
-										Content: Type: EndOfLine, Start: 1, 55, End: 1, 55, Content: ";"
+										Content: Type: EndOfLine, Start: 1, 54, End: 1, 55, Content: ";"
 										Type: EndOfLine
 										Children:
 
-									Content: Type: RightCurlyBracket, Start: 1, 57, End: 1, 57, Content: "}"
+									Content: Type: RightCurlyBracket, Start: 1, 56, End: 1, 57, Content: "}"
 									Type: RightCurlyBracket
 									Children:
 
-		Content: Type: EndOfLine, Start: 1, 58, End: 1, 58, Content: ";"
+		Content: Type: EndOfLine, Start: 1, 57, End: 1, 58, Content: ";"
 		Type: EndOfLine
 		Children:

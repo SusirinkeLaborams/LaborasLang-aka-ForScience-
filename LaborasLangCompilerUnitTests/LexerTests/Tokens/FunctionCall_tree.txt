@@ -14,15 +14,15 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: LeftBracket, Start: 2, 17, End: 2, 17, Content: "("
+			Content: Type: LeftBracket, Start: 2, 16, End: 2, 17, Content: "("
 			Type: LeftBracket
 			Children:
 
-			Content: Type: RightBracket, Start: 2, 18, End: 2, 18, Content: ")"
+			Content: Type: RightBracket, Start: 2, 17, End: 2, 18, Content: ")"
 			Type: RightBracket
 			Children:
 
-		Content: Type: EndOfLine, Start: 2, 19, End: 2, 19, Content: ";"
+		Content: Type: EndOfLine, Start: 2, 18, End: 2, 19, Content: ";"
 		Type: EndOfLine
 		Children:
 
@@ -39,7 +39,7 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: LeftBracket, Start: 3, 17, End: 3, 17, Content: "("
+			Content: Type: LeftBracket, Start: 3, 16, End: 3, 17, Content: "("
 			Type: LeftBracket
 			Children:
 
@@ -62,11 +62,11 @@ Children:
 								Type: Symbol
 								Children:
 
-			Content: Type: RightBracket, Start: 3, 21, End: 3, 21, Content: ")"
+			Content: Type: RightBracket, Start: 3, 20, End: 3, 21, Content: ")"
 			Type: RightBracket
 			Children:
 
-		Content: Type: EndOfLine, Start: 3, 22, End: 3, 22, Content: ";"
+		Content: Type: EndOfLine, Start: 3, 21, End: 3, 22, Content: ";"
 		Type: EndOfLine
 		Children:
 
@@ -83,7 +83,7 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: LeftBracket, Start: 4, 17, End: 4, 17, Content: "("
+			Content: Type: LeftBracket, Start: 4, 16, End: 4, 17, Content: "("
 			Type: LeftBracket
 			Children:
 
@@ -109,18 +109,18 @@ Children:
 									Type: Symbol
 									Children:
 
-								Content: Type: LeftBracket, Start: 4, 21, End: 4, 21, Content: "("
+								Content: Type: LeftBracket, Start: 4, 20, End: 4, 21, Content: "("
 								Type: LeftBracket
 								Children:
 
-								Content: Type: RightBracket, Start: 4, 22, End: 4, 22, Content: ")"
+								Content: Type: RightBracket, Start: 4, 21, End: 4, 22, Content: ")"
 								Type: RightBracket
 								Children:
 
-			Content: Type: FunctionArgument, Start: 4, 23, End: 4, 27, Content: ""
+			Content: Type: FunctionArgument, Start: 4, 22, End: 4, 27, Content: ""
 			Type: FunctionArgument
 			Children:
-				Content: Type: Comma, Start: 4, 23, End: 4, 23, Content: ","
+				Content: Type: Comma, Start: 4, 22, End: 4, 23, Content: ","
 				Type: Comma
 				Children:
 
@@ -143,10 +143,10 @@ Children:
 									Type: Symbol
 									Children:
 
-			Content: Type: RightBracket, Start: 4, 28, End: 4, 28, Content: ")"
+			Content: Type: RightBracket, Start: 4, 27, End: 4, 28, Content: ")"
 			Type: RightBracket
 			Children:
 
-		Content: Type: EndOfLine, Start: 4, 29, End: 4, 29, Content: ";"
+		Content: Type: EndOfLine, Start: 4, 28, End: 4, 29, Content: ";"
 		Type: EndOfLine
 		Children:
