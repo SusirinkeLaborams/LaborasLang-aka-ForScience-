@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Lexer.Containers
 {
@@ -110,16 +104,12 @@ namespace Lexer.Containers
             return (typeHash << 24) ^ (contentHash << 16) + (startHash ^ endHash);
         }
 
-        [Serializable, DebuggerDisplay("Token, type = {m_Type}")]
+        [DebuggerDisplay("Token, type = {m_Type}")]
         internal struct InternalToken
         {
-            [DataMember]
             public TokenType type;
-            [DataMember]
             public Location start;
-            [DataMember]
             public Location end;
-            [DataMember]
             public FastString content;
         }
     }

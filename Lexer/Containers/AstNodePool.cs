@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Lexer.Utils;
+using System;
 
 namespace Lexer.Containers
 {
@@ -122,11 +117,18 @@ namespace Lexer.Containers
 
             public AstNodeContainer(int capacity)
             {
-                var byteCount = capacity * kNodeSize;
-                var ptr = Marshal.AllocHGlobal(byteCount);
+                do
+                {
+                    var byteCount = capacity * kNodeSize;
+                    m_NextNode = m_Nodes = (byte*)NativeFunctions.AllocateProcessMemory(byteCount);
+                    m_End = m_Nodes + capacity * kNodeSize;
+                }
+                while (m_Nodes == null && (capacity /= 2) > 64);
 
-                m_NextNode = m_Nodes = (byte*)ptr;
-                m_End = m_Nodes + capacity * kNodeSize;
+                if (m_Nodes == null)
+                {
+                    throw new OutOfMemoryException();
+                }
             }
 
             public AstNode.InternalNode* GetNode()
@@ -170,7 +172,7 @@ namespace Lexer.Containers
 
             public void Cleanup()
             {
-                Marshal.FreeHGlobal(new IntPtr(m_Nodes));
+                NativeFunctions.FreeProcessMemory(new IntPtr(m_Nodes));
             }
         }
     }

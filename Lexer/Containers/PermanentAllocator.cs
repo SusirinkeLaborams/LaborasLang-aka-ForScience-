@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Lexer.Utils;
+using System;
 
 namespace Lexer.Containers
 {
@@ -20,8 +16,8 @@ namespace Lexer.Containers
 
         public PermanentAllocator()
         {
-            // Filling 15th container would mean having tokens occupy over 4 GB RAM at 20 bytes per item
-            m_MemoryContainers = new MemoryContainer[15];
+            // Filling 18th container would mean having items in memory occupying over 4 GB RAM
+            m_MemoryContainers = new MemoryContainer[18];
             m_MemoryContainers[0] = m_CurrentContainer = new MemoryContainer(m_AllocationCapacity);
             m_ContainerCount = 1;
         }
@@ -59,8 +55,17 @@ namespace Lexer.Containers
 
             public MemoryContainer(int capacity)
             {
-                m_Current = m_Memory = (byte*)Marshal.AllocHGlobal(capacity).ToPointer();
-                m_End = m_Current + capacity;
+                do
+                {
+                    m_Current = m_Memory = (byte*)NativeFunctions.AllocateProcessMemory(capacity).ToPointer();
+                    m_End = m_Current + capacity;
+                }
+                while (m_Memory == null && (capacity /= 2) > 64);
+
+                if (m_Memory == null)
+                {
+                    throw new OutOfMemoryException();
+                }
             }
 
             public bool HasFreeSpace(int size)
@@ -77,7 +82,7 @@ namespace Lexer.Containers
 
             public void Cleanup()
             {
-                Marshal.FreeHGlobal(new IntPtr(m_Memory));
+                NativeFunctions.FreeProcessMemory(new IntPtr(m_Memory));
             }
         }
     }

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Lexer.Utils;
+using System;
 
 namespace Lexer.Containers
 {
@@ -20,7 +16,7 @@ namespace Lexer.Containers
 
         static FastString()
         {
-            kPointerToNullChar = (char*)Marshal.AllocHGlobal(1);
+            kPointerToNullChar = (char*)NativeFunctions.AllocateProcessMemory(1);
             *kPointerToNullChar = '\0';
             kEmpty.m_Buffer = kPointerToNullChar;
         }
@@ -113,14 +109,14 @@ namespace Lexer.Containers
         public FastStringBuilder()
         {
             m_Capacity = kInitialCapacity;
-            m_Ptr = (char*)Marshal.AllocHGlobal(kSizeOfChar * (m_Capacity + 1));
+            m_Ptr = (char*)NativeFunctions.AllocateProcessMemory(kSizeOfChar * (m_Capacity + 1));
         }
 
         public FastStringBuilder(string str)
         {
             var strLength = str.Length;
             m_Capacity = m_Length = strLength;
-            m_Ptr = (char*)Marshal.AllocHGlobal(kSizeOfChar * (m_Capacity + 1));
+            m_Ptr = (char*)NativeFunctions.AllocateProcessMemory(kSizeOfChar * (m_Capacity + 1));
 
             fixed (char* src = str)
             {
@@ -229,14 +225,14 @@ namespace Lexer.Containers
         private void Reallocate()
         {
             var oldPtr = m_Ptr;
-            m_Ptr = (char*)Marshal.AllocHGlobal(kSizeOfChar * (m_Capacity + 1));    // +2 part comes so FastString could copy 4 bytes at a time
+            m_Ptr = (char*)NativeFunctions.AllocateProcessMemory(kSizeOfChar * (m_Capacity + 1));    // +2 part comes so FastString could copy 4 bytes at a time
 
             for (int i = 0; i < m_Length; i++)
             {
                 m_Ptr[i] = oldPtr[i];
             }
 
-            Marshal.FreeHGlobal((IntPtr)oldPtr);
+            NativeFunctions.FreeProcessMemory((IntPtr)oldPtr);
         }
     }
 }

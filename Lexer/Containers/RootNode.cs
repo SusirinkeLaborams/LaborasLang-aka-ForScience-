@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lexer.Containers
 {
@@ -14,19 +10,18 @@ namespace Lexer.Containers
 
         internal PermanentAllocator Allocator { get; private set; }
         internal AstNodePool NodePool { get; private set; }
-
-        internal unsafe Token ProvideToken()
-        {
-            return new Token((Token.InternalToken*)Allocator.ProvideMemory(kTokenSize));
-        }
-
+        public AstNode Node { get { return m_Node; } }
+        
         internal RootNode()
         {
             Allocator = new PermanentAllocator();
             NodePool = new AstNodePool();
         }
 
-        public AstNode Node { get { return m_Node; } }
+        internal unsafe Token ProvideToken()
+        {
+            return new Token((Token.InternalToken*)Allocator.ProvideMemory(kTokenSize));
+        }
 
         internal void SetNode(AstNode node)
         {
