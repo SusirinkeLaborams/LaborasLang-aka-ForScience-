@@ -253,13 +253,13 @@ namespace Lexer
                     FunctionCall),
 
                 new ParseRule(FunctionCall,
-                    Function + FunctionArgumentList,
                     OneOrMore(FunctionSegment)),
 
 
                 new ParseRule(FunctionSegment,
                     Period,
                     FunctionArgumentList,
+                    Function,
                     LeftBracket + ArithmeticNode + RightBracket,
                     Symbol),
 

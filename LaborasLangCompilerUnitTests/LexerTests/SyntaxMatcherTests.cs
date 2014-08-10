@@ -1,4 +1,4 @@
-﻿#define REMATCH
+﻿//#define REMATCH
 
 using System;
 using System.Linq;
@@ -41,7 +41,7 @@ a = 5;
         {
 
             var source = @"
-void(int a){a = 5;}(5);
+void(int a){a = 5;}(5)()()();
 ";
             ExecuteTest(source);
         }
