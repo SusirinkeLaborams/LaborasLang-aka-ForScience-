@@ -1,4 +1,4 @@
-﻿// #define REMATCH
+﻿#define REMATCH
 
 using System;
 using System.Linq;
@@ -20,6 +20,9 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         private const int timeout = 0;
         private const string Path = @"..\..\LexerTests\Tokens\";
 
+        #region Tests
+
+
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestMethod1()
         {
@@ -33,8 +36,18 @@ a = 5;
             ExecuteTest(source);
         }
 
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestFunctionDeclarationAndCall()
+        {
 
-        #region Tests
+            var source = @"
+void(int a){a = 5;}(5);
+";
+            ExecuteTest(source);
+        }
+
+
+
 
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void DeclareFunctionTest()

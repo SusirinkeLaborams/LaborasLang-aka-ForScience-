@@ -253,6 +253,7 @@ namespace Lexer
                     FunctionCall),
 
                 new ParseRule(FunctionCall,
+                    Function + FunctionArgumentList,
                     OneOrMore(FunctionSegment)),
 
 
