@@ -135,6 +135,8 @@
         ArithmeticNode,
 
         Function,
+        FunctionSegment,
+        FunctionArgumentList,
 
         ConditionalSentence,
         AssignmentOperator,

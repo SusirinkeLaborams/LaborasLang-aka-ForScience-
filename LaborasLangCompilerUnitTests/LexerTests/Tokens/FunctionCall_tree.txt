@@ -7,20 +7,26 @@ Children:
 		Content: Type: FunctionCall, Start: 2, 13, End: 2, 18, Content: ""
 		Type: FunctionCall
 		Children:
-			Content: Type: FullSymbol, Start: 2, 13, End: 2, 16, Content: ""
-			Type: FullSymbol
+			Content: Type: FunctionSegment, Start: 2, 13, End: 2, 16, Content: ""
+			Type: FunctionSegment
 			Children:
 				Content: Type: Symbol, Start: 2, 13, End: 2, 16, Content: "foo"
 				Type: Symbol
 				Children:
 
-			Content: Type: LeftBracket, Start: 2, 16, End: 2, 17, Content: "("
-			Type: LeftBracket
+			Content: Type: FunctionSegment, Start: 2, 16, End: 2, 18, Content: ""
+			Type: FunctionSegment
 			Children:
+				Content: Type: FunctionArgumentList, Start: 2, 16, End: 2, 18, Content: ""
+				Type: FunctionArgumentList
+				Children:
+					Content: Type: LeftBracket, Start: 2, 16, End: 2, 17, Content: "("
+					Type: LeftBracket
+					Children:
 
-			Content: Type: RightBracket, Start: 2, 17, End: 2, 18, Content: ")"
-			Type: RightBracket
-			Children:
+					Content: Type: RightBracket, Start: 2, 17, End: 2, 18, Content: ")"
+					Type: RightBracket
+					Children:
 
 		Content: Type: EndOfLine, Start: 2, 18, End: 2, 19, Content: ";"
 		Type: EndOfLine
@@ -32,39 +38,45 @@ Children:
 		Content: Type: FunctionCall, Start: 3, 13, End: 3, 21, Content: ""
 		Type: FunctionCall
 		Children:
-			Content: Type: FullSymbol, Start: 3, 13, End: 3, 16, Content: ""
-			Type: FullSymbol
+			Content: Type: FunctionSegment, Start: 3, 13, End: 3, 16, Content: ""
+			Type: FunctionSegment
 			Children:
 				Content: Type: Symbol, Start: 3, 13, End: 3, 16, Content: "foo"
 				Type: Symbol
 				Children:
 
-			Content: Type: LeftBracket, Start: 3, 16, End: 3, 17, Content: "("
-			Type: LeftBracket
+			Content: Type: FunctionSegment, Start: 3, 16, End: 3, 21, Content: ""
+			Type: FunctionSegment
 			Children:
-
-			Content: Type: Value, Start: 3, 17, End: 3, 20, Content: ""
-			Type: Value
-			Children:
-				Content: Type: ArithmeticNode, Start: 3, 17, End: 3, 20, Content: ""
-				Type: ArithmeticNode
+				Content: Type: FunctionArgumentList, Start: 3, 16, End: 3, 21, Content: ""
+				Type: FunctionArgumentList
 				Children:
-					Content: Type: ArithmeticSubnode, Start: 3, 17, End: 3, 20, Content: ""
-					Type: ArithmeticSubnode
+					Content: Type: LeftBracket, Start: 3, 16, End: 3, 17, Content: "("
+					Type: LeftBracket
 					Children:
-						Content: Type: RValue, Start: 3, 17, End: 3, 20, Content: ""
-						Type: RValue
-						Children:
-							Content: Type: FullSymbol, Start: 3, 17, End: 3, 20, Content: ""
-							Type: FullSymbol
-							Children:
-								Content: Type: Symbol, Start: 3, 17, End: 3, 20, Content: "bar"
-								Type: Symbol
-								Children:
 
-			Content: Type: RightBracket, Start: 3, 20, End: 3, 21, Content: ")"
-			Type: RightBracket
-			Children:
+					Content: Type: Value, Start: 3, 17, End: 3, 20, Content: ""
+					Type: Value
+					Children:
+						Content: Type: ArithmeticNode, Start: 3, 17, End: 3, 20, Content: ""
+						Type: ArithmeticNode
+						Children:
+							Content: Type: ArithmeticSubnode, Start: 3, 17, End: 3, 20, Content: ""
+							Type: ArithmeticSubnode
+							Children:
+								Content: Type: RValue, Start: 3, 17, End: 3, 20, Content: ""
+								Type: RValue
+								Children:
+									Content: Type: FullSymbol, Start: 3, 17, End: 3, 20, Content: ""
+									Type: FullSymbol
+									Children:
+										Content: Type: Symbol, Start: 3, 17, End: 3, 20, Content: "bar"
+										Type: Symbol
+										Children:
+
+					Content: Type: RightBracket, Start: 3, 20, End: 3, 21, Content: ")"
+					Type: RightBracket
+					Children:
 
 		Content: Type: EndOfLine, Start: 3, 21, End: 3, 22, Content: ";"
 		Type: EndOfLine
@@ -76,76 +88,94 @@ Children:
 		Content: Type: FunctionCall, Start: 4, 13, End: 4, 28, Content: ""
 		Type: FunctionCall
 		Children:
-			Content: Type: FullSymbol, Start: 4, 13, End: 4, 16, Content: ""
-			Type: FullSymbol
+			Content: Type: FunctionSegment, Start: 4, 13, End: 4, 16, Content: ""
+			Type: FunctionSegment
 			Children:
 				Content: Type: Symbol, Start: 4, 13, End: 4, 16, Content: "foo"
 				Type: Symbol
 				Children:
 
-			Content: Type: LeftBracket, Start: 4, 16, End: 4, 17, Content: "("
-			Type: LeftBracket
+			Content: Type: FunctionSegment, Start: 4, 16, End: 4, 28, Content: ""
+			Type: FunctionSegment
 			Children:
-
-			Content: Type: Value, Start: 4, 17, End: 4, 22, Content: ""
-			Type: Value
-			Children:
-				Content: Type: ArithmeticNode, Start: 4, 17, End: 4, 22, Content: ""
-				Type: ArithmeticNode
+				Content: Type: FunctionArgumentList, Start: 4, 16, End: 4, 28, Content: ""
+				Type: FunctionArgumentList
 				Children:
-					Content: Type: ArithmeticSubnode, Start: 4, 17, End: 4, 22, Content: ""
-					Type: ArithmeticSubnode
+					Content: Type: LeftBracket, Start: 4, 16, End: 4, 17, Content: "("
+					Type: LeftBracket
 					Children:
-						Content: Type: RValue, Start: 4, 17, End: 4, 22, Content: ""
-						Type: RValue
-						Children:
-							Content: Type: FunctionCall, Start: 4, 17, End: 4, 22, Content: ""
-							Type: FunctionCall
-							Children:
-								Content: Type: FullSymbol, Start: 4, 17, End: 4, 20, Content: ""
-								Type: FullSymbol
-								Children:
-									Content: Type: Symbol, Start: 4, 17, End: 4, 20, Content: "foo"
-									Type: Symbol
-									Children:
 
-								Content: Type: LeftBracket, Start: 4, 20, End: 4, 21, Content: "("
-								Type: LeftBracket
-								Children:
-
-								Content: Type: RightBracket, Start: 4, 21, End: 4, 22, Content: ")"
-								Type: RightBracket
-								Children:
-
-			Content: Type: FunctionArgument, Start: 4, 22, End: 4, 27, Content: ""
-			Type: FunctionArgument
-			Children:
-				Content: Type: Comma, Start: 4, 22, End: 4, 23, Content: ","
-				Type: Comma
-				Children:
-
-				Content: Type: Value, Start: 4, 24, End: 4, 27, Content: ""
-				Type: Value
-				Children:
-					Content: Type: ArithmeticNode, Start: 4, 24, End: 4, 27, Content: ""
-					Type: ArithmeticNode
+					Content: Type: Value, Start: 4, 17, End: 4, 22, Content: ""
+					Type: Value
 					Children:
-						Content: Type: ArithmeticSubnode, Start: 4, 24, End: 4, 27, Content: ""
-						Type: ArithmeticSubnode
+						Content: Type: ArithmeticNode, Start: 4, 17, End: 4, 22, Content: ""
+						Type: ArithmeticNode
 						Children:
-							Content: Type: RValue, Start: 4, 24, End: 4, 27, Content: ""
-							Type: RValue
+							Content: Type: ArithmeticSubnode, Start: 4, 17, End: 4, 20, Content: ""
+							Type: ArithmeticSubnode
 							Children:
-								Content: Type: FullSymbol, Start: 4, 24, End: 4, 27, Content: ""
-								Type: FullSymbol
+								Content: Type: RValue, Start: 4, 17, End: 4, 20, Content: ""
+								Type: RValue
 								Children:
-									Content: Type: Symbol, Start: 4, 24, End: 4, 27, Content: "bar"
-									Type: Symbol
+									Content: Type: FullSymbol, Start: 4, 17, End: 4, 20, Content: ""
+									Type: FullSymbol
 									Children:
+										Content: Type: Symbol, Start: 4, 17, End: 4, 20, Content: "foo"
+										Type: Symbol
+										Children:
 
-			Content: Type: RightBracket, Start: 4, 27, End: 4, 28, Content: ")"
-			Type: RightBracket
-			Children:
+							Content: Type: ArithmeticSubnode, Start: 4, 20, End: 4, 22, Content: ""
+							Type: ArithmeticSubnode
+							Children:
+								Content: Type: RValue, Start: 4, 20, End: 4, 22, Content: ""
+								Type: RValue
+								Children:
+									Content: Type: FunctionCall, Start: 4, 20, End: 4, 22, Content: ""
+									Type: FunctionCall
+									Children:
+										Content: Type: FunctionSegment, Start: 4, 20, End: 4, 22, Content: ""
+										Type: FunctionSegment
+										Children:
+											Content: Type: FunctionArgumentList, Start: 4, 20, End: 4, 22, Content: ""
+											Type: FunctionArgumentList
+											Children:
+												Content: Type: LeftBracket, Start: 4, 20, End: 4, 21, Content: "("
+												Type: LeftBracket
+												Children:
+
+												Content: Type: RightBracket, Start: 4, 21, End: 4, 22, Content: ")"
+												Type: RightBracket
+												Children:
+
+					Content: Type: FunctionArgument, Start: 4, 22, End: 4, 27, Content: ""
+					Type: FunctionArgument
+					Children:
+						Content: Type: Comma, Start: 4, 22, End: 4, 23, Content: ","
+						Type: Comma
+						Children:
+
+						Content: Type: Value, Start: 4, 24, End: 4, 27, Content: ""
+						Type: Value
+						Children:
+							Content: Type: ArithmeticNode, Start: 4, 24, End: 4, 27, Content: ""
+							Type: ArithmeticNode
+							Children:
+								Content: Type: ArithmeticSubnode, Start: 4, 24, End: 4, 27, Content: ""
+								Type: ArithmeticSubnode
+								Children:
+									Content: Type: RValue, Start: 4, 24, End: 4, 27, Content: ""
+									Type: RValue
+									Children:
+										Content: Type: FullSymbol, Start: 4, 24, End: 4, 27, Content: ""
+										Type: FullSymbol
+										Children:
+											Content: Type: Symbol, Start: 4, 24, End: 4, 27, Content: "bar"
+											Type: Symbol
+											Children:
+
+					Content: Type: RightBracket, Start: 4, 27, End: 4, 28, Content: ")"
+					Type: RightBracket
+					Children:
 
 		Content: Type: EndOfLine, Start: 4, 28, End: 4, 29, Content: ";"
 		Type: EndOfLine

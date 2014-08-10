@@ -111,20 +111,26 @@ Children:
 										Content: Type: FunctionCall, Start: 1, 29, End: 1, 34, Content: ""
 										Type: FunctionCall
 										Children:
-											Content: Type: FullSymbol, Start: 1, 29, End: 1, 32, Content: ""
-											Type: FullSymbol
+											Content: Type: FunctionSegment, Start: 1, 29, End: 1, 32, Content: ""
+											Type: FunctionSegment
 											Children:
 												Content: Type: Symbol, Start: 1, 29, End: 1, 32, Content: "bar"
 												Type: Symbol
 												Children:
 
-											Content: Type: LeftBracket, Start: 1, 32, End: 1, 33, Content: "("
-											Type: LeftBracket
+											Content: Type: FunctionSegment, Start: 1, 32, End: 1, 34, Content: ""
+											Type: FunctionSegment
 											Children:
+												Content: Type: FunctionArgumentList, Start: 1, 32, End: 1, 34, Content: ""
+												Type: FunctionArgumentList
+												Children:
+													Content: Type: LeftBracket, Start: 1, 32, End: 1, 33, Content: "("
+													Type: LeftBracket
+													Children:
 
-											Content: Type: RightBracket, Start: 1, 33, End: 1, 34, Content: ")"
-											Type: RightBracket
-											Children:
+													Content: Type: RightBracket, Start: 1, 33, End: 1, 34, Content: ")"
+													Type: RightBracket
+													Children:
 
 										Content: Type: EndOfLine, Start: 1, 34, End: 1, 35, Content: ";"
 										Type: EndOfLine

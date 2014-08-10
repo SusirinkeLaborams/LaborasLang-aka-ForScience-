@@ -74,58 +74,70 @@ Children:
 										Content: Type: FunctionCall, Start: 4, 17, End: 4, 57, Content: ""
 										Type: FunctionCall
 										Children:
-											Content: Type: FullSymbol, Start: 4, 17, End: 4, 41, Content: ""
-											Type: FullSymbol
+											Content: Type: FunctionSegment, Start: 4, 17, End: 4, 23, Content: ""
+											Type: FunctionSegment
 											Children:
 												Content: Type: Symbol, Start: 4, 17, End: 4, 23, Content: "System"
 												Type: Symbol
 												Children:
 
-												Content: Type: SubSymbol, Start: 4, 23, End: 4, 31, Content: ""
-												Type: SubSymbol
-												Children:
-													Content: Type: Period, Start: 4, 23, End: 4, 24, Content: "."
-													Type: Period
-													Children:
-
-													Content: Type: Symbol, Start: 4, 24, End: 4, 31, Content: "Console"
-													Type: Symbol
-													Children:
-
-												Content: Type: SubSymbol, Start: 4, 31, End: 4, 41, Content: ""
-												Type: SubSymbol
-												Children:
-													Content: Type: Period, Start: 4, 31, End: 4, 32, Content: "."
-													Type: Period
-													Children:
-
-													Content: Type: Symbol, Start: 4, 32, End: 4, 41, Content: "WriteLine"
-													Type: Symbol
-													Children:
-
-											Content: Type: LeftBracket, Start: 4, 41, End: 4, 42, Content: "("
-											Type: LeftBracket
+											Content: Type: FunctionSegment, Start: 4, 23, End: 4, 24, Content: ""
+											Type: FunctionSegment
 											Children:
-
-											Content: Type: Value, Start: 4, 43, End: 4, 56, Content: ""
-											Type: Value
-											Children:
-												Content: Type: ArithmeticNode, Start: 4, 43, End: 4, 56, Content: ""
-												Type: ArithmeticNode
+												Content: Type: Period, Start: 4, 23, End: 4, 24, Content: "."
+												Type: Period
 												Children:
-													Content: Type: ArithmeticSubnode, Start: 4, 43, End: 4, 56, Content: ""
-													Type: ArithmeticSubnode
+
+											Content: Type: FunctionSegment, Start: 4, 24, End: 4, 31, Content: ""
+											Type: FunctionSegment
+											Children:
+												Content: Type: Symbol, Start: 4, 24, End: 4, 31, Content: "Console"
+												Type: Symbol
+												Children:
+
+											Content: Type: FunctionSegment, Start: 4, 31, End: 4, 32, Content: ""
+											Type: FunctionSegment
+											Children:
+												Content: Type: Period, Start: 4, 31, End: 4, 32, Content: "."
+												Type: Period
+												Children:
+
+											Content: Type: FunctionSegment, Start: 4, 32, End: 4, 41, Content: ""
+											Type: FunctionSegment
+											Children:
+												Content: Type: Symbol, Start: 4, 32, End: 4, 41, Content: "WriteLine"
+												Type: Symbol
+												Children:
+
+											Content: Type: FunctionSegment, Start: 4, 41, End: 4, 57, Content: ""
+											Type: FunctionSegment
+											Children:
+												Content: Type: FunctionArgumentList, Start: 4, 41, End: 4, 57, Content: ""
+												Type: FunctionArgumentList
+												Children:
+													Content: Type: LeftBracket, Start: 4, 41, End: 4, 42, Content: "("
+													Type: LeftBracket
 													Children:
-														Content: Type: RValue, Start: 4, 43, End: 4, 56, Content: ""
-														Type: RValue
+
+													Content: Type: Value, Start: 4, 43, End: 4, 56, Content: ""
+													Type: Value
+													Children:
+														Content: Type: ArithmeticNode, Start: 4, 43, End: 4, 56, Content: ""
+														Type: ArithmeticNode
 														Children:
-															Content: Type: StringLiteral, Start: 4, 43, End: 4, 56, Content: "'Hello, world'"
-															Type: StringLiteral
+															Content: Type: ArithmeticSubnode, Start: 4, 43, End: 4, 56, Content: ""
+															Type: ArithmeticSubnode
 															Children:
+																Content: Type: RValue, Start: 4, 43, End: 4, 56, Content: ""
+																Type: RValue
+																Children:
+																	Content: Type: StringLiteral, Start: 4, 43, End: 4, 56, Content: "'Hello, world'"
+																	Type: StringLiteral
+																	Children:
 
-											Content: Type: RightBracket, Start: 4, 56, End: 4, 57, Content: ")"
-											Type: RightBracket
-											Children:
+													Content: Type: RightBracket, Start: 4, 56, End: 4, 57, Content: ")"
+													Type: RightBracket
+													Children:
 
 										Content: Type: EndOfLine, Start: 4, 57, End: 4, 58, Content: ";"
 										Type: EndOfLine
@@ -137,42 +149,54 @@ Children:
 										Content: Type: FunctionCall, Start: 5, 17, End: 5, 41, Content: ""
 										Type: FunctionCall
 										Children:
-											Content: Type: FullSymbol, Start: 5, 17, End: 5, 39, Content: ""
-											Type: FullSymbol
+											Content: Type: FunctionSegment, Start: 5, 17, End: 5, 23, Content: ""
+											Type: FunctionSegment
 											Children:
 												Content: Type: Symbol, Start: 5, 17, End: 5, 23, Content: "System"
 												Type: Symbol
 												Children:
 
-												Content: Type: SubSymbol, Start: 5, 23, End: 5, 31, Content: ""
-												Type: SubSymbol
-												Children:
-													Content: Type: Period, Start: 5, 23, End: 5, 24, Content: "."
-													Type: Period
-													Children:
-
-													Content: Type: Symbol, Start: 5, 24, End: 5, 31, Content: "Console"
-													Type: Symbol
-													Children:
-
-												Content: Type: SubSymbol, Start: 5, 31, End: 5, 39, Content: ""
-												Type: SubSymbol
-												Children:
-													Content: Type: Period, Start: 5, 31, End: 5, 32, Content: "."
-													Type: Period
-													Children:
-
-													Content: Type: Symbol, Start: 5, 32, End: 5, 39, Content: "ReadKey"
-													Type: Symbol
-													Children:
-
-											Content: Type: LeftBracket, Start: 5, 39, End: 5, 40, Content: "("
-											Type: LeftBracket
+											Content: Type: FunctionSegment, Start: 5, 23, End: 5, 24, Content: ""
+											Type: FunctionSegment
 											Children:
+												Content: Type: Period, Start: 5, 23, End: 5, 24, Content: "."
+												Type: Period
+												Children:
 
-											Content: Type: RightBracket, Start: 5, 40, End: 5, 41, Content: ")"
-											Type: RightBracket
+											Content: Type: FunctionSegment, Start: 5, 24, End: 5, 31, Content: ""
+											Type: FunctionSegment
 											Children:
+												Content: Type: Symbol, Start: 5, 24, End: 5, 31, Content: "Console"
+												Type: Symbol
+												Children:
+
+											Content: Type: FunctionSegment, Start: 5, 31, End: 5, 32, Content: ""
+											Type: FunctionSegment
+											Children:
+												Content: Type: Period, Start: 5, 31, End: 5, 32, Content: "."
+												Type: Period
+												Children:
+
+											Content: Type: FunctionSegment, Start: 5, 32, End: 5, 39, Content: ""
+											Type: FunctionSegment
+											Children:
+												Content: Type: Symbol, Start: 5, 32, End: 5, 39, Content: "ReadKey"
+												Type: Symbol
+												Children:
+
+											Content: Type: FunctionSegment, Start: 5, 39, End: 5, 41, Content: ""
+											Type: FunctionSegment
+											Children:
+												Content: Type: FunctionArgumentList, Start: 5, 39, End: 5, 41, Content: ""
+												Type: FunctionArgumentList
+												Children:
+													Content: Type: LeftBracket, Start: 5, 39, End: 5, 40, Content: "("
+													Type: LeftBracket
+													Children:
+
+													Content: Type: RightBracket, Start: 5, 40, End: 5, 41, Content: ")"
+													Type: RightBracket
+													Children:
 
 										Content: Type: EndOfLine, Start: 5, 41, End: 5, 42, Content: ";"
 										Type: EndOfLine

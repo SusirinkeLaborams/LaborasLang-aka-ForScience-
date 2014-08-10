@@ -267,48 +267,60 @@ Children:
 												Content: Type: ArithmeticNode, Start: 9, 6, End: 9, 15, Content: ""
 												Type: ArithmeticNode
 												Children:
-													Content: Type: ArithmeticSubnode, Start: 9, 6, End: 9, 15, Content: ""
+													Content: Type: ArithmeticSubnode, Start: 9, 6, End: 9, 12, Content: ""
 													Type: ArithmeticSubnode
 													Children:
-														Content: Type: RValue, Start: 9, 6, End: 9, 15, Content: ""
+														Content: Type: RValue, Start: 9, 6, End: 9, 12, Content: ""
 														Type: RValue
 														Children:
-															Content: Type: FunctionCall, Start: 9, 6, End: 9, 15, Content: ""
+															Content: Type: FullSymbol, Start: 9, 6, End: 9, 12, Content: ""
+															Type: FullSymbol
+															Children:
+																Content: Type: Symbol, Start: 9, 6, End: 9, 12, Content: "IsEven"
+																Type: Symbol
+																Children:
+
+													Content: Type: ArithmeticSubnode, Start: 9, 12, End: 9, 15, Content: ""
+													Type: ArithmeticSubnode
+													Children:
+														Content: Type: RValue, Start: 9, 12, End: 9, 15, Content: ""
+														Type: RValue
+														Children:
+															Content: Type: FunctionCall, Start: 9, 12, End: 9, 15, Content: ""
 															Type: FunctionCall
 															Children:
-																Content: Type: FullSymbol, Start: 9, 6, End: 9, 12, Content: ""
-																Type: FullSymbol
+																Content: Type: FunctionSegment, Start: 9, 12, End: 9, 15, Content: ""
+																Type: FunctionSegment
 																Children:
-																	Content: Type: Symbol, Start: 9, 6, End: 9, 12, Content: "IsEven"
-																	Type: Symbol
+																	Content: Type: FunctionArgumentList, Start: 9, 12, End: 9, 15, Content: ""
+																	Type: FunctionArgumentList
 																	Children:
-
-																Content: Type: LeftBracket, Start: 9, 12, End: 9, 13, Content: "("
-																Type: LeftBracket
-																Children:
-
-																Content: Type: Value, Start: 9, 13, End: 9, 14, Content: ""
-																Type: Value
-																Children:
-																	Content: Type: ArithmeticNode, Start: 9, 13, End: 9, 14, Content: ""
-																	Type: ArithmeticNode
-																	Children:
-																		Content: Type: ArithmeticSubnode, Start: 9, 13, End: 9, 14, Content: ""
-																		Type: ArithmeticSubnode
+																		Content: Type: LeftBracket, Start: 9, 12, End: 9, 13, Content: "("
+																		Type: LeftBracket
 																		Children:
-																			Content: Type: RValue, Start: 9, 13, End: 9, 14, Content: ""
-																			Type: RValue
-																			Children:
-																				Content: Type: FullSymbol, Start: 9, 13, End: 9, 14, Content: ""
-																				Type: FullSymbol
-																				Children:
-																					Content: Type: Symbol, Start: 9, 13, End: 9, 14, Content: "i"
-																					Type: Symbol
-																					Children:
 
-																Content: Type: RightBracket, Start: 9, 14, End: 9, 15, Content: ")"
-																Type: RightBracket
-																Children:
+																		Content: Type: Value, Start: 9, 13, End: 9, 14, Content: ""
+																		Type: Value
+																		Children:
+																			Content: Type: ArithmeticNode, Start: 9, 13, End: 9, 14, Content: ""
+																			Type: ArithmeticNode
+																			Children:
+																				Content: Type: ArithmeticSubnode, Start: 9, 13, End: 9, 14, Content: ""
+																				Type: ArithmeticSubnode
+																				Children:
+																					Content: Type: RValue, Start: 9, 13, End: 9, 14, Content: ""
+																					Type: RValue
+																					Children:
+																						Content: Type: FullSymbol, Start: 9, 13, End: 9, 14, Content: ""
+																						Type: FullSymbol
+																						Children:
+																							Content: Type: Symbol, Start: 9, 13, End: 9, 14, Content: "i"
+																							Type: Symbol
+																							Children:
+
+																		Content: Type: RightBracket, Start: 9, 14, End: 9, 15, Content: ")"
+																		Type: RightBracket
+																		Children:
 
 											Content: Type: RightBracket, Start: 9, 15, End: 9, 16, Content: ")"
 											Type: RightBracket
@@ -330,84 +342,96 @@ Children:
 														Content: Type: FunctionCall, Start: 11, 3, End: 11, 45, Content: ""
 														Type: FunctionCall
 														Children:
-															Content: Type: FullSymbol, Start: 11, 3, End: 11, 27, Content: ""
-															Type: FullSymbol
+															Content: Type: FunctionSegment, Start: 11, 3, End: 11, 9, Content: ""
+															Type: FunctionSegment
 															Children:
 																Content: Type: Symbol, Start: 11, 3, End: 11, 9, Content: "System"
 																Type: Symbol
 																Children:
 
-																Content: Type: SubSymbol, Start: 11, 9, End: 11, 17, Content: ""
-																Type: SubSymbol
-																Children:
-																	Content: Type: Period, Start: 11, 9, End: 11, 10, Content: "."
-																	Type: Period
-																	Children:
-
-																	Content: Type: Symbol, Start: 11, 10, End: 11, 17, Content: "Console"
-																	Type: Symbol
-																	Children:
-
-																Content: Type: SubSymbol, Start: 11, 17, End: 11, 27, Content: ""
-																Type: SubSymbol
-																Children:
-																	Content: Type: Period, Start: 11, 17, End: 11, 18, Content: "."
-																	Type: Period
-																	Children:
-
-																	Content: Type: Symbol, Start: 11, 18, End: 11, 27, Content: "WriteLine"
-																	Type: Symbol
-																	Children:
-
-															Content: Type: LeftBracket, Start: 11, 27, End: 11, 28, Content: "("
-															Type: LeftBracket
+															Content: Type: FunctionSegment, Start: 11, 9, End: 11, 10, Content: ""
+															Type: FunctionSegment
 															Children:
-
-															Content: Type: Value, Start: 11, 29, End: 11, 41, Content: ""
-															Type: Value
-															Children:
-																Content: Type: ArithmeticNode, Start: 11, 29, End: 11, 41, Content: ""
-																Type: ArithmeticNode
+																Content: Type: Period, Start: 11, 9, End: 11, 10, Content: "."
+																Type: Period
 																Children:
-																	Content: Type: ArithmeticSubnode, Start: 11, 29, End: 11, 41, Content: ""
-																	Type: ArithmeticSubnode
+
+															Content: Type: FunctionSegment, Start: 11, 10, End: 11, 17, Content: ""
+															Type: FunctionSegment
+															Children:
+																Content: Type: Symbol, Start: 11, 10, End: 11, 17, Content: "Console"
+																Type: Symbol
+																Children:
+
+															Content: Type: FunctionSegment, Start: 11, 17, End: 11, 18, Content: ""
+															Type: FunctionSegment
+															Children:
+																Content: Type: Period, Start: 11, 17, End: 11, 18, Content: "."
+																Type: Period
+																Children:
+
+															Content: Type: FunctionSegment, Start: 11, 18, End: 11, 27, Content: ""
+															Type: FunctionSegment
+															Children:
+																Content: Type: Symbol, Start: 11, 18, End: 11, 27, Content: "WriteLine"
+																Type: Symbol
+																Children:
+
+															Content: Type: FunctionSegment, Start: 11, 27, End: 11, 45, Content: ""
+															Type: FunctionSegment
+															Children:
+																Content: Type: FunctionArgumentList, Start: 11, 27, End: 11, 45, Content: ""
+																Type: FunctionArgumentList
+																Children:
+																	Content: Type: LeftBracket, Start: 11, 27, End: 11, 28, Content: "("
+																	Type: LeftBracket
 																	Children:
-																		Content: Type: RValue, Start: 11, 29, End: 11, 41, Content: ""
-																		Type: RValue
+
+																	Content: Type: Value, Start: 11, 29, End: 11, 41, Content: ""
+																	Type: Value
+																	Children:
+																		Content: Type: ArithmeticNode, Start: 11, 29, End: 11, 41, Content: ""
+																		Type: ArithmeticNode
 																		Children:
-																			Content: Type: StringLiteral, Start: 11, 29, End: 11, 41, Content: ""{0} is even""
-																			Type: StringLiteral
+																			Content: Type: ArithmeticSubnode, Start: 11, 29, End: 11, 41, Content: ""
+																			Type: ArithmeticSubnode
 																			Children:
-
-															Content: Type: FunctionArgument, Start: 11, 41, End: 11, 44, Content: ""
-															Type: FunctionArgument
-															Children:
-																Content: Type: Comma, Start: 11, 41, End: 11, 42, Content: ","
-																Type: Comma
-																Children:
-
-																Content: Type: Value, Start: 11, 43, End: 11, 44, Content: ""
-																Type: Value
-																Children:
-																	Content: Type: ArithmeticNode, Start: 11, 43, End: 11, 44, Content: ""
-																	Type: ArithmeticNode
-																	Children:
-																		Content: Type: ArithmeticSubnode, Start: 11, 43, End: 11, 44, Content: ""
-																		Type: ArithmeticSubnode
-																		Children:
-																			Content: Type: RValue, Start: 11, 43, End: 11, 44, Content: ""
-																			Type: RValue
-																			Children:
-																				Content: Type: FullSymbol, Start: 11, 43, End: 11, 44, Content: ""
-																				Type: FullSymbol
+																				Content: Type: RValue, Start: 11, 29, End: 11, 41, Content: ""
+																				Type: RValue
 																				Children:
-																					Content: Type: Symbol, Start: 11, 43, End: 11, 44, Content: "i"
-																					Type: Symbol
+																					Content: Type: StringLiteral, Start: 11, 29, End: 11, 41, Content: ""{0} is even""
+																					Type: StringLiteral
 																					Children:
 
-															Content: Type: RightBracket, Start: 11, 44, End: 11, 45, Content: ")"
-															Type: RightBracket
-															Children:
+																	Content: Type: FunctionArgument, Start: 11, 41, End: 11, 44, Content: ""
+																	Type: FunctionArgument
+																	Children:
+																		Content: Type: Comma, Start: 11, 41, End: 11, 42, Content: ","
+																		Type: Comma
+																		Children:
+
+																		Content: Type: Value, Start: 11, 43, End: 11, 44, Content: ""
+																		Type: Value
+																		Children:
+																			Content: Type: ArithmeticNode, Start: 11, 43, End: 11, 44, Content: ""
+																			Type: ArithmeticNode
+																			Children:
+																				Content: Type: ArithmeticSubnode, Start: 11, 43, End: 11, 44, Content: ""
+																				Type: ArithmeticSubnode
+																				Children:
+																					Content: Type: RValue, Start: 11, 43, End: 11, 44, Content: ""
+																					Type: RValue
+																					Children:
+																						Content: Type: FullSymbol, Start: 11, 43, End: 11, 44, Content: ""
+																						Type: FullSymbol
+																						Children:
+																							Content: Type: Symbol, Start: 11, 43, End: 11, 44, Content: "i"
+																							Type: Symbol
+																							Children:
+
+																	Content: Type: RightBracket, Start: 11, 44, End: 11, 45, Content: ")"
+																	Type: RightBracket
+																	Children:
 
 														Content: Type: EndOfLine, Start: 11, 45, End: 11, 46, Content: ";"
 														Type: EndOfLine
@@ -419,59 +443,65 @@ Children:
 														Content: Type: FunctionCall, Start: 12, 3, End: 12, 14, Content: ""
 														Type: FunctionCall
 														Children:
-															Content: Type: FullSymbol, Start: 12, 3, End: 12, 7, Content: ""
-															Type: FullSymbol
+															Content: Type: FunctionSegment, Start: 12, 3, End: 12, 7, Content: ""
+															Type: FunctionSegment
 															Children:
 																Content: Type: Symbol, Start: 12, 3, End: 12, 7, Content: "Func"
 																Type: Symbol
 																Children:
 
-															Content: Type: LeftBracket, Start: 12, 7, End: 12, 8, Content: "("
-															Type: LeftBracket
+															Content: Type: FunctionSegment, Start: 12, 7, End: 12, 14, Content: ""
+															Type: FunctionSegment
 															Children:
-
-															Content: Type: Value, Start: 12, 8, End: 12, 13, Content: ""
-															Type: Value
-															Children:
-																Content: Type: ArithmeticNode, Start: 12, 8, End: 12, 13, Content: ""
-																Type: ArithmeticNode
+																Content: Type: FunctionArgumentList, Start: 12, 7, End: 12, 14, Content: ""
+																Type: FunctionArgumentList
 																Children:
-																	Content: Type: ArithmeticSubnode, Start: 12, 8, End: 12, 9, Content: ""
-																	Type: ArithmeticSubnode
+																	Content: Type: LeftBracket, Start: 12, 7, End: 12, 8, Content: "("
+																	Type: LeftBracket
 																	Children:
-																		Content: Type: RValue, Start: 12, 8, End: 12, 9, Content: ""
-																		Type: RValue
+
+																	Content: Type: Value, Start: 12, 8, End: 12, 13, Content: ""
+																	Type: Value
+																	Children:
+																		Content: Type: ArithmeticNode, Start: 12, 8, End: 12, 13, Content: ""
+																		Type: ArithmeticNode
 																		Children:
-																			Content: Type: FullSymbol, Start: 12, 8, End: 12, 9, Content: ""
-																			Type: FullSymbol
+																			Content: Type: ArithmeticSubnode, Start: 12, 8, End: 12, 9, Content: ""
+																			Type: ArithmeticSubnode
 																			Children:
-																				Content: Type: Symbol, Start: 12, 8, End: 12, 9, Content: "i"
-																				Type: Symbol
+																				Content: Type: RValue, Start: 12, 8, End: 12, 9, Content: ""
+																				Type: RValue
 																				Children:
+																					Content: Type: FullSymbol, Start: 12, 8, End: 12, 9, Content: ""
+																					Type: FullSymbol
+																					Children:
+																						Content: Type: Symbol, Start: 12, 8, End: 12, 9, Content: "i"
+																						Type: Symbol
+																						Children:
 
-																	Content: Type: ArithmeticSubnode, Start: 12, 10, End: 12, 11, Content: ""
-																	Type: ArithmeticSubnode
-																	Children:
-																		Content: Type: Operator, Start: 12, 10, End: 12, 11, Content: ""
-																		Type: Operator
-																		Children:
-																			Content: Type: Plus, Start: 12, 10, End: 12, 11, Content: "+"
-																			Type: Plus
+																			Content: Type: ArithmeticSubnode, Start: 12, 10, End: 12, 11, Content: ""
+																			Type: ArithmeticSubnode
 																			Children:
+																				Content: Type: Operator, Start: 12, 10, End: 12, 11, Content: ""
+																				Type: Operator
+																				Children:
+																					Content: Type: Plus, Start: 12, 10, End: 12, 11, Content: "+"
+																					Type: Plus
+																					Children:
 
-																	Content: Type: ArithmeticSubnode, Start: 12, 12, End: 12, 13, Content: ""
-																	Type: ArithmeticSubnode
-																	Children:
-																		Content: Type: RValue, Start: 12, 12, End: 12, 13, Content: ""
-																		Type: RValue
-																		Children:
-																			Content: Type: Integer, Start: 12, 12, End: 12, 13, Content: "3"
-																			Type: Integer
+																			Content: Type: ArithmeticSubnode, Start: 12, 12, End: 12, 13, Content: ""
+																			Type: ArithmeticSubnode
 																			Children:
+																				Content: Type: RValue, Start: 12, 12, End: 12, 13, Content: ""
+																				Type: RValue
+																				Children:
+																					Content: Type: Integer, Start: 12, 12, End: 12, 13, Content: "3"
+																					Type: Integer
+																					Children:
 
-															Content: Type: RightBracket, Start: 12, 13, End: 12, 14, Content: ")"
-															Type: RightBracket
-															Children:
+																	Content: Type: RightBracket, Start: 12, 13, End: 12, 14, Content: ")"
+																	Type: RightBracket
+																	Children:
 
 														Content: Type: EndOfLine, Start: 12, 14, End: 12, 15, Content: ";"
 														Type: EndOfLine
@@ -501,84 +531,96 @@ Children:
 														Content: Type: FunctionCall, Start: 16, 3, End: 16, 44, Content: ""
 														Type: FunctionCall
 														Children:
-															Content: Type: FullSymbol, Start: 16, 3, End: 16, 27, Content: ""
-															Type: FullSymbol
+															Content: Type: FunctionSegment, Start: 16, 3, End: 16, 9, Content: ""
+															Type: FunctionSegment
 															Children:
 																Content: Type: Symbol, Start: 16, 3, End: 16, 9, Content: "System"
 																Type: Symbol
 																Children:
 
-																Content: Type: SubSymbol, Start: 16, 9, End: 16, 17, Content: ""
-																Type: SubSymbol
-																Children:
-																	Content: Type: Period, Start: 16, 9, End: 16, 10, Content: "."
-																	Type: Period
-																	Children:
-
-																	Content: Type: Symbol, Start: 16, 10, End: 16, 17, Content: "Console"
-																	Type: Symbol
-																	Children:
-
-																Content: Type: SubSymbol, Start: 16, 17, End: 16, 27, Content: ""
-																Type: SubSymbol
-																Children:
-																	Content: Type: Period, Start: 16, 17, End: 16, 18, Content: "."
-																	Type: Period
-																	Children:
-
-																	Content: Type: Symbol, Start: 16, 18, End: 16, 27, Content: "WriteLine"
-																	Type: Symbol
-																	Children:
-
-															Content: Type: LeftBracket, Start: 16, 27, End: 16, 28, Content: "("
-															Type: LeftBracket
+															Content: Type: FunctionSegment, Start: 16, 9, End: 16, 10, Content: ""
+															Type: FunctionSegment
 															Children:
-
-															Content: Type: Value, Start: 16, 29, End: 16, 40, Content: ""
-															Type: Value
-															Children:
-																Content: Type: ArithmeticNode, Start: 16, 29, End: 16, 40, Content: ""
-																Type: ArithmeticNode
+																Content: Type: Period, Start: 16, 9, End: 16, 10, Content: "."
+																Type: Period
 																Children:
-																	Content: Type: ArithmeticSubnode, Start: 16, 29, End: 16, 40, Content: ""
-																	Type: ArithmeticSubnode
+
+															Content: Type: FunctionSegment, Start: 16, 10, End: 16, 17, Content: ""
+															Type: FunctionSegment
+															Children:
+																Content: Type: Symbol, Start: 16, 10, End: 16, 17, Content: "Console"
+																Type: Symbol
+																Children:
+
+															Content: Type: FunctionSegment, Start: 16, 17, End: 16, 18, Content: ""
+															Type: FunctionSegment
+															Children:
+																Content: Type: Period, Start: 16, 17, End: 16, 18, Content: "."
+																Type: Period
+																Children:
+
+															Content: Type: FunctionSegment, Start: 16, 18, End: 16, 27, Content: ""
+															Type: FunctionSegment
+															Children:
+																Content: Type: Symbol, Start: 16, 18, End: 16, 27, Content: "WriteLine"
+																Type: Symbol
+																Children:
+
+															Content: Type: FunctionSegment, Start: 16, 27, End: 16, 44, Content: ""
+															Type: FunctionSegment
+															Children:
+																Content: Type: FunctionArgumentList, Start: 16, 27, End: 16, 44, Content: ""
+																Type: FunctionArgumentList
+																Children:
+																	Content: Type: LeftBracket, Start: 16, 27, End: 16, 28, Content: "("
+																	Type: LeftBracket
 																	Children:
-																		Content: Type: RValue, Start: 16, 29, End: 16, 40, Content: ""
-																		Type: RValue
+
+																	Content: Type: Value, Start: 16, 29, End: 16, 40, Content: ""
+																	Type: Value
+																	Children:
+																		Content: Type: ArithmeticNode, Start: 16, 29, End: 16, 40, Content: ""
+																		Type: ArithmeticNode
 																		Children:
-																			Content: Type: StringLiteral, Start: 16, 29, End: 16, 40, Content: ""{0} is odd""
-																			Type: StringLiteral
+																			Content: Type: ArithmeticSubnode, Start: 16, 29, End: 16, 40, Content: ""
+																			Type: ArithmeticSubnode
 																			Children:
-
-															Content: Type: FunctionArgument, Start: 16, 40, End: 16, 43, Content: ""
-															Type: FunctionArgument
-															Children:
-																Content: Type: Comma, Start: 16, 40, End: 16, 41, Content: ","
-																Type: Comma
-																Children:
-
-																Content: Type: Value, Start: 16, 42, End: 16, 43, Content: ""
-																Type: Value
-																Children:
-																	Content: Type: ArithmeticNode, Start: 16, 42, End: 16, 43, Content: ""
-																	Type: ArithmeticNode
-																	Children:
-																		Content: Type: ArithmeticSubnode, Start: 16, 42, End: 16, 43, Content: ""
-																		Type: ArithmeticSubnode
-																		Children:
-																			Content: Type: RValue, Start: 16, 42, End: 16, 43, Content: ""
-																			Type: RValue
-																			Children:
-																				Content: Type: FullSymbol, Start: 16, 42, End: 16, 43, Content: ""
-																				Type: FullSymbol
+																				Content: Type: RValue, Start: 16, 29, End: 16, 40, Content: ""
+																				Type: RValue
 																				Children:
-																					Content: Type: Symbol, Start: 16, 42, End: 16, 43, Content: "i"
-																					Type: Symbol
+																					Content: Type: StringLiteral, Start: 16, 29, End: 16, 40, Content: ""{0} is odd""
+																					Type: StringLiteral
 																					Children:
 
-															Content: Type: RightBracket, Start: 16, 43, End: 16, 44, Content: ")"
-															Type: RightBracket
-															Children:
+																	Content: Type: FunctionArgument, Start: 16, 40, End: 16, 43, Content: ""
+																	Type: FunctionArgument
+																	Children:
+																		Content: Type: Comma, Start: 16, 40, End: 16, 41, Content: ","
+																		Type: Comma
+																		Children:
+
+																		Content: Type: Value, Start: 16, 42, End: 16, 43, Content: ""
+																		Type: Value
+																		Children:
+																			Content: Type: ArithmeticNode, Start: 16, 42, End: 16, 43, Content: ""
+																			Type: ArithmeticNode
+																			Children:
+																				Content: Type: ArithmeticSubnode, Start: 16, 42, End: 16, 43, Content: ""
+																				Type: ArithmeticSubnode
+																				Children:
+																					Content: Type: RValue, Start: 16, 42, End: 16, 43, Content: ""
+																					Type: RValue
+																					Children:
+																						Content: Type: FullSymbol, Start: 16, 42, End: 16, 43, Content: ""
+																						Type: FullSymbol
+																						Children:
+																							Content: Type: Symbol, Start: 16, 42, End: 16, 43, Content: "i"
+																							Type: Symbol
+																							Children:
+
+																	Content: Type: RightBracket, Start: 16, 43, End: 16, 44, Content: ")"
+																	Type: RightBracket
+																	Children:
 
 														Content: Type: EndOfLine, Start: 16, 44, End: 16, 45, Content: ";"
 														Type: EndOfLine
@@ -590,59 +632,65 @@ Children:
 														Content: Type: FunctionCall, Start: 17, 3, End: 17, 14, Content: ""
 														Type: FunctionCall
 														Children:
-															Content: Type: FullSymbol, Start: 17, 3, End: 17, 7, Content: ""
-															Type: FullSymbol
+															Content: Type: FunctionSegment, Start: 17, 3, End: 17, 7, Content: ""
+															Type: FunctionSegment
 															Children:
 																Content: Type: Symbol, Start: 17, 3, End: 17, 7, Content: "Func"
 																Type: Symbol
 																Children:
 
-															Content: Type: LeftBracket, Start: 17, 7, End: 17, 8, Content: "("
-															Type: LeftBracket
+															Content: Type: FunctionSegment, Start: 17, 7, End: 17, 14, Content: ""
+															Type: FunctionSegment
 															Children:
-
-															Content: Type: Value, Start: 17, 8, End: 17, 13, Content: ""
-															Type: Value
-															Children:
-																Content: Type: ArithmeticNode, Start: 17, 8, End: 17, 13, Content: ""
-																Type: ArithmeticNode
+																Content: Type: FunctionArgumentList, Start: 17, 7, End: 17, 14, Content: ""
+																Type: FunctionArgumentList
 																Children:
-																	Content: Type: ArithmeticSubnode, Start: 17, 8, End: 17, 9, Content: ""
-																	Type: ArithmeticSubnode
+																	Content: Type: LeftBracket, Start: 17, 7, End: 17, 8, Content: "("
+																	Type: LeftBracket
 																	Children:
-																		Content: Type: RValue, Start: 17, 8, End: 17, 9, Content: ""
-																		Type: RValue
+
+																	Content: Type: Value, Start: 17, 8, End: 17, 13, Content: ""
+																	Type: Value
+																	Children:
+																		Content: Type: ArithmeticNode, Start: 17, 8, End: 17, 13, Content: ""
+																		Type: ArithmeticNode
 																		Children:
-																			Content: Type: FullSymbol, Start: 17, 8, End: 17, 9, Content: ""
-																			Type: FullSymbol
+																			Content: Type: ArithmeticSubnode, Start: 17, 8, End: 17, 9, Content: ""
+																			Type: ArithmeticSubnode
 																			Children:
-																				Content: Type: Symbol, Start: 17, 8, End: 17, 9, Content: "i"
-																				Type: Symbol
+																				Content: Type: RValue, Start: 17, 8, End: 17, 9, Content: ""
+																				Type: RValue
 																				Children:
+																					Content: Type: FullSymbol, Start: 17, 8, End: 17, 9, Content: ""
+																					Type: FullSymbol
+																					Children:
+																						Content: Type: Symbol, Start: 17, 8, End: 17, 9, Content: "i"
+																						Type: Symbol
+																						Children:
 
-																	Content: Type: ArithmeticSubnode, Start: 17, 10, End: 17, 11, Content: ""
-																	Type: ArithmeticSubnode
-																	Children:
-																		Content: Type: Operator, Start: 17, 10, End: 17, 11, Content: ""
-																		Type: Operator
-																		Children:
-																			Content: Type: Plus, Start: 17, 10, End: 17, 11, Content: "+"
-																			Type: Plus
+																			Content: Type: ArithmeticSubnode, Start: 17, 10, End: 17, 11, Content: ""
+																			Type: ArithmeticSubnode
 																			Children:
+																				Content: Type: Operator, Start: 17, 10, End: 17, 11, Content: ""
+																				Type: Operator
+																				Children:
+																					Content: Type: Plus, Start: 17, 10, End: 17, 11, Content: "+"
+																					Type: Plus
+																					Children:
 
-																	Content: Type: ArithmeticSubnode, Start: 17, 12, End: 17, 13, Content: ""
-																	Type: ArithmeticSubnode
-																	Children:
-																		Content: Type: RValue, Start: 17, 12, End: 17, 13, Content: ""
-																		Type: RValue
-																		Children:
-																			Content: Type: Integer, Start: 17, 12, End: 17, 13, Content: "5"
-																			Type: Integer
+																			Content: Type: ArithmeticSubnode, Start: 17, 12, End: 17, 13, Content: ""
+																			Type: ArithmeticSubnode
 																			Children:
+																				Content: Type: RValue, Start: 17, 12, End: 17, 13, Content: ""
+																				Type: RValue
+																				Children:
+																					Content: Type: Integer, Start: 17, 12, End: 17, 13, Content: "5"
+																					Type: Integer
+																					Children:
 
-															Content: Type: RightBracket, Start: 17, 13, End: 17, 14, Content: ")"
-															Type: RightBracket
-															Children:
+																	Content: Type: RightBracket, Start: 17, 13, End: 17, 14, Content: ")"
+																	Type: RightBracket
+																	Children:
 
 														Content: Type: EndOfLine, Start: 17, 14, End: 17, 15, Content: ";"
 														Type: EndOfLine
@@ -733,36 +781,42 @@ Children:
 										Content: Type: FunctionCall, Start: 23, 2, End: 23, 9, Content: ""
 										Type: FunctionCall
 										Children:
-											Content: Type: FullSymbol, Start: 23, 2, End: 23, 6, Content: ""
-											Type: FullSymbol
+											Content: Type: FunctionSegment, Start: 23, 2, End: 23, 6, Content: ""
+											Type: FunctionSegment
 											Children:
 												Content: Type: Symbol, Start: 23, 2, End: 23, 6, Content: "Func"
 												Type: Symbol
 												Children:
 
-											Content: Type: LeftBracket, Start: 23, 6, End: 23, 7, Content: "("
-											Type: LeftBracket
+											Content: Type: FunctionSegment, Start: 23, 6, End: 23, 9, Content: ""
+											Type: FunctionSegment
 											Children:
-
-											Content: Type: Value, Start: 23, 7, End: 23, 8, Content: ""
-											Type: Value
-											Children:
-												Content: Type: ArithmeticNode, Start: 23, 7, End: 23, 8, Content: ""
-												Type: ArithmeticNode
+												Content: Type: FunctionArgumentList, Start: 23, 6, End: 23, 9, Content: ""
+												Type: FunctionArgumentList
 												Children:
-													Content: Type: ArithmeticSubnode, Start: 23, 7, End: 23, 8, Content: ""
-													Type: ArithmeticSubnode
+													Content: Type: LeftBracket, Start: 23, 6, End: 23, 7, Content: "("
+													Type: LeftBracket
 													Children:
-														Content: Type: RValue, Start: 23, 7, End: 23, 8, Content: ""
-														Type: RValue
-														Children:
-															Content: Type: Integer, Start: 23, 7, End: 23, 8, Content: "0"
-															Type: Integer
-															Children:
 
-											Content: Type: RightBracket, Start: 23, 8, End: 23, 9, Content: ")"
-											Type: RightBracket
-											Children:
+													Content: Type: Value, Start: 23, 7, End: 23, 8, Content: ""
+													Type: Value
+													Children:
+														Content: Type: ArithmeticNode, Start: 23, 7, End: 23, 8, Content: ""
+														Type: ArithmeticNode
+														Children:
+															Content: Type: ArithmeticSubnode, Start: 23, 7, End: 23, 8, Content: ""
+															Type: ArithmeticSubnode
+															Children:
+																Content: Type: RValue, Start: 23, 7, End: 23, 8, Content: ""
+																Type: RValue
+																Children:
+																	Content: Type: Integer, Start: 23, 7, End: 23, 8, Content: "0"
+																	Type: Integer
+																	Children:
+
+													Content: Type: RightBracket, Start: 23, 8, End: 23, 9, Content: ")"
+													Type: RightBracket
+													Children:
 
 										Content: Type: EndOfLine, Start: 23, 9, End: 23, 10, Content: ";"
 										Type: EndOfLine

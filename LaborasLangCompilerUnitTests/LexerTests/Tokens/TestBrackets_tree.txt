@@ -111,65 +111,77 @@ Children:
 								Type: Plus
 								Children:
 
-						Content: Type: ArithmeticSubnode, Start: 1, 22, End: 1, 32, Content: ""
+						Content: Type: ArithmeticSubnode, Start: 1, 22, End: 1, 25, Content: ""
 						Type: ArithmeticSubnode
 						Children:
-							Content: Type: RValue, Start: 1, 22, End: 1, 32, Content: ""
+							Content: Type: RValue, Start: 1, 22, End: 1, 25, Content: ""
 							Type: RValue
 							Children:
-								Content: Type: FunctionCall, Start: 1, 22, End: 1, 32, Content: ""
+								Content: Type: FullSymbol, Start: 1, 22, End: 1, 25, Content: ""
+								Type: FullSymbol
+								Children:
+									Content: Type: Symbol, Start: 1, 22, End: 1, 25, Content: "bar"
+									Type: Symbol
+									Children:
+
+						Content: Type: ArithmeticSubnode, Start: 1, 25, End: 1, 32, Content: ""
+						Type: ArithmeticSubnode
+						Children:
+							Content: Type: RValue, Start: 1, 25, End: 1, 32, Content: ""
+							Type: RValue
+							Children:
+								Content: Type: FunctionCall, Start: 1, 25, End: 1, 32, Content: ""
 								Type: FunctionCall
 								Children:
-									Content: Type: FullSymbol, Start: 1, 22, End: 1, 25, Content: ""
-									Type: FullSymbol
+									Content: Type: FunctionSegment, Start: 1, 25, End: 1, 32, Content: ""
+									Type: FunctionSegment
 									Children:
-										Content: Type: Symbol, Start: 1, 22, End: 1, 25, Content: "bar"
-										Type: Symbol
+										Content: Type: FunctionArgumentList, Start: 1, 25, End: 1, 32, Content: ""
+										Type: FunctionArgumentList
 										Children:
-
-									Content: Type: LeftBracket, Start: 1, 25, End: 1, 26, Content: "("
-									Type: LeftBracket
-									Children:
-
-									Content: Type: Value, Start: 1, 26, End: 1, 31, Content: ""
-									Type: Value
-									Children:
-										Content: Type: ArithmeticNode, Start: 1, 26, End: 1, 31, Content: ""
-										Type: ArithmeticNode
-										Children:
-											Content: Type: ArithmeticSubnode, Start: 1, 26, End: 1, 27, Content: ""
-											Type: ArithmeticSubnode
+											Content: Type: LeftBracket, Start: 1, 25, End: 1, 26, Content: "("
+											Type: LeftBracket
 											Children:
-												Content: Type: RValue, Start: 1, 26, End: 1, 27, Content: ""
-												Type: RValue
-												Children:
-													Content: Type: Integer, Start: 1, 26, End: 1, 27, Content: "2"
-													Type: Integer
-													Children:
 
-											Content: Type: ArithmeticSubnode, Start: 1, 28, End: 1, 29, Content: ""
-											Type: ArithmeticSubnode
+											Content: Type: Value, Start: 1, 26, End: 1, 31, Content: ""
+											Type: Value
 											Children:
-												Content: Type: Operator, Start: 1, 28, End: 1, 29, Content: ""
-												Type: Operator
+												Content: Type: ArithmeticNode, Start: 1, 26, End: 1, 31, Content: ""
+												Type: ArithmeticNode
 												Children:
-													Content: Type: Plus, Start: 1, 28, End: 1, 29, Content: "+"
-													Type: Plus
+													Content: Type: ArithmeticSubnode, Start: 1, 26, End: 1, 27, Content: ""
+													Type: ArithmeticSubnode
 													Children:
+														Content: Type: RValue, Start: 1, 26, End: 1, 27, Content: ""
+														Type: RValue
+														Children:
+															Content: Type: Integer, Start: 1, 26, End: 1, 27, Content: "2"
+															Type: Integer
+															Children:
 
-											Content: Type: ArithmeticSubnode, Start: 1, 30, End: 1, 31, Content: ""
-											Type: ArithmeticSubnode
+													Content: Type: ArithmeticSubnode, Start: 1, 28, End: 1, 29, Content: ""
+													Type: ArithmeticSubnode
+													Children:
+														Content: Type: Operator, Start: 1, 28, End: 1, 29, Content: ""
+														Type: Operator
+														Children:
+															Content: Type: Plus, Start: 1, 28, End: 1, 29, Content: "+"
+															Type: Plus
+															Children:
+
+													Content: Type: ArithmeticSubnode, Start: 1, 30, End: 1, 31, Content: ""
+													Type: ArithmeticSubnode
+													Children:
+														Content: Type: RValue, Start: 1, 30, End: 1, 31, Content: ""
+														Type: RValue
+														Children:
+															Content: Type: Integer, Start: 1, 30, End: 1, 31, Content: "3"
+															Type: Integer
+															Children:
+
+											Content: Type: RightBracket, Start: 1, 31, End: 1, 32, Content: ")"
+											Type: RightBracket
 											Children:
-												Content: Type: RValue, Start: 1, 30, End: 1, 31, Content: ""
-												Type: RValue
-												Children:
-													Content: Type: Integer, Start: 1, 30, End: 1, 31, Content: "3"
-													Type: Integer
-													Children:
-
-									Content: Type: RightBracket, Start: 1, 31, End: 1, 32, Content: ")"
-									Type: RightBracket
-									Children:
 
 					Content: Type: RightBracket, Start: 1, 32, End: 1, 33, Content: ")"
 					Type: RightBracket

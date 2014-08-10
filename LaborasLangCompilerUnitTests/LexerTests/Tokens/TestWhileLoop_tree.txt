@@ -44,20 +44,26 @@ Children:
 				Content: Type: FunctionCall, Start: 1, 18, End: 1, 28, Content: ""
 				Type: FunctionCall
 				Children:
-					Content: Type: FullSymbol, Start: 1, 18, End: 1, 26, Content: ""
-					Type: FullSymbol
+					Content: Type: FunctionSegment, Start: 1, 18, End: 1, 26, Content: ""
+					Type: FunctionSegment
 					Children:
 						Content: Type: Symbol, Start: 1, 18, End: 1, 26, Content: "function"
 						Type: Symbol
 						Children:
 
-					Content: Type: LeftBracket, Start: 1, 26, End: 1, 27, Content: "("
-					Type: LeftBracket
+					Content: Type: FunctionSegment, Start: 1, 26, End: 1, 28, Content: ""
+					Type: FunctionSegment
 					Children:
+						Content: Type: FunctionArgumentList, Start: 1, 26, End: 1, 28, Content: ""
+						Type: FunctionArgumentList
+						Children:
+							Content: Type: LeftBracket, Start: 1, 26, End: 1, 27, Content: "("
+							Type: LeftBracket
+							Children:
 
-					Content: Type: RightBracket, Start: 1, 27, End: 1, 28, Content: ")"
-					Type: RightBracket
-					Children:
+							Content: Type: RightBracket, Start: 1, 27, End: 1, 28, Content: ")"
+							Type: RightBracket
+							Children:
 
 				Content: Type: EndOfLine, Start: 1, 28, End: 1, 29, Content: ";"
 				Type: EndOfLine
@@ -83,29 +89,41 @@ Children:
 				Content: Type: ArithmeticNode, Start: 2, 19, End: 2, 30, Content: ""
 				Type: ArithmeticNode
 				Children:
-					Content: Type: ArithmeticSubnode, Start: 2, 19, End: 2, 30, Content: ""
+					Content: Type: ArithmeticSubnode, Start: 2, 19, End: 2, 28, Content: ""
 					Type: ArithmeticSubnode
 					Children:
-						Content: Type: RValue, Start: 2, 19, End: 2, 30, Content: ""
+						Content: Type: RValue, Start: 2, 19, End: 2, 28, Content: ""
 						Type: RValue
 						Children:
-							Content: Type: FunctionCall, Start: 2, 19, End: 2, 30, Content: ""
+							Content: Type: FullSymbol, Start: 2, 19, End: 2, 28, Content: ""
+							Type: FullSymbol
+							Children:
+								Content: Type: Symbol, Start: 2, 19, End: 2, 28, Content: "condition"
+								Type: Symbol
+								Children:
+
+					Content: Type: ArithmeticSubnode, Start: 2, 28, End: 2, 30, Content: ""
+					Type: ArithmeticSubnode
+					Children:
+						Content: Type: RValue, Start: 2, 28, End: 2, 30, Content: ""
+						Type: RValue
+						Children:
+							Content: Type: FunctionCall, Start: 2, 28, End: 2, 30, Content: ""
 							Type: FunctionCall
 							Children:
-								Content: Type: FullSymbol, Start: 2, 19, End: 2, 28, Content: ""
-								Type: FullSymbol
+								Content: Type: FunctionSegment, Start: 2, 28, End: 2, 30, Content: ""
+								Type: FunctionSegment
 								Children:
-									Content: Type: Symbol, Start: 2, 19, End: 2, 28, Content: "condition"
-									Type: Symbol
+									Content: Type: FunctionArgumentList, Start: 2, 28, End: 2, 30, Content: ""
+									Type: FunctionArgumentList
 									Children:
+										Content: Type: LeftBracket, Start: 2, 28, End: 2, 29, Content: "("
+										Type: LeftBracket
+										Children:
 
-								Content: Type: LeftBracket, Start: 2, 28, End: 2, 29, Content: "("
-								Type: LeftBracket
-								Children:
-
-								Content: Type: RightBracket, Start: 2, 29, End: 2, 30, Content: ")"
-								Type: RightBracket
-								Children:
+										Content: Type: RightBracket, Start: 2, 29, End: 2, 30, Content: ")"
+										Type: RightBracket
+										Children:
 
 			Content: Type: RightBracket, Start: 2, 30, End: 2, 31, Content: ")"
 			Type: RightBracket
@@ -127,20 +145,26 @@ Children:
 						Content: Type: FunctionCall, Start: 2, 33, End: 2, 43, Content: ""
 						Type: FunctionCall
 						Children:
-							Content: Type: FullSymbol, Start: 2, 33, End: 2, 41, Content: ""
-							Type: FullSymbol
+							Content: Type: FunctionSegment, Start: 2, 33, End: 2, 41, Content: ""
+							Type: FunctionSegment
 							Children:
 								Content: Type: Symbol, Start: 2, 33, End: 2, 41, Content: "function"
 								Type: Symbol
 								Children:
 
-							Content: Type: LeftBracket, Start: 2, 41, End: 2, 42, Content: "("
-							Type: LeftBracket
+							Content: Type: FunctionSegment, Start: 2, 41, End: 2, 43, Content: ""
+							Type: FunctionSegment
 							Children:
+								Content: Type: FunctionArgumentList, Start: 2, 41, End: 2, 43, Content: ""
+								Type: FunctionArgumentList
+								Children:
+									Content: Type: LeftBracket, Start: 2, 41, End: 2, 42, Content: "("
+									Type: LeftBracket
+									Children:
 
-							Content: Type: RightBracket, Start: 2, 42, End: 2, 43, Content: ")"
-							Type: RightBracket
-							Children:
+									Content: Type: RightBracket, Start: 2, 42, End: 2, 43, Content: ")"
+									Type: RightBracket
+									Children:
 
 						Content: Type: EndOfLine, Start: 2, 43, End: 2, 44, Content: ";"
 						Type: EndOfLine

@@ -1,4 +1,4 @@
-﻿//#define REMATCH
+﻿#define REMATCH
 
 using System;
 using System.Linq;
@@ -138,7 +138,18 @@ a = 5;
             };";
             ExecuteTest(source);
         }
-        
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void MultipleFunctionCallTest()
+        {
+            var source = @"
+foo().bar();
+foo().bar = 5;
+(foo + 5).bar();
+";
+            ExecuteTest(source);
+        }
+       
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void IfTest()
         {

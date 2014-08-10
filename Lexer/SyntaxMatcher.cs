@@ -169,6 +169,8 @@ namespace Lexer
         private static Condition Function { get { return TokenType.Function; } }
         private static Condition ConditionalSentence { get { return TokenType.ConditionalSentence; } }
         private static Condition AssignmentOperator { get { return TokenType.AssignmentOperator; } }
+        private static Condition FunctionSegment { get { return TokenType.FunctionSegment; } }
+        private static Condition FunctionArgumentList { get { return TokenType.FunctionArgumentList; } }
         #endregion
 
         static SyntaxMatcher()
@@ -203,7 +205,8 @@ namespace Lexer
                     Virtual),
 
                 new ParseRule(AssignmentNode,
-                    LValue + AssignmentOperator + Value),
+                    LValue + AssignmentOperator + Value,
+                    FunctionCall + AssignmentOperator + Value),
 
             
                 new ParseRule(AssignmentOperator,
@@ -239,7 +242,6 @@ namespace Lexer
                 new ParseRule(RValue,                     
                     AssignmentNode,
                     Function,
-                    FunctionCall,
                     FullSymbol,
                     Float,
                     Integer,
@@ -247,12 +249,23 @@ namespace Lexer
                     Long,
                     StringLiteral,
                     True,
-                    False),
+                    False,                    
+                    FunctionCall),
 
                 new ParseRule(FunctionCall,
-                    FullSymbol + LeftBracket + RightBracket,
-                    FullSymbol + LeftBracket + Value + OneOrMore(FunctionArgument) + RightBracket,
-                    FullSymbol + LeftBracket + Value + RightBracket),
+                    OneOrMore(FunctionSegment)),
+
+
+                new ParseRule(FunctionSegment,
+                    Period,
+                    FunctionArgumentList,
+                    LeftBracket + ArithmeticNode + RightBracket,
+                    Symbol),
+
+                new ParseRule(FunctionArgumentList,
+                    LeftBracket + RightBracket,
+                    LeftBracket + Value + ZeroOrMore(FunctionArgument) + RightBracket
+                    ),
 
                 new ParseRule(FunctionArgument,
                     Comma + Value),
