@@ -67,10 +67,9 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if (!builtNode.ReturnType.IsFunctorType())
                     return false;
-                var nvm = new List<TypeReference>();
-                var returnType = ILTools.ILHelpers.GetFunctorReturnTypeAndArguments(parser.Assembly, builtNode.ReturnType, out nvm);
-                var method = AssemblyRegistry.GetMethod(parser.Assembly, builtNode.ReturnType, "Invoke");
-                if(ILHelpers.MatchesArgumentList(method, types))
+
+                var returnType = ILTools.ILHelpers.GetFunctorReturnType(parser.Assembly, builtNode.ReturnType);
+                if(ILHelpers.MatchesArgumentList(builtNode.ReturnType, types))
                 {
                     builtNode = new MethodCallNode(builtNode, returnType, node.Arguments, node.SequencePoint);
                     return true;
@@ -279,8 +278,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if (builtNode.ReturnType.IsFunctorType())
                 {
-                    var method = AssemblyRegistry.GetMethod(parser.Assembly, builtNode.ReturnType, "Invoke");
-                    if (ILHelpers.MatchesArgumentList(method, types))
+                    if (ILHelpers.MatchesArgumentList(builtNode.ReturnType, types))
                     {
                         return (IExpressionNode)builtNode;
                     }

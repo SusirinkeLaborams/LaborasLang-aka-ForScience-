@@ -181,13 +181,24 @@ namespace LaborasLangCompiler.ILTools
             return child.BaseType.DerivesFrom(parent);
         }
 
+        public static bool MatchesArgumentList(TypeReference functorType, IReadOnlyList<TypeReference> desiredParameters)
+        {
+            return functorType.Resolve().Methods.Single(method => method.Name == "Invoke").MatchesArgumentList(desiredParameters);
+        }
+
         public static bool MatchesArgumentList(this MethodReference method, IReadOnlyList<TypeReference> desiredParameters)
         {
             var methodParameters = method.Resolve().Parameters; // Resolve is needed or otherwise we will not know methods parameter attributes
+            return MatchesArgumentList(methodParameters, desiredParameters);
+        }
 
+        public static bool MatchesArgumentList(IList<ParameterDefinition> methodParameters, IReadOnlyList<TypeReference> desiredParameters)
+        {
             // Doesn't match if parameter count doesn't match and either method has no parameters, or last parameter is neither params, nor default one.
+            var lastParameter = methodParameters.LastOrDefault();
+
             if (methodParameters.Count != desiredParameters.Count &&
-                (!method.HasParameters || (!method.IsParamsMethod() && (methodParameters.Last().Attributes & ParameterAttributes.HasDefault) == 0)))
+                (methodParameters.Count == 0 || (!lastParameter.IsParams() && !lastParameter.IsDefault())))
             {
                 return false;
             }
@@ -262,8 +273,28 @@ namespace LaborasLangCompiler.ILTools
                 return false;
             }
 
-            var lastParameterAttributes = parameters[parameters.Count - 1].CustomAttributes;
-            return lastParameterAttributes.Any(attribute => attribute.AttributeType.FullName == "System.ParamArrayAttribute");
+            return parameters[parameters.Count - 1].IsParams();
+        }
+
+        public static bool IsParams(this ParameterDefinition parameter)
+        {
+            return parameter.CustomAttributes.Any(attribute => attribute.AttributeType.FullName == "System.ParamArrayAttribute");
+        }
+
+        public static bool IsDefault(this ParameterDefinition parameter)
+        {
+            return (parameter.Attributes & ParameterAttributes.HasDefault) != 0;
+        }
+
+        public static TypeReference GetFunctorReturnType(AssemblyEmitter assemblyScope, TypeReference functorType)
+        {
+            if (!functorType.IsFunctorType())
+            {
+                throw new ArgumentException("functorType isn't a functor type!");
+            }
+
+            var invokeMethod = AssemblyRegistry.GetMethod(assemblyScope, functorType, "Invoke");
+            return invokeMethod.ReturnType;
         }
 
         public static TypeReference GetFunctorReturnTypeAndArguments(AssemblyEmitter assemblyScope, TypeReference functorType, 
@@ -274,8 +305,7 @@ namespace LaborasLangCompiler.ILTools
                 throw new ArgumentException("functorType isn't a functor type!");
             }
 
-            var invokeMethod = AssemblyRegistry.GetMethod(assemblyScope, functorType, "Invoke");
-            
+            var invokeMethod = AssemblyRegistry.GetMethod(assemblyScope, functorType, "Invoke");            
             arguments = invokeMethod.Parameters.Select(parameter => parameter.ParameterType).ToList();
             return invokeMethod.ReturnType;
         }
