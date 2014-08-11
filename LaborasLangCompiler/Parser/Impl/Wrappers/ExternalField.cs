@@ -1,4 +1,5 @@
-﻿using Mono.Cecil;
+﻿using LaborasLangCompiler.ILTools;
+using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +8,17 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
-    class ExternalField : FieldWrapper
+    class ExternalField : ExternalWrapperBase, FieldWrapper
     {
         public FieldReference FieldReference { get; private set; }
-        public TypeReference ReturnType { get { return FieldReference.FieldType; } }
+        public TypeWrapper ReturnType { get { return returnType; } }
         public string Name { get { return FieldReference.Name; } }
-        public ExternalField(FieldReference field)
+
+        private TypeWrapper returnType;
+        public ExternalField(AssemblyEmitter assembly, FieldReference field) : base(assembly)
         {
             this.FieldReference = field;
+            this.returnType = new ExternalType(assembly, field.FieldType);
         }
     }
 }

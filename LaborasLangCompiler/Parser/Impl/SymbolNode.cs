@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.LexingTools;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NPEG;
@@ -11,18 +12,17 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class SymbolNode : ParserNode, IExpressionNode
+    class SymbolNode : ExpressionNode
     {
-        public override NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
-        public TypeReference ReturnType { get { return null; } }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
+        public override TypeWrapper ReturnType { get { return null; } }
         public string Value { get; private set; }
         protected SymbolNode(string value, SequencePoint point) : base(point)
         {
             Value = value;
             
         }
-        public static SymbolNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static new SymbolNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             return new SymbolNode(parser.ValueOf(lexerNode), parser.GetSequencePoint(lexerNode));
         }
@@ -53,13 +53,14 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
-        public TypeReference ReturnType { get { return null; } }
-        public TypeReference ParsedType { get; private set; }
-        public TypeNode(TypeReference type, SequencePoint point) : base(point)
+        public TypeWrapper ReturnType { get { return null; } }
+        public TypeWrapper ParsedType { get; private set; }
+        public TypeNode(TypeWrapper type, SequencePoint point)
+            : base(point)
         {
             ParsedType = type;
         }
-        public static TypeReference Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static TypeWrapper Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             if (lexerNode.Token.Name == Lexer.FunctionType)
                 return TypeNode.Parse(parser, parent, lexerNode.Children[0]);

@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NPEG;
@@ -14,18 +15,18 @@ namespace LaborasLangCompiler.Parser.Impl
     class AssignmentOperatorNode : RValueNode, IAssignmentOperatorNode
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.AssignmentOperator; } }
-        public override TypeReference ReturnType { get { return returnType; } }
+        public override TypeWrapper ReturnType { get { return type; } }
         public ILValueNode LeftOperand { get; private set; }
         public IExpressionNode RightOperand { get; private set; }
 
-        private TypeReference returnType;
+        private TypeWrapper type;
         protected AssignmentOperatorNode(SequencePoint point) : base(point) { }
         public static new AssignmentOperatorNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var instance = new AssignmentOperatorNode(parser.GetSequencePoint(lexerNode));
             var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]).ExtractLValue();
             var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
-            instance.returnType = left.ReturnType;
+            instance.type = left.ReturnType;
 
             var op = parser.ValueOf(lexerNode.Children[1]);
             if (op != "=")

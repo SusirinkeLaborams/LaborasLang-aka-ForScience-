@@ -16,5 +16,12 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         MethodWrapper GetMethod(string name);
         IEnumerable<MethodWrapper> GetMethods(string name);
         bool IsAssignableTo(TypeWrapper type);
+        bool IsNumericType();
+        bool IsStringType();
+        bool IsIntegerType();
+        bool IsBooleanType();
+        bool IsFunctorType();
+        bool IsUnsignedInteger();
+        int GetIntegerWidth();
     }
 }

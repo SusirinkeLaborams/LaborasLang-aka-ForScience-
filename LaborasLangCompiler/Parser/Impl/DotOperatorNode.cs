@@ -259,7 +259,7 @@ namespace LaborasLangCompiler.Parser.Impl
             else
                 return ((NamespaceNode)builtNode).Value;
         }
-        public TypeReference ExtractType()
+        public TypeWrapper ExtractType()
         {
             if (!(builtNode is TypeNode))
                 throw new ParseException(builtNode.SequencePoint, "Type expected");

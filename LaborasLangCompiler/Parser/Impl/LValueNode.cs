@@ -24,7 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.LocalVariable; } }
         public VariableDefinition LocalVariable { get; set; }
-        public override TypeReference ReturnType { get { return LocalVariable.VariableType; } }
+        public override TypeWrapper ReturnType { get { return LocalVariable.VariableType; } }
         public LocalVariableNode(SequencePoint point, VariableDefinition variable)
             : base(point)
         {
@@ -41,7 +41,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override LValueNodeType LValueType { get { return LValueNodeType.FunctionArgument; } }
         public ParameterDefinition Param { get; set; }
         public bool IsFunctionStatic { get; set; }
-        public override TypeReference ReturnType { get { return Param.ParameterType; } }
+        public override TypeWrapper ReturnType { get { return Param.ParameterType; } }
         public FunctionArgumentNode(ParameterDefinition param, bool isFunctionStatic, SequencePoint point)
             : base(point)
         {
@@ -58,8 +58,8 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.Field; } }
         public IExpressionNode ObjectInstance { get; private set; }
-        public FieldReference Field { get { return field.FieldReference; } }
-        public override TypeReference ReturnType { get { return field.ReturnType; } }
+        public FieldWrapper Field { get { return field.FieldReference; } }
+        public override TypeWrapper ReturnType { get { return field.ReturnType; } }
 
         private FieldWrapper field;
         public FieldNode(IExpressionNode instance, FieldWrapper field, SequencePoint point)

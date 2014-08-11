@@ -10,20 +10,21 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.ILTools;
 using Mono.Cecil.Cil;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
     class BinaryOperatorNode : RValueNode, IBinaryOperatorNode
     {
-        public IExpressionNode RightOperand { get; set; }
-        public IExpressionNode LeftOperand { get; set; }
+        public IExpressionNode RightOperand { get; private set; }
+        public IExpressionNode LeftOperand { get; private set; }
         public override RValueNodeType RValueType { get { return RValueNodeType.BinaryOperator; } }
         public BinaryOperatorNodeType BinaryOperatorType { get; set; }
-        public override TypeReference ReturnType { get { return returnType; } }
+        public override TypeWrapper ReturnType { get { return returnType; } }
 
-        private TypeReference returnType;
+        private TypeWrapper returnType;
         protected BinaryOperatorNode(SequencePoint point) : base(point) { }
-        public static new IExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static new ExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             if (lexerNode.Children.Count == 1)
             {
@@ -31,7 +32,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                IExpressionNode left, right;
+                ExpressionNode left, right;
                 string op;
                 left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
                 for (int i = 1; i < lexerNode.Children.Count; i += 2)
@@ -43,7 +44,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return left;
             }
         }
-        public static BinaryOperatorNode Parse(Parser parser, string op, IExpressionNode left, IExpressionNode right)
+        public static BinaryOperatorNode Parse(Parser parser, string op, ExpressionNode left, ExpressionNode right)
         {
             var instance = new BinaryOperatorNode(left.SequencePoint);
             instance.BinaryOperatorType = Operators[op];
@@ -95,7 +96,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 else if (right.ReturnType.IsAssignableTo(left.ReturnType))
                     instance.returnType = left.ReturnType;
                 else
-                    throw new TypeException(instance.SequencePoint, "Incompatible operand types, {0} and {1} received", 
+                    throw new TypeException(instance.SequencePoint, "Incompatible operand types, {0} and {1} received",
                         left.ReturnType.FullName, right.ReturnType.FullName);
             }
             else if ((left.ReturnType.IsStringType() || right.ReturnType.IsStringType()) && instance.BinaryOperatorType == BinaryOperatorNodeType.Addition)

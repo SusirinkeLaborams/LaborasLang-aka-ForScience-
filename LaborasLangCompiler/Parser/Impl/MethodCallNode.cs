@@ -1,6 +1,7 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Exceptions;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NPEG;
@@ -15,17 +16,17 @@ namespace LaborasLangCompiler.Parser.Impl
     class MethodCallNode : RValueNode, IMethodCallNode
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.Call; } }
-        public override TypeReference ReturnType { get { return returnType; } }
+        public override TypeWrapper ReturnType { get { return type; } }
         public IReadOnlyList<IExpressionNode> Arguments { get; private set; }
         public IExpressionNode Function { get; private set; }
 
-        private TypeReference returnType;
-        public MethodCallNode(IExpressionNode function, TypeReference returnType, IReadOnlyList<IExpressionNode> args, SequencePoint point)
+        private TypeWrapper type;
+        public MethodCallNode(IExpressionNode function, TypeWrapper returnType, IReadOnlyList<IExpressionNode> args, SequencePoint point)
             : base(point)
         {
             Function = function;
             Arguments = args;
-            this.returnType = returnType;
+            this.type = returnType;
         }
         public static new MethodCallNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
@@ -41,7 +42,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             var method = function.ExtractMethod(args.Select(x => x.ReturnType).ToList());
             var nvm = new List<TypeReference>();
-            var returnType = ILTools.ILHelpers.GetFunctorReturnTypeAndArguments(parser.Assembly, method.ReturnType, out nvm);
+            var returnType = new ExternalType(parser.Assembly, ILTools.ILHelpers.GetFunctorReturnTypeAndArguments(parser.Assembly, method.ReturnType, out nvm));
             return new MethodCallNode(method, returnType, args, parser.GetSequencePoint(lexerNode));
         }
         public override string ToString()

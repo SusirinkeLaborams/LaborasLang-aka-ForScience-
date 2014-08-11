@@ -14,10 +14,10 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class AmbiguousMethodNode : RValueNode, IFunctionNode
     {
-        public override TypeReference ReturnType { get { return null; } }
+        public override TypeWrapper ReturnType { get { return null; } }
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
         public override RValueNodeType RValueType { get { return RValueNodeType.Function; } }
-        public MethodReference Function { get { return null; } }
+        public MethodWrapper Function { get { return null; } }
         public IExpressionNode ObjectInstance { get; private set; }
         private List<MethodReference> methods;
         public AmbiguousMethodNode(List<MethodReference> methods, IExpressionNode instance, SequencePoint sequencePoint)
@@ -33,7 +33,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 method = AssemblyRegistry.GetCompatibleMethod(methods, argTypes);
                 //TODO: make this lazy
-                return new MethodNode(new ExternalMethod(method, parser.Assembly), ObjectInstance, SequencePoint);
+                return new MethodNode(new ExternalMethod(parser.Assembly, method), ObjectInstance, SequencePoint);
             }
             catch (Exception)
             {

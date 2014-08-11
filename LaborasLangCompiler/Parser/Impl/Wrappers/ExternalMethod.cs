@@ -8,18 +8,40 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
-    class ExternalMethod : MethodWrapper
+    class ExternalMethod : ExternalWrapperBase, MethodWrapper
     {
         public MethodReference MethodReference { get; private set; }
-        public TypeReference ReturnType { get { return ILTools.AssemblyRegistry.GetFunctorType(assembly, MethodReference); } }
-        public TypeReference MethodReturnType { get { return MethodReference.ReturnType; } }
-        public IEnumerable<TypeReference> ArgumentTypes { get { return MethodReference.Parameters.Select(p => p.ParameterType); } }
+        public TypeWrapper FunctorType 
+        {
+            get 
+            {
+                if(functorType == null)
+                {
+                    functorType = ExternalType.GetFunctorType(Assembly, MethodReference);
+                }
+                return functorType;
+            } 
+        }
+        public TypeWrapper MethodReturnType { get { return methodReturnType; } }
+        public IEnumerable<TypeWrapper> ArgumentTypes
+        { 
+            get 
+            { 
+                if(argumentTypes == null)
+                {
+                    argumentTypes = MethodReference.Parameters.Select(p => new ExternalType(Assembly, p.ParameterType));
+                }
+                return argumentTypes;
+            } 
+        }
 
-        private AssemblyEmitter assembly;
-        public ExternalMethod(MethodReference method, AssemblyEmitter assembly)
+        private TypeWrapper methodReturnType;
+        private TypeWrapper functorType;
+        private IEnumerable<TypeWrapper> argumentTypes;
+        public ExternalMethod(AssemblyEmitter assembly, MethodReference method) : base(assembly)
         {
             this.MethodReference = method;
-            this.assembly = assembly;
+            this.methodReturnType = new ExternalType(assembly, method.ReturnType);
         }
     }
 }

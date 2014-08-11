@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
-    class ExternalNamespace : NamespaceWrapper
+    class ExternalNamespace : ExternalWrapperBase, NamespaceWrapper
     {
         public string Namespace {get; private set;}
 
@@ -15,7 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         {
             var full = Namespace + "." + name;
             if (AssemblyRegistry.IsNamespaceKnown(full))
-                return new ExternalNamespace(full, assembly);
+                return new ExternalNamespace(full, Assembly);
             else
                 return null;
         }
@@ -23,19 +23,16 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         public TypeWrapper GetContainedType(string name)
         {
             var full = Namespace + "." + name;
-            var type = AssemblyRegistry.FindType(assembly, full);
+            var type = AssemblyRegistry.FindType(Assembly, full);
             if (type != null)
-                return new ExternalType(assembly, type);
+                return new ExternalType(Assembly, type);
             else
                 return null;
         }
 
-        private AssemblyEmitter assembly;
-
-        private ExternalNamespace(string namespaze, AssemblyEmitter assembly)
+        private ExternalNamespace(string namespaze, AssemblyEmitter assembly) : base(assembly)
         {
             Namespace = namespaze;
-            this.assembly = assembly;
         }
     }
 }

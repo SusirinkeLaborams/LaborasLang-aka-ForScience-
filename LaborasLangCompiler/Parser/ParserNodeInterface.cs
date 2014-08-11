@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
@@ -37,7 +38,7 @@ namespace LaborasLangCompiler.Parser
     interface IExpressionNode : IParserNode
     {
         ExpressionNodeType ExpressionType { get; }
-        TypeReference ReturnType { get; }
+        TypeWrapper ReturnType { get; }
     }
     public enum RValueNodeType
     {
@@ -64,7 +65,7 @@ namespace LaborasLangCompiler.Parser
     interface IFunctionNode : IRValueNode
     {
         IExpressionNode ObjectInstance { get; }
-        MethodReference Function { get; }
+        MethodWrapper Function { get; }
     }
 
     interface IMethodCallNode : IRValueNode
@@ -112,7 +113,7 @@ namespace LaborasLangCompiler.Parser
     interface IFieldNode : ILValueNode
     {
         IExpressionNode ObjectInstance { get; }
-        FieldReference Field { get; }
+        FieldWrapper Field { get; }
     }
 
     interface IPropertyNode : ILValueNode

@@ -283,5 +283,14 @@ namespace LaborasLangCompiler.Parser.Impl
             
             return builder.Append(")").ToString();
         }
+
+
+        public bool IsNumericType() { return false; }
+        public bool IsStringType() { return false; }
+        public bool IsIntegerType() { return false; }
+        public bool IsBooleanType() { return false; }
+        public bool IsFunctorType() { return false; }
+        public bool IsUnsignedInteger() { return false; }
+        public int GetIntegerWidth() { throw new NotSupportedException("Type is not an integer!"); }
     }
 }

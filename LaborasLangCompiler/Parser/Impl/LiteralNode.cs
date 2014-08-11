@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.LexingTools;
 using Mono.Cecil.Cil;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -17,7 +18,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.Literal; } }
         public dynamic Value { get; private set; }
-        public override TypeReference ReturnType { get { return returnType; } }
+        public override TypeWrapper ReturnType { get { return returnType; } }
 
         private TypeReference returnType;
         private LiteralNode(dynamic value, TypeReference type, SequencePoint point)

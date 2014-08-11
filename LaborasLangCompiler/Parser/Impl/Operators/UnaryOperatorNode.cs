@@ -9,13 +9,14 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.ILTools;
 using Mono.Cecil.Cil;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
     class UnaryOperatorNode : RValueNode, IUnaryOperatorNode
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.UnaryOperator; } }
-        public override TypeReference ReturnType { get { return Operand.ReturnType; } }
+        public override TypeWrapper ReturnType { get { return Operand.ReturnType; } }
         public UnaryOperatorNodeType UnaryOperatorType { get; private set; }
         public IExpressionNode Operand { get; private set; }
         private UnaryOperatorNode(UnaryOperatorNodeType type, IExpressionNode operand)
@@ -24,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Operand = operand;
             UnaryOperatorType = type;
         }
-        public static new IExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static new ExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             if(lexerNode.Children.Count == 1)
             {
@@ -43,7 +44,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
-        private static IExpressionNode ParseSuffix(Parser parser, IContainerNode parent, AstNode lexerNode)
+        private static ExpressionNode ParseSuffix(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
             var ops = new List<UnaryOperatorNodeType>();
@@ -61,7 +62,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return ParseUnary(parser, expression, ops);
         }
-        private static IExpressionNode ParsePrefix(Parser parser, IContainerNode parent, AstNode lexerNode)
+        private static ExpressionNode ParsePrefix(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var count = lexerNode.Children.Count;
             var expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[count - 1]);
@@ -80,7 +81,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return ParseUnary(parser, expression, ops);
         }
-        private static IExpressionNode ParseUnary(Parser parser, IExpressionNode expression, List<UnaryOperatorNodeType> ops)
+        private static ExpressionNode ParseUnary(Parser parser, ExpressionNode expression, List<UnaryOperatorNodeType> ops)
         {
             foreach(var op in ops)
             {
@@ -88,7 +89,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return expression;
         }
-        private static UnaryOperatorNode ParseUnary(Parser parser, IExpressionNode expression, UnaryOperatorNodeType op)
+        private static UnaryOperatorNode ParseUnary(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
         {
             var instance = new UnaryOperatorNode(op, expression);
             switch(op)

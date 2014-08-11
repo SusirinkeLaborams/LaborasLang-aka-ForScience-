@@ -18,11 +18,11 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public MethodReference MethodReference { get { return emitter.Get(); } }
         public override NodeType Type { get { return NodeType.ParserInternal; } }
-        public TypeReference ReturnType { get { return ILTools.AssemblyRegistry.GetFunctorType(parser.Assembly, MethodReference); } }
-        public IEnumerable<TypeReference> ArgumentTypes { get { return MethodReference.Parameters.Select(p => p.ParameterType); } }
+        public TypeWrapper FunctorType { get { return ExternalType.GetFunctorType(parser.Assembly, MethodReference); } }
+        public IEnumerable<TypeWrapper> ArgumentTypes { get { return MethodReference.Parameters.Select(p => new ExternalType(parser.Assembly, p.ParameterType)); } }
         private CodeBlockNode body;
         private MethodEmitter emitter;
-        public TypeReference MethodReturnType { get; private set; }
+        public TypeWrapper MethodReturnType { get; private set; }
         private ClassNode parent;
         private Dictionary<string, ParameterDefinition> symbols;
         private Parser parser;
@@ -44,7 +44,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private void ParseHeader(AstNode lexerNode, string name)
         {
             MethodReturnType = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
-            emitter = new MethodEmitter(parent.TypeEmitter, name, MethodReturnType, MethodAttributes.Static | MethodAttributes.Private);
+            emitter = new MethodEmitter(parent.TypeEmitter, name, MethodReturnType.TypeReference, MethodAttributes.Static | MethodAttributes.Private);
             for(int i = 1; i < lexerNode.Children.Count; i++)
             {
                 emitter.AddArgument(ParseParameter(parent, lexerNode.Children[i]));
