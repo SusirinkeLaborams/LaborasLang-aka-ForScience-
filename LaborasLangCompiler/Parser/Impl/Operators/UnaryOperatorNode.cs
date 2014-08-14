@@ -16,13 +16,15 @@ namespace LaborasLangCompiler.Parser.Impl
     class UnaryOperatorNode : RValueNode, IUnaryOperatorNode
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.UnaryOperator; } }
-        public override TypeWrapper ReturnType { get { return Operand.ReturnType; } }
+        public override TypeWrapper TypeWrapper { get { return operand.TypeWrapper; } }
         public UnaryOperatorNodeType UnaryOperatorType { get; private set; }
-        public IExpressionNode Operand { get; private set; }
-        private UnaryOperatorNode(UnaryOperatorNodeType type, IExpressionNode operand)
+        public IExpressionNode Operand { get { return operand; } }
+
+        private ExpressionNode operand;
+        private UnaryOperatorNode(UnaryOperatorNodeType type, ExpressionNode operand)
             : base(operand.SequencePoint)
         {
-            Operand = operand;
+            this.operand = operand;
             UnaryOperatorType = type;
         }
         public static new ExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
@@ -138,7 +140,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new TypeException(SequencePoint, "Binary ops only allowed on integer types, {0} received",
                     ReturnType);
         }
-        public static UnaryOperatorNode Void(IExpressionNode expression)
+        public static UnaryOperatorNode Void(ExpressionNode expression)
         {
             return new UnaryOperatorNode(UnaryOperatorNodeType.VoidOperator, expression);
         }

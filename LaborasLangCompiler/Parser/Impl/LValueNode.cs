@@ -23,12 +23,14 @@ namespace LaborasLangCompiler.Parser.Impl
     class LocalVariableNode : LValueNode, ILocalVariableNode
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.LocalVariable; } }
-        public VariableDefinition LocalVariable { get; set; }
-        public override TypeWrapper ReturnType { get { return LocalVariable.VariableType; } }
-        public LocalVariableNode(SequencePoint point, VariableDefinition variable)
+        public VariableDefinition LocalVariable { get { return variable.VariableDefinition; } }
+        public override TypeWrapper TypeWrapper { get { return variable.TypeWrapper; } }
+
+        private VariableWrapper variable;
+        public LocalVariableNode(SequencePoint point, VariableWrapper variable)
             : base(point)
         {
-            LocalVariable = variable;
+            this.variable = variable;
         }
         public override string ToString()
         {
@@ -39,13 +41,15 @@ namespace LaborasLangCompiler.Parser.Impl
     class FunctionArgumentNode : LValueNode, IFunctionArgumentNode
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.FunctionArgument; } }
-        public ParameterDefinition Param { get; set; }
+        public ParameterDefinition Param { get { return parameter.ParameterDefinition; } }
         public bool IsFunctionStatic { get; set; }
-        public override TypeWrapper ReturnType { get { return Param.ParameterType; } }
-        public FunctionArgumentNode(ParameterDefinition param, bool isFunctionStatic, SequencePoint point)
+        public override TypeWrapper TypeWrapper { get { return parameter.TypeWrapper; } }
+
+        private ParameterWrapper parameter;
+        public FunctionArgumentNode(ParameterWrapper param, bool isFunctionStatic, SequencePoint point)
             : base(point)
         {
-            Param = param;
+            this.parameter = param;
             IsFunctionStatic = isFunctionStatic;
         }
         public override string ToString()
@@ -58,8 +62,8 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.Field; } }
         public IExpressionNode ObjectInstance { get; private set; }
-        public FieldWrapper Field { get { return field.FieldReference; } }
-        public override TypeWrapper ReturnType { get { return field.ReturnType; } }
+        public FieldReference Field { get { return field.FieldReference; } }
+        public override TypeWrapper TypeWrapper { get { return field.TypeWrapper; } }
 
         private FieldWrapper field;
         public FieldNode(IExpressionNode instance, FieldWrapper field, SequencePoint point)

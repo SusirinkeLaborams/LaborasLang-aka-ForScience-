@@ -30,7 +30,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
                 return null;
         }
 
-        private ExternalNamespace(string namespaze, AssemblyEmitter assembly) : base(assembly)
+        public ExternalNamespace(string namespaze, AssemblyEmitter assembly) : base(assembly)
         {
             Namespace = namespaze;
         }

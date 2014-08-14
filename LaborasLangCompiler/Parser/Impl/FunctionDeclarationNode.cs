@@ -18,14 +18,26 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public MethodReference MethodReference { get { return emitter.Get(); } }
         public override NodeType Type { get { return NodeType.ParserInternal; } }
-        public TypeWrapper FunctorType { get { return ExternalType.GetFunctorType(parser.Assembly, MethodReference); } }
-        public IEnumerable<TypeWrapper> ArgumentTypes { get { return MethodReference.Parameters.Select(p => new ExternalType(parser.Assembly, p.ParameterType)); } }
+        public TypeWrapper FunctorType 
+        {
+            get
+            { 
+                if(functorType == null)
+                {
+                    functorType = new FunctorTypeWrapper(parser.Assembly, MethodReturnType, ArgumentTypes);
+                }
+                return functorType;
+            }
+        }
+        public bool IsStatic { get { return true; } }
+        public IEnumerable<TypeWrapper> ArgumentTypes { get; private set; }
         private CodeBlockNode body;
         private MethodEmitter emitter;
         public TypeWrapper MethodReturnType { get; private set; }
         private ClassNode parent;
-        private Dictionary<string, ParameterDefinition> symbols;
+        private Dictionary<string, ParameterWrapper> symbols;
         private Parser parser;
+        private TypeWrapper functorType;
         public void Emit(bool entry = false)
         {
             emitter.ParseTree(body);
@@ -36,7 +48,7 @@ namespace LaborasLangCompiler.Parser.Impl
             : base(point)
         {
             this.parent = parent.GetClass();
-            this.symbols = new Dictionary<string, ParameterDefinition>();
+            this.symbols = new Dictionary<string, ParameterWrapper>();
             this.parser = parser;
             ParseHeader(header, name != null ? name : this.parent.NewFunctionName());
         }
@@ -47,16 +59,18 @@ namespace LaborasLangCompiler.Parser.Impl
             emitter = new MethodEmitter(parent.TypeEmitter, name, MethodReturnType.TypeReference, MethodAttributes.Static | MethodAttributes.Private);
             for(int i = 1; i < lexerNode.Children.Count; i++)
             {
-                emitter.AddArgument(ParseParameter(parent, lexerNode.Children[i]));
+                var param = ParseParameter(parent, lexerNode.Children[i]);
+                emitter.AddArgument(param.ParameterDefinition);
+                symbols.Add(param.Name, param);
             }
+            ArgumentTypes = symbols.Select(arg => arg.Value.TypeWrapper);
             parent.AddMethod(this, name);
-            symbols = MethodReference.Parameters.ToDictionary(param => param.Name);
         }
-        private ParameterDefinition ParseParameter(IContainerNode parent, AstNode lexerNode)
+        private ParameterWrapper ParseParameter(IContainerNode parent, AstNode lexerNode)
         {
             var type = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
             var name = parser.ValueOf(lexerNode.Children[1]);
-            return new ParameterDefinition(name, ParameterAttributes.None, type);
+            return new ParameterWrapper(name, ParameterAttributes.None, type);
         }
         public void ParseBody(AstNode body)
         {
@@ -93,17 +107,17 @@ namespace LaborasLangCompiler.Parser.Impl
             builder.Append(")").Append(body.ToString()).Append(")");
             return builder.ToString();
         }
-        public static TypeReference ParseFunctorType(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static FunctorTypeWrapper ParseFunctorType(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var header = lexerNode.Children[0];
             var ret = TypeNode.Parse(parser, parent, header.Children[0]);
-            var args = new List<TypeReference>();
+            var args = new List<TypeWrapper>();
             for (int i = 1; i < header.Children.Count; i++)
             {
                 var arg = header.Children[i];
                 args.Add(TypeNode.Parse(parser, parent, arg.Children[0]));
             }
-            return ILTools.AssemblyRegistry.GetFunctorType(parser.Assembly, ret, args);
+            return new FunctorTypeWrapper(parser.Assembly, ret, args);
         }
     }
 }

@@ -2,6 +2,7 @@
 using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NPEG;
@@ -22,8 +23,8 @@ namespace LaborasLangCompiler.Parser
         public Document Document { get; private set; }
         public SymbolCounter SymbolCounter { get; private set; }
         private ByteInputIterator source;
-        public IReadOnlyDictionary<string, TypeReference> Primitives { get; private set; }
-        public bool Testing { get; private set; }
+        public IReadOnlyDictionary<string, TypeWrapper> Primitives { get; private set; }
+        private bool testing;
         public const string Bool   = "bool";
         public const string Char   = "char";
         public const string Byte   = "byte";
@@ -44,7 +45,7 @@ namespace LaborasLangCompiler.Parser
         public Parser(AssemblyEmitter assembly, AstNode tree, ByteInputIterator source, string filePath, bool testing = false)
         {
             Assembly = assembly;
-            Testing = testing;
+            this.testing = testing;
             this.source = source;
             Filename = Path.GetFileNameWithoutExtension(filePath);
             Document = new Document(filePath);
@@ -53,30 +54,30 @@ namespace LaborasLangCompiler.Parser
             Document.Type = DocumentType.Text;
             SymbolCounter = new SymbolCounter(source);
 
-            var primitives = new Dictionary<string, TypeReference>();
-            primitives.Add(Bool, Assembly.TypeToTypeReference(typeof(bool)));
+            var primitives = new Dictionary<string, TypeWrapper>();
+            primitives.Add(Bool, new ExternalType(assembly, typeof(bool)));
 
-            primitives.Add(Char, Assembly.TypeToTypeReference(typeof(char)));
-            primitives.Add(Byte, Assembly.TypeToTypeReference(typeof(sbyte)));
-            primitives.Add(UByte, Assembly.TypeToTypeReference(typeof(byte)));
+            primitives.Add(Char, new ExternalType(assembly, typeof(char)));
+            primitives.Add(Byte, new ExternalType(assembly, typeof(sbyte)));
+            primitives.Add(UByte, new ExternalType(assembly, typeof(byte)));
 
-            primitives.Add(Word, Assembly.TypeToTypeReference(typeof(short)));
-            primitives.Add(UWord, Assembly.TypeToTypeReference(typeof(ushort)));
+            primitives.Add(Word, new ExternalType(assembly, typeof(short)));
+            primitives.Add(UWord, new ExternalType(assembly, typeof(ushort)));
 
-            primitives.Add(Int, Assembly.TypeToTypeReference(typeof(int)));
-            primitives.Add(UInt, Assembly.TypeToTypeReference(typeof(uint)));
+            primitives.Add(Int, new ExternalType(assembly, typeof(int)));
+            primitives.Add(UInt, new ExternalType(assembly, typeof(uint)));
 
-            primitives.Add(Long, Assembly.TypeToTypeReference(typeof(long)));
-            primitives.Add(ULong, Assembly.TypeToTypeReference(typeof(ulong)));
+            primitives.Add(Long, new ExternalType(assembly, typeof(long)));
+            primitives.Add(ULong, new ExternalType(assembly, typeof(ulong)));
 
-            primitives.Add(Float, Assembly.TypeToTypeReference(typeof(float)));
-            primitives.Add(Double, Assembly.TypeToTypeReference(typeof(double)));
-            primitives.Add(Decimal, Assembly.TypeToTypeReference(typeof(decimal)));
+            primitives.Add(Float, new ExternalType(assembly, typeof(float)));
+            primitives.Add(Double, new ExternalType(assembly, typeof(double)));
+            primitives.Add(Decimal, new ExternalType(assembly, typeof(decimal)));
 
-            primitives.Add(String, Assembly.TypeToTypeReference(typeof(string)));
-            primitives.Add(Object, Assembly.TypeToTypeReference(typeof(object)));
+            primitives.Add(String, new ExternalType(assembly, typeof(string)));
+            primitives.Add(Object, new ExternalType(assembly, typeof(object)));
 
-            primitives.Add(Void, Assembly.TypeToTypeReference(typeof(void)));
+            primitives.Add(Void, new ExternalType(assembly, typeof(void)));
             primitives.Add(Auto, null);
 
             Primitives = primitives;
@@ -104,6 +105,19 @@ namespace LaborasLangCompiler.Parser
             sequencePoint.EndLine = end.row;
             sequencePoint.EndColumn = end.column + 1;
             return sequencePoint; 
+        }
+        public TypeWrapper FindType(string fullname)
+        {
+            var type = AssemblyRegistry.FindType(Assembly, fullname);
+            if (type != null)
+                return new ExternalType(Assembly, type);
+            return null;
+        }
+        public NamespaceWrapper FindNamespace(string fullname)
+        {
+            if (AssemblyRegistry.IsNamespaceKnown(fullname))
+                return new ExternalNamespace(fullname, Assembly);
+            return null;
         }
     }
 }

@@ -18,10 +18,10 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.Literal; } }
         public dynamic Value { get; private set; }
-        public override TypeWrapper ReturnType { get { return returnType; } }
+        public override TypeWrapper TypeWrapper { get { return returnType; } }
 
-        private TypeReference returnType;
-        private LiteralNode(dynamic value, TypeReference type, SequencePoint point)
+        private TypeWrapper returnType;
+        private LiteralNode(dynamic value, TypeWrapper type, SequencePoint point)
             : base(point)
         {
             this.returnType = type;

@@ -38,7 +38,7 @@ namespace LaborasLangCompiler.Parser
     interface IExpressionNode : IParserNode
     {
         ExpressionNodeType ExpressionType { get; }
-        TypeWrapper ReturnType { get; }
+        TypeReference ReturnType { get; }
     }
     public enum RValueNodeType
     {
@@ -65,7 +65,7 @@ namespace LaborasLangCompiler.Parser
     interface IFunctionNode : IRValueNode
     {
         IExpressionNode ObjectInstance { get; }
-        MethodWrapper Function { get; }
+        MethodReference Function { get; }
     }
 
     interface IMethodCallNode : IRValueNode
@@ -113,7 +113,7 @@ namespace LaborasLangCompiler.Parser
     interface IFieldNode : ILValueNode
     {
         IExpressionNode ObjectInstance { get; }
-        FieldWrapper Field { get; }
+        FieldReference Field { get; }
     }
 
     interface IPropertyNode : ILValueNode

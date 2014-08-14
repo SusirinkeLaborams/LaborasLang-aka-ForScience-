@@ -14,7 +14,7 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class DotOperatorNode
     {
-        IExpressionNode builtNode;
+        ExpressionNode builtNode;
         Parser parser;
         ClassNode cls;
         IContainerNode parent;
@@ -34,9 +34,9 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return instance;
         }
-        private void Append(IExpressionNode node)
+        private void Append(ExpressionNode node)
         {
-            if(node is ExpressionNode)
+            if(node.ExpressionType != ExpressionNodeType.ParserInternal)
             {
                 if (!AppendExpression((ExpressionNode)node))
                     throw new ParseException(node.SequencePoint, "Expressions only allowed on left of dot operator");
@@ -62,16 +62,17 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private bool AppendCall(SymbolCallNode node)
         {
-            var types = node.Arguments.Select(arg => arg.ReturnType).ToList();
+            var types = node.Arguments.Select(arg => arg.TypeWrapper);
             if (AppendLValue(node))
             {
-                if (!builtNode.ReturnType.IsFunctorType())
+                if (!builtNode.TypeWrapper.IsFunctorType())
                     return false;
 
-                var returnType = ILTools.ILHelpers.GetFunctorReturnType(parser.Assembly, builtNode.ReturnType);
-                if(ILHelpers.MatchesArgumentList(builtNode.ReturnType, types))
+                var functorType = (FunctorTypeWrapper)builtNode.TypeWrapper;
+
+                if(functorType.MatchesArgumentList(types))
                 {
-                    builtNode = new MethodCallNode(builtNode, returnType, node.Arguments, node.SequencePoint);
+                    builtNode = new MethodCallNode(builtNode, functorType.FunctorReturnType, node.Arguments, node.SequencePoint);
                     return true;
                 }
                 else
@@ -82,7 +83,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (AppendMethod(node))
             {
                 var method = ((AmbiguousMethodNode)builtNode).RemoveAmbiguity(parser, types);
-                builtNode = new MethodCallNode(method, method.Function.ReturnType, node.Arguments, node.SequencePoint);
+                builtNode = new MethodCallNode(method, method.MethodWrapper.MethodReturnType, node.Arguments, node.SequencePoint);
                 return true;
             }
             return false;
@@ -102,9 +103,9 @@ namespace LaborasLangCompiler.Parser.Impl
                 if(builtNode is TypeNode)
                 {
                     //static methods
-                    var methods = AssemblyRegistry.GetMethods(parser.Assembly, ((TypeNode)builtNode).ParsedType, node.Value);
-                    methods = methods.Where(m => m.Resolve().IsStatic).ToList();
-                    if (methods != null && methods.Count != 0)
+                    var methods = ((TypeNode)builtNode).ParsedType.GetMethods(node.Value);
+                    methods = methods.Where(m => m.IsStatic);
+                    if (methods.Count() != 0)
                     {
                         builtNode = new AmbiguousMethodNode(methods, null, builtNode.SequencePoint);
                         return true;
@@ -117,9 +118,9 @@ namespace LaborasLangCompiler.Parser.Impl
                 else
                 {
                     //non-static methods
-                    var methods = AssemblyRegistry.GetMethods(parser.Assembly, builtNode.ReturnType, node.Value);
-                    methods = methods.Where(m => !m.Resolve().IsStatic).ToList();
-                    if (methods != null && methods.Count != 0)
+                    var methods = builtNode.TypeWrapper.GetMethods(node.Value);
+                    methods = methods.Where(m => !m.IsStatic);
+                    if (methods.Count() != 0)
                     {
                         builtNode = new AmbiguousMethodNode(methods, builtNode, builtNode.SequencePoint);
                         return true;
@@ -140,33 +141,25 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
+                TypeWrapper type = null;
                 if(builtNode is NamespaceNode)
                 {
-                    var found = cls.FindType((NamespaceNode) builtNode, node.Value, node.SequencePoint);
-                    if(found != null)
-                    {
-                        builtNode = found;
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    type = ((NamespaceNode)builtNode).Namespace.GetContainedType(node.Value);
                 }
                 if(builtNode is TypeNode)
                 {
-                    var found = cls.FindType((TypeNode)builtNode, node.Value, node.SequencePoint);
-                    if (found != null)
-                    {
-                        builtNode = found;
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    type = ((TypeNode)builtNode).TypeWrapper.GetContainedType(node.Value);
                 }
-                return false;
+
+                if (type != null)
+                {
+                    builtNode = new TypeNode(type, node.SequencePoint);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
         private bool AppendNamespace(SymbolNode node)
@@ -178,18 +171,16 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
+                NamespaceWrapper found = null;
                 if(builtNode is NamespaceNode)
                 {
-                    var found = cls.FindNamespace((NamespaceNode)builtNode, node.Value, node.SequencePoint);
-                    if(found != null)
-                    {
-                        builtNode = found;
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    found = ((NamespaceNode)builtNode).Namespace.GetContainedNamespace(node.Value);
+                }
+
+                if(found != null)
+                {
+                    builtNode = new NamespaceNode(found, node.SequencePoint);
+                    return true;
                 }
                 else
                 {
@@ -206,30 +197,30 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                if(builtNode is NamespaceNode)
-                    return false;
-                FieldReference field = null;
+                FieldWrapper field = null;
+
                 if(builtNode is TypeNode)
                 {
-                    var type = ((TypeNode)builtNode).ParsedType;
-                    field = AssemblyRegistry.GetField(parser.Assembly, type, name);
-                    if (field != null && !field.Resolve().IsStatic)
+                    field = ((TypeNode)builtNode).ParsedType.GetField(node.Value);
+                    if (field != null && !field.IsStatic)
                         field = null;
                 }
-                else
+                else if(builtNode.ExpressionType != ExpressionNodeType.ParserInternal)
                 {
-                    var type = builtNode.ReturnType;
-                    field = AssemblyRegistry.GetField(parser.Assembly, type, name);
-                    if (field != null && field.Resolve().IsStatic)
+                    field = builtNode.TypeWrapper.GetField(node.Value);
+                    if (field != null && field.IsStatic)
                         field = null;
                 }
 
-                if(field != null)
+                if (field != null)
                 {
-                    builtNode = new FieldNode(builtNode, new ExternalField(field), builtNode.SequencePoint);
+                    builtNode = new FieldNode(field.IsStatic ? null : builtNode, field, builtNode.SequencePoint);
                     return true;
                 }
-                return false;
+                else
+                {
+                    return false;
+                }
             }
         }
         private bool AppendExpression(ExpressionNode node)
@@ -246,17 +237,17 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public ExpressionNode ExtractExpression()
         {
-            if (builtNode is NamespaceNode || builtNode is TypeNode)
+            if (builtNode.ExpressionType == ExpressionNodeType.ParserInternal)
                 throw new ParseException(builtNode.SequencePoint, "Expression expected");
             else
-                return (ExpressionNode)builtNode;
+                return builtNode;
         }
-        public string ExtractNamespace()
+        public NamespaceWrapper ExtractNamespace()
         {
             if (!(builtNode is NamespaceNode))
                 throw new ParseException(builtNode.SequencePoint, "Namespace expected");
             else
-                return ((NamespaceNode)builtNode).Value;
+                return ((NamespaceNode)builtNode).Namespace;
         }
         public TypeWrapper ExtractType()
         {
@@ -272,22 +263,21 @@ namespace LaborasLangCompiler.Parser.Impl
             else
                 return (LValueNode)builtNode;
         }
-        public IExpressionNode ExtractMethod(List<TypeReference> types)
+        public ExpressionNode ExtractMethod(IEnumerable<TypeWrapper> args)
         {
             if (builtNode is LValueNode)
             {
-                if (builtNode.ReturnType.IsFunctorType())
+                if (builtNode.TypeWrapper.IsFunctorType())
                 {
-                    if (ILHelpers.MatchesArgumentList(builtNode.ReturnType, types))
+                    if (builtNode.TypeWrapper.MatchesArgumentList(args))
                     {
-                        return (IExpressionNode)builtNode;
+                        return builtNode;
                     }
                 }
             }
             if (builtNode is AmbiguousMethodNode)
             {
-                var method = ((AmbiguousMethodNode)builtNode).RemoveAmbiguity(parser, types);
-                return method;
+                return ((AmbiguousMethodNode)builtNode).RemoveAmbiguity(parser, args);
             }
             throw new ParseException(builtNode.SequencePoint, "Method expected");
         }

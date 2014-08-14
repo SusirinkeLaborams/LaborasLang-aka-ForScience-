@@ -16,7 +16,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class MethodCallNode : RValueNode, IMethodCallNode
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.Call; } }
-        public override TypeWrapper ReturnType { get { return type; } }
+        public override TypeWrapper TypeWrapper { get { return type; } }
         public IReadOnlyList<IExpressionNode> Arguments { get; private set; }
         public IExpressionNode Function { get; private set; }
 
@@ -35,13 +35,13 @@ namespace LaborasLangCompiler.Parser.Impl
             if(lexerNode.Children.Count(x => x.Token.Name == Lexer.Arguments) > 1)
                 throw new NotImplementedException("Calling returned functions not supported");
             var function = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]);
-            var args = new List<IExpressionNode>();
+            var args = new List<ExpressionNode>();
             foreach (var node in lexerNode.Children[1].Children)
             {
                 args.Add(ExpressionNode.Parse(parser, parent, node));
             }
-            var method = function.ExtractMethod(args.Select(x => x.ReturnType).ToList());
-            var returnType = ILTools.ILHelpers.GetFunctorReturnType(parser.Assembly, method.ReturnType);
+            var method = function.ExtractMethod(args.Select(arg => arg.TypeWrapper));
+            var returnType = new ExternalType(parser.Assembly, ILHelpers.GetFunctorReturnType(parser.Assembly, method.ReturnType));
             return new MethodCallNode(method, returnType, args, parser.GetSequencePoint(lexerNode));
         }
         public override string ToString()

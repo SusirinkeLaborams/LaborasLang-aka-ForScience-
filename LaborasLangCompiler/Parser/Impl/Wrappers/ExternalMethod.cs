@@ -17,7 +17,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             {
                 if(functorType == null)
                 {
-                    functorType = ExternalType.GetFunctorType(Assembly, MethodReference);
+                    functorType = new FunctorTypeWrapper(Assembly, MethodReturnType, ArgumentTypes);
                 }
                 return functorType;
             } 
@@ -34,6 +34,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
                 return argumentTypes;
             } 
         }
+        public bool IsStatic { get { return MethodReference.Resolve().IsStatic; } }
 
         private TypeWrapper methodReturnType;
         private TypeWrapper functorType;

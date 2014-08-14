@@ -8,18 +8,24 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
-    class ExternalType : ExternalWrapperBase, TypeWrapper
+    class ExternalType : TypeWrapper
     {
-        public TypeReference TypeReference { get; private set; }
+        public override TypeReference TypeReference { get { return typeReference; } }
+        public override string FullName { get { return TypeReference.FullName; } }
 
-        public string FullName { get { return TypeReference.FullName; } }
+        private TypeReference typeReference;
 
         public ExternalType(AssemblyEmitter assembly, TypeReference type) : base(assembly)
         {
-            TypeReference = type;
+            this.typeReference = type;
         }
 
-        public TypeWrapper GetContainedType(string name)
+        public ExternalType(AssemblyEmitter assembly, Type type) : base(assembly)
+        {
+            this.typeReference = assembly.TypeToTypeReference(type);
+        }
+
+        public override TypeWrapper GetContainedType(string name)
         {
             var type = AssemblyRegistry.FindType(Assembly, TypeReference + "." + name);
             if (type != null)
@@ -27,69 +33,24 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             else
                 return null;
         }
-        public FieldWrapper GetField(string name)
+        public override FieldWrapper GetField(string name)
         {
-            return new ExternalField(Assembly, AssemblyRegistry.GetField(Assembly, TypeReference, name));
+            var field = AssemblyRegistry.GetField(Assembly, TypeReference, name);
+            if (field != null)
+                return new ExternalField(Assembly, field);
+            else
+                return null;
         }
-        public MethodWrapper GetMethod(string name)
+        public override MethodWrapper GetMethod(string name)
         {
-            return new ExternalMethod(Assembly, AssemblyRegistry.GetMethod(Assembly, TypeReference, name));
+            var method = AssemblyRegistry.GetMethod(Assembly, TypeReference, name);
+            if(method != null)
+                return new ExternalMethod(Assembly, method);
+            return null;
         }
-        public IEnumerable<MethodWrapper> GetMethods(string name)
+        public override IEnumerable<MethodWrapper> GetMethods(string name)
         {
             return AssemblyRegistry.GetMethods(Assembly, TypeReference, name).Select(m => new ExternalMethod(Assembly, m));
-        }
-        public bool IsAssignableTo(TypeWrapper type)
-        {
-            if (!(type is ExternalType))
-                return false;
-            var t = ((ExternalType)type);
-            return this.IsAssignableTo(type);
-        }
-
-        public static ExternalType GetFunctorType(AssemblyEmitter assembly, MethodReference method)
-        {
-            return new ExternalType(assembly, ILTools.AssemblyRegistry.GetFunctorType(assembly, method));
-        }
-
-        public bool IsNumericType()
-        {
-            return TypeReference.IsNumericType();
-        }
-
-        public bool IsStringType()
-        {
-            return TypeReference.IsStringType();
-        }
-
-        public bool IsIntegerType()
-        {
-            return TypeReference.IsIntegerType();
-        }
-
-        public bool IsBooleanType()
-        {
-            return TypeReference.IsBooleanType();
-        }
-
-        public override string ToString()
-        {
-            return TypeReference.ToString();
-        }
-
-        public bool IsFunctorType()
-        {
-            return TypeReference.IsFunctorType();
-        }
-
-        public int GetIntegerWidth()
-        {
-            return TypeReference.GetIntegerWidth();
-        }
-
-        public bool IsUnsignedInteger()
-        {
-            return TypeReference.IsUnsignedInteger();
         }
     }
 }

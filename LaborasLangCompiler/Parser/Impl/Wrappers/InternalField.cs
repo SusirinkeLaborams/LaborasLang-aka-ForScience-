@@ -11,14 +11,16 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     {
         public FieldReference FieldReference { get { return FieldDefinition; } }
         public FieldDefinition FieldDefinition { get; set; }
-        public TypeWrapper ReturnType { get; set; }
+        public TypeWrapper TypeWrapper { get; set; }
         public string Name { get; private set; }
         public ExpressionNode Initializer { get; set; }
+        public bool IsStatic { get; private set; }
         public InternalField(TypeWrapper returnType, string name, ExpressionNode init = null)
         {
-            this.ReturnType = returnType;
+            this.TypeWrapper = returnType;
             this.Name = name;
             this.Initializer = init;
+            this.IsStatic = true;
         }
     }
 }

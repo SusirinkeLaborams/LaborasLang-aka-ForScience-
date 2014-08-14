@@ -15,18 +15,21 @@ namespace LaborasLangCompiler.Parser.Impl
     class SymbolDeclarationNode : ParserNode, ISymbolDeclarationNode
     {
         public override NodeType Type { get { return NodeType.SymbolDeclaration; } }
-        public ILValueNode DeclaredSymbol { get; private set; }
-        public IExpressionNode Initializer { get; private set; }
-        private SymbolDeclarationNode(ILValueNode symbol, IExpressionNode init, SequencePoint point)
+        public ILValueNode DeclaredSymbol { get { return declaredSymbol; } }
+        public IExpressionNode Initializer { get { return initializer; } }
+
+        private ExpressionNode initializer;
+        private LValueNode declaredSymbol;
+        private SymbolDeclarationNode(LValueNode symbol, ExpressionNode init, SequencePoint point)
             : base(point)
         {
-            DeclaredSymbol = symbol;
-            Initializer = init;
+            this.declaredSymbol = symbol;
+            this.initializer = init;
         }
         public static SymbolDeclarationNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
-            ILValueNode symbol = null;
-            IExpressionNode initializer = null;
+            LValueNode symbol = null;
+            ExpressionNode initializer = null;
             string type = lexerNode.Token.Name;
 
             var declaredType = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
@@ -41,8 +44,8 @@ namespace LaborasLangCompiler.Parser.Impl
             if (initializer != null)
             {
                 if (declaredType == null)
-                    declaredType = initializer.ReturnType;
-                else if (!ILHelpers.IsAssignableTo(initializer.ReturnType, declaredType))
+                    declaredType = initializer.TypeWrapper;
+                else if (!initializer.TypeWrapper.IsAssignableTo(declaredType))
                     throw new TypeException(parser.GetSequencePoint(lexerNode), "Type mismatch, type " + declaredType.FullName + " initialized with " + initializer.ReturnType.FullName);
             }
             if (parent is CodeBlockNode)

@@ -15,7 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class AssignmentOperatorNode : RValueNode, IAssignmentOperatorNode
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.AssignmentOperator; } }
-        public override TypeWrapper ReturnType { get { return type; } }
+        public override TypeWrapper TypeWrapper { get { return type; } }
         public ILValueNode LeftOperand { get; private set; }
         public IExpressionNode RightOperand { get; private set; }
 
@@ -26,7 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var instance = new AssignmentOperatorNode(parser.GetSequencePoint(lexerNode));
             var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]).ExtractLValue();
             var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
-            instance.type = left.ReturnType;
+            instance.type = left.TypeWrapper;
 
             var op = parser.ValueOf(lexerNode.Children[1]);
             if (op != "=")
