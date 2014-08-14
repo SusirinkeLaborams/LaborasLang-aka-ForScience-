@@ -17,16 +17,22 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class ClassNode : ParserNode, IContainerNode
     {
-        public override NodeType Type { get { return NodeType.ParserInternal; } }
+        #region fields
         private Dictionary<string, InternalField> fields;
-        private List<string> globalImports;
+        private List<NamespaceWrapper> globalImports;
         private ClassNode parent;
         private Parser parser;
+        private Dictionary<string, FunctionDeclarationNode> methods = new Dictionary<string, FunctionDeclarationNode>();
+        private int lambdaCounter = 0;
+        #endregion fields
+
+        #region properties
+        public override NodeType Type { get { return NodeType.ParserInternal; } }
         public TypeEmitter TypeEmitter { get; private set; }
         public string FullName { get; private set; }
         public TypeReference TypeReference { get { return TypeEmitter.Get(parser.Assembly); } }
-        private Dictionary<string, FunctionDeclarationNode> methods = new Dictionary<string, FunctionDeclarationNode>();
-        private int lambdaCounter = 0;
+        #endregion properties
+
         public ClassNode(Parser parser, ClassNode parent, SequencePoint point) : base(point)
         {
             if (parser.Root == null)
@@ -34,8 +40,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.parent = parent;
             this.parser = parser;
             fields = new Dictionary<string, InternalField>();
-            globalImports = new List<string>();
-            globalImports.Add("");
+            globalImports = new List<NamespaceWrapper>();
             FullName = parser.Filename;
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
@@ -84,38 +89,54 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public TypeNode FindType(string name, SequencePoint point)
         {
+            TypeNode type = null;
+
+            //local types not implemented
+
+            //primitives
             if (parser.Primitives.ContainsKey(name))
-                return new TypeNode(parser.Primitives[name], point);
-            TypeWrapper type = null;
-            var types = globalImports.Select(namespaze => parser.FindType(namespaze + name)).Where(t => t != null);
-            if (types.Count() == 0)
-                return null;
-            try
+                type = new TypeNode(parser.Primitives[name], point);
+
+            //imports
+            if(type == null)
             {
-                type = types.Single();
-            }
-            catch (InvalidOperationException)
-            {
-                StringBuilder builder = new StringBuilder();
-                builder.AppendFormat("Ambigious type {0}\n Could be:\n", name);
-                foreach (var t in types)
+                var types = globalImports.Select(namespaze => namespaze.GetContainedType(name)).Where(t => t != null);
+                try
                 {
-                    builder.Append(t.FullName);
+                    if(types.Count() != 0)
+                        type = new TypeNode(types.Single(), point);
                 }
-                throw new TypeException(point, builder.ToString());
+                catch (InvalidOperationException)
+                {
+                    StringBuilder builder = new StringBuilder();
+                    builder.AppendFormat("Ambigious type {0}\n Could be:\n", name);
+                    foreach (var t in types)
+                    {
+                        builder.Append(t.FullName);
+                    }
+                    throw new TypeException(point, builder.ToString());
+                }
             }
 
-            return new TypeNode(type, point);
+            if(type == null)
+            {
+                if (parent != null)
+                    type = parent.FindType(name, point);
+                else
+                    parser.FindType(name, point);
+            }
+
+            return type;
         }
         public NamespaceNode FindNamespace(string name, SequencePoint point)
         {
-            NamespaceWrapper namespaze = null;
-            var namespazes = globalImports.Select(import => parser.FindNamespace(import + name)).Where(n => n != null);
-            if (namespazes.Count() == 0)
-                return null;
+            NamespaceNode namespaze = null;
+
+            var namespazes = globalImports.Select(import => import.GetContainedNamespace(name)).Where(n => n != null);
             try
             {
-                namespaze = namespazes.Single();
+                if(namespazes.Count() != 0)
+                    namespaze = new NamespaceNode(namespazes.Single(), point);
             }
             catch(InvalidOperationException)
             {
@@ -128,13 +149,26 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new TypeException(point, builder.ToString());
             }
 
-            return new NamespaceNode(namespaze, point);
+            if (namespaze == null)
+            {
+                if(parent != null)
+                    namespaze = parent.FindNamespace(name, point);
+                else
+                    namespaze = parser.FindNamespace(name, point);
+            }
+
+            return namespaze;
         }
         public void AddImport(string namespaze, SequencePoint point)
         {
-            if (globalImports.Contains(namespaze))
+            if (globalImports.Any(n => n.Namespace == namespaze))
                 throw new ParseException(point, "Namespace {0} already imported", namespaze);
-            globalImports.Add(namespaze + ".");
+
+            var found = FindNamespace(namespaze, point);
+            if(found != null)
+                globalImports.Add(found.Namespace);
+            else
+                throw new ParseException(point, "Unknown namespace {0}", namespaze);
         }
         private void AddFieldToEmitter(InternalField field)
         {

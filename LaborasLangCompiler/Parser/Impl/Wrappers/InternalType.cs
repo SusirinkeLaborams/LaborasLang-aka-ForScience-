@@ -10,15 +10,13 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
     class InternalType : TypeWrapper
     {
-        public override TypeReference TypeReference { get { return classNode.TypeReference; } }
-
-        public override string FullName { get { return classNode.FullName; } }
-
-        private ClassNode classNode;
+        public override TypeReference TypeReference { get { return Class.TypeReference; } }
+        public override string FullName { get { return Class.FullName; } }
+        public ClassNode Class { get; private set; }
 
         public InternalType(AssemblyEmitter assembly, ClassNode classNode) : base(assembly)
         {
-            this.classNode = classNode;
+            this.Class = classNode;
         }
 
         public override TypeWrapper GetContainedType(string name)
@@ -27,15 +25,15 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         }
         public override FieldWrapper GetField(string name)
         {
-            return classNode.GetField(name);
+            return Class.GetField(name);
         }
         public override MethodWrapper GetMethod(string name)
         {
-            return classNode.GetMethod(name);
+            return Class.GetMethod(name);
         }
         public override IEnumerable<MethodWrapper> GetMethods(string name)
         {
-            return classNode.GetMethods(name);
+            return Class.GetMethods(name);
         }
     }
 }

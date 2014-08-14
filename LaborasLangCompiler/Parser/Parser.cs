@@ -106,18 +106,20 @@ namespace LaborasLangCompiler.Parser
             sequencePoint.EndColumn = end.column + 1;
             return sequencePoint; 
         }
-        public TypeWrapper FindType(string fullname)
+        public TypeNode FindType(string fullname, SequencePoint point)
         {
             var type = AssemblyRegistry.FindType(Assembly, fullname);
             if (type != null)
-                return new ExternalType(Assembly, type);
-            return null;
+                return new TypeNode(new ExternalType(Assembly, type), point);
+            else
+                return null;
         }
-        public NamespaceWrapper FindNamespace(string fullname)
+        public NamespaceNode FindNamespace(string fullname, SequencePoint point)
         {
             if (AssemblyRegistry.IsNamespaceKnown(fullname))
-                return new ExternalNamespace(fullname, Assembly);
-            return null;
+                return new NamespaceNode(new ExternalNamespace(fullname, Assembly), point);
+            else
+                return null;
         }
     }
 }
