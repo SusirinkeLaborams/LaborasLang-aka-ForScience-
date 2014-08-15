@@ -12,19 +12,19 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class AmbiguousMethodNode : RValueNode, IFunctionNode
+    class AmbiguousMethodNode : RValueNode
     {
         public override TypeWrapper TypeWrapper { get { return null; } }
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
-        public override RValueNodeType RValueType { get { return RValueNodeType.Function; } }
-        public MethodReference Function { get { return null; } }
-        public IExpressionNode ObjectInstance { get; private set; }
+        public override RValueNodeType RValueType { get { return RValueNodeType.ParserInternal; } }
+
         private IEnumerable<MethodWrapper> methods;
-        public AmbiguousMethodNode(IEnumerable<MethodWrapper> methods, IExpressionNode instance, SequencePoint sequencePoint)
+        private ExpressionNode instance;
+        public AmbiguousMethodNode(IEnumerable<MethodWrapper> methods, ExpressionNode instance, SequencePoint sequencePoint)
             : base(sequencePoint)
         {
             this.methods = methods;
-            ObjectInstance = instance;
+            this.instance = instance;
         }
         public MethodNode RemoveAmbiguity(Parser parser, IEnumerable<TypeWrapper> argTypes)
         {
@@ -32,8 +32,7 @@ namespace LaborasLangCompiler.Parser.Impl
             try
             {
                 method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), argTypes.Select(t => t.TypeReference).ToList());
-                //TODO: make this lazy
-                return new MethodNode(new ExternalMethod(parser.Assembly, method), ObjectInstance, SequencePoint);
+                return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, SequencePoint);
             }
             catch (Exception)
             {

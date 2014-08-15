@@ -11,7 +11,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     class ExternalType : TypeWrapper
     {
         public override TypeReference TypeReference { get { return typeReference; } }
-        public override string FullName { get { return TypeReference.FullName; } }
+        public override string FullName { get { return typeReference.FullName; } }
 
         private TypeReference typeReference;
 
@@ -27,7 +27,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
 
         public override TypeWrapper GetContainedType(string name)
         {
-            var type = AssemblyRegistry.FindType(Assembly, TypeReference + "." + name);
+            var type = AssemblyRegistry.FindType(Assembly, TypeReference.FullName + "." + name);
             if (type != null)
                 return new ExternalType(Assembly, type);
             else

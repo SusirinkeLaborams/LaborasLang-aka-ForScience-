@@ -53,7 +53,10 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         }
         public bool MatchesArgumentList(IEnumerable<TypeWrapper> args)
         {
-            return ILHelpers.MatchesArgumentList(TypeReference, args.Select(arg => arg.TypeReference).ToList());
+            if (!IsFunctorType())
+                return false;
+            else
+                return ILHelpers.MatchesArgumentList(TypeReference, args.Select(arg => arg.TypeReference).ToList());
         }
         public override string ToString()
         {

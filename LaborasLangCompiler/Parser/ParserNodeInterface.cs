@@ -49,7 +49,8 @@ namespace LaborasLangCompiler.Parser
         BinaryOperator,
         UnaryOperator,
         AssignmentOperator,
-        This
+        This,
+        ParserInternal
     }
 
     interface IRValueNode : IExpressionNode

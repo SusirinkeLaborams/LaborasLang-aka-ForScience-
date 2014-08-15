@@ -33,7 +33,11 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             this.FunctorArgumentTypes = args;
         }
 
-        public override bool IsFunctorType() { return true; }
+        //tipo optimizacija
+        public override bool IsFunctorType()
+        { 
+            return true; 
+        }
 
         #region class stuff
         //pagal parser, functor nelabai tipas

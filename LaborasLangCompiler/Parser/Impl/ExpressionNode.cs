@@ -25,8 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
             switch (lexerNode.Token.Name)
             {
                 case Lexer.FullSymbol:
-                    var tmp = DotOperatorNode.Parse(parser, parent, lexerNode);
-                    return tmp.ExtractExpression();
+                    return DotOperatorNode.Parse(parser, parent, lexerNode).ExtractExpression();
                 case Lexer.Symbol:
                     return SymbolNode.Parse(parser, parent, lexerNode);
                 case Lexer.Literal:
