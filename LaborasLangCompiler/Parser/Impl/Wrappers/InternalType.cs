@@ -21,7 +21,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
 
         public override TypeWrapper GetContainedType(string name)
         {
-            return null;
+            return Class.GetContainedType(name);
         }
         public override FieldWrapper GetField(string name)
         {

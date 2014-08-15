@@ -44,10 +44,8 @@ namespace LaborasLangCompiler.Parser.Impl
             FullName = parser.Filename;
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
-        public void AddMethod(FunctionDeclarationNode method, string name)
-        {
-            methods.Add(name, method);
-        }
+        #region type wrapper
+
         public FieldWrapper GetField(string name)
         {
             if (fields.ContainsKey(name))
@@ -55,13 +53,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return null;
         }
-        public MethodWrapper GetMethod(string name)
-        {
-            if (methods.ContainsKey(name))
-                return methods[name];
-            else
-                return null;
-        }
+
         public IEnumerable<MethodWrapper> GetMethods(string name)
         {
             var ret = new List<MethodWrapper>(1);
@@ -69,13 +61,35 @@ namespace LaborasLangCompiler.Parser.Impl
                 ret.Add(methods[name]);
             return ret;
         }
-        public bool IsAssignableTo(TypeWrapper other)
+
+        public MethodWrapper GetMethod(string name)
         {
-            return FullName == other.FullName;
+            if (methods.ContainsKey(name))
+                return methods[name];
+            else
+                return null;
         }
-        public TypeWrapper GetContainedType(string name) { return null; }
-        public ClassNode GetClass() { return this; }
-        public FunctionDeclarationNode GetFunction() { return null; }
+
+        public TypeWrapper GetContainedType(string name)
+        {
+            return null; 
+        }
+
+        #endregion typewrapper
+
+        #region container
+
+        public ClassNode GetClass() 
+        { 
+            return this;
+        
+        }
+
+        public FunctionDeclarationNode GetFunction() 
+        {
+            return null;
+        }
+
         public LValueNode GetSymbol(string name, SequencePoint point)
         {
             var field = GetField(name);
@@ -87,6 +101,11 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return null;
         }
+
+        #endregion container
+
+        #region type/namespace lookup
+
         public TypeNode FindType(string name, SequencePoint point)
         {
             TypeNode type = null;
@@ -98,12 +117,12 @@ namespace LaborasLangCompiler.Parser.Impl
                 type = new TypeNode(parser.Primitives[name], point);
 
             //imports
-            if(type == null)
+            if (type == null)
             {
                 var types = globalImports.Select(namespaze => namespaze.GetContainedType(name)).Where(t => t != null);
                 try
                 {
-                    if(types.Count() != 0)
+                    if (types.Count() != 0)
                         type = new TypeNode(types.Single(), point);
                 }
                 catch (InvalidOperationException)
@@ -118,7 +137,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            if(type == null)
+            if (type == null)
             {
                 if (parent != null)
                     type = parent.FindType(name, point);
@@ -128,6 +147,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return type;
         }
+
         public NamespaceNode FindNamespace(string name, SequencePoint point)
         {
             NamespaceNode namespaze = null;
@@ -135,10 +155,10 @@ namespace LaborasLangCompiler.Parser.Impl
             var namespazes = globalImports.Select(import => import.GetContainedNamespace(name)).Where(n => n != null);
             try
             {
-                if(namespazes.Count() != 0)
+                if (namespazes.Count() != 0)
                     namespaze = new NamespaceNode(namespazes.Single(), point);
             }
-            catch(InvalidOperationException)
+            catch (InvalidOperationException)
             {
                 StringBuilder builder = new StringBuilder();
                 builder.AppendFormat("Ambigious namespace {0}\n Could be:\n", name);
@@ -151,7 +171,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (namespaze == null)
             {
-                if(parent != null)
+                if (parent != null)
                     namespaze = parent.FindNamespace(name, point);
                 else
                     namespaze = parser.FindNamespace(name, point);
@@ -159,21 +179,22 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return namespaze;
         }
+
         public void AddImport(string namespaze, SequencePoint point)
         {
             if (globalImports.Any(n => n.Namespace == namespaze))
                 throw new ParseException(point, "Namespace {0} already imported", namespaze);
 
             var found = FindNamespace(namespaze, point);
-            if(found != null)
+            if (found != null)
                 globalImports.Add(found.Namespace);
             else
                 throw new ParseException(point, "Unknown namespace {0}", namespaze);
         }
-        private void AddFieldToEmitter(InternalField field)
-        {
-            TypeEmitter.AddField(field.FieldDefinition, field.Initializer);
-        }
+
+        #endregion type/namespace lookup
+
+        #region parsing
         public void ParseDeclarations(AstNode lexerNode)
         {
             foreach (var node in lexerNode.Children)
@@ -200,6 +221,19 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
+
+        private void ParseDeclaration(AstNode lexerNode)
+        {
+            var type = TypeNode.Parse(parser, this, lexerNode.Children[0]);
+            var name = parser.ValueOf(lexerNode.Children[1]);
+            //nera tipo, deklaruojam funkcija
+            if (lexerNode.Children.Count > 2 && lexerNode.Children[2].Token.Name == Lexer.Function && type == null)
+            {
+                type = FunctionDeclarationNode.ParseFunctorType(parser, this, lexerNode.Children[2]);
+            }
+            fields.Add(name, new InternalField(type, name));
+        }
+
         public void ParseBody(AstNode lexerNode)
         {
             foreach (var node in lexerNode.Children)
@@ -234,37 +268,42 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
+
         public void DeclareMembers()
         {
-            foreach(var f in fields)
+            foreach (var f in fields)
             {
                 var field = f.Value;
                 field.FieldDefinition = new FieldDefinition(field.Name, FieldAttributes.Private | FieldAttributes.Static, field.TypeWrapper.TypeReference);
                 AddFieldToEmitter(field);
             }
         }
+
         public void Emit()
         {
-            foreach(var m in methods)
+            foreach (var m in methods)
             {
                 m.Value.Emit(m.Key == "$Main");
             }
         }
-        private void ParseDeclaration(AstNode lexerNode)
+
+        #endregion parsing
+
+        public void AddMethod(FunctionDeclarationNode method, string name)
         {
-            var type = TypeNode.Parse(parser, this, lexerNode.Children[0]);
-            var name = parser.ValueOf(lexerNode.Children[1]);
-            //nera tipo, deklaruojam funkcija
-            if(lexerNode.Children.Count > 2 && lexerNode.Children[2].Token.Name == Lexer.Function && type == null)
-            {
-                type = FunctionDeclarationNode.ParseFunctorType(parser, this, lexerNode.Children[2]);
-            }
-            fields.Add(name, new InternalField(type, name));
+            methods.Add(name, method);
         }
+
+        private void AddFieldToEmitter(InternalField field)
+        {
+            TypeEmitter.AddField(field.FieldDefinition, field.Initializer);
+        }
+
         public string NewFunctionName()
         {
             return "$Lambda_" + lambdaCounter++.ToString();
         }
+
         public override string ToString()
         {
             string delim = "";
