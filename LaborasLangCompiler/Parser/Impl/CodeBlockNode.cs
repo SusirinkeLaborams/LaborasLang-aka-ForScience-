@@ -53,7 +53,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private void AddExpression(ExpressionNode node, Parser parser, AstNode lexerNode)
         {
-            if (node.ReturnType.FullName == parser.Primitives[Parser.Void].FullName)
+            if (node.TypeWrapper.FullName == parser.Void.FullName)
                 AddNode(node);
             else
                 AddNode(UnaryOperatorNode.Void(node));

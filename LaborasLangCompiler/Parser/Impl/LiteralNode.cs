@@ -41,13 +41,13 @@ namespace LaborasLangCompiler.Parser.Impl
             switch(lexerNode.Token.Name)
             {
                 case Lexer.IntegerLiteral:
-                    return parser.Primitives[Parser.Int];
+                    return parser.Int;
                 case Lexer.StringLiteral:
-                    return parser.Primitives[Parser.String];
+                    return parser.String;
                 case Lexer.FloatLiteral:
-                    return parser.Primitives[Parser.Double];
+                    return parser.Double;
                 case Lexer.BooleanLiteral:
-                    return parser.Primitives[Parser.Bool];
+                    return parser.Bool;
                 default:
                     throw new ParseException(parser.GetSequencePoint(lexerNode), "Unknown lexer type {0}", lexerNode.Token.Name);
             }

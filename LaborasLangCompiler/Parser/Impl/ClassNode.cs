@@ -113,8 +113,8 @@ namespace LaborasLangCompiler.Parser.Impl
             //local types not implemented
 
             //primitives
-            if (parser.Primitives.ContainsKey(name))
-                type = new TypeNode(parser.Primitives[name], point);
+            if (parser.IsPrimitive(name))
+                type = new TypeNode(parser.GetPrimitive(name), point);
 
             //imports
             if (type == null)

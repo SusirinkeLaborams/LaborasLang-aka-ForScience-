@@ -100,7 +100,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else if ((left.ReturnType.IsStringType() || right.ReturnType.IsStringType()) && BinaryOperatorType == BinaryOperatorNodeType.Addition)
             {
-                typeWrapper = parser.Primitives[Parser.String];
+                typeWrapper = parser.String;
             }
             else
             {
@@ -110,7 +110,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private void VerifyComparison(Parser parser)
         {
-            typeWrapper = parser.Primitives[Parser.Bool];
+            typeWrapper = parser.Bool;
 
             bool comparable = left.TypeWrapper.IsNumericType() && right.TypeWrapper.IsNumericType();
 
@@ -130,7 +130,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private void VerifyShift(Parser parser)
         {
             typeWrapper = left.TypeWrapper;
-            if (right.TypeWrapper.FullName != parser.Primitives[Parser.Int].FullName)
+            if (right.TypeWrapper.FullName != parser.Int.FullName)
                 throw new TypeException(SequencePoint, "Right shift operand must be of signed 32bit integer type");
             if (!left.TypeWrapper.IsIntegerType())
                 throw new TypeException(SequencePoint, "Left shift operand must be of integer type");
@@ -149,7 +149,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private void VerifyLogical(Parser parser)
         {
-            typeWrapper = parser.Primitives[Parser.Bool];
+            typeWrapper = parser.Bool;
 
             if (!(left.TypeWrapper.IsBooleanType() && right.TypeWrapper.IsBooleanType()))
                 throw new TypeException(SequencePoint, "Logical operations only allowed on booleans, operands: {0}, {1}",

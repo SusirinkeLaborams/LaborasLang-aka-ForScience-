@@ -12,9 +12,9 @@ namespace LaborasLangCompiler.Parser.Impl
     class ConditionBlockNode : ParserNode, IConditionBlock, IReturning
     {
         public override NodeType Type { get { return NodeType.ConditionBlock; } }
-        public IExpressionNode Condition { get; private set; }
-        public ICodeBlockNode TrueBlock { get; private set; }
-        public ICodeBlockNode FalseBlock { get; private set; }
+        public IExpressionNode Condition { get { return condition; } }
+        public ICodeBlockNode TrueBlock { get { return trueBlock; } }
+        public ICodeBlockNode FalseBlock { get { return falseBlock; } }
         protected ConditionBlockNode(SequencePoint sequencePoint) : base(sequencePoint) { }
         public bool Returns
         {
@@ -23,15 +23,18 @@ namespace LaborasLangCompiler.Parser.Impl
                 return ((CodeBlockNode)TrueBlock).Returns && FalseBlock != null && ((CodeBlockNode)FalseBlock).Returns;
             }
         }
+
+        private ExpressionNode condition;
+        private CodeBlockNode trueBlock, falseBlock;
         public static ConditionBlockNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var instance = new ConditionBlockNode(parser.GetSequencePoint(lexerNode));
-            instance.Condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[0].Children[0]);
-            if (instance.Condition.ReturnType.FullName != parser.Primitives[Parser.Bool].FullName)
+            instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[0].Children[0]);
+            if (instance.condition.TypeWrapper.FullName != parser.Bool.FullName)
                 throw new TypeException(instance.SequencePoint, "Condition must be a boolean expression");
-            instance.TrueBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[1].Children[0]);
+            instance.trueBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[1].Children[0]);
             if (lexerNode.Children.Count > 2)
-                instance.FalseBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[2].Children[0]);
+                instance.falseBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[2].Children[0]);
             return instance;
         }
         public override string ToString()

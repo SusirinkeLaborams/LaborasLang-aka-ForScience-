@@ -24,7 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public static ReturnNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var instance = new ReturnNode(parser.GetSequencePoint(lexerNode));
-            TypeWrapper retType = parser.Primitives[Parser.Void];
+            TypeWrapper retType = parser.Void;
             if (lexerNode.Children.Count > 0)
             {
                 instance.expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);

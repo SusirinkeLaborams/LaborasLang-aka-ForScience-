@@ -12,16 +12,19 @@ namespace LaborasLangCompiler.Parser.Impl
     class WhileBlock : ParserNode, IWhileBlockNode
     {
         public override NodeType Type { get { return NodeType.WhileBlock; } }
-        public IExpressionNode Condition { get; private set; }
-        public ICodeBlockNode ExecutedBlock { get; private set; }
+        public IExpressionNode Condition { get { return condition; } }
+        public ICodeBlockNode ExecutedBlock { get { return block; } }
+
+        private ExpressionNode condition;
+        private CodeBlockNode block;
         protected WhileBlock(SequencePoint point) : base(point) { }
         public static WhileBlock Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
             var instance = new WhileBlock(parser.GetSequencePoint(lexerNode));
-            instance.Condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[0].Children[0]);
-            if (instance.Condition.ReturnType.FullName != parser.Primitives[Parser.Bool].FullName)
+            instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[0].Children[0]);
+            if (instance.condition.TypeWrapper.FullName != parser.Bool.FullName)
                 throw new TypeException(instance.SequencePoint, "Condition must be a boolean expression");
-            instance.ExecutedBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[1]);
+            instance.block = CodeBlockNode.Parse(parser, parent, lexerNode.Children[1]);
             return instance;
         }
         public override string ToString()
