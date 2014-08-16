@@ -87,6 +87,7 @@
     <Compile Include="Parser\Exceptions\SymbolNotFoundException.cs" />
     <Compile Include="Parser\Exceptions\TypeException.cs" />
     <Compile Include="Parser\Impl\AmbiguousMethodNode.cs" />
+    <Compile Include="Parser\Impl\AmbiguousNode.cs" />
     <Compile Include="Parser\Impl\ConditionBlockNode.cs" />
     <Compile Include="Parser\Impl\DotOperatorNode.cs" />
     <Compile Include="Parser\Impl\IContainerNode.cs" />
