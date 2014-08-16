@@ -26,7 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.declaredSymbol = symbol;
             this.initializer = init;
         }
-        public static SymbolDeclarationNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static SymbolDeclarationNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             LValueNode symbol = null;
             ExpressionNode initializer = null;
@@ -51,7 +51,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (parent is CodeBlockNode)
                 symbol = ((CodeBlockNode)parent).AddVariable(declaredType, name, parser.GetSequencePoint(lexerNode));
             else
-                throw new ParseException(parser.GetSequencePoint(lexerNode), "SymbolDeclarationNode somehow parsed in a class");
+                throw new ParseException(parser.GetSequencePoint(lexerNode), "SymbolDeclarationNode somehow parsed not in a code block");
 
             return new SymbolDeclarationNode(symbol, initializer, parser.GetSequencePoint(lexerNode));
         }

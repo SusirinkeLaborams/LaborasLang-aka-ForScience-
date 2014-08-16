@@ -12,7 +12,7 @@ using LaborasLangCompiler.Parser.Impl.Wrappers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ReturnNode : ParserNode, IReturnNode, IReturning
+    class ReturnNode : ParserNode, IReturnNode, ReturningNode
     {
         public override NodeType Type { get { return NodeType.ReturnNode; } }
         public IExpressionNode Expression { get { return expression; } }
@@ -21,7 +21,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private ExpressionNode expression;
         protected ReturnNode(SequencePoint point) : base(point) { }
 
-        public static ReturnNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static ReturnNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var instance = new ReturnNode(parser.GetSequencePoint(lexerNode));
             TypeWrapper retType = parser.Void;

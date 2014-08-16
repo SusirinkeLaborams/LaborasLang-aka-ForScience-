@@ -14,7 +14,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.ParserInternal; } }
         protected ImportNode(SequencePoint point) : base(point) { }
-        public static void Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static void Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             string namespaze = parser.ValueOf(lexerNode.Children[0]);
             

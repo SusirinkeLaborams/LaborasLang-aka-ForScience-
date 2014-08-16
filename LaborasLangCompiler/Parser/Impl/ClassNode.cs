@@ -15,7 +15,7 @@ using LaborasLangCompiler.Parser.Impl.Wrappers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ClassNode : ParserNode, IContainerNode
+    class ClassNode : ParserNode, ContainerNode
     {
         #region fields
         private Dictionary<string, InternalField> fields;

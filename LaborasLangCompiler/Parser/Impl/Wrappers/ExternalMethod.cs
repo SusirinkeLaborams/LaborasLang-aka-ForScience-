@@ -11,7 +11,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     class ExternalMethod : ExternalWrapperBase, MethodWrapper
     {
         public MethodReference MethodReference { get; private set; }
-        public TypeWrapper FunctorType 
+        public FunctorTypeWrapper FunctorType 
         {
             get 
             {
@@ -37,7 +37,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         public bool IsStatic { get { return MethodReference.Resolve().IsStatic; } }
 
         private TypeWrapper methodReturnType;
-        private TypeWrapper functorType;
+        private FunctorTypeWrapper functorType;
         private IEnumerable<TypeWrapper> argumentTypes;
         public ExternalMethod(AssemblyEmitter assembly, MethodReference method) : base(assembly)
         {

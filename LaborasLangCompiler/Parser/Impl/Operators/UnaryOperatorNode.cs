@@ -25,9 +25,9 @@ namespace LaborasLangCompiler.Parser.Impl
             : base(operand.SequencePoint)
         {
             this.operand = operand;
-            UnaryOperatorType = type;
+            this.UnaryOperatorType = type;
         }
-        public static new ExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static new ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             if(lexerNode.Children.Count == 1)
             {
@@ -46,7 +46,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
-        private static ExpressionNode ParseSuffix(Parser parser, IContainerNode parent, AstNode lexerNode)
+        private static ExpressionNode ParseSuffix(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
             var ops = new List<UnaryOperatorNodeType>();
@@ -64,7 +64,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return ParseUnary(parser, expression, ops);
         }
-        private static ExpressionNode ParsePrefix(Parser parser, IContainerNode parent, AstNode lexerNode)
+        private static ExpressionNode ParsePrefix(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var count = lexerNode.Children.Count;
             var expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[count - 1]);
@@ -118,27 +118,27 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private void ParseInc(Parser parser)
         {
-            if (!ReturnType.IsNumericType() || Operand is LiteralNode)
+            if (!TypeWrapper.IsNumericType() || Operand is LiteralNode)
                 throw new TypeException(SequencePoint, "Increment/Decrement ops only allowed on numeric typed variables, {0} received",
-                    ReturnType);
+                    TypeWrapper);
         }
         private void ParseNegation(Parser parser)
         {
-            if (!ReturnType.IsNumericType())
+            if (!TypeWrapper.IsNumericType())
                 throw new TypeException(SequencePoint, "Arithmetic ops only allowed on numeric types, {0} received",
-                    ReturnType);
+                    TypeWrapper);
         }
         private void ParseLogical(Parser parser)
         {
-            if (!ReturnType.IsBooleanType())
+            if (!TypeWrapper.IsBooleanType())
                 throw new TypeException(SequencePoint, "Logical ops only allowed on boolean types, {0} received",
-                    ReturnType);
+                    TypeWrapper);
         }
         private void ParseBinary(Parser parser)
         {
-            if (!ReturnType.IsIntegerType())
+            if (!TypeWrapper.IsIntegerType())
                 throw new TypeException(SequencePoint, "Binary ops only allowed on integer types, {0} received",
-                    ReturnType);
+                    TypeWrapper);
         }
         public static UnaryOperatorNode Void(ExpressionNode expression)
         {

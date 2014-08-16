@@ -13,15 +13,16 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class CodeBlockNode : ParserNode, ICodeBlockNode, IContainerNode, IReturning
+    class CodeBlockNode : ParserNode, ICodeBlockNode, ContainerNode, ReturningNode
     {
         public override NodeType Type { get { return NodeType.CodeBlockNode; } }
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
         public bool Returns { get; private set; }
+
         protected List<ParserNode> nodes;
         protected Dictionary<string, VariableWrapper> symbols;
-        private IContainerNode parent;
-        protected CodeBlockNode(IContainerNode parent, SequencePoint point) : base(point)
+        private ContainerNode parent;
+        protected CodeBlockNode(ContainerNode parent, SequencePoint point) : base(point)
         {
             nodes = new List<ParserNode>();
             symbols = new Dictionary<string, VariableWrapper>();
@@ -46,19 +47,19 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private void AddNode(ParserNode node)
         {
-            if (node is IReturning)
-                if (((IReturning)node).Returns)
+            if (node is ReturningNode)
+                if (((ReturningNode)node).Returns)
                     Returns = true;
             nodes.Add(node);
         }
-        private void AddExpression(ExpressionNode node, Parser parser, AstNode lexerNode)
+        private void AddExpression(ExpressionNode node, Parser parser)
         {
             if (node.TypeWrapper.FullName == parser.Void.FullName)
                 AddNode(node);
             else
                 AddNode(UnaryOperatorNode.Void(node));
         }
-        public static CodeBlockNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static CodeBlockNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var instance = new CodeBlockNode(parent, parser.GetSequencePoint(lexerNode));
             foreach (var node in lexerNode.Children)
@@ -68,17 +69,13 @@ namespace LaborasLangCompiler.Parser.Impl
                     var sentence = node.Children[0];
                     switch (sentence.Token.Name)
                     {
-                        case Lexer.NamespaceImport:
-                            throw new ParseException(parser.GetSequencePoint(sentence), "Imports only allowed in classes");
                         case Lexer.Declaration:
                         case Lexer.DeclarationAndAssignment:
                             instance.AddNode(SymbolDeclarationNode.Parse(parser, instance, sentence));
                             break;
-                        case Lexer.Assignment:
-                            instance.AddExpression(AssignmentOperatorNode.Parse(parser, instance, sentence), parser, sentence);
-                            break;
                         case Lexer.FunctionCall:
-                            instance.AddExpression(MethodCallNode.Parse(parser, instance, sentence), parser, sentence);
+                        case Lexer.Assignment:
+                            instance.AddExpression(ExpressionNode.Parse(parser, instance, sentence), parser);
                             break;
                         case Lexer.Loop:
                             instance.AddNode(WhileBlock.Parse(parser, instance, sentence));

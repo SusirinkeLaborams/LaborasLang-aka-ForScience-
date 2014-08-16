@@ -28,7 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Arguments = args;
             this.type = returnType;
         }
-        public static new MethodCallNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static new MethodCallNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             if (lexerNode.Children[0].Token.Name == Lexer.Create)
                 throw new NotImplementedException("Create not implemented");
@@ -41,7 +41,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 args.Add(ExpressionNode.Parse(parser, parent, node));
             }
             var method = function.ExtractMethod(args.Select(arg => arg.TypeWrapper));
-            var returnType = new ExternalType(parser.Assembly, ILHelpers.GetFunctorReturnType(parser.Assembly, method.ReturnType));
+            var returnType = ((FunctorTypeWrapper)method.TypeWrapper).FunctorReturnType;
             return new MethodCallNode(method, returnType, args, parser.GetSequencePoint(lexerNode));
         }
         public override string ToString()

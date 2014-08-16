@@ -17,15 +17,15 @@ namespace LaborasLangCompiler.Parser.Impl
         ExpressionNode builtNode;
         Parser parser;
         ClassNode cls;
-        IContainerNode parent;
+        ContainerNode parent;
 
-        private DotOperatorNode(Parser parser, IContainerNode parent)
+        private DotOperatorNode(Parser parser, ContainerNode parent)
         {
             this.parser = parser;
             this.parent = parent;
             this.cls = parent.GetClass();
         }
-        public static DotOperatorNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static DotOperatorNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var instance = new DotOperatorNode(parser, parent);
             foreach(var node in lexerNode.Children)

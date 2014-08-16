@@ -20,14 +20,16 @@ namespace LaborasLangCompiler.Parser.Impl
         public IExpressionNode ObjectInstance { get; private set; }
         public MethodReference Function { get { return method.MethodReference; } }
         public MethodWrapper MethodWrapper { get { return method; } }
+
         private MethodWrapper method;
+
         public MethodNode(MethodWrapper method, IExpressionNode instance, SequencePoint point)
             : base(point)
         {
             this.method = method;
             this.ObjectInstance = instance;
         }
-        public static MethodNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode, string name = null)
+        public static MethodNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode, string name = null)
         {
             var method = FunctionDeclarationNode.Parse(parser, parent, lexerNode, name);
             return new MethodNode(method, null, method.SequencePoint);

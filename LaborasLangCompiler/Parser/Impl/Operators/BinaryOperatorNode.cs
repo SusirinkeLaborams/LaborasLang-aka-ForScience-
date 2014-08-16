@@ -19,13 +19,13 @@ namespace LaborasLangCompiler.Parser.Impl
         public IExpressionNode RightOperand { get { return right; } }
         public IExpressionNode LeftOperand { get { return left; } }
         public override RValueNodeType RValueType { get { return RValueNodeType.BinaryOperator; } }
-        public BinaryOperatorNodeType BinaryOperatorType { get; set; }
+        public BinaryOperatorNodeType BinaryOperatorType { get; private set; }
         public override TypeWrapper TypeWrapper { get { return typeWrapper; } }
 
         private TypeWrapper typeWrapper;
         private ExpressionNode left, right;
         protected BinaryOperatorNode(SequencePoint point) : base(point) { }
-        public static new ExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static new ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             if (lexerNode.Children.Count == 1)
             {
@@ -88,17 +88,17 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private void VerifyArithmetic(Parser parser)
         {
-            if (left.ReturnType.IsNumericType() && right.ReturnType.IsNumericType())
+            if (left.TypeWrapper.IsNumericType() && right.TypeWrapper.IsNumericType())
             {
-                if (left.ReturnType.IsAssignableTo(right.ReturnType))
+                if (left.TypeWrapper.IsAssignableTo(right.TypeWrapper))
                     typeWrapper = right.TypeWrapper;
-                else if (right.ReturnType.IsAssignableTo(left.ReturnType))
+                else if (right.TypeWrapper.IsAssignableTo(left.TypeWrapper))
                     typeWrapper = left.TypeWrapper;
                 else
                     throw new TypeException(SequencePoint, "Incompatible operand types, {0} and {1} received",
-                        left.ReturnType.FullName, right.ReturnType.FullName);
+                        left.TypeWrapper.FullName, right.TypeWrapper.FullName);
             }
-            else if ((left.ReturnType.IsStringType() || right.ReturnType.IsStringType()) && BinaryOperatorType == BinaryOperatorNodeType.Addition)
+            else if ((left.TypeWrapper.IsStringType() || right.TypeWrapper.IsStringType()) && BinaryOperatorType == BinaryOperatorNodeType.Addition)
             {
                 typeWrapper = parser.String;
             }

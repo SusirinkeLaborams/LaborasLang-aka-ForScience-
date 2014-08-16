@@ -16,12 +16,14 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.AssignmentOperator; } }
         public override TypeWrapper TypeWrapper { get { return type; } }
-        public ILValueNode LeftOperand { get; private set; }
-        public IExpressionNode RightOperand { get; private set; }
+        public ILValueNode LeftOperand { get { return left; } }
+        public IExpressionNode RightOperand { get { return right; } }
 
         private TypeWrapper type;
+        private LValueNode left;
+        private ExpressionNode right;
         protected AssignmentOperatorNode(SequencePoint point) : base(point) { }
-        public static new AssignmentOperatorNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static new AssignmentOperatorNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var instance = new AssignmentOperatorNode(parser.GetSequencePoint(lexerNode));
             var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]).ExtractLValue();
@@ -32,10 +34,10 @@ namespace LaborasLangCompiler.Parser.Impl
             if (op != "=")
                 right = BinaryOperatorNode.Parse(parser, op.Remove(op.Length - 1), left, right);
 
-            if (!right.ReturnType.IsAssignableTo(left.ReturnType))
-                throw new TypeException(instance.SequencePoint, "Assigned {0} to {1}", instance.RightOperand.ReturnType, instance.LeftOperand.ReturnType);
-            instance.RightOperand = right;
-            instance.LeftOperand = left;
+            if (!right.TypeWrapper.IsAssignableTo(left.TypeWrapper))
+                throw new TypeException(instance.SequencePoint, "Assigned {0} to {1}", instance.right.TypeWrapper, instance.left.TypeWrapper);
+            instance.right = right;
+            instance.left = left;
             return instance;    
         }
         public override string ToString()

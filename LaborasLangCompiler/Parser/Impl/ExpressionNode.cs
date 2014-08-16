@@ -20,7 +20,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeReference ReturnType { get { return TypeWrapper != null ? TypeWrapper.TypeReference : null; } }
         public abstract TypeWrapper TypeWrapper { get; }
         protected ExpressionNode(SequencePoint sequencePoint) : base(sequencePoint) { }
-        public static ExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             switch (lexerNode.Token.Name)
             {

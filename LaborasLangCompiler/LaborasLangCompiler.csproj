@@ -90,9 +90,9 @@
     <Compile Include="Parser\Impl\AmbiguousNode.cs" />
     <Compile Include="Parser\Impl\ConditionBlockNode.cs" />
     <Compile Include="Parser\Impl\DotOperatorNode.cs" />
-    <Compile Include="Parser\Impl\IContainerNode.cs" />
+    <Compile Include="Parser\Impl\ContainerNode.cs" />
     <Compile Include="Parser\Impl\ImportNode.cs" />
-    <Compile Include="Parser\Impl\IReturning.cs" />
+    <Compile Include="Parser\Impl\ReturningNode.cs" />
     <Compile Include="Parser\Impl\MethodCallNode.cs" />
     <Compile Include="Parser\Impl\MethodNode.cs" />
     <Compile Include="Parser\Impl\Operators\AssignmentOperatorNode.cs" />

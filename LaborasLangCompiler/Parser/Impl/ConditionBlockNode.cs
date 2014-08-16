@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ConditionBlockNode : ParserNode, IConditionBlock, IReturning
+    class ConditionBlockNode : ParserNode, IConditionBlock, ReturningNode
     {
         public override NodeType Type { get { return NodeType.ConditionBlock; } }
         public IExpressionNode Condition { get { return condition; } }
@@ -26,7 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private ExpressionNode condition;
         private CodeBlockNode trueBlock, falseBlock;
-        public static ConditionBlockNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static ConditionBlockNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var instance = new ConditionBlockNode(parser.GetSequencePoint(lexerNode));
             instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[0].Children[0]);
