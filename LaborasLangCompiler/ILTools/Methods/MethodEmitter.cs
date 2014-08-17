@@ -180,7 +180,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             if (symbolDeclaration.Initializer != null)
             {
-                EmitExpressionWithTargetType(symbolDeclaration.Initializer, symbolDeclaration.DeclaredSymbol.ReturnType);
+                EmitExpressionWithTargetType(symbolDeclaration.Initializer, symbolDeclaration.DeclaredSymbol.ExpressionReturnType);
                 EmitStore(symbolDeclaration.DeclaredSymbol);
             }
         }
@@ -496,7 +496,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Emit(objectInstance, true);
             }
 
-            EmitExpressionWithTargetType(assignmentOperator.RightOperand, assignmentOperator.LeftOperand.ReturnType);
+            EmitExpressionWithTargetType(assignmentOperator.RightOperand, assignmentOperator.LeftOperand.ExpressionReturnType);
 
             if (duplicateValueInStack)
             {
@@ -508,7 +508,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 {
                     // Right operand could be a different type, 
                     // so it will get casted to left operand type
-                    tempVariable = AcquireTempVariable(assignmentOperator.LeftOperand.ReturnType);
+                    tempVariable = AcquireTempVariable(assignmentOperator.LeftOperand.ExpressionReturnType);
 
                     Dup();
                     Stloc(tempVariable.Index);
@@ -535,7 +535,7 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             bool expressionIsFunction = expression.ExpressionType == ExpressionNodeType.RValue &&
                 ((IRValueNode)expression).RValueType == RValueNodeType.Function;
-            bool expressionIsFunctor = expression.ReturnType.IsFunctorType();
+            bool expressionIsFunctor = expression.ExpressionReturnType.IsFunctorType();
             bool canEmitExpressionAsReference = CanEmitAsReference(expression);
 
             var targetBaseType = targetType.Resolve().BaseType;
@@ -562,7 +562,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     // Here we have a functor object on top of the stack
                     
                     var delegateType = targetType;
-                    var functorType = expression.ReturnType;
+                    var functorType = expression.ExpressionReturnType;
 
                     var asDelegateMethod = AssemblyRegistry.GetMethod(Assembly, functorType, "AsDelegate");
                     var delegateInvokeMethod = AssemblyRegistry.GetMethod(Assembly, asDelegateMethod.ReturnType, "Invoke");
@@ -575,7 +575,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitConversionIfNeeded(expression.ReturnType, targetType);
+                EmitConversionIfNeeded(expression.ExpressionReturnType, targetType);
             }
         }
 
@@ -668,7 +668,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Emit(IFunctionNode function)
         {
-            var returnTypeIsDelegate = function.ReturnType.Resolve().BaseType.FullName == "System.MulticastDelegate";
+            var returnTypeIsDelegate = function.ExpressionReturnType.Resolve().BaseType.FullName == "System.MulticastDelegate";
 
             if (!returnTypeIsDelegate)
             {
@@ -684,7 +684,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                var ctor = AssemblyRegistry.GetMethod(Assembly, function.ReturnType, ".ctor");
+                var ctor = AssemblyRegistry.GetMethod(Assembly, function.ExpressionReturnType, ".ctor");
 
                 if (function.Function.HasThis)
                 {
@@ -726,7 +726,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {   // Functor Call
-                var invokeMethod = AssemblyRegistry.GetMethod(Assembly, function.ReturnType, "Invoke");
+                var invokeMethod = AssemblyRegistry.GetMethod(Assembly, function.ExpressionReturnType, "Invoke");
 
                 Emit(function, true);
                 EmitArgumentsForCall(functionCall.Arguments, invokeMethod);
@@ -850,7 +850,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Emit(ILiteralNode literal)
         {
-            switch (literal.ReturnType.FullName)
+            switch (literal.ExpressionReturnType.FullName)
             {
                 case "System.Boolean":
                     Ldc_I4(literal.Value ? 1 : 0);
@@ -901,14 +901,14 @@ namespace LaborasLangCompiler.ILTools.Methods
                     return;
 
                 default:
-                    throw new NotSupportedException("Unknown literal type: " + literal.ReturnType.FullName);
+                    throw new NotSupportedException("Unknown literal type: " + literal.ExpressionReturnType.FullName);
             }
         }
 
         protected void Emit(IObjectCreationNode objectCreation)
         {
-            var ctor = AssemblyRegistry.GetCompatibleMethod(Assembly, objectCreation.ReturnType, ".ctor",
-                objectCreation.Arguments.Select(argument => argument.ReturnType).ToList());
+            var ctor = AssemblyRegistry.GetCompatibleMethod(Assembly, objectCreation.ExpressionReturnType, ".ctor",
+                objectCreation.Arguments.Select(argument => argument.ExpressionReturnType).ToList());
 
             foreach (var argument in objectCreation.Arguments)
             {
@@ -996,7 +996,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitAddNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ReturnType);
+                EmitAddNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ExpressionReturnType);
             }
         }
 
@@ -1010,16 +1010,16 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             Emit(left, false);
 
-            if (left.ReturnType.IsValueType)
+            if (left.ExpressionReturnType.IsValueType)
             {
-                Box(left.ReturnType);
+                Box(left.ExpressionReturnType);
             }
 
             Emit(right, false);
 
-            if (right.ReturnType.IsValueType)
+            if (right.ExpressionReturnType.IsValueType)
             {
-                Box(right.ReturnType);
+                Box(right.ExpressionReturnType);
             }
 
             var concatMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, "System.String", "Concat", new List<string>()
@@ -1079,7 +1079,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitGreaterEqualThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ReturnType);
+                EmitGreaterEqualThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ExpressionReturnType);
             }
         }
 
@@ -1125,7 +1125,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitGreaterThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ReturnType);
+                EmitGreaterThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ExpressionReturnType);
             }
         }
 
@@ -1165,7 +1165,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitLessEqualThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ReturnType);
+                EmitLessEqualThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ExpressionReturnType);
             }
         }
 
@@ -1211,7 +1211,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitLessThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ReturnType);
+                EmitLessThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ExpressionReturnType);
             }
         }
 
@@ -1310,28 +1310,28 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitOperandsAndConvertIfNeeded(IExpressionNode left, IExpressionNode right)
         {
-            bool conversionNeeded = left.ReturnType.FullName != right.ReturnType.FullName;
+            bool conversionNeeded = left.ExpressionReturnType.FullName != right.ExpressionReturnType.FullName;
 
             if (!conversionNeeded)
             {
                 Emit(left, false);
                 Emit(right, false);
             }
-            else if (left.ReturnType.IsAssignableTo(right.ReturnType))
+            else if (left.ExpressionReturnType.IsAssignableTo(right.ExpressionReturnType))
             {
                 Emit(left, false);
-                EmitConversionIfNeeded(left.ReturnType, right.ReturnType);
+                EmitConversionIfNeeded(left.ExpressionReturnType, right.ExpressionReturnType);
                 Emit(right, false);
             }
-            else if (right.ReturnType.IsAssignableTo(right.ReturnType))
+            else if (right.ExpressionReturnType.IsAssignableTo(right.ExpressionReturnType))
             {
                 Emit(left, false);
                 Emit(right, false);
-                EmitConversionIfNeeded(right.ReturnType, left.ReturnType);
+                EmitConversionIfNeeded(right.ExpressionReturnType, left.ExpressionReturnType);
             }
             else
             {
-                throw new ArgumentException(string.Format("{0} and {1} cannot be cast to each other!", left.ReturnType.FullName, right.ReturnType.FullName));
+                throw new ArgumentException(string.Format("{0} and {1} cannot be cast to each other!", left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName));
             }
         }
 

@@ -49,7 +49,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = assemblyEmitter.TypeToTypeReference(typeof(string)),
+                                ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(string)),
                                 Value = "Hello, world!"
                             }
                         }
@@ -57,7 +57,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
+                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = new MethodCallNode()
                         {
                             Function = new FunctionNode()
@@ -92,7 +92,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         },
                         Initializer = new LiteralNode()
                         {
-                            ReturnType = assemblyEmitter.TypeToTypeReference(typeof(float)),
+                            ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(float)),
                             Value = 2.5
                         }
                     }
@@ -116,7 +116,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
+                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new FieldNode()
@@ -125,7 +125,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new LiteralNode()
                             {
-                                ReturnType = assemblyEmitter.TypeToTypeReference(typeof(int)),
+                                ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(int)),
                                 Value = 1
                             }
                         }
@@ -184,7 +184,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
+                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new FieldNode()
@@ -219,14 +219,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         },
                         Initializer = new LiteralNode
                         {
-                            ReturnType = assemblyEmitter.TypeToTypeReference(typeof(double)),
+                            ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(double)),
                             Value = 5.5
                         }
                     },
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
+                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new PropertyNode()
@@ -260,7 +260,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new LiteralNode()
                     {
-                        ReturnType = assemblyEmitter.TypeToTypeReference(typeof(string)),
+                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(string)),
                         Value = "Test"
                     }
                 }
@@ -281,7 +281,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
+                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new FunctionArgumentNode()
@@ -311,7 +311,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = assemblyEmitter.TypeToTypeReference(typeof(string)),
+                                ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(string)),
                                 Value = "Test"
                             }
                         }
@@ -349,7 +349,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode
                             {
-                                ReturnType = assemblyEmitter.TypeToTypeReference(typeof(bool)),
+                                ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(bool)),
                                 Value = true
                             }
                         }
@@ -372,7 +372,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             {
                 RightOperand = new LiteralNode()
                 {
-                    ReturnType = assemblyEmitter.TypeToTypeReference(typeof(int)),
+                    ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(int)),
                     Value = 110
                 }
             };
@@ -407,7 +407,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
+                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = assignmentNode
                     }
                 }
@@ -429,7 +429,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             {
                 RightOperand = new LiteralNode()
                 {
-                    ReturnType = floatType,
+                    ExpressionReturnType = floatType,
                     Value = 110
                 }
             };
@@ -444,7 +444,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     ObjectInstance = new ThisNode
                     {
-                        ReturnType = field.DeclaringType
+                        ExpressionReturnType = field.DeclaringType
                     },
                     Field = field
                 };
@@ -467,7 +467,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Operand = assignmentNode
                     }
                 }
@@ -510,7 +510,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new LocalVariableNode()
@@ -519,15 +519,15 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new BinaryOperatorNode()
                             {
-                                ReturnType = intType,
+                                ExpressionReturnType = intType,
                                 LeftOperand = new LiteralNode()
                                 {
-                                    ReturnType = intType,
+                                    ExpressionReturnType = intType,
                                     Value = 2
                                 },
                                 RightOperand = new LiteralNode()
                                 {
-                                    ReturnType = intType,
+                                    ExpressionReturnType = intType,
                                     Value = 3
                                 },
                             }
@@ -564,7 +564,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new LocalVariableNode()
@@ -573,15 +573,15 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new BinaryOperatorNode()
                             {
-                                ReturnType = floatType,
+                                ExpressionReturnType = floatType,
                                 LeftOperand = new LiteralNode()
                                 {
-                                    ReturnType = floatType,
+                                    ExpressionReturnType = floatType,
                                     Value = 3.2f
                                 },
                                 RightOperand = new LiteralNode()
                                 {
-                                    ReturnType = intType,
+                                    ExpressionReturnType = intType,
                                     Value = 2
                                 },
                             }
@@ -611,7 +611,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new FieldNode()
@@ -620,15 +620,15 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new BinaryOperatorNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 LeftOperand = new LiteralNode()
                                 {
-                                    ReturnType = stringType,
+                                    ExpressionReturnType = stringType,
                                     Value = "testing string addition: "
                                 },
                                 RightOperand = new LiteralNode()
                                 {
-                                    ReturnType = intType,
+                                    ExpressionReturnType = intType,
                                     Value = 22
                                 },
                             }
@@ -657,7 +657,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new UnaryOperatorNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
@@ -667,16 +667,16 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new BinaryOperatorNode()
                             {
-                                ReturnType = doubleType,
+                                ExpressionReturnType = doubleType,
                                 BinaryOperatorType = BinaryOperatorNodeType.Subtraction,
                                 LeftOperand = new LiteralNode()
                                 {
-                                    ReturnType = doubleType,
+                                    ExpressionReturnType = doubleType,
                                     Value = 3.4
                                 },
                                 RightOperand = new LiteralNode()
                                 {
-                                    ReturnType = floatType,
+                                    ExpressionReturnType = floatType,
                                     Value = 5.5f
                                 }
                             }
@@ -705,7 +705,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new UnaryOperatorNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
@@ -715,16 +715,16 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new BinaryOperatorNode()
                             {
-                                ReturnType = uintType,
+                                ExpressionReturnType = uintType,
                                 BinaryOperatorType = BinaryOperatorNodeType.Multiplication,
                                 LeftOperand = new LiteralNode()
                                 {
-                                    ReturnType = uintType,
+                                    ExpressionReturnType = uintType,
                                     Value = 5
                                 },
                                 RightOperand = new LiteralNode()
                                 {
-                                    ReturnType = uintType,
+                                    ExpressionReturnType = uintType,
                                     Value = 3
                                 }
                             }
@@ -753,7 +753,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new UnaryOperatorNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
@@ -763,16 +763,16 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new BinaryOperatorNode()
                             {
-                                ReturnType = doubleType,
+                                ExpressionReturnType = doubleType,
                                 BinaryOperatorType = BinaryOperatorNodeType.Division,
                                 LeftOperand = new LiteralNode()
                                 {
-                                    ReturnType = doubleType,
+                                    ExpressionReturnType = doubleType,
                                     Value = 15.4
                                 },
                                 RightOperand = new LiteralNode()
                                 {
-                                    ReturnType = doubleType,
+                                    ExpressionReturnType = doubleType,
                                     Value = 4.8
                                 }
                             }
@@ -801,7 +801,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new UnaryOperatorNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
@@ -811,16 +811,16 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new BinaryOperatorNode()
                             {
-                                ReturnType = uintType,
+                                ExpressionReturnType = uintType,
                                 BinaryOperatorType = BinaryOperatorNodeType.Division,
                                 LeftOperand = new LiteralNode()
                                 {
-                                    ReturnType = uintType,
+                                    ExpressionReturnType = uintType,
                                     Value = 17
                                 },
                                 RightOperand = new LiteralNode()
                                 {
-                                    ReturnType = uintType,
+                                    ExpressionReturnType = uintType,
                                     Value = 3
                                 }
                             }
@@ -849,7 +849,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new UnaryOperatorNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
@@ -859,16 +859,16 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new BinaryOperatorNode()
                             {
-                                ReturnType = intType,
+                                ExpressionReturnType = intType,
                                 BinaryOperatorType = BinaryOperatorNodeType.Modulus,
                                 LeftOperand = new LiteralNode()
                                 {
-                                    ReturnType = intType,
+                                    ExpressionReturnType = intType,
                                     Value = 94
                                 },
                                 RightOperand = new LiteralNode()
                                 {
-                                    ReturnType = intType,
+                                    ExpressionReturnType = intType,
                                     Value = -17
                                 }
                             }
@@ -897,7 +897,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new UnaryOperatorNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
@@ -907,16 +907,16 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new BinaryOperatorNode()
                             {
-                                ReturnType = uintType,
+                                ExpressionReturnType = uintType,
                                 BinaryOperatorType = BinaryOperatorNodeType.Modulus,
                                 LeftOperand = new LiteralNode()
                                 {
-                                    ReturnType = uintType,
+                                    ExpressionReturnType = uintType,
                                     Value = 41
                                 },
                                 RightOperand = new LiteralNode()
                                 {
-                                    ReturnType = uintType,
+                                    ExpressionReturnType = uintType,
                                     Value = 81
                                 }
                             }
@@ -945,7 +945,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new UnaryOperatorNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
@@ -955,26 +955,26 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new BinaryOperatorNode()
                             {
-                                ReturnType = uintType,
+                                ExpressionReturnType = uintType,
                                 BinaryOperatorType = BinaryOperatorNodeType.ShiftLeft,
                                 LeftOperand = new BinaryOperatorNode()
                                 {
-                                    ReturnType = uintType,
+                                    ExpressionReturnType = uintType,
                                     BinaryOperatorType = BinaryOperatorNodeType.ShiftRight,
                                     LeftOperand = new LiteralNode()
                                     {
-                                        ReturnType = uintType,
+                                        ExpressionReturnType = uintType,
                                         Value = 15
                                     },
                                     RightOperand = new LiteralNode()
                                     {
-                                        ReturnType = ushortType,
+                                        ExpressionReturnType = ushortType,
                                         Value = 2
                                     }
                                 },
                                 RightOperand = new LiteralNode()
                                 {
-                                    ReturnType = uintType,
+                                    ExpressionReturnType = uintType,
                                     Value = 3
                                 }
                             }
@@ -1018,7 +1018,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         },
                         Initializer = new LiteralNode()
                         {
-                            ReturnType = literalType,
+                            ExpressionReturnType = literalType,
                             Value = value1
                         }
                     },
@@ -1030,7 +1030,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         },
                         Initializer = new LiteralNode()
                         {
-                            ReturnType = literalType,
+                            ExpressionReturnType = literalType,
                             Value = value2
                         }
                     },
@@ -1038,7 +1038,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     {
                         Condition = new BinaryOperatorNode()
                         {
-                            ReturnType = boolType,
+                            ExpressionReturnType = boolType,
                             BinaryOperatorType = BinaryOperatorNodeType.GreaterThan,
                             LeftOperand = new LocalVariableNode()
                             {
@@ -1055,7 +1055,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             {
                                 new MethodCallNode()
                                 {
-                                    ReturnType = voidType,
+                                    ExpressionReturnType = voidType,
                                     Function = new FunctionNode()
                                     {
                                         Function = outputMethod,
@@ -1064,7 +1064,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                     {
                                         new LiteralNode()
                                         {
-                                            ReturnType = stringType,
+                                            ExpressionReturnType = stringType,
                                             Value = "{0} is greater than {1}."
                                         },
                                         new LocalVariableNode()
@@ -1087,7 +1087,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                 {
                                     Condition = new BinaryOperatorNode()
                                     {
-                                        ReturnType = boolType,
+                                        ExpressionReturnType = boolType,
                                         BinaryOperatorType = BinaryOperatorNodeType.LessThan,
                                         LeftOperand = new LocalVariableNode()
                                         {
@@ -1104,7 +1104,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                         {
                                             new MethodCallNode()
                                             {
-                                                ReturnType = voidType,
+                                                ExpressionReturnType = voidType,
                                                 Function = new FunctionNode()
                                                 {
                                                     Function = outputMethod,
@@ -1113,7 +1113,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                                 {
                                                     new LiteralNode()
                                                     {
-                                                        ReturnType = stringType,
+                                                        ExpressionReturnType = stringType,
                                                         Value = "{0} is less than {1}."
                                                     },
                                                     new LocalVariableNode()
@@ -1136,7 +1136,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                             {
                                                 Condition = new BinaryOperatorNode()
                                                 {
-                                                    ReturnType = boolType,
+                                                    ExpressionReturnType = boolType,
                                                     BinaryOperatorType = BinaryOperatorNodeType.Equals,
                                                     LeftOperand = new LocalVariableNode()
                                                     {
@@ -1153,7 +1153,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                                     {
                                                         new MethodCallNode()
                                                         {
-                                                            ReturnType = voidType,
+                                                            ExpressionReturnType = voidType,
                                                             Function = new FunctionNode()
                                                             {
                                                                 Function = outputMethod,
@@ -1162,7 +1162,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                                             {
                                                                 new LiteralNode()
                                                                 {
-                                                                    ReturnType = stringType,
+                                                                    ExpressionReturnType = stringType,
                                                                     Value = "{0} and {1} are equal."
                                                                 },
                                                                 new LocalVariableNode()
@@ -1183,7 +1183,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                                     {
                                                         new MethodCallNode()
                                                         {
-                                                            ReturnType = voidType,
+                                                            ExpressionReturnType = voidType,
                                                             Function = new FunctionNode()
                                                             {
                                                                 Function = outputMethod,
@@ -1192,7 +1192,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                                             {
                                                                 new LiteralNode()
                                                                 {
-                                                                    ReturnType = stringType,
+                                                                    ExpressionReturnType = stringType,
                                                                     Value = "We're screwed."
                                                                 },
                                                                 new LocalVariableNode()
@@ -1252,13 +1252,13 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var literal1 = new LiteralNode()
             {
-                ReturnType = literalType,
+                ExpressionReturnType = literalType,
                 Value = value1,
             };
 
             var literal2 = new LiteralNode()
             {
-                ReturnType = literalType,
+                ExpressionReturnType = literalType,
                 Value = value2,
             };
 
@@ -1268,7 +1268,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new MethodCallNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
                             Function = outputMethod
@@ -1277,14 +1277,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 Value = "Is {0} is greater than or equal to {1}? {2}"
                             },
                             literal1,
                             literal2,
                             new BinaryOperatorNode()
                             {
-                                ReturnType = booleanType,
+                                ExpressionReturnType = booleanType,
                                 BinaryOperatorType = BinaryOperatorNodeType.GreaterEqualThan,
                                 LeftOperand = literal1,
                                 RightOperand = literal2
@@ -1293,7 +1293,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     },
                     new MethodCallNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
                             Function = outputMethod
@@ -1302,14 +1302,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 Value = "Is {0} is less than or equal to {1}? {2}"
                             },
                             literal1,
                             literal2,
                             new BinaryOperatorNode()
                             {
-                                ReturnType = booleanType,
+                                ExpressionReturnType = booleanType,
                                 BinaryOperatorType = BinaryOperatorNodeType.LessEqualThan,
                                 LeftOperand = literal1,
                                 RightOperand = literal2
@@ -1318,7 +1318,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     },
                     new MethodCallNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
                             Function = outputMethod
@@ -1327,14 +1327,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 Value = "Is {0} is not equal to {1}? {2}"
                             },
                             literal1,
                             literal2,
                             new BinaryOperatorNode()
                             {
-                                ReturnType = booleanType,
+                                ExpressionReturnType = booleanType,
                                 BinaryOperatorType = BinaryOperatorNodeType.NotEquals,
                                 LeftOperand = literal1,
                                 RightOperand = literal2
@@ -1392,13 +1392,13 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var literal1 = new LiteralNode()
             {
-                ReturnType = booleanType,
+                ExpressionReturnType = booleanType,
                 Value = true
             };
 
             var literal2 = new LiteralNode()
             {
-                ReturnType = booleanType,
+                ExpressionReturnType = booleanType,
                 Value = false
             };
 
@@ -1419,7 +1419,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
                     new MethodCallNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
                             Function = outputMethod
@@ -1428,14 +1428,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 Value = "{0} && {1} == {2}."
                             },
                             variable1,
                             variable2,
                             new BinaryOperatorNode()
                             {
-                                ReturnType = booleanType,
+                                ExpressionReturnType = booleanType,
                                 BinaryOperatorType = BinaryOperatorNodeType.LogicalAnd,
                                 LeftOperand = variable1,
                                 RightOperand = variable2
@@ -1444,7 +1444,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     },
                     new MethodCallNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
                             Function = outputMethod
@@ -1453,14 +1453,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 Value = "{0} || {1} == {2}."
                             },
                             variable1,
                             variable2,
                             new BinaryOperatorNode()
                             {
-                                ReturnType = booleanType,
+                                ExpressionReturnType = booleanType,
                                 BinaryOperatorType = BinaryOperatorNodeType.LogicalOr,
                                 LeftOperand = variable1,
                                 RightOperand = variable2
@@ -1502,13 +1502,13 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var literal1 = new LiteralNode()
             {
-                ReturnType = uintType,
+                ExpressionReturnType = uintType,
                 Value = 0x156
             };
 
             var literal2 = new LiteralNode()
             {
-                ReturnType = uintType,
+                ExpressionReturnType = uintType,
                 Value = 0x841
             };
 
@@ -1529,7 +1529,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
                     new MethodCallNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
                             Function = outputMethod
@@ -1538,14 +1538,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 Value = "{0} & {1} == {2}."
                             },
                             variable1,
                             variable2,
                             new BinaryOperatorNode()
                             {
-                                ReturnType = uintType,
+                                ExpressionReturnType = uintType,
                                 BinaryOperatorType = BinaryOperatorNodeType.BinaryAnd,
                                 LeftOperand = variable1,
                                 RightOperand = variable2
@@ -1554,7 +1554,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     },
                     new MethodCallNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
                             Function = outputMethod
@@ -1563,14 +1563,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 Value = "{0} | {1} == {2}."
                             },
                             variable1,
                             variable2,
                             new BinaryOperatorNode()
                             {
-                                ReturnType = uintType,
+                                ExpressionReturnType = uintType,
                                 BinaryOperatorType = BinaryOperatorNodeType.BinaryOr,
                                 LeftOperand = variable1,
                                 RightOperand = variable2
@@ -1579,7 +1579,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     },
                     new MethodCallNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
                             Function = outputMethod
@@ -1588,14 +1588,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 Value = "{0} ^ {1} == {2}."
                             },
                             variable1,
                             variable2,
                             new BinaryOperatorNode()
                             {
-                                ReturnType = uintType,
+                                ExpressionReturnType = uintType,
                                 BinaryOperatorType = BinaryOperatorNodeType.BinaryXor,
                                 LeftOperand = variable1,
                                 RightOperand = variable2
@@ -1650,7 +1650,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         DeclaredSymbol = variables[0],
                         Initializer = new LiteralNode()
                         {
-                            ReturnType = intType,
+                            ExpressionReturnType = intType,
                             Value = 5
                         }
                     }
@@ -1676,7 +1676,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     Initializer = new UnaryOperatorNode()
                     {
                         UnaryOperatorType = operators[i - 1],
-                        ReturnType = intType,
+                        ExpressionReturnType = intType,
                         Operand = variables[0]
                     }
                 });
@@ -1684,7 +1684,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             nodes.Add(new MethodCallNode()
             {
-                ReturnType = voidType,
+                ExpressionReturnType = voidType,
                 Function = new FunctionNode()
                 {
                     Function = consoleWriteLine
@@ -1693,7 +1693,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new LiteralNode()
                     {
-                        ReturnType = stringType,
+                        ExpressionReturnType = stringType,
                         Value = "Results: \r\n{0}\r\n{1}\r\n{2}\r\n{3}\r\n{4}\r\n{5}\r\n{6}\r\n"
                     },
                     variables[0],
@@ -1725,7 +1725,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new UnaryOperatorNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
@@ -1735,7 +1735,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new UnaryOperatorNode()
                             {
-                                ReturnType = boolType,
+                                ExpressionReturnType = boolType,
                                 UnaryOperatorType = UnaryOperatorNodeType.LogicalNot,
                                 Operand = new FieldNode()
                                 {
@@ -1785,7 +1785,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         DeclaredSymbol = localVariable,
                         Initializer = new LiteralNode()
                         {
-                            ReturnType = intType,
+                            ExpressionReturnType = intType,
                             Value = 0
                         }
                     },
@@ -1793,12 +1793,12 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     {
                         Condition = new BinaryOperatorNode()
                         {
-                            ReturnType = boolType,
+                            ExpressionReturnType = boolType,
                             BinaryOperatorType = BinaryOperatorNodeType.LessThan,
                             LeftOperand = localVariable,
                             RightOperand = new LiteralNode()
                             {
-                                ReturnType = intType,
+                                ExpressionReturnType = intType,
                                 Value = 10
                             }
                         },
@@ -1808,7 +1808,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             {
                                 new MethodCallNode()
                                 {
-                                    ReturnType = voidType,
+                                    ExpressionReturnType = voidType,
                                     Function = new FunctionNode()
                                     {
                                         Function = consoleWriteLine
@@ -1817,7 +1817,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                     {
                                         new LiteralNode()
                                         {
-                                            ReturnType = stringType,
+                                            ExpressionReturnType = stringType,
                                             Value = "The loop has looped {0} time(s)."
                                         },
                                         localVariable
@@ -1865,7 +1865,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             {
                                 new MethodCallNode()
                                 {
-                                    ReturnType = voidType,
+                                    ExpressionReturnType = voidType,
                                     Function = new FunctionNode()
                                     {
                                         Function = consoleWriteLine
@@ -1874,7 +1874,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                     {
                                         new LiteralNode()
                                         {
-                                            ReturnType = stringType,
+                                            ExpressionReturnType = stringType,
                                             Value = "myField is true."
                                         }
                                     }
@@ -1912,7 +1912,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     {
                         Expression = new MethodCallNode()
                         {
-                            ReturnType = stringType,
+                            ExpressionReturnType = stringType,
                             Function = new FunctionNode()
                             {
                                 Function = consoleReadLine
@@ -1929,7 +1929,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new MethodCallNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
                             Function = consoleWriteLine
@@ -1938,12 +1938,12 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 Value = "Your input is: \"{0}\"."
                             },
                             new MethodCallNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 Function = new FunctionNode()
                                 {
                                     Function = readInputMethod.Get()
@@ -1985,7 +1985,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         },
                         Initializer = new ObjectCreationNode()
                         {
-                            ReturnType = myType,
+                            ExpressionReturnType = myType,
                             Arguments = new List<IExpressionNode>()
                         }
                     }
@@ -2024,7 +2024,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new MethodCallNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
                             Function = consoleWriteLine
@@ -2033,7 +2033,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 Value = "{0}: {1}"
                             },
                             new FunctionArgumentNode()
@@ -2070,7 +2070,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new MethodCallNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
                             Function = callableTestMethod1
@@ -2079,14 +2079,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 Value = "Hi"
                             }
                         }
                     },
                     new MethodCallNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
                             Function = callableTestMethod2
@@ -2095,12 +2095,12 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             new LiteralNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 Value = "Hi"
                             },
                             new LiteralNode()
                             {
-                                ReturnType = stringType,
+                                ExpressionReturnType = stringType,
                                 Value = "NonOptional"
                             }
                         }
@@ -2151,7 +2151,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     {
                         Expression = new LiteralNode()
                         {
-                            ReturnType = intType,
+                            ExpressionReturnType = intType,
                             Value = -1
                         }
                     }
@@ -2180,7 +2180,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             var initializer = new FunctionNode()
             {
                 Function = methodEmitter.Get(),
-                ReturnType = functorType
+                ExpressionReturnType = functorType
             };
 
             typeEmitter.AddField(field, initializer);
@@ -2216,7 +2216,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     {
                         Expression = new LiteralNode()
                         {
-                            ReturnType = intType,
+                            ExpressionReturnType = intType,
                             Value = 5
                         }
                     }
@@ -2226,7 +2226,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             var initializer = new FunctionNode()
             {
                 Function = targetMethod.Get(),
-                ReturnType = functorType
+                ExpressionReturnType = functorType
             };
 
             typeEmitter.AddField(field, initializer);
@@ -2263,7 +2263,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new UnaryOperatorNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
@@ -2306,7 +2306,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new UnaryOperatorNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
@@ -2316,7 +2316,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new FunctionNode()
                             {
-                                ReturnType = delegateType,
+                                ExpressionReturnType = delegateType,
                                 Function = myMethod
                             }
                         }
@@ -2353,7 +2353,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new LiteralNode()
                     {
-                        ReturnType = stringType,
+                        ExpressionReturnType = stringType,
                         Value = "Str"
                     }
                 }
@@ -2365,7 +2365,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new UnaryOperatorNode()
                     {
-                        ReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
+                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new MethodCallNode()
                         {
@@ -2380,14 +2380,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                     Arguments = new List<IExpressionNode>(),
                                     Function = new FunctionNode()
                                     {
-                                        ReturnType = stringType,
+                                        ExpressionReturnType = stringType,
                                         Function = getFirstArgumentMethod.Get()
                                     },
-                                    ReturnType = stringType
+                                    ExpressionReturnType = stringType
                                 },
                                 new LiteralNode()
                                 {
-                                    ReturnType = floatType,
+                                    ExpressionReturnType = floatType,
                                     Value = 3.5f
                                 }
                             }
@@ -2429,7 +2429,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new UnaryOperatorNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
@@ -2496,7 +2496,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new UnaryOperatorNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
@@ -2548,7 +2548,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new UnaryOperatorNode()
                     {
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {

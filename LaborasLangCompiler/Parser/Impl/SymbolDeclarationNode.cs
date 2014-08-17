@@ -46,7 +46,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 if (declaredType == null)
                     declaredType = initializer.TypeWrapper;
                 else if (!initializer.TypeWrapper.IsAssignableTo(declaredType))
-                    throw new TypeException(parser.GetSequencePoint(lexerNode), "Type mismatch, type " + declaredType.FullName + " initialized with " + initializer.ReturnType.FullName);
+                    throw new TypeException(parser.GetSequencePoint(lexerNode), "Type mismatch, type " + declaredType.FullName + " initialized with " + initializer.ExpressionReturnType.FullName);
             }
             if (parent is CodeBlockNode)
                 symbol = ((CodeBlockNode)parent).AddVariable(declaredType, name, parser.GetSequencePoint(lexerNode));

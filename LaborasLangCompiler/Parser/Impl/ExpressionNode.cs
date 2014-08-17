@@ -17,7 +17,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.Expression; } }
         public abstract ExpressionNodeType ExpressionType { get; }
-        public TypeReference ReturnType { get { return TypeWrapper != null ? TypeWrapper.TypeReference : null; } }
+        public TypeReference ExpressionReturnType { get { return TypeWrapper != null ? TypeWrapper.TypeReference : null; } }
         public abstract TypeWrapper TypeWrapper { get; }
         protected ExpressionNode(SequencePoint sequencePoint) : base(sequencePoint) { }
         public static ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
@@ -54,7 +54,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public override string ToString()
         {
-            return String.Format("(ExpressionNode: {0} {1})", ExpressionType, ReturnType);
+            return String.Format("(ExpressionNode: {0} {1})", ExpressionType, ExpressionReturnType);
         }
     }
 }

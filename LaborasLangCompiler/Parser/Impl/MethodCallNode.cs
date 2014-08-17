@@ -47,7 +47,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override string ToString()
         {
             StringBuilder builder = new StringBuilder("(MethodCall: Return: ");
-            builder.Append(ReturnType)
+            builder.Append(ExpressionReturnType)
                 .Append(" Args: ");
             string delim = "";
             foreach(var arg in Arguments)

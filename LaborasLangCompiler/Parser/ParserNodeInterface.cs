@@ -38,7 +38,7 @@ namespace LaborasLangCompiler.Parser
     interface IExpressionNode : IParserNode
     {
         ExpressionNodeType ExpressionType { get; }
-        TypeReference ReturnType { get; }
+        TypeReference ExpressionReturnType { get; }
     }
     public enum RValueNodeType
     {
