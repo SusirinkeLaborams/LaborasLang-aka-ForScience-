@@ -19,7 +19,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             get { throw new InvalidOperationException("Type is not a functor type"); }
         }
 
-        public override IEnumerable<TypeWrapper> FunctorArgumentTypes
+        public override IEnumerable<TypeWrapper> FunctorParamTypes
         {
             get { throw new InvalidOperationException("Type is not a functor type"); }
         }

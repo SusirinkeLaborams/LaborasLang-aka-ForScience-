@@ -71,13 +71,13 @@ namespace LaborasLangCompiler.Parser
 
     interface IFunctionCallNode : IRValueNode
     {
-        IReadOnlyList<IExpressionNode> Params { get; }
+        IReadOnlyList<IExpressionNode> Args { get; }
         IExpressionNode Function { get; }
     }
 
     interface IObjectCreationNode : IRValueNode
     {
-        IReadOnlyList<IExpressionNode> Params { get; }
+        IReadOnlyList<IExpressionNode> Args { get; }
     }
 
     interface IWhileBlockNode : IParserNode

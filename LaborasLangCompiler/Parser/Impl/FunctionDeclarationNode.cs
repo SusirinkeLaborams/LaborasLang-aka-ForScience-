@@ -24,13 +24,13 @@ namespace LaborasLangCompiler.Parser.Impl
             { 
                 if(functorType == null)
                 {
-                    functorType = new FunctorTypeWrapper(parser.Assembly, MethodReturnType, ArgumentTypes);
+                    functorType = new FunctorTypeWrapper(parser.Assembly, MethodReturnType, ParamTypes);
                 }
                 return functorType;
             }
         }
         public bool IsStatic { get { return true; } }
-        public IEnumerable<TypeWrapper> ArgumentTypes { get; private set; }
+        public IEnumerable<TypeWrapper> ParamTypes { get; private set; }
         public TypeWrapper MethodReturnType { get; private set; }
 
         private CodeBlockNode body;
@@ -66,7 +66,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 emitter.AddArgument(param.ParameterDefinition);
                 symbols.Add(param.Name, param);
             }
-            ArgumentTypes = symbols.Select(arg => arg.Value.TypeWrapper);
+            ParamTypes = symbols.Select(arg => arg.Value.TypeWrapper);
             parent.AddMethod(this, name);
         }
 

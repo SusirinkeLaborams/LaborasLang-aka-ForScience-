@@ -26,23 +26,23 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             }
         }
 
-        public override IEnumerable<TypeWrapper> FunctorArgumentTypes
+        public override IEnumerable<TypeWrapper> FunctorParamTypes
         {
             get 
             { 
-                if(functorArgumentTypes == null)
+                if(functorParamTypes == null)
                 {
                     var tmp = new List<TypeReference>();
                     ILHelpers.GetFunctorReturnTypeAndArguments(Assembly, TypeReference, out tmp);
-                    functorArgumentTypes = tmp.Select(t => new ExternalType(Assembly, t));
+                    functorParamTypes = tmp.Select(t => new ExternalType(Assembly, t));
                 }
-                return functorArgumentTypes;
+                return functorParamTypes;
             }
         }
 
         private TypeReference typeReference;
         private TypeWrapper functorReturnType;
-        private IEnumerable<TypeWrapper> functorArgumentTypes;
+        private IEnumerable<TypeWrapper> functorParamTypes;
 
         public ExternalType(AssemblyEmitter assembly, TypeReference type) : base(assembly)
         {

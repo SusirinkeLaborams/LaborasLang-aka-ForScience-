@@ -17,23 +17,23 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             {
                 if(typeReference == null)
                 {
-                    typeReference = AssemblyRegistry.GetFunctorType(Assembly, FunctorReturnType.TypeReference, FunctorArgumentTypes.Select(t => t.TypeReference).ToList());
+                    typeReference = AssemblyRegistry.GetFunctorType(Assembly, FunctorReturnType.TypeReference, FunctorParamTypes.Select(t => t.TypeReference).ToList());
                 }
                 return typeReference;
             }
         }
         public override string FullName { get { return TypeReference.FullName; } }
         public override TypeWrapper FunctorReturnType { get { return functorReturnType; } }
-        public override IEnumerable<TypeWrapper> FunctorArgumentTypes { get { return functorArgumentTypes; } }
+        public override IEnumerable<TypeWrapper> FunctorParamTypes { get { return functorParamTypes; } }
 
         private TypeReference typeReference;
         private TypeWrapper functorReturnType;
-        private IEnumerable<TypeWrapper> functorArgumentTypes;
+        private IEnumerable<TypeWrapper> functorParamTypes;
 
-        public FunctorTypeWrapper(AssemblyEmitter assembly, TypeWrapper returnType, IEnumerable<TypeWrapper> args) : base(assembly)
+        public FunctorTypeWrapper(AssemblyEmitter assembly, TypeWrapper returnType, IEnumerable<TypeWrapper> parameters) : base(assembly)
         {
             this.functorReturnType = returnType;
-            this.functorArgumentTypes = args;
+            this.functorParamTypes = parameters;
         }
 
         //tipo optimizacija

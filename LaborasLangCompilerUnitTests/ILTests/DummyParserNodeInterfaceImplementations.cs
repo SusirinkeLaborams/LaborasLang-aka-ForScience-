@@ -54,7 +54,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public TypeReference ExpressionReturnType { get; set; }
         public IExpressionNode Function { get; set; }
 
-        public IReadOnlyList<IExpressionNode> Params
+        public IReadOnlyList<IExpressionNode> Args
         {
             get { return arguments; }
             set
@@ -82,7 +82,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
         public TypeReference ExpressionReturnType { get; set; }
 
-        public IReadOnlyList<IExpressionNode> Params
+        public IReadOnlyList<IExpressionNode> Args
         {
             get { return arguments; }
             set

@@ -17,7 +17,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.Call; } }
         public override TypeWrapper TypeWrapper { get { return type; } }
-        public IReadOnlyList<IExpressionNode> Params { get; private set; }
+        public IReadOnlyList<IExpressionNode> Args { get; private set; }
         public IExpressionNode Function { get; private set; }
 
         private TypeWrapper type;
@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
             : base(point)
         {
             Function = function;
-            Params = args;
+            Args = args;
             this.type = returnType;
         }
         public static new MethodCallNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
@@ -50,7 +50,7 @@ namespace LaborasLangCompiler.Parser.Impl
             builder.Append(ExpressionReturnType)
                 .Append(" Args: ");
             string delim = "";
-            foreach(var arg in Params)
+            foreach(var arg in Args)
             {
                 builder.Append(delim).Append(arg);
                 delim = ", ";

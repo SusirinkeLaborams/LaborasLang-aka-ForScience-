@@ -713,7 +713,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Emit(functionNode.ObjectInstance, true);
                 }
 
-                EmitArgumentsForCall(functionCall.Params, functionNode.Method);
+                EmitArgumentsForCall(functionCall.Args, functionNode.Method);
 
                 if (functionNode.Method.Resolve().IsVirtual)
                 {
@@ -729,7 +729,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 var invokeMethod = AssemblyRegistry.GetMethod(Assembly, function.ExpressionReturnType, "Invoke");
 
                 Emit(function, true);
-                EmitArgumentsForCall(functionCall.Params, invokeMethod);
+                EmitArgumentsForCall(functionCall.Args, invokeMethod);
 
                 Callvirt(invokeMethod);
             }
@@ -908,9 +908,9 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Emit(IObjectCreationNode objectCreation)
         {
             var ctor = AssemblyRegistry.GetCompatibleMethod(Assembly, objectCreation.ExpressionReturnType, ".ctor",
-                objectCreation.Params.Select(argument => argument.ExpressionReturnType).ToList());
+                objectCreation.Args.Select(argument => argument.ExpressionReturnType).ToList());
 
-            foreach (var argument in objectCreation.Params)
+            foreach (var argument in objectCreation.Args)
             {
                 Emit(argument, false);
             }

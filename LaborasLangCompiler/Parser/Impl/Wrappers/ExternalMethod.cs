@@ -17,28 +17,28 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             {
                 if(functorType == null)
                 {
-                    functorType = new FunctorTypeWrapper(Assembly, MethodReturnType, ArgumentTypes);
+                    functorType = new FunctorTypeWrapper(Assembly, MethodReturnType, ParamTypes);
                 }
                 return functorType;
             } 
         }
         public TypeWrapper MethodReturnType { get { return methodReturnType; } }
-        public IEnumerable<TypeWrapper> ArgumentTypes
+        public IEnumerable<TypeWrapper> ParamTypes
         { 
             get 
             { 
-                if(argumentTypes == null)
+                if(paramTypes == null)
                 {
-                    argumentTypes = MethodReference.Parameters.Select(p => new ExternalType(Assembly, p.ParameterType));
+                    paramTypes = MethodReference.Parameters.Select(p => new ExternalType(Assembly, p.ParameterType));
                 }
-                return argumentTypes;
+                return paramTypes;
             } 
         }
         public bool IsStatic { get { return MethodReference.Resolve().IsStatic; } }
 
         private TypeWrapper methodReturnType;
         private FunctorTypeWrapper functorType;
-        private IEnumerable<TypeWrapper> argumentTypes;
+        private IEnumerable<TypeWrapper> paramTypes;
         public ExternalMethod(AssemblyEmitter assembly, MethodReference method) : base(assembly)
         {
             this.MethodReference = method;
