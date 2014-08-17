@@ -42,7 +42,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     {
                         Function = new FunctionNode()
                         {
-                            Function = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", 
+                            Method = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", 
                                 new List<string>() { "System.String" })
                         },
                         Arguments = new List<IExpressionNode>()
@@ -62,7 +62,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Function = new FunctionNode()
                             {
-                                Function = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "ReadKey",
+                                Method = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "ReadKey",
                                     new List<TypeReference>())
                             },
                             Arguments = new List<IExpressionNode>()
@@ -305,7 +305,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     {
                         Function = new FunctionNode()
                         {
-                            Function = methodWithArgument.Get()
+                            Method = methodWithArgument.Get()
                         },
                         Arguments = new List<IExpressionNode>()
                         {
@@ -343,7 +343,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     {
                         Function = new FunctionNode()
                         {
-                            Function = callableMethod.Get()
+                            Method = callableMethod.Get()
                         },
                         Arguments = new List<IExpressionNode>()
                         {
@@ -1058,7 +1058,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                     ExpressionReturnType = voidType,
                                     Function = new FunctionNode()
                                     {
-                                        Function = outputMethod,
+                                        Method = outputMethod,
                                     },
                                     Arguments = new List<IExpressionNode>()
                                     {
@@ -1107,7 +1107,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                                 ExpressionReturnType = voidType,
                                                 Function = new FunctionNode()
                                                 {
-                                                    Function = outputMethod,
+                                                    Method = outputMethod,
                                                 },
                                                 Arguments = new List<IExpressionNode>()
                                                 {
@@ -1156,7 +1156,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                                             ExpressionReturnType = voidType,
                                                             Function = new FunctionNode()
                                                             {
-                                                                Function = outputMethod,
+                                                                Method = outputMethod,
                                                             },
                                                             Arguments = new List<IExpressionNode>()
                                                             {
@@ -1186,7 +1186,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                                             ExpressionReturnType = voidType,
                                                             Function = new FunctionNode()
                                                             {
-                                                                Function = outputMethod,
+                                                                Method = outputMethod,
                                                             },
                                                             Arguments = new List<IExpressionNode>()
                                                             {
@@ -1271,7 +1271,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
-                            Function = outputMethod
+                            Method = outputMethod
                         },
                         Arguments = new List<IExpressionNode>()
                         {
@@ -1296,7 +1296,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
-                            Function = outputMethod
+                            Method = outputMethod
                         },
                         Arguments = new List<IExpressionNode>()
                         {
@@ -1321,7 +1321,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
-                            Function = outputMethod
+                            Method = outputMethod
                         },
                         Arguments = new List<IExpressionNode>()
                         {
@@ -1422,7 +1422,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
-                            Function = outputMethod
+                            Method = outputMethod
                         },
                         Arguments = new List<IExpressionNode>()
                         {
@@ -1447,7 +1447,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
-                            Function = outputMethod
+                            Method = outputMethod
                         },
                         Arguments = new List<IExpressionNode>()
                         {
@@ -1532,7 +1532,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
-                            Function = outputMethod
+                            Method = outputMethod
                         },
                         Arguments = new List<IExpressionNode>()
                         {
@@ -1557,7 +1557,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
-                            Function = outputMethod
+                            Method = outputMethod
                         },
                         Arguments = new List<IExpressionNode>()
                         {
@@ -1582,7 +1582,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
-                            Function = outputMethod
+                            Method = outputMethod
                         },
                         Arguments = new List<IExpressionNode>()
                         {
@@ -1687,7 +1687,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 ExpressionReturnType = voidType,
                 Function = new FunctionNode()
                 {
-                    Function = consoleWriteLine
+                    Method = consoleWriteLine
                 },
                 Arguments = new List<IExpressionNode>()
                 {
@@ -1811,7 +1811,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                     ExpressionReturnType = voidType,
                                     Function = new FunctionNode()
                                     {
-                                        Function = consoleWriteLine
+                                        Method = consoleWriteLine
                                     },
                                     Arguments = new List<IExpressionNode>()
                                     {
@@ -1868,7 +1868,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                     ExpressionReturnType = voidType,
                                     Function = new FunctionNode()
                                     {
-                                        Function = consoleWriteLine
+                                        Method = consoleWriteLine
                                     },
                                     Arguments = new List<IExpressionNode>()
                                     {
@@ -1915,7 +1915,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             ExpressionReturnType = stringType,
                             Function = new FunctionNode()
                             {
-                                Function = consoleReadLine
+                                Method = consoleReadLine
                             },
                             Arguments = new List<IExpressionNode>()
                         },
@@ -1932,7 +1932,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
-                            Function = consoleWriteLine
+                            Method = consoleWriteLine
                         },
                         Arguments = new List<IExpressionNode>()
                         {
@@ -1946,7 +1946,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                 ExpressionReturnType = stringType,
                                 Function = new FunctionNode()
                                 {
-                                    Function = readInputMethod.Get()
+                                    Method = readInputMethod.Get()
                                 },
                                 Arguments = new List<IExpressionNode>()
                             }
@@ -2027,7 +2027,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
-                            Function = consoleWriteLine
+                            Method = consoleWriteLine
                         },
                         Arguments = new List<IExpressionNode>()
                         {
@@ -2073,7 +2073,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
-                            Function = callableTestMethod1
+                            Method = callableTestMethod1
                         },
                         Arguments = new List<IExpressionNode>()
                         {
@@ -2089,7 +2089,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Function = new FunctionNode()
                         {
-                            Function = callableTestMethod2
+                            Method = callableTestMethod2
                         },
                         Arguments = new List<IExpressionNode>()
                         {
@@ -2179,7 +2179,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var initializer = new FunctionNode()
             {
-                Function = methodEmitter.Get(),
+                Method = methodEmitter.Get(),
                 ExpressionReturnType = functorType
             };
 
@@ -2225,7 +2225,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var initializer = new FunctionNode()
             {
-                Function = targetMethod.Get(),
+                Method = targetMethod.Get(),
                 ExpressionReturnType = functorType
             };
 
@@ -2317,7 +2317,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             RightOperand = new FunctionNode()
                             {
                                 ExpressionReturnType = delegateType,
-                                Function = myMethod
+                                Method = myMethod
                             }
                         }
                     }
@@ -2381,7 +2381,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                     Function = new FunctionNode()
                                     {
                                         ExpressionReturnType = stringType,
-                                        Function = getFirstArgumentMethod.Get()
+                                        Method = getFirstArgumentMethod.Get()
                                     },
                                     ExpressionReturnType = stringType
                                 },

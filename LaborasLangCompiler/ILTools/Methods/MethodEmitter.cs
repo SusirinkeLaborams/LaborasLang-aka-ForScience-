@@ -272,7 +272,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     return;
 
                 case RValueNodeType.Function:
-                    Emit((IFunctionNode)rvalue);
+                    Emit((IMethodNode)rvalue);
                     return;
 
                 case RValueNodeType.Literal:
@@ -666,16 +666,16 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        protected void Emit(IFunctionNode function)
+        protected void Emit(IMethodNode function)
         {
             var returnTypeIsDelegate = function.ExpressionReturnType.Resolve().BaseType.FullName == "System.MulticastDelegate";
 
             if (!returnTypeIsDelegate)
             {
-                var functorType = AssemblyRegistry.GetImplementationFunctorType(Assembly, DeclaringType, function.Function);
+                var functorType = AssemblyRegistry.GetImplementationFunctorType(Assembly, DeclaringType, function.Method);
                 var ctor = AssemblyRegistry.GetMethod(Assembly, functorType, ".ctor");
 
-                if (function.Function.HasThis)
+                if (function.Method.HasThis)
                 {
                     Emit(function.ObjectInstance, false);
                 }
@@ -686,7 +686,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             {
                 var ctor = AssemblyRegistry.GetMethod(Assembly, function.ExpressionReturnType, ".ctor");
 
-                if (function.Function.HasThis)
+                if (function.Method.HasThis)
                 {
                     Emit(function.ObjectInstance, false);
                 }
@@ -695,7 +695,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Ldnull();
                 }
 
-                Ldftn(function.Function);
+                Ldftn(function.Method);
                 Newobj(ctor);
             }
         }
@@ -706,22 +706,22 @@ namespace LaborasLangCompiler.ILTools.Methods
 
             if (function.ExpressionType == ExpressionNodeType.RValue && ((IRValueNode)function).RValueType == RValueNodeType.Function)
             {   // Direct call
-                var functionNode = (IFunctionNode)function;
+                var functionNode = (IMethodNode)function;
 
-                if (functionNode.Function.HasThis)
+                if (functionNode.Method.HasThis)
                 {
                     Emit(functionNode.ObjectInstance, true);
                 }
 
-                EmitArgumentsForCall(functionCall.Arguments, functionNode.Function);
+                EmitArgumentsForCall(functionCall.Arguments, functionNode.Method);
 
-                if (functionNode.Function.Resolve().IsVirtual)
+                if (functionNode.Method.Resolve().IsVirtual)
                 {
-                    Callvirt(functionNode.Function);
+                    Callvirt(functionNode.Method);
                 }
                 else
                 {
-                    Call(functionNode.Function);
+                    Call(functionNode.Method);
                 }
             }
             else

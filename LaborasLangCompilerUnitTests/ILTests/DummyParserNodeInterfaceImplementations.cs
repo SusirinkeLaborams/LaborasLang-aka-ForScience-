@@ -30,7 +30,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public dynamic Value { get; set; }
     }
 
-    class FunctionNode : IFunctionNode
+    class FunctionNode : IMethodNode
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
@@ -39,7 +39,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
         public TypeReference ExpressionReturnType { get; set; }
         public IExpressionNode ObjectInstance { get; set; }
-        public MethodReference Function { get; set; }
+        public MethodReference Method { get; set; }
     }
 
     class MethodCallNode : IMethodCallNode

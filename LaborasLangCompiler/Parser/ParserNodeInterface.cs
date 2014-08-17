@@ -63,10 +63,10 @@ namespace LaborasLangCompiler.Parser
         dynamic Value { get; }
     }
 
-    interface IFunctionNode : IRValueNode
+    interface IMethodNode : IRValueNode
     {
         IExpressionNode ObjectInstance { get; }
-        MethodReference Function { get; }
+        MethodReference Method { get; }
     }
 
     interface IMethodCallNode : IRValueNode
