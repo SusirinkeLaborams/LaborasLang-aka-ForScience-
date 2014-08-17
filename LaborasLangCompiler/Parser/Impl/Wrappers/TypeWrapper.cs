@@ -12,6 +12,8 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     {
         public abstract TypeReference TypeReference { get; }
         public abstract string FullName { get; }
+        public abstract TypeWrapper FunctorReturnType { get; }
+        public abstract IEnumerable<TypeWrapper> FunctorArgumentTypes { get; }
         public abstract FieldWrapper GetField(string name);
         public abstract TypeWrapper GetContainedType(string name);
         public abstract MethodWrapper GetMethod(string name);

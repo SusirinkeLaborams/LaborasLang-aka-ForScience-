@@ -23,15 +23,17 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             }
         }
         public override string FullName { get { return TypeReference.FullName; } }
-        public TypeWrapper FunctorReturnType { get; private set; }
-        public IEnumerable<TypeWrapper> FunctorArgumentTypes { get; private set; }
+        public override TypeWrapper FunctorReturnType { get { return functorReturnType; } }
+        public override IEnumerable<TypeWrapper> FunctorArgumentTypes { get { return functorArgumentTypes; } }
 
         private TypeReference typeReference;
+        private TypeWrapper functorReturnType;
+        private IEnumerable<TypeWrapper> functorArgumentTypes;
 
         public FunctorTypeWrapper(AssemblyEmitter assembly, TypeWrapper returnType, IEnumerable<TypeWrapper> args) : base(assembly)
         {
-            this.FunctorReturnType = returnType;
-            this.FunctorArgumentTypes = args;
+            this.functorReturnType = returnType;
+            this.functorArgumentTypes = args;
         }
 
         //tipo optimizacija

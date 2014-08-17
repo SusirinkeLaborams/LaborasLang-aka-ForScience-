@@ -41,7 +41,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 args.Add(ExpressionNode.Parse(parser, parent, node));
             }
             var method = function.ExtractMethod(args.Select(arg => arg.TypeWrapper));
-            var returnType = ((FunctorTypeWrapper)method.TypeWrapper).FunctorReturnType;
+            var returnType = method.TypeWrapper.FunctorReturnType;
             return new MethodCallNode(method, returnType, args, parser.GetSequencePoint(lexerNode));
         }
         public override string ToString()

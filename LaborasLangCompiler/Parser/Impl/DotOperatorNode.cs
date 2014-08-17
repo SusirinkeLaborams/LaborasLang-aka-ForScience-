@@ -68,11 +68,9 @@ namespace LaborasLangCompiler.Parser.Impl
                 if (!builtNode.TypeWrapper.IsFunctorType())
                     return false;
 
-                var functorType = (FunctorTypeWrapper)builtNode.TypeWrapper;
-
-                if(functorType.MatchesArgumentList(types))
+                if(builtNode.TypeWrapper.MatchesArgumentList(types))
                 {
-                    builtNode = new MethodCallNode(builtNode, functorType.FunctorReturnType, node.Arguments, node.SequencePoint);
+                    builtNode = new MethodCallNode(builtNode, builtNode.TypeWrapper.FunctorReturnType, node.Arguments, node.SequencePoint);
                     return true;
                 }
                 else

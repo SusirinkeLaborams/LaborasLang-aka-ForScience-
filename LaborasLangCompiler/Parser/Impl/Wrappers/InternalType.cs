@@ -11,7 +11,19 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     class InternalType : TypeWrapper
     {
         public override TypeReference TypeReference { get { return Class.TypeReference; } }
+
         public override string FullName { get { return Class.FullName; } }
+
+        public override TypeWrapper FunctorReturnType
+        {
+            get { throw new InvalidOperationException("Type is not a functor type"); }
+        }
+
+        public override IEnumerable<TypeWrapper> FunctorArgumentTypes
+        {
+            get { throw new InvalidOperationException("Type is not a functor type"); }
+        }
+
         public ClassNode Class { get; private set; }
 
         public InternalType(AssemblyEmitter assembly, ClassNode classNode) : base(assembly)
@@ -23,14 +35,17 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         {
             return Class.GetContainedType(name);
         }
+
         public override FieldWrapper GetField(string name)
         {
             return Class.GetField(name);
         }
+
         public override MethodWrapper GetMethod(string name)
         {
             return Class.GetMethod(name);
         }
+
         public override IEnumerable<MethodWrapper> GetMethods(string name)
         {
             return Class.GetMethods(name);

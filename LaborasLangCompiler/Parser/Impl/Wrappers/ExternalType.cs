@@ -11,9 +11,38 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     class ExternalType : TypeWrapper
     {
         public override TypeReference TypeReference { get { return typeReference; } }
+
         public override string FullName { get { return typeReference.FullName; } }
 
+        public override TypeWrapper FunctorReturnType
+        {
+            get 
+            { 
+                if(functorReturnType == null)
+                {
+                    functorReturnType = new ExternalType(Assembly, ILHelpers.GetFunctorReturnType(Assembly, typeReference));
+                }
+                return functorReturnType;
+            }
+        }
+
+        public override IEnumerable<TypeWrapper> FunctorArgumentTypes
+        {
+            get 
+            { 
+                if(functorArgumentTypes == null)
+                {
+                    var tmp = new List<TypeReference>();
+                    ILHelpers.GetFunctorReturnTypeAndArguments(Assembly, TypeReference, out tmp);
+                    functorArgumentTypes = tmp.Select(t => new ExternalType(Assembly, t));
+                }
+                return functorArgumentTypes;
+            }
+        }
+
         private TypeReference typeReference;
+        private TypeWrapper functorReturnType;
+        private IEnumerable<TypeWrapper> functorArgumentTypes;
 
         public ExternalType(AssemblyEmitter assembly, TypeReference type) : base(assembly)
         {
