@@ -69,15 +69,15 @@ namespace LaborasLangCompiler.Parser
         MethodReference Method { get; }
     }
 
-    interface IMethodCallNode : IRValueNode
+    interface IFunctionCallNode : IRValueNode
     {
-        IReadOnlyList<IExpressionNode> Arguments { get; }
+        IReadOnlyList<IExpressionNode> Params { get; }
         IExpressionNode Function { get; }
     }
 
     interface IObjectCreationNode : IRValueNode
     {
-        IReadOnlyList<IExpressionNode> Arguments { get; }
+        IReadOnlyList<IExpressionNode> Params { get; }
     }
 
     interface IWhileBlockNode : IParserNode
@@ -123,10 +123,10 @@ namespace LaborasLangCompiler.Parser
         PropertyReference Property { get; }
     }
 
-    interface IFunctionArgumentNode : ILValueNode
+    interface IMethodParamNode : ILValueNode
     {
         ParameterDefinition Param { get; }
-        bool IsFunctionStatic { get; }
+        bool IsMethodStatic { get; }
     }
 
     public enum BinaryOperatorNodeType

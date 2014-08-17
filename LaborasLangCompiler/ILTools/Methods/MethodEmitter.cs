@@ -214,7 +214,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     return;
 
                 case LValueNodeType.FunctionArgument:
-                    Emit((IFunctionArgumentNode)lvalue, emitReference);
+                    Emit((IMethodParamNode)lvalue, emitReference);
                     return;
 
                 case LValueNodeType.LocalVariable:
@@ -239,7 +239,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     return;
 
                 case LValueNodeType.FunctionArgument:
-                    EmitStore((IFunctionArgumentNode)lvalue);
+                    EmitStore((IMethodParamNode)lvalue);
                     return;
 
                 case LValueNodeType.LocalVariable:
@@ -268,7 +268,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     return;
 
                 case RValueNodeType.Call:
-                    Emit((IMethodCallNode)rvalue);
+                    Emit((IFunctionCallNode)rvalue);
                     return;
 
                 case RValueNodeType.Function:
@@ -332,9 +332,9 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        protected void Emit(IFunctionArgumentNode argument, bool emitReference)
+        protected void Emit(IMethodParamNode argument, bool emitReference)
         {
-            var index = argument.Param.Index + (argument.IsFunctionStatic ? 0 : 1);
+            var index = argument.Param.Index + (argument.IsMethodStatic ? 0 : 1);
             emitReference &= argument.Param.ParameterType.IsValueType;
 
             if (emitReference)
@@ -394,7 +394,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        protected void EmitStore(IFunctionArgumentNode argument)
+        protected void EmitStore(IMethodParamNode argument)
         {
             Starg(argument.Param.Index);
         }
@@ -700,7 +700,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
         }
 
-        protected void Emit(IMethodCallNode functionCall)
+        protected void Emit(IFunctionCallNode functionCall)
         {
             var function = functionCall.Function;
 
@@ -713,7 +713,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Emit(functionNode.ObjectInstance, true);
                 }
 
-                EmitArgumentsForCall(functionCall.Arguments, functionNode.Method);
+                EmitArgumentsForCall(functionCall.Params, functionNode.Method);
 
                 if (functionNode.Method.Resolve().IsVirtual)
                 {
@@ -729,7 +729,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 var invokeMethod = AssemblyRegistry.GetMethod(Assembly, function.ExpressionReturnType, "Invoke");
 
                 Emit(function, true);
-                EmitArgumentsForCall(functionCall.Arguments, invokeMethod);
+                EmitArgumentsForCall(functionCall.Params, invokeMethod);
 
                 Callvirt(invokeMethod);
             }
@@ -908,9 +908,9 @@ namespace LaborasLangCompiler.ILTools.Methods
         protected void Emit(IObjectCreationNode objectCreation)
         {
             var ctor = AssemblyRegistry.GetCompatibleMethod(Assembly, objectCreation.ExpressionReturnType, ".ctor",
-                objectCreation.Arguments.Select(argument => argument.ExpressionReturnType).ToList());
+                objectCreation.Params.Select(argument => argument.ExpressionReturnType).ToList());
 
-            foreach (var argument in objectCreation.Arguments)
+            foreach (var argument in objectCreation.Params)
             {
                 Emit(argument, false);
             }

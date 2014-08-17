@@ -45,7 +45,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             Method = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", 
                                 new List<string>() { "System.String" })
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
@@ -65,7 +65,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                 Method = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "ReadKey",
                                     new List<TypeReference>())
                             },
-                            Arguments = new List<IExpressionNode>()
+                            Params = new List<IExpressionNode>()
                         }
                     }
                 }
@@ -194,7 +194,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             RightOperand = new FunctionArgumentNode()
                             {
                                 Param = argument,
-                                IsFunctionStatic = true
+                                IsMethodStatic = true
                             }
                         }
                     }
@@ -307,7 +307,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Method = methodWithArgument.Get()
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
@@ -345,7 +345,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Method = callableMethod.Get()
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode
                             {
@@ -1060,7 +1060,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                     {
                                         Method = outputMethod,
                                     },
-                                    Arguments = new List<IExpressionNode>()
+                                    Params = new List<IExpressionNode>()
                                     {
                                         new LiteralNode()
                                         {
@@ -1109,7 +1109,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                                 {
                                                     Method = outputMethod,
                                                 },
-                                                Arguments = new List<IExpressionNode>()
+                                                Params = new List<IExpressionNode>()
                                                 {
                                                     new LiteralNode()
                                                     {
@@ -1158,7 +1158,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                                             {
                                                                 Method = outputMethod,
                                                             },
-                                                            Arguments = new List<IExpressionNode>()
+                                                            Params = new List<IExpressionNode>()
                                                             {
                                                                 new LiteralNode()
                                                                 {
@@ -1188,7 +1188,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                                             {
                                                                 Method = outputMethod,
                                                             },
-                                                            Arguments = new List<IExpressionNode>()
+                                                            Params = new List<IExpressionNode>()
                                                             {
                                                                 new LiteralNode()
                                                                 {
@@ -1273,7 +1273,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Method = outputMethod
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
@@ -1298,7 +1298,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Method = outputMethod
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
@@ -1323,7 +1323,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Method = outputMethod
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
@@ -1424,7 +1424,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Method = outputMethod
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
@@ -1449,7 +1449,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Method = outputMethod
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
@@ -1534,7 +1534,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Method = outputMethod
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
@@ -1559,7 +1559,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Method = outputMethod
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
@@ -1584,7 +1584,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Method = outputMethod
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
@@ -1689,7 +1689,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     Method = consoleWriteLine
                 },
-                Arguments = new List<IExpressionNode>()
+                Params = new List<IExpressionNode>()
                 {
                     new LiteralNode()
                     {
@@ -1813,7 +1813,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                     {
                                         Method = consoleWriteLine
                                     },
-                                    Arguments = new List<IExpressionNode>()
+                                    Params = new List<IExpressionNode>()
                                     {
                                         new LiteralNode()
                                         {
@@ -1870,7 +1870,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                     {
                                         Method = consoleWriteLine
                                     },
-                                    Arguments = new List<IExpressionNode>()
+                                    Params = new List<IExpressionNode>()
                                     {
                                         new LiteralNode()
                                         {
@@ -1917,7 +1917,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             {
                                 Method = consoleReadLine
                             },
-                            Arguments = new List<IExpressionNode>()
+                            Params = new List<IExpressionNode>()
                         },
                     }
                 }
@@ -1934,7 +1934,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Method = consoleWriteLine
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
@@ -1948,7 +1948,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                                 {
                                     Method = readInputMethod.Get()
                                 },
-                                Arguments = new List<IExpressionNode>()
+                                Params = new List<IExpressionNode>()
                             }
                         }
                     }
@@ -1986,7 +1986,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         Initializer = new ObjectCreationNode()
                         {
                             ExpressionReturnType = myType,
-                            Arguments = new List<IExpressionNode>()
+                            Params = new List<IExpressionNode>()
                         }
                     }
                 }
@@ -2029,7 +2029,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Method = consoleWriteLine
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
@@ -2038,12 +2038,12 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             new FunctionArgumentNode()
                             {
-                                IsFunctionStatic = true,
+                                IsMethodStatic = true,
                                 Param = neededParameter,
                             },
                             new FunctionArgumentNode()
                             {
-                                IsFunctionStatic = true,
+                                IsMethodStatic = true,
                                 Param = optionalParameter,
                             }
                         }
@@ -2075,7 +2075,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Method = callableTestMethod1
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
@@ -2091,7 +2091,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                         {
                             Method = callableTestMethod2
                         },
-                        Arguments = new List<IExpressionNode>()
+                        Params = new List<IExpressionNode>()
                         {
                             new LiteralNode()
                             {
@@ -2373,11 +2373,11 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             {
                                 Field = field
                             },
-                            Arguments = new List<IExpressionNode>()
+                            Params = new List<IExpressionNode>()
                             {
                                 new MethodCallNode()
                                 {
-                                    Arguments = new List<IExpressionNode>(),
+                                    Params = new List<IExpressionNode>(),
                                     Function = new FunctionNode()
                                     {
                                         ExpressionReturnType = stringType,
@@ -2439,7 +2439,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new FunctionArgumentNode()
                             {
-                                IsFunctionStatic = true,
+                                IsMethodStatic = true,
                                 Param = functorSetterArgument
                             }
                         }
@@ -2506,7 +2506,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             },
                             RightOperand = new FunctionArgumentNode()
                             {
-                                IsFunctionStatic = true,
+                                IsMethodStatic = true,
                                 Param = delegateSetterArgument
                             }
                         }

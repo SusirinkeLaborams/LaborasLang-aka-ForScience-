@@ -142,7 +142,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             RightOperand = new FunctionArgumentNode()
                             {
                                 Param = value,
-                                IsFunctionStatic = true
+                                IsMethodStatic = true
                             }
                         }
                     }

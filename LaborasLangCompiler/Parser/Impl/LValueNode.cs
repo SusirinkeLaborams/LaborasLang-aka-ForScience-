@@ -38,11 +38,11 @@ namespace LaborasLangCompiler.Parser.Impl
         }
     }
 
-    class FunctionArgumentNode : LValueNode, IFunctionArgumentNode
+    class FunctionArgumentNode : LValueNode, IMethodParamNode
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.FunctionArgument; } }
         public ParameterDefinition Param { get { return parameter.ParameterDefinition; } }
-        public bool IsFunctionStatic { get; set; }
+        public bool IsMethodStatic { get; set; }
         public override TypeWrapper TypeWrapper { get { return parameter.TypeWrapper; } }
 
         private ParameterWrapper parameter;
@@ -50,7 +50,7 @@ namespace LaborasLangCompiler.Parser.Impl
             : base(point)
         {
             this.parameter = param;
-            IsFunctionStatic = isFunctionStatic;
+            IsMethodStatic = isFunctionStatic;
         }
         public override string ToString()
         {

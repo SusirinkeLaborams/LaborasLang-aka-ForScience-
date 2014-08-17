@@ -42,7 +42,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public MethodReference Method { get; set; }
     }
 
-    class MethodCallNode : IMethodCallNode
+    class MethodCallNode : IFunctionCallNode
     {
         public SequencePoint SequencePoint { get { return null; } }
         private List<IExpressionNode> arguments;
@@ -54,7 +54,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public TypeReference ExpressionReturnType { get; set; }
         public IExpressionNode Function { get; set; }
 
-        public IReadOnlyList<IExpressionNode> Arguments
+        public IReadOnlyList<IExpressionNode> Params
         {
             get { return arguments; }
             set
@@ -82,7 +82,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
         public TypeReference ExpressionReturnType { get; set; }
 
-        public IReadOnlyList<IExpressionNode> Arguments
+        public IReadOnlyList<IExpressionNode> Params
         {
             get { return arguments; }
             set
@@ -134,7 +134,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public PropertyReference Property { get; set; }
     }
 
-    class FunctionArgumentNode : IFunctionArgumentNode
+    class FunctionArgumentNode : IMethodParamNode
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
@@ -143,7 +143,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
         public TypeReference ExpressionReturnType { get { return Param.ParameterType; } }
         public ParameterDefinition Param { get; set; }
-        public bool IsFunctionStatic { get; set; }
+        public bool IsMethodStatic { get; set; }
     }
 
     class BinaryOperatorNode : IBinaryOperatorNode
