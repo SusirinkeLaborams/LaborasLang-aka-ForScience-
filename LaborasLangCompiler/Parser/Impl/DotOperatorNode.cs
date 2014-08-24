@@ -30,7 +30,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var instance = new DotOperatorNode(parser, parent);
             foreach(var node in lexerNode.Children)
             {
-                instance.Append(ExpressionNode.Parse(parser, parent, node));
+                instance.Append(ExpressionNode.Parse(parser, parent, node, true));
             }
             return instance;
         }
@@ -40,11 +40,6 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if (!AppendExpression((ExpressionNode)node))
                     throw new ParseException(node.SequencePoint, "Expressions only allowed on left of dot operator");
-            }
-            else if (node is SymbolCallNode)
-            {
-                if (!AppendCall((SymbolCallNode)node))
-                    throw new SymbolNotFoundException(node.SequencePoint, "Symbol {0} not found", ((SymbolCallNode)node).Value);
             }
             else if(node is SymbolNode)
             {
@@ -60,6 +55,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new SymbolNotFoundException(node.SequencePoint, "Symbol {0} not found", nod.Value);
             }
         }
+        /*
+         * to be used maybe later
         private bool AppendCall(SymbolCallNode node)
         {
             var types = node.Arguments.Select(arg => arg.TypeWrapper);
@@ -86,6 +83,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return false;
         }
+         */
         private bool AppendMethod(SymbolNode node)
         {
             if(builtNode == null)
@@ -233,9 +231,9 @@ namespace LaborasLangCompiler.Parser.Impl
                 return false;
             }
         }
-        public ExpressionNode ExtractExpression()
+        public ExpressionNode ExtractExpression(bool allowAmbiguous)
         {
-            if (builtNode.ExpressionType == ExpressionNodeType.ParserInternal)
+            if (builtNode.TypeWrapper == null && !allowAmbiguous)
                 throw new ParseException(builtNode.SequencePoint, "Expression expected");
             else
                 return builtNode;
@@ -261,23 +259,26 @@ namespace LaborasLangCompiler.Parser.Impl
             else
                 return (LValueNode)builtNode;
         }
-        public ExpressionNode ExtractMethod(IEnumerable<TypeWrapper> args)
+        public ExpressionNode ExtractMethod(IEnumerable<ExpressionNode> args)
         {
+            ExpressionNode method = null;
             if (builtNode is LValueNode)
             {
                 if (builtNode.TypeWrapper.IsFunctorType())
                 {
-                    if (builtNode.TypeWrapper.MatchesArgumentList(args))
+                    if (builtNode.TypeWrapper.MatchesArgumentList(args.Select(a => a.TypeWrapper)))
                     {
-                        return builtNode;
+                        method = builtNode;
                     }
                 }
             }
             if (builtNode is AmbiguousMethodNode)
             {
-                return ((AmbiguousMethodNode)builtNode).RemoveAmbiguity(parser, args);
+                method = ((AmbiguousMethodNode)builtNode).RemoveAmbiguity(parser, new FunctorTypeWrapper(parser.Assembly, null, args.Select(a => a.TypeWrapper)));
             }
-            throw new ParseException(builtNode.SequencePoint, "Method expected");
+            if(method == null)
+                throw new ParseException(builtNode.SequencePoint, "Method expected");
+            return method;
         }
     }
 }

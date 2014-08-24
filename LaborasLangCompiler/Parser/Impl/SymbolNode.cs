@@ -22,7 +22,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Value = value;
             
         }
-        public static new SymbolNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static SymbolNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             return new SymbolNode(parser.ValueOf(lexerNode), parser.GetSequencePoint(lexerNode));
         }
@@ -65,7 +65,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             ParsedType = type;
         }
-        public static new TypeWrapper Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static TypeWrapper Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             if (lexerNode.Token.Name == Lexer.FunctionType)
                 return TypeNode.Parse(parser, parent, lexerNode.Children[0]);

@@ -27,7 +27,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.operand = operand;
             this.UnaryOperatorType = type;
         }
-        public static new ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             if(lexerNode.Children.Count == 1)
             {
