@@ -36,21 +36,21 @@ namespace LaborasLangCompiler.Parser.Impl
                     break;
                 case Lexer.Value:
                 case Lexer.FunctionArgument:
-                    expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
+                    expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0], allowAmbiguous);
                     break;
                 case Lexer.Sum:
                 case Lexer.Product:
                 case Lexer.BinaryOperationNode:
                 case Lexer.BooleanNode:
                 case Lexer.Comparison:
-                    expression = BinaryOperatorNode.Parse(parser, parent, lexerNode);
+                    expression = BinaryOperatorNode.Parse(parser, parent, lexerNode, allowAmbiguous);
                     break;
                 case Lexer.Function:
                     expression = MethodNode.Parse(parser, parent, lexerNode);
                     break;
                 case Lexer.PrefixNode:
                 case Lexer.SuffixNode:
-                    expression = UnaryOperatorNode.Parse(parser, parent, lexerNode);
+                    expression = UnaryOperatorNode.Parse(parser, parent, lexerNode, allowAmbiguous);
                     break;
                 case Lexer.FunctionCall:
                     expression = MethodCallNode.Parse(parser, parent, lexerNode);

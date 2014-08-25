@@ -448,6 +448,19 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!) Function: (MethodNode: Instance: null, Method: WriteLine)), (UnaryOp: VoidOperator (MethodCall: Return: System.Boolean Args: (Literal: System.String ) Function: (MethodNode: Instance: null, Method: Exists)))))))";
             TestParser(source, expected, lex);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestMethodInferrence()
+        {
+            string source = @"
+                auto a = 5;
+                auto Main = void()
+                {
+                    string() func = a.ToString;
+	                System.Console.WriteLine(func());
+                };";
+            string expected = "";
+            TestParser(source, expected, lex);
+        }
         private void TestParser(string source, string expected, bool lex, [CallerMemberName]string name = "")
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
