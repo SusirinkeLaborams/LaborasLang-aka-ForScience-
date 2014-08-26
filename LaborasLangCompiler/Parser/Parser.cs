@@ -2,6 +2,7 @@
 using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NPEG;
@@ -21,30 +22,58 @@ namespace LaborasLangCompiler.Parser
         public string Filename { get; private set; }
         public Document Document { get; private set; }
         public SymbolCounter SymbolCounter { get; private set; }
+
         private ByteInputIterator source;
-        public IReadOnlyDictionary<string, TypeReference> Primitives { get; private set; }
-        public bool Testing { get; private set; }
-        public const string Bool   = "bool";
-        public const string Char   = "char";
-        public const string Byte   = "byte";
-        public const string UByte  = "ubyte";
-        public const string Word   = "word";
-        public const string UWord  = "uword";
-        public const string Int    = "int";
-        public const string UInt   = "uint";
-        public const string Long   = "long";
-        public const string ULong  = "ulong";
-        public const string Float  = "float";
-        public const string Double = "double";
-        public const string Decimal = "decimal";
-        public const string String = "string";
-        public const string Void   = "void";
-        public const string Auto   = "auto";
-        public const string Object = "object";
+        private bool testing;
+        private Dictionary<string, TypeWrapper> primitives;
+
+        #region typenames
+        private const string tBool = "bool";
+        private const string tChar = "char";
+        private const string tByte = "byte";
+        private const string tUByte = "ubyte";
+        private const string tWord = "word";
+        private const string tUWord = "uword";
+        private const string tInt = "int";
+        private const string tUInt = "uint";
+        private const string tLong = "long";
+        private const string tULong = "ulong";
+        private const string tFloat = "float";
+        private const string tDouble = "double";
+        private const string tDecimal = "decimal";
+        private const string tString = "string";
+        private const string tVoid = "void";
+        private const string tAuto = "auto";
+        private const string tObject = "object";
+        #endregion typenames
+
+        #region types
+
+        public TypeWrapper Bool { get; private set; }
+        public TypeWrapper Char { get; private set; }
+        public TypeWrapper Byte { get; private set; }
+        public TypeWrapper UByte { get; private set; }
+        public TypeWrapper UBool { get; private set; }
+        public TypeWrapper Word { get; private set; }
+        public TypeWrapper UWord { get; private set; }
+        public TypeWrapper Int { get; private set; }
+        public TypeWrapper UInt { get; private set; }
+        public TypeWrapper Long { get; private set; }
+        public TypeWrapper ULong { get; private set; }
+        public TypeWrapper Float { get; private set; }
+        public TypeWrapper Double { get; private set; }
+        public TypeWrapper Decimal { get; private set; }
+        public TypeWrapper String { get; private set; }
+        public TypeWrapper Void { get; private set; }
+        public TypeWrapper Auto { get; private set; }
+        public TypeWrapper Object { get; private set; }
+
+        #endregion types
+
         public Parser(AssemblyEmitter assembly, AstNode tree, ByteInputIterator source, string filePath, bool testing = false)
         {
             Assembly = assembly;
-            Testing = testing;
+            this.testing = testing;
             this.source = source;
             Filename = Path.GetFileNameWithoutExtension(filePath);
             Document = new Document(filePath);
@@ -52,45 +81,48 @@ namespace LaborasLangCompiler.Parser
             Document.LanguageVendor = DocumentLanguageVendor.Other;
             Document.Type = DocumentType.Text;
             SymbolCounter = new SymbolCounter(source);
+            this.primitives = new Dictionary<string, TypeWrapper>();
 
-            var primitives = new Dictionary<string, TypeReference>();
-            primitives.Add(Bool, Assembly.TypeToTypeReference(typeof(bool)));
+            primitives[tBool] = Bool = new ExternalType(assembly, typeof(bool));
 
-            primitives.Add(Char, Assembly.TypeToTypeReference(typeof(char)));
-            primitives.Add(Byte, Assembly.TypeToTypeReference(typeof(sbyte)));
-            primitives.Add(UByte, Assembly.TypeToTypeReference(typeof(byte)));
+            primitives[tChar] = Char = new ExternalType(assembly, typeof(char));
+            primitives[tByte] = Byte = new ExternalType(assembly, typeof(sbyte));
+            primitives[tUByte] = UByte = new ExternalType(assembly, typeof(byte));
 
-            primitives.Add(Word, Assembly.TypeToTypeReference(typeof(short)));
-            primitives.Add(UWord, Assembly.TypeToTypeReference(typeof(ushort)));
+            primitives[tWord] = Word = new ExternalType(assembly, typeof(short));
+            primitives[tUWord] = UWord = new ExternalType(assembly, typeof(ushort));
 
-            primitives.Add(Int, Assembly.TypeToTypeReference(typeof(int)));
-            primitives.Add(UInt, Assembly.TypeToTypeReference(typeof(uint)));
+            primitives[tInt] = Int = new ExternalType(assembly, typeof(int));
+            primitives[tUInt] = UInt = new ExternalType(assembly, typeof(uint));
 
-            primitives.Add(Long, Assembly.TypeToTypeReference(typeof(long)));
-            primitives.Add(ULong, Assembly.TypeToTypeReference(typeof(ulong)));
+            primitives[tLong] = Long = new ExternalType(assembly, typeof(long));
+            primitives[tULong] = ULong = new ExternalType(assembly, typeof(ulong));
 
-            primitives.Add(Float, Assembly.TypeToTypeReference(typeof(float)));
-            primitives.Add(Double, Assembly.TypeToTypeReference(typeof(double)));
-            primitives.Add(Decimal, Assembly.TypeToTypeReference(typeof(decimal)));
+            primitives[tFloat] = Float = new ExternalType(assembly, typeof(float));
+            primitives[tDouble] = Double = new ExternalType(assembly, typeof(double));
+            primitives[tDecimal] = Decimal = new ExternalType(assembly, typeof(decimal));
 
-            primitives.Add(String, Assembly.TypeToTypeReference(typeof(string)));
-            primitives.Add(Object, Assembly.TypeToTypeReference(typeof(object)));
+            primitives[tString] = String = new ExternalType(assembly, typeof(string));
+            primitives[tObject] = Object = new ExternalType(assembly, typeof(object));
 
-            primitives.Add(Void, Assembly.TypeToTypeReference(typeof(void)));
-            primitives.Add(Auto, null);
-
-            Primitives = primitives;
+            primitives[tVoid] = Void = new ExternalType(assembly, typeof(void));
+            primitives[tAuto] = Auto = null;
 
             Root = new ClassNode(this, null, GetSequencePoint(tree));
             Root.ParseDeclarations(tree);
             Root.ParseBody(tree);
-            Root.DeclareMembers();
-            Root.Emit();
+            if (!testing)
+            {
+                Root.DeclareMembers();
+                Root.Emit();
+            }
         }
+
         public string ValueOf(AstNode node)
         {
             return Encoding.UTF8.GetString(source.Text(node.Token.Start, node.Token.End));
         }
+
         public SequencePoint GetSequencePoint(AstNode lexerNode)
         {
             var sequencePoint = new SequencePoint(Document);
@@ -101,6 +133,36 @@ namespace LaborasLangCompiler.Parser
             sequencePoint.EndLine = end.row;
             sequencePoint.EndColumn = end.column + 1;
             return sequencePoint; 
+        }
+
+        public TypeNode FindType(string fullname, SequencePoint point)
+        {
+            var type = AssemblyRegistry.FindType(Assembly, fullname);
+            if (type != null)
+                return new TypeNode(new ExternalType(Assembly, type), point);
+            else
+                return null;
+        }
+
+        public NamespaceNode FindNamespace(string fullname, SequencePoint point)
+        {
+            if (AssemblyRegistry.IsNamespaceKnown(fullname))
+                return new NamespaceNode(new ExternalNamespace(fullname, Assembly), point);
+            else
+                return null;
+        }
+
+        public bool IsPrimitive(string name)
+        {
+            return primitives.ContainsKey(name);
+        }
+
+        public TypeWrapper GetPrimitive(string name)
+        {
+            if (!IsPrimitive(name))
+                return null;
+            else
+                return primitives[name];
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NPEG;
@@ -11,28 +12,27 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class AmbiguousMethodNode : RValueNode, IFunctionNode
+    class AmbiguousMethodNode : RValueNode
     {
-        public override TypeReference ReturnType { get { return null; } }
-        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Intermediate; } }
-        public override RValueNodeType RValueType { get { return RValueNodeType.Function; } }
-        public MethodReference Function { get { return null; } }
-        public IExpressionNode ObjectInstance { get; private set; }
-        private List<MethodReference> methods;
-        public AmbiguousMethodNode(List<MethodReference> methods, IExpressionNode instance, SequencePoint sequencePoint)
+        public override TypeWrapper TypeWrapper { get { return null; } }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
+        public override RValueNodeType RValueType { get { return RValueNodeType.ParserInternal; } }
+
+        private IEnumerable<MethodWrapper> methods;
+        private ExpressionNode instance;
+        public AmbiguousMethodNode(IEnumerable<MethodWrapper> methods, ExpressionNode instance, SequencePoint sequencePoint)
             : base(sequencePoint)
         {
             this.methods = methods;
-            ObjectInstance = instance;
+            this.instance = instance;
         }
-        public MethodNode RemoveAmbiguity(Parser parser, List<TypeReference> argTypes)
+        public MethodNode RemoveAmbiguity(Parser parser, IEnumerable<TypeWrapper> argTypes)
         {
             MethodReference method = null;
             try
             {
-                method = AssemblyRegistry.GetCompatibleMethod(methods, argTypes);
-                //TODO: make this lazy
-                return new MethodNode(method, AssemblyRegistry.GetFunctorType(parser.Assembly, method), ObjectInstance, SequencePoint);
+                method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), argTypes.Select(t => t.TypeReference).ToList());
+                return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, SequencePoint);
             }
             catch (Exception)
             {

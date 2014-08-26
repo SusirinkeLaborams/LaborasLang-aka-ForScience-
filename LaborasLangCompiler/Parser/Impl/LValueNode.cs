@@ -23,34 +23,38 @@ namespace LaborasLangCompiler.Parser.Impl
     class LocalVariableNode : LValueNode, ILocalVariableNode
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.LocalVariable; } }
-        public VariableDefinition LocalVariable { get; set; }
-        public override TypeReference ReturnType { get { return LocalVariable.VariableType; } }
-        public LocalVariableNode(SequencePoint point, VariableDefinition variable)
+        public VariableDefinition LocalVariable { get { return variable.VariableDefinition; } }
+        public override TypeWrapper TypeWrapper { get { return variable.TypeWrapper; } }
+
+        private VariableWrapper variable;
+        public LocalVariableNode(SequencePoint point, VariableWrapper variable)
             : base(point)
         {
-            LocalVariable = variable;
+            this.variable = variable;
         }
         public override string ToString()
         {
-            return String.Format("(LValueNode: {0} {1} {2})", LValueType, LocalVariable.Name, ReturnType);
+            return String.Format("(LValueNode: {0} {1} {2})", LValueType, LocalVariable.Name, ExpressionReturnType);
         }
     }
 
-    class FunctionArgumentNode : LValueNode, IFunctionArgumentNode
+    class FunctionArgumentNode : LValueNode, IMethodParamNode
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.FunctionArgument; } }
-        public ParameterDefinition Param { get; set; }
-        public bool IsFunctionStatic { get; set; }
-        public override TypeReference ReturnType { get { return Param.ParameterType; } }
-        public FunctionArgumentNode(ParameterDefinition param, bool isFunctionStatic, SequencePoint point)
+        public ParameterDefinition Param { get { return parameter.ParameterDefinition; } }
+        public bool IsMethodStatic { get; set; }
+        public override TypeWrapper TypeWrapper { get { return parameter.TypeWrapper; } }
+
+        private ParameterWrapper parameter;
+        public FunctionArgumentNode(ParameterWrapper param, bool isFunctionStatic, SequencePoint point)
             : base(point)
         {
-            Param = param;
-            IsFunctionStatic = isFunctionStatic;
+            this.parameter = param;
+            IsMethodStatic = isFunctionStatic;
         }
         public override string ToString()
         {
-            return String.Format("(LValueNode: {0} {1} {2})", LValueType, Param.Name, ReturnType);
+            return String.Format("(LValueNode: {0} {1} {2})", LValueType, Param.Name, ExpressionReturnType);
         }
     }
 
@@ -59,7 +63,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override LValueNodeType LValueType { get { return LValueNodeType.Field; } }
         public IExpressionNode ObjectInstance { get; private set; }
         public FieldReference Field { get { return field.FieldReference; } }
-        public override TypeReference ReturnType { get { return field.ReturnType; } }
+        public override TypeWrapper TypeWrapper { get { return field.TypeWrapper; } }
 
         private FieldWrapper field;
         public FieldNode(IExpressionNode instance, FieldWrapper field, SequencePoint point)
@@ -70,7 +74,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public override string ToString()
         {
-            return String.Format("(LValueNode: {0} {1} {2})", LValueType, Field.Name, ReturnType);
+            return String.Format("(LValueNode: {0} {1} {2})", LValueType, field.Name, ExpressionReturnType);
         }
     }
     /*

@@ -1,6 +1,7 @@
 ﻿using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser;
 using LaborasLangCompiler.Parser.Exceptions;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NPEG;
@@ -12,18 +13,19 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class CodeBlockNode : ParserNode, ICodeBlockNode, IContainerNode, IReturning
+    class CodeBlockNode : ParserNode, ICodeBlockNode, ContainerNode, ReturningNode
     {
         public override NodeType Type { get { return NodeType.CodeBlockNode; } }
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
         public bool Returns { get; private set; }
-        protected List<IParserNode> nodes;
-        protected Dictionary<string, VariableDefinition> symbols;
-        private IContainerNode parent;
-        protected CodeBlockNode(IContainerNode parent, SequencePoint point) : base(point)
+
+        protected List<ParserNode> nodes;
+        protected Dictionary<string, VariableWrapper> symbols;
+        private ContainerNode parent;
+        protected CodeBlockNode(ContainerNode parent, SequencePoint point) : base(point)
         {
-            nodes = new List<IParserNode>();
-            symbols = new Dictionary<string, VariableDefinition>();
+            nodes = new List<ParserNode>();
+            symbols = new Dictionary<string, VariableWrapper>();
             this.parent = parent;
             Returns = false;
         }
@@ -36,28 +38,28 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return parent.GetSymbol(name, point);
         }
-        public virtual LValueNode AddVariable(TypeReference type, string name, SequencePoint point)
+        public virtual LValueNode AddVariable(TypeWrapper type, string name, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
                 throw new SymbolAlreadyDeclaredException(point, "Var {0} already declared", name);
-            symbols.Add(name, new VariableDefinition(name, type));
+            symbols.Add(name, new VariableWrapper(name, type));
             return new LocalVariableNode(point, symbols[name]);
         }
-        private void AddNode(IParserNode node)
+        private void AddNode(ParserNode node)
         {
-            if (node is IReturning)
-                if (((IReturning)node).Returns)
+            if (node is ReturningNode)
+                if (((ReturningNode)node).Returns)
                     Returns = true;
             nodes.Add(node);
         }
-        private void AddExpression(IExpressionNode node, Parser parser, AstNode lexerNode)
+        private void AddExpression(ExpressionNode node, Parser parser)
         {
-            if (node.ReturnType.FullName == parser.Primitives[Parser.Void].FullName)
+            if (node.TypeWrapper.FullName == parser.Void.FullName)
                 AddNode(node);
             else
                 AddNode(UnaryOperatorNode.Void(node));
         }
-        public static CodeBlockNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static CodeBlockNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var instance = new CodeBlockNode(parent, parser.GetSequencePoint(lexerNode));
             foreach (var node in lexerNode.Children)
@@ -67,17 +69,13 @@ namespace LaborasLangCompiler.Parser.Impl
                     var sentence = node.Children[0];
                     switch (sentence.Token.Name)
                     {
-                        case Lexer.NamespaceImport:
-                            throw new ParseException(parser.GetSequencePoint(sentence), "Imports only allowed in classes");
                         case Lexer.Declaration:
                         case Lexer.DeclarationAndAssignment:
                             instance.AddNode(SymbolDeclarationNode.Parse(parser, instance, sentence));
                             break;
-                        case Lexer.Assignment:
-                            instance.AddExpression(AssignmentOperatorNode.Parse(parser, instance, sentence), parser, sentence);
-                            break;
                         case Lexer.FunctionCall:
-                            instance.AddExpression(MethodCallNode.Parse(parser, instance, sentence), parser, sentence);
+                        case Lexer.Assignment:
+                            instance.AddExpression(ExpressionNode.Parse(parser, instance, sentence), parser);
                             break;
                         case Lexer.Loop:
                             instance.AddNode(WhileBlock.Parse(parser, instance, sentence));
@@ -108,7 +106,7 @@ namespace LaborasLangCompiler.Parser.Impl
             string delim = "";
             foreach(var symbol in symbols)
             {
-                builder.Append(String.Format("{0}{1} {2}", delim, symbol.Value.VariableType, symbol.Key));
+                builder.Append(String.Format("{0}{1} {2}", delim, symbol.Value.TypeWrapper, symbol.Key));
                 delim = ", ";
             }
             delim = "";

@@ -12,16 +12,12 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class ImportNode : ParserNode
     {
-        public override NodeType Type { get { return NodeType.ImportNode; } }
+        public override NodeType Type { get { return NodeType.ParserInternal; } }
         protected ImportNode(SequencePoint point) : base(point) { }
-        public static void Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static void Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             string namespaze = parser.ValueOf(lexerNode.Children[0]);
-            string name = null;
-            if (lexerNode.Children.Count != 1)
-                name = parser.ValueOf(lexerNode.Children[1]);
-            if (!AssemblyRegistry.IsNamespaceKnown(namespaze))
-                throw new ParseException(parser.GetSequencePoint(lexerNode), "Unknown namespace {0}", namespaze);
+            
             parent.GetClass().AddImport(namespaze, parser.GetSequencePoint(lexerNode));
         }
     }

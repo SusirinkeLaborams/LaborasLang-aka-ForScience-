@@ -10,20 +10,22 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.ILTools;
 using Mono.Cecil.Cil;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
     class BinaryOperatorNode : RValueNode, IBinaryOperatorNode
     {
-        public IExpressionNode RightOperand { get; set; }
-        public IExpressionNode LeftOperand { get; set; }
+        public IExpressionNode RightOperand { get { return right; } }
+        public IExpressionNode LeftOperand { get { return left; } }
         public override RValueNodeType RValueType { get { return RValueNodeType.BinaryOperator; } }
-        public BinaryOperatorNodeType BinaryOperatorType { get; set; }
-        public override TypeReference ReturnType { get { return returnType; } }
+        public BinaryOperatorNodeType BinaryOperatorType { get; private set; }
+        public override TypeWrapper TypeWrapper { get { return typeWrapper; } }
 
-        private TypeReference returnType;
+        private TypeWrapper typeWrapper;
+        private ExpressionNode left, right;
         protected BinaryOperatorNode(SequencePoint point) : base(point) { }
-        public static new IExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static new ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             if (lexerNode.Children.Count == 1)
             {
@@ -31,7 +33,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                IExpressionNode left, right;
+                ExpressionNode left, right;
                 string op;
                 left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
                 for (int i = 1; i < lexerNode.Children.Count; i += 2)
@@ -43,12 +45,12 @@ namespace LaborasLangCompiler.Parser.Impl
                 return left;
             }
         }
-        public static BinaryOperatorNode Parse(Parser parser, string op, IExpressionNode left, IExpressionNode right)
+        public static BinaryOperatorNode Parse(Parser parser, string op, ExpressionNode left, ExpressionNode right)
         {
             var instance = new BinaryOperatorNode(left.SequencePoint);
             instance.BinaryOperatorType = Operators[op];
-            instance.LeftOperand = left;
-            instance.RightOperand = right;
+            instance.left = left;
+            instance.right = right;
             switch (instance.BinaryOperatorType)
             {
                 case BinaryOperatorNodeType.Addition:
@@ -56,7 +58,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 case BinaryOperatorNodeType.Multiplication:
                 case BinaryOperatorNodeType.Division:
                 case BinaryOperatorNodeType.Modulus:
-                    ParseArithmetic(parser, instance);
+                    instance.VerifyArithmetic(parser);
                     break;
                 case BinaryOperatorNodeType.GreaterThan:
                 case BinaryOperatorNodeType.LessThan:
@@ -64,104 +66,94 @@ namespace LaborasLangCompiler.Parser.Impl
                 case BinaryOperatorNodeType.LessEqualThan:
                 case BinaryOperatorNodeType.Equals:
                 case BinaryOperatorNodeType.NotEquals:
-                    ParseComparison(parser, instance);
+                    instance.VerifyComparison(parser);
                     break;
                 case BinaryOperatorNodeType.ShiftLeft:
                 case BinaryOperatorNodeType.ShiftRight:
-                    ParseShift(parser, instance);
+                    instance.VerifyShift(parser);
                     break;
                 case BinaryOperatorNodeType.LogicalAnd:
                 case BinaryOperatorNodeType.LogicalOr:
-                    ParseLogical(parser, instance);
+                    instance.VerifyLogical(parser);
                     break;
                 case BinaryOperatorNodeType.BinaryAnd:
                 case BinaryOperatorNodeType.BinaryOr:
                 case BinaryOperatorNodeType.BinaryXor:
-                    ParseBinary(parser, instance);
+                    instance.VerifyBinary(parser);
                     break;
                 default:
                     throw new ParseException(instance.SequencePoint, "Binary op expected, '{0}' received", op);
             }
             return instance;
         }
-        private static void ParseArithmetic(Parser parser, BinaryOperatorNode instance)
+        private void VerifyArithmetic(Parser parser)
         {
-            var left = instance.LeftOperand;
-            var right = instance.RightOperand;
-            if (left.ReturnType.IsNumericType() && right.ReturnType.IsNumericType())
+            if (left.TypeWrapper.IsNumericType() && right.TypeWrapper.IsNumericType())
             {
-                if (left.ReturnType.IsAssignableTo(right.ReturnType))
-                    instance.returnType = right.ReturnType;
-                else if (right.ReturnType.IsAssignableTo(left.ReturnType))
-                    instance.returnType = left.ReturnType;
+                if (left.TypeWrapper.IsAssignableTo(right.TypeWrapper))
+                    typeWrapper = right.TypeWrapper;
+                else if (right.TypeWrapper.IsAssignableTo(left.TypeWrapper))
+                    typeWrapper = left.TypeWrapper;
                 else
-                    throw new TypeException(instance.SequencePoint, "Incompatible operand types, {0} and {1} received", 
-                        left.ReturnType.FullName, right.ReturnType.FullName);
+                    throw new TypeException(SequencePoint, "Incompatible operand types, {0} and {1} received",
+                        left.TypeWrapper.FullName, right.TypeWrapper.FullName);
             }
-            else if ((left.ReturnType.IsStringType() || right.ReturnType.IsStringType()) && instance.BinaryOperatorType == BinaryOperatorNodeType.Addition)
+            else if ((left.TypeWrapper.IsStringType() || right.TypeWrapper.IsStringType()) && BinaryOperatorType == BinaryOperatorNodeType.Addition)
             {
-                instance.returnType = parser.Primitives[Parser.String];
+                typeWrapper = parser.String;
             }
             else
             {
-                throw new TypeException(instance.SequencePoint, "Incompatible operand types, {0} and {1} for operator {2}", 
-                    left.ReturnType.FullName, right.ReturnType.FullName, instance.BinaryOperatorType);
+                throw new TypeException(SequencePoint, "Incompatible operand types, {0} and {1} for operator {2}",
+                    left.TypeWrapper.FullName, right.TypeWrapper.FullName, BinaryOperatorType);
             }
         }
-        private static void ParseComparison(Parser parser, BinaryOperatorNode instance)
+        private void VerifyComparison(Parser parser)
         {
-            var left = instance.LeftOperand;
-            var right = instance.RightOperand;
-            instance.returnType = parser.Primitives[Parser.Bool];
+            typeWrapper = parser.Bool;
 
-            bool comparable = left.ReturnType.IsNumericType() && right.ReturnType.IsNumericType();
+            bool comparable = left.TypeWrapper.IsNumericType() && right.TypeWrapper.IsNumericType();
 
             if (!comparable)
-                comparable = left.ReturnType.IsStringType() && right.ReturnType.IsStringType();
+                comparable = left.TypeWrapper.IsStringType() && right.TypeWrapper.IsStringType();
 
             if (!comparable)
-                comparable = left.ReturnType.IsBooleanType() && right.ReturnType.IsBooleanType();
+                comparable = left.TypeWrapper.IsBooleanType() && right.TypeWrapper.IsBooleanType();
 
             if (comparable)
-                comparable = left.ReturnType.IsAssignableTo(right.ReturnType) || right.ReturnType.IsAssignableTo(left.ReturnType);
+                comparable = left.TypeWrapper.IsAssignableTo(right.TypeWrapper) || right.TypeWrapper.IsAssignableTo(left.TypeWrapper);
 
             if (!comparable)
-                throw new TypeException(instance.SequencePoint, "Types {0} and {1} cannot be compared with op {2}", 
-                    left.ReturnType, right.ReturnType, instance.BinaryOperatorType);
+                throw new TypeException(SequencePoint, "Types {0} and {1} cannot be compared with op {2}",
+                    left.TypeWrapper, right.TypeWrapper, BinaryOperatorType);
         }
-        private static void ParseShift(Parser parser, BinaryOperatorNode instance)
+        private void VerifyShift(Parser parser)
         {
-            var left = instance.LeftOperand;
-            var right = instance.RightOperand;
-            instance.returnType = left.ReturnType;
-            if (right.ReturnType.FullName != parser.Primitives[Parser.Int].FullName)
-                throw new TypeException(instance.SequencePoint, "Right shift operand must be of signed 32bit integer type");
-            if (!left.ReturnType.IsIntegerType())
-                throw new TypeException(instance.SequencePoint, "Left shift operand must be of integer type");
+            typeWrapper = left.TypeWrapper;
+            if (right.TypeWrapper.FullName != parser.Int.FullName)
+                throw new TypeException(SequencePoint, "Right shift operand must be of signed 32bit integer type");
+            if (!left.TypeWrapper.IsIntegerType())
+                throw new TypeException(SequencePoint, "Left shift operand must be of integer type");
         }
-        private static void ParseBinary(Parser parser, BinaryOperatorNode instance)
+        private void VerifyBinary(Parser parser)
         {
-            var left = instance.LeftOperand;
-            var right = instance.RightOperand;
-            instance.returnType = left.ReturnType;
+            typeWrapper = left.TypeWrapper;
 
-            if (!(left.ReturnType.IsIntegerType() && right.ReturnType.IsIntegerType()))
-                throw new TypeException(instance.SequencePoint, "Binary operations only allowed on equal length integers, operands: {0}, {1}",
-                    left.ReturnType, right.ReturnType);
+            if (!(left.TypeWrapper.IsIntegerType() && right.TypeWrapper.IsIntegerType()))
+                throw new TypeException(SequencePoint, "Binary operations only allowed on equal length integers, operands: {0}, {1}",
+                    left.TypeWrapper, right.TypeWrapper);
 
-            if(left.ReturnType.GetIntegerWidth() != right.ReturnType.GetIntegerWidth())
-                throw new TypeException(instance.SequencePoint, "Binary operations only allowed on equal length integers, operands: {0}, {1}",
-                    left.ReturnType, right.ReturnType);
+            if (left.TypeWrapper.GetIntegerWidth() != right.TypeWrapper.GetIntegerWidth())
+                throw new TypeException(SequencePoint, "Binary operations only allowed on equal length integers, operands: {0}, {1}",
+                    left.TypeWrapper, right.TypeWrapper);
         }
-        private static void ParseLogical(Parser parser, BinaryOperatorNode instance)
+        private void VerifyLogical(Parser parser)
         {
-            var left = instance.LeftOperand;
-            var right = instance.RightOperand;
-            instance.returnType = parser.Primitives[Parser.Bool];
+            typeWrapper = parser.Bool;
 
-            if (!(left.ReturnType.IsBooleanType() && right.ReturnType.IsBooleanType()))
-                throw new TypeException(instance.SequencePoint, "Logical operations only allowed on booleans, operands: {0}, {1}",
-                    left.ReturnType, right.ReturnType);
+            if (!(left.TypeWrapper.IsBooleanType() && right.TypeWrapper.IsBooleanType()))
+                throw new TypeException(SequencePoint, "Logical operations only allowed on booleans, operands: {0}, {1}",
+                    left.TypeWrapper, right.TypeWrapper);
         }
         public override string ToString()
         {

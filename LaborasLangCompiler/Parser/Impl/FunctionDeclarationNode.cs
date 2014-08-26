@@ -2,6 +2,7 @@
 using LaborasLangCompiler.ILTools.Types;
 using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Exceptions;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using NPEG;
@@ -13,33 +14,80 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class FunctionDeclarationNode : RValueNode, IFunctionNode, IContainerNode
+    class FunctionDeclarationNode : ParserNode, ContainerNode, MethodWrapper
     {
-        public IExpressionNode ObjectInstance { get { return null; } }
-        public MethodReference Function { get; private set; }
-        public override RValueNodeType RValueType { get { return RValueNodeType.Function; } }
-        public override TypeReference ReturnType { get { return header.ReturnType; } }
+        public MethodReference MethodReference { get { return emitter.Get(); } }
+        public override NodeType Type { get { return NodeType.ParserInternal; } }
+        public FunctorTypeWrapper FunctorType 
+        {
+            get
+            { 
+                if(functorType == null)
+                {
+                    functorType = new FunctorTypeWrapper(parser.Assembly, MethodReturnType, ParamTypes);
+                }
+                return functorType;
+            }
+        }
+        public bool IsStatic { get { return true; } }
+        public IEnumerable<TypeWrapper> ParamTypes { get; private set; }
+        public TypeWrapper MethodReturnType { get; private set; }
+
         private CodeBlockNode body;
         private MethodEmitter emitter;
-        public TypeReference FunctionReturnType { get { return header.FunctorReturnType; } }
         private ClassNode parent;
-        public IReadOnlyList<FunctionArgumentNode> Args { get { return header.Args; } }
-        private Dictionary<string, ParameterDefinition> symbols;
-        private FunctionHeader header;
-        public void Emit(bool entry = false)
+        private Dictionary<string, ParameterWrapper> symbols;
+        private Parser parser;
+        private FunctorTypeWrapper functorType;
+
+        public FunctionDeclarationNode(Parser parser, ContainerNode parent, SequencePoint point, AstNode header, string name = null)
+            : base(point)
+        {
+            this.parent = parent.GetClass();
+            this.symbols = new Dictionary<string, ParameterWrapper>();
+            this.parser = parser;
+            ParseHeader(header, name != null ? name : this.parent.NewFunctionName());
+        }
+
+        public void Emit(bool entry)
         {
             emitter.ParseTree(body);
             if(entry)
                 emitter.SetAsEntryPoint();
         }
-        private FunctionDeclarationNode(IContainerNode parent, SequencePoint point)
-            : base(point)
+
+        private void ParseHeader(AstNode lexerNode, string name)
         {
-            this.parent = parent.GetClass();
-            this.symbols = new Dictionary<string, ParameterDefinition>();
+            MethodReturnType = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
+            emitter = new MethodEmitter(parent.TypeEmitter, name, MethodReturnType.TypeReference, MethodAttributes.Static | MethodAttributes.Private);
+            for(int i = 1; i < lexerNode.Children.Count; i++)
+            {
+                var param = ParseParameter(parent, lexerNode.Children[i]);
+                emitter.AddArgument(param.ParameterDefinition);
+                symbols.Add(param.Name, param);
+            }
+            ParamTypes = symbols.Select(arg => arg.Value.TypeWrapper);
+            parent.AddMethod(this, name);
         }
+
+        private ParameterWrapper ParseParameter(ContainerNode parent, AstNode lexerNode)
+        {
+            var type = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
+            var name = parser.ValueOf(lexerNode.Children[1]);
+            return new ParameterWrapper(name, ParameterAttributes.None, type);
+        }
+
+        public void ParseBody(AstNode body)
+        {
+            this.body = CodeBlockNode.Parse(parser, this, body);
+            if(MethodReturnType.FullName != parser.Void.FullName && !this.body.Returns)
+                throw new ParseException(SequencePoint, "Not all control paths return a value");
+        }
+
         public FunctionDeclarationNode GetFunction() { return this; }
+
         public ClassNode GetClass() { return parent.GetClass(); }
+
         public LValueNode GetSymbol(string name, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
@@ -47,36 +95,36 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return parent.GetSymbol(name, point); 
         }
-        public static FunctionDeclarationNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode, string name = null)
+
+        public static FunctionDeclarationNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode, string name = null)
         {
-            var instance = new FunctionDeclarationNode(parent, parser.GetSequencePoint(lexerNode));
-            var header = FunctionHeader.Parse(parser, parent, lexerNode.Children[0]);
-            if (name == null)
-                name = instance.parent.NewFunctionName();
-            instance.header = header;
-            instance.symbols = instance.Args.Select(a => a.Param).ToDictionary(arg => arg.Name);
-            instance.body = CodeBlockNode.Parse(parser, instance, lexerNode.Children[1]);
-            if (instance.FunctionReturnType.FullName != "System.Void" && !instance.body.Returns)
-                throw new ParseException(instance.SequencePoint, "Not all control paths return a value");
-            instance.emitter = new MethodEmitter(instance.parent.TypeEmitter, "$" + name, header.FunctorReturnType, MethodAttributes.Static | MethodAttributes.Private);
-            foreach (var arg in header.Args)
-                instance.emitter.AddArgument(arg.Param);
-            instance.Function = instance.emitter.Get();
-            instance.parent.AddMethod(instance, name);
+            var instance = new FunctionDeclarationNode(parser, parent, parser.GetSequencePoint(lexerNode), lexerNode.Children[0], name);
+            instance.ParseBody(lexerNode.Children[1]);
             return instance;
         }
-        public static TypeReference ParseType(Parser parser, IContainerNode parent, AstNode lexerNode)
+
+        public static FunctorTypeWrapper ParseFunctorType(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            return FunctionHeader.Parse(parser, parent, lexerNode.Children[0]).ReturnType;
+            var header = lexerNode.Children[0];
+            var ret = TypeNode.Parse(parser, parent, header.Children[0]);
+            var args = new List<TypeWrapper>();
+            for (int i = 1; i < header.Children.Count; i++)
+            {
+                var arg = header.Children[i];
+                args.Add(TypeNode.Parse(parser, parent, arg.Children[0]));
+            }
+            return new FunctorTypeWrapper(parser.Assembly, ret, args);
         }
+
         public override string ToString()
         {
-            StringBuilder builder = new StringBuilder("(Function: ");
-            builder.Append(ReturnType).Append("(");
+            StringBuilder builder = new StringBuilder("(Method: ");
+            builder.Append(MethodReference.Name).Append(" ");
+            builder.Append(MethodReturnType).Append("(");
             string delim = "";
             foreach(var arg in emitter.Get().Parameters)
             {
-                builder.Append(String.Format("{0}{1} {2}", delim, arg.ParameterType, arg.Name));
+                builder.AppendFormat("{0}{1} {2}", delim, arg.ParameterType, arg.Name);
                 delim = ", ";
             }
             builder.Append(")").Append(body.ToString()).Append(")");

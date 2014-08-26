@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    interface IContainerNode
+    interface ContainerNode
     {
         FunctionDeclarationNode GetFunction();
         ClassNode GetClass();

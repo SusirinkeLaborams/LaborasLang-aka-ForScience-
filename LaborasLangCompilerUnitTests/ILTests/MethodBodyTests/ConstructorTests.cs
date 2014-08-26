@@ -20,7 +20,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var initializer = new LiteralNode()
             {
-                ReturnType = intType,
+                ExpressionReturnType = intType,
                 Value = 2
             };
 
@@ -39,7 +39,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var initializer = new LiteralNode()
             {
-                ReturnType = floatType,
+                ExpressionReturnType = floatType,
                 Value = 2.0f
             };
 
@@ -59,7 +59,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var initializer = new LiteralNode()
             {
-                ReturnType = stringType,
+                ExpressionReturnType = stringType,
                 Value = "aaa"
             };
 
@@ -75,14 +75,14 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new FieldNode()
                             {
                                 ObjectInstance = new ThisNode()
                                 {
-                                    ReturnType = backingField.DeclaringType
+                                    ExpressionReturnType = backingField.DeclaringType
                                 },
                                 Field = backingField
                             },
@@ -116,7 +116,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var initializer = new LiteralNode()
             {
-                ReturnType = boolType,
+                ExpressionReturnType = boolType,
                 Value = true
             };
 
@@ -132,7 +132,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ReturnType = voidType,
+                        ExpressionReturnType = voidType,
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new FieldNode()
@@ -142,7 +142,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                             RightOperand = new FunctionArgumentNode()
                             {
                                 Param = value,
-                                IsFunctionStatic = true
+                                IsMethodStatic = true
                             }
                         }
                     }

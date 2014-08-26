@@ -8,25 +8,29 @@ using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ReturnNode : ParserNode, IReturnNode, IReturning
+    class ReturnNode : ParserNode, IReturnNode, ReturningNode
     {
         public override NodeType Type { get { return NodeType.ReturnNode; } }
-        public IExpressionNode Expression { get; private set; }
+        public IExpressionNode Expression { get { return expression; } }
         public bool Returns { get { return true; } }
+
+        private ExpressionNode expression;
         protected ReturnNode(SequencePoint point) : base(point) { }
-        public static ReturnNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+
+        public static ReturnNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var instance = new ReturnNode(parser.GetSequencePoint(lexerNode));
-            TypeReference retType = parser.Primitives[Parser.Void];
+            TypeWrapper retType = parser.Void;
             if (lexerNode.Children.Count > 0)
             {
-                instance.Expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
-                retType = instance.Expression.ReturnType;
+                instance.expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
+                retType = instance.expression.TypeWrapper;
             }
-            var functionReturn = parent.GetFunction().FunctionReturnType;
+            var functionReturn = parent.GetFunction().MethodReturnType;
             if (!retType.IsAssignableTo(functionReturn))
                 throw new TypeException(instance.SequencePoint, "Function returns {0}, cannot return {1}",
                     functionReturn, retType);

@@ -84,15 +84,15 @@ namespace LaborasLangCompiler.ILTools.Methods
             var left = binaryOperator.LeftOperand;
             var right = binaryOperator.RightOperand;
 
-            bool leftIsString = left.ReturnType.FullName == "System.String";
-            bool rightIsString = left.ReturnType.FullName == "System.String";
+            bool leftIsString = left.ExpressionReturnType.FullName == "System.String";
+            bool rightIsString = left.ExpressionReturnType.FullName == "System.String";
 
             return leftIsString || rightIsString;
         }
 
         protected bool AreBothOperandsUnsigned(IBinaryOperatorNode binaryOperator)
         {
-            return binaryOperator.LeftOperand.ReturnType.IsUnsignedInteger() && binaryOperator.RightOperand.ReturnType.IsUnsignedInteger();
+            return binaryOperator.LeftOperand.ExpressionReturnType.IsUnsignedInteger() && binaryOperator.RightOperand.ExpressionReturnType.IsUnsignedInteger();
         }
 
         #region IL Instructions

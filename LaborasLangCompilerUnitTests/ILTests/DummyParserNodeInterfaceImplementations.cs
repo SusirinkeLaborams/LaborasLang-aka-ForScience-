@@ -16,7 +16,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
         public RValueNodeType RValueType { get { return RValueNodeType.This; } }
 
-        public TypeReference ReturnType { get; set; }
+        public TypeReference ExpressionReturnType { get; set; }
     }
 
     class LiteralNode : ILiteralNode
@@ -26,23 +26,23 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
         public RValueNodeType RValueType { get { return RValueNodeType.Literal; } }
 
-        public TypeReference ReturnType { get; set; }
+        public TypeReference ExpressionReturnType { get; set; }
         public dynamic Value { get; set; }
     }
 
-    class FunctionNode : IFunctionNode
+    class FunctionNode : IMethodNode
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
         public RValueNodeType RValueType { get { return RValueNodeType.Function; } }
 
-        public TypeReference ReturnType { get; set; }
+        public TypeReference ExpressionReturnType { get; set; }
         public IExpressionNode ObjectInstance { get; set; }
-        public MethodReference Function { get; set; }
+        public MethodReference Method { get; set; }
     }
 
-    class MethodCallNode : IMethodCallNode
+    class MethodCallNode : IFunctionCallNode
     {
         public SequencePoint SequencePoint { get { return null; } }
         private List<IExpressionNode> arguments;
@@ -51,10 +51,10 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
         public RValueNodeType RValueType { get { return RValueNodeType.Call; } }
 
-        public TypeReference ReturnType { get; set; }
+        public TypeReference ExpressionReturnType { get; set; }
         public IExpressionNode Function { get; set; }
 
-        public IReadOnlyList<IExpressionNode> Arguments
+        public IReadOnlyList<IExpressionNode> Args
         {
             get { return arguments; }
             set
@@ -80,9 +80,9 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
         public RValueNodeType RValueType { get { return RValueNodeType.ObjectCreation; } }
 
-        public TypeReference ReturnType { get; set; }
+        public TypeReference ExpressionReturnType { get; set; }
 
-        public IReadOnlyList<IExpressionNode> Arguments
+        public IReadOnlyList<IExpressionNode> Args
         {
             get { return arguments; }
             set
@@ -106,7 +106,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
         public LValueNodeType LValueType { get { return LValueNodeType.LocalVariable; } }
 
-        public TypeReference ReturnType { get { return LocalVariable.VariableType; } }
+        public TypeReference ExpressionReturnType { get { return LocalVariable.VariableType; } }
         public VariableDefinition LocalVariable { get; set; }
     }
 
@@ -117,7 +117,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
         public LValueNodeType LValueType { get { return LValueNodeType.Field; } }
 
-        public TypeReference ReturnType { get { return Field.FieldType; } }
+        public TypeReference ExpressionReturnType { get { return Field.FieldType; } }
         public IExpressionNode ObjectInstance { get; set; }
         public FieldReference Field { get; set; }
     }
@@ -129,21 +129,21 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
         public LValueNodeType LValueType { get { return LValueNodeType.Property; } }
 
-        public TypeReference ReturnType { get { return Property.PropertyType; } }
+        public TypeReference ExpressionReturnType { get { return Property.PropertyType; } }
         public IExpressionNode ObjectInstance { get; set; }
         public PropertyReference Property { get; set; }
     }
 
-    class FunctionArgumentNode : IFunctionArgumentNode
+    class FunctionArgumentNode : IMethodParamNode
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
         public LValueNodeType LValueType { get { return LValueNodeType.FunctionArgument; } }
 
-        public TypeReference ReturnType { get { return Param.ParameterType; } }
+        public TypeReference ExpressionReturnType { get { return Param.ParameterType; } }
         public ParameterDefinition Param { get; set; }
-        public bool IsFunctionStatic { get; set; }
+        public bool IsMethodStatic { get; set; }
     }
 
     class BinaryOperatorNode : IBinaryOperatorNode
@@ -153,7 +153,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
         public RValueNodeType RValueType { get { return RValueNodeType.BinaryOperator; } }
 
-        public TypeReference ReturnType { get; set; }
+        public TypeReference ExpressionReturnType { get; set; }
         public BinaryOperatorNodeType BinaryOperatorType { get; set; }
         public IExpressionNode LeftOperand { get; set; }
         public IExpressionNode RightOperand { get; set; }
@@ -166,7 +166,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
         public RValueNodeType RValueType { get { return RValueNodeType.UnaryOperator; } }
 
-        public TypeReference ReturnType { get; set; }
+        public TypeReference ExpressionReturnType { get; set; }
         public UnaryOperatorNodeType UnaryOperatorType { get; set; }
         public IExpressionNode Operand { get; set; }
     }
@@ -178,7 +178,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
         public RValueNodeType RValueType { get { return RValueNodeType.AssignmentOperator; } }
 
-        public TypeReference ReturnType { get { return LeftOperand.ReturnType; } }
+        public TypeReference ExpressionReturnType { get { return LeftOperand.ExpressionReturnType; } }
         public ILValueNode LeftOperand { get; set; }
         public IExpressionNode RightOperand { get; set; }
     }
@@ -188,7 +188,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.SymbolDeclaration; } }
 
-        public TypeReference ReturnType { get { return DeclaredSymbol.ReturnType; } }
+        public TypeReference ReturnType { get { return DeclaredSymbol.ExpressionReturnType; } }
         public ILValueNode DeclaredSymbol { get; set; }
         public IExpressionNode Initializer { get; set; }
     }

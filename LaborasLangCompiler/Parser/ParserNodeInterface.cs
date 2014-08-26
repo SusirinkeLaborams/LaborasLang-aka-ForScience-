@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
@@ -16,9 +17,8 @@ namespace LaborasLangCompiler.Parser
         CodeBlockNode,
         ConditionBlock,
         WhileBlock,
-        ImportNode,
-        ClassNode,
-        ReturnNode
+        ReturnNode,
+        ParserInternal
     }
     interface IParserNode
     {
@@ -32,13 +32,13 @@ namespace LaborasLangCompiler.Parser
     {
         LValue,
         RValue,
-        Intermediate//used by the parser with incompletely parsed node
+        ParserInternal//used by the parser with incompletely parsed node
     }
 
     interface IExpressionNode : IParserNode
     {
         ExpressionNodeType ExpressionType { get; }
-        TypeReference ReturnType { get; }
+        TypeReference ExpressionReturnType { get; }
     }
     public enum RValueNodeType
     {
@@ -49,7 +49,8 @@ namespace LaborasLangCompiler.Parser
         BinaryOperator,
         UnaryOperator,
         AssignmentOperator,
-        This
+        This,
+        ParserInternal
     }
 
     interface IRValueNode : IExpressionNode
@@ -62,21 +63,21 @@ namespace LaborasLangCompiler.Parser
         dynamic Value { get; }
     }
 
-    interface IFunctionNode : IRValueNode
+    interface IMethodNode : IRValueNode
     {
         IExpressionNode ObjectInstance { get; }
-        MethodReference Function { get; }
+        MethodReference Method { get; }
     }
 
-    interface IMethodCallNode : IRValueNode
+    interface IFunctionCallNode : IRValueNode
     {
-        IReadOnlyList<IExpressionNode> Arguments { get; }
+        IReadOnlyList<IExpressionNode> Args { get; }
         IExpressionNode Function { get; }
     }
 
     interface IObjectCreationNode : IRValueNode
     {
-        IReadOnlyList<IExpressionNode> Arguments { get; }
+        IReadOnlyList<IExpressionNode> Args { get; }
     }
 
     interface IWhileBlockNode : IParserNode
@@ -122,10 +123,10 @@ namespace LaborasLangCompiler.Parser
         PropertyReference Property { get; }
     }
 
-    interface IFunctionArgumentNode : ILValueNode
+    interface IMethodParamNode : ILValueNode
     {
         ParameterDefinition Param { get; }
-        bool IsFunctionStatic { get; }
+        bool IsMethodStatic { get; }
     }
 
     public enum BinaryOperatorNodeType

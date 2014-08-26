@@ -15,16 +15,24 @@ using LaborasLangCompiler.Parser.Impl.Wrappers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ClassNode : ParserNode, IContainerNode
+    class ClassNode : ParserNode, ContainerNode
     {
-        public override NodeType Type { get { return NodeType.ClassNode; } }
+        #region fields
         private Dictionary<string, InternalField> fields;
-        private List<string> globalImports;
+        private List<NamespaceWrapper> globalImports;
         private ClassNode parent;
         private Parser parser;
-        public TypeEmitter TypeEmitter { get; private set; }
         private Dictionary<string, FunctionDeclarationNode> methods = new Dictionary<string, FunctionDeclarationNode>();
         private int lambdaCounter = 0;
+        #endregion fields
+
+        #region properties
+        public override NodeType Type { get { return NodeType.ParserInternal; } }
+        public TypeEmitter TypeEmitter { get; private set; }
+        public string FullName { get; private set; }
+        public TypeReference TypeReference { get { return TypeEmitter.Get(parser.Assembly); } }
+        #endregion properties
+
         public ClassNode(Parser parser, ClassNode parent, SequencePoint point) : base(point)
         {
             if (parser.Root == null)
@@ -32,90 +40,125 @@ namespace LaborasLangCompiler.Parser.Impl
             this.parent = parent;
             this.parser = parser;
             fields = new Dictionary<string, InternalField>();
-            globalImports = new List<string>();
-            globalImports.Add("");
+            globalImports = new List<NamespaceWrapper>();
+            FullName = parser.Filename;
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
-        private void AddField(string name, TypeReference type)
-        {
-            fields.Add(name, new InternalField(type, name));
-        }
-        public void AddMethod(FunctionDeclarationNode method, string name)
-        {
-            methods.Add(name, method);
-        }
-        private FieldNode GetField(string name, SequencePoint point)
+        #region type wrapper
+
+        public FieldWrapper GetField(string name)
         {
             if (fields.ContainsKey(name))
-                return new FieldNode(null, fields[name], point);
-
-            if (parent != null)
-                return parent.GetField(name, point);
+                return fields[name];
 
             return null;
         }
-        public ClassNode GetClass() { return this; }
-        public FunctionDeclarationNode GetFunction() { return null; }
+
+        public IEnumerable<MethodWrapper> GetMethods(string name)
+        {
+            var ret = new List<MethodWrapper>(1);
+            if (methods.ContainsKey(name))
+                ret.Add(methods[name]);
+            return ret;
+        }
+
+        public MethodWrapper GetMethod(string name)
+        {
+            if (methods.ContainsKey(name))
+                return methods[name];
+            else
+                return null;
+        }
+
+        public TypeWrapper GetContainedType(string name)
+        {
+            return null; 
+        }
+
+        #endregion typewrapper
+
+        #region container
+
+        public ClassNode GetClass() 
+        { 
+            return this;
+        
+        }
+
+        public FunctionDeclarationNode GetFunction() 
+        {
+            return null;
+        }
+
         public LValueNode GetSymbol(string name, SequencePoint point)
         {
-            return GetField(name, point);
+            var field = GetField(name);
+            if (field != null)
+                return new FieldNode(null, field, point);
+
+            if (parent != null)
+                return parent.GetSymbol(name, point);
+
+            return null;
         }
+
+        #endregion container
+
+        #region type/namespace lookup
+
         public TypeNode FindType(string name, SequencePoint point)
         {
-            if (parser.Primitives.ContainsKey(name))
-                return new TypeNode(parser.Primitives[name], point);
+            TypeNode type = null;
 
-            var types = globalImports.Select(namespaze => AssemblyRegistry.FindType(parser.Assembly, namespaze + name)).Where(t => t != null);
-            if(types.Count() == 0)
-                return null;
-            TypeReference type = null;
-            try
+            //local types not implemented
+
+            //primitives
+            if (parser.IsPrimitive(name))
+                type = new TypeNode(parser.GetPrimitive(name), point);
+
+            //imports
+            if (type == null)
             {
-                type = types.Single();
-            }
-            catch(InvalidOperationException)
-            {
-                StringBuilder builder = new StringBuilder();
-                builder.AppendFormat("Ambigious type {0}\n Could be:\n", name);
-                foreach(var t in types)
+                var types = globalImports.Select(namespaze => namespaze.GetContainedType(name)).Where(t => t != null);
+                try
                 {
-                    builder.Append(t.FullName);
+                    if (types.Count() != 0)
+                        type = new TypeNode(types.Single(), point);
                 }
-                throw new TypeException(point, builder.ToString());
+                catch (InvalidOperationException)
+                {
+                    StringBuilder builder = new StringBuilder();
+                    builder.AppendFormat("Ambigious type {0}\n Could be:\n", name);
+                    foreach (var t in types)
+                    {
+                        builder.Append(t.FullName);
+                    }
+                    throw new TypeException(point, builder.ToString());
+                }
             }
 
-            if(type != null)
-                return new TypeNode(type, point);
+            if (type == null)
+            {
+                if (parent != null)
+                    type = parent.FindType(name, point);
+                else
+                    parser.FindType(name, point);
+            }
 
-            return null;
+            return type;
         }
-        public TypeNode FindType(TypeNode main, string nested, SequencePoint point)
-        {
-            var type = AssemblyRegistry.FindType(parser.Assembly, main.ParsedType.FullName + "." + nested);
-            if(type != null)
-                return new TypeNode(type, point);
 
-            return null;
-        }
-        public TypeNode FindType(NamespaceNode namespaze, string name, SequencePoint point)
-        {
-            var type = AssemblyRegistry.FindType(parser.Assembly, namespaze.Value + "." + name);
-            if (type != null)
-                return new TypeNode(type, point);
-
-            return null;
-        }
         public NamespaceNode FindNamespace(string name, SequencePoint point)
         {
-            string namespaze = null;
-            var namespazes = globalImports.Select(import => AssemblyRegistry.IsNamespaceKnown(import + name) ? import + name : null).Where(n => n != null);
-            if (namespazes.Count() == 0)
-                return null;
+            NamespaceNode namespaze = null;
+
+            var namespazes = globalImports.Select(import => import.GetContainedNamespace(name)).Where(n => n != null);
             try
             {
-                namespaze = namespazes.Single();
+                if (namespazes.Count() != 0)
+                    namespaze = new NamespaceNode(namespazes.Single(), point);
             }
-            catch(InvalidOperationException)
+            catch (InvalidOperationException)
             {
                 StringBuilder builder = new StringBuilder();
                 builder.AppendFormat("Ambigious namespace {0}\n Could be:\n", name);
@@ -126,27 +169,32 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new TypeException(point, builder.ToString());
             }
 
-            return new NamespaceNode(namespaze, point);
+            if (namespaze == null)
+            {
+                if (parent != null)
+                    namespaze = parent.FindNamespace(name, point);
+                else
+                    namespaze = parser.FindNamespace(name, point);
+            }
+
+            return namespaze;
         }
+
         public void AddImport(string namespaze, SequencePoint point)
         {
-            if (globalImports.Contains(namespaze))
+            if (globalImports.Any(n => n.Namespace == namespaze))
                 throw new ParseException(point, "Namespace {0} already imported", namespaze);
-            globalImports.Add(namespaze + ".");
-        }
-        public NamespaceNode FindNamespace(NamespaceNode left, string right, SequencePoint point)
-        {
-            var full = left.Value + "." + right;
-            if (AssemblyRegistry.IsNamespaceKnown(full))
-                return new NamespaceNode(full, point);
 
-            return null;
+            var found = FindNamespace(namespaze, point);
+            if (found != null)
+                globalImports.Add(found.Namespace);
+            else
+                throw new ParseException(point, "Unknown namespace {0}", namespaze);
         }
-        private void AddFieldToEmitter(InternalField field)
-        {
-            if (!parser.Testing)
-                TypeEmitter.AddField(field.FieldDefinition, field.Initializer);
-        }
+
+        #endregion type/namespace lookup
+
+        #region parsing
         public void ParseDeclarations(AstNode lexerNode)
         {
             foreach (var node in lexerNode.Children)
@@ -173,6 +221,19 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
+
+        private void ParseDeclaration(AstNode lexerNode)
+        {
+            var type = TypeNode.Parse(parser, this, lexerNode.Children[0]);
+            var name = parser.ValueOf(lexerNode.Children[1]);
+            //nera tipo, deklaruojam funkcija
+            if (lexerNode.Children.Count > 2 && lexerNode.Children[2].Token.Name == Lexer.Function && type == null)
+            {
+                type = FunctionDeclarationNode.ParseFunctorType(parser, this, lexerNode.Children[2]);
+            }
+            fields.Add(name, new InternalField(type, name));
+        }
+
         public void ParseBody(AstNode lexerNode)
         {
             foreach (var node in lexerNode.Children)
@@ -181,21 +242,25 @@ namespace LaborasLangCompiler.Parser.Impl
                 switch (sentence.Token.Name)
                 {
                     case Lexer.DeclarationAndAssignment:
-                        IExpressionNode init = null;
                         var field = fields[parser.ValueOf(sentence.Children[1])];
+                        var init = sentence.Children[2];
+
                         if (sentence.Children[2].Token.Name == Lexer.Function)
-                            init = FunctionDeclarationNode.Parse(parser, this, sentence.Children[2], field.Name);
-                        else
-                            init = ExpressionNode.Parse(parser, this, sentence.Children[2]);
-                        field.Initializer = init;
-                        if (field.ReturnType == null)
                         {
-                            field.ReturnType = init.ReturnType;
+                            field.Initializer = MethodNode.Parse(parser, this, init, "$" + field.Name);
                         }
                         else
                         {
-                            if (!ILHelpers.IsAssignableTo(init.ReturnType, field.ReturnType))
-                                throw new TypeException(parser.GetSequencePoint(sentence), "Type mismatch, field " + field.Name + " type " + field.ReturnType.FullName + " initialized with " + init.ReturnType.FullName);
+                            field.Initializer = ExpressionNode.Parse(parser, this, init);
+                        }
+                        if (field.TypeWrapper == null)
+                        {
+                            field.TypeWrapper = field.Initializer.TypeWrapper;
+                        }
+                        else
+                        {
+                            if (!field.Initializer.TypeWrapper.IsAssignableTo(field.TypeWrapper))
+                                throw new TypeException(parser.GetSequencePoint(sentence), "Type mismatch, field " + field.Name + " type " + field.TypeWrapper.FullName + " initialized with " + field.Initializer.TypeWrapper.FullName);
                         }
                         break;
                     default:
@@ -203,50 +268,59 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
+
         public void DeclareMembers()
         {
-            foreach(var f in fields)
+            foreach (var f in fields)
             {
                 var field = f.Value;
-                field.FieldDefinition = new FieldDefinition(field.Name, FieldAttributes.Private | FieldAttributes.Static, field.ReturnType);
+                field.FieldDefinition = new FieldDefinition(field.Name, FieldAttributes.Private | FieldAttributes.Static, field.TypeWrapper.TypeReference);
                 AddFieldToEmitter(field);
             }
-            foreach(var m in methods.Values)
-            {
-                //later
-            }
         }
+
         public void Emit()
         {
-            foreach(var m in methods)
+            foreach (var m in methods)
             {
-                m.Value.Emit(m.Key == "Main");
+                m.Value.Emit(m.Key == "$Main");
             }
         }
-        private void ParseDeclaration(AstNode lexerNode)
+
+        #endregion parsing
+
+        public void AddMethod(FunctionDeclarationNode method, string name)
         {
-            var type = TypeNode.Parse(parser, this, lexerNode.Children[0]);
-            var name = parser.ValueOf(lexerNode.Children[1]);
-            //nera tipo, deklaruojam funkcija
-            if(type == null && lexerNode.Children.Count > 2 && lexerNode.Children[2].Token.Name == Lexer.Function)
-            {
-                type = FunctionDeclarationNode.ParseType(parser, this, lexerNode.Children[2]);
-            }
-            AddField(name, type);
+            methods.Add(name, method);
         }
+
+        private void AddFieldToEmitter(InternalField field)
+        {
+            TypeEmitter.AddField(field.FieldDefinition, field.Initializer);
+        }
+
         public string NewFunctionName()
         {
-            return "Lambda_" + lambdaCounter++.ToString();
+            return "$Lambda_" + lambdaCounter++.ToString();
         }
+
         public override string ToString()
         {
             string delim = "";
             StringBuilder builder = new StringBuilder("(ClassNode: Fields: ");
             foreach(var field in fields)
             {
-                builder.Append(String.Format("{0}{1} {2}", delim, field.Value.ReturnType.FullName, field.Key));
+                builder.Append(String.Format("{0}{1} {2}", delim, field.Value.TypeWrapper.FullName, field.Key));
                 if (field.Value.Initializer != null)
                     builder.Append(" = ").Append(field.Value.Initializer.ToString());
+                delim = ", ";
+            }
+
+            builder.Append(" Methods: ");
+            delim = "";
+            foreach(var method in methods.Values)
+            {
+                builder.Append(method);
                 delim = ", ";
             }
             

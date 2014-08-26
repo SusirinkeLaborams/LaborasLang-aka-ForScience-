@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.LexingTools;
 using Mono.Cecil.Cil;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -16,15 +17,15 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.Expression; } }
         public abstract ExpressionNodeType ExpressionType { get; }
-        public abstract TypeReference ReturnType { get; }
+        public TypeReference ExpressionReturnType { get { return TypeWrapper != null ? TypeWrapper.TypeReference : null; } }
+        public abstract TypeWrapper TypeWrapper { get; }
         protected ExpressionNode(SequencePoint sequencePoint) : base(sequencePoint) { }
-        public static IExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
+        public static ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             switch (lexerNode.Token.Name)
             {
                 case Lexer.FullSymbol:
-                    var tmp = DotOperatorNode.Parse(parser, parent, lexerNode);
-                    return tmp.ExtractExpression();
+                    return DotOperatorNode.Parse(parser, parent, lexerNode).ExtractExpression();
                 case Lexer.Symbol:
                     return SymbolNode.Parse(parser, parent, lexerNode);
                 case Lexer.Literal:
@@ -39,7 +40,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.Comparison:
                     return BinaryOperatorNode.Parse(parser, parent, lexerNode);
                 case Lexer.Function:
-                    return FunctionDeclarationNode.Parse(parser, parent, lexerNode);
+                    return MethodNode.Parse(parser, parent, lexerNode);
                 case Lexer.PrefixNode:
                 case Lexer.SuffixNode:
                     return UnaryOperatorNode.Parse(parser, parent, lexerNode);
@@ -53,7 +54,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public override string ToString()
         {
-            return String.Format("(ExpressionNode: {0} {1})", ExpressionType, ReturnType);
+            return String.Format("(ExpressionNode: {0} {1})", ExpressionType, ExpressionReturnType);
         }
     }
 }
