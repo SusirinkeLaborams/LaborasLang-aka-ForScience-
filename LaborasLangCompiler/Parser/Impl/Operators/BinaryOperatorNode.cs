@@ -19,7 +19,9 @@ namespace LaborasLangCompiler.Parser.Impl
         public IExpressionNode LeftOperand { get; set; }
         public override RValueNodeType RValueType { get { return RValueNodeType.BinaryOperator; } }
         public BinaryOperatorNodeType BinaryOperatorType { get; set; }
-        public override TypeReference ReturnType { get; set; }
+        public override TypeReference ReturnType { get { return returnType; } }
+
+        private TypeReference returnType;
         protected BinaryOperatorNode(SequencePoint point) : base(point) { }
         public static new IExpressionNode Parse(Parser parser, IContainerNode parent, AstNode lexerNode)
         {
@@ -89,16 +91,16 @@ namespace LaborasLangCompiler.Parser.Impl
             if (left.ReturnType.IsNumericType() && right.ReturnType.IsNumericType())
             {
                 if (left.ReturnType.IsAssignableTo(right.ReturnType))
-                    instance.ReturnType = right.ReturnType;
+                    instance.returnType = right.ReturnType;
                 else if (right.ReturnType.IsAssignableTo(left.ReturnType))
-                    instance.ReturnType = left.ReturnType;
+                    instance.returnType = left.ReturnType;
                 else
                     throw new TypeException(instance.SequencePoint, "Incompatible operand types, {0} and {1} received", 
                         left.ReturnType.FullName, right.ReturnType.FullName);
             }
             else if ((left.ReturnType.IsStringType() || right.ReturnType.IsStringType()) && instance.BinaryOperatorType == BinaryOperatorNodeType.Addition)
             {
-                instance.ReturnType = parser.Primitives[Parser.String];
+                instance.returnType = parser.Primitives[Parser.String];
             }
             else
             {
@@ -110,7 +112,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var left = instance.LeftOperand;
             var right = instance.RightOperand;
-            instance.ReturnType = parser.Primitives[Parser.Bool];
+            instance.returnType = parser.Primitives[Parser.Bool];
 
             bool comparable = left.ReturnType.IsNumericType() && right.ReturnType.IsNumericType();
 
@@ -131,7 +133,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var left = instance.LeftOperand;
             var right = instance.RightOperand;
-            instance.ReturnType = left.ReturnType;
+            instance.returnType = left.ReturnType;
             if (right.ReturnType.FullName != parser.Primitives[Parser.Int].FullName)
                 throw new TypeException(instance.SequencePoint, "Right shift operand must be of signed 32bit integer type");
             if (!left.ReturnType.IsIntegerType())
@@ -141,7 +143,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var left = instance.LeftOperand;
             var right = instance.RightOperand;
-            instance.ReturnType = left.ReturnType;
+            instance.returnType = left.ReturnType;
 
             if (!(left.ReturnType.IsIntegerType() && right.ReturnType.IsIntegerType()))
                 throw new TypeException(instance.SequencePoint, "Binary operations only allowed on equal length integers, operands: {0}, {1}",
@@ -155,7 +157,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var left = instance.LeftOperand;
             var right = instance.RightOperand;
-            instance.ReturnType = parser.Primitives[Parser.Bool];
+            instance.returnType = parser.Primitives[Parser.Bool];
 
             if (!(left.ReturnType.IsBooleanType() && right.ReturnType.IsBooleanType()))
                 throw new TypeException(instance.SequencePoint, "Logical operations only allowed on booleans, operands: {0}, {1}",

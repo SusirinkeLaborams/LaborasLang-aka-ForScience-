@@ -13,7 +13,7 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class AmbiguousMethodNode : RValueNode, IFunctionNode
     {
-        public override TypeReference ReturnType { get; set; }
+        public override TypeReference ReturnType { get { return null; } }
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Intermediate; } }
         public override RValueNodeType RValueType { get { return RValueNodeType.Function; } }
         public MethodReference Function { get { return null; } }
@@ -23,7 +23,6 @@ namespace LaborasLangCompiler.Parser.Impl
             : base(sequencePoint)
         {
             this.methods = methods;
-            ReturnType = null;
             ObjectInstance = instance;
         }
         public MethodNode RemoveAmbiguity(Parser parser, List<TypeReference> argTypes)

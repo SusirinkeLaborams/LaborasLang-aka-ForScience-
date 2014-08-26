@@ -1,6 +1,7 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Exceptions;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using NPEG;
 using System;
@@ -201,7 +202,7 @@ namespace LaborasLangCompiler.Parser.Impl
             string name = node.Value;
             if(builtNode == null)
             {
-                return (builtNode = parent.GetSymbol(name)) != null;
+                return (builtNode = parent.GetSymbol(name, node.SequencePoint)) != null;
             }
             else
             {
@@ -225,7 +226,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
                 if(field != null)
                 {
-                    builtNode = new FieldNode(builtNode, field, builtNode.SequencePoint);
+                    builtNode = new FieldNode(builtNode, new ExternalField(field), builtNode.SequencePoint);
                     return true;
                 }
                 return false;
