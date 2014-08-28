@@ -458,7 +458,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     string() func = a.ToString;
 	                System.Console.WriteLine(func());
                 };";
-            string expected = "";
+            string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: ($Functors.$System_String func) Nodes: ((Declaration: (LValueNode: LocalVariable func $Functors.$System_String) = (MethodNode: Instance: (LValueNode: Field a System.Int32), Method: ToString)), (MethodCall: Return: System.Void Args: (MethodCall: Return: System.String Args:  Function: (LValueNode: LocalVariable func $Functors.$System_String)) Function: (MethodNode: Instance: null, Method: WriteLine))))))";
             TestParser(source, expected, lex);
         }
         private void TestParser(string source, string expected, bool lex, [CallerMemberName]string name = "")
