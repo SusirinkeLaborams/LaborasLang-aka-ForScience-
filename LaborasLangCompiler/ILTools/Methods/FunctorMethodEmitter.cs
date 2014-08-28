@@ -79,7 +79,15 @@ namespace LaborasLangCompiler.ILTools.Methods
             if (targetMethod.HasThis)
             {
                 Ldarg(0);
-                Ldfld(ThisField);
+
+                if (ThisField.FieldType.IsValueType)
+                {
+                    Ldflda(ThisField);
+                }
+                else
+                {
+                    Ldfld(ThisField);
+                }
             }
 
             for (int i = 0; i < targetMethod.Parameters.Count; i++)
