@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class AmbiguousMethodNode : RValueNode
+    class AmbiguousMethodNode : RValueNode, AmbiguousNode
     {
         public override TypeWrapper TypeWrapper { get { return null; } }
-        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
         public override RValueNodeType RValueType { get { return RValueNodeType.ParserInternal; } }
 
         private IEnumerable<MethodWrapper> methods;
@@ -26,17 +26,33 @@ namespace LaborasLangCompiler.Parser.Impl
             this.methods = methods;
             this.instance = instance;
         }
-        public MethodNode RemoveAmbiguity(Parser parser, IEnumerable<TypeWrapper> argTypes)
+        public ExpressionNode RemoveAmbiguity(Parser parser, TypeWrapper expectedType = null)
         {
-            MethodReference method = null;
-            try
+            if (!expectedType.IsFunctorType())
+                throw new TypeException(SequencePoint, "Cannot cast functor to type {0}", expectedType.FullName);
+            if (expectedType == null)
             {
-                method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), argTypes.Select(t => t.TypeReference).ToList());
-                return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, SequencePoint);
+                try
+                {
+                    var method = methods.Single();
+                    return new MethodNode(method, instance, SequencePoint);
+                }
+                catch(InvalidOperationException)
+                {
+                    return this;
+                }
             }
-            catch (Exception)
+            else
             {
-                throw new TypeException(SequencePoint, "Ambiguous method result");
+                try
+                {
+                    var method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), expectedType.FunctorParamTypes.Select(t => t.TypeReference).ToList());
+                    return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, SequencePoint);
+                }
+                catch(Exception)
+                {
+                    throw new TypeException(SequencePoint, "Ambiguous method result");
+                }
             }
         }
     }
