@@ -86,7 +86,8 @@ namespace Lexer.Containers
 
             while (*ptr != '\0')
             {
-                hash = hash << 5 + hash + ((hash >> 8) ^ *ptr);
+                hash = (hash << 5) + hash + ((hash >> 8) ^ *ptr);
+                ptr++;
             }
 
             return hash;
