@@ -56,6 +56,9 @@ namespace Lexer.Containers
                 {
                     return false;
                 }
+                
+                aBuffer++;
+                bBuffer++;
             }
 
             return true;
