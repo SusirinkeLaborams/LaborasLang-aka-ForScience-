@@ -11,7 +11,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
 {
     public class TestBase
     {
-        protected static Lexer lexer = new Lexer();
+        protected static LaborasLangCompiler.LexingTools.Lexer lexer = new LaborasLangCompiler.LexingTools.Lexer();
 
         public TestBase()
         {

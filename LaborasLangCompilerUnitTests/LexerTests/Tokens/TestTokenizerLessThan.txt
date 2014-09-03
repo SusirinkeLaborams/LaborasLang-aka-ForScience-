@@ -1,0 +1,1 @@
+Type: Less, Start: 1, 1, End: 1, 2, Content: "<" Type: LeftShift, Start: 1, 3, End: 1, 5, Content: "<<" Type: LessOrEqual, Start: 1, 6, End: 1, 8, Content: "<=" Type: LeftShiftEqual, Start: 1, 9, End: 1, 12, Content: "<<=" 

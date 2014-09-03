@@ -1,0 +1,215 @@
+Content: Type: RootNode, Start: 2, 13, End: 14, 14, Content: ""
+Type: RootNode
+Children:
+	Content: Type: StatementNode, Start: 2, 13, End: 9, 14, Content: ""
+	Type: StatementNode
+	Children:
+		Content: Type: ConditionalSentence, Start: 2, 13, End: 9, 14, Content: ""
+		Type: ConditionalSentence
+		Children:
+			Content: Type: If, Start: 2, 13, End: 2, 15, Content: "if"
+			Type: If
+			Children:
+
+			Content: Type: LeftBracket, Start: 2, 15, End: 2, 16, Content: "("
+			Type: LeftBracket
+			Children:
+
+			Content: Type: Value, Start: 2, 16, End: 2, 25, Content: ""
+			Type: Value
+			Children:
+				Content: Type: ArithmeticNode, Start: 2, 16, End: 2, 25, Content: ""
+				Type: ArithmeticNode
+				Children:
+					Content: Type: ArithmeticSubnode, Start: 2, 16, End: 2, 25, Content: ""
+					Type: ArithmeticSubnode
+					Children:
+						Content: Type: RValue, Start: 2, 16, End: 2, 25, Content: ""
+						Type: RValue
+						Children:
+							Content: Type: FullSymbol, Start: 2, 16, End: 2, 25, Content: ""
+							Type: FullSymbol
+							Children:
+								Content: Type: Symbol, Start: 2, 16, End: 2, 25, Content: "somehting"
+								Type: Symbol
+								Children:
+
+			Content: Type: RightBracket, Start: 2, 25, End: 2, 26, Content: ")"
+			Type: RightBracket
+			Children:
+
+			Content: Type: StatementNode, Start: 3, 13, End: 5, 14, Content: ""
+			Type: StatementNode
+			Children:
+				Content: Type: CodeBlockNode, Start: 3, 13, End: 5, 14, Content: ""
+				Type: CodeBlockNode
+				Children:
+					Content: Type: LeftCurlyBracket, Start: 3, 13, End: 3, 14, Content: "{"
+					Type: LeftCurlyBracket
+					Children:
+
+					Content: Type: StatementNode, Start: 4, 17, End: 4, 25, Content: ""
+					Type: StatementNode
+					Children:
+						Content: Type: FunctionCall, Start: 4, 17, End: 4, 24, Content: ""
+						Type: FunctionCall
+						Children:
+							Content: Type: FunctionSegment, Start: 4, 17, End: 4, 22, Content: ""
+							Type: FunctionSegment
+							Children:
+								Content: Type: Symbol, Start: 4, 17, End: 4, 22, Content: "stuff"
+								Type: Symbol
+								Children:
+
+							Content: Type: FunctionSegment, Start: 4, 22, End: 4, 24, Content: ""
+							Type: FunctionSegment
+							Children:
+								Content: Type: FunctionArgumentList, Start: 4, 22, End: 4, 24, Content: ""
+								Type: FunctionArgumentList
+								Children:
+									Content: Type: LeftBracket, Start: 4, 22, End: 4, 23, Content: "("
+									Type: LeftBracket
+									Children:
+
+									Content: Type: RightBracket, Start: 4, 23, End: 4, 24, Content: ")"
+									Type: RightBracket
+									Children:
+
+						Content: Type: EndOfLine, Start: 4, 24, End: 4, 25, Content: ";"
+						Type: EndOfLine
+						Children:
+
+					Content: Type: RightCurlyBracket, Start: 5, 13, End: 5, 14, Content: "}"
+					Type: RightCurlyBracket
+					Children:
+
+			Content: Type: Else, Start: 6, 13, End: 6, 17, Content: "else"
+			Type: Else
+			Children:
+
+			Content: Type: StatementNode, Start: 7, 13, End: 9, 14, Content: ""
+			Type: StatementNode
+			Children:
+				Content: Type: CodeBlockNode, Start: 7, 13, End: 9, 14, Content: ""
+				Type: CodeBlockNode
+				Children:
+					Content: Type: LeftCurlyBracket, Start: 7, 13, End: 7, 14, Content: "{"
+					Type: LeftCurlyBracket
+					Children:
+
+					Content: Type: StatementNode, Start: 8, 13, End: 8, 22, Content: ""
+					Type: StatementNode
+					Children:
+						Content: Type: FunctionCall, Start: 8, 13, End: 8, 21, Content: ""
+						Type: FunctionCall
+						Children:
+							Content: Type: FunctionSegment, Start: 8, 13, End: 8, 19, Content: ""
+							Type: FunctionSegment
+							Children:
+								Content: Type: Symbol, Start: 8, 13, End: 8, 19, Content: "stuff2"
+								Type: Symbol
+								Children:
+
+							Content: Type: FunctionSegment, Start: 8, 19, End: 8, 21, Content: ""
+							Type: FunctionSegment
+							Children:
+								Content: Type: FunctionArgumentList, Start: 8, 19, End: 8, 21, Content: ""
+								Type: FunctionArgumentList
+								Children:
+									Content: Type: LeftBracket, Start: 8, 19, End: 8, 20, Content: "("
+									Type: LeftBracket
+									Children:
+
+									Content: Type: RightBracket, Start: 8, 20, End: 8, 21, Content: ")"
+									Type: RightBracket
+									Children:
+
+						Content: Type: EndOfLine, Start: 8, 21, End: 8, 22, Content: ";"
+						Type: EndOfLine
+						Children:
+
+					Content: Type: RightCurlyBracket, Start: 9, 13, End: 9, 14, Content: "}"
+					Type: RightCurlyBracket
+					Children:
+
+	Content: Type: StatementNode, Start: 11, 13, End: 14, 14, Content: ""
+	Type: StatementNode
+	Children:
+		Content: Type: ConditionalSentence, Start: 11, 13, End: 14, 14, Content: ""
+		Type: ConditionalSentence
+		Children:
+			Content: Type: If, Start: 11, 13, End: 11, 15, Content: "if"
+			Type: If
+			Children:
+
+			Content: Type: LeftBracket, Start: 11, 15, End: 11, 16, Content: "("
+			Type: LeftBracket
+			Children:
+
+			Content: Type: Value, Start: 11, 16, End: 11, 25, Content: ""
+			Type: Value
+			Children:
+				Content: Type: ArithmeticNode, Start: 11, 16, End: 11, 25, Content: ""
+				Type: ArithmeticNode
+				Children:
+					Content: Type: ArithmeticSubnode, Start: 11, 16, End: 11, 25, Content: ""
+					Type: ArithmeticSubnode
+					Children:
+						Content: Type: RValue, Start: 11, 16, End: 11, 25, Content: ""
+						Type: RValue
+						Children:
+							Content: Type: FullSymbol, Start: 11, 16, End: 11, 25, Content: ""
+							Type: FullSymbol
+							Children:
+								Content: Type: Symbol, Start: 11, 16, End: 11, 25, Content: "something"
+								Type: Symbol
+								Children:
+
+			Content: Type: RightBracket, Start: 11, 25, End: 11, 26, Content: ")"
+			Type: RightBracket
+			Children:
+
+			Content: Type: StatementNode, Start: 12, 13, End: 14, 14, Content: ""
+			Type: StatementNode
+			Children:
+				Content: Type: CodeBlockNode, Start: 12, 13, End: 14, 14, Content: ""
+				Type: CodeBlockNode
+				Children:
+					Content: Type: LeftCurlyBracket, Start: 12, 13, End: 12, 14, Content: "{"
+					Type: LeftCurlyBracket
+					Children:
+
+					Content: Type: StatementNode, Start: 13, 17, End: 13, 25, Content: ""
+					Type: StatementNode
+					Children:
+						Content: Type: FunctionCall, Start: 13, 17, End: 13, 24, Content: ""
+						Type: FunctionCall
+						Children:
+							Content: Type: FunctionSegment, Start: 13, 17, End: 13, 22, Content: ""
+							Type: FunctionSegment
+							Children:
+								Content: Type: Symbol, Start: 13, 17, End: 13, 22, Content: "stuff"
+								Type: Symbol
+								Children:
+
+							Content: Type: FunctionSegment, Start: 13, 22, End: 13, 24, Content: ""
+							Type: FunctionSegment
+							Children:
+								Content: Type: FunctionArgumentList, Start: 13, 22, End: 13, 24, Content: ""
+								Type: FunctionArgumentList
+								Children:
+									Content: Type: LeftBracket, Start: 13, 22, End: 13, 23, Content: "("
+									Type: LeftBracket
+									Children:
+
+									Content: Type: RightBracket, Start: 13, 23, End: 13, 24, Content: ")"
+									Type: RightBracket
+									Children:
+
+						Content: Type: EndOfLine, Start: 13, 24, End: 13, 25, Content: ";"
+						Type: EndOfLine
+						Children:
+
+					Content: Type: RightCurlyBracket, Start: 14, 13, End: 14, 14, Content: "}"
+					Type: RightCurlyBracket
+					Children:

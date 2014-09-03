@@ -1,0 +1,1 @@
+Type: Assignment, Start: 1, 1, End: 1, 2, Content: "=" Type: Equal, Start: 1, 3, End: 1, 5, Content: "==" 
