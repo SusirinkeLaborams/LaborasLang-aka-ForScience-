@@ -34,6 +34,9 @@ namespace LaborasLangCompiler.Parser.Impl
             if (op != "=")
                 right = BinaryOperatorNode.Parse(parser, op.Remove(op.Length - 1), left, right);
 
+            if (right is AmbiguousNode)
+                right = ((AmbiguousNode)right).RemoveAmbiguity(parser, left.TypeWrapper);
+
             if (!right.TypeWrapper.IsAssignableTo(left.TypeWrapper))
                 throw new TypeException(instance.SequencePoint, "Assigned {0} to {1}", instance.right.TypeWrapper, instance.left.TypeWrapper);
             instance.right = right;
