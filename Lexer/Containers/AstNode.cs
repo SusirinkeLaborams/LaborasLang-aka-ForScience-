@@ -18,10 +18,15 @@ namespace Lexer.Containers
             get { return m_NodePtr->children.Count; }
         }
 
-        public Token Content
+        public Token Token
         {
             get { return m_NodePtr->content; }
             internal set { m_NodePtr->content = value; }
+        }
+
+        public FastString Content
+        {
+            get { return Token.Content; }
         }
 
         public TokenType Type
@@ -43,7 +48,7 @@ namespace Lexer.Containers
         {
             m_NodePtr = rootNode.NodePool.ProvideNodePtr();
             m_NodePtr->children.Initialize();
-            Content = content;
+            Token = content;
             Type = type;
         }
 
@@ -78,7 +83,7 @@ namespace Lexer.Containers
             var builder = new StringBuilder();
             var indentStr = new string('\t', indentation);
 
-            builder.AppendFormat("{0}Content: {1}\r\n", indentStr, Content != null ? Content.ToString() : string.Empty);
+            builder.AppendFormat("{0}Content: {1}\r\n", indentStr, Token != null ? Token.ToString() : string.Empty);
             builder.AppendFormat("{0}Type: {1}\r\n", indentStr, Type);
             builder.AppendFormat("{0}Children:\r\n", indentStr);
 

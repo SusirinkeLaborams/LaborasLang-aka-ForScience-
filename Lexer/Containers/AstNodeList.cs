@@ -1,4 +1,5 @@
-﻿namespace Lexer.Containers
+﻿using System;
+namespace Lexer.Containers
 {
     public unsafe struct AstNodeList
     {

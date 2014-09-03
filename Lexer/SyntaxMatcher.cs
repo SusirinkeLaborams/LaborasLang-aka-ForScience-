@@ -2,6 +2,7 @@
 
 using Lexer.Containers;
 using System;
+using System.Diagnostics;
 
 namespace Lexer
 {
@@ -381,10 +382,10 @@ namespace Lexer
             }
 
             var token = m_RootNode.ProvideToken();
-            token.Start = node.Children[0].Content.Start;
-            token.End = node.Children[node.ChildrenCount - 1].Content.End;
+            token.Start = node.Children[0].Token.Start;
+            token.End = node.Children[node.ChildrenCount - 1].Token.End;
             token.Content = FastString.Empty;
-            node.Content = token;
+            node.Token = token;
 
             return node;
         }
