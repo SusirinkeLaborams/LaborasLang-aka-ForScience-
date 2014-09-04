@@ -1,6 +1,6 @@
 ﻿using LaborasLangCompiler.Parser.Exceptions;
+using Lexer.Containers;
 using Mono.Cecil.Cil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;

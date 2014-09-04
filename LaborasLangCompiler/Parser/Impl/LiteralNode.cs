@@ -1,7 +1,6 @@
 ﻿using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser;
 using Mono.Cecil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,6 +10,7 @@ using System.Threading.Tasks;
 using LaborasLangCompiler.LexingTools;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer.Containers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -32,24 +32,25 @@ namespace LaborasLangCompiler.Parser.Impl
             lexerNode = lexerNode.Children[0];
             var point = parser.GetSequencePoint(lexerNode);
             var type = ParseLiteralType(parser, lexerNode);
-            dynamic value = ParseValue(parser.ValueOf(lexerNode), type, point);
+            dynamic value = ParseValue(lexerNode.Content.ToString(), type, point);
             return new LiteralNode(value, type, point);
         }
 
         private static TypeWrapper ParseLiteralType(Parser parser, AstNode lexerNode)
         {
-            switch(lexerNode.Token.Name)
+            switch(lexerNode.Type)
             {
-                case Lexer.IntegerLiteral:
+                case Lexer.TokenType.Integer:
                     return parser.Int;
-                case Lexer.StringLiteral:
+                case Lexer.TokenType.StringLiteral:
                     return parser.String;
-                case Lexer.FloatLiteral:
+                case Lexer.TokenType.Float:
                     return parser.Double;
-                case Lexer.BooleanLiteral:
+                case Lexer.TokenType.True:
+                case Lexer.TokenType.False:
                     return parser.Bool;
                 default:
-                    throw new ParseException(parser.GetSequencePoint(lexerNode), "Unknown lexer type {0}", lexerNode.Token.Name);
+                    throw new ParseException(parser.GetSequencePoint(lexerNode), "Unknown lexer type {0}", lexerNode.Type);
             }
         }
 

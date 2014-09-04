@@ -2,9 +2,9 @@
 using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer.Containers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,9 +30,9 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static MethodCallNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            if (lexerNode.Children[0].Token.Name == Lexer.Create)
+            if (lexerNode.Children[0].Type == Lexer.TokenType.New)
                 throw new NotImplementedException("Create not implemented");
-            if(lexerNode.Children.Count(x => x.Token.Name == Lexer.Arguments) > 1)
+            if(lexerNode.Children.Count(x => x.Type == Lexer.TokenType.FunctionArgumentList) > 1)
                 throw new NotImplementedException("Calling returned functions not supported");
             var function = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]);
             var args = new List<ExpressionNode>();

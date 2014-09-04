@@ -2,7 +2,6 @@
 using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;

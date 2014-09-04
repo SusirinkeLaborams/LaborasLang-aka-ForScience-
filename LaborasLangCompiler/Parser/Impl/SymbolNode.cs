@@ -1,9 +1,9 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer.Containers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static SymbolNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            return new SymbolNode(parser.ValueOf(lexerNode), parser.GetSequencePoint(lexerNode));
+            return new SymbolNode(lexerNode.Content.ToString(), parser.GetSequencePoint(lexerNode));
         }
     }
     class NamespaceNode : ExpressionNode
@@ -46,7 +46,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static new SymbolCallNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            string name = parser.ValueOf(lexerNode.Children[0]);
+            string name = lexerNode.Children[0].Content.ToString();
             var args = new List<ExpressionNode>();
             foreach(var node in lexerNode.Children[1].Children)
             {
@@ -67,7 +67,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static TypeWrapper Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            if (lexerNode.Token.Name == Lexer.FunctionType)
+            if (lexerNode.Type == Lexer.TokenType.Function)
                 return TypeNode.Parse(parser, parent, lexerNode.Children[0]);
 
             var ret = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]).ExtractType();

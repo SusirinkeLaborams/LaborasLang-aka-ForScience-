@@ -76,9 +76,6 @@
     <Compile Include="ILTools\Methods\MethodEmitter.cs" />
     <Compile Include="ILTools\Types\FunctorImplementationTypeEmitter.cs" />
     <Compile Include="ILTools\Types\TypeEmitter.cs" />
-    <Compile Include="LexingTools\FileReader.cs" />
-    <Compile Include="LexingTools\Lexer.cs" />
-    <Compile Include="LexingTools\SymbolCounter.cs" />
     <Compile Include="Parser\Exceptions\CompilerException.cs" />
     <Compile Include="Parser\Exceptions\ParseException.cs" />
     <Compile Include="Parser\Exceptions\SymbolAlreadyDeclaredException.cs" />

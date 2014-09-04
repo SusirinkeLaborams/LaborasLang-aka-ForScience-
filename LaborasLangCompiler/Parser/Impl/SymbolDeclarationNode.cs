@@ -1,6 +1,5 @@
 ﻿using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +9,7 @@ using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.ILTools;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer.Containers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -31,12 +31,13 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             LValueNode symbol = null;
             ExpressionNode initializer = null;
-            string nodeType = lexerNode.Token.Name;
+            var nodeType = lexerNode.Type;
 
             var declaredType = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
-            var name = parser.ValueOf(lexerNode.Children[1]);
+            var name = lexerNode.Children[1].Content;
 
-            if (nodeType == Lexer.DeclarationAndAssignment)
+            //temp code
+            if (lexerNode.Children.Count > 2)
             {
                 initializer = ExpressionNode.Parse(parser, parent, lexerNode.Children[2], true);
             }

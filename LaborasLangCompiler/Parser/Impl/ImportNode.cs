@@ -1,7 +1,7 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
+using Lexer.Containers;
 using Mono.Cecil.Cil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace LaborasLangCompiler.Parser.Impl
         protected ImportNode(SequencePoint point) : base(point) { }
         public static void Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            string namespaze = parser.ValueOf(lexerNode.Children[0]);
+            string namespaze = lexerNode.Children[0].Content.ToString();
             
             parent.GetClass().AddImport(namespaze, parser.GetSequencePoint(lexerNode));
         }

@@ -1,7 +1,6 @@
 ﻿using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser;
 using Mono.Cecil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 using LaborasLangCompiler.LexingTools;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer.Containers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -23,39 +23,35 @@ namespace LaborasLangCompiler.Parser.Impl
         public static ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode, bool allowAmbiguous = false)
         {
             ExpressionNode expression = null;
-            switch (lexerNode.Token.Name)
+            switch (lexerNode.Type)
             {
-                case Lexer.FullSymbol:
+                case Lexer.TokenType.FullSymbol:
                     expression = DotOperatorNode.Parse(parser, parent, lexerNode).ExtractExpression(allowAmbiguous);
                     break;
-                case Lexer.Symbol:
+                case Lexer.TokenType.Symbol:
                     expression = SymbolNode.Parse(parser, parent, lexerNode);
                     break;
-                case Lexer.Literal:
+                case Lexer.TokenType.StringLiteral:
+                case Lexer.TokenType.Float:
+                case Lexer.TokenType.Double:
+                case Lexer.TokenType.Integer:
+                case Lexer.TokenType.Long:
+                case Lexer.TokenType.True:
+                case Lexer.TokenType.False:
                     expression = LiteralNode.Parse(parser, parent, lexerNode);
                     break;
-                case Lexer.Value:
-                case Lexer.FunctionArgument:
+                case Lexer.TokenType.LValue:
+                case Lexer.TokenType.RValue:
+                case Lexer.TokenType.Value:
                     expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0], allowAmbiguous);
                     break;
-                case Lexer.Sum:
-                case Lexer.Product:
-                case Lexer.BinaryOperationNode:
-                case Lexer.BooleanNode:
-                case Lexer.Comparison:
-                    expression = BinaryOperatorNode.Parse(parser, parent, lexerNode, allowAmbiguous);
-                    break;
-                case Lexer.Function:
+                case Lexer.TokenType.Function:
                     expression = MethodNode.Parse(parser, parent, lexerNode);
                     break;
-                case Lexer.PrefixNode:
-                case Lexer.SuffixNode:
-                    expression = UnaryOperatorNode.Parse(parser, parent, lexerNode, allowAmbiguous);
-                    break;
-                case Lexer.FunctionCall:
+                case Lexer.TokenType.FunctionCall:
                     expression = MethodCallNode.Parse(parser, parent, lexerNode);
                     break;
-                case Lexer.Assignment:
+                case Lexer.TokenType.AssignmentNode:
                     expression = AssignmentOperatorNode.Parse(parser, parent, lexerNode);
                     break;
                 default:

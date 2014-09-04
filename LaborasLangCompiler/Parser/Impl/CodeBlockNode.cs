@@ -2,9 +2,9 @@
 using LaborasLangCompiler.Parser;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer.Containers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,38 +64,37 @@ namespace LaborasLangCompiler.Parser.Impl
             var instance = new CodeBlockNode(parent, parser.GetSequencePoint(lexerNode));
             foreach (var node in lexerNode.Children)
             {
-                if (node.Token.Name == Lexer.Sentence)
+                if (node.Type == Lexer.TokenType.StatementNode)
                 {
                     var sentence = node.Children[0];
-                    switch (sentence.Token.Name)
+                    switch (sentence.Type)
                     {
-                        case Lexer.Declaration:
-                        case Lexer.DeclarationAndAssignment:
+                        case Lexer.TokenType.DeclarationNode:
                             instance.AddNode(SymbolDeclarationNode.Parse(parser, instance, sentence));
                             break;
-                        case Lexer.FunctionCall:
-                        case Lexer.Assignment:
+                        case Lexer.TokenType.FunctionCall:
+                        case Lexer.TokenType.AssignmentNode:
                             instance.AddExpression(ExpressionNode.Parse(parser, instance, sentence), parser);
                             break;
-                        case Lexer.Loop:
+                        case Lexer.TokenType.WhileLoop:
                             instance.AddNode(WhileBlock.Parse(parser, instance, sentence));
                             break;
-                        case Lexer.ConditionalSentence:
+                        case Lexer.TokenType.ConditionalSentence:
                             instance.AddNode(ConditionBlockNode.Parse(parser, instance, sentence));
                             break;
-                        case Lexer.CodeBlock:
+                        case Lexer.TokenType.CodeBlockNode:
                             instance.AddNode(CodeBlockNode.Parse(parser, instance, sentence));
                             break;
-                        case Lexer.ReturnSentence:
+                        case Lexer.TokenType.Return:
                             instance.AddNode(ReturnNode.Parse(parser, instance, sentence));
                             break;
                         default:
-                            throw new ParseException(parser.GetSequencePoint(sentence), "Node " + sentence.Token.Name + " in sentence, dafuq");
+                            throw new ParseException(parser.GetSequencePoint(sentence), "Node " + sentence.Type + " in sentence, dafuq");
                     }
                 }
                 else
                 {
-                    throw new ParseException(parser.GetSequencePoint(node), "Sentence expected, " + node.Token.Name + " received");
+                    throw new ParseException(parser.GetSequencePoint(node), "Sentence expected, " + node.Type + " received");
                 }
             }
             return instance;

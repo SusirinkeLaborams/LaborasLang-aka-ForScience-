@@ -1,7 +1,6 @@
 ﻿using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser;
 using Mono.Cecil.Cil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
