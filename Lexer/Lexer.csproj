@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Containers\AstNodeEnumerator.cs" />
     <Compile Include="Containers\AstNodeList.cs" />
     <Compile Include="Containers\AstNodePool.cs" />
     <Compile Include="Containers\AstNode.cs" />
