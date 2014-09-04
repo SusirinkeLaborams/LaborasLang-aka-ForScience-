@@ -1,5 +1,4 @@
-﻿using LaborasLangCompiler.LexingTools;
-using LaborasLangCompilerUnitTests.ILTests;
+﻿using LaborasLangCompilerUnitTests.ILTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

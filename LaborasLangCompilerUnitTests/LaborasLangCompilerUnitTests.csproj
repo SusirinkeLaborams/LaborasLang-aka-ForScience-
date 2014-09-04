@@ -100,6 +100,8 @@
     <Compile Include="ILTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="ILTests\ILHelpersTests.cs" />
     <Compile Include="ILTests\PEVerifyRunner.cs" />
+    <Compile Include="IntegrationTests\IntegrationTestBase.cs" />
+    <Compile Include="IntegrationTests\IntegrationTests.cs" />
     <Compile Include="LexerTests\TokenizerTests.cs" />
     <Compile Include="LexerTests\SyntaxMatcherTests.cs" />
     <Compile Include="TestBase.cs" />
@@ -153,6 +155,7 @@
   <ItemGroup>
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_StoreField_LoadIntLiteral.il" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
