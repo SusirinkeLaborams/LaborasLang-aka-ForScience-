@@ -199,35 +199,34 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             foreach (var node in lexerNode.Children)
             {
-                //if (node.Token.Type == TokenType.sentence)
+                if (node.Type == Lexer.TokenType.StatementNode)
                 {
                     AstNode sentence = node.Children[0];
-                    switch (sentence.Token.Name)
+                    switch (sentence.Type)
                     {
-                        case Lexer.NamespaceImport:
+                        case Lexer.TokenType.Namespace:
                             ImportNode.Parse(parser, this, sentence);
                             break;
-                        case Lexer.Declaration:
-                        case Lexer.DeclarationAndAssignment:
+                        case Lexer.TokenType.DeclarationNode:
                             ParseDeclaration(sentence);
                             break;
                         default:
                             throw new ParseException(parser.GetSequencePoint(sentence), "Import or declaration expected " + sentence.Token.Name + " received");
                     }
-                /*}
+                }
                 else
                 {
                     throw new ParseException(parser.GetSequencePoint(node), "Node Sentence expected, " + node.Token.Name + " received");
-                }*/
+                }
             }
         }
 
         private void ParseDeclaration(AstNode lexerNode)
         {
             var type = TypeNode.Parse(parser, this, lexerNode.Children[0]);
-            var name = parser.ValueOf(lexerNode.Children[1]);
+            var name = lexerNode.Children[1].Content;
             //nera tipo, deklaruojam funkcija
-            if (lexerNode.Children.Count > 2 && lexerNode.Children[2].Token.Name == Lexer.Function && type == null)
+            if (lexerNode.Children.Count > 2 && lexerNode.Children[2].Type == Lexer.TokenType.Function && type == null)
             {
                 type = FunctionDeclarationNode.ParseFunctorType(parser, this, lexerNode.Children[2]);
             }
@@ -239,29 +238,34 @@ namespace LaborasLangCompiler.Parser.Impl
             foreach (var node in lexerNode.Children)
             {
                 AstNode sentence = node.Children[0];
-                switch (sentence.Token.Name)
+                //temp code
+                if(sentence.Type == Lexer.TokenType.DeclarationNode && sentence.Children.Count > 2)
                 {
-                    case Lexer.DeclarationAndAssignment:
-                        var field = fields[parser.ValueOf(sentence.Children[1])];
-                        var init = sentence.Children[2];
+                    var field = fields[sentence.Children[1].Content.ToString()];
+                    var init = sentence.Children[2];
 
-                        if (sentence.Children[2].Token.Name == Lexer.Function)
-                        {
-                            field.Initializer = MethodNode.Parse(parser, this, init, "$" + field.Name);
-                        }
-                        else
-                        {
-                            field.Initializer = ExpressionNode.Parse(parser, this, init);
-                        }
-                        if (field.TypeWrapper == null)
-                        {
-                            field.TypeWrapper = field.Initializer.TypeWrapper;
-                        }
-                        else
-                        {
-                            if (!field.Initializer.TypeWrapper.IsAssignableTo(field.TypeWrapper))
-                                throw new TypeException(parser.GetSequencePoint(sentence), "Type mismatch, field " + field.Name + " type " + field.TypeWrapper.FullName + " initialized with " + field.Initializer.TypeWrapper.FullName);
-                        }
+                    if (sentence.Children[2].Type == Lexer.TokenType.Function)
+                    {
+                        field.Initializer = MethodNode.Parse(parser, this, init, "$" + field.Name);
+                    }
+                    else
+                    {
+                        field.Initializer = ExpressionNode.Parse(parser, this, init);
+                    }
+                    if (field.TypeWrapper == null)
+                    {
+                        field.TypeWrapper = field.Initializer.TypeWrapper;
+                    }
+                    else
+                    {
+                        if (!field.Initializer.TypeWrapper.IsAssignableTo(field.TypeWrapper))
+                            throw new TypeException(parser.GetSequencePoint(sentence), "Type mismatch, field " + field.Name + " type " + field.TypeWrapper.FullName + " initialized with " + field.Initializer.TypeWrapper.FullName);
+                    }
+                }
+                switch (sentence.Type)
+                {
+                    case Lexer.TokenType.DeclarationNode:
+                        
                         break;
                     default:
                         break;
