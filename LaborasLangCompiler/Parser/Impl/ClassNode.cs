@@ -2,7 +2,6 @@
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser;
 using Mono.Cecil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +11,7 @@ using LaborasLangCompiler.ILTools.Types;
 using LaborasLangCompiler.LexingTools;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer.Containers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -199,7 +199,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             foreach (var node in lexerNode.Children)
             {
-                if (node.Token.Name == Lexer.Sentence)
+                //if (node.Token.Type == TokenType.sentence)
                 {
                     AstNode sentence = node.Children[0];
                     switch (sentence.Token.Name)
@@ -214,11 +214,11 @@ namespace LaborasLangCompiler.Parser.Impl
                         default:
                             throw new ParseException(parser.GetSequencePoint(sentence), "Import or declaration expected " + sentence.Token.Name + " received");
                     }
-                }
+                /*}
                 else
                 {
                     throw new ParseException(parser.GetSequencePoint(node), "Node Sentence expected, " + node.Token.Name + " received");
-                }
+                }*/
             }
         }
 

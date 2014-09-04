@@ -48,9 +48,6 @@
     <Reference Include="Mono.Cecil.Rocks">
       <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
-    <Reference Include="NPEG">
-      <HintPath>..\packages\NPEG.1.7.2\lib\NPEG.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -140,6 +137,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="CodeSamples\Fail\fail1.ll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Lexer\Lexer.csproj">
+      <Project>{0c7187d8-8048-4539-9f3d-f781c5c5bf1d}</Project>
+      <Name>Lexer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

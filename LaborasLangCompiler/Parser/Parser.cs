@@ -3,9 +3,9 @@ using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer.Containers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +23,6 @@ namespace LaborasLangCompiler.Parser
         public Document Document { get; private set; }
         public SymbolCounter SymbolCounter { get; private set; }
 
-        private ByteInputIterator source;
         private bool testing;
         private Dictionary<string, TypeWrapper> primitives;
 
@@ -70,17 +69,15 @@ namespace LaborasLangCompiler.Parser
 
         #endregion types
 
-        public Parser(AssemblyEmitter assembly, AstNode tree, ByteInputIterator source, string filePath, bool testing = false)
+        public Parser(AssemblyEmitter assembly, RootNode tree, string filePath, bool testing = false)
         {
             Assembly = assembly;
             this.testing = testing;
-            this.source = source;
             Filename = Path.GetFileNameWithoutExtension(filePath);
             Document = new Document(filePath);
             Document.Language = DocumentLanguage.Other;
             Document.LanguageVendor = DocumentLanguageVendor.Other;
             Document.Type = DocumentType.Text;
-            SymbolCounter = new SymbolCounter(source);
             this.primitives = new Dictionary<string, TypeWrapper>();
 
             primitives[tBool] = Bool = new ExternalType(assembly, typeof(bool));
@@ -118,20 +115,15 @@ namespace LaborasLangCompiler.Parser
             }
         }
 
-        public string ValueOf(AstNode node)
-        {
-            return Encoding.UTF8.GetString(source.Text(node.Token.Start, node.Token.End));
-        }
-
         public SequencePoint GetSequencePoint(AstNode lexerNode)
         {
             var sequencePoint = new SequencePoint(Document);
-            var start = SymbolCounter.Positions[lexerNode.Token.Start];
-            var end = SymbolCounter.Positions[lexerNode.Token.End];
-            sequencePoint.StartLine = start.row;
-            sequencePoint.StartColumn = start.column;
-            sequencePoint.EndLine = end.row;
-            sequencePoint.EndColumn = end.column + 1;
+            var start = lexerNode.Token.Start;
+            var end = lexerNode.Token.End;
+            sequencePoint.StartLine = start.Row;
+            sequencePoint.StartColumn = start.Column;
+            sequencePoint.EndLine = end.Row;
+            sequencePoint.EndColumn = end.Column + 1;
             return sequencePoint; 
         }
 
