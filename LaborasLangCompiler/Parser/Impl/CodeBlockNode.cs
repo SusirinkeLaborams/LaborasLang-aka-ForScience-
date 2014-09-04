@@ -1,5 +1,4 @@
-﻿using LaborasLangCompiler.LexingTools;
-using LaborasLangCompiler.Parser;
+﻿using LaborasLangCompiler.Parser;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;

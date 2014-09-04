@@ -1,7 +1,5 @@
-﻿using LaborasLangCompiler.LexingTools;
-using LaborasLangCompiler.Parser.Exceptions;
+﻿using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +8,7 @@ using System.Threading.Tasks;
 using LaborasLangCompiler.ILTools;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer.Containers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -35,7 +34,8 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                switch(lexerNode.Token.Name)
+                throw new NotImplementedException();
+                /*switch(lexerNode.Type)
                 {
                     case Lexer.SuffixNode:
                         return ParseSuffix(parser, parent, lexerNode);
@@ -43,7 +43,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         return ParsePrefix(parser, parent, lexerNode);
                     default:
                         throw new ParseException(parser.GetSequencePoint(lexerNode), "Unary op node expected, " + lexerNode.Token.Name + " received");
-                }
+                }*/
             }
         }
         private static ExpressionNode ParseSuffix(Parser parser, ContainerNode parent, AstNode lexerNode)
@@ -52,7 +52,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var ops = new List<UnaryOperatorNodeType>();
             for (int i = 1; i < lexerNode.Children.Count; i++ )
             {
-                string op = parser.ValueOf(lexerNode.Children[i]);
+                string op = lexerNode.Children[1].Content.ToString();
                 try
                 {
                     ops.Add(SuffixOperators[op]);
@@ -71,7 +71,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var ops = new List<UnaryOperatorNodeType>();
             for (int i = count - 2; i >= 0; i--)
             {
-                string op = parser.ValueOf(lexerNode.Children[i]);
+                string op = lexerNode.Children[1].Content.ToString();
                 try
                 {
                     ops.Add(PrefixOperators[op]);

@@ -1,8 +1,6 @@
-﻿using LaborasLangCompiler.LexingTools;
-using LaborasLangCompiler.Parser;
+﻿using LaborasLangCompiler.Parser;
 using LaborasLangCompiler.Parser.Exceptions;
 using Mono.Cecil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +9,7 @@ using System.Threading.Tasks;
 using LaborasLangCompiler.ILTools;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer.Containers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -38,7 +37,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
                 for (int i = 1; i < lexerNode.Children.Count; i += 2)
                 {
-                    op = parser.ValueOf(lexerNode.Children[i]);
+                    op = lexerNode.Children[1].Content.ToString();
                     right = ExpressionNode.Parse(parser, parent, lexerNode.Children[i + 1]);
                     left = Parse(parser, op, left, right);
                 }

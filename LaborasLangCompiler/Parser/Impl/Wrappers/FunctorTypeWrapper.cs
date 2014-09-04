@@ -1,6 +1,5 @@
 ﻿using LaborasLangCompiler.ILTools;
 using Mono.Cecil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;

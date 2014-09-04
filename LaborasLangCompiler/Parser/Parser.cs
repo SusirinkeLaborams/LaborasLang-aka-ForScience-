@@ -1,5 +1,4 @@
 ﻿using LaborasLangCompiler.ILTools;
-using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
@@ -21,7 +20,6 @@ namespace LaborasLangCompiler.Parser
         public ClassNode Root { get; set; }
         public string Filename { get; private set; }
         public Document Document { get; private set; }
-        public SymbolCounter SymbolCounter { get; private set; }
 
         private bool testing;
         private Dictionary<string, TypeWrapper> primitives;
@@ -69,7 +67,7 @@ namespace LaborasLangCompiler.Parser
 
         #endregion types
 
-        public Parser(AssemblyEmitter assembly, RootNode tree, string filePath, bool testing = false)
+        public Parser(AssemblyEmitter assembly, RootNode root, string filePath, bool testing = false)
         {
             Assembly = assembly;
             this.testing = testing;
@@ -104,6 +102,8 @@ namespace LaborasLangCompiler.Parser
 
             primitives[tVoid] = Void = new ExternalType(assembly, typeof(void));
             primitives[tAuto] = Auto = null;
+
+            var tree = root.Node;
 
             Root = new ClassNode(this, null, GetSequencePoint(tree));
             Root.ParseDeclarations(tree);

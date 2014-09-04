@@ -1,9 +1,9 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer.Containers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using NPEG;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +30,8 @@ namespace LaborasLangCompiler.Parser.Impl
             var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
             instance.type = left.TypeWrapper;
 
-            var op = parser.ValueOf(lexerNode.Children[1]);
+            //use properties from lexer instead of string comparisons here
+            var op = lexerNode.Children[1].Content.ToString();
             if (op != "=")
                 right = BinaryOperatorNode.Parse(parser, op.Remove(op.Length - 1), left, right);
 

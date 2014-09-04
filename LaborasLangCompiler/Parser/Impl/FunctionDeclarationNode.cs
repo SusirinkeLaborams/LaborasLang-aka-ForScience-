@@ -1,6 +1,5 @@
 ﻿using LaborasLangCompiler.ILTools.Methods;
 using LaborasLangCompiler.ILTools.Types;
-using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
@@ -73,7 +72,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private ParameterWrapper ParseParameter(ContainerNode parent, AstNode lexerNode)
         {
             var type = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
-            var name = parser.ValueOf(lexerNode.Children[1]);
+            var name = lexerNode.Children[1].Content.ToString();
             return new ParameterWrapper(name, ParameterAttributes.None, type);
         }
 

@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.ILTools.Types;
-using LaborasLangCompiler.LexingTools;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
@@ -211,12 +210,12 @@ namespace LaborasLangCompiler.Parser.Impl
                             ParseDeclaration(sentence);
                             break;
                         default:
-                            throw new ParseException(parser.GetSequencePoint(sentence), "Import or declaration expected " + sentence.Token.Name + " received");
+                            throw new ParseException(parser.GetSequencePoint(sentence), "Import or declaration expected " + sentence.Type + " received");
                     }
                 }
                 else
                 {
-                    throw new ParseException(parser.GetSequencePoint(node), "Node Sentence expected, " + node.Token.Name + " received");
+                    throw new ParseException(parser.GetSequencePoint(node), "Node Sentence expected, " + node.Type + " received");
                 }
             }
         }
@@ -224,7 +223,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private void ParseDeclaration(AstNode lexerNode)
         {
             var type = TypeNode.Parse(parser, this, lexerNode.Children[0]);
-            var name = lexerNode.Children[1].Content;
+            var name = lexerNode.Children[1].Content.ToString();
             //nera tipo, deklaruojam funkcija
             if (lexerNode.Children.Count > 2 && lexerNode.Children[2].Type == Lexer.TokenType.Function && type == null)
             {

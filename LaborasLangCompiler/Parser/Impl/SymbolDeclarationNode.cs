@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LaborasLangCompiler.LexingTools;
 using LaborasLangCompiler.ILTools;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
@@ -34,7 +33,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var nodeType = lexerNode.Type;
 
             var declaredType = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
-            var name = lexerNode.Children[1].Content;
+            var name = lexerNode.Children[1].Content.ToString();
 
             //temp code
             if (lexerNode.Children.Count > 2)
