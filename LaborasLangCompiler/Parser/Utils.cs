@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lexer.Containers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,10 +16,24 @@ namespace LaborasLangCompiler.Parser
             return true;
             //properties vistiek dar neveikia
         }
+
         public static bool IsGettable(this IExpressionNode node)
         {
             //kol kas viskas gettable
             return true;
+        }
+
+        public static int Count(this AstNodeList list, Predicate<AstNode> pred)
+        {
+            int count = 0;
+            foreach(var node in list)
+            {
+                if(pred(node))
+                {
+                    count++;
+                }
+            }
+            return count;
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.ILTools;
-using LaborasLangCompiler.LexingTools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +10,6 @@ namespace LaborasLangCompilerUnitTests.ILTests
 {
     public class TestBase
     {
-        protected static LaborasLangCompiler.LexingTools.Lexer lexer = new LaborasLangCompiler.LexingTools.Lexer();
-
         public TestBase()
         {
             var compilerArgs = CompilerArguments.Parse(new[] { "dummy.il" });
