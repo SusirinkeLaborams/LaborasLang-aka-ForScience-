@@ -222,52 +222,43 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private void ParseDeclaration(AstNode lexerNode)
         {
-            var type = TypeNode.Parse(parser, this, lexerNode.Children[0]);
-            var name = lexerNode.Children[1].Content.ToString();
-            //nera tipo, deklaruojam funkcija
-            if (lexerNode.Children.Count > 2 && lexerNode.Children[2].Type == Lexer.TokenType.Function && type == null)
-            {
-                type = FunctionDeclarationNode.ParseFunctorType(parser, this, lexerNode.Children[2]);
-            }
-            fields.Add(name, new InternalField(type, name));
+            var declaration = DeclarationInfo.Parse(parser, lexerNode);
+            var field = new InternalField(declaration);
+
+            field.Name = declaration.SymbolName.GetSingleSymbolOrThrow();
+            field.TypeWrapper = TypeNode.Parse(parser, this, declaration.Type);
+
+            if (field.TypeWrapper == null && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
+                field.TypeWrapper = FunctionDeclarationNode.ParseFunctorType(parser, this, declaration.Initializer);
+
+            fields.Add(field.Name, field);
         }
 
         public void ParseBody(AstNode lexerNode)
         {
-            foreach (var node in lexerNode.Children)
+            foreach(var field in fields.Values)
             {
-                AstNode sentence = node.Children[0];
-                //temp code
-                if(sentence.Type == Lexer.TokenType.DeclarationNode && sentence.Children.Count > 2)
+                var init = field.Declaration.Initializer;
+                if (!init.IsNull)
                 {
-                    var field = fields[sentence.Children[1].Content.ToString()];
-                    var init = sentence.Children[2];
-
-                    if (sentence.Children[2].Type == Lexer.TokenType.Function)
+                    if (init.Type == Lexer.TokenType.Function)
                     {
                         field.Initializer = MethodNode.Parse(parser, this, init, "$" + field.Name);
                     }
                     else
                     {
-                        field.Initializer = ExpressionNode.Parse(parser, this, init);
+                        field.Initializer = ExpressionNode.Parse(parser, parent, init);
                     }
-                    if (field.TypeWrapper == null)
+
+                    if(field.TypeWrapper == null)
                     {
                         field.TypeWrapper = field.Initializer.TypeWrapper;
                     }
                     else
                     {
                         if (!field.Initializer.TypeWrapper.IsAssignableTo(field.TypeWrapper))
-                            throw new TypeException(parser.GetSequencePoint(sentence), "Type mismatch, field " + field.Name + " type " + field.TypeWrapper.FullName + " initialized with " + field.Initializer.TypeWrapper.FullName);
+                            throw new TypeException(field.Initializer.SequencePoint, "Type mismatch, field " + field.Name + " type " + field.TypeWrapper.FullName + " initialized with " + field.Initializer.TypeWrapper.FullName);
                     }
-                }
-                switch (sentence.Type)
-                {
-                    case Lexer.TokenType.DeclarationNode:
-                        
-                        break;
-                    default:
-                        break;
                 }
             }
         }

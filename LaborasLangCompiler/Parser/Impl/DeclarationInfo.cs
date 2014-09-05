@@ -7,29 +7,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.Parser;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class DeclaraionInfo : ParserNode
+    class DeclarationInfo
     {
-        public override NodeType Type { get { return NodeType.ParserInternal; } }
+        public AstNode Type { get; private set; }
+        public AstNode Initializer { get; private set; }
+        public AstNode SymbolName { get; private set; }
 
-        public string TypeName { get; private set; }
-        public string SymbolName { get; private set; }
-        public AstNode ?Initializer { get; private set; }
-
-        protected DeclaraionInfo(string name, string type, AstNode ?init, SequencePoint point) : base(point)
+        protected DeclarationInfo(AstNode name, AstNode type, AstNode init, SequencePoint point)
         {
             this.Initializer = init;
             this.SymbolName = name;
-            this.TypeName = type;
+            this.Type = type;
         }
 
-        public static DeclaraionInfo Parse(Parser parser, AstNode lexerNode)
+        public static DeclarationInfo Parse(Parser parser, AstNode lexerNode)
         {
-            string type = null;
-            string name = null;
-            AstNode ?init = null;
+            AstNode type = new AstNode();
+            AstNode name = new AstNode();
+            AstNode init = new AstNode();
 
             foreach(var node in lexerNode.Children)
             {
@@ -38,32 +37,35 @@ namespace LaborasLangCompiler.Parser.Impl
                     case Lexer.TokenType.VariableModifier:
                         throw new NotImplementedException("Modifiers not implemented");
                     case Lexer.TokenType.Type:
-                        if (type == null)
-                            type = node.Content.ToString();
+                        if (type.IsNull)
+                            type = node;
                         else
                             throw new ParseException(parser.GetSequencePoint(node), "Type declared twice: {0}", node.Content.ToString());
                         break;
                     case Lexer.TokenType.FullSymbol:
-                        if (name == null)
-                            name = node.Content.ToString();
+                        if (name.IsNull)
+                            name = node;
                         else
                             throw new ParseException(parser.GetSequencePoint(node), "Name declared twice: {0}", node.Content.ToString());
                         break;
                     case Lexer.TokenType.Value:
-                        if (init == null)
+                        if (init.IsNull)
                             init = node;
                         else
                             throw new ParseException(parser.GetSequencePoint(node), "Initializer declared twice: {0}", node.Content.ToString());
+                        break;
+                    case Lexer.TokenType.Assignment:
+                    case Lexer.TokenType.EndOfLine:
                         break;
                     default:
                         throw new ParseException(parser.GetSequencePoint(node), "Unexpected node in declaration: {0}", node.Type);
                 }
             }
 
-            if(name == null || type == null)
+            if(name.IsNull || type.IsNull)
                 throw new ParseException(parser.GetSequencePoint(lexerNode), "Missing elements in declaration {0}, lexer messed up", lexerNode.Content);
 
-            return new DeclaraionInfo(name, type, init, parser.GetSequencePoint(lexerNode));
+            return new DeclarationInfo(name, type, init, parser.GetSequencePoint(lexerNode));
         }
     }
 }

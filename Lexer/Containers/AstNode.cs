@@ -73,9 +73,12 @@ namespace Lexer.Containers
             public Token content;
         }
 
-        internal bool IsNull()
+        public bool IsNull
         {
-            return m_NodePtr == null;
+            get
+            {
+                return m_NodePtr == null;
+            }
         }
 
         private string ToString(int indentation)

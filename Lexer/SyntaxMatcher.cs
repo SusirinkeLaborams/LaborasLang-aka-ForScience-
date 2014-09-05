@@ -334,7 +334,7 @@ namespace Lexer
 
             AstNode matchedNode = Match(0, new Condition[] { new Condition(TokenType.StatementNode, ConditionType.OneOrMore) }, ref tokensConsumed);
 
-            if (matchedNode.IsNull() || tokensConsumed != m_Source.Length)
+            if (matchedNode.IsNull || tokensConsumed != m_Source.Length)
             {
                 throw new Exception(String.Format("Could not match all  tokens, last matched token {0} - {1}, line {2}, column {3}", LastMatched, m_Source[LastMatched - 1].Content, m_Source[LastMatched - 1].Start.Row, m_Source[LastMatched - 1].Start.Column));
             }
@@ -466,7 +466,7 @@ namespace Lexer
             var lookupTokensConsumed = 0;
             AstNode matchedNode = MatchWithLookup(sourceOffset + tokensConsumed, alternative, ref lookupTokensConsumed);
 
-            if (matchedNode.IsNull())
+            if (matchedNode.IsNull)
             {
                 return false;
             }

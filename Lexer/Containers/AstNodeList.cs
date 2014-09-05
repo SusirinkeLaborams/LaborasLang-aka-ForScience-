@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace Lexer.Containers
 {
-    public unsafe struct AstNodeList
+    public unsafe struct AstNodeList : IEnumerable<AstNode>
     {
         private const int kInitialCapacity = 6;
 
@@ -19,6 +19,11 @@ namespace Lexer.Containers
             {
 #if DEBUG
                 m_Capacity = -1;
+
+                if (index < 0 || index >= m_Count)
+                {
+                    throw new IndexOutOfRangeException(String.Format("AstNodeList index out of range, index {0}, count {1}", index, m_Count));
+                }
 #endif
                 return m_Nodes[index];
             } 
@@ -61,7 +66,12 @@ namespace Lexer.Containers
             }
         }
 
-        public AstNodeEnumerator GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public IEnumerator<AstNode> GetEnumerator()
         {
             return new AstNodeEnumerator(this);
         }

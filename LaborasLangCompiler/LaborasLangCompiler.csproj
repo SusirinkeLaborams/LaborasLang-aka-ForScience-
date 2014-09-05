@@ -84,7 +84,7 @@
     <Compile Include="Parser\Impl\AmbiguousMethodNode.cs" />
     <Compile Include="Parser\Impl\AmbiguousNode.cs" />
     <Compile Include="Parser\Impl\ConditionBlockNode.cs" />
-    <Compile Include="Parser\Impl\DeclaraionInfo.cs" />
+    <Compile Include="Parser\Impl\DeclarationInfo.cs" />
     <Compile Include="Parser\Impl\DotOperatorNode.cs" />
     <Compile Include="Parser\Impl\ContainerNode.cs" />
     <Compile Include="Parser\Impl\ImportNode.cs" />
