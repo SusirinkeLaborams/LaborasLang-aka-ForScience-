@@ -21,7 +21,10 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         [TestMethod, TestCategory("Parser")]
         public void FieldDeclarationTest()
         {
-            string source = "auto a = 5; int b; int c = 10;";
+            string source = @"
+                auto a = 5; 
+                int b; 
+                int c = 10;";
             string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b, System.Int32 c = (Literal: System.Int32 10) Methods: )";
             TestParser(source, expected);
         }
