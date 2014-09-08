@@ -23,7 +23,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private LValueNode left;
         private ExpressionNode right;
         protected AssignmentOperatorNode(SequencePoint point) : base(point) { }
-        public static new AssignmentOperatorNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static AssignmentOperatorNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var instance = new AssignmentOperatorNode(parser.GetSequencePoint(lexerNode));
             var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]).ExtractLValue();
@@ -33,6 +33,9 @@ namespace LaborasLangCompiler.Parser.Impl
             var op = parser.ValueOf(lexerNode.Children[1]);
             if (op != "=")
                 right = BinaryOperatorNode.Parse(parser, op.Remove(op.Length - 1), left, right);
+
+            if (right is AmbiguousNode)
+                right = ((AmbiguousNode)right).RemoveAmbiguity(parser, left.TypeWrapper);
 
             if (!right.TypeWrapper.IsAssignableTo(left.TypeWrapper))
                 throw new TypeException(instance.SequencePoint, "Assigned {0} to {1}", instance.right.TypeWrapper, instance.left.TypeWrapper);
