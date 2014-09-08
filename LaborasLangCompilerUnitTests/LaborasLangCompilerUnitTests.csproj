@@ -102,11 +102,13 @@
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_LogicalNot.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_MultipleNestedInstanceFieldAssignments.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_Multiplication.il" />
+    <Compile Include="ILTests\MethodBodyTests\FunctorTests.cs" />
     <Compile Include="ILTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="ILTests\ILHelpersTests.cs" />
     <Compile Include="ILTests\PEVerifyRunner.cs" />
     <Compile Include="IntegrationTests\IntegrationTestBase.cs" />
     <Compile Include="IntegrationTests\IntegrationTests.cs" />
+    <None Include="ILTests\MethodBodyTests\Expected\Test_FunctorNamesDoNotClash.il" />
     <None Include="IntegrationTests\SourceFiles\StdInWorks.ll" />
     <Compile Include="LexerTests\PrefixSuffixTests.cs" />
     <Compile Include="LexerTests\NotWorking.cs" />
