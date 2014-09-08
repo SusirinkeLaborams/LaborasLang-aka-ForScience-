@@ -180,9 +180,9 @@ namespace Lexer
             ParseRule[] AllRules = 
             {
                 #region Syntax rules
-                new ParseRule(StatementNode,                    
+                new ParseRule(StatementNode,       
+                    DeclarationNode,                                 
                     FunctionCall + EndOfLine,
-                    DeclarationNode,
                     AssignmentNode + EndOfLine,
                     CodeBlockNode,
                     WhileLoop,

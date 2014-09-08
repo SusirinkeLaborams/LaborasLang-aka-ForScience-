@@ -4,23 +4,26 @@ Children:
 	Content: Type: StatementNode, Start: 1, 1, End: 1, 9, Content: ""
 	Type: StatementNode
 	Children:
-		Content: Type: FunctionCall, Start: 1, 1, End: 1, 8, Content: ""
-		Type: FunctionCall
+		Content: Type: DeclarationNode, Start: 1, 1, End: 1, 9, Content: ""
+		Type: DeclarationNode
 		Children:
-			Content: Type: FunctionSegment, Start: 1, 1, End: 1, 4, Content: ""
-			Type: FunctionSegment
+			Content: Type: Type, Start: 1, 1, End: 1, 4, Content: ""
+			Type: Type
 			Children:
-				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "int"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "int"
+					Type: Symbol
+					Children:
 
-			Content: Type: FunctionSegment, Start: 1, 5, End: 1, 8, Content: ""
-			Type: FunctionSegment
+			Content: Type: FullSymbol, Start: 1, 5, End: 1, 8, Content: ""
+			Type: FullSymbol
 			Children:
 				Content: Type: Symbol, Start: 1, 5, End: 1, 8, Content: "foo"
 				Type: Symbol
 				Children:
 
-		Content: Type: EndOfLine, Start: 1, 8, End: 1, 9, Content: ";"
-		Type: EndOfLine
-		Children:
+			Content: Type: EndOfLine, Start: 1, 8, End: 1, 9, Content: ";"
+			Type: EndOfLine
+			Children:
