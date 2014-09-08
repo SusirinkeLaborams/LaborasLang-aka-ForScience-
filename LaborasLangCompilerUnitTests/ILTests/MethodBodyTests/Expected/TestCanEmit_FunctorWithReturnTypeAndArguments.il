@@ -22,7 +22,7 @@ System.Void klass/MethodWithArgs$System_Boolean$System_Single$System_String$Invo
 .maxstack 8
 
 IL_0000: ldarg.0
-IL_0001: call instance void $Functors.$System_Int32$System_Boolean$System_Single$System_String::.ctor()
+IL_0001: call instance void '$Functors.$System_Int32*System_Boolean*System_Single*System_String?'::.ctor()
 IL_0006: ret
 
 
@@ -39,18 +39,18 @@ IL_0005: call int32 klass::MethodWithArgs(bool, float32, string)
 IL_000a: ret
 
 
-$Functors.$System_Int32$System_Boolean$System_Single$System_String/Delegate klass/MethodWithArgs$System_Boolean$System_Single$System_String$Invoker::AsDelegate()
+$Functors.$System_Int32*System_Boolean*System_Single*System_String?/Delegate klass/MethodWithArgs$System_Boolean$System_Single$System_String$Invoker::AsDelegate()
 // Method begins at RVA 0x206c
 // Code size 13 (0xd)
 .maxstack 8
 
 IL_0000: ldnull
 IL_0001: ldftn int32 klass::MethodWithArgs(bool, float32, string)
-IL_0007: newobj instance void $Functors.$System_Int32$System_Boolean$System_Single$System_String/Delegate::.ctor(object, native int)
+IL_0007: newobj instance void '$Functors.$System_Int32*System_Boolean*System_Single*System_String?'/Delegate::.ctor(object, native int)
 IL_000c: ret
 
 
-System.Void $Functors.$System_Int32$System_Boolean$System_Single$System_String::.ctor()
+System.Void $Functors.$System_Int32*System_Boolean*System_Single*System_String?::.ctor()
 // Method begins at RVA 0x207c
 // Code size 7 (0x7)
 .maxstack 8

@@ -22,7 +22,7 @@ System.Void klass::.cctor()
 .maxstack 8
 
 IL_0000: newobj instance void klass/FunctionWithArgs$System_Double$System_Single$Invoker::.ctor()
-IL_0005: stsfld class $Functors.$System_Int32$System_Double$System_Single klass::myFunction
+IL_0005: stsfld class '$Functors.$System_Int32*System_Double*System_Single?' klass::myFunction
 IL_000a: ret
 
 
@@ -32,7 +32,7 @@ System.Void klass/FunctionWithArgs$System_Double$System_Single$Invoker::.ctor()
 .maxstack 8
 
 IL_0000: ldarg.0
-IL_0001: call instance void $Functors.$System_Int32$System_Double$System_Single::.ctor()
+IL_0001: call instance void '$Functors.$System_Int32*System_Double*System_Single?'::.ctor()
 IL_0006: ret
 
 
@@ -48,18 +48,18 @@ IL_0004: call int32 klass::FunctionWithArgs(float64, float32)
 IL_0009: ret
 
 
-$Functors.$System_Int32$System_Double$System_Single/Delegate klass/FunctionWithArgs$System_Double$System_Single$Invoker::AsDelegate()
+$Functors.$System_Int32*System_Double*System_Single?/Delegate klass/FunctionWithArgs$System_Double$System_Single$Invoker::AsDelegate()
 // Method begins at RVA 0x2078
 // Code size 13 (0xd)
 .maxstack 8
 
 IL_0000: ldnull
 IL_0001: ldftn int32 klass::FunctionWithArgs(float64, float32)
-IL_0007: newobj instance void $Functors.$System_Int32$System_Double$System_Single/Delegate::.ctor(object, native int)
+IL_0007: newobj instance void '$Functors.$System_Int32*System_Double*System_Single?'/Delegate::.ctor(object, native int)
 IL_000c: ret
 
 
-System.Void $Functors.$System_Int32$System_Double$System_Single::.ctor()
+System.Void $Functors.$System_Int32*System_Double*System_Single?::.ctor()
 // Method begins at RVA 0x2088
 // Code size 7 (0x7)
 .maxstack 8
