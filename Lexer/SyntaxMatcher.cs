@@ -1,6 +1,4 @@
-﻿//#define USE_LOOKUP
-
-using Lexer.Containers;
+﻿using Lexer.Containers;
 using System;
 using System.Diagnostics;
 
@@ -11,10 +9,6 @@ namespace Lexer
         private static ParseRule[] m_ParseRules;
         private Token[] m_Source;
         private RootNode m_RootNode;
-
-#if USE_LOOKUP
-        private Dictionary<Tuple<IEnumerable<Condition>, int>, MatchResult> m_ParsingResults;
-#endif
 
         private int m_LastMatched = 0;
         private int LastMatched
@@ -28,27 +22,7 @@ namespace Lexer
                 m_LastMatched = m_LastMatched < value ? value : m_LastMatched;
             }
         }
-        
-#if USE_LOOKUP
-        class ConditionListComparer : IEqualityComparer<Tuple<IEnumerable<Condition>, int>>
-        {
-            public bool Equals(Tuple<IEnumerable<Condition>, int> x, Tuple<IEnumerable<Condition>, int> y)
-            {
-                return x.Item2 == y.Item2 && x.Item1.SequenceEqual(y.Item1);
-            }
-
-            public int GetHashCode(Tuple<IEnumerable<Condition>, int> obj)
-            {
-                int hashcode = obj.Item2;
-                foreach (Condition t in obj.Item1)
-                {
-                    hashcode ^= t.GetHashCode();
-                }
-                return hashcode;
-            }
-        }
-#endif
-                        
+                                
         #region TokenProperties
         private static Condition EndOfLine { get { return TokenType.EndOfLine; } }
         private static Condition Comma { get { return TokenType.Comma; } }
@@ -321,9 +295,6 @@ namespace Lexer
 
         public SyntaxMatcher(Token[] sourceTokens, RootNode rootNode)
         {
-#if USE_LOOKUP
-            m_ParsingResults = new Dictionary<Tuple<IEnumerable<Condition>, int>, MatchResult>(new ConditionListComparer());
-#endif
             m_RootNode = rootNode;
             m_Source = sourceTokens;
         }
@@ -342,25 +313,6 @@ namespace Lexer
             matchedNode.Type = TokenType.RootNode;
             m_RootNode.SetNode(matchedNode);
             return matchedNode;
-        }
-
-        private AstNode MatchWithLookup(int sourceOffset, Condition[] rule, ref int tokensConsumed)
-        {
-#if !USE_LOOKUP
-            return Match(sourceOffset, rule, ref tokensConsumed);
-#else
-            MatchResult value = new MatchResult(new AstNode(null, Unknown.Token), 0);
-            if (m_ParsingResults.TryGetValue(new Tuple<IEnumerable<Condition>, int>(rule, sourceOffset), out value))
-            {
-                return value;
-            }
-            else
-            {
-                var result = Match(sourceOffset, rule);
-                m_ParsingResults[new Tuple<IEnumerable<Condition>, int>(rule, sourceOffset)] = result;
-                return result;
-            }
-#endif
         }
 
         private AstNode Match(int sourceOffset, Condition[] rule, ref int tokensConsumed)
@@ -464,7 +416,7 @@ namespace Lexer
         private bool MatchCondition(Condition token, int sourceOffset, Condition[] alternative, ref AstNode node, ref int tokensConsumed)
         {
             var lookupTokensConsumed = 0;
-            AstNode matchedNode = MatchWithLookup(sourceOffset + tokensConsumed, alternative, ref lookupTokensConsumed);
+            AstNode matchedNode = Match(sourceOffset + tokensConsumed, alternative, ref lookupTokensConsumed);
 
             if (matchedNode.IsNull)
             {
