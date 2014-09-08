@@ -54,36 +54,4 @@ namespace LaborasLangCompiler.Parser.Impl
             return new SymbolCallNode(name, args, parser.GetSequencePoint(lexerNode));
         }
     }
-    class TypeNode : ExpressionNode
-    {
-        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
-        public override TypeWrapper TypeWrapper { get { return null; } }
-        public TypeWrapper ParsedType { get; private set; }
-        public TypeNode(TypeWrapper type, SequencePoint point)
-            : base(point)
-        {
-            ParsedType = type;
-        }
-        public static TypeWrapper Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
-        {
-            if (lexerNode.Type == Lexer.TokenType.Function)
-                return TypeNode.Parse(parser, parent, lexerNode.Children[0]);
-
-            var ret = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]).ExtractType();
-
-            if (lexerNode.Children.Count == 1)
-            {
-                return ret;
-            }
-            else
-            {
-                var args = new List<TypeWrapper>();
-                foreach(var arg in lexerNode.Children[1].Children)
-                {
-                    args.Add(TypeNode.Parse(parser, parent, arg));
-                }
-                return new FunctorTypeWrapper(parser.Assembly, ret, args);
-            }
-        }
-    }
 }

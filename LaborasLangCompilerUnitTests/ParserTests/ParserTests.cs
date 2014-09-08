@@ -36,6 +36,15 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             TestParser(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
+        public void FunctorTypeTest()
+        {
+            string source = @"
+                int() a;
+                void(float(double), int) b;";
+            string expected = "(ClassNode: Fields: $Functors.$System_Int32 a, $Functors.$System_Void$$Functors_$System_Single$System_Double$System_Int32 b Methods: )";
+            TestParser(source, expected);
+        }
+        [TestMethod, TestCategory("Parser")]
         public void TypeExceptionTest()
         {
             string source = "int a = 0.0;";
