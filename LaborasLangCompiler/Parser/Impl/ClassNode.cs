@@ -247,7 +247,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     }
                     else
                     {
-                        field.Initializer = ExpressionNode.Parse(parser, parent, init);
+                        field.Initializer = ExpressionNode.Parse(parser, this, init);
                     }
 
                     if(field.TypeWrapper == null)
