@@ -39,7 +39,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private Parser parser;
         private FunctorTypeWrapper functorType;
 
-        public FunctionDeclarationNode(Parser parser, ContainerNode parent, SequencePoint point, AstNode header, string name = null)
+        private FunctionDeclarationNode(Parser parser, ContainerNode parent, SequencePoint point, AstNode header, string name = null)
             : base(point)
         {
             this.parent = parent.GetClass();
@@ -55,24 +55,25 @@ namespace LaborasLangCompiler.Parser.Impl
                 emitter.SetAsEntryPoint();
         }
 
-        private void ParseHeader(AstNode lexerNode, string name)
+        private void ParseHeader(AstNode lexerNode, string methodName)
         {
-            MethodReturnType = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
-            emitter = new MethodEmitter(parent.TypeEmitter, name, MethodReturnType.TypeReference, MethodAttributes.Static | MethodAttributes.Private);
-            for(int i = 1; i < lexerNode.Children.Count; i++)
+            var info = new FunctionDeclarationInfo(parser, lexerNode);
+            MethodReturnType = TypeNode.Parse(parser, parent, info.ReturnType); 
+            emitter = new MethodEmitter(parent.TypeEmitter, methodName, MethodReturnType.TypeReference, MethodAttributes.Static | MethodAttributes.Private);
+            foreach(var p in info.Params)
             {
-                var param = ParseParameter(parent, lexerNode.Children[i]);
+                var param = ParseParameter(parent, p.Type, p.Name);
                 emitter.AddArgument(param.ParameterDefinition);
                 symbols.Add(param.Name, param);
             }
-            ParamTypes = symbols.Select(arg => arg.Value.TypeWrapper);
-            parent.AddMethod(this, name);
+            ParamTypes = symbols.Values.Select(p => p.TypeWrapper);
+            parent.AddMethod(this, methodName);
         }
 
-        private ParameterWrapper ParseParameter(ContainerNode parent, AstNode lexerNode)
+        private ParameterWrapper ParseParameter(ContainerNode parent, AstNode typeNode, AstNode nameNode)
         {
-            var type = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
-            var name = lexerNode.Children[1].Content.ToString();
+            var type = TypeNode.Parse(parser, parent, typeNode);
+            var name = nameNode.GetSingleSymbolOrThrow();
             return new ParameterWrapper(name, ParameterAttributes.None, type);
         }
 
@@ -104,14 +105,9 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static FunctorTypeWrapper ParseFunctorType(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            var header = lexerNode.Children[0];
-            var ret = TypeNode.Parse(parser, parent, header.Children[0]);
-            var args = new List<TypeWrapper>();
-            for (int i = 1; i < header.Children.Count; i++)
-            {
-                var arg = header.Children[i];
-                args.Add(TypeNode.Parse(parser, parent, arg.Children[0]));
-            }
+            var info = new FunctionDeclarationInfo(parser, lexerNode.Children[0]);
+            var ret = TypeNode.Parse(parser, parent, info.ReturnType);
+            var args = info.Params.Select(p => TypeNode.Parse(parser, parent, p.Type));
             return new FunctorTypeWrapper(parser.Assembly, ret, args);
         }
 
@@ -128,6 +124,60 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             builder.Append(")").Append(body.ToString()).Append(")");
             return builder.ToString();
+        }
+
+        class FunctionDeclarationInfo
+        {
+            public AstNode ReturnType { get; private set; }
+            public List<FunctionParamInfo> Params { get; private set; }
+
+            public FunctionDeclarationInfo(Parser parser, AstNode lexerNode)
+            {
+                ReturnType = lexerNode.Children[0];
+                Params = new List<FunctionParamInfo>();
+                int i = 1;
+                while (i < lexerNode.ChildrenCount)
+                {
+                    var param = lexerNode.Children[i];
+                    switch(param.Type)
+                    {
+                        case Lexer.TokenType.LeftBracket:
+                        case Lexer.TokenType.RightBracket:
+                            i++;
+                            break;
+                        case Lexer.TokenType.TypeArgument:
+                            if (param.ChildrenCount != 3)
+                                throw new ParseException(parser.GetSequencePoint(lexerNode), "Not a valid method definition, {0}", lexerNode.FullContent);
+                            else
+                                Params.Add(new FunctionParamInfo(param.Children[1], param.Children[2]));
+                            i++;
+                            break;
+                        case Lexer.TokenType.Type:
+                            var next = lexerNode.Children[i + 1];
+                            if(next.Type != Lexer.TokenType.FullSymbol)
+                                throw new ParseException(parser.GetSequencePoint(lexerNode), "Not a valid method definition, {0}", lexerNode.FullContent);
+                            else
+                                Params.Add(new FunctionParamInfo(param, next));
+                            i += 2;
+                            break;
+                        case Lexer.TokenType.FullSymbol:
+                            throw new ParseException(parser.GetSequencePoint(lexerNode), "Not a valid method definition, {0}", lexerNode.FullContent);
+                        default:
+                            throw new ParseException(parser.GetSequencePoint(lexerNode), "Unexpected node type, {0} in {1}", param.Type, lexerNode.FullContent);
+                    }
+                }
+            }
+        }
+        struct FunctionParamInfo
+        {
+            public AstNode Type { get; private set; }
+            public AstNode Name { get; private set; }
+
+            public FunctionParamInfo(AstNode type, AstNode name)
+            {
+                Type = type;
+                Name = name;
+            }
         }
     }
 }

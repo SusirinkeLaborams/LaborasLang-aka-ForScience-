@@ -22,6 +22,9 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static TypeWrapper Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
+            if(lexerNode.Type == Lexer.TokenType.FullSymbol)
+                return DotOperatorNode.Parse(parser, parent, lexerNode).ExtractType();
+
             var ret = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]).ExtractType();
 
             if(lexerNode.ChildrenCount != 1)

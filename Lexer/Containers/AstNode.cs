@@ -29,6 +29,22 @@ namespace Lexer.Containers
             get { return Token.Content; }
         }
 
+        public string FullContent
+        {
+            get
+            {
+                if (Token.Type.IsTerminal())
+                    return Content.ToString();
+
+                StringBuilder builder = new StringBuilder();
+                foreach(var node in Children)
+                {
+                    builder.Append(node.FullContent);
+                }
+                return builder.ToString();
+            }
+        }
+
         public TokenType Type
         {
             get { return m_NodePtr->content.Type; }

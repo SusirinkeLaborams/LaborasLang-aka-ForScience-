@@ -91,7 +91,7 @@ namespace LaborasLangCompiler.Parser.Impl
                             throw new ParseException(parser.GetSequencePoint(sentence), "Node " + sentence.Type + " in sentence, dafuq");
                     }
                 }
-                else
+                else if(node.Type != Lexer.TokenType.RightCurlyBracket && node.Type != Lexer.TokenType.LeftCurlyBracket)
                 {
                     throw new ParseException(parser.GetSequencePoint(node), "Sentence expected, " + node.Type + " received");
                 }

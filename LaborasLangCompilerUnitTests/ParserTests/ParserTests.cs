@@ -80,6 +80,16 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             TestParser(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
+        public void MethodDeclaration()
+        {
+            string source = @"
+                auto Main = void()
+                {
+                };";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: () Nodes: ())))";
+            TestParser(source, expected);
+        }
+        [TestMethod, TestCategory("Parser")]
         public void HelloWorld()
         {
             string source = @"
