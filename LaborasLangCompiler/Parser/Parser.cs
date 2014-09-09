@@ -50,7 +50,6 @@ namespace LaborasLangCompiler.Parser
         public TypeWrapper Char { get; private set; }
         public TypeWrapper Byte { get; private set; }
         public TypeWrapper UByte { get; private set; }
-        public TypeWrapper UBool { get; private set; }
         public TypeWrapper Word { get; private set; }
         public TypeWrapper UWord { get; private set; }
         public TypeWrapper Int { get; private set; }
