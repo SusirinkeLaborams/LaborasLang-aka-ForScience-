@@ -21,7 +21,6 @@ namespace LaborasLangCompiler.Parser
         public string Filename { get; private set; }
         public Document Document { get; private set; }
 
-        private bool testing;
         private Dictionary<string, TypeWrapper> primitives;
 
         #region typenames
@@ -69,7 +68,6 @@ namespace LaborasLangCompiler.Parser
         public Parser(AssemblyEmitter assembly, RootNode root, string filePath, bool testing = false)
         {
             Assembly = assembly;
-            this.testing = testing;
             Filename = Path.GetFileNameWithoutExtension(filePath);
             Document = new Document(filePath);
             Document.Language = DocumentLanguage.Other;
