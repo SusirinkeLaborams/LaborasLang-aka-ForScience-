@@ -60,10 +60,10 @@ void(int a){a = 5;}(5)()()();
         public void FunctionCall()
         {
             var source =
-            @"
-            foo();
-            foo(bar);
-            foo(foo(), bar);";
+@"
+foo();
+foo(bar);
+foo(foo(), bar);";
             ExecuteTest(source);
         }
 

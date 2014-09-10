@@ -57,7 +57,7 @@ namespace Lexer
         public ParseRule(Condition result, params List<Condition>[] requiredTokens) : this()
         {
             Result = result.Token;
-            RequiredTokens = new Condition[requiredTokens.Length][];// requiredTokens.Select(list => list.ToArray()).ToArray();
+            RequiredTokens = new Condition[requiredTokens.Length][];
 
             for (int i = 0; i < requiredTokens.Length; i++)
             {
@@ -74,7 +74,7 @@ namespace Lexer
             : this()
         {
             Result = result;
-            RequiredTokens = new Condition[requiredTokens.Length][];// requiredTokens.Select(list => list.ToArray()).ToArray();
+            RequiredTokens = new Condition[requiredTokens.Length][];
 
             for (int i = 0; i < requiredTokens.Length; i++)
             {
