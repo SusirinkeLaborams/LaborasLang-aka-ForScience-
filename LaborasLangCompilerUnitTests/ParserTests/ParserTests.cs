@@ -44,22 +44,12 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: $Functors.$System_Int32 a, $Functors.$System_Void$$Functors_$System_Single$System_Double$System_Int32 b Methods: )";
             CompareTrees(source, expected);
         }
-        [TestMethod, TestCategory("Parser")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Assigned double to int")]
         public void TypeExceptionTest()
         {
             string source = "int a = 0.0;";
             string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Single 0))";
-            try
-            {
-                CompareTrees(source, expected);
-            }
-            catch(TypeException)
-            {
-                //should throw
-                return;
-            }
-            //no type error
-            Assert.Fail();
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void MethodCallTest()
@@ -308,21 +298,13 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: System.Boolean i = (BinaryOp: (Literal: System.Boolean True) Equals (Literal: System.Boolean False)), System.Boolean a = (BinaryOp: (LValueNode: Field i System.Boolean) NotEquals (Literal: System.Boolean True)), System.Boolean c = (BinaryOp: (Literal: System.Int32 5) GreaterThan (Literal: System.Int32 6)), System.Boolean b = (BinaryOp: (Literal: System.Int32 8) LessEqualThan (Literal: System.Int32 10)) Methods: )";
             CompareTrees(source, expected);
         }
-        [TestMethod, TestCategory("Parser")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Returned double instead of int")]
         public void TestReturnTypeFailure()
         {
             string source = @"
                 auto Main = int(){return 4.0;};";
             string expected = "";
-            try
-            {
-                CompareTrees(source, expected);
-            }
-            catch(TypeException)
-            {
-                return;
-            }
-            Assert.Fail("Tried to return float instead of int, should've failed");
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestReturnTypeSuccess()
@@ -350,7 +332,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Int32()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 1)))), False: (CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 0))))))))";
             CompareTrees(source, expected);
         }
-        [TestMethod, TestCategory("Parser")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(ParseException), "Not all method paths return")]
         public void TestEnforceReturn2()
         {
             string source = @"
@@ -362,15 +344,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     }
                 };";
             string expected = "";
-            try
-            {
-                CompareTrees(source, expected);
-            }
-            catch(ParseException)
-            {
-                return;
-            }
-            Assert.Fail("Not all paths return, should've failed");
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestEnforceReturn3()
@@ -424,7 +398,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Single a = (MethodNode: Instance: null, Method: $a) Methods: (Method: $a System.Int32(System.Single x)(CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 4))))))";
             CompareTrees(source, expected);
         }
-        [TestMethod, TestCategory("Parser")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Returned value in a void method")]
         public void TestReturnVoid()
         {
             string source = @"
@@ -433,15 +407,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     return 5;
                 };";
             string expected = "";
-            try
-            {
-                CompareTrees(source, expected);
-            }
-            catch(TypeException)
-            {
-                return;
-            }
-            Assert.Fail("Should've failed, returning 5 in void()");
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestImport()
