@@ -34,12 +34,6 @@ namespace LaborasLangCompiler.Parser.Impl
             var declaredType = TypeNode.Parse(parser, parent, info.Type);
             ExpressionNode initializer = info.Initializer.IsNull ? null : ExpressionNode.Parse(parser, parent, info.Initializer);
 
-            //temp code
-            if (lexerNode.Children.Count > 2)
-            {
-                initializer = ExpressionNode.Parse(parser, parent, lexerNode.Children[2], true);
-            }
-
             if (declaredType == null && (initializer == null || initializer.TypeWrapper == null))
                 throw new TypeException(parser.GetSequencePoint(lexerNode), "Type inference requires initialization");
 
