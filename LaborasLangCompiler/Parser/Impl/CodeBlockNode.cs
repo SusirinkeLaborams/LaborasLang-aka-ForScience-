@@ -58,42 +58,64 @@ namespace LaborasLangCompiler.Parser.Impl
             else
                 AddNode(UnaryOperatorNode.Void(node));
         }
+        private void AddNode(Parser parser, AstNode lexerNode)
+        {
+            switch (lexerNode.Type)
+            {
+                case Lexer.TokenType.DeclarationNode:
+                    AddNode(SymbolDeclarationNode.Parse(parser, this, lexerNode));
+                    break;
+                case Lexer.TokenType.FunctionCall:
+                case Lexer.TokenType.AssignmentNode:
+                    AddExpression(ExpressionNode.Parse(parser, this, lexerNode), parser);
+                    break;
+                case Lexer.TokenType.WhileLoop:
+                    AddNode(WhileBlock.Parse(parser, this, lexerNode));
+                    break;
+                case Lexer.TokenType.ConditionalSentence:
+                    AddNode(ConditionBlockNode.Parse(parser, this, lexerNode));
+                    break;
+                case Lexer.TokenType.CodeBlockNode:
+                    AddNode(CodeBlockNode.Parse(parser, this, lexerNode));
+                    break;
+                case Lexer.TokenType.Return:
+                    AddNode(ReturnNode.Parse(parser, this, lexerNode));
+                    break;
+                default:
+                    throw new ParseException(parser.GetSequencePoint(lexerNode), "Node " + lexerNode.Type + " in sentence, dafuq");
+            }
+        }
         public static CodeBlockNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            var instance = new CodeBlockNode(parent, parser.GetSequencePoint(lexerNode));
-            foreach (var node in lexerNode.Children)
+            CodeBlockNode instance = null;
+            if(lexerNode.Type == Lexer.TokenType.CodeBlockNode)
             {
-                if (node.Type == Lexer.TokenType.StatementNode)
+                instance = new CodeBlockNode(parent, parser.GetSequencePoint(lexerNode));
+                foreach(var node in lexerNode.Children)
                 {
-                    var sentence = node.Children[0];
-                    switch (sentence.Type)
+                    switch(node.Type)
                     {
-                        case Lexer.TokenType.DeclarationNode:
-                            instance.AddNode(SymbolDeclarationNode.Parse(parser, instance, sentence));
+                        case Lexer.TokenType.LeftCurlyBracket:
+                        case Lexer.TokenType.RightCurlyBracket:
                             break;
-                        case Lexer.TokenType.FunctionCall:
-                        case Lexer.TokenType.AssignmentNode:
-                            instance.AddExpression(ExpressionNode.Parse(parser, instance, sentence), parser);
-                            break;
-                        case Lexer.TokenType.WhileLoop:
-                            instance.AddNode(WhileBlock.Parse(parser, instance, sentence));
-                            break;
-                        case Lexer.TokenType.ConditionalSentence:
-                            instance.AddNode(ConditionBlockNode.Parse(parser, instance, sentence));
-                            break;
-                        case Lexer.TokenType.CodeBlockNode:
-                            instance.AddNode(CodeBlockNode.Parse(parser, instance, sentence));
-                            break;
-                        case Lexer.TokenType.Return:
-                            instance.AddNode(ReturnNode.Parse(parser, instance, sentence));
+                        case Lexer.TokenType.StatementNode:
+                            instance.AddNode(parser, node.Children[0]);
                             break;
                         default:
-                            throw new ParseException(parser.GetSequencePoint(sentence), "Node " + sentence.Type + " in sentence, dafuq");
+                            throw new ParseException(parser.GetSequencePoint(node), "Unexpected node type {0} in code block", node.Type);
                     }
                 }
-                else if(node.Type != Lexer.TokenType.RightCurlyBracket && node.Type != Lexer.TokenType.LeftCurlyBracket)
+            }
+            else if(lexerNode.Type == Lexer.TokenType.StatementNode)
+            {
+                if (lexerNode.Children[0].Type == Lexer.TokenType.CodeBlockNode)
                 {
-                    throw new ParseException(parser.GetSequencePoint(node), "Sentence expected, " + node.Type + " received");
+                    instance = Parse(parser, parent, lexerNode.Children[0]);
+                }
+                else
+                {
+                    instance = new CodeBlockNode(parent, parser.GetSequencePoint(lexerNode));
+                    instance.AddNode(parser, lexerNode.Children[0]);
                 }
             }
             return instance;

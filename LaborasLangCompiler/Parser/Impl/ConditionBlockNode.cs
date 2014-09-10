@@ -29,12 +29,12 @@ namespace LaborasLangCompiler.Parser.Impl
         public static ConditionBlockNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var instance = new ConditionBlockNode(parser.GetSequencePoint(lexerNode));
-            instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[0].Children[0]);
-            if (instance.condition.TypeWrapper.FullName != parser.Bool.FullName)
+            instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
+            if (!instance.condition.TypeWrapper.IsAssignableTo(parser.Bool))
                 throw new TypeException(instance.SequencePoint, "Condition must be a boolean expression");
-            instance.trueBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[1].Children[0]);
-            if (lexerNode.Children.Count > 2)
-                instance.falseBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[2].Children[0]);
+            instance.trueBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[4]);
+            if (lexerNode.Children.Count > 5)
+                instance.falseBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[6]);
             return instance;
         }
         public override string ToString()

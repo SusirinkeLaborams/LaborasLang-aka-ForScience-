@@ -159,7 +159,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                         int c;
                     }
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: (System.Int32 a) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = ))), False: (CodeBlock: Symbols: (System.Int32 b) Nodes: ((Declaration: (LValueNode: LocalVariable b System.Int32) = ))), (ConditionBlock: Condition: (Literal: System.Boolean False), True: (CodeBlock: Symbols: (System.Int32 c) Nodes: ((Declaration: (LValueNode: LocalVariable c System.Int32) = ))), False: ))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: (System.Int32 a) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = ))), False: (CodeBlock: Symbols: (System.Int32 b) Nodes: ((Declaration: (LValueNode: LocalVariable b System.Int32) = ))), (ConditionBlock: Condition: (Literal: System.Boolean False), True: (CodeBlock: Symbols: (System.Int32 c) Nodes: ((Declaration: (LValueNode: LocalVariable c System.Int32) = ))), False: ))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]

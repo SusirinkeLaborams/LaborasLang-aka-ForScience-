@@ -32,5 +32,10 @@ namespace LaborasLangCompiler.Parser
 
             throw new InvalidOperationException("Node not a single symbol node");
         }
+
+        public static IEnumerator<AstNode> GetEnumerator(this AstNode node)
+        {
+            return node.Children.GetEnumerator();
+        }
     }
 }
