@@ -29,11 +29,10 @@ namespace LaborasLangCompiler.Parser.Impl
         public static SymbolDeclarationNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             LValueNode symbol = null;
-            ExpressionNode initializer = null;
-            var nodeType = lexerNode.Type;
-
-            var declaredType = TypeNode.Parse(parser, parent, lexerNode.Children[0]);
-            var name = lexerNode.Children[1].Content.ToString();
+            var info = DeclarationInfo.Parse(parser, lexerNode);
+            var name = info.SymbolName.GetSingleSymbolOrThrow();
+            var declaredType = TypeNode.Parse(parser, parent, info.Type);
+            ExpressionNode initializer = info.Initializer.IsNull ? null : ExpressionNode.Parse(parser, parent, info.Initializer);
 
             //temp code
             if (lexerNode.Children.Count > 2)
