@@ -125,19 +125,44 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
-        public void While()
+        public void WhileLiteral()
         {
             string source = @"
                 auto Main = void()
                 {
-                    bool a;
-                    int c = 5;
-	                while(a)
+	                while(true)
                     {
-                        c += 1;
                     }
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: (System.Boolean a, System.Int32 c) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Boolean) = ), (Declaration: (LValueNode: LocalVariable c System.Int32) = (Literal: System.Int32 5)), (WhileBlock: Condition: (LValueNode: LocalVariable a System.Boolean), Block: (CodeBlock: Symbols: () Nodes: ((UnaryOp: VoidOperator (Assignment: (LValueNode: LocalVariable c System.Int32) = (BinaryOp: (LValueNode: LocalVariable c System.Int32) Addition (Literal: System.Int32 1))))))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: () Nodes: ((WhileBlock: Condition: (Literal: System.Boolean True), Block: (CodeBlock: Symbols: () Nodes: ())))))";
+            CompareTrees(source, expected);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void WhileSymbol()
+        {
+            string source = @"
+                auto Main = void()
+                {
+                    bool a = true;
+	                while(a)
+                    {
+                    }
+                };";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: (System.Boolean a) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Boolean) = (Literal: System.Boolean True)), (WhileBlock: Condition: (LValueNode: LocalVariable a System.Boolean), Block: (CodeBlock: Symbols: () Nodes: ())))))";
+            CompareTrees(source, expected);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void WhileExpression()
+        {
+            string source = @"
+                auto Main = void()
+                {
+                    int a = 8;
+	                while(a < 10)
+                    {
+                    }
+                };";
+            string expected = "";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
