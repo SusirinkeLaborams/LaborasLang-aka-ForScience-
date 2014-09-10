@@ -129,7 +129,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private void VerifyShift(Parser parser)
         {
             typeWrapper = left.TypeWrapper;
-            if (right.TypeWrapper.FullName != parser.Int.FullName)
+            if (right.TypeWrapper.FullName != parser.Int32.FullName)
                 throw new TypeException(SequencePoint, "Right shift operand must be of signed 32bit integer type");
             if (!left.TypeWrapper.IsIntegerType())
                 throw new TypeException(SequencePoint, "Left shift operand must be of integer type");

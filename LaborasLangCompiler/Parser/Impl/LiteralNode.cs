@@ -39,7 +39,7 @@ namespace LaborasLangCompiler.Parser.Impl
             switch(lexerNode.Type)
             {
                 case Lexer.TokenType.Integer:
-                    return parser.Int;
+                    return parser.Int32;
                 case Lexer.TokenType.StringLiteral:
                     return parser.String;
                 case Lexer.TokenType.Float:
