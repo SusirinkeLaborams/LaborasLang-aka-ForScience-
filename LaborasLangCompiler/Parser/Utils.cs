@@ -10,33 +10,6 @@ namespace LaborasLangCompiler.Parser
 {
     static class Utils
     {
-        public static bool IsSettable(this IExpressionNode node)
-        {
-            if (node.ExpressionType != ExpressionNodeType.LValue)
-                return false;
-            return true;
-            //properties vistiek dar neveikia
-        }
-
-        public static bool IsGettable(this IExpressionNode node)
-        {
-            //kol kas viskas gettable
-            return true;
-        }
-
-        public static int Count(this AstNodeList list, Predicate<AstNode> pred)
-        {
-            int count = 0;
-            foreach(var node in list)
-            {
-                if(pred(node))
-                {
-                    count++;
-                }
-            }
-            return count;
-        }
-
         public static bool IsFunctionDeclaration(this AstNode node)
         {
             if(node.Type == Lexer.TokenType.DeclarationNode)
@@ -58,6 +31,11 @@ namespace LaborasLangCompiler.Parser
                 return node.Children[0].Content.ToString();
 
             throw new InvalidOperationException("Node not a single symbol node");
+        }
+
+        public static IEnumerator<AstNode> GetEnumerator(this AstNode node)
+        {
+            return node.Children.GetEnumerator();
         }
     }
 }

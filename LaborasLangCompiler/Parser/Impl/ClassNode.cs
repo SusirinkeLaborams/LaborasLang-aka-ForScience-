@@ -241,14 +241,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 var init = field.Declaration.Initializer;
                 if (!init.IsNull)
                 {
-                    if (init.Type == Lexer.TokenType.Function)
-                    {
-                        field.Initializer = MethodNode.Parse(parser, this, init, "$" + field.Name);
-                    }
-                    else
-                    {
-                        field.Initializer = ExpressionNode.Parse(parser, parent, init);
-                    }
+                    field.Initializer = ExpressionNode.Parse(parser, this, init);
 
                     if(field.TypeWrapper == null)
                     {

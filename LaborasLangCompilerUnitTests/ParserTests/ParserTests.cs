@@ -26,31 +26,30 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 int b; 
                 int c = 10;";
             string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b, System.Int32 c = (Literal: System.Int32 10) Methods: )";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void ImplicitIntToLong()
         {
             string source = "auto a = 5; long b = a;";
             string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int64 b = (LValueNode: Field a System.Int32) Methods: )";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
+        public void FunctorTypeTest()
+        {
+            string source = @"
+                int() a;
+                void(float(double), int) b;";
+            string expected = "(ClassNode: Fields: $Functors.$System_Int32 a, $Functors.$System_Void$$Functors_$System_Single$System_Double$System_Int32 b Methods: )";
+            CompareTrees(source, expected);
+        }
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Assigned double to int")]
         public void TypeExceptionTest()
         {
             string source = "int a = 0.0;";
             string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Single 0))";
-            try
-            {
-                TestParser(source, expected);
-            }
-            catch(TypeException)
-            {
-                //should throw
-                return;
-            }
-            //no type error
-            Assert.Fail();
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void MethodCallTest()
@@ -61,14 +60,35 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 	                Main(4);
                 };";
             string expected = "(ClassNode: Fields: $Functors.$System_Void$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void(System.Int32 arg)(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.Int32 4) Function: (LValueNode: Field Main $Functors.$System_Void$System_Int32))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void StringLiteralTest()
         {
             string source = @"auto a = ""word"";";
             string expected = "(ClassNode: Fields: System.String a = (Literal: System.String word) Methods: )";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void MethodDeclaration()
+        {
+            string source = @"
+                auto Main = void()
+                {
+                };";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: () Nodes: ())))";
+            CompareTrees(source, expected);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void DeclarationInsideMethod()
+        {
+            string source = @"
+                auto Main = void()
+                {
+                    auto c = 20;
+                };";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: (System.Int32 c) Nodes: ((Declaration: (LValueNode: LocalVariable c System.Int32) = (Literal: System.Int32 20))))))";
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void HelloWorld()
@@ -79,7 +99,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 	                System.Console.WriteLine(""Hello, World!"");
                 };";
             string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!) Function: (MethodNode: Instance: null, Method: WriteLine))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void MoarArgs()
@@ -90,7 +110,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 	                System.Console.WriteLine(""Hello, World!"", ""Hello, World!"", ""Hello, World!"", ""Hello, World!"", ""Hello, World!"", ""Hello, World!"", ""Hello, World!"", ""Hello, World!"", ""Hello, World!"", ""Hello, World!"");
                 };";
             string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!) Function: (MethodNode: Instance: null, Method: WriteLine))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void NonStaticMethod()
@@ -102,23 +122,48 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     auto str = a.ToString();
                 };";
             string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: (System.Int32 a, System.String str) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 5)), (Declaration: (LValueNode: LocalVariable str System.String) = (MethodCall: Return: System.String Args:  Function: (MethodNode: Instance: (LValueNode: LocalVariable a System.Int32), Method: ToString)))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
-        public void While()
+        public void WhileLiteral()
         {
             string source = @"
                 auto Main = void()
                 {
-                    bool a;
-                    int c = 5;
-	                while(a)
+	                while(true)
                     {
-                        c += 1;
                     }
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: (System.Boolean a, System.Int32 c) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Boolean) = ), (Declaration: (LValueNode: LocalVariable c System.Int32) = (Literal: System.Int32 5)), (WhileBlock: Condition: (LValueNode: LocalVariable a System.Boolean), Block: (CodeBlock: Symbols: () Nodes: ((UnaryOp: VoidOperator (Assignment: (LValueNode: LocalVariable c System.Int32) = (BinaryOp: (LValueNode: LocalVariable c System.Int32) Addition (Literal: System.Int32 1))))))))))";
-            TestParser(source, expected);
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: () Nodes: ((WhileBlock: Condition: (Literal: System.Boolean True), Block: (CodeBlock: Symbols: () Nodes: ())))))";
+            CompareTrees(source, expected);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void WhileSymbol()
+        {
+            string source = @"
+                auto Main = void()
+                {
+                    bool a = true;
+	                while(a)
+                    {
+                    }
+                };";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: (System.Boolean a) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Boolean) = (Literal: System.Boolean True)), (WhileBlock: Condition: (LValueNode: LocalVariable a System.Boolean), Block: (CodeBlock: Symbols: () Nodes: ())))))";
+            CompareTrees(source, expected);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void WhileExpression()
+        {
+            string source = @"
+                auto Main = void()
+                {
+                    int a = 8;
+	                while(a < 10)
+                    {
+                    }
+                };";
+            string expected = "";
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void If()
@@ -139,8 +184,8 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                         int c;
                     }
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: (System.Int32 a) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = ))), False: (CodeBlock: Symbols: (System.Int32 b) Nodes: ((Declaration: (LValueNode: LocalVariable b System.Int32) = ))), (ConditionBlock: Condition: (Literal: System.Boolean False), True: (CodeBlock: Symbols: (System.Int32 c) Nodes: ((Declaration: (LValueNode: LocalVariable c System.Int32) = ))), False: ))))";
-            TestParser(source, expected);
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: (System.Int32 a) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = ))), False: (CodeBlock: Symbols: (System.Int32 b) Nodes: ((Declaration: (LValueNode: LocalVariable b System.Int32) = ))), (ConditionBlock: Condition: (Literal: System.Boolean False), True: (CodeBlock: Symbols: (System.Int32 c) Nodes: ((Declaration: (LValueNode: LocalVariable c System.Int32) = ))), False: ))))";
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void SomeTest()
@@ -160,7 +205,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 	                };
                 };";
             string expected = @"(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b = (LValueNode: Field a System.Int32), $Functors.$System_Void$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void(System.Int32 arg)(CodeBlock: Symbols: (System.Int32 a, $Functors.$System_Int32$System_Int32$System_Single f) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 20)), (UnaryOp: VoidOperator (Assignment: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 10))), (Declaration: (LValueNode: LocalVariable f $Functors.$System_Int32$System_Int32$System_Single) = (MethodNode: Instance: null, Method: $Lambda_0)))))(Method: $Lambda_0 System.Int32(System.Int32 a, System.Single b)(CodeBlock: Symbols: (System.Single c) Nodes: ((Declaration: (LValueNode: LocalVariable c System.Single) = (BinaryOp: (LValueNode: FunctionArgument a System.Int32) Multiplication (LValueNode: FunctionArgument b System.Single))), (ReturnNode: (LValueNode: FunctionArgument a System.Int32))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void AssignmentArithmeticOperatorTest()
@@ -175,14 +220,14 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     a -= 8;
                 };";
             string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), $Functors.$System_Void$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void(System.Int32 b)(CodeBlock: Symbols: () Nodes: ((UnaryOp: VoidOperator (Assignment: (LValueNode: Field a System.Int32) = (BinaryOp: (LValueNode: Field a System.Int32) Addition (LValueNode: FunctionArgument b System.Int32)))), (UnaryOp: VoidOperator (Assignment: (LValueNode: FunctionArgument b System.Int32) = (BinaryOp: (LValueNode: FunctionArgument b System.Int32) Multiplication (LValueNode: Field a System.Int32)))), (UnaryOp: VoidOperator (Assignment: (LValueNode: Field a System.Int32) = (BinaryOp: (LValueNode: Field a System.Int32) Division (Literal: System.Int32 5)))), (UnaryOp: VoidOperator (Assignment: (LValueNode: Field a System.Int32) = (BinaryOp: (LValueNode: Field a System.Int32) Subtraction (Literal: System.Int32 8))))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestPrecedence()
         {
             string source = "auto a = 5 * 4 + 8 * (2 + 1);";
             string expected = "(ClassNode: Fields: System.Int32 a = (BinaryOp: (BinaryOp: (Literal: System.Int32 5) Multiplication (Literal: System.Int32 4)) Addition (BinaryOp: (Literal: System.Int32 8) Multiplication (BinaryOp: (Literal: System.Int32 2) Addition (Literal: System.Int32 1)))) Methods: )";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestReturnValue()
@@ -192,7 +237,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     return b;
                 };";
             string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Int32(System.Int32 b)(CodeBlock: Symbols: () Nodes: ((ReturnNode: (LValueNode: FunctionArgument b System.Int32))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestUnaryOrder()
@@ -201,7 +246,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto i = 1;
                 auto a = ++--i;";
             string expected = "(ClassNode: Fields: System.Int32 i = (Literal: System.Int32 1), System.Int32 a = (UnaryOp: PreIncrement (UnaryOp: PreDecrement (LValueNode: Field i System.Int32))) Methods: )";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestSuffixOrder()
@@ -210,7 +255,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto i = 1;
                 auto a = i++--;";
             string expected = "(ClassNode: Fields: System.Int32 i = (Literal: System.Int32 1), System.Int32 a = (UnaryOp: PostDecrement (UnaryOp: PostIncrement (LValueNode: Field i System.Int32))) Methods: )";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void HarderBetterFasterStronger()
@@ -229,7 +274,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++;";
             string expected = "(ClassNode: Fields: System.Int32 i = (Literal: System.Int32 1), System.Int32 a = (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PostIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (UnaryOp: PreIncrement (LValueNode: Field i System.Int32))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))) Methods: )";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestMixedSuffixPrefix()
@@ -238,7 +283,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto i = 1;
                 auto a = -++i--;";
             string expected = "(ClassNode: Fields: System.Int32 i = (Literal: System.Int32 1), System.Int32 a = (UnaryOp: PostDecrement (UnaryOp: Negation (UnaryOp: PreIncrement (LValueNode: Field i System.Int32)))) Methods: )";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestStringPlusNumber()
@@ -246,7 +291,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 auto a = 5 + ""something"";";
             string expected = "(ClassNode: Fields: System.String a = (BinaryOp: (Literal: System.Int32 5) Addition (Literal: System.String something)) Methods: )";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestBinaryOps()
@@ -256,7 +301,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto a = i & i;
                 int c = i | a;";
             string expected = "(ClassNode: Fields: System.Int32 i = (BinaryOp: (Literal: System.Int32 1) BinaryXor (Literal: System.Int32 2)), System.Int32 a = (BinaryOp: (LValueNode: Field i System.Int32) BinaryAnd (LValueNode: Field i System.Int32)), System.Int32 c = (BinaryOp: (LValueNode: Field i System.Int32) BinaryOr (LValueNode: Field a System.Int32)) Methods: )";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestLogicalOps()
@@ -265,7 +310,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto i = true && false;
                 auto a = i || true;";
             string expected = "(ClassNode: Fields: System.Boolean i = (BinaryOp: (Literal: System.Boolean True) LogicalAnd (Literal: System.Boolean False)), System.Boolean a = (BinaryOp: (LValueNode: Field i System.Boolean) LogicalOr (Literal: System.Boolean True)) Methods: )";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestComparison()
@@ -276,23 +321,15 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto c = 5 > 6;
                 auto b = 8 <= 10;";
             string expected = "(ClassNode: Fields: System.Boolean i = (BinaryOp: (Literal: System.Boolean True) Equals (Literal: System.Boolean False)), System.Boolean a = (BinaryOp: (LValueNode: Field i System.Boolean) NotEquals (Literal: System.Boolean True)), System.Boolean c = (BinaryOp: (Literal: System.Int32 5) GreaterThan (Literal: System.Int32 6)), System.Boolean b = (BinaryOp: (Literal: System.Int32 8) LessEqualThan (Literal: System.Int32 10)) Methods: )";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
-        [TestMethod, TestCategory("Parser")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Returned double instead of int")]
         public void TestReturnTypeFailure()
         {
             string source = @"
                 auto Main = int(){return 4.0;};";
             string expected = "";
-            try
-            {
-                TestParser(source, expected);
-            }
-            catch(TypeException)
-            {
-                return;
-            }
-            Assert.Fail("Tried to return float instead of int, should've failed");
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestReturnTypeSuccess()
@@ -300,7 +337,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 auto Main = int(){return 4;};";
             string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Int32()(CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 4))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestEnforceReturn1()
@@ -318,9 +355,9 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     }
                 };";
             string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Int32()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 1)))), False: (CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 0))))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
-        [TestMethod, TestCategory("Parser")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(ParseException), "Not all method paths return")]
         public void TestEnforceReturn2()
         {
             string source = @"
@@ -332,15 +369,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     }
                 };";
             string expected = "";
-            try
-            {
-                TestParser(source, expected);
-            }
-            catch(ParseException)
-            {
-                return;
-            }
-            Assert.Fail("Not all paths return, should've failed");
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestEnforceReturn3()
@@ -355,7 +384,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     return 0;
                 };";
             string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Int32()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 1)))), False: , (ReturnNode: (Literal: System.Int32 0))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestEnforceReturn4()
@@ -368,7 +397,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     }
                 };";
             string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Int32()(CodeBlock: Symbols: () Nodes: ((CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 500))))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestScaryOperators()
@@ -376,7 +405,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 auto a = 1 * 2 / 3 * 4 % 5;";
             string expected = "(ClassNode: Fields: System.Int32 a = (BinaryOp: (BinaryOp: (BinaryOp: (BinaryOp: (Literal: System.Int32 1) Multiplication (Literal: System.Int32 2)) Division (Literal: System.Int32 3)) Multiplication (Literal: System.Int32 4)) Modulus (Literal: System.Int32 5)) Methods: )";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestFunctionType()
@@ -384,7 +413,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 void() a = void(){};";
             string expected = "(ClassNode: Fields: $Functors.$System_Void a = (MethodNode: Instance: null, Method: $a) Methods: (Method: $a System.Void()(CodeBlock: Symbols: () Nodes: ())))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestFunctionType2()
@@ -392,9 +421,9 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 int(float) a = int(float x){return 4;};";
             string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Single a = (MethodNode: Instance: null, Method: $a) Methods: (Method: $a System.Int32(System.Single x)(CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 4))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
-        [TestMethod, TestCategory("Parser")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Returned value in a void method")]
         public void TestReturnVoid()
         {
             string source = @"
@@ -403,15 +432,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     return 5;
                 };";
             string expected = "";
-            try
-            {
-                TestParser(source, expected);
-            }
-            catch(TypeException)
-            {
-                return;
-            }
-            Assert.Fail("Should've failed, returning 5 in void()");
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestImport()
@@ -419,7 +440,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 use System;";
             string expected = "(ClassNode: Fields:  Methods: )";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestUseImport()
@@ -431,7 +452,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 	                Console.WriteLine(""Hello, World!"");
                 };";
             string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!) Function: (MethodNode: Instance: null, Method: WriteLine))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestMultipleImport()
@@ -445,7 +466,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     File.Exists("""");
                 };";
             string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!) Function: (MethodNode: Instance: null, Method: WriteLine)), (UnaryOp: VoidOperator (MethodCall: Return: System.Boolean Args: (Literal: System.String ) Function: (MethodNode: Instance: null, Method: Exists)))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestMethodInferrence()
@@ -458,9 +479,9 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 	                System.Console.WriteLine(func());
                 };";
             string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: ($Functors.$System_String func) Nodes: ((Declaration: (LValueNode: LocalVariable func $Functors.$System_String) = (MethodNode: Instance: (LValueNode: Field a System.Int32), Method: ToString)), (MethodCall: Return: System.Void Args: (MethodCall: Return: System.String Args:  Function: (LValueNode: LocalVariable func $Functors.$System_String)) Function: (MethodNode: Instance: null, Method: WriteLine))))))";
-            TestParser(source, expected);
+            CompareTrees(source, expected);
         }
-        private void TestParser(string source, string expected, [CallerMemberName]string name = "")
+        private void CompareTrees(string source, string expected, [CallerMemberName]string name = "")
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
             var assembly = new AssemblyEmitter(compilerArgs);

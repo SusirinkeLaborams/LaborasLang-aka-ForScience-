@@ -21,10 +21,10 @@ namespace LaborasLangCompiler.Parser.Impl
         public static WhileBlock Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var instance = new WhileBlock(parser.GetSequencePoint(lexerNode));
-            instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[0].Children[0]);
+            instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
             if (instance.condition.TypeWrapper.FullName != parser.Bool.FullName)
                 throw new TypeException(instance.SequencePoint, "Condition must be a boolean expression");
-            instance.block = CodeBlockNode.Parse(parser, parent, lexerNode.Children[1]);
+            instance.block = CodeBlockNode.Parse(parser, parent, lexerNode.Children[4]);
             return instance;
         }
         public override string ToString()

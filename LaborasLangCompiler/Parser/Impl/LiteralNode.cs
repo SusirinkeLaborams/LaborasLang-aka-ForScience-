@@ -28,7 +28,6 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static LiteralNode Parse(Parser parser, ContainerNode parentBlock, AstNode lexerNode)
         {
-            lexerNode = lexerNode.Children[0];
             var point = parser.GetSequencePoint(lexerNode);
             var type = ParseLiteralType(parser, lexerNode);
             dynamic value = ParseValue(lexerNode.Content.ToString(), type, point);
@@ -40,14 +39,16 @@ namespace LaborasLangCompiler.Parser.Impl
             switch(lexerNode.Type)
             {
                 case Lexer.TokenType.Integer:
-                    return parser.Int;
+                    return parser.Int32;
                 case Lexer.TokenType.StringLiteral:
                     return parser.String;
                 case Lexer.TokenType.Float:
-                    return parser.Double;
+                    return parser.Float;
                 case Lexer.TokenType.True:
                 case Lexer.TokenType.False:
                     return parser.Bool;
+                case Lexer.TokenType.Double:
+                    return parser.Double;
                 default:
                     throw new ParseException(parser.GetSequencePoint(lexerNode), "Unknown lexer type {0}", lexerNode.Type);
             }

@@ -21,42 +21,20 @@ namespace LaborasLangCompiler.Parser
         public string Filename { get; private set; }
         public Document Document { get; private set; }
 
-        private bool testing;
         private Dictionary<string, TypeWrapper> primitives;
-
-        #region typenames
-        private const string tBool = "bool";
-        private const string tChar = "char";
-        private const string tByte = "byte";
-        private const string tUByte = "ubyte";
-        private const string tWord = "word";
-        private const string tUWord = "uword";
-        private const string tInt = "int";
-        private const string tUInt = "uint";
-        private const string tLong = "long";
-        private const string tULong = "ulong";
-        private const string tFloat = "float";
-        private const string tDouble = "double";
-        private const string tDecimal = "decimal";
-        private const string tString = "string";
-        private const string tVoid = "void";
-        private const string tAuto = "auto";
-        private const string tObject = "object";
-        #endregion typenames
 
         #region types
 
         public TypeWrapper Bool { get; private set; }
         public TypeWrapper Char { get; private set; }
-        public TypeWrapper Byte { get; private set; }
-        public TypeWrapper UByte { get; private set; }
-        public TypeWrapper UBool { get; private set; }
-        public TypeWrapper Word { get; private set; }
-        public TypeWrapper UWord { get; private set; }
-        public TypeWrapper Int { get; private set; }
-        public TypeWrapper UInt { get; private set; }
-        public TypeWrapper Long { get; private set; }
-        public TypeWrapper ULong { get; private set; }
+        public TypeWrapper Int8 { get; private set; }
+        public TypeWrapper UInt8 { get; private set; }
+        public TypeWrapper Int16 { get; private set; }
+        public TypeWrapper UInt16 { get; private set; }
+        public TypeWrapper Int32 { get; private set; }
+        public TypeWrapper UInt32 { get; private set; }
+        public TypeWrapper Int64 { get; private set; }
+        public TypeWrapper UInt64 { get; private set; }
         public TypeWrapper Float { get; private set; }
         public TypeWrapper Double { get; private set; }
         public TypeWrapper Decimal { get; private set; }
@@ -70,7 +48,6 @@ namespace LaborasLangCompiler.Parser
         public Parser(AssemblyEmitter assembly, RootNode root, string filePath, bool testing = false)
         {
             Assembly = assembly;
-            this.testing = testing;
             Filename = Path.GetFileNameWithoutExtension(filePath);
             Document = new Document(filePath);
             Document.Language = DocumentLanguage.Other;
@@ -78,30 +55,30 @@ namespace LaborasLangCompiler.Parser
             Document.Type = DocumentType.Text;
             this.primitives = new Dictionary<string, TypeWrapper>();
 
-            primitives[tBool] = Bool = new ExternalType(assembly, typeof(bool));
+            primitives["bool"] = Bool = new ExternalType(assembly, typeof(bool));
 
-            primitives[tChar] = Char = new ExternalType(assembly, typeof(char));
-            primitives[tByte] = Byte = new ExternalType(assembly, typeof(sbyte));
-            primitives[tUByte] = UByte = new ExternalType(assembly, typeof(byte));
+            primitives["char"] = Char = new ExternalType(assembly, typeof(char));
+            primitives["int8"] = Int8 = new ExternalType(assembly, typeof(sbyte));
+            primitives["uint8"] = UInt8 = new ExternalType(assembly, typeof(byte));
 
-            primitives[tWord] = Word = new ExternalType(assembly, typeof(short));
-            primitives[tUWord] = UWord = new ExternalType(assembly, typeof(ushort));
+            primitives["int16"] = Int16 = new ExternalType(assembly, typeof(short));
+            primitives["uint16"] = UInt16 = new ExternalType(assembly, typeof(ushort));
 
-            primitives[tInt] = Int = new ExternalType(assembly, typeof(int));
-            primitives[tUInt] = UInt = new ExternalType(assembly, typeof(uint));
+            primitives["int32"] = primitives["int"] = Int32 = new ExternalType(assembly, typeof(int));
+            primitives["uint32"] = primitives["uint"] = UInt32 = new ExternalType(assembly, typeof(uint));
 
-            primitives[tLong] = Long = new ExternalType(assembly, typeof(long));
-            primitives[tULong] = ULong = new ExternalType(assembly, typeof(ulong));
+            primitives["int64"] = primitives["long"] = Int64 = new ExternalType(assembly, typeof(long));
+            primitives["uint64"] = primitives["ulong"] = UInt64 = new ExternalType(assembly, typeof(ulong));
 
-            primitives[tFloat] = Float = new ExternalType(assembly, typeof(float));
-            primitives[tDouble] = Double = new ExternalType(assembly, typeof(double));
-            primitives[tDecimal] = Decimal = new ExternalType(assembly, typeof(decimal));
+            primitives["float"] = Float = new ExternalType(assembly, typeof(float));
+            primitives["double"] = Double = new ExternalType(assembly, typeof(double));
+            primitives["decimal"] = Decimal = new ExternalType(assembly, typeof(decimal));
 
-            primitives[tString] = String = new ExternalType(assembly, typeof(string));
-            primitives[tObject] = Object = new ExternalType(assembly, typeof(object));
+            primitives["string"] = String = new ExternalType(assembly, typeof(string));
+            primitives["object"] = Object = new ExternalType(assembly, typeof(object));
 
-            primitives[tVoid] = Void = new ExternalType(assembly, typeof(void));
-            primitives[tAuto] = Auto = null;
+            primitives["void"] = Void = new ExternalType(assembly, typeof(void));
+            primitives["auto"] = Auto = null;
 
             var tree = root.Node;
 

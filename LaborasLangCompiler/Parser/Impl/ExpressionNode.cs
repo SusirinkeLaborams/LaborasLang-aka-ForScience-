@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
+using LaborasLangCompiler.Parser.Impl.Operators;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -52,6 +53,9 @@ namespace LaborasLangCompiler.Parser.Impl
                     break;
                 case Lexer.TokenType.AssignmentNode:
                     expression = AssignmentOperatorNode.Parse(parser, parent, lexerNode);
+                    break;
+                case Lexer.TokenType.ArithmeticNode:
+                    expression = TemporaryOperatorParser.Parse(parser, parent, lexerNode);
                     break;
                 default:
                     throw new NotImplementedException();
