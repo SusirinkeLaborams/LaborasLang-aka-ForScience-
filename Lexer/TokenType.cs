@@ -190,6 +190,7 @@
         PostfixNode,
         PrefixOperator,
         PostfixOperator,
+        FunctionArgumentsList,
 
         TokenTypeCount
     }

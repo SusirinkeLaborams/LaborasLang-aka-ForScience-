@@ -40,8 +40,11 @@ a = 5;
         public void TestFunctionDeclarationAndCall()
         {
 
-            var source = @"
-void(int a){a = 5;}(5)()()();
+            var source = @"void(int a){a = 5;}
+(5)
+()
+()
+();
 ";
             ExecuteTest(source);
         }
@@ -63,7 +66,8 @@ void(int a){a = 5;}(5)()()();
 @"
 foo();
 foo(bar);
-foo(foo(), bar);";
+foo(foo(), bar);
+foo()()();";
             ExecuteTest(source);
         }
 

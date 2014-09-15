@@ -255,9 +255,12 @@ namespace Lexer
 
 
                 new ParseRule(FunctionCall,
-                    FullSymbol + LeftBracket + RightBracket,
-                    FullSymbol + LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket
+                    FullSymbol + OneOrMore(FunctionArgumentsList)
                     ),
+
+                new ParseRule(FunctionArgumentsList,
+                    LeftBracket + RightBracket,
+                    LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket),
 
                 new ParseRule(CommaAndValue,
                     Comma + Value),
@@ -644,6 +647,7 @@ namespace Lexer
         private static Condition PostfixNode { get { return TokenType.PostfixNode; } }
         private static Condition PostfixOperator { get { return TokenType.PostfixOperator; } }
         private static Condition PrefixOperator { get { return TokenType.PrefixOperator; } }
+        private static Condition FunctionArgumentsList { get { return TokenType.FunctionArgumentsList; } }
         #endregion
 
     }
