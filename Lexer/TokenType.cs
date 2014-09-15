@@ -186,6 +186,10 @@
         PlusPlusNode,
         MinusMinusNode,
         Operand,
+        PrefixNode, 
+        PostfixNode,
+        PrefixOperator,
+        PostfixOperator,
 
         TokenTypeCount
     }

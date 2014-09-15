@@ -34,7 +34,7 @@ namespace Lexer
             {
                 #region Syntax rules
                 new ParseRule(StatementNode,       
-                    DeclarationNode,
+                    DeclarationNode + EndOfLine,
                     Value + EndOfLine,             
                     CodeBlockNode,
                     WhileLoop,
@@ -43,10 +43,8 @@ namespace Lexer
                     ),
             
                 new ParseRule(DeclarationNode,
-                    OneOrMore(VariableModifier) + Type + FullSymbol + EndOfLine,
-                    OneOrMore(VariableModifier) + Type + FullSymbol + Assignment + Value + EndOfLine,
-                    Type + FullSymbol + EndOfLine,
-                    Type + FullSymbol + Assignment + Value + EndOfLine ),
+                    //ZeroOrMore(VariableModifier) + Type + FullSymbol,
+                    ZeroOrMore(VariableModifier) + Value + Value),
             
                 new ParseRule(VariableModifier, 
                     Const,
@@ -214,20 +212,22 @@ namespace Lexer
                     Divide + MultiplicationNode),
 
                     new ParseRule(MultiplicationNode,
-                    NotNode + ZeroOrMore(MultiplicationSubnode)),
+                    PrefixNode + ZeroOrMore(MultiplicationSubnode)),
 
                     new ParseRule(MultiplicationSubnode,
-                    Multiply + NotNode),
+                    Multiply + PrefixNode),
 
-                    new ParseRule(NotNode,
-                        ZeroOrMore(Not) + PlusPlusNode),
+                    new ParseRule(PrefixNode,
+                        ZeroOrMore(PrefixOperator) + PostfixNode),
 
-                    new ParseRule(PlusPlusNode,
-                        ZeroOrMore(PlusPlus) + MinusMinusNode + ZeroOrMore(PlusPlus)),
+                    new ParseRule(PostfixNode,
+                        PeriodNode + ZeroOrMore(PostfixOperator)),
 
-                    new ParseRule(MinusMinusNode,
-                        ZeroOrMore(MinusMinus) + PeriodNode + ZeroOrMore(MinusMinus)),
+                    new ParseRule(PostfixOperator,
+                        PlusPlus, MinusMinus),
 
+                    new ParseRule(PrefixOperator,
+                        PlusPlus, MinusMinus, Minus, Not),
                                         
 #endregion
 
@@ -239,7 +239,9 @@ namespace Lexer
                     Period + Operand,
                     Period + LeftBracket + OrNode + RightBracket + ZeroOrMore(PeriodSubnode)),
 
+
                 new ParseRule(Operand,
+                    Function,
                     FunctionCall,
                     Symbol,
                     Float,
@@ -251,9 +253,11 @@ namespace Lexer
                     False),
 
 
+
                 new ParseRule(FunctionCall,
                     FullSymbol + LeftBracket + RightBracket,
-                    FullSymbol + LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket),
+                    FullSymbol + LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket
+                    ),
 
                 new ParseRule(CommaAndValue,
                     Comma + Value),
@@ -636,6 +640,10 @@ namespace Lexer
         private static Condition PlusPlusNode { get { return TokenType.PlusPlusNode; } }
         private static Condition MinusMinusNode { get { return TokenType.MinusMinusNode; } }
         private static Condition Operand { get { return TokenType.Operand; } }
+        private static Condition PrefixNode { get { return TokenType.PrefixNode; } }
+        private static Condition PostfixNode { get { return TokenType.PostfixNode; } }
+        private static Condition PostfixOperator { get { return TokenType.PostfixOperator; } }
+        private static Condition PrefixOperator { get { return TokenType.PrefixOperator; } }
         #endregion
 
     }
