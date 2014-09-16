@@ -82,7 +82,7 @@ namespace Lexer
                     LeftCurlyBracket + OneOrMore(StatementNode) + RightCurlyBracket,
                     LeftCurlyBracket + RightCurlyBracket),
 
-                new ParseRule(Value,  
+                new ParseRule(Value,
                     AssignmentOperatorNode),
 
                 new ParseRule(LValue,
@@ -222,14 +222,13 @@ namespace Lexer
 
                     new ParseRule(PostfixNode,
                         PeriodNode + ZeroOrMore(PostfixOperator)),
-
+#endregion
+                        
                     new ParseRule(PostfixOperator,
                         PlusPlus, MinusMinus),
 
                     new ParseRule(PrefixOperator,
                         PlusPlus, MinusMinus, Minus, Not),
-                                        
-#endregion
 
                     new ParseRule(PeriodNode,
                     Operand + ZeroOrMore(PeriodSubnode),
@@ -240,10 +239,10 @@ namespace Lexer
                     Period + LeftBracket + OrNode + RightBracket + ZeroOrMore(PeriodSubnode)),
 
 
+
                 new ParseRule(Operand,
-                    Function,
-                    FunctionCall,
-                    Symbol,
+                    Function + ZeroOrMore(FunctionArgumentsList),
+                    Symbol + ZeroOrMore(FunctionArgumentsList),
                     Float,
                     Integer,
                     Double,
@@ -648,6 +647,7 @@ namespace Lexer
         private static Condition PostfixOperator { get { return TokenType.PostfixOperator; } }
         private static Condition PrefixOperator { get { return TokenType.PrefixOperator; } }
         private static Condition FunctionArgumentsList { get { return TokenType.FunctionArgumentsList; } }
+        private static Condition FunctionCallNode { get { return TokenType.FunctionCallNode; } }
         #endregion
 
     }

@@ -191,6 +191,7 @@
         PrefixOperator,
         PostfixOperator,
         FunctionArgumentsList,
+        FunctionCallNode,
 
         TokenTypeCount
     }
