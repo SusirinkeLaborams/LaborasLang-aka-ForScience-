@@ -28,7 +28,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_EmptyMethod.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -72,7 +72,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_HelloWorld.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         #region Load/Store lvalues and load literals tests
@@ -100,7 +100,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_VariableDeclarationAndInitialization_LoadFloatLiteral.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -134,7 +134,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_StoreField_LoadIntLiteral.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -162,7 +162,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_StoreLocalVariable_LoadField.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -243,7 +243,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_StoreProperty_LoadLocalVariable_LoadArgument_LoadDoubleLiteral.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -320,7 +320,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_StoreArgument_LoadProperty_LoadStringLiteral.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -358,7 +358,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         #endregion
@@ -414,7 +414,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_MultipleNestedAssignments.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -481,7 +481,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_MultipleNestedInstanceFieldAssignments.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         #region Binary operators
@@ -537,7 +537,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_AddIntegers.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -591,7 +591,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_AddFloatAndInteger.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -638,7 +638,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_AddStrings.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -686,7 +686,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_Subtraction.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -734,7 +734,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_Multiplication.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -782,7 +782,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_SignedDivision.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -830,7 +830,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_UnsignedDivision.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -878,7 +878,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_SignedRemainder.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -926,7 +926,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_UnsignedRemainder.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -984,7 +984,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_ShiftLeftAndRight.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         #endregion
@@ -1224,7 +1224,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(assemblyEmitter.TypeToTypeReference(typeof(int)), 5, 6);
 
             ExpectedILFilePath = "TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Numerals.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -1233,7 +1233,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(assemblyEmitter.TypeToTypeReference(typeof(string)), "hi", "bye");
 
             ExpectedILFilePath = "TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Strings.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         public void TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(TypeReference literalType, dynamic value1, dynamic value2)
@@ -1351,7 +1351,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(assemblyEmitter.TypeToTypeReference(typeof(float)), 3.5, 2.1);
 
             ExpectedILFilePath = "TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Numerals.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -1360,7 +1360,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(assemblyEmitter.TypeToTypeReference(typeof(string)), "hi", "bye");
 
             ExpectedILFilePath = "TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Strings.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         #endregion
@@ -1471,7 +1471,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_LogicalAnd_LogicalOr.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -1606,7 +1606,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_BinaryAnd_BinaryOr_BinaryXor.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
         
         #endregion
@@ -1707,7 +1707,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             });
 
             ExpectedILFilePath = "TestCanEmit_Negation_BinaryNot_Increment_Decrement.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -1748,7 +1748,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_LogicalNot.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         #endregion
@@ -1830,7 +1830,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_WhileLoop.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -1886,7 +1886,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_IfBlockWithoutElse.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -1956,7 +1956,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_Return.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         #endregion
@@ -1993,7 +1993,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_CreateObject.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -2109,7 +2109,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_CallFunctionWithOptionalParameter.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         #endregion

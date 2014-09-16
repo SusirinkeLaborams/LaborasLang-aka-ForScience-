@@ -29,7 +29,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             typeEmitter.AddField(field, initializer);
 
             ExpectedILFilePath = "TestCanEmit_InstanceFieldInitializer.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -48,7 +48,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             typeEmitter.AddField(field, initializer);
 
             ExpectedILFilePath = "TestCanEmit_StaticFieldInitializer.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -105,7 +105,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             typeEmitter.AddProperty(property, initializer);
 
             ExpectedILFilePath = "TestCanEmit_InstancePropertyInitializer.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -159,7 +159,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             typeEmitter.AddProperty(property, initializer);
 
             ExpectedILFilePath = "TestCanEmit_StaticPropertyInitializer.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
     }
 }

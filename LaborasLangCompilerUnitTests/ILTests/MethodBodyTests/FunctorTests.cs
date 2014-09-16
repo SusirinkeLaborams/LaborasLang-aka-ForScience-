@@ -26,7 +26,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_FunctorDefinition.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -65,7 +65,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_FunctorWithReturnTypeAndArguments.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -85,7 +85,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             typeEmitter.AddField(field, initializer);
 
             ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToFunctorWithoutArgs.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -131,7 +131,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             typeEmitter.AddField(field, initializer);
 
             ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToFunctorWithArgs.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -180,7 +180,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_FunctorAssignmentToDelegate.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -224,7 +224,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToDelegate.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -296,7 +296,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_CallFunctor_PassReturnValueAsArgument.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         [TestMethod, TestCategory("IL Tests")]
@@ -465,7 +465,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_FunctorPropertyAssignmentToDelegate.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
 
         private TypeReference GetFunctorType(TypeReference returnType, params TypeReference[] args)
@@ -491,7 +491,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             var type8 = GetFunctorType(GetFunctorType(intType, stringType, floatType, boolType));
 
             ExpectedILFilePath = "Test_FunctorNamesDoNotClash.il";
-            Test();
+            ExecuteAndAssertSuccess();
         }
     }
 }
