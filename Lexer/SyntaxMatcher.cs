@@ -43,8 +43,8 @@ namespace Lexer
                     ),
             
                 new ParseRule(DeclarationNode,
-                    //ZeroOrMore(VariableModifier) + Type + FullSymbol,
-                    ZeroOrMore(VariableModifier) + Value + Value),
+                    ZeroOrMore(VariableModifier) + Value + Symbol + Assignment + Value,
+                    ZeroOrMore(VariableModifier) + Value + Symbol),
             
                 new ParseRule(VariableModifier, 
                     Const,
