@@ -29,7 +29,10 @@ namespace LaborasLangCompiler.Parser.Impl
             var instance = new DotOperatorNode(parser, parent);
             foreach(var node in lexerNode.Children)
             {
-                instance.Append(ExpressionNode.Parse(parser, parent, node, true));
+                if (node.Type != Lexer.TokenType.PeriodSubnode)
+                    instance.Append(ExpressionNode.Parse(parser, parent, node.Children[0], true));
+                else
+                    throw new NotImplementedException();
             }
             return instance;
         }

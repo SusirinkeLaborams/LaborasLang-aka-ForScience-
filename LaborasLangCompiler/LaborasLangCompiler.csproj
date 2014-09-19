@@ -88,7 +88,6 @@
     <Compile Include="Parser\Impl\DotOperatorNode.cs" />
     <Compile Include="Parser\Impl\ContainerNode.cs" />
     <Compile Include="Parser\Impl\ImportNode.cs" />
-    <Compile Include="Parser\Impl\Operators\TemporaryOperatorParser.cs" />
     <Compile Include="Parser\Impl\ReturningNode.cs" />
     <Compile Include="Parser\Impl\MethodCallNode.cs" />
     <Compile Include="Parser\Impl\MethodNode.cs" />

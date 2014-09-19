@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
-using LaborasLangCompiler.Parser.Impl.Operators;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -25,7 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
             ExpressionNode expression = null;
             switch (lexerNode.Type)
             {
-                case Lexer.TokenType.FullSymbol:
+                case Lexer.TokenType.PeriodNode:
                     expression = DotOperatorNode.Parse(parser, parent, lexerNode).ExtractExpression(allowAmbiguous);
                     break;
                 case Lexer.TokenType.Symbol:
@@ -51,11 +50,30 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.FunctionCall:
                     expression = MethodCallNode.Parse(parser, parent, lexerNode);
                     break;
-                case Lexer.TokenType.AssignmentNode:
-                    expression = AssignmentOperatorNode.Parse(parser, parent, lexerNode);
+                case Lexer.TokenType.AssignmentOperatorNode:
+                case Lexer.TokenType.OrNode:
+                case Lexer.TokenType.AndNode:
+                case Lexer.TokenType.BitwiseOrNode:
+                case Lexer.TokenType.BitwiseXorNode:
+                case Lexer.TokenType.BitwiseAndNode:
+                case Lexer.TokenType.NotEqualNode:
+                case Lexer.TokenType.EqualNode:
+                case Lexer.TokenType.LessOrEqualNode:
+                case Lexer.TokenType.MoreOrEqualNode:
+                case Lexer.TokenType.LessNode:
+                case Lexer.TokenType.MoreNode:
+                case Lexer.TokenType.RightShiftNode:
+                case Lexer.TokenType.LeftShiftNode:
+                case Lexer.TokenType.MinusNode:
+                case Lexer.TokenType.PlusNode:
+                case Lexer.TokenType.RemainderNode:
+                case Lexer.TokenType.DivisionNode:
+                case Lexer.TokenType.MultiplicationNode:
+                    expression = BinaryOperatorNode.Parse(parser, parent, lexerNode, allowAmbiguous);
                     break;
-                case Lexer.TokenType.ArithmeticNode:
-                    expression = TemporaryOperatorParser.Parse(parser, parent, lexerNode);
+                case Lexer.TokenType.PostfixNode:
+                case Lexer.TokenType.PrefixNode:
+                    expression = UnaryOperatorNode.Parse(parser, parent, lexerNode, allowAmbiguous);
                     break;
                 default:
                     throw new NotImplementedException();

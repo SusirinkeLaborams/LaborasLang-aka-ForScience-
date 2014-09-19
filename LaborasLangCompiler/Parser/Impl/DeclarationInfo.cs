@@ -36,26 +36,16 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     case Lexer.TokenType.VariableModifier:
                         throw new NotImplementedException("Modifiers not implemented");
-                    case Lexer.TokenType.Type:
+                    case Lexer.TokenType.Symbol:
+                        name = node;
+                        break;
+                    case Lexer.TokenType.Value:
                         if (type.IsNull)
                             type = node;
                         else
-                            throw new ParseException(parser.GetSequencePoint(node), "Type declared twice: {0}", node.Content.ToString());
-                        break;
-                    case Lexer.TokenType.FullSymbol:
-                        if (name.IsNull)
-                            name = node;
-                        else
-                            throw new ParseException(parser.GetSequencePoint(node), "Name declared twice: {0}", node.Content.ToString());
-                        break;
-                    case Lexer.TokenType.Value:
-                        if (init.IsNull)
                             init = node;
-                        else
-                            throw new ParseException(parser.GetSequencePoint(node), "Initializer declared twice: {0}", node.Content.ToString());
                         break;
                     case Lexer.TokenType.Assignment:
-                    case Lexer.TokenType.EndOfLine:
                         break;
                     default:
                         throw new ParseException(parser.GetSequencePoint(node), "Unexpected node in declaration: {0}", node.Type);
