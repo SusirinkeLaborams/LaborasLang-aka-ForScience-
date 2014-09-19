@@ -65,8 +65,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.DeclarationNode:
                     AddNode(SymbolDeclarationNode.Parse(parser, this, lexerNode));
                     break;
-                case Lexer.TokenType.FunctionCall:
-                case Lexer.TokenType.AssignmentNode:
+                case Lexer.TokenType.Value:
                     AddExpression(ExpressionNode.Parse(parser, this, lexerNode), parser);
                     break;
                 case Lexer.TokenType.WhileLoop:

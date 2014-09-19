@@ -39,16 +39,11 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.False:
                     expression = LiteralNode.Parse(parser, parent, lexerNode);
                     break;
-                case Lexer.TokenType.LValue:
-                case Lexer.TokenType.RValue:
                 case Lexer.TokenType.Value:
                     expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0], allowAmbiguous);
                     break;
                 case Lexer.TokenType.Function:
                     expression = MethodNode.Parse(parser, parent, lexerNode);
-                    break;
-                case Lexer.TokenType.FunctionCall:
-                    expression = MethodCallNode.Parse(parser, parent, lexerNode);
                     break;
                 case Lexer.TokenType.AssignmentOperatorNode:
                 case Lexer.TokenType.OrNode:
