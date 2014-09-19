@@ -109,33 +109,20 @@
         StatementNode,
         CodeBlockNode,
         DeclarationNode,
-        AssignmentNode,
         RootNode,
 
         FullSymbol,
         SubSymbol,
 
         Value,
-        LValue, 
-        RValue,
 
         Type,
         VariableModifier,
         TypeArgument,
 
-        FunctionCall,
-        FunctionArgument,
-        FunctionDeclarationArgument,
-        FunctionBody,
-
         WhileLoop,
 
-        Operator,
-        ArithmeticSubnode,
-        ArithmeticNode,
-
         Function,
-        FunctionArgumentList,
 
         ConditionalSentence,
         AssignmentOperator,
@@ -182,16 +169,12 @@
         MultiplicationSubnode,
         PeriodNode,
         PeriodSubnode,
-        NotNode,
-        PlusPlusNode,
-        MinusMinusNode,
         Operand,
         PrefixNode, 
         PostfixNode,
         PrefixOperator,
         PostfixOperator,
         FunctionArgumentsList,
-        FunctionCallNode,
 
         TokenTypeCount
     }

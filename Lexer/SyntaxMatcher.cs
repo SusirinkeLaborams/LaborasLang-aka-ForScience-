@@ -1,6 +1,4 @@
-﻿#define VALIDATE_RULE_POOL
-
-using Lexer.Containers;
+﻿using Lexer.Containers;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -25,13 +23,12 @@ namespace Lexer
                 m_LastMatched = m_LastMatched < value ? value : m_LastMatched;
             }
         }
-
-
-        static SyntaxMatcher()
+        
+        internal static ParseRule[] ParseRulePool
         {
-            m_ParseRules = new ParseRule[(int)TokenType.TokenTypeCount];
-            ParseRule[] AllRules = 
+            get
             {
+                return new ParseRule[]{
                 #region Syntax rules
                 new ParseRule(StatementNode,       
                     DeclarationNode + EndOfLine,
@@ -54,12 +51,7 @@ namespace Lexer
                     Protected,
                     Static,
                     Virtual),
-
-                new ParseRule(AssignmentNode,
-                    LValue + AssignmentOperator + Value,
-                    FunctionCall + AssignmentOperator + Value),
-
-            
+                                
                 new ParseRule(AssignmentOperator,
                     Assignment,
                     BitwiseAndEqual,
@@ -84,22 +76,6 @@ namespace Lexer
 
                 new ParseRule(Value,
                     AssignmentOperatorNode),
-
-                new ParseRule(LValue,
-                    FullSymbol),
- 
-                new ParseRule(RValue,                     
-                    AssignmentNode,
-                    Function,                                   
-                    FunctionCall,
-                    FullSymbol,
-                    Float,
-                    Integer,
-                    Double,
-                    Long,
-                    StringLiteral,
-                    True,
-                    False),
 
                 new ParseRule(AssignmentOperatorNode,
                     OrNode + ZeroOrMore(AssignmentOperatorSubnode)),
@@ -251,12 +227,6 @@ namespace Lexer
                     True,
                     False),
 
-
-
-                new ParseRule(FunctionCall,
-                    FullSymbol + OneOrMore(FunctionArgumentsList)
-                    ),
-
                 new ParseRule(FunctionArgumentsList,
                     LeftBracket + RightBracket,
                     LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket),
@@ -287,47 +257,22 @@ namespace Lexer
                 new ParseRule(WhileLoop,
                     While + LeftBracket + Value + RightBracket + StatementNode),
 
-                new ParseRule(Operator,
-                    Plus, Minus, PlusPlus, MinusMinus, Multiply, Divide, Remainder, BitwiseXor, BitwiseOr, BitwiseComplement, BitwiseXor, Or, And, BitwiseAnd, Not, LeftShift, RightShift, Equal, NotEqual, More, MoreOrEqual, Less, LessOrEqual),
-
-                new ParseRule(ArithmeticNode,
-                    LeftBracket + OneOrMore(ArithmeticNode) + RightBracket,
-                    OneOrMore(ArithmeticSubnode)),
-
-                new ParseRule(ArithmeticSubnode,
-                    RValue,
-                    Operator),
-
                 new ParseRule(ConditionalSentence,
                     If + LeftBracket + Value + RightBracket + StatementNode + Else + StatementNode,
                     If + LeftBracket + Value + RightBracket + StatementNode),
                 #endregion
-            };
+                    };
+            }
+        }
 
-            foreach (var rule in AllRules)
+        static SyntaxMatcher()
+        {
+            m_ParseRules = new ParseRule[(int)TokenType.TokenTypeCount];
+
+            foreach (var rule in ParseRulePool)
             {
                 m_ParseRules[(int)rule.Result] = rule;
             }
-
-#if VALIDATE_RULE_POOL
-            var nonTerminals = System.Enum.GetValues(typeof(TokenType)).Cast<TokenType>().Where(t => !t.IsTerminal() && t != TokenType.TokenTypeCount && t != TokenType.NonTerminalToken);
-            foreach (var token in nonTerminals)
-            {
-                var found = false;
-                foreach (var rule in AllRules)
-                {
-                    if (rule.Result == token)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
-                {
-                    Debug.WriteLine(String.Format("Could not find a rule for {0}", System.Enum.GetName(typeof(TokenType), token)));
-                }
-            }
-#endif
         }
 
         public SyntaxMatcher(Token[] sourceTokens, RootNode rootNode)
@@ -556,7 +501,6 @@ namespace Lexer
         private static Condition New { get { return TokenType.New; } }
         private static Condition Null { get { return TokenType.Null; } }
         private static Condition Namespace { get { return TokenType.Namespace; } }
-        private static Condition Operator { get { return TokenType.Operator; } }
         private static Condition Out { get { return TokenType.Out; } }
         private static Condition Override { get { return TokenType.Override; } }
         private static Condition Protected { get { return TokenType.Protected; } }
@@ -580,19 +524,13 @@ namespace Lexer
         private static Condition StatementNode { get { return TokenType.StatementNode; } }
         private static Condition CodeBlockNode { get { return TokenType.CodeBlockNode; } }
         private static Condition DeclarationNode { get { return TokenType.DeclarationNode; } }
-        private static Condition AssignmentNode { get { return TokenType.AssignmentNode; } }
         private static Condition RootNode { get { return TokenType.RootNode; } }
         private static Condition FullSymbol { get { return TokenType.FullSymbol; } }
         private static Condition SubSymbol { get { return TokenType.SubSymbol; } }
         private static Condition Value { get { return TokenType.Value; } }
-        private static Condition LValue { get { return TokenType.LValue; } }
-        private static Condition RValue { get { return TokenType.RValue; } }
         private static Condition Type { get { return TokenType.Type; } }
         private static Condition VariableModifier { get { return TokenType.VariableModifier; } }
-        private static Condition FunctionCall { get { return TokenType.FunctionCall; } }private static Condition FunctionBody { get { return TokenType.FunctionBody; } }
         private static Condition WhileLoop { get { return TokenType.WhileLoop; } }
-        private static Condition ArithmeticNode { get { return TokenType.ArithmeticNode; } }
-        private static Condition ArithmeticSubnode { get { return TokenType.ArithmeticSubnode; } }
         private static Condition TypeArgument { get { return TokenType.TypeArgument; } }
         private static Condition Function { get { return TokenType.Function; } }
         private static Condition ConditionalSentence { get { return TokenType.ConditionalSentence; } }
@@ -638,16 +576,12 @@ namespace Lexer
         private static Condition MultiplicationSubnode { get { return TokenType.MultiplicationSubnode; } }
         private static Condition PeriodNode { get { return TokenType.PeriodNode; } }
         private static Condition PeriodSubnode { get { return TokenType.PeriodSubnode; } }
-        private static Condition NotNode { get { return TokenType.NotNode; } }
-        private static Condition PlusPlusNode { get { return TokenType.PlusPlusNode; } }
-        private static Condition MinusMinusNode { get { return TokenType.MinusMinusNode; } }
         private static Condition Operand { get { return TokenType.Operand; } }
         private static Condition PrefixNode { get { return TokenType.PrefixNode; } }
         private static Condition PostfixNode { get { return TokenType.PostfixNode; } }
         private static Condition PostfixOperator { get { return TokenType.PostfixOperator; } }
         private static Condition PrefixOperator { get { return TokenType.PrefixOperator; } }
         private static Condition FunctionArgumentsList { get { return TokenType.FunctionArgumentsList; } }
-        private static Condition FunctionCallNode { get { return TokenType.FunctionCallNode; } }
         #endregion
 
     }
