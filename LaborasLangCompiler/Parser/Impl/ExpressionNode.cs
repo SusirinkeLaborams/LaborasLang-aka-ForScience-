@@ -19,17 +19,14 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeReference ExpressionReturnType { get { return TypeWrapper != null ? TypeWrapper.TypeReference : null; } }
         public abstract TypeWrapper TypeWrapper { get; }
         protected ExpressionNode(SequencePoint sequencePoint) : base(sequencePoint) { }
-        public static ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode, bool allowAmbiguous = false)
+        public static ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            ExpressionNode expression = null;
             switch (lexerNode.Type)
             {
                 case Lexer.TokenType.PeriodNode:
-                    expression = DotOperatorNode.Parse(parser, parent, lexerNode).ExtractExpression(allowAmbiguous);
-                    break;
+                    return DotOperatorNode.Parse(parser, parent, lexerNode);
                 case Lexer.TokenType.Symbol:
-                    expression = SymbolNode.Parse(parser, parent, lexerNode);
-                    break;
+                    return SymbolNode.Parse(parser, parent, lexerNode);
                 case Lexer.TokenType.StringLiteral:
                 case Lexer.TokenType.Float:
                 case Lexer.TokenType.Double:
@@ -37,14 +34,11 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.Long:
                 case Lexer.TokenType.True:
                 case Lexer.TokenType.False:
-                    expression = LiteralNode.Parse(parser, parent, lexerNode);
-                    break;
+                    return LiteralNode.Parse(parser, parent, lexerNode);
                 case Lexer.TokenType.Value:
-                    expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0], allowAmbiguous);
-                    break;
+                    return ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
                 case Lexer.TokenType.Function:
-                    expression = MethodNode.Parse(parser, parent, lexerNode);
-                    break;
+                    return MethodNode.Parse(parser, parent, lexerNode);
                 case Lexer.TokenType.AssignmentOperatorNode:
                 case Lexer.TokenType.OrNode:
                 case Lexer.TokenType.AndNode:
@@ -64,18 +58,13 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.RemainderNode:
                 case Lexer.TokenType.DivisionNode:
                 case Lexer.TokenType.MultiplicationNode:
-                    expression = BinaryOperatorNode.Parse(parser, parent, lexerNode, allowAmbiguous);
-                    break;
+                    return BinaryOperatorNode.Parse(parser, parent, lexerNode);
                 case Lexer.TokenType.PostfixNode:
                 case Lexer.TokenType.PrefixNode:
-                    expression = UnaryOperatorNode.Parse(parser, parent, lexerNode, allowAmbiguous);
-                    break;
+                    return UnaryOperatorNode.Parse(parser, parent, lexerNode);
                 default:
                     throw new NotImplementedException();
             }
-            if (expression.TypeWrapper == null && !allowAmbiguous)
-                throw new ParseException(expression.SequencePoint, "Ambiguous expression {0}", expression);
-            return expression;
         }
         public override string ToString()
         {

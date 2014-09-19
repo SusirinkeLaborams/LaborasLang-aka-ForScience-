@@ -24,11 +24,11 @@ namespace LaborasLangCompiler.Parser.Impl
         private TypeWrapper typeWrapper;
         private ExpressionNode left, right;
         protected BinaryOperatorNode(SequencePoint point) : base(point) { }
-        public static new ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode, bool allowAmbiguous = false)
+        public static new ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             if (lexerNode.Children.Count == 1)
             {
-                return ExpressionNode.Parse(parser, parent, lexerNode.Children[0], allowAmbiguous);
+                return ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
             }
             else
             {

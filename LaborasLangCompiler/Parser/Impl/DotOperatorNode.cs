@@ -24,17 +24,17 @@ namespace LaborasLangCompiler.Parser.Impl
             this.parent = parent;
             this.cls = parent.GetClass();
         }
-        public static DotOperatorNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var instance = new DotOperatorNode(parser, parent);
             foreach(var node in lexerNode.Children)
             {
                 if (node.Type != Lexer.TokenType.PeriodSubnode)
-                    instance.Append(ExpressionNode.Parse(parser, parent, node.Children[0], true));
+                    instance.Append(ExpressionNode.Parse(parser, parent, node.Children[0]));
                 else
                     throw new NotImplementedException();
             }
-            return instance;
+            return instance.builtNode;
         }
         private void Append(ExpressionNode node)
         {
@@ -233,7 +233,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return false;
             }
         }
-        public ExpressionNode ExtractExpression(bool allowAmbiguous)
+        /*public ExpressionNode ExtractExpression(bool allowAmbiguous)
         {
             if (builtNode.TypeWrapper == null && !allowAmbiguous)
                 throw new ParseException(builtNode.SequencePoint, "Expression expected");
@@ -281,6 +281,6 @@ namespace LaborasLangCompiler.Parser.Impl
             if(method == null)
                 throw new ParseException(builtNode.SequencePoint, "Method expected");
             return method;
-        }
+        }*/
     }
 }

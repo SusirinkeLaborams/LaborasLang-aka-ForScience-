@@ -21,7 +21,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Value = value;
             
         }
-        public static SymbolNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static new SymbolNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             return new SymbolNode(lexerNode.Content.ToString(), parser.GetSequencePoint(lexerNode));
         }

@@ -27,7 +27,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Args = args;
             this.type = returnType;
         }
-        public static MethodCallNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static new MethodCallNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             if (lexerNode.Children[0].Type == Lexer.TokenType.New)
                 throw new NotImplementedException("Create not implemented");
@@ -39,9 +39,37 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 args.Add(ExpressionNode.Parse(parser, parent, node));
             }
-            var method = function.ExtractMethod(args);
+
+            var method = AsMethod(parser, function, args);
+            if (method == null)
+                method = AsFunctor(function, args);
+
+            if (method == null)
+                throw new TypeException(function.SequencePoint, "Method expected");
             var returnType = method.TypeWrapper.FunctorReturnType;
             return new MethodCallNode(method, returnType, args, parser.GetSequencePoint(lexerNode));
+        }
+        private static ExpressionNode AsFunctor(ExpressionNode node, IEnumerable<ExpressionNode> args)
+        {
+            if(node.TypeWrapper.IsFunctorType())
+            {
+                if (node.TypeWrapper.MatchesArgumentList(args.Select(a => a.TypeWrapper)))
+                    return node;
+                else
+                    return null;
+            }
+            else
+            {
+                return null;
+            }
+        }
+        private static ExpressionNode AsMethod(Parser parser, ExpressionNode node, IEnumerable<ExpressionNode> args)
+        {
+            var method = node as AmbiguousMethodNode;
+            if (method == null)
+                return null;
+
+            return method.RemoveAmbiguity(parser, new FunctorTypeWrapper(parser.Assembly, null, args.Select(a => a.TypeWrapper)));
         }
         public override string ToString()
         {

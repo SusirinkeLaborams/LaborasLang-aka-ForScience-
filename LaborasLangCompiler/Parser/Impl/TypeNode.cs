@@ -20,12 +20,24 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             ParsedType = type;
         }
-        public static TypeWrapper Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static new TypeWrapper Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
+            TypeNode node = null;
             if(lexerNode.Type == Lexer.TokenType.FullSymbol)
-                return DotOperatorNode.Parse(parser, parent, lexerNode).ExtractType();
+            {
+                node = DotOperatorNode.Parse(parser, parent, lexerNode) as TypeNode;
+                if (node != null)
+                    return node.ParsedType;
+                else
+                    throw new ParseException(parser.GetSequencePoint(lexerNode), "Type expected");
+            }
 
-            var ret = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]).ExtractType();
+            TypeWrapper ret = null;
+            node = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]) as TypeNode;
+            if (node != null)
+                ret = node.ParsedType;
+            else
+                throw new ParseException(parser.GetSequencePoint(lexerNode.Children[0]), "Type expected");
 
             if(lexerNode.ChildrenCount != 1)
             {

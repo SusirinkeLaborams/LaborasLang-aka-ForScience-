@@ -23,10 +23,12 @@ namespace LaborasLangCompiler.Parser.Impl
         private LValueNode left;
         private ExpressionNode right;
         protected AssignmentOperatorNode(SequencePoint point) : base(point) { }
-        public static AssignmentOperatorNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static new AssignmentOperatorNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var instance = new AssignmentOperatorNode(parser.GetSequencePoint(lexerNode));
-            var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]).ExtractLValue();
+            var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]) as LValueNode;
+            if (left == null)
+                throw new ParseException(left.SequencePoint, "LValue expected");
             var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
             instance.type = left.TypeWrapper;
 
