@@ -1,1 +1,1 @@
-Type: LeftCurlyBracket, Start: 1, 1, End: 1, 2, Content: "{" Type: RightCurlyBracket, Start: 1, 3, End: 1, 4, Content: "}" 
+Type: LeftCurlyBrace, Start: 1, 1, End: 1, 2, Content: "{" Type: RightCurlyBrace, Start: 1, 3, End: 1, 4, Content: "}" 

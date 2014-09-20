@@ -4,216 +4,42 @@ Children:
 	Content: Type: StatementNode, Start: 1, 1, End: 1, 21, Content: ""
 	Type: StatementNode
 	Children:
-		Content: Type: Value, Start: 1, 1, End: 1, 20, Content: ""
-		Type: Value
+		Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 20, Content: ""
+		Type: AssignmentOperatorNode
 		Children:
-			Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 20, Content: ""
-			Type: AssignmentOperatorNode
+			Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+			Type: Symbol
 			Children:
-				Content: Type: OrNode, Start: 1, 1, End: 1, 4, Content: ""
-				Type: OrNode
+
+			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
+			Type: Assignment
+			Children:
+
+			Content: Type: AdditiveOperatorNode, Start: 1, 7, End: 1, 20, Content: ""
+			Type: AdditiveOperatorNode
+			Children:
+				Content: Type: Integer, Start: 1, 7, End: 1, 8, Content: "5"
+				Type: Integer
 				Children:
-					Content: Type: AndNode, Start: 1, 1, End: 1, 4, Content: ""
-					Type: AndNode
-					Children:
-						Content: Type: BitwiseOrNode, Start: 1, 1, End: 1, 4, Content: ""
-						Type: BitwiseOrNode
-						Children:
-							Content: Type: BitwiseXorNode, Start: 1, 1, End: 1, 4, Content: ""
-							Type: BitwiseXorNode
-							Children:
-								Content: Type: BitwiseAndNode, Start: 1, 1, End: 1, 4, Content: ""
-								Type: BitwiseAndNode
-								Children:
-									Content: Type: NotEqualNode, Start: 1, 1, End: 1, 4, Content: ""
-									Type: NotEqualNode
-									Children:
-										Content: Type: EqualNode, Start: 1, 1, End: 1, 4, Content: ""
-										Type: EqualNode
-										Children:
-											Content: Type: LessOrEqualNode, Start: 1, 1, End: 1, 4, Content: ""
-											Type: LessOrEqualNode
-											Children:
-												Content: Type: MoreOrEqualNode, Start: 1, 1, End: 1, 4, Content: ""
-												Type: MoreOrEqualNode
-												Children:
-													Content: Type: LessNode, Start: 1, 1, End: 1, 4, Content: ""
-													Type: LessNode
-													Children:
-														Content: Type: MoreNode, Start: 1, 1, End: 1, 4, Content: ""
-														Type: MoreNode
-														Children:
-															Content: Type: RightShiftNode, Start: 1, 1, End: 1, 4, Content: ""
-															Type: RightShiftNode
-															Children:
-																Content: Type: LeftShiftNode, Start: 1, 1, End: 1, 4, Content: ""
-																Type: LeftShiftNode
-																Children:
-																	Content: Type: MinusNode, Start: 1, 1, End: 1, 4, Content: ""
-																	Type: MinusNode
-																	Children:
-																		Content: Type: PlusNode, Start: 1, 1, End: 1, 4, Content: ""
-																		Type: PlusNode
-																		Children:
-																			Content: Type: RemainderNode, Start: 1, 1, End: 1, 4, Content: ""
-																			Type: RemainderNode
-																			Children:
-																				Content: Type: DivisionNode, Start: 1, 1, End: 1, 4, Content: ""
-																				Type: DivisionNode
-																				Children:
-																					Content: Type: MultiplicationNode, Start: 1, 1, End: 1, 4, Content: ""
-																					Type: MultiplicationNode
-																					Children:
-																						Content: Type: PrefixNode, Start: 1, 1, End: 1, 4, Content: ""
-																						Type: PrefixNode
-																						Children:
-																							Content: Type: PostfixNode, Start: 1, 1, End: 1, 4, Content: ""
-																							Type: PostfixNode
-																							Children:
-																								Content: Type: PeriodNode, Start: 1, 1, End: 1, 4, Content: ""
-																								Type: PeriodNode
-																								Children:
-																									Content: Type: Operand, Start: 1, 1, End: 1, 4, Content: ""
-																									Type: Operand
-																									Children:
-																										Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
-																										Type: Symbol
-																										Children:
 
-				Content: Type: AssignmentOperatorSubnode, Start: 1, 5, End: 1, 20, Content: ""
-				Type: AssignmentOperatorSubnode
+				Content: Type: Plus, Start: 1, 9, End: 1, 10, Content: "+"
+				Type: Plus
 				Children:
-					Content: Type: AssignmentOperator, Start: 1, 5, End: 1, 6, Content: ""
-					Type: AssignmentOperator
+
+				Content: Type: MultiplicativeOperatorNode, Start: 1, 11, End: 1, 20, Content: ""
+				Type: MultiplicativeOperatorNode
+				Children:
+					Content: Type: Double, Start: 1, 11, End: 1, 14, Content: "1.2"
+					Type: Double
 					Children:
-						Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
-						Type: Assignment
-						Children:
 
-					Content: Type: OrNode, Start: 1, 7, End: 1, 20, Content: ""
-					Type: OrNode
+					Content: Type: Multiply, Start: 1, 15, End: 1, 16, Content: "*"
+					Type: Multiply
 					Children:
-						Content: Type: AndNode, Start: 1, 7, End: 1, 20, Content: ""
-						Type: AndNode
-						Children:
-							Content: Type: BitwiseOrNode, Start: 1, 7, End: 1, 20, Content: ""
-							Type: BitwiseOrNode
-							Children:
-								Content: Type: BitwiseXorNode, Start: 1, 7, End: 1, 20, Content: ""
-								Type: BitwiseXorNode
-								Children:
-									Content: Type: BitwiseAndNode, Start: 1, 7, End: 1, 20, Content: ""
-									Type: BitwiseAndNode
-									Children:
-										Content: Type: NotEqualNode, Start: 1, 7, End: 1, 20, Content: ""
-										Type: NotEqualNode
-										Children:
-											Content: Type: EqualNode, Start: 1, 7, End: 1, 20, Content: ""
-											Type: EqualNode
-											Children:
-												Content: Type: LessOrEqualNode, Start: 1, 7, End: 1, 20, Content: ""
-												Type: LessOrEqualNode
-												Children:
-													Content: Type: MoreOrEqualNode, Start: 1, 7, End: 1, 20, Content: ""
-													Type: MoreOrEqualNode
-													Children:
-														Content: Type: LessNode, Start: 1, 7, End: 1, 20, Content: ""
-														Type: LessNode
-														Children:
-															Content: Type: MoreNode, Start: 1, 7, End: 1, 20, Content: ""
-															Type: MoreNode
-															Children:
-																Content: Type: RightShiftNode, Start: 1, 7, End: 1, 20, Content: ""
-																Type: RightShiftNode
-																Children:
-																	Content: Type: LeftShiftNode, Start: 1, 7, End: 1, 20, Content: ""
-																	Type: LeftShiftNode
-																	Children:
-																		Content: Type: MinusNode, Start: 1, 7, End: 1, 20, Content: ""
-																		Type: MinusNode
-																		Children:
-																			Content: Type: PlusNode, Start: 1, 7, End: 1, 20, Content: ""
-																			Type: PlusNode
-																			Children:
-																				Content: Type: RemainderNode, Start: 1, 7, End: 1, 8, Content: ""
-																				Type: RemainderNode
-																				Children:
-																					Content: Type: DivisionNode, Start: 1, 7, End: 1, 8, Content: ""
-																					Type: DivisionNode
-																					Children:
-																						Content: Type: MultiplicationNode, Start: 1, 7, End: 1, 8, Content: ""
-																						Type: MultiplicationNode
-																						Children:
-																							Content: Type: PrefixNode, Start: 1, 7, End: 1, 8, Content: ""
-																							Type: PrefixNode
-																							Children:
-																								Content: Type: PostfixNode, Start: 1, 7, End: 1, 8, Content: ""
-																								Type: PostfixNode
-																								Children:
-																									Content: Type: PeriodNode, Start: 1, 7, End: 1, 8, Content: ""
-																									Type: PeriodNode
-																									Children:
-																										Content: Type: Operand, Start: 1, 7, End: 1, 8, Content: ""
-																										Type: Operand
-																										Children:
-																											Content: Type: Integer, Start: 1, 7, End: 1, 8, Content: "5"
-																											Type: Integer
-																											Children:
 
-																				Content: Type: PlusSubnode, Start: 1, 9, End: 1, 20, Content: ""
-																				Type: PlusSubnode
-																				Children:
-																					Content: Type: Plus, Start: 1, 9, End: 1, 10, Content: "+"
-																					Type: Plus
-																					Children:
-
-																					Content: Type: RemainderNode, Start: 1, 11, End: 1, 20, Content: ""
-																					Type: RemainderNode
-																					Children:
-																						Content: Type: DivisionNode, Start: 1, 11, End: 1, 20, Content: ""
-																						Type: DivisionNode
-																						Children:
-																							Content: Type: MultiplicationNode, Start: 1, 11, End: 1, 20, Content: ""
-																							Type: MultiplicationNode
-																							Children:
-																								Content: Type: PrefixNode, Start: 1, 11, End: 1, 14, Content: ""
-																								Type: PrefixNode
-																								Children:
-																									Content: Type: PostfixNode, Start: 1, 11, End: 1, 14, Content: ""
-																									Type: PostfixNode
-																									Children:
-																										Content: Type: PeriodNode, Start: 1, 11, End: 1, 14, Content: ""
-																										Type: PeriodNode
-																										Children:
-																											Content: Type: Operand, Start: 1, 11, End: 1, 14, Content: ""
-																											Type: Operand
-																											Children:
-																												Content: Type: Double, Start: 1, 11, End: 1, 14, Content: "1.2"
-																												Type: Double
-																												Children:
-
-																								Content: Type: MultiplicationSubnode, Start: 1, 15, End: 1, 20, Content: ""
-																								Type: MultiplicationSubnode
-																								Children:
-																									Content: Type: Multiply, Start: 1, 15, End: 1, 16, Content: "*"
-																									Type: Multiply
-																									Children:
-
-																									Content: Type: PrefixNode, Start: 1, 17, End: 1, 20, Content: ""
-																									Type: PrefixNode
-																									Children:
-																										Content: Type: PostfixNode, Start: 1, 17, End: 1, 20, Content: ""
-																										Type: PostfixNode
-																										Children:
-																											Content: Type: PeriodNode, Start: 1, 17, End: 1, 20, Content: ""
-																											Type: PeriodNode
-																											Children:
-																												Content: Type: Operand, Start: 1, 17, End: 1, 20, Content: ""
-																												Type: Operand
-																												Children:
-																													Content: Type: Symbol, Start: 1, 17, End: 1, 20, Content: "bar"
-																													Type: Symbol
-																													Children:
+					Content: Type: Symbol, Start: 1, 17, End: 1, 20, Content: "bar"
+					Type: Symbol
+					Children:
 
 		Content: Type: EndOfLine, Start: 1, 20, End: 1, 21, Content: ";"
 		Type: EndOfLine

@@ -45,10 +45,10 @@
         RemainderEqual,
         Assignment,
         Equal,
-        LeftCurlyBracket,
-        RightCurlyBracket,
-        LeftBracket,
-        RightBracket,
+        LeftCurlyBrace,
+        RightCurlyBrace,
+        LeftParenthesis,
+        RightParenthesis,
         Integer,
         Float,
         Long,
@@ -115,10 +115,11 @@
         SubSymbol,
 
         Value,
+        VariableModifier,
 
         Type,
-        VariableModifier,
-        TypeArgument,
+        TypeSubnode,
+        TypeAndSymbolSubnode,
 
         WhileLoop,
 
@@ -128,6 +129,12 @@
         AssignmentOperator,
 
         CommaAndValue,
+
+        EqualityOperator,
+        RelationalOperator,
+        ShiftOperator,
+        AdditiveOperator,
+        MultiplicativeOperator,
 
         AssignmentOperatorNode,
         AssignmentOperatorSubnode,
@@ -174,7 +181,21 @@
         PostfixNode,
         PrefixOperator,
         PostfixOperator,
+        InlineFunctionCallNode,
+        FunctionCallNode,
         FunctionArgumentsList,
+        EqualityOperatorNode,
+        RelationalOperatorNode,
+        ShiftOperatorNode,
+        AdditiveOperatorNode,
+        MultiplicativeOperatorNode,
+        ParenthesesNode,
+        
+        MultiplicativeOperatorSubnode,
+        AdditiveOperatorSubnode,
+        ShiftOperatorSubnode,
+        RelationalOperatorSubnode,
+        EqualityOperatorSubnode,
 
         TokenTypeCount
     }

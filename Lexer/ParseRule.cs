@@ -5,9 +5,10 @@ namespace Lexer
 {
     public enum ConditionType
     {
+        OptionalFromThis,
         One,
         OneOrMore,
-        ZeroOrMore,
+        ZeroOrMore
     }
 
     [DebuggerDisplay("Condition, {Type} {Token}")]
@@ -33,47 +34,55 @@ namespace Lexer
             return new Condition(token, ConditionType.One);
         }
 
-        public static implicit operator List<Condition>(Condition token)
+        public static implicit operator ConditionList(Condition token)
         {
-            return new List<Condition>(8) { token };
+            return new ConditionList(8) { token };
         }
 
-        public static List<Condition> operator +(Condition a, Condition b)
+        public static ConditionList operator +(Condition a, Condition b)
         {
-            return new List<Condition>(8) { a, b };
+            return new ConditionList(8) { a, b };
         }
 
-        public static List<Condition> operator +(List<Condition> list, Condition token)
+        public static ConditionList operator +(ConditionList list, Condition token)
         {
             list.Add(token);
             return list;
         }
     }
+
+    class ConditionList : List<Condition>
+    {
+        public ConditionList()
+        {
+        }
+
+        public ConditionList(int capacity) :
+            base(capacity)
+        {
+        }
+        
+        public static ConditionList operator +(ConditionList list, ConditionList tokens)
+        {
+            foreach (var token in tokens)
+            {
+                list.Add(token);
+            }
+
+            return list;
+        }
+    }
+
     struct ParseRule
     {
         public TokenType Result;
         public Condition[][] RequiredTokens { get; private set; }
+        public int CollapsableLevel { get; private set; }
 
-        public ParseRule(Condition result, params List<Condition>[] requiredTokens) : this()
+        public ParseRule(Condition result, int collapsableLevel, params List<Condition>[] requiredTokens) : this()
         {
             Result = result.Token;
-            RequiredTokens = new Condition[requiredTokens.Length][];
-
-            for (int i = 0; i < requiredTokens.Length; i++)
-            {
-                RequiredTokens[i] = new Condition[requiredTokens[i].Count];
-
-                for (int j = 0; j < requiredTokens[i].Count; j++)
-                {
-                    RequiredTokens[i][j] = requiredTokens[i][j];
-                }
-            }
-        }
-
-        public ParseRule(TokenType result, params List<Condition>[] requiredTokens)
-            : this()
-        {
-            Result = result;
+            CollapsableLevel = collapsableLevel;
             RequiredTokens = new Condition[requiredTokens.Length][];
 
             for (int i = 0; i < requiredTokens.Length; i++)
