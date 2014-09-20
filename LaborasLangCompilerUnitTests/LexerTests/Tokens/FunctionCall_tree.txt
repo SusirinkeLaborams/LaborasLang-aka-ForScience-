@@ -7,9 +7,12 @@ Children:
 		Content: Type: FunctionCallNode, Start: 2, 1, End: 2, 6, Content: ""
 		Type: FunctionCallNode
 		Children:
-			Content: Type: Symbol, Start: 2, 1, End: 2, 4, Content: "foo"
-			Type: Symbol
+			Content: Type: FullSymbol, Start: 2, 1, End: 2, 4, Content: ""
+			Type: FullSymbol
 			Children:
+				Content: Type: Symbol, Start: 2, 1, End: 2, 4, Content: "foo"
+				Type: Symbol
+				Children:
 
 			Content: Type: FunctionArgumentsList, Start: 2, 4, End: 2, 6, Content: ""
 			Type: FunctionArgumentsList
@@ -32,9 +35,12 @@ Children:
 		Content: Type: FunctionCallNode, Start: 3, 1, End: 3, 9, Content: ""
 		Type: FunctionCallNode
 		Children:
-			Content: Type: Symbol, Start: 3, 1, End: 3, 4, Content: "foo"
-			Type: Symbol
+			Content: Type: FullSymbol, Start: 3, 1, End: 3, 4, Content: ""
+			Type: FullSymbol
 			Children:
+				Content: Type: Symbol, Start: 3, 1, End: 3, 4, Content: "foo"
+				Type: Symbol
+				Children:
 
 			Content: Type: FunctionArgumentsList, Start: 3, 4, End: 3, 9, Content: ""
 			Type: FunctionArgumentsList
@@ -43,9 +49,12 @@ Children:
 				Type: LeftParenthesis
 				Children:
 
-				Content: Type: Symbol, Start: 3, 5, End: 3, 8, Content: "bar"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 3, 5, End: 3, 8, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 3, 5, End: 3, 8, Content: "bar"
+					Type: Symbol
+					Children:
 
 				Content: Type: RightParenthesis, Start: 3, 8, End: 3, 9, Content: ")"
 				Type: RightParenthesis
@@ -61,9 +70,12 @@ Children:
 		Content: Type: FunctionCallNode, Start: 4, 1, End: 4, 16, Content: ""
 		Type: FunctionCallNode
 		Children:
-			Content: Type: Symbol, Start: 4, 1, End: 4, 4, Content: "foo"
-			Type: Symbol
+			Content: Type: FullSymbol, Start: 4, 1, End: 4, 4, Content: ""
+			Type: FullSymbol
 			Children:
+				Content: Type: Symbol, Start: 4, 1, End: 4, 4, Content: "foo"
+				Type: Symbol
+				Children:
 
 			Content: Type: FunctionArgumentsList, Start: 4, 4, End: 4, 16, Content: ""
 			Type: FunctionArgumentsList
@@ -75,9 +87,12 @@ Children:
 				Content: Type: FunctionCallNode, Start: 4, 5, End: 4, 10, Content: ""
 				Type: FunctionCallNode
 				Children:
-					Content: Type: Symbol, Start: 4, 5, End: 4, 8, Content: "foo"
-					Type: Symbol
+					Content: Type: FullSymbol, Start: 4, 5, End: 4, 8, Content: ""
+					Type: FullSymbol
 					Children:
+						Content: Type: Symbol, Start: 4, 5, End: 4, 8, Content: "foo"
+						Type: Symbol
+						Children:
 
 					Content: Type: FunctionArgumentsList, Start: 4, 8, End: 4, 10, Content: ""
 					Type: FunctionArgumentsList
@@ -94,9 +109,12 @@ Children:
 				Type: Comma
 				Children:
 
-				Content: Type: Symbol, Start: 4, 12, End: 4, 15, Content: "bar"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 4, 12, End: 4, 15, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 4, 12, End: 4, 15, Content: "bar"
+					Type: Symbol
+					Children:
 
 				Content: Type: RightParenthesis, Start: 4, 15, End: 4, 16, Content: ")"
 				Type: RightParenthesis
@@ -112,9 +130,12 @@ Children:
 		Content: Type: FunctionCallNode, Start: 5, 1, End: 5, 10, Content: ""
 		Type: FunctionCallNode
 		Children:
-			Content: Type: Symbol, Start: 5, 1, End: 5, 4, Content: "foo"
-			Type: Symbol
+			Content: Type: FullSymbol, Start: 5, 1, End: 5, 4, Content: ""
+			Type: FullSymbol
 			Children:
+				Content: Type: Symbol, Start: 5, 1, End: 5, 4, Content: "foo"
+				Type: Symbol
+				Children:
 
 			Content: Type: FunctionArgumentsList, Start: 5, 4, End: 5, 6, Content: ""
 			Type: FunctionArgumentsList

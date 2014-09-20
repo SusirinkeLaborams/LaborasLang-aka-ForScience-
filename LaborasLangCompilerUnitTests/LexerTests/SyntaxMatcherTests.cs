@@ -71,6 +71,14 @@ foo()()();";
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void FullSymbolFunctionCall()
+        {
+            var source = @"Console.WriteLine(5);";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void DeclareFunctionTestNoParameters()
         {
             var source = @"int() foo;";

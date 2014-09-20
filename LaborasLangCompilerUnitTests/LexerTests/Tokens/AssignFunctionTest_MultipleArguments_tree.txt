@@ -7,9 +7,12 @@ Children:
 		Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 57, Content: ""
 		Type: AssignmentOperatorNode
 		Children:
-			Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
-			Type: Symbol
+			Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
+			Type: FullSymbol
 			Children:
+				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+				Type: Symbol
+				Children:
 
 			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
 			Type: Assignment
@@ -63,12 +66,9 @@ Children:
 							Type: Symbol
 							Children:
 
-					Content: Type: FullSymbol, Start: 1, 24, End: 1, 25, Content: ""
-					Type: FullSymbol
+					Content: Type: Symbol, Start: 1, 24, End: 1, 25, Content: "c"
+					Type: Symbol
 					Children:
-						Content: Type: Symbol, Start: 1, 24, End: 1, 25, Content: "c"
-						Type: Symbol
-						Children:
 
 					Content: Type: Comma, Start: 1, 25, End: 1, 26, Content: ","
 					Type: Comma
@@ -84,12 +84,9 @@ Children:
 							Type: Symbol
 							Children:
 
-					Content: Type: FullSymbol, Start: 1, 33, End: 1, 34, Content: ""
-					Type: FullSymbol
+					Content: Type: Symbol, Start: 1, 33, End: 1, 34, Content: "d"
+					Type: Symbol
 					Children:
-						Content: Type: Symbol, Start: 1, 33, End: 1, 34, Content: "d"
-						Type: Symbol
-						Children:
 
 					Content: Type: Comma, Start: 1, 34, End: 1, 35, Content: ","
 					Type: Comma
@@ -105,12 +102,9 @@ Children:
 							Type: Symbol
 							Children:
 
-					Content: Type: FullSymbol, Start: 1, 43, End: 1, 45, Content: ""
-					Type: FullSymbol
+					Content: Type: Symbol, Start: 1, 43, End: 1, 45, Content: "d2"
+					Type: Symbol
 					Children:
-						Content: Type: Symbol, Start: 1, 43, End: 1, 45, Content: "d2"
-						Type: Symbol
-						Children:
 
 					Content: Type: RightParenthesis, Start: 1, 45, End: 1, 46, Content: ")"
 					Type: RightParenthesis
@@ -129,9 +123,12 @@ Children:
 						Content: Type: FunctionCallNode, Start: 1, 49, End: 1, 54, Content: ""
 						Type: FunctionCallNode
 						Children:
-							Content: Type: Symbol, Start: 1, 49, End: 1, 52, Content: "bar"
-							Type: Symbol
+							Content: Type: FullSymbol, Start: 1, 49, End: 1, 52, Content: ""
+							Type: FullSymbol
 							Children:
+								Content: Type: Symbol, Start: 1, 49, End: 1, 52, Content: "bar"
+								Type: Symbol
+								Children:
 
 							Content: Type: FunctionArgumentsList, Start: 1, 52, End: 1, 54, Content: ""
 							Type: FunctionArgumentsList

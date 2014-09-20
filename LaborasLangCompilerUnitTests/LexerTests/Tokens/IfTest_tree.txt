@@ -15,9 +15,12 @@ Children:
 			Type: LeftParenthesis
 			Children:
 
-			Content: Type: Symbol, Start: 2, 16, End: 2, 25, Content: "somehting"
-			Type: Symbol
+			Content: Type: FullSymbol, Start: 2, 16, End: 2, 25, Content: ""
+			Type: FullSymbol
 			Children:
+				Content: Type: Symbol, Start: 2, 16, End: 2, 25, Content: "somehting"
+				Type: Symbol
+				Children:
 
 			Content: Type: RightParenthesis, Start: 2, 25, End: 2, 26, Content: ")"
 			Type: RightParenthesis
@@ -39,9 +42,12 @@ Children:
 						Content: Type: FunctionCallNode, Start: 4, 17, End: 4, 24, Content: ""
 						Type: FunctionCallNode
 						Children:
-							Content: Type: Symbol, Start: 4, 17, End: 4, 22, Content: "stuff"
-							Type: Symbol
+							Content: Type: FullSymbol, Start: 4, 17, End: 4, 22, Content: ""
+							Type: FullSymbol
 							Children:
+								Content: Type: Symbol, Start: 4, 17, End: 4, 22, Content: "stuff"
+								Type: Symbol
+								Children:
 
 							Content: Type: FunctionArgumentsList, Start: 4, 22, End: 4, 24, Content: ""
 							Type: FunctionArgumentsList
@@ -82,9 +88,12 @@ Children:
 						Content: Type: FunctionCallNode, Start: 8, 13, End: 8, 21, Content: ""
 						Type: FunctionCallNode
 						Children:
-							Content: Type: Symbol, Start: 8, 13, End: 8, 19, Content: "stuff2"
-							Type: Symbol
+							Content: Type: FullSymbol, Start: 8, 13, End: 8, 19, Content: ""
+							Type: FullSymbol
 							Children:
+								Content: Type: Symbol, Start: 8, 13, End: 8, 19, Content: "stuff2"
+								Type: Symbol
+								Children:
 
 							Content: Type: FunctionArgumentsList, Start: 8, 19, End: 8, 21, Content: ""
 							Type: FunctionArgumentsList
@@ -119,9 +128,12 @@ Children:
 			Type: LeftParenthesis
 			Children:
 
-			Content: Type: Symbol, Start: 11, 16, End: 11, 25, Content: "something"
-			Type: Symbol
+			Content: Type: FullSymbol, Start: 11, 16, End: 11, 25, Content: ""
+			Type: FullSymbol
 			Children:
+				Content: Type: Symbol, Start: 11, 16, End: 11, 25, Content: "something"
+				Type: Symbol
+				Children:
 
 			Content: Type: RightParenthesis, Start: 11, 25, End: 11, 26, Content: ")"
 			Type: RightParenthesis
@@ -143,9 +155,12 @@ Children:
 						Content: Type: FunctionCallNode, Start: 13, 17, End: 13, 24, Content: ""
 						Type: FunctionCallNode
 						Children:
-							Content: Type: Symbol, Start: 13, 17, End: 13, 22, Content: "stuff"
-							Type: Symbol
+							Content: Type: FullSymbol, Start: 13, 17, End: 13, 22, Content: ""
+							Type: FullSymbol
 							Children:
+								Content: Type: Symbol, Start: 13, 17, End: 13, 22, Content: "stuff"
+								Type: Symbol
+								Children:
 
 							Content: Type: FunctionArgumentsList, Start: 13, 22, End: 13, 24, Content: ""
 							Type: FunctionArgumentsList

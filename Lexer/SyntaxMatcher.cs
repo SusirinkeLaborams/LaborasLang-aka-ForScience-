@@ -218,7 +218,7 @@ namespace Lexer
                         InlineFunctionCallNode,
                         Function,
                         FunctionCallNode,
-                        Symbol,
+                        FullSymbol,
                         Float,
                         Integer,
                         Double,
@@ -231,7 +231,7 @@ namespace Lexer
                         Function + OneOrMore(FunctionArgumentsList)),
 
                     ParseRule(FunctionCallNode,
-                        Symbol + OneOrMore(FunctionArgumentsList)),
+                        FullSymbol + OneOrMore(FunctionArgumentsList)),
 
                     ParseRule(FunctionArgumentsList,
                         LeftParenthesis + RightParenthesis,
@@ -255,7 +255,7 @@ namespace Lexer
                         Comma + Type),
 
                     AlwaysCollapsableParseRule(TypeAndSymbolSubnode,
-                        Comma + Type + FullSymbol),
+                        Comma + Type + Symbol),
 
                     ParseRule(Function,
                         Type + CodeBlockNode),                    

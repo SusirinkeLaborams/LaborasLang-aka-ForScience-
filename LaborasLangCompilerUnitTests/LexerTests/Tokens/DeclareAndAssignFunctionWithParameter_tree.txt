@@ -76,9 +76,12 @@ Children:
 						Content: Type: FunctionCallNode, Start: 1, 26, End: 1, 31, Content: ""
 						Type: FunctionCallNode
 						Children:
-							Content: Type: Symbol, Start: 1, 26, End: 1, 29, Content: "foo"
-							Type: Symbol
+							Content: Type: FullSymbol, Start: 1, 26, End: 1, 29, Content: ""
+							Type: FullSymbol
 							Children:
+								Content: Type: Symbol, Start: 1, 26, End: 1, 29, Content: "foo"
+								Type: Symbol
+								Children:
 
 							Content: Type: FunctionArgumentsList, Start: 1, 29, End: 1, 31, Content: ""
 							Type: FunctionArgumentsList

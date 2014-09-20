@@ -58,9 +58,12 @@ Children:
 						Content: Type: AssignmentOperatorNode, Start: 1, 13, End: 1, 18, Content: ""
 						Type: AssignmentOperatorNode
 						Children:
-							Content: Type: Symbol, Start: 1, 13, End: 1, 14, Content: "a"
-							Type: Symbol
+							Content: Type: FullSymbol, Start: 1, 13, End: 1, 14, Content: ""
+							Type: FullSymbol
 							Children:
+								Content: Type: Symbol, Start: 1, 13, End: 1, 14, Content: "a"
+								Type: Symbol
+								Children:
 
 							Content: Type: Assignment, Start: 1, 15, End: 1, 16, Content: "="
 							Type: Assignment

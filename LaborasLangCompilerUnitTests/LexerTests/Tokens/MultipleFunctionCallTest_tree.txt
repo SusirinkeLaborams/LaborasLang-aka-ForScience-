@@ -10,9 +10,12 @@ Children:
 			Content: Type: FunctionCallNode, Start: 2, 1, End: 2, 6, Content: ""
 			Type: FunctionCallNode
 			Children:
-				Content: Type: Symbol, Start: 2, 1, End: 2, 4, Content: "foo"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 2, 1, End: 2, 4, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 2, 1, End: 2, 4, Content: "foo"
+					Type: Symbol
+					Children:
 
 				Content: Type: FunctionArgumentsList, Start: 2, 4, End: 2, 6, Content: ""
 				Type: FunctionArgumentsList
@@ -32,9 +35,12 @@ Children:
 			Content: Type: FunctionCallNode, Start: 2, 7, End: 2, 12, Content: ""
 			Type: FunctionCallNode
 			Children:
-				Content: Type: Symbol, Start: 2, 7, End: 2, 10, Content: "bar"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 2, 7, End: 2, 10, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 2, 7, End: 2, 10, Content: "bar"
+					Type: Symbol
+					Children:
 
 				Content: Type: FunctionArgumentsList, Start: 2, 10, End: 2, 12, Content: ""
 				Type: FunctionArgumentsList
@@ -63,9 +69,12 @@ Children:
 				Content: Type: FunctionCallNode, Start: 3, 1, End: 3, 6, Content: ""
 				Type: FunctionCallNode
 				Children:
-					Content: Type: Symbol, Start: 3, 1, End: 3, 4, Content: "foo"
-					Type: Symbol
+					Content: Type: FullSymbol, Start: 3, 1, End: 3, 4, Content: ""
+					Type: FullSymbol
 					Children:
+						Content: Type: Symbol, Start: 3, 1, End: 3, 4, Content: "foo"
+						Type: Symbol
+						Children:
 
 					Content: Type: FunctionArgumentsList, Start: 3, 4, End: 3, 6, Content: ""
 					Type: FunctionArgumentsList
@@ -82,9 +91,12 @@ Children:
 				Type: Period
 				Children:
 
-				Content: Type: Symbol, Start: 3, 7, End: 3, 10, Content: "bar"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 3, 7, End: 3, 10, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 3, 7, End: 3, 10, Content: "bar"
+					Type: Symbol
+					Children:
 
 			Content: Type: Assignment, Start: 3, 11, End: 3, 12, Content: "="
 			Type: Assignment
@@ -114,9 +126,12 @@ Children:
 				Content: Type: AdditiveOperatorNode, Start: 4, 2, End: 4, 9, Content: ""
 				Type: AdditiveOperatorNode
 				Children:
-					Content: Type: Symbol, Start: 4, 2, End: 4, 5, Content: "foo"
-					Type: Symbol
+					Content: Type: FullSymbol, Start: 4, 2, End: 4, 5, Content: ""
+					Type: FullSymbol
 					Children:
+						Content: Type: Symbol, Start: 4, 2, End: 4, 5, Content: "foo"
+						Type: Symbol
+						Children:
 
 					Content: Type: Plus, Start: 4, 6, End: 4, 7, Content: "+"
 					Type: Plus
@@ -137,9 +152,12 @@ Children:
 			Content: Type: FunctionCallNode, Start: 4, 11, End: 4, 16, Content: ""
 			Type: FunctionCallNode
 			Children:
-				Content: Type: Symbol, Start: 4, 11, End: 4, 14, Content: "bar"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 4, 11, End: 4, 14, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 4, 11, End: 4, 14, Content: "bar"
+					Type: Symbol
+					Children:
 
 				Content: Type: FunctionArgumentsList, Start: 4, 14, End: 4, 16, Content: ""
 				Type: FunctionArgumentsList
