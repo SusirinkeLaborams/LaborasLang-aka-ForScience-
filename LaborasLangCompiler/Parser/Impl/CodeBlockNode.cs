@@ -97,25 +97,16 @@ namespace LaborasLangCompiler.Parser.Impl
                         case Lexer.TokenType.LeftCurlyBrace:
                         case Lexer.TokenType.RightCurlyBrace:
                             break;
-                        case Lexer.TokenType.StatementNode:
-                            instance.AddNode(parser, node.Children[0]);
-                            break;
                         default:
-                            throw new ParseException(parser.GetSequencePoint(node), "Unexpected node type {0} in code block", node.Type);
+                            instance.AddNode(parser, node);
+                            break;
                     }
                 }
             }
             else if(lexerNode.Type == Lexer.TokenType.StatementNode)
             {
-                if (lexerNode.Children[0].Type == Lexer.TokenType.CodeBlockNode)
-                {
-                    instance = Parse(parser, parent, lexerNode.Children[0]);
-                }
-                else
-                {
-                    instance = new CodeBlockNode(parent, parser.GetSequencePoint(lexerNode));
-                    instance.AddNode(parser, lexerNode.Children[0]);
-                }
+                instance = new CodeBlockNode(parent, parser.GetSequencePoint(lexerNode));
+                instance.AddNode(parser, lexerNode.Children[0]);
             }
             return instance;
         }
