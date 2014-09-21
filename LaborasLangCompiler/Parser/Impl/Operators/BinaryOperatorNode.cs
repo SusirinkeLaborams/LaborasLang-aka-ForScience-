@@ -37,7 +37,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 for (int i = 1; i < lexerNode.Children.Count; i += 2)
                 {
                     right = ExpressionNode.Parse(parser, parent, lexerNode.Children[i + 1]);
-                    left = Parse(parser, Operators[lexerNode.Children[1].Type], left, right);
+                    left = Parse(parser, Operators[lexerNode.Children[i].Type], left, right);
                 }
                 return left;
             }
