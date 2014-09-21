@@ -33,21 +33,19 @@ namespace LaborasLangCompiler.Parser.Impl
             else
             {
                 ExpressionNode left, right;
-                string op;
                 left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
                 for (int i = 1; i < lexerNode.Children.Count; i += 2)
                 {
-                    op = lexerNode.Children[1].Content.ToString();
                     right = ExpressionNode.Parse(parser, parent, lexerNode.Children[i + 1]);
-                    left = Parse(parser, op, left, right);
+                    left = Parse(parser, Operators[lexerNode.Children[1].Type], left, right);
                 }
                 return left;
             }
         }
-        public static BinaryOperatorNode Parse(Parser parser, string op, ExpressionNode left, ExpressionNode right)
+        public static BinaryOperatorNode Parse(Parser parser, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right)
         {
             var instance = new BinaryOperatorNode(left.SequencePoint);
-            instance.BinaryOperatorType = Operators[op];
+            instance.BinaryOperatorType = op;
             instance.left = left;
             instance.right = right;
             switch (instance.BinaryOperatorType)
@@ -158,28 +156,28 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             return String.Format("(BinaryOp: {0} {1} {2})", LeftOperand, BinaryOperatorType, RightOperand);
         }
-        public static Dictionary<string, BinaryOperatorNodeType> Operators;
+        public static Dictionary<Lexer.TokenType, BinaryOperatorNodeType> Operators;
         static BinaryOperatorNode()
         {
-            Operators = new Dictionary<string, BinaryOperatorNodeType>();
-            Operators["+"]  = BinaryOperatorNodeType.Addition;
-            Operators["-"]  = BinaryOperatorNodeType.Subtraction;
-            Operators["*"]  = BinaryOperatorNodeType.Multiplication;
-            Operators["/"]  = BinaryOperatorNodeType.Division;
-            Operators["%"]  = BinaryOperatorNodeType.Modulus;
-            Operators["|"]  = BinaryOperatorNodeType.BinaryOr;
-            Operators["&"]  = BinaryOperatorNodeType.BinaryAnd;
-            Operators["^"]  = BinaryOperatorNodeType.BinaryXor;
-            Operators[">"]  = BinaryOperatorNodeType.GreaterThan;
-            Operators[">="] = BinaryOperatorNodeType.GreaterEqualThan;
-            Operators["<"]  = BinaryOperatorNodeType.LessThan;
-            Operators["<="] = BinaryOperatorNodeType.LessEqualThan;
-            Operators["=="] = BinaryOperatorNodeType.Equals;
-            Operators["!="] = BinaryOperatorNodeType.NotEquals;
-            Operators["||"] = BinaryOperatorNodeType.LogicalOr;
-            Operators["&&"] = BinaryOperatorNodeType.LogicalAnd;
-            Operators[">>"] = BinaryOperatorNodeType.ShiftRight;
-            Operators["<<"] = BinaryOperatorNodeType.ShiftLeft;
+            Operators = new Dictionary<Lexer.TokenType, BinaryOperatorNodeType>();
+            Operators[Lexer.TokenType.Plus]  = BinaryOperatorNodeType.Addition;
+            Operators[Lexer.TokenType.Minus]  = BinaryOperatorNodeType.Subtraction;
+            Operators[Lexer.TokenType.Multiply] = BinaryOperatorNodeType.Multiplication;
+            Operators[Lexer.TokenType.Divide]  = BinaryOperatorNodeType.Division;
+            Operators[Lexer.TokenType.Remainder]  = BinaryOperatorNodeType.Modulus;
+            Operators[Lexer.TokenType.BitwiseOr]  = BinaryOperatorNodeType.BinaryOr;
+            Operators[Lexer.TokenType.BitwiseAnd]  = BinaryOperatorNodeType.BinaryAnd;
+            Operators[Lexer.TokenType.BitwiseXor]  = BinaryOperatorNodeType.BinaryXor;
+            Operators[Lexer.TokenType.More]  = BinaryOperatorNodeType.GreaterThan;
+            Operators[Lexer.TokenType.MoreOrEqual] = BinaryOperatorNodeType.GreaterEqualThan;
+            Operators[Lexer.TokenType.Less]  = BinaryOperatorNodeType.LessThan;
+            Operators[Lexer.TokenType.LessOrEqual] = BinaryOperatorNodeType.LessEqualThan;
+            Operators[Lexer.TokenType.Equal] = BinaryOperatorNodeType.Equals;
+            Operators[Lexer.TokenType.NotEqual] = BinaryOperatorNodeType.NotEquals;
+            Operators[Lexer.TokenType.Or] = BinaryOperatorNodeType.LogicalOr;
+            Operators[Lexer.TokenType.And] = BinaryOperatorNodeType.LogicalAnd;
+            Operators[Lexer.TokenType.RightShift] = BinaryOperatorNodeType.ShiftRight;
+            Operators[Lexer.TokenType.LeftShift] = BinaryOperatorNodeType.ShiftLeft;
         }
     }
 }

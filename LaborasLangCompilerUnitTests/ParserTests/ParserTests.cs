@@ -162,7 +162,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     {
                     }
                 };";
-            string expected = "";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: (System.Int32 a) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 8)), (WhileBlock: Condition: (BinaryOp: (LValueNode: LocalVariable a System.Int32) LessThan (Literal: System.Int32 10)), Block: (CodeBlock: Symbols: () Nodes: ())))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]

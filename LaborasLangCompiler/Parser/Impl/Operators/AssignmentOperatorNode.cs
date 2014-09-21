@@ -33,9 +33,9 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.type = left.TypeWrapper;
 
             //use properties from lexer instead of string comparisons here
-            var op = lexerNode.Children[1].Content.ToString();
-            if (op != "=")
-                right = BinaryOperatorNode.Parse(parser, op.Remove(op.Length - 1), left, right);
+            var op = lexerNode.Children[1];
+            if (op.Type != Lexer.TokenType.Assignment)
+                right = BinaryOperatorNode.Parse(parser, Operators[op.Type], left, right);
 
             if (right is AmbiguousNode)
                 right = ((AmbiguousNode)right).RemoveAmbiguity(parser, left.TypeWrapper);
@@ -49,6 +49,22 @@ namespace LaborasLangCompiler.Parser.Impl
         public override string ToString()
         {
             return String.Format("(Assignment: {0} = {1})", LeftOperand, RightOperand);
+        }
+
+        public static Dictionary<Lexer.TokenType, BinaryOperatorNodeType> Operators;
+        static AssignmentOperatorNode()
+        {
+            Operators = new Dictionary<Lexer.TokenType, BinaryOperatorNodeType>();
+            Operators[Lexer.TokenType.PlusEqual]  = BinaryOperatorNodeType.Addition;
+            Operators[Lexer.TokenType.MinusEqual]  = BinaryOperatorNodeType.Subtraction;
+            Operators[Lexer.TokenType.MultiplyEqual] = BinaryOperatorNodeType.Multiplication;
+            Operators[Lexer.TokenType.DivideEqual]  = BinaryOperatorNodeType.Division;
+            Operators[Lexer.TokenType.RemainderEqual]  = BinaryOperatorNodeType.Modulus;
+            Operators[Lexer.TokenType.BitwiseOrEqual]  = BinaryOperatorNodeType.BinaryOr;
+            Operators[Lexer.TokenType.BitwiseAndEqual]  = BinaryOperatorNodeType.BinaryAnd;
+            Operators[Lexer.TokenType.BitwiseXorEqual]  = BinaryOperatorNodeType.BinaryXor;
+            Operators[Lexer.TokenType.RightShiftEqual] = BinaryOperatorNodeType.ShiftRight;
+            Operators[Lexer.TokenType.LeftShiftEqual] = BinaryOperatorNodeType.ShiftLeft;
         }
     }
 }
