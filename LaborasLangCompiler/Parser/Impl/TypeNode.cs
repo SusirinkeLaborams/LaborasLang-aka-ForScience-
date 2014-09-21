@@ -49,6 +49,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     {
                         case Lexer.TokenType.LeftParenthesis:
                         case Lexer.TokenType.RightParenthesis:
+                        case Lexer.TokenType.Comma:
                             break;
                         case Lexer.TokenType.Type:
                             args.Add(Parse(parser, parent, arg));
