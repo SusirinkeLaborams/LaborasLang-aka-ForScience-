@@ -34,12 +34,9 @@ Children:
 							Type: Symbol
 							Children:
 
-					Content: Type: FullSymbol, Start: 1, 10, End: 1, 11, Content: ""
-					Type: FullSymbol
+					Content: Type: Symbol, Start: 1, 10, End: 1, 11, Content: "a"
+					Type: Symbol
 					Children:
-						Content: Type: Symbol, Start: 1, 10, End: 1, 11, Content: "a"
-						Type: Symbol
-						Children:
 
 					Content: Type: RightParenthesis, Start: 1, 11, End: 1, 12, Content: ")"
 					Type: RightParenthesis
