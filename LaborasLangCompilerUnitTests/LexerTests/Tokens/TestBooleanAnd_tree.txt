@@ -28,8 +28,8 @@ Children:
 					Type: Symbol
 					Children:
 
-				Content: Type: And, Start: 1, 7, End: 1, 9, Content: "&&"
-				Type: And
+				Content: Type: LogicalAnd, Start: 1, 7, End: 1, 9, Content: "&&"
+				Type: LogicalAnd
 				Children:
 
 				Content: Type: False, Start: 1, 10, End: 1, 15, Content: "false"

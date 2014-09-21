@@ -1,1 +1,1 @@
-Type: BitwiseOr, Start: 1, 1, End: 1, 2, Content: "|" Type: BitwiseOrEqual, Start: 1, 3, End: 1, 5, Content: "|=" Type: Or, Start: 1, 6, End: 1, 8, Content: "||" 
+Type: BitwiseOr, Start: 1, 1, End: 1, 2, Content: "|" Type: BitwiseOrEqual, Start: 1, 3, End: 1, 5, Content: "|=" Type: LogicalOr, Start: 1, 6, End: 1, 8, Content: "||" Type: LogicalOrEqual, Start: 1, 9, End: 1, 12, Content: "||=" 

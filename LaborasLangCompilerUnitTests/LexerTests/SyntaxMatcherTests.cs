@@ -379,6 +379,18 @@ use Windows.Security.Cryptography.Core; use Windows;";
             ExecuteTest(source);
         }
 
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestLogicalOperators()
+        {
+            var source =
+@"a = true && false;
+b = false || true;
+a ||= true;
+b &&= a;";
+
+            ExecuteTest(source);
+        }
+
         #endregion tests
 
         private void ExecuteTest(string source, [CallerMemberName] string fileName = "")

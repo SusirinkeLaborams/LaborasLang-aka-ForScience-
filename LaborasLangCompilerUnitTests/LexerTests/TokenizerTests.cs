@@ -71,14 +71,14 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerBitwiseComplement()
         {
-            var source = @"~ ~=";
+            var source = @"~";
             ExecuteTest(source);
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerAnd()
         {
-            var source = @"& && &=";
+            var source = @"& && &= &&=";
             ExecuteTest(source);
         }
 
@@ -92,7 +92,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
         public void TestTokenizerOr()
         {
-            var source = @"| |= ||";
+            var source = @"| |= || ||=";
             ExecuteTest(source);
         }
 
