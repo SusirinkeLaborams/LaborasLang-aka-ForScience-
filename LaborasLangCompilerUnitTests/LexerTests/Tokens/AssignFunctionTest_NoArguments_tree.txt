@@ -1,8 +1,8 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 24, Content: ""
 Type: RootNode
 Children:
-	Content: Type: StatementNode, Start: 1, 1, End: 1, 24, Content: ""
-	Type: StatementNode
+	Content: Type: Value, Start: 1, 1, End: 1, 23, Content: ""
+	Type: Value
 	Children:
 		Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 23, Content: ""
 		Type: AssignmentOperatorNode
@@ -46,8 +46,8 @@ Children:
 					Type: LeftCurlyBrace
 					Children:
 
-					Content: Type: StatementNode, Start: 1, 15, End: 1, 21, Content: ""
-					Type: StatementNode
+					Content: Type: Value, Start: 1, 15, End: 1, 20, Content: ""
+					Type: Value
 					Children:
 						Content: Type: FunctionCallNode, Start: 1, 15, End: 1, 20, Content: ""
 						Type: FunctionCallNode
@@ -70,14 +70,14 @@ Children:
 								Type: RightParenthesis
 								Children:
 
-						Content: Type: EndOfLine, Start: 1, 20, End: 1, 21, Content: ";"
-						Type: EndOfLine
-						Children:
+					Content: Type: EndOfLine, Start: 1, 20, End: 1, 21, Content: ";"
+					Type: EndOfLine
+					Children:
 
 					Content: Type: RightCurlyBrace, Start: 1, 22, End: 1, 23, Content: "}"
 					Type: RightCurlyBrace
 					Children:
 
-		Content: Type: EndOfLine, Start: 1, 23, End: 1, 24, Content: ";"
-		Type: EndOfLine
-		Children:
+	Content: Type: EndOfLine, Start: 1, 23, End: 1, 24, Content: ";"
+	Type: EndOfLine
+	Children:

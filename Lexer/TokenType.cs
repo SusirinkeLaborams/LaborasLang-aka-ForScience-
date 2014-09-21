@@ -103,56 +103,30 @@
         
         //Non terminals
         NonTerminalToken,
-
-
-        StatementNode,
+        
         CodeBlockNode,
         DeclarationNode,
-        RootNode,
-
-        FullSymbol,
-        SubSymbol,
-
+        ReturnNode,
         Value,
-        VariableModifier,
 
+        RootNode,
+        
+        FullSymbol,
         Type,
-        TypeSubnode,
-        TypeAndSymbolSubnode,
 
         WhileLoop,
-
         Function,
-
         ConditionalSentence,
-        AssignmentOperator,
-
-        CommaAndValue,
-
-        EqualityOperator,
-        RelationalOperator,
-        ShiftOperator,
-        AdditiveOperator,
-        MultiplicativeOperator,
 
         AssignmentOperatorNode,
         OrNode,
-        OrSubnode,
         AndNode,
-        AndSubnode,
         BitwiseOrNode,
-        BitwiseOrSubnode,
         BitwiseXorNode,
-        BitwiseXorSubnode,
         BitwiseAndNode,
-        BitwiseAndSubnode,
         PeriodNode,
-        PeriodSubnode,
-        Operand,
         PrefixNode, 
         PostfixNode,
-        PrefixOperator,
-        PostfixOperator,
         InlineFunctionCallNode,
         FunctionCallNode,
         FunctionArgumentsList,
@@ -162,12 +136,41 @@
         AdditiveOperatorNode,
         MultiplicativeOperatorNode,
         ParenthesesNode,
-        
+
+        LexerInternalTokens,    // Lexer internal-only tokens start from here
+
+        StatementNode,
+        DeclarationSubnode,
+        ValueStatementNode,
+
+        TypeSubnode,
+        TypeAndSymbolSubnode,
+        CommaAndValue,
+        SubSymbol,
+
+        Operand,
+        VariableModifier,
+
+        PeriodSubnode,
         MultiplicativeOperatorSubnode,
         AdditiveOperatorSubnode,
         ShiftOperatorSubnode,
         RelationalOperatorSubnode,
         EqualityOperatorSubnode,
+        BitwiseAndSubnode,
+        BitwiseXorSubnode,
+        BitwiseOrSubnode,
+        AndSubnode,
+        OrSubnode,
+
+        PrefixOperator,
+        PostfixOperator,
+        MultiplicativeOperator,
+        AdditiveOperator,
+        ShiftOperator,
+        RelationalOperator,
+        EqualityOperator,
+        AssignmentOperator,
 
         TokenTypeCount
     }

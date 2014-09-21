@@ -1,8 +1,8 @@
 Content: Type: RootNode, Start: 2, 1, End: 4, 17, Content: ""
 Type: RootNode
 Children:
-	Content: Type: StatementNode, Start: 2, 1, End: 2, 13, Content: ""
-	Type: StatementNode
+	Content: Type: Value, Start: 2, 1, End: 2, 12, Content: ""
+	Type: Value
 	Children:
 		Content: Type: PeriodNode, Start: 2, 1, End: 2, 12, Content: ""
 		Type: PeriodNode
@@ -53,12 +53,12 @@ Children:
 					Type: RightParenthesis
 					Children:
 
-		Content: Type: EndOfLine, Start: 2, 12, End: 2, 13, Content: ";"
-		Type: EndOfLine
-		Children:
+	Content: Type: EndOfLine, Start: 2, 12, End: 2, 13, Content: ";"
+	Type: EndOfLine
+	Children:
 
-	Content: Type: StatementNode, Start: 3, 1, End: 3, 15, Content: ""
-	Type: StatementNode
+	Content: Type: Value, Start: 3, 1, End: 3, 14, Content: ""
+	Type: Value
 	Children:
 		Content: Type: AssignmentOperatorNode, Start: 3, 1, End: 3, 14, Content: ""
 		Type: AssignmentOperatorNode
@@ -106,12 +106,12 @@ Children:
 			Type: Integer
 			Children:
 
-		Content: Type: EndOfLine, Start: 3, 14, End: 3, 15, Content: ";"
-		Type: EndOfLine
-		Children:
+	Content: Type: EndOfLine, Start: 3, 14, End: 3, 15, Content: ";"
+	Type: EndOfLine
+	Children:
 
-	Content: Type: StatementNode, Start: 4, 1, End: 4, 17, Content: ""
-	Type: StatementNode
+	Content: Type: Value, Start: 4, 1, End: 4, 16, Content: ""
+	Type: Value
 	Children:
 		Content: Type: PeriodNode, Start: 4, 1, End: 4, 16, Content: ""
 		Type: PeriodNode
@@ -123,23 +123,26 @@ Children:
 				Type: LeftParenthesis
 				Children:
 
-				Content: Type: AdditiveOperatorNode, Start: 4, 2, End: 4, 9, Content: ""
-				Type: AdditiveOperatorNode
+				Content: Type: Value, Start: 4, 2, End: 4, 9, Content: ""
+				Type: Value
 				Children:
-					Content: Type: FullSymbol, Start: 4, 2, End: 4, 5, Content: ""
-					Type: FullSymbol
+					Content: Type: AdditiveOperatorNode, Start: 4, 2, End: 4, 9, Content: ""
+					Type: AdditiveOperatorNode
 					Children:
-						Content: Type: Symbol, Start: 4, 2, End: 4, 5, Content: "foo"
-						Type: Symbol
+						Content: Type: FullSymbol, Start: 4, 2, End: 4, 5, Content: ""
+						Type: FullSymbol
+						Children:
+							Content: Type: Symbol, Start: 4, 2, End: 4, 5, Content: "foo"
+							Type: Symbol
+							Children:
+
+						Content: Type: Plus, Start: 4, 6, End: 4, 7, Content: "+"
+						Type: Plus
 						Children:
 
-					Content: Type: Plus, Start: 4, 6, End: 4, 7, Content: "+"
-					Type: Plus
-					Children:
-
-					Content: Type: Integer, Start: 4, 8, End: 4, 9, Content: "5"
-					Type: Integer
-					Children:
+						Content: Type: Integer, Start: 4, 8, End: 4, 9, Content: "5"
+						Type: Integer
+						Children:
 
 				Content: Type: RightParenthesis, Start: 4, 9, End: 4, 10, Content: ")"
 				Type: RightParenthesis
@@ -170,6 +173,6 @@ Children:
 					Type: RightParenthesis
 					Children:
 
-		Content: Type: EndOfLine, Start: 4, 16, End: 4, 17, Content: ";"
-		Type: EndOfLine
-		Children:
+	Content: Type: EndOfLine, Start: 4, 16, End: 4, 17, Content: ";"
+	Type: EndOfLine
+	Children:
