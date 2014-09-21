@@ -52,12 +52,9 @@ Children:
 							Type: Symbol
 							Children:
 
-					Content: Type: FullSymbol, Start: 1, 22, End: 1, 23, Content: ""
-					Type: FullSymbol
+					Content: Type: Symbol, Start: 1, 22, End: 1, 23, Content: "p"
+					Type: Symbol
 					Children:
-						Content: Type: Symbol, Start: 1, 22, End: 1, 23, Content: "p"
-						Type: Symbol
-						Children:
 
 					Content: Type: RightParenthesis, Start: 1, 23, End: 1, 24, Content: ")"
 					Type: RightParenthesis

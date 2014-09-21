@@ -257,7 +257,7 @@ namespace Lexer
 
                     ParseRule(Type,
                         FullSymbol + LeftParenthesis + Type + ZeroOrMore(TypeSubnode) + RightParenthesis,
-                        FullSymbol + LeftParenthesis + Type + FullSymbol + ZeroOrMore(TypeAndSymbolSubnode) + RightParenthesis,
+                        FullSymbol + LeftParenthesis + Type + Symbol + ZeroOrMore(TypeAndSymbolSubnode) + RightParenthesis,
                         FullSymbol + Optional(LeftParenthesis + RightParenthesis)),
 
                     AlwaysCollapsableParseRule(TypeSubnode,
