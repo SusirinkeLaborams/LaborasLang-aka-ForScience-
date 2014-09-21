@@ -47,17 +47,11 @@ namespace LaborasLangCompiler.Parser.Impl
                     var arg = lexerNode.Children[i];
                     switch(arg.Type)
                     {
-                        case Lexer.TokenType.LeftBracket:
-                        case Lexer.TokenType.RightBracket:
+                        case Lexer.TokenType.LeftParenthesis:
+                        case Lexer.TokenType.RightParenthesis:
                             break;
                         case Lexer.TokenType.Type:
                             args.Add(Parse(parser, parent, arg));
-                            break;
-                        case Lexer.TokenType.TypeArgument:
-                            if (arg.ChildrenCount > 2)
-                                throw new ParseException(parser.GetSequencePoint(arg), "Method argument declaration instead of type");
-                            else
-                                args.Add(Parse(parser, parent, arg.Children[1]));
                             break;
                         case Lexer.TokenType.FullSymbol:
                             throw new ParseException(parser.GetSequencePoint(arg), "Method argument declaration instead of type");

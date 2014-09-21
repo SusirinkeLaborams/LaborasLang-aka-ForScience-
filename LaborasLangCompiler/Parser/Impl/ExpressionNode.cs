@@ -45,19 +45,11 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.BitwiseOrNode:
                 case Lexer.TokenType.BitwiseXorNode:
                 case Lexer.TokenType.BitwiseAndNode:
-                case Lexer.TokenType.NotEqualNode:
-                case Lexer.TokenType.EqualNode:
-                case Lexer.TokenType.LessOrEqualNode:
-                case Lexer.TokenType.MoreOrEqualNode:
-                case Lexer.TokenType.LessNode:
-                case Lexer.TokenType.MoreNode:
-                case Lexer.TokenType.RightShiftNode:
-                case Lexer.TokenType.LeftShiftNode:
-                case Lexer.TokenType.MinusNode:
-                case Lexer.TokenType.PlusNode:
-                case Lexer.TokenType.RemainderNode:
-                case Lexer.TokenType.DivisionNode:
-                case Lexer.TokenType.MultiplicationNode:
+                case Lexer.TokenType.EqualityOperatorNode:
+                case Lexer.TokenType.RelationalOperatorNode:
+                case Lexer.TokenType.ShiftOperatorNode:
+                case Lexer.TokenType.AdditiveOperatorNode:
+                case Lexer.TokenType.MultiplicativeOperatorNode:
                     return BinaryOperatorNode.Parse(parser, parent, lexerNode);
                 case Lexer.TokenType.PostfixNode:
                 case Lexer.TokenType.PrefixNode:

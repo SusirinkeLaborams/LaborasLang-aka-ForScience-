@@ -141,15 +141,8 @@ namespace LaborasLangCompiler.Parser.Impl
                     var param = lexerNode.Children[i];
                     switch(param.Type)
                     {
-                        case Lexer.TokenType.LeftBracket:
-                        case Lexer.TokenType.RightBracket:
-                            i++;
-                            break;
-                        case Lexer.TokenType.TypeArgument:
-                            if (param.ChildrenCount != 3)
-                                throw new ParseException(parser.GetSequencePoint(lexerNode), "Not a valid method definition, {0}", lexerNode.FullContent);
-                            else
-                                Params.Add(new FunctionParamInfo(param.Children[1], param.Children[2]));
+                        case Lexer.TokenType.LeftParenthesis:
+                        case Lexer.TokenType.RightParenthesis:
                             i++;
                             break;
                         case Lexer.TokenType.Type:

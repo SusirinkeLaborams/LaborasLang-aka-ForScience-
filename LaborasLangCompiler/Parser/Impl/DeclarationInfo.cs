@@ -39,11 +39,11 @@ namespace LaborasLangCompiler.Parser.Impl
                     case Lexer.TokenType.Symbol:
                         name = node;
                         break;
+                    case Lexer.TokenType.Type:
+                        type = node;
+                        break;
                     case Lexer.TokenType.Value:
-                        if (type.IsNull)
-                            type = node;
-                        else
-                            init = node;
+                        init = node;
                         break;
                     case Lexer.TokenType.Assignment:
                         break;

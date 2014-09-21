@@ -94,8 +94,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     switch(node.Type)
                     {
-                        case Lexer.TokenType.LeftCurlyBracket:
-                        case Lexer.TokenType.RightCurlyBracket:
+                        case Lexer.TokenType.LeftCurlyBrace:
+                        case Lexer.TokenType.RightCurlyBrace:
                             break;
                         case Lexer.TokenType.StatementNode:
                             instance.AddNode(parser, node.Children[0]);
