@@ -34,7 +34,8 @@ namespace Lexer
 
                 #region Syntax rules
 
-                    AlwaysCollapsableParseRule(StatementNode,       
+                    AlwaysCollapsableParseRule(StatementNode,
+                        UseNode,
                         DeclarationNode,
                         ValueStatementNode,
                         CodeBlockNode,
@@ -42,6 +43,9 @@ namespace Lexer
                         ReturnNode,
                         ConditionalSentence),
             
+                    ParseRule(UseNode,
+                        Use + FullSymbol + EndOfLine),
+
                     ParseRule(DeclarationNode,
                         DeclarationSubnode + EndOfLine),
             
@@ -52,7 +56,7 @@ namespace Lexer
                         Value + EndOfLine),
 
                     ParseRule(ReturnNode,
-                        Return + Value + EndOfLine),                        
+                        Return + Value + EndOfLine),
 
                     AlwaysCollapsableParseRule(VariableModifier, 
                         Const,
@@ -596,7 +600,7 @@ namespace Lexer
         private static Condition Struct { get { return TokenType.Struct; } }
         private static Condition True { get { return TokenType.True; } }
         private static Condition Try { get { return TokenType.Try; } }
-        private static Condition Using { get { return TokenType.Using; } }
+        private static Condition Use { get { return TokenType.Use; } }
         private static Condition Virtual { get { return TokenType.Virtual; } }
         private static Condition While { get { return TokenType.While; } }
         private static Condition Static { get { return TokenType.Static; } }
@@ -607,6 +611,7 @@ namespace Lexer
         private static Condition CodeBlockNode { get { return TokenType.CodeBlockNode; } }
         private static Condition DeclarationNode { get { return TokenType.DeclarationNode; } }
         private static Condition DeclarationSubnode { get { return TokenType.DeclarationSubnode; } }
+        private static Condition UseNode { get { return TokenType.UseNode; } }
         private static Condition ValueStatementNode { get { return TokenType.ValueStatementNode; } }
         private static Condition ReturnNode { get { return TokenType.ReturnNode; } }
         private static Condition RootNode { get { return TokenType.RootNode; } }

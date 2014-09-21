@@ -765,7 +765,7 @@ namespace Lexer
             keywordTypeMap[(FastStringBuilder)"throw"] = (int)TokenType.Throw;
             keywordTypeMap[(FastStringBuilder)"true"] = (int)TokenType.True;
             keywordTypeMap[(FastStringBuilder)"try"] = (int)TokenType.Try;
-            keywordTypeMap[(FastStringBuilder)"using"] = (int)TokenType.Using;
+            keywordTypeMap[(FastStringBuilder)"use"] = (int)TokenType.Use;
             keywordTypeMap[(FastStringBuilder)"virtual"] = (int)TokenType.Virtual;
             keywordTypeMap[(FastStringBuilder)"while"] = (int)TokenType.While;
         }

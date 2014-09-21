@@ -92,7 +92,7 @@
         Struct,
         True,
         Try,
-        Using,
+        Use,
         Virtual,
         While,
 
@@ -113,6 +113,7 @@
         
         FullSymbol,
         Type,
+        UseNode,
 
         WhileLoop,
         Function,
