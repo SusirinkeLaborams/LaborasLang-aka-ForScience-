@@ -198,24 +198,16 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             foreach (var node in lexerNode.Children)
             {
-                if (node.Type == Lexer.TokenType.StatementNode)
+                switch (node.Type)
                 {
-                    AstNode sentence = node.Children[0];
-                    switch (sentence.Type)
-                    {
-                        case Lexer.TokenType.Namespace:
-                            ImportNode.Parse(parser, this, sentence);
-                            break;
-                        case Lexer.TokenType.DeclarationNode:
-                            ParseDeclaration(sentence);
-                            break;
-                        default:
-                            throw new ParseException(parser.GetSequencePoint(sentence), "Import or declaration expected " + sentence.Type + " received");
-                    }
-                }
-                else
-                {
-                    throw new ParseException(parser.GetSequencePoint(node), "Node Sentence expected, " + node.Type + " received");
+                    case Lexer.TokenType.Namespace:
+                        ImportNode.Parse(parser, this, node);
+                        break;
+                    case Lexer.TokenType.DeclarationNode:
+                        ParseDeclaration(node);
+                        break;
+                    default:
+                        throw new ParseException(parser.GetSequencePoint(node), "Import or declaration expected " + node.Type + " received");
                 }
             }
         }

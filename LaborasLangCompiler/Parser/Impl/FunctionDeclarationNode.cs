@@ -147,14 +147,12 @@ namespace LaborasLangCompiler.Parser.Impl
                             break;
                         case Lexer.TokenType.Type:
                             var next = lexerNode.Children[i + 1];
-                            if(next.Type != Lexer.TokenType.FullSymbol)
+                            if(next.Type != Lexer.TokenType.Symbol)
                                 throw new ParseException(parser.GetSequencePoint(lexerNode), "Not a valid method definition, {0}", lexerNode.FullContent);
                             else
                                 Params.Add(new FunctionParamInfo(param, next));
                             i += 2;
                             break;
-                        case Lexer.TokenType.FullSymbol:
-                            throw new ParseException(parser.GetSequencePoint(lexerNode), "Not a valid method definition, {0}", lexerNode.FullContent);
                         default:
                             throw new ParseException(parser.GetSequencePoint(lexerNode), "Unexpected node type, {0} in {1}", param.Type, lexerNode.FullContent);
                     }

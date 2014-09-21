@@ -24,6 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
             switch (lexerNode.Type)
             {
                 case Lexer.TokenType.PeriodNode:
+                case Lexer.TokenType.FullSymbol:
                     return DotOperatorNode.Parse(parser, parent, lexerNode);
                 case Lexer.TokenType.Symbol:
                     return SymbolNode.Parse(parser, parent, lexerNode);

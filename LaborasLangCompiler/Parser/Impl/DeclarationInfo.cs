@@ -46,6 +46,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         init = node;
                         break;
                     case Lexer.TokenType.Assignment:
+                    case Lexer.TokenType.EndOfLine:
                         break;
                     default:
                         throw new ParseException(parser.GetSequencePoint(node), "Unexpected node in declaration: {0}", node.Type);

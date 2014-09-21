@@ -53,8 +53,6 @@ namespace LaborasLangCompiler.Parser.Impl
                         case Lexer.TokenType.Type:
                             args.Add(Parse(parser, parent, arg));
                             break;
-                        case Lexer.TokenType.FullSymbol:
-                            throw new ParseException(parser.GetSequencePoint(arg), "Method argument declaration instead of type");
                         default:
                             throw new ParseException(parser.GetSequencePoint(arg), "Unexpected node type, {0}", arg.Type);
                     }
