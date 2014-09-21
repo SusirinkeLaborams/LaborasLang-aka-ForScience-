@@ -18,21 +18,35 @@ Children:
 			Type: Assignment
 			Children:
 
-			Content: Type: MultiplicativeOperatorNode, Start: 1, 7, End: 1, 16, Content: ""
-			Type: MultiplicativeOperatorNode
+			Content: Type: AdditiveOperatorNode, Start: 1, 7, End: 1, 16, Content: ""
+			Type: AdditiveOperatorNode
 			Children:
-				Content: Type: Double, Start: 1, 7, End: 1, 10, Content: "1.5"
-				Type: Double
-				Children:
-
-				Content: Type: Divide, Start: 1, 11, End: 1, 12, Content: "/"
-				Type: Divide
-				Children:
-
-				Content: Type: FullSymbol, Start: 1, 13, End: 1, 16, Content: ""
+				Content: Type: FullSymbol, Start: 1, 7, End: 1, 8, Content: ""
 				Type: FullSymbol
 				Children:
-					Content: Type: Symbol, Start: 1, 13, End: 1, 16, Content: "bar"
+					Content: Type: Symbol, Start: 1, 7, End: 1, 8, Content: "a"
+					Type: Symbol
+					Children:
+
+				Content: Type: Plus, Start: 1, 9, End: 1, 10, Content: "+"
+				Type: Plus
+				Children:
+
+				Content: Type: FullSymbol, Start: 1, 11, End: 1, 12, Content: ""
+				Type: FullSymbol
+				Children:
+					Content: Type: Symbol, Start: 1, 11, End: 1, 12, Content: "b"
+					Type: Symbol
+					Children:
+
+				Content: Type: Plus, Start: 1, 13, End: 1, 14, Content: "+"
+				Type: Plus
+				Children:
+
+				Content: Type: FullSymbol, Start: 1, 15, End: 1, 16, Content: ""
+				Type: FullSymbol
+				Children:
+					Content: Type: Symbol, Start: 1, 15, End: 1, 16, Content: "a"
 					Type: Symbol
 					Children:
 

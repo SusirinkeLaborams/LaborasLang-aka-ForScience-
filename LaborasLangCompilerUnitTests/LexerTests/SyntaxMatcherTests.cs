@@ -71,6 +71,14 @@ foo()()();";
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void FullSymbolFunctionCall()
+        {
+            var source = @"Console.WriteLine(5);";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void DeclareFunctionTestNoParameters()
         {
             var source = @"int() foo;";
@@ -91,6 +99,7 @@ foo()()();";
             var source = @"auto foo = int(param p) {foo();};";
             ExecuteTest(source);
         }
+
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void DeclareVariable()
         {
@@ -339,7 +348,7 @@ foo().bar = 5;
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
-        public void TestBrackets()
+        public void TestParentheses()
         {
             var source = "foo = ((1 + 2) + 3 + bar(2 + 3));";
             ExecuteTest(source);
@@ -349,6 +358,13 @@ foo().bar = 5;
         public void TestPrefixSuffix()
         {
             var source = "foo = ++i++;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestNestedAddition()
+        {
+            var source = "foo = a + b + a;";
             ExecuteTest(source);
         }
 
@@ -363,13 +379,19 @@ foo().bar = 5;
             {
                 var tokens = Tokenizer.Tokenize(source, rootNode);
 
-                string tree;
+                string tree = null;
 
 #if REMATCH
                 tree = new SyntaxMatcher(tokens, rootNode).Match().ToString();
                 System.IO.File.WriteAllText(serializedTree, tree);
 #else
-                tree = System.IO.File.ReadAllText(serializedTree);
+                try
+                {
+                    tree = System.IO.File.ReadAllText(serializedTree);
+                }
+                catch
+                {
+                }
 #endif
 
                 var syntaxMatcher = new SyntaxMatcher(tokens, rootNode);

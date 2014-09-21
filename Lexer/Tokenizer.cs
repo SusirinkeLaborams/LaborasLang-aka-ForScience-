@@ -537,7 +537,7 @@ namespace Lexer
                         {
                             var token = rootNode.ProvideToken();
                             builder.Clear();
-                            token.Type = TokenType.LeftCurlyBracket;
+                            token.Type = TokenType.LeftCurlyBrace;
                             token.Start = Source.Location;
                             builder.Append(Source.Pop());
                             token.End = Source.Location;
@@ -551,7 +551,7 @@ namespace Lexer
                         {
                             var token = rootNode.ProvideToken();
                             builder.Clear();
-                            token.Type = TokenType.RightCurlyBracket;
+                            token.Type = TokenType.RightCurlyBrace;
                             token.Start = Source.Location;
                             builder.Append(Source.Pop());
                             token.End = Source.Location;
@@ -565,7 +565,7 @@ namespace Lexer
                         {
                             var token = rootNode.ProvideToken();
                             builder.Clear();
-                            token.Type = TokenType.LeftBracket;
+                            token.Type = TokenType.LeftParenthesis;
                             token.Start = Source.Location;
                             builder.Append(Source.Pop());
                             token.End = Source.Location;
@@ -579,7 +579,7 @@ namespace Lexer
                         {
                             var token = rootNode.ProvideToken();
                             builder.Clear();
-                            token.Type = TokenType.RightBracket;
+                            token.Type = TokenType.RightParenthesis;
                             token.Start = Source.Location;
                             builder.Append(Source.Pop());
                             token.End = Source.Location;

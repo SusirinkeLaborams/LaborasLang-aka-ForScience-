@@ -1,0 +1,111 @@
+Content: Type: RootNode, Start: 1, 1, End: 1, 34, Content: ""
+Type: RootNode
+Children:
+	Content: Type: StatementNode, Start: 1, 1, End: 1, 34, Content: ""
+	Type: StatementNode
+	Children:
+		Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 33, Content: ""
+		Type: AssignmentOperatorNode
+		Children:
+			Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
+			Type: FullSymbol
+			Children:
+				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+				Type: Symbol
+				Children:
+
+			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
+			Type: Assignment
+			Children:
+
+			Content: Type: ParenthesesNode, Start: 1, 7, End: 1, 33, Content: ""
+			Type: ParenthesesNode
+			Children:
+				Content: Type: LeftParenthesis, Start: 1, 7, End: 1, 8, Content: "("
+				Type: LeftParenthesis
+				Children:
+
+				Content: Type: AdditiveOperatorNode, Start: 1, 8, End: 1, 32, Content: ""
+				Type: AdditiveOperatorNode
+				Children:
+					Content: Type: ParenthesesNode, Start: 1, 8, End: 1, 15, Content: ""
+					Type: ParenthesesNode
+					Children:
+						Content: Type: LeftParenthesis, Start: 1, 8, End: 1, 9, Content: "("
+						Type: LeftParenthesis
+						Children:
+
+						Content: Type: AdditiveOperatorNode, Start: 1, 9, End: 1, 14, Content: ""
+						Type: AdditiveOperatorNode
+						Children:
+							Content: Type: Integer, Start: 1, 9, End: 1, 10, Content: "1"
+							Type: Integer
+							Children:
+
+							Content: Type: Plus, Start: 1, 11, End: 1, 12, Content: "+"
+							Type: Plus
+							Children:
+
+							Content: Type: Integer, Start: 1, 13, End: 1, 14, Content: "2"
+							Type: Integer
+							Children:
+
+						Content: Type: RightParenthesis, Start: 1, 14, End: 1, 15, Content: ")"
+						Type: RightParenthesis
+						Children:
+
+					Content: Type: Plus, Start: 1, 16, End: 1, 17, Content: "+"
+					Type: Plus
+					Children:
+
+					Content: Type: Integer, Start: 1, 18, End: 1, 19, Content: "3"
+					Type: Integer
+					Children:
+
+					Content: Type: Plus, Start: 1, 20, End: 1, 21, Content: "+"
+					Type: Plus
+					Children:
+
+					Content: Type: FunctionCallNode, Start: 1, 22, End: 1, 32, Content: ""
+					Type: FunctionCallNode
+					Children:
+						Content: Type: FullSymbol, Start: 1, 22, End: 1, 25, Content: ""
+						Type: FullSymbol
+						Children:
+							Content: Type: Symbol, Start: 1, 22, End: 1, 25, Content: "bar"
+							Type: Symbol
+							Children:
+
+						Content: Type: FunctionArgumentsList, Start: 1, 25, End: 1, 32, Content: ""
+						Type: FunctionArgumentsList
+						Children:
+							Content: Type: LeftParenthesis, Start: 1, 25, End: 1, 26, Content: "("
+							Type: LeftParenthesis
+							Children:
+
+							Content: Type: AdditiveOperatorNode, Start: 1, 26, End: 1, 31, Content: ""
+							Type: AdditiveOperatorNode
+							Children:
+								Content: Type: Integer, Start: 1, 26, End: 1, 27, Content: "2"
+								Type: Integer
+								Children:
+
+								Content: Type: Plus, Start: 1, 28, End: 1, 29, Content: "+"
+								Type: Plus
+								Children:
+
+								Content: Type: Integer, Start: 1, 30, End: 1, 31, Content: "3"
+								Type: Integer
+								Children:
+
+							Content: Type: RightParenthesis, Start: 1, 31, End: 1, 32, Content: ")"
+							Type: RightParenthesis
+							Children:
+
+				Content: Type: RightParenthesis, Start: 1, 32, End: 1, 33, Content: ")"
+				Type: RightParenthesis
+				Children:
+
+		Content: Type: EndOfLine, Start: 1, 33, End: 1, 34, Content: ";"
+		Type: EndOfLine
+		Children:

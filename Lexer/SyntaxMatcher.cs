@@ -1,5 +1,6 @@
 ﻿using Lexer.Containers;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -23,245 +24,251 @@ namespace Lexer
                 m_LastMatched = m_LastMatched < value ? value : m_LastMatched;
             }
         }
-        
+
         internal static ParseRule[] ParseRulePool
         {
             get
             {
-                return new ParseRule[]{
+                return new ParseRule[]
+                {
+
                 #region Syntax rules
-                new ParseRule(StatementNode,       
-                    DeclarationNode + EndOfLine,
-                    Value + EndOfLine,             
-                    CodeBlockNode,
-                    WhileLoop,
-                    Return + Value + EndOfLine,
-                    ConditionalSentence
-                    ),
+
+                    ParseRule(StatementNode,       
+                        DeclarationNode + EndOfLine,
+                        Value + EndOfLine,             
+                        CodeBlockNode,
+                        WhileLoop,
+                        Return + Value + EndOfLine,
+                        ConditionalSentence),
             
-                new ParseRule(DeclarationNode,
-                    ZeroOrMore(VariableModifier) + Value + Symbol + Assignment + Value,
-                    ZeroOrMore(VariableModifier) + Value + Symbol),
+                    ParseRule(DeclarationNode,
+                        ZeroOrMore(VariableModifier) + Type + Symbol + Optional(Assignment + Value)),
             
-                new ParseRule(VariableModifier, 
-                    Const,
-                    Internal,
-                    Private,
-                    Public,
-                    Protected,
-                    Static,
-                    Virtual),
+                    CollapsableParseRule(VariableModifier, 
+                        Const,
+                        Internal,
+                        Private,
+                        Public,
+                        Protected,
+                        Static,
+                        Virtual),
                                 
-                new ParseRule(AssignmentOperator,
-                    Assignment,
-                    BitwiseAndEqual,
-                    MinusEqual,
-                    NotEqual,
-                    PlusEqual,
-                    BitwiseComplementEqual,
-                    BitwiseXorEqual,
-                    BitwiseOrEqual,
-                    LeftShiftEqual,
-                    LessOrEqual,
-                    RightShiftEqual,
-                    MoreOrEqual,
-                    DivideEqual,
-                    MultiplyEqual,
-                    RemainderEqual,
-                    Equal),
+                    CollapsableParseRule(AssignmentOperator,
+                        Assignment,
+                        BitwiseAndEqual,
+                        MinusEqual,
+                        NotEqual,
+                        PlusEqual,
+                        BitwiseComplementEqual,
+                        BitwiseXorEqual,
+                        BitwiseOrEqual,
+                        LeftShiftEqual,
+                        LessOrEqual,
+                        RightShiftEqual,
+                        MoreOrEqual,
+                        DivideEqual,
+                        MultiplyEqual,
+                        RemainderEqual),
 
-                new ParseRule(CodeBlockNode,
-                    LeftCurlyBracket + OneOrMore(StatementNode) + RightCurlyBracket,
-                    LeftCurlyBracket + RightCurlyBracket),
+                    CollapsableParseRule(EqualityOperator,
+                        Equal,
+                        NotEqual),
 
-                new ParseRule(Value,
-                    AssignmentOperatorNode),
+                    CollapsableParseRule(RelationalOperator,
+                        More,
+                        Less,
+                        MoreOrEqual,
+                        LessOrEqual),
 
-                new ParseRule(AssignmentOperatorNode,
-                    OrNode + ZeroOrMore(AssignmentOperatorSubnode)),
-                    
-#region Operator BS
+                    CollapsableParseRule(ShiftOperator,
+                        LeftShift,
+                        RightShift),
 
-                    new ParseRule(AssignmentOperatorSubnode,
-                    AssignmentOperator + OrNode),
+                    CollapsableParseRule(AdditiveOperator,
+                        Plus,
+                        Minus),
 
-                    new ParseRule(OrNode,
-                    AndNode + ZeroOrMore(OrSubnode)),
+                    CollapsableParseRule(MultiplicativeOperator,
+                        Multiply,
+                        Divide,
+                        Remainder),
 
-                    new ParseRule(OrSubnode,
-                    Or + AndNode),
+                    CollapsableParseRule(PostfixOperator,
+                        PlusPlus, 
+                        MinusMinus),
 
-                    new ParseRule(AndNode,
-                    BitwiseOrNode + ZeroOrMore(AndSubnode)),
+                    CollapsableParseRule(PrefixOperator,
+                        PlusPlus, 
+                        MinusMinus, 
+                        Minus, 
+                        Not),
+                        
+                    CollapsableParseRule(CodeBlockNode,
+                        LeftCurlyBrace + ZeroOrMore(StatementNode) + RightCurlyBrace),
 
-                    new ParseRule(AndSubnode,
-                    And + BitwiseOrNode),
+                    #region Operators
 
-                    new ParseRule(BitwiseOrNode,
-                    BitwiseXorNode + ZeroOrMore(BitwiseOrSubnode)),
+                    /* Operator precedence:
+                            Parentheses
+                            Period
+                            PostfixOperator
+                            PrefixOperator
+                            MultiplicativeOperator (Remainder, Division, Multiplication)
+                            AdditiveOperator (Minus, Plus)
+                            ShiftOperator (LeftShift, RightShift)
+                            RelationalOperator (LessOrEqual, MoreOrEqual, Less, More)
+                            EqualityOperator (Equal, NotEqual)
+                            BitwiseAnd
+                            BitwiseXor
+                            BitwiseOr
+                            And
+                            Or
+                            Assignment operator
+                     */
 
-                    new ParseRule(BitwiseOrSubnode,
-                    BitwiseOr + BitwiseXorNode),
+                    CollapsableParseRule(ParenthesesNode,
+                        LeftParenthesis + Value + RightParenthesis,
+                        Operand),
 
-                    new ParseRule(BitwiseXorNode,
-                    BitwiseAndNode + ZeroOrMore(BitwiseXorSubnode)),
+                    CollapsableParseRule(PeriodNode,
+                        ParenthesesNode + ZeroOrMore(PeriodSubnode)),
 
-                    new ParseRule(BitwiseXorSubnode,
-                    BitwiseXor + BitwiseAndNode),
+                    AlwaysCollapsableParseRule(PeriodSubnode,
+                        Period + ParenthesesNode),
 
-                    new ParseRule(BitwiseAndNode,
-                    NotEqualNode + ZeroOrMore(BitwiseAndSubnode)),
+                    CollapsableParseRule(PostfixNode,
+                        PeriodNode + ZeroOrMore(PostfixOperator)),
 
-                    new ParseRule(BitwiseAndSubnode,
-                    BitwiseAnd + NotEqualNode),
-
-                    new ParseRule(NotEqualNode,
-                    EqualNode + ZeroOrMore(NotEqualSubnode)),
-
-                    new ParseRule(NotEqualSubnode,
-                    NotEqual + EqualNode),
-
-                    new ParseRule(EqualNode,
-                    LessOrEqualNode + ZeroOrMore(EqualSubnode)),
-
-                    new ParseRule(EqualSubnode,
-                    Equal + LessOrEqualNode),
-
-                    new ParseRule(LessOrEqualNode,
-                    MoreOrEqualNode + ZeroOrMore(LessOrEqualSubnode)),
-
-                    new ParseRule(LessOrEqualSubnode,
-                    LessOrEqual + MoreOrEqualNode),
-
-                    new ParseRule(MoreOrEqualNode,
-                    LessNode + ZeroOrMore(MoreOrEqualSubnode)),
-
-                    new ParseRule(MoreOrEqualSubnode,
-                    MoreOrEqual + LessNode),
-
-                    new ParseRule(LessNode,
-                    MoreNode + ZeroOrMore(LessSubnode)),
-
-                    new ParseRule(LessSubnode,
-                    Less + MoreNode),
-
-                    new ParseRule(MoreNode,
-                    RightShiftNode + ZeroOrMore(MoreSubnode)),
-
-                    new ParseRule(MoreSubnode,
-                    More + RightShiftNode),
-
-                    new ParseRule(RightShiftNode,
-                    LeftShiftNode + ZeroOrMore(RightShiftSubnode)),
-
-                    new ParseRule(RightShiftSubnode,
-                    RightShift + LeftShiftNode),
-
-                    new ParseRule(LeftShiftNode,
-                    MinusNode + ZeroOrMore(LeftShiftSubnode)),
-
-                    new ParseRule(LeftShiftSubnode,
-                    LeftShift + MinusNode),
-
-                    new ParseRule(MinusNode,
-                    PlusNode + ZeroOrMore(MinusSubnode)),
-
-                    new ParseRule(MinusSubnode,
-                    Minus + PlusNode),
-
-                    new ParseRule(PlusNode,
-                    RemainderNode + ZeroOrMore(PlusSubnode)),
-
-                    new ParseRule(PlusSubnode,
-                    Plus + RemainderNode),
-
-                    new ParseRule(RemainderNode,
-                    DivisionNode + ZeroOrMore(RemainderSubnode)),
-
-                    new ParseRule(RemainderSubnode,
-                    Remainder + DivisionNode),
-
-                    new ParseRule(DivisionNode,
-                    MultiplicationNode + ZeroOrMore(DivisionSubnode)),
-
-                    new ParseRule(DivisionSubnode,
-                    Divide + MultiplicationNode),
-
-                    new ParseRule(MultiplicationNode,
-                    PrefixNode + ZeroOrMore(MultiplicationSubnode)),
-
-                    new ParseRule(MultiplicationSubnode,
-                    Multiply + PrefixNode),
-
-                    new ParseRule(PrefixNode,
+                    CollapsableParseRule(PrefixNode,
                         ZeroOrMore(PrefixOperator) + PostfixNode),
 
-                    new ParseRule(PostfixNode,
-                        PeriodNode + ZeroOrMore(PostfixOperator)),
-#endregion
+                    CollapsableParseRule(MultiplicativeOperatorNode,
+                        PrefixNode + ZeroOrMore(MultiplicativeOperatorSubnode)),
+
+                    AlwaysCollapsableParseRule(MultiplicativeOperatorSubnode,
+                        MultiplicativeOperator + PrefixNode),
+
+                    CollapsableParseRule(AdditiveOperatorNode,
+                        MultiplicativeOperatorNode + ZeroOrMore(AdditiveOperatorSubnode)),
+
+                    AlwaysCollapsableParseRule(AdditiveOperatorSubnode,
+                        AdditiveOperator + MultiplicativeOperatorNode),
+
+                    CollapsableParseRule(ShiftOperatorNode,
+                        AdditiveOperatorNode + ZeroOrMore(ShiftOperatorSubnode)),
+
+                    AlwaysCollapsableParseRule(ShiftOperatorSubnode,
+                        ShiftOperator + AdditiveOperatorNode),
+
+                    CollapsableParseRule(RelationalOperatorNode,
+                        ShiftOperatorNode + ZeroOrMore(RelationalOperatorSubnode)),
+
+                    AlwaysCollapsableParseRule(RelationalOperatorSubnode,
+                        RelationalOperator + ShiftOperatorNode),
+
+                    CollapsableParseRule(EqualityOperatorNode,
+                        RelationalOperatorNode + ZeroOrMore(EqualityOperatorSubnode)),
+
+                    AlwaysCollapsableParseRule(EqualityOperatorSubnode,
+                        EqualityOperator + RelationalOperatorNode),
                         
-                    new ParseRule(PostfixOperator,
-                        PlusPlus, MinusMinus),
+                    CollapsableParseRule(BitwiseAndNode,
+                        EqualityOperatorNode + ZeroOrMore(BitwiseAndSubnode)),
 
-                    new ParseRule(PrefixOperator,
-                        PlusPlus, MinusMinus, Minus, Not),
+                    AlwaysCollapsableParseRule(BitwiseAndSubnode,
+                        BitwiseAnd + EqualityOperatorNode),
+                        
+                    CollapsableParseRule(BitwiseXorNode,
+                        BitwiseAndNode + ZeroOrMore(BitwiseXorSubnode)),
 
-                    new ParseRule(PeriodNode,
-                    Operand + ZeroOrMore(PeriodSubnode),
-                    LeftBracket + OrNode + RightBracket + ZeroOrMore(PeriodSubnode)),
+                    AlwaysCollapsableParseRule(BitwiseXorSubnode,
+                        BitwiseXor + BitwiseAndNode),
+                        
+                    CollapsableParseRule(BitwiseOrNode,
+                        BitwiseXorNode + ZeroOrMore(BitwiseOrSubnode)),
 
-                    new ParseRule(PeriodSubnode,
-                    Period + Operand,
-                    Period + LeftBracket + OrNode + RightBracket + ZeroOrMore(PeriodSubnode)),
+                    AlwaysCollapsableParseRule(BitwiseOrSubnode,
+                        BitwiseOr + BitwiseXorNode),
+                        
+                    CollapsableParseRule(AndNode,
+                        BitwiseOrNode + ZeroOrMore(AndSubnode)),
+
+                    AlwaysCollapsableParseRule(AndSubnode,
+                        And + BitwiseOrNode),
+                        
+                    CollapsableParseRule(OrNode,
+                        AndNode + ZeroOrMore(OrSubnode)),
+
+                    AlwaysCollapsableParseRule(OrSubnode,
+                        Or + AndNode),
 
 
+                    // Assignment operator is evaluated right to left
+                    CollapsableParseRule(AssignmentOperatorNode,
+                        PeriodNode + AssignmentOperator + AssignmentOperatorNode,
+                        OrNode),
+ 
+                    #endregion
 
-                new ParseRule(Operand,
-                    Function + ZeroOrMore(FunctionArgumentsList),
-                    Symbol + ZeroOrMore(FunctionArgumentsList),
-                    Float,
-                    Integer,
-                    Double,
-                    Long,
-                    StringLiteral,
-                    True,
-                    False),
+                    CollapsableParseRule(Value,
+                       AssignmentOperatorNode),
+                       
+                    CollapsableParseRule(Operand,
+                        InlineFunctionCallNode,
+                        Function,
+                        FunctionCallNode,
+                        FullSymbol,
+                        Float,
+                        Integer,
+                        Double,
+                        Long,
+                        StringLiteral,
+                        True,
+                        False),
+                        
+                    ParseRule(InlineFunctionCallNode,
+                        Function + OneOrMore(FunctionArgumentsList)),
 
-                new ParseRule(FunctionArgumentsList,
-                    LeftBracket + RightBracket,
-                    LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket),
+                    ParseRule(FunctionCallNode,
+                        FullSymbol + OneOrMore(FunctionArgumentsList)),
 
-                new ParseRule(CommaAndValue,
-                    Comma + Value),
+                    ParseRule(FunctionArgumentsList,
+                        LeftParenthesis + RightParenthesis,
+                        LeftParenthesis + Value + ZeroOrMore(CommaAndValue) + RightParenthesis),
 
-                new ParseRule(FullSymbol,
-                    Symbol + OneOrMore(SubSymbol),
-                    Symbol),
+                    AlwaysCollapsableParseRule(CommaAndValue,
+                        Comma + Value),
 
-                new ParseRule(SubSymbol,
-                    Period + Symbol),
+                    ParseRule(FullSymbol,
+                        Symbol + ZeroOrMore(SubSymbol)),
 
-                new ParseRule(Type,
-                    FullSymbol + LeftBracket + Type + ZeroOrMore(TypeArgument) + RightBracket,
-                    FullSymbol + LeftBracket + Type + FullSymbol + ZeroOrMore(TypeArgument) + RightBracket,
-                    FullSymbol + LeftBracket + RightBracket,
-                    FullSymbol),
+                    AlwaysCollapsableParseRule(SubSymbol,
+                        Period + Symbol),
 
-                new ParseRule(TypeArgument,
-                    Comma + Type + FullSymbol,
-                    Comma + Type),
+                    ParseRule(Type,
+                        FullSymbol + LeftParenthesis + Type + ZeroOrMore(TypeSubnode) + RightParenthesis,
+                        FullSymbol + LeftParenthesis + Type + FullSymbol + ZeroOrMore(TypeAndSymbolSubnode) + RightParenthesis,
+                        FullSymbol + Optional(LeftParenthesis + RightParenthesis)),
 
-                new ParseRule(Function,
-                    Type + CodeBlockNode),                    
+                    AlwaysCollapsableParseRule(TypeSubnode,
+                        Comma + Type),
 
-                new ParseRule(WhileLoop,
-                    While + LeftBracket + Value + RightBracket + StatementNode),
+                    AlwaysCollapsableParseRule(TypeAndSymbolSubnode,
+                        Comma + Type + Symbol),
 
-                new ParseRule(ConditionalSentence,
-                    If + LeftBracket + Value + RightBracket + StatementNode + Else + StatementNode,
-                    If + LeftBracket + Value + RightBracket + StatementNode),
+                    ParseRule(Function,
+                        Type + CodeBlockNode),                    
+
+                    ParseRule(WhileLoop,
+                        While + LeftParenthesis + Value + RightParenthesis + StatementNode),
+
+                    ParseRule(ConditionalSentence,
+                        If + LeftParenthesis + Value + RightParenthesis + StatementNode + Optional(Else + StatementNode)),
+
                 #endregion
-                    };
+
+                };
             }
         }
 
@@ -310,8 +317,15 @@ namespace Lexer
             {
                 if (!MatchRule(rule[i], sourceOffset, ref node, ref tokensConsumed))
                 {
-                    node.Cleanup(m_RootNode);
-                    return default(AstNode);
+                    if (rule[i].Type == ConditionType.OptionalFromThis)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        node.Cleanup(m_RootNode);
+                        return default(AstNode);
+                    }
                 }
             }
 
@@ -342,7 +356,7 @@ namespace Lexer
         {
             foreach (var alternative in m_ParseRules[(int)token.Token].RequiredTokens)
             {
-                if (MatchCondition(token, sourceOffset, alternative, ref node, ref tokensConsumed))
+                if (MatchCondition(token, sourceOffset, alternative, m_ParseRules[(int)token.Token].CollapsableLevel, ref node, ref tokensConsumed))
                 {
                     return true;
                 }
@@ -353,7 +367,7 @@ namespace Lexer
 
         private bool MatchRule(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)
         {
-            if (token.Type == ConditionType.One)
+            if (token.Type < ConditionType.OneOrMore)   // Either One or OptionalFromThis
             {
                 return sourceOffset + tokensConsumed < m_Source.Length
                     && (token.Token.IsTerminal()
@@ -395,7 +409,7 @@ namespace Lexer
         }
 
 
-        private bool MatchCondition(Condition token, int sourceOffset, Condition[] alternative, ref AstNode node, ref int tokensConsumed)
+        private bool MatchCondition(Condition token, int sourceOffset, Condition[] alternative, int collapsableLevel, ref AstNode node, ref int tokensConsumed)
         {
             var lookupTokensConsumed = 0;
             AstNode matchedNode = Match(sourceOffset + tokensConsumed, alternative, ref lookupTokensConsumed);
@@ -406,8 +420,19 @@ namespace Lexer
             }
             else
             {
-                matchedNode.Type = token.Token;
-                node.AddChild(m_RootNode, matchedNode);
+                if (collapsableLevel == matchedNode.ChildrenCount)
+                {
+                    for (int i = 0; i < collapsableLevel; i++)
+                    {
+                        node.AddChild(m_RootNode, matchedNode.Children[i]);
+                    }
+                }
+                else
+                {
+                    matchedNode.Type = token.Token;
+                    node.AddChild(m_RootNode, matchedNode);
+                }
+
                 tokensConsumed += lookupTokensConsumed;
                 LastMatched = tokensConsumed;
                 return true;
@@ -422,6 +447,32 @@ namespace Lexer
         private static Condition ZeroOrMore(Condition c)
         {
             return new Condition(c, ConditionType.ZeroOrMore);
+        }
+
+        private static ConditionList Optional(ConditionList conditions)
+        {
+#if DEBUG
+            Debug.Assert(conditions.Count > 0);
+#endif
+            var firstCondition = conditions[0];
+            firstCondition.Type = ConditionType.OptionalFromThis;
+            conditions[0] = firstCondition;
+            return conditions;
+        }
+
+        private static ParseRule ParseRule(Condition result, params List<Condition>[] requiredTokens)
+        {
+            return new ParseRule(result, 0, requiredTokens);
+        }
+
+        private static ParseRule CollapsableParseRule(Condition result, params List<Condition>[] requiredTokens)
+        {
+            return new ParseRule(result, 1, requiredTokens);
+        }
+
+        private static ParseRule AlwaysCollapsableParseRule(Condition result, List<Condition> requiredTokens)
+        {
+            return new ParseRule(result, requiredTokens.Count, requiredTokens);
         }
 
         #region TokenProperties
@@ -465,10 +516,10 @@ namespace Lexer
         private static Condition RemainderEqual { get { return TokenType.RemainderEqual; } }
         private static Condition Assignment { get { return TokenType.Assignment; } }
         private static Condition Equal { get { return TokenType.Equal; } }
-        private static Condition LeftCurlyBracket { get { return TokenType.LeftCurlyBracket; } }
-        private static Condition RightCurlyBracket { get { return TokenType.RightCurlyBracket; } }
-        private static Condition LeftBracket { get { return TokenType.LeftBracket; } }
-        private static Condition RightBracket { get { return TokenType.RightBracket; } }
+        private static Condition LeftCurlyBrace { get { return TokenType.LeftCurlyBrace; } }
+        private static Condition RightCurlyBrace { get { return TokenType.RightCurlyBrace; } }
+        private static Condition LeftParenthesis { get { return TokenType.LeftParenthesis; } }
+        private static Condition RightParenthesis { get { return TokenType.RightParenthesis; } }
         private static Condition Unknown { get { return TokenType.Unknown; } }
         private static Condition Integer { get { return TokenType.Integer; } }
         private static Condition Float { get { return TokenType.Float; } }
@@ -517,7 +568,6 @@ namespace Lexer
         private static Condition Virtual { get { return TokenType.Virtual; } }
         private static Condition While { get { return TokenType.While; } }
         private static Condition Static { get { return TokenType.Static; } }
-        private static Condition Constant { get { return TokenType.Constant; } }
         private static Condition Private { get { return TokenType.Private; } }
         private static Condition Public { get { return TokenType.Public; } }
         private static Condition NonTerminalToken { get { return TokenType.NonTerminalToken; } }
@@ -531,13 +581,13 @@ namespace Lexer
         private static Condition Type { get { return TokenType.Type; } }
         private static Condition VariableModifier { get { return TokenType.VariableModifier; } }
         private static Condition WhileLoop { get { return TokenType.WhileLoop; } }
-        private static Condition TypeArgument { get { return TokenType.TypeArgument; } }
+        private static Condition TypeSubnode { get { return TokenType.TypeSubnode; } }
+        private static Condition TypeAndSymbolSubnode { get { return TokenType.TypeAndSymbolSubnode; } }        
         private static Condition Function { get { return TokenType.Function; } }
         private static Condition ConditionalSentence { get { return TokenType.ConditionalSentence; } }
         private static Condition AssignmentOperator { get { return TokenType.AssignmentOperator; } }
         private static Condition CommaAndValue { get { return TokenType.CommaAndValue; } }
         private static Condition AssignmentOperatorNode { get { return TokenType.AssignmentOperatorNode; } }
-        private static Condition AssignmentOperatorSubnode { get { return TokenType.AssignmentOperatorSubnode; } }
         private static Condition OrNode { get { return TokenType.OrNode; } }
         private static Condition OrSubnode { get { return TokenType.OrSubnode; } }
         private static Condition AndNode { get { return TokenType.AndNode; } }
@@ -548,32 +598,26 @@ namespace Lexer
         private static Condition BitwiseXorSubnode { get { return TokenType.BitwiseXorSubnode; } }
         private static Condition BitwiseAndNode { get { return TokenType.BitwiseAndNode; } }
         private static Condition BitwiseAndSubnode { get { return TokenType.BitwiseAndSubnode; } }
-        private static Condition NotEqualNode { get { return TokenType.NotEqualNode; } }
-        private static Condition NotEqualSubnode { get { return TokenType.NotEqualSubnode; } }
-        private static Condition EqualNode { get { return TokenType.EqualNode; } }
-        private static Condition EqualSubnode { get { return TokenType.EqualSubnode; } }
-        private static Condition LessOrEqualNode { get { return TokenType.LessOrEqualNode; } }
-        private static Condition LessOrEqualSubnode { get { return TokenType.LessOrEqualSubnode; } }
-        private static Condition MoreOrEqualNode { get { return TokenType.MoreOrEqualNode; } }
-        private static Condition MoreOrEqualSubnode { get { return TokenType.MoreOrEqualSubnode; } }
-        private static Condition LessNode { get { return TokenType.LessNode; } }
-        private static Condition LessSubnode { get { return TokenType.LessSubnode; } }
-        private static Condition MoreNode { get { return TokenType.MoreNode; } }
-        private static Condition MoreSubnode { get { return TokenType.MoreSubnode; } }
-        private static Condition RightShiftNode { get { return TokenType.RightShiftNode; } }
-        private static Condition RightShiftSubnode { get { return TokenType.RightShiftSubnode; } }
-        private static Condition LeftShiftNode { get { return TokenType.LeftShiftNode; } }
-        private static Condition LeftShiftSubnode { get { return TokenType.LeftShiftSubnode; } }
-        private static Condition MinusNode { get { return TokenType.MinusNode; } }
-        private static Condition MinusSubnode { get { return TokenType.MinusSubnode; } }
-        private static Condition PlusNode { get { return TokenType.PlusNode; } }
-        private static Condition PlusSubnode { get { return TokenType.PlusSubnode; } }
-        private static Condition RemainderNode { get { return TokenType.RemainderNode; } }
-        private static Condition RemainderSubnode { get { return TokenType.RemainderSubnode; } }
-        private static Condition DivisionNode { get { return TokenType.DivisionNode; } }
-        private static Condition DivisionSubnode { get { return TokenType.DivisionSubnode; } }
-        private static Condition MultiplicationNode { get { return TokenType.MultiplicationNode; } }
-        private static Condition MultiplicationSubnode { get { return TokenType.MultiplicationSubnode; } }
+
+        private static Condition EqualityOperatorNode { get { return TokenType.EqualityOperatorNode; } }
+        private static Condition RelationalOperatorNode { get { return TokenType.RelationalOperatorNode; } }
+        private static Condition ShiftOperatorNode { get { return TokenType.ShiftOperatorNode; } }
+        private static Condition AdditiveOperatorNode { get { return TokenType.AdditiveOperatorNode; } }
+        private static Condition MultiplicativeOperatorNode { get { return TokenType.MultiplicativeOperatorNode; } }
+        private static Condition ParenthesesNode { get { return TokenType.ParenthesesNode; } }
+
+        private static Condition MultiplicativeOperatorSubnode { get { return TokenType.MultiplicativeOperatorSubnode; } }
+        private static Condition AdditiveOperatorSubnode { get { return TokenType.AdditiveOperatorSubnode; } }
+        private static Condition ShiftOperatorSubnode { get { return TokenType.ShiftOperatorSubnode; } }
+        private static Condition RelationalOperatorSubnode { get { return TokenType.RelationalOperatorSubnode; } }
+        private static Condition EqualityOperatorSubnode { get { return TokenType.EqualityOperatorSubnode; } }
+        
+        private static Condition EqualityOperator { get { return TokenType.EqualityOperator; } }
+        private static Condition RelationalOperator { get { return TokenType.RelationalOperator; } }
+        private static Condition ShiftOperator { get { return TokenType.ShiftOperator; } }
+        private static Condition AdditiveOperator { get { return TokenType.AdditiveOperator; } }
+        private static Condition MultiplicativeOperator { get { return TokenType.MultiplicativeOperator; } }
+
         private static Condition PeriodNode { get { return TokenType.PeriodNode; } }
         private static Condition PeriodSubnode { get { return TokenType.PeriodSubnode; } }
         private static Condition Operand { get { return TokenType.Operand; } }
@@ -581,6 +625,8 @@ namespace Lexer
         private static Condition PostfixNode { get { return TokenType.PostfixNode; } }
         private static Condition PostfixOperator { get { return TokenType.PostfixOperator; } }
         private static Condition PrefixOperator { get { return TokenType.PrefixOperator; } }
+        private static Condition InlineFunctionCallNode { get { return TokenType.InlineFunctionCallNode; } }
+        private static Condition FunctionCallNode { get { return TokenType.FunctionCallNode; } }
         private static Condition FunctionArgumentsList { get { return TokenType.FunctionArgumentsList; } }
         #endregion
 
