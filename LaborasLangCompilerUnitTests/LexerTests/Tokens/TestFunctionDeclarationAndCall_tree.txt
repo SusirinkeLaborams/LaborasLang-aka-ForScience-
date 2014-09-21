@@ -1,8 +1,8 @@
 Content: Type: RootNode, Start: 1, 1, End: 5, 4, Content: ""
 Type: RootNode
 Children:
-	Content: Type: StatementNode, Start: 1, 1, End: 5, 4, Content: ""
-	Type: StatementNode
+	Content: Type: Value, Start: 1, 1, End: 5, 3, Content: ""
+	Type: Value
 	Children:
 		Content: Type: InlineFunctionCallNode, Start: 1, 1, End: 5, 3, Content: ""
 		Type: InlineFunctionCallNode
@@ -52,8 +52,8 @@ Children:
 					Type: LeftCurlyBrace
 					Children:
 
-					Content: Type: StatementNode, Start: 1, 13, End: 1, 19, Content: ""
-					Type: StatementNode
+					Content: Type: Value, Start: 1, 13, End: 1, 18, Content: ""
+					Type: Value
 					Children:
 						Content: Type: AssignmentOperatorNode, Start: 1, 13, End: 1, 18, Content: ""
 						Type: AssignmentOperatorNode
@@ -73,9 +73,9 @@ Children:
 							Type: Integer
 							Children:
 
-						Content: Type: EndOfLine, Start: 1, 18, End: 1, 19, Content: ";"
-						Type: EndOfLine
-						Children:
+					Content: Type: EndOfLine, Start: 1, 18, End: 1, 19, Content: ";"
+					Type: EndOfLine
+					Children:
 
 					Content: Type: RightCurlyBrace, Start: 1, 19, End: 1, 20, Content: "}"
 					Type: RightCurlyBrace
@@ -88,9 +88,12 @@ Children:
 				Type: LeftParenthesis
 				Children:
 
-				Content: Type: Integer, Start: 2, 2, End: 2, 3, Content: "5"
-				Type: Integer
+				Content: Type: Value, Start: 2, 2, End: 2, 3, Content: ""
+				Type: Value
 				Children:
+					Content: Type: Integer, Start: 2, 2, End: 2, 3, Content: "5"
+					Type: Integer
+					Children:
 
 				Content: Type: RightParenthesis, Start: 2, 3, End: 2, 4, Content: ")"
 				Type: RightParenthesis
@@ -129,6 +132,6 @@ Children:
 				Type: RightParenthesis
 				Children:
 
-		Content: Type: EndOfLine, Start: 5, 3, End: 5, 4, Content: ";"
-		Type: EndOfLine
-		Children:
+	Content: Type: EndOfLine, Start: 5, 3, End: 5, 4, Content: ";"
+	Type: EndOfLine
+	Children:

@@ -1,20 +1,20 @@
 Content: Type: RootNode, Start: 1, 1, End: 2, 45, Content: ""
 Type: RootNode
 Children:
-	Content: Type: StatementNode, Start: 1, 1, End: 1, 29, Content: ""
-	Type: StatementNode
+	Content: Type: WhileLoop, Start: 1, 1, End: 1, 29, Content: ""
+	Type: WhileLoop
 	Children:
-		Content: Type: WhileLoop, Start: 1, 1, End: 1, 29, Content: ""
-		Type: WhileLoop
+		Content: Type: While, Start: 1, 1, End: 1, 6, Content: "while"
+		Type: While
 		Children:
-			Content: Type: While, Start: 1, 1, End: 1, 6, Content: "while"
-			Type: While
-			Children:
 
-			Content: Type: LeftParenthesis, Start: 1, 6, End: 1, 7, Content: "("
-			Type: LeftParenthesis
-			Children:
+		Content: Type: LeftParenthesis, Start: 1, 6, End: 1, 7, Content: "("
+		Type: LeftParenthesis
+		Children:
 
+		Content: Type: Value, Start: 1, 7, End: 1, 16, Content: ""
+		Type: Value
+		Children:
 			Content: Type: FullSymbol, Start: 1, 7, End: 1, 16, Content: ""
 			Type: FullSymbol
 			Children:
@@ -22,52 +22,52 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: RightParenthesis, Start: 1, 16, End: 1, 17, Content: ")"
-			Type: RightParenthesis
-			Children:
-
-			Content: Type: StatementNode, Start: 1, 18, End: 1, 29, Content: ""
-			Type: StatementNode
-			Children:
-				Content: Type: FunctionCallNode, Start: 1, 18, End: 1, 28, Content: ""
-				Type: FunctionCallNode
-				Children:
-					Content: Type: FullSymbol, Start: 1, 18, End: 1, 26, Content: ""
-					Type: FullSymbol
-					Children:
-						Content: Type: Symbol, Start: 1, 18, End: 1, 26, Content: "function"
-						Type: Symbol
-						Children:
-
-					Content: Type: FunctionArgumentsList, Start: 1, 26, End: 1, 28, Content: ""
-					Type: FunctionArgumentsList
-					Children:
-						Content: Type: LeftParenthesis, Start: 1, 26, End: 1, 27, Content: "("
-						Type: LeftParenthesis
-						Children:
-
-						Content: Type: RightParenthesis, Start: 1, 27, End: 1, 28, Content: ")"
-						Type: RightParenthesis
-						Children:
-
-				Content: Type: EndOfLine, Start: 1, 28, End: 1, 29, Content: ";"
-				Type: EndOfLine
-				Children:
-
-	Content: Type: StatementNode, Start: 2, 13, End: 2, 45, Content: ""
-	Type: StatementNode
-	Children:
-		Content: Type: WhileLoop, Start: 2, 13, End: 2, 45, Content: ""
-		Type: WhileLoop
+		Content: Type: RightParenthesis, Start: 1, 16, End: 1, 17, Content: ")"
+		Type: RightParenthesis
 		Children:
-			Content: Type: While, Start: 2, 13, End: 2, 18, Content: "while"
-			Type: While
-			Children:
 
-			Content: Type: LeftParenthesis, Start: 2, 18, End: 2, 19, Content: "("
-			Type: LeftParenthesis
+		Content: Type: Value, Start: 1, 18, End: 1, 28, Content: ""
+		Type: Value
+		Children:
+			Content: Type: FunctionCallNode, Start: 1, 18, End: 1, 28, Content: ""
+			Type: FunctionCallNode
 			Children:
+				Content: Type: FullSymbol, Start: 1, 18, End: 1, 26, Content: ""
+				Type: FullSymbol
+				Children:
+					Content: Type: Symbol, Start: 1, 18, End: 1, 26, Content: "function"
+					Type: Symbol
+					Children:
 
+				Content: Type: FunctionArgumentsList, Start: 1, 26, End: 1, 28, Content: ""
+				Type: FunctionArgumentsList
+				Children:
+					Content: Type: LeftParenthesis, Start: 1, 26, End: 1, 27, Content: "("
+					Type: LeftParenthesis
+					Children:
+
+					Content: Type: RightParenthesis, Start: 1, 27, End: 1, 28, Content: ")"
+					Type: RightParenthesis
+					Children:
+
+		Content: Type: EndOfLine, Start: 1, 28, End: 1, 29, Content: ";"
+		Type: EndOfLine
+		Children:
+
+	Content: Type: WhileLoop, Start: 2, 13, End: 2, 45, Content: ""
+	Type: WhileLoop
+	Children:
+		Content: Type: While, Start: 2, 13, End: 2, 18, Content: "while"
+		Type: While
+		Children:
+
+		Content: Type: LeftParenthesis, Start: 2, 18, End: 2, 19, Content: "("
+		Type: LeftParenthesis
+		Children:
+
+		Content: Type: Value, Start: 2, 19, End: 2, 30, Content: ""
+		Type: Value
+		Children:
 			Content: Type: FunctionCallNode, Start: 2, 19, End: 2, 30, Content: ""
 			Type: FunctionCallNode
 			Children:
@@ -89,48 +89,45 @@ Children:
 					Type: RightParenthesis
 					Children:
 
-			Content: Type: RightParenthesis, Start: 2, 30, End: 2, 31, Content: ")"
-			Type: RightParenthesis
+		Content: Type: RightParenthesis, Start: 2, 30, End: 2, 31, Content: ")"
+		Type: RightParenthesis
+		Children:
+
+		Content: Type: CodeBlockNode, Start: 2, 32, End: 2, 45, Content: ""
+		Type: CodeBlockNode
+		Children:
+			Content: Type: LeftCurlyBrace, Start: 2, 32, End: 2, 33, Content: "{"
+			Type: LeftCurlyBrace
 			Children:
 
-			Content: Type: StatementNode, Start: 2, 32, End: 2, 45, Content: ""
-			Type: StatementNode
+			Content: Type: Value, Start: 2, 33, End: 2, 43, Content: ""
+			Type: Value
 			Children:
-				Content: Type: CodeBlockNode, Start: 2, 32, End: 2, 45, Content: ""
-				Type: CodeBlockNode
+				Content: Type: FunctionCallNode, Start: 2, 33, End: 2, 43, Content: ""
+				Type: FunctionCallNode
 				Children:
-					Content: Type: LeftCurlyBrace, Start: 2, 32, End: 2, 33, Content: "{"
-					Type: LeftCurlyBrace
+					Content: Type: FullSymbol, Start: 2, 33, End: 2, 41, Content: ""
+					Type: FullSymbol
 					Children:
-
-					Content: Type: StatementNode, Start: 2, 33, End: 2, 44, Content: ""
-					Type: StatementNode
-					Children:
-						Content: Type: FunctionCallNode, Start: 2, 33, End: 2, 43, Content: ""
-						Type: FunctionCallNode
-						Children:
-							Content: Type: FullSymbol, Start: 2, 33, End: 2, 41, Content: ""
-							Type: FullSymbol
-							Children:
-								Content: Type: Symbol, Start: 2, 33, End: 2, 41, Content: "function"
-								Type: Symbol
-								Children:
-
-							Content: Type: FunctionArgumentsList, Start: 2, 41, End: 2, 43, Content: ""
-							Type: FunctionArgumentsList
-							Children:
-								Content: Type: LeftParenthesis, Start: 2, 41, End: 2, 42, Content: "("
-								Type: LeftParenthesis
-								Children:
-
-								Content: Type: RightParenthesis, Start: 2, 42, End: 2, 43, Content: ")"
-								Type: RightParenthesis
-								Children:
-
-						Content: Type: EndOfLine, Start: 2, 43, End: 2, 44, Content: ";"
-						Type: EndOfLine
+						Content: Type: Symbol, Start: 2, 33, End: 2, 41, Content: "function"
+						Type: Symbol
 						Children:
 
-					Content: Type: RightCurlyBrace, Start: 2, 44, End: 2, 45, Content: "}"
-					Type: RightCurlyBrace
+					Content: Type: FunctionArgumentsList, Start: 2, 41, End: 2, 43, Content: ""
+					Type: FunctionArgumentsList
 					Children:
+						Content: Type: LeftParenthesis, Start: 2, 41, End: 2, 42, Content: "("
+						Type: LeftParenthesis
+						Children:
+
+						Content: Type: RightParenthesis, Start: 2, 42, End: 2, 43, Content: ")"
+						Type: RightParenthesis
+						Children:
+
+			Content: Type: EndOfLine, Start: 2, 43, End: 2, 44, Content: ";"
+			Type: EndOfLine
+			Children:
+
+			Content: Type: RightCurlyBrace, Start: 2, 44, End: 2, 45, Content: "}"
+			Type: RightCurlyBrace
+			Children:

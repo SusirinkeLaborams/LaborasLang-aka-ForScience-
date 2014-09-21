@@ -1,8 +1,8 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 15, Content: ""
 Type: RootNode
 Children:
-	Content: Type: StatementNode, Start: 1, 1, End: 1, 15, Content: ""
-	Type: StatementNode
+	Content: Type: Value, Start: 1, 1, End: 1, 14, Content: ""
+	Type: Value
 	Children:
 		Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 14, Content: ""
 		Type: AssignmentOperatorNode
@@ -36,6 +36,6 @@ Children:
 				Type: Integer
 				Children:
 
-		Content: Type: EndOfLine, Start: 1, 14, End: 1, 15, Content: ";"
-		Type: EndOfLine
-		Children:
+	Content: Type: EndOfLine, Start: 1, 14, End: 1, 15, Content: ";"
+	Type: EndOfLine
+	Children:

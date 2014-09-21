@@ -72,14 +72,21 @@ namespace Lexer
             return list;
         }
     }
+    enum ParseRuleCollapsableLevel
+    {
+        Never,
+        OneChild,
+        Always
+    }
 
     struct ParseRule
     {
         public TokenType Result;
         public Condition[][] RequiredTokens { get; private set; }
-        public int CollapsableLevel { get; private set; }
+        public ParseRuleCollapsableLevel CollapsableLevel { get; private set; }
 
-        public ParseRule(Condition result, int collapsableLevel, params List<Condition>[] requiredTokens) : this()
+        public ParseRule(Condition result, ParseRuleCollapsableLevel collapsableLevel, params List<Condition>[] requiredTokens)
+            : this()
         {
             Result = result.Token;
             CollapsableLevel = collapsableLevel;

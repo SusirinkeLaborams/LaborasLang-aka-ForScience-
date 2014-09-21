@@ -34,18 +34,27 @@ namespace Lexer
 
                 #region Syntax rules
 
-                    ParseRule(StatementNode,       
-                        DeclarationNode + EndOfLine,
-                        Value + EndOfLine,             
+                    AlwaysCollapsableParseRule(StatementNode,       
+                        DeclarationNode,
+                        ValueStatementNode,
                         CodeBlockNode,
                         WhileLoop,
-                        Return + Value + EndOfLine,
+                        ReturnNode,
                         ConditionalSentence),
             
                     ParseRule(DeclarationNode,
-                        ZeroOrMore(VariableModifier) + Type + Symbol + Optional(Assignment + Value)),
+                        DeclarationSubnode + EndOfLine),
             
-                    CollapsableParseRule(VariableModifier, 
+                    AlwaysCollapsableParseRule(DeclarationSubnode,
+                        ZeroOrMore(VariableModifier) + Type + Symbol + Optional(Assignment + Value)),
+
+                    AlwaysCollapsableParseRule(ValueStatementNode,
+                        Value + EndOfLine),
+
+                    ParseRule(ReturnNode,
+                        Return + Value + EndOfLine),                        
+
+                    AlwaysCollapsableParseRule(VariableModifier, 
                         Const,
                         Internal,
                         Private,
@@ -54,7 +63,7 @@ namespace Lexer
                         Static,
                         Virtual),
                                 
-                    CollapsableParseRule(AssignmentOperator,
+                    AlwaysCollapsableParseRule(AssignmentOperator,
                         Assignment,
                         BitwiseAndEqual,
                         MinusEqual,
@@ -71,34 +80,34 @@ namespace Lexer
                         MultiplyEqual,
                         RemainderEqual),
 
-                    CollapsableParseRule(EqualityOperator,
+                    AlwaysCollapsableParseRule(EqualityOperator,
                         Equal,
                         NotEqual),
 
-                    CollapsableParseRule(RelationalOperator,
+                    AlwaysCollapsableParseRule(RelationalOperator,
                         More,
                         Less,
                         MoreOrEqual,
                         LessOrEqual),
 
-                    CollapsableParseRule(ShiftOperator,
+                    AlwaysCollapsableParseRule(ShiftOperator,
                         LeftShift,
                         RightShift),
 
-                    CollapsableParseRule(AdditiveOperator,
+                    AlwaysCollapsableParseRule(AdditiveOperator,
                         Plus,
                         Minus),
 
-                    CollapsableParseRule(MultiplicativeOperator,
+                    AlwaysCollapsableParseRule(MultiplicativeOperator,
                         Multiply,
                         Divide,
                         Remainder),
 
-                    CollapsableParseRule(PostfixOperator,
+                    AlwaysCollapsableParseRule(PostfixOperator,
                         PlusPlus, 
                         MinusMinus),
 
-                    CollapsableParseRule(PrefixOperator,
+                    AlwaysCollapsableParseRule(PrefixOperator,
                         PlusPlus, 
                         MinusMinus, 
                         Minus, 
@@ -211,10 +220,10 @@ namespace Lexer
  
                     #endregion
 
-                    CollapsableParseRule(Value,
+                    ParseRule(Value,
                        AssignmentOperatorNode),
                        
-                    CollapsableParseRule(Operand,
+                    AlwaysCollapsableParseRule(Operand,
                         InlineFunctionCallNode,
                         Function,
                         FunctionCallNode,
@@ -354,9 +363,11 @@ namespace Lexer
 
         private bool MatchNonTerminal(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)
         {
+            var collapsableLevel = m_ParseRules[(int)token.Token].CollapsableLevel;
+
             foreach (var alternative in m_ParseRules[(int)token.Token].RequiredTokens)
             {
-                if (MatchCondition(token, sourceOffset, alternative, m_ParseRules[(int)token.Token].CollapsableLevel, ref node, ref tokensConsumed))
+                if (MatchCondition(token, sourceOffset, alternative, collapsableLevel, ref node, ref tokensConsumed))
                 {
                     return true;
                 }
@@ -409,7 +420,8 @@ namespace Lexer
         }
 
 
-        private bool MatchCondition(Condition token, int sourceOffset, Condition[] alternative, int collapsableLevel, ref AstNode node, ref int tokensConsumed)
+        private bool MatchCondition(Condition token, int sourceOffset, Condition[] alternative, ParseRuleCollapsableLevel collapsableLevel,
+            ref AstNode node, ref int tokensConsumed)
         {
             var lookupTokensConsumed = 0;
             AstNode matchedNode = Match(sourceOffset + tokensConsumed, alternative, ref lookupTokensConsumed);
@@ -420,9 +432,12 @@ namespace Lexer
             }
             else
             {
-                if (collapsableLevel == matchedNode.ChildrenCount)
+                var childrenCount = matchedNode.ChildrenCount;
+
+                if (collapsableLevel == ParseRuleCollapsableLevel.Always ||
+                    (collapsableLevel == ParseRuleCollapsableLevel.OneChild && childrenCount == 1))
                 {
-                    for (int i = 0; i < collapsableLevel; i++)
+                    for (int i = 0; i < childrenCount; i++)
                     {
                         node.AddChild(m_RootNode, matchedNode.Children[i]);
                     }
@@ -462,17 +477,34 @@ namespace Lexer
 
         private static ParseRule ParseRule(Condition result, params List<Condition>[] requiredTokens)
         {
-            return new ParseRule(result, 0, requiredTokens);
+#if DEBUG
+            Debug.Assert(requiredTokens.Length > 0);
+#endif
+
+            return new ParseRule(result, ParseRuleCollapsableLevel.Never, requiredTokens);
         }
 
         private static ParseRule CollapsableParseRule(Condition result, params List<Condition>[] requiredTokens)
         {
-            return new ParseRule(result, 1, requiredTokens);
+#if DEBUG
+            Debug.Assert(requiredTokens.Length > 0);
+#endif
+
+            return new ParseRule(result, ParseRuleCollapsableLevel.OneChild, requiredTokens);
         }
 
         private static ParseRule AlwaysCollapsableParseRule(Condition result, List<Condition> requiredTokens)
         {
-            return new ParseRule(result, requiredTokens.Count, requiredTokens);
+            return new ParseRule(result, ParseRuleCollapsableLevel.Always, requiredTokens);
+        }
+
+        private static ParseRule AlwaysCollapsableParseRule(Condition result, params List<Condition>[] requiredTokens)
+        {
+#if DEBUG
+            Debug.Assert(requiredTokens.Length > 0);
+#endif
+
+            return new ParseRule(result, ParseRuleCollapsableLevel.Always, requiredTokens);
         }
 
         #region TokenProperties
@@ -574,6 +606,9 @@ namespace Lexer
         private static Condition StatementNode { get { return TokenType.StatementNode; } }
         private static Condition CodeBlockNode { get { return TokenType.CodeBlockNode; } }
         private static Condition DeclarationNode { get { return TokenType.DeclarationNode; } }
+        private static Condition DeclarationSubnode { get { return TokenType.DeclarationSubnode; } }
+        private static Condition ValueStatementNode { get { return TokenType.ValueStatementNode; } }
+        private static Condition ReturnNode { get { return TokenType.ReturnNode; } }
         private static Condition RootNode { get { return TokenType.RootNode; } }
         private static Condition FullSymbol { get { return TokenType.FullSymbol; } }
         private static Condition SubSymbol { get { return TokenType.SubSymbol; } }
