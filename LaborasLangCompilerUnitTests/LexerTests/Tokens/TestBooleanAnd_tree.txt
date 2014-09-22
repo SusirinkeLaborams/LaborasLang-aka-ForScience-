@@ -18,8 +18,8 @@ Children:
 			Type: Assignment
 			Children:
 
-			Content: Type: AndNode, Start: 1, 5, End: 1, 15, Content: ""
-			Type: AndNode
+			Content: Type: LogicalAndNode, Start: 1, 5, End: 1, 15, Content: ""
+			Type: LogicalAndNode
 			Children:
 				Content: Type: FullSymbol, Start: 1, 5, End: 1, 6, Content: ""
 				Type: FullSymbol

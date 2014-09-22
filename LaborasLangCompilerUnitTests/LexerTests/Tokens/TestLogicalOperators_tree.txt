@@ -1,0 +1,127 @@
+Content: Type: RootNode, Start: 1, 1, End: 4, 9, Content: ""
+Type: RootNode
+Children:
+	Content: Type: Value, Start: 1, 1, End: 1, 18, Content: ""
+	Type: Value
+	Children:
+		Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 18, Content: ""
+		Type: AssignmentOperatorNode
+		Children:
+			Content: Type: FullSymbol, Start: 1, 1, End: 1, 2, Content: ""
+			Type: FullSymbol
+			Children:
+				Content: Type: Symbol, Start: 1, 1, End: 1, 2, Content: "a"
+				Type: Symbol
+				Children:
+
+			Content: Type: Assignment, Start: 1, 3, End: 1, 4, Content: "="
+			Type: Assignment
+			Children:
+
+			Content: Type: LogicalAndNode, Start: 1, 5, End: 1, 18, Content: ""
+			Type: LogicalAndNode
+			Children:
+				Content: Type: True, Start: 1, 5, End: 1, 9, Content: "true"
+				Type: True
+				Children:
+
+				Content: Type: LogicalAnd, Start: 1, 10, End: 1, 12, Content: "&&"
+				Type: LogicalAnd
+				Children:
+
+				Content: Type: False, Start: 1, 13, End: 1, 18, Content: "false"
+				Type: False
+				Children:
+
+	Content: Type: EndOfLine, Start: 1, 18, End: 1, 19, Content: ";"
+	Type: EndOfLine
+	Children:
+
+	Content: Type: Value, Start: 2, 1, End: 2, 18, Content: ""
+	Type: Value
+	Children:
+		Content: Type: AssignmentOperatorNode, Start: 2, 1, End: 2, 18, Content: ""
+		Type: AssignmentOperatorNode
+		Children:
+			Content: Type: FullSymbol, Start: 2, 1, End: 2, 2, Content: ""
+			Type: FullSymbol
+			Children:
+				Content: Type: Symbol, Start: 2, 1, End: 2, 2, Content: "b"
+				Type: Symbol
+				Children:
+
+			Content: Type: Assignment, Start: 2, 3, End: 2, 4, Content: "="
+			Type: Assignment
+			Children:
+
+			Content: Type: LogicalOrNode, Start: 2, 5, End: 2, 18, Content: ""
+			Type: LogicalOrNode
+			Children:
+				Content: Type: False, Start: 2, 5, End: 2, 10, Content: "false"
+				Type: False
+				Children:
+
+				Content: Type: LogicalOr, Start: 2, 11, End: 2, 13, Content: "||"
+				Type: LogicalOr
+				Children:
+
+				Content: Type: True, Start: 2, 14, End: 2, 18, Content: "true"
+				Type: True
+				Children:
+
+	Content: Type: EndOfLine, Start: 2, 18, End: 2, 19, Content: ";"
+	Type: EndOfLine
+	Children:
+
+	Content: Type: Value, Start: 3, 1, End: 3, 11, Content: ""
+	Type: Value
+	Children:
+		Content: Type: AssignmentOperatorNode, Start: 3, 1, End: 3, 11, Content: ""
+		Type: AssignmentOperatorNode
+		Children:
+			Content: Type: FullSymbol, Start: 3, 1, End: 3, 2, Content: ""
+			Type: FullSymbol
+			Children:
+				Content: Type: Symbol, Start: 3, 1, End: 3, 2, Content: "a"
+				Type: Symbol
+				Children:
+
+			Content: Type: LogicalOrEqual, Start: 3, 3, End: 3, 6, Content: "||="
+			Type: LogicalOrEqual
+			Children:
+
+			Content: Type: True, Start: 3, 7, End: 3, 11, Content: "true"
+			Type: True
+			Children:
+
+	Content: Type: EndOfLine, Start: 3, 11, End: 3, 12, Content: ";"
+	Type: EndOfLine
+	Children:
+
+	Content: Type: Value, Start: 4, 1, End: 4, 8, Content: ""
+	Type: Value
+	Children:
+		Content: Type: AssignmentOperatorNode, Start: 4, 1, End: 4, 8, Content: ""
+		Type: AssignmentOperatorNode
+		Children:
+			Content: Type: FullSymbol, Start: 4, 1, End: 4, 2, Content: ""
+			Type: FullSymbol
+			Children:
+				Content: Type: Symbol, Start: 4, 1, End: 4, 2, Content: "b"
+				Type: Symbol
+				Children:
+
+			Content: Type: LogicalAndEqual, Start: 4, 3, End: 4, 6, Content: "&&="
+			Type: LogicalAndEqual
+			Children:
+
+			Content: Type: FullSymbol, Start: 4, 7, End: 4, 8, Content: ""
+			Type: FullSymbol
+			Children:
+				Content: Type: Symbol, Start: 4, 7, End: 4, 8, Content: "a"
+				Type: Symbol
+				Children:
+
+	Content: Type: EndOfLine, Start: 4, 8, End: 4, 9, Content: ";"
+	Type: EndOfLine
+	Children:
