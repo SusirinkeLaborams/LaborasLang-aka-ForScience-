@@ -121,8 +121,8 @@
         ConditionalSentence,
 
         AssignmentOperatorNode,
-        OrNode,
-        AndNode,
+        LogicalOrNode,
+        LogicalAndNode,
         BitwiseOrNode,
         BitwiseXorNode,
         BitwiseAndNode,
@@ -162,8 +162,8 @@
         BitwiseAndSubnode,
         BitwiseXorSubnode,
         BitwiseOrSubnode,
-        AndSubnode,
-        OrSubnode,
+        LogicalAndSubnode,
+        LogicalOrSubnode,
 
         PrefixOperator,
         PostfixOperator,

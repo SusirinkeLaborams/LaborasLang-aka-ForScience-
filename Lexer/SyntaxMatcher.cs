@@ -202,23 +202,23 @@ namespace Lexer
                     AlwaysCollapsableParseRule(BitwiseOrSubnode,
                         BitwiseOr + BitwiseXorNode),
                         
-                    CollapsableParseRule(AndNode,
-                        BitwiseOrNode + ZeroOrMore(AndSubnode)),
+                    CollapsableParseRule(LogicalAndNode,
+                        BitwiseOrNode + ZeroOrMore(LogicalAndSubnode)),
 
-                    AlwaysCollapsableParseRule(AndSubnode,
+                    AlwaysCollapsableParseRule(LogicalAndSubnode,
                         LogicalAnd + BitwiseOrNode),
                         
-                    CollapsableParseRule(OrNode,
-                        AndNode + ZeroOrMore(OrSubnode)),
+                    CollapsableParseRule(LogicalOrNode,
+                        LogicalAndNode + ZeroOrMore(LogicalOrSubnode)),
 
-                    AlwaysCollapsableParseRule(OrSubnode,
-                        LogicalOr + AndNode),
+                    AlwaysCollapsableParseRule(LogicalOrSubnode,
+                        LogicalOr + LogicalAndNode),
 
 
                     // Assignment operator is evaluated right to left
                     CollapsableParseRule(AssignmentOperatorNode,
                         PeriodNode + AssignmentOperator + AssignmentOperatorNode,
-                        OrNode),
+                        LogicalOrNode),
  
                     #endregion
 
@@ -627,10 +627,10 @@ namespace Lexer
         private static Condition AssignmentOperator { get { return TokenType.AssignmentOperator; } }
         private static Condition CommaAndValue { get { return TokenType.CommaAndValue; } }
         private static Condition AssignmentOperatorNode { get { return TokenType.AssignmentOperatorNode; } }
-        private static Condition OrNode { get { return TokenType.OrNode; } }
-        private static Condition OrSubnode { get { return TokenType.OrSubnode; } }
-        private static Condition AndNode { get { return TokenType.AndNode; } }
-        private static Condition AndSubnode { get { return TokenType.AndSubnode; } }
+        private static Condition LogicalOrNode { get { return TokenType.LogicalOrNode; } }
+        private static Condition LogicalOrSubnode { get { return TokenType.LogicalOrSubnode; } }
+        private static Condition LogicalAndNode { get { return TokenType.LogicalAndNode; } }
+        private static Condition LogicalAndSubnode { get { return TokenType.LogicalAndSubnode; } }
         private static Condition BitwiseOrNode { get { return TokenType.BitwiseOrNode; } }
         private static Condition BitwiseOrSubnode { get { return TokenType.BitwiseOrSubnode; } }
         private static Condition BitwiseXorNode { get { return TokenType.BitwiseXorNode; } }
