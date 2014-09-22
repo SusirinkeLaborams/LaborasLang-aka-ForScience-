@@ -28,13 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     return DotOperatorNode.Parse(parser, parent, lexerNode);
                 case Lexer.TokenType.Symbol:
                     return SymbolNode.Parse(parser, parent, lexerNode);
-                case Lexer.TokenType.StringLiteral:
-                case Lexer.TokenType.Float:
-                case Lexer.TokenType.Double:
-                case Lexer.TokenType.Integer:
-                case Lexer.TokenType.Long:
-                case Lexer.TokenType.True:
-                case Lexer.TokenType.False:
+                case Lexer.TokenType.LiteralNode:
                     return LiteralNode.Parse(parser, parent, lexerNode);
                 case Lexer.TokenType.Value:
                     return ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);

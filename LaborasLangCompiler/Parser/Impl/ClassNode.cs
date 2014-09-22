@@ -179,16 +179,12 @@ namespace LaborasLangCompiler.Parser.Impl
             return namespaze;
         }
 
-        public void AddImport(string namespaze, SequencePoint point)
+        public void AddImport(NamespaceNode namespaze, SequencePoint point)
         {
-            if (globalImports.Any(n => n.Namespace == namespaze))
+            if (globalImports.Any(n => n.Namespace == namespaze.Namespace.Namespace))
                 throw new ParseException(point, "Namespace {0} already imported", namespaze);
 
-            var found = FindNamespace(namespaze, point);
-            if (found != null)
-                globalImports.Add(found.Namespace);
-            else
-                throw new ParseException(point, "Unknown namespace {0}", namespaze);
+            globalImports.Add(namespaze.Namespace);
         }
 
         #endregion type/namespace lookup
@@ -200,7 +196,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 switch (node.Type)
                 {
-                    case Lexer.TokenType.Namespace:
+                    case Lexer.TokenType.UseNode:
                         ImportNode.Parse(parser, this, node);
                         break;
                     case Lexer.TokenType.DeclarationNode:

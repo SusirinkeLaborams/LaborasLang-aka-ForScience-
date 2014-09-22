@@ -28,6 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static new LiteralNode Parse(Parser parser, ContainerNode parentBlock, AstNode lexerNode)
         {
+            lexerNode = lexerNode.Children[0];
             var point = parser.GetSequencePoint(lexerNode);
             var type = ParseLiteralType(parser, lexerNode);
             dynamic value = ParseValue(lexerNode.Content.ToString(), type, point);

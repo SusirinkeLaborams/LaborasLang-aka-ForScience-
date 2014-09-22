@@ -16,9 +16,11 @@ namespace LaborasLangCompiler.Parser.Impl
         protected ImportNode(SequencePoint point) : base(point) { }
         public static void Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            string namespaze = lexerNode.Children[0].Content.ToString();
-            
-            parent.GetClass().AddImport(namespaze, parser.GetSequencePoint(lexerNode));
+            var namespaze = DotOperatorNode.Parse(parser, parent, lexerNode.Children[1]) as NamespaceNode;
+            if (namespaze != null)
+                parent.GetClass().AddImport(namespaze, parser.GetSequencePoint(lexerNode));
+            else
+                throw new ParseException(parser.GetSequencePoint(lexerNode), "Namespace {0} not found", lexerNode.Children[1].FullContent);
         }
     }
 }
