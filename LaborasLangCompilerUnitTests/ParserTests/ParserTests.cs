@@ -446,12 +446,12 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         public void TestUseImport()
         {
             string source = @"
-                use System;
+                use System.Collections;
                 auto Main = void()
                 {
-	                Console.WriteLine(""Hello, World!"");
+	                ArrayList foo;
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!) Function: (MethodNode: Instance: null, Method: WriteLine))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: (System.Collections.ArrayList foo) Nodes: ((Declaration: (LValueNode: LocalVariable foo System.Collections.ArrayList) = )))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
