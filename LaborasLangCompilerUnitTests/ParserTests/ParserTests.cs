@@ -412,7 +412,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string source = @"
                 void() a = void(){};";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void a = (MethodNode: Instance: null, Method: $a) Methods: (Method: $a System.Void()(CodeBlock: Symbols: () Nodes: ())))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void a = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: () Nodes: ())))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
