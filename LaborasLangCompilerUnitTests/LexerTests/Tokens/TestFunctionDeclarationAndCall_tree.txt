@@ -66,9 +66,12 @@ Children:
 							Type: Assignment
 							Children:
 
-							Content: Type: Integer, Start: 1, 17, End: 1, 18, Content: "5"
-							Type: Integer
+							Content: Type: LiteralNode, Start: 1, 17, End: 1, 18, Content: ""
+							Type: LiteralNode
 							Children:
+								Content: Type: Integer, Start: 1, 17, End: 1, 18, Content: "5"
+								Type: Integer
+								Children:
 
 					Content: Type: EndOfLine, Start: 1, 18, End: 1, 19, Content: ";"
 					Type: EndOfLine
@@ -88,9 +91,12 @@ Children:
 				Content: Type: Value, Start: 2, 2, End: 2, 3, Content: ""
 				Type: Value
 				Children:
-					Content: Type: Integer, Start: 2, 2, End: 2, 3, Content: "5"
-					Type: Integer
+					Content: Type: LiteralNode, Start: 2, 2, End: 2, 3, Content: ""
+					Type: LiteralNode
 					Children:
+						Content: Type: Integer, Start: 2, 2, End: 2, 3, Content: "5"
+						Type: Integer
+						Children:
 
 				Content: Type: RightParenthesis, Start: 2, 3, End: 2, 4, Content: ")"
 				Type: RightParenthesis

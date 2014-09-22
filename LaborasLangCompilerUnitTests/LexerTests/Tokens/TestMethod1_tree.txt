@@ -88,9 +88,12 @@ Children:
 			Type: Assignment
 			Children:
 
-			Content: Type: Integer, Start: 5, 5, End: 5, 6, Content: "5"
-			Type: Integer
+			Content: Type: LiteralNode, Start: 5, 5, End: 5, 6, Content: ""
+			Type: LiteralNode
 			Children:
+				Content: Type: Integer, Start: 5, 5, End: 5, 6, Content: "5"
+				Type: Integer
+				Children:
 
 	Content: Type: EndOfLine, Start: 5, 6, End: 5, 7, Content: ";"
 	Type: EndOfLine

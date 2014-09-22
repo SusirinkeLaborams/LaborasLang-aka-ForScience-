@@ -230,6 +230,9 @@ namespace Lexer
                         Function,
                         FunctionCallNode,
                         FullSymbol,
+                        LiteralNode),
+
+                    ParseRule(LiteralNode,
                         Float,
                         Integer,
                         Double,
@@ -667,6 +670,7 @@ namespace Lexer
         private static Condition InlineFunctionCallNode { get { return TokenType.InlineFunctionCallNode; } }
         private static Condition FunctionCallNode { get { return TokenType.FunctionCallNode; } }
         private static Condition FunctionArgumentsList { get { return TokenType.FunctionArgumentsList; } }
+        private static Condition LiteralNode { get { return TokenType.LiteralNode; } }
         #endregion
 
     }

@@ -102,9 +102,12 @@ Children:
 			Type: Assignment
 			Children:
 
-			Content: Type: Integer, Start: 3, 13, End: 3, 14, Content: "5"
-			Type: Integer
+			Content: Type: LiteralNode, Start: 3, 13, End: 3, 14, Content: ""
+			Type: LiteralNode
 			Children:
+				Content: Type: Integer, Start: 3, 13, End: 3, 14, Content: "5"
+				Type: Integer
+				Children:
 
 	Content: Type: EndOfLine, Start: 3, 14, End: 3, 15, Content: ";"
 	Type: EndOfLine
@@ -140,9 +143,12 @@ Children:
 						Type: Plus
 						Children:
 
-						Content: Type: Integer, Start: 4, 8, End: 4, 9, Content: "5"
-						Type: Integer
+						Content: Type: LiteralNode, Start: 4, 8, End: 4, 9, Content: ""
+						Type: LiteralNode
 						Children:
+							Content: Type: Integer, Start: 4, 8, End: 4, 9, Content: "5"
+							Type: Integer
+							Children:
 
 				Content: Type: RightParenthesis, Start: 4, 9, End: 4, 10, Content: ")"
 				Type: RightParenthesis

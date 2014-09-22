@@ -18,9 +18,12 @@ Children:
 			Type: Assignment
 			Children:
 
-			Content: Type: True, Start: 1, 7, End: 1, 11, Content: "true"
-			Type: True
+			Content: Type: LiteralNode, Start: 1, 7, End: 1, 11, Content: ""
+			Type: LiteralNode
 			Children:
+				Content: Type: True, Start: 1, 7, End: 1, 11, Content: "true"
+				Type: True
+				Children:
 
 	Content: Type: EndOfLine, Start: 1, 11, End: 1, 12, Content: ";"
 	Type: EndOfLine

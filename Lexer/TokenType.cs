@@ -138,6 +138,7 @@
         AdditiveOperatorNode,
         MultiplicativeOperatorNode,
         ParenthesesNode,
+        LiteralNode,
 
         LexerInternalTokens,    // Lexer internal-only tokens start from here
 

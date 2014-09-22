@@ -18,9 +18,12 @@ Children:
 			Type: Assignment
 			Children:
 
-			Content: Type: StringLiteral, Start: 1, 8, End: 1, 12, Content: ""bar""
-			Type: StringLiteral
+			Content: Type: LiteralNode, Start: 1, 8, End: 1, 12, Content: ""
+			Type: LiteralNode
 			Children:
+				Content: Type: StringLiteral, Start: 1, 8, End: 1, 12, Content: ""bar""
+				Type: StringLiteral
+				Children:
 
 	Content: Type: EndOfLine, Start: 1, 12, End: 1, 13, Content: ";"
 	Type: EndOfLine
