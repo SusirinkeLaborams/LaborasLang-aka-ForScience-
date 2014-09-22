@@ -23,17 +23,17 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ReturnNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
+            var returnType = parent.GetFunction().MethodReturnType;
             var instance = new ReturnNode(parser.GetSequencePoint(lexerNode));
-            TypeWrapper retType = parser.Void;
-            if (lexerNode.Children.Count > 0)
+            if (returnType == parser.Void && lexerNode.ChildrenCount != 2)
+                throw new TypeException(instance.SequencePoint, "Cannot return value in a void method");
+
+            if (lexerNode.Children.Count == 3)
             {
-                instance.expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
-                retType = instance.expression.TypeWrapper;
+                instance.expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[1]);
+                if (!instance.expression.TypeWrapper.IsAssignableTo(returnType)) 
+                    throw new TypeException(instance.SequencePoint, "Function returns {0}, cannot return {1}", returnType, instance.expression.TypeWrapper);
             }
-            var functionReturn = parent.GetFunction().MethodReturnType;
-            if (!retType.IsAssignableTo(functionReturn))
-                throw new TypeException(instance.SequencePoint, "Function returns {0}, cannot return {1}",
-                    functionReturn, retType);
             return instance;
         }
         public override string ToString()

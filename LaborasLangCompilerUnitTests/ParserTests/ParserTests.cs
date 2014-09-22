@@ -236,7 +236,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     return b;
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Int32(System.Int32 b)(CodeBlock: Symbols: () Nodes: ((ReturnNode: (LValueNode: FunctionArgument b System.Int32))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Int32 Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Int32(System.Int32 b)(CodeBlock: Symbols: () Nodes: ((ReturnNode: (LValueNode: FunctionArgument b System.Int32))))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
@@ -336,7 +336,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string source = @"
                 auto Main = int(){return 4;};";
-            string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Int32()(CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 4))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Int32()(CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 4))))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
@@ -354,7 +354,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                         return 0;
                     }
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Int32()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 1)))), False: (CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 0))))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Int32()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 1)))), False: (CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 0))))))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser"), ExpectedException(typeof(ParseException), "Not all method paths return")]
@@ -383,7 +383,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     }
                     return 0;
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Int32()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 1)))), False: , (ReturnNode: (Literal: System.Int32 0))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Int32()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 1)))), False: , (ReturnNode: (Literal: System.Int32 0))))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
@@ -396,7 +396,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                         return 500;
                     }
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Int32()(CodeBlock: Symbols: () Nodes: ((CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 500))))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Int32 Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Int32()(CodeBlock: Symbols: () Nodes: ((CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 500))))))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
@@ -420,7 +420,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string source = @"
                 int(float) a = int(float x){return 4;};";
-            string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Single a = (MethodNode: Instance: null, Method: $a) Methods: (Method: $a System.Int32(System.Single x)(CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 4))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Int32$System_Single a = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Int32(System.Single x)(CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 4))))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Returned value in a void method")]

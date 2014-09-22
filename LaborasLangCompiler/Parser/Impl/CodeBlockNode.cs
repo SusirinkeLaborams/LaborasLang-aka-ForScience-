@@ -77,7 +77,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.CodeBlockNode:
                     AddNode(CodeBlockNode.Parse(parser, this, lexerNode));
                     break;
-                case Lexer.TokenType.Return:
+                case Lexer.TokenType.ReturnNode:
                     AddNode(ReturnNode.Parse(parser, this, lexerNode));
                     break;
                 default:
