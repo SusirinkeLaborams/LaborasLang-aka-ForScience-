@@ -174,8 +174,8 @@ namespace LaborasLangCompiler.Parser.Impl
             Operators[Lexer.TokenType.LessOrEqual] = BinaryOperatorNodeType.LessEqualThan;
             Operators[Lexer.TokenType.Equal] = BinaryOperatorNodeType.Equals;
             Operators[Lexer.TokenType.NotEqual] = BinaryOperatorNodeType.NotEquals;
-            Operators[Lexer.TokenType.Or] = BinaryOperatorNodeType.LogicalOr;
-            Operators[Lexer.TokenType.And] = BinaryOperatorNodeType.LogicalAnd;
+            Operators[Lexer.TokenType.LogicalOr] = BinaryOperatorNodeType.LogicalOr;
+            Operators[Lexer.TokenType.LogicalAnd] = BinaryOperatorNodeType.LogicalAnd;
             Operators[Lexer.TokenType.RightShift] = BinaryOperatorNodeType.ShiftRight;
             Operators[Lexer.TokenType.LeftShift] = BinaryOperatorNodeType.ShiftLeft;
         }
