@@ -34,16 +34,15 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                throw new NotImplementedException();
-                /*switch(lexerNode.Type)
+                switch(lexerNode.Type)
                 {
-                    case Lexer.SuffixNode:
+                    case Lexer.TokenType.PostfixNode:
                         return ParseSuffix(parser, parent, lexerNode);
-                    case Lexer.PrefixNode:
+                    case Lexer.TokenType.PrefixNode:
                         return ParsePrefix(parser, parent, lexerNode);
                     default:
-                        throw new ParseException(parser.GetSequencePoint(lexerNode), "Unary op node expected, " + lexerNode.Token.Name + " received");
-                }*/
+                        throw new ParseException(parser.GetSequencePoint(lexerNode), "Unary op node expected, " + lexerNode.Type + " received");
+                }
             }
         }
         private static ExpressionNode ParseSuffix(Parser parser, ContainerNode parent, AstNode lexerNode)
@@ -52,7 +51,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var ops = new List<UnaryOperatorNodeType>();
             for (int i = 1; i < lexerNode.Children.Count; i++ )
             {
-                string op = lexerNode.Children[1].Content.ToString();
+                var op = lexerNode.Children[i].Type;
                 try
                 {
                     ops.Add(SuffixOperators[op]);
@@ -71,7 +70,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var ops = new List<UnaryOperatorNodeType>();
             for (int i = count - 2; i >= 0; i--)
             {
-                string op = lexerNode.Children[1].Content.ToString();
+                var op = lexerNode.Children[i].Type;
                 try
                 {
                     ops.Add(PrefixOperators[op]);
@@ -148,21 +147,21 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             return String.Format("(UnaryOp: {0} {1})", UnaryOperatorType, Operand);
         }
-        public static Dictionary<string, UnaryOperatorNodeType> SuffixOperators;
-        public static Dictionary<string, UnaryOperatorNodeType> PrefixOperators;
+        public static Dictionary<Lexer.TokenType, UnaryOperatorNodeType> SuffixOperators;
+        public static Dictionary<Lexer.TokenType, UnaryOperatorNodeType> PrefixOperators;
         static UnaryOperatorNode()
         {
-            SuffixOperators = new Dictionary<string, UnaryOperatorNodeType>();
-            PrefixOperators = new Dictionary<string, UnaryOperatorNodeType>();
+            SuffixOperators = new Dictionary<Lexer.TokenType, UnaryOperatorNodeType>();
+            PrefixOperators = new Dictionary<Lexer.TokenType, UnaryOperatorNodeType>();
 
-            SuffixOperators["++"] = UnaryOperatorNodeType.PostIncrement;
-            SuffixOperators["--"] = UnaryOperatorNodeType.PostDecrement;
+            SuffixOperators[Lexer.TokenType.PlusPlus] = UnaryOperatorNodeType.PostIncrement;
+            SuffixOperators[Lexer.TokenType.MinusMinus] = UnaryOperatorNodeType.PostDecrement;
 
-            PrefixOperators["++"] = UnaryOperatorNodeType.PreIncrement;
-            PrefixOperators["--"] = UnaryOperatorNodeType.PreDecrement;
-            PrefixOperators["-"] = UnaryOperatorNodeType.Negation;
-            PrefixOperators["!"] = UnaryOperatorNodeType.LogicalNot;
-            PrefixOperators["~"] = UnaryOperatorNodeType.BinaryNot;
+            PrefixOperators[Lexer.TokenType.PlusPlus] = UnaryOperatorNodeType.PreIncrement;
+            PrefixOperators[Lexer.TokenType.MinusMinus] = UnaryOperatorNodeType.PreDecrement;
+            PrefixOperators[Lexer.TokenType.Minus] = UnaryOperatorNodeType.Negation;
+            PrefixOperators[Lexer.TokenType.Not] = UnaryOperatorNodeType.LogicalNot;
+            PrefixOperators[Lexer.TokenType.BitwiseComplement] = UnaryOperatorNodeType.BinaryNot;
         }
     }
 }
