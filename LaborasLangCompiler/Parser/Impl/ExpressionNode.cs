@@ -49,6 +49,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.PostfixNode:
                 case Lexer.TokenType.PrefixNode:
                     return UnaryOperatorNode.Parse(parser, parent, lexerNode);
+                case Lexer.TokenType.ParenthesesNode:
+                    return ExpressionNode.Parse(parser, parent, lexerNode.Children[1]);
                 default:
                     throw new NotImplementedException();
             }
