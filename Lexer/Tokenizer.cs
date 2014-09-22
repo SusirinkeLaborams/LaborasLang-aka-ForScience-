@@ -213,25 +213,13 @@ namespace Lexer
                     #region BitwiseComplement
                     case '~':
                         {
-                            // ~ ~=
+                            // ~
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Start = Source.Location;
                             builder.Append(Source.Pop());
-                            switch (Source.Peek())
-                            {
-                                case '=':
-                                    {
-                                        builder.Append(Source.Pop());
-                                        token.Type = TokenType.BitwiseComplementEqual;
-                                        break;
-                                    }
-                                default:
-                                    {
-                                        token.Type = TokenType.BitwiseComplement;
-                                        break;
-                                    }
-                            }
+
+                            token.Type = TokenType.BitwiseComplement;
                             token.End = Source.Location;
                             token.Content = new FastString(rootNode, builder);
                             tokens.Add(token);
@@ -241,7 +229,7 @@ namespace Lexer
                     #region And
                     case '&':
                         {
-                            // & && &=
+                            // & && &= &&=
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.BitwiseAnd;
@@ -252,7 +240,17 @@ namespace Lexer
                                 case '&':
                                     {
                                         builder.Append(Source.Pop());
-                                        token.Type = TokenType.And;
+
+                                        if (Source.Peek() == '=')
+                                        {
+                                            builder.Append(Source.Pop());
+                                            token.Type = TokenType.LogicalAndEqual;
+                                        }
+                                        else
+                                        {
+                                            token.Type = TokenType.LogicalAnd;
+                                        }
+
                                         break;
                                     }
                                 case '=':
@@ -299,7 +297,7 @@ namespace Lexer
                     #region Or
                     case '|':
                         {
-                            // | |= || 
+                            // | |= || ||=
                             var token = rootNode.ProvideToken();
                             builder.Clear();
                             token.Type = TokenType.BitwiseOr;
@@ -310,7 +308,16 @@ namespace Lexer
                                 case '|':
                                     {
                                         builder.Append(Source.Pop());
-                                        token.Type = TokenType.Or;
+
+                                        if (Source.Peek() == '=')
+                                        {
+                                            builder.Append(Source.Pop());
+                                            token.Type = TokenType.LogicalOrEqual;
+                                        }
+                                        else
+                                        {
+                                            token.Type = TokenType.LogicalOr;
+                                        }
                                         break;
                                     }
                                 case '=':
@@ -765,7 +772,7 @@ namespace Lexer
             keywordTypeMap[(FastStringBuilder)"throw"] = (int)TokenType.Throw;
             keywordTypeMap[(FastStringBuilder)"true"] = (int)TokenType.True;
             keywordTypeMap[(FastStringBuilder)"try"] = (int)TokenType.Try;
-            keywordTypeMap[(FastStringBuilder)"using"] = (int)TokenType.Using;
+            keywordTypeMap[(FastStringBuilder)"use"] = (int)TokenType.Use;
             keywordTypeMap[(FastStringBuilder)"virtual"] = (int)TokenType.Virtual;
             keywordTypeMap[(FastStringBuilder)"while"] = (int)TokenType.While;
         }

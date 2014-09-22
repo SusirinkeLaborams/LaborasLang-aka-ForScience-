@@ -28,8 +28,8 @@ Children:
 					Type: Symbol
 					Children:
 
-				Content: Type: Or, Start: 1, 7, End: 1, 9, Content: "||"
-				Type: Or
+				Content: Type: LogicalOr, Start: 1, 7, End: 1, 9, Content: "||"
+				Type: LogicalOr
 				Children:
 
 				Content: Type: True, Start: 1, 10, End: 1, 14, Content: "true"

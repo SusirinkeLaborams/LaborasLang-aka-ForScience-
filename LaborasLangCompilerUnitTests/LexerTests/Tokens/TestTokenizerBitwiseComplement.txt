@@ -1,1 +1,1 @@
-Type: BitwiseComplement, Start: 1, 1, End: 1, 2, Content: "~" Type: BitwiseComplementEqual, Start: 1, 3, End: 1, 5, Content: "~=" 
+Type: BitwiseComplement, Start: 1, 1, End: 1, 2, Content: "~" 

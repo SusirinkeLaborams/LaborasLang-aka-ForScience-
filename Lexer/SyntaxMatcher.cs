@@ -34,7 +34,8 @@ namespace Lexer
 
                 #region Syntax rules
 
-                    AlwaysCollapsableParseRule(StatementNode,       
+                    AlwaysCollapsableParseRule(StatementNode,
+                        UseNode,
                         DeclarationNode,
                         ValueStatementNode,
                         CodeBlockNode,
@@ -42,6 +43,9 @@ namespace Lexer
                         ReturnNode,
                         ConditionalSentence),
             
+                    ParseRule(UseNode,
+                        Use + FullSymbol + EndOfLine),
+
                     ParseRule(DeclarationNode,
                         DeclarationSubnode + EndOfLine),
             
@@ -52,7 +56,7 @@ namespace Lexer
                         Value + EndOfLine),
 
                     ParseRule(ReturnNode,
-                        Return + Value + EndOfLine),                        
+                        Return + Value + EndOfLine),
 
                     AlwaysCollapsableParseRule(VariableModifier, 
                         Const,
@@ -65,20 +69,18 @@ namespace Lexer
                                 
                     AlwaysCollapsableParseRule(AssignmentOperator,
                         Assignment,
-                        BitwiseAndEqual,
-                        MinusEqual,
-                        NotEqual,
                         PlusEqual,
-                        BitwiseComplementEqual,
-                        BitwiseXorEqual,
-                        BitwiseOrEqual,
-                        LeftShiftEqual,
-                        LessOrEqual,
-                        RightShiftEqual,
-                        MoreOrEqual,
+                        MinusEqual,
                         DivideEqual,
                         MultiplyEqual,
-                        RemainderEqual),
+                        RemainderEqual,
+                        LeftShiftEqual,
+                        RightShiftEqual,
+                        LogicalAndEqual,
+                        LogicalOrEqual,
+                        BitwiseAndEqual,
+                        BitwiseXorEqual,
+                        BitwiseOrEqual),
 
                     AlwaysCollapsableParseRule(EqualityOperator,
                         Equal,
@@ -204,13 +206,13 @@ namespace Lexer
                         BitwiseOrNode + ZeroOrMore(AndSubnode)),
 
                     AlwaysCollapsableParseRule(AndSubnode,
-                        And + BitwiseOrNode),
+                        LogicalAnd + BitwiseOrNode),
                         
                     CollapsableParseRule(OrNode,
                         AndNode + ZeroOrMore(OrSubnode)),
 
                     AlwaysCollapsableParseRule(OrSubnode,
-                        Or + AndNode),
+                        LogicalOr + AndNode),
 
 
                     // Assignment operator is evaluated right to left
@@ -514,7 +516,6 @@ namespace Lexer
         private static Condition Comment { get { return TokenType.Comment; } }
         private static Condition BitwiseAnd { get { return TokenType.BitwiseAnd; } }
         private static Condition BitwiseAndEqual { get { return TokenType.BitwiseAndEqual; } }
-        private static Condition And { get { return TokenType.And; } }
         private static Condition Plus { get { return TokenType.Plus; } }
         private static Condition PlusPlus { get { return TokenType.PlusPlus; } }
         private static Condition Minus { get { return TokenType.Minus; } }
@@ -525,17 +526,19 @@ namespace Lexer
         private static Condition Whitespace { get { return TokenType.Whitespace; } }
         private static Condition PlusEqual { get { return TokenType.PlusEqual; } }
         private static Condition StringLiteral { get { return TokenType.StringLiteral; } }
-        private static Condition BitwiseComplementEqual { get { return TokenType.BitwiseComplementEqual; } }
         private static Condition BitwiseComplement { get { return TokenType.BitwiseComplement; } }
         private static Condition BitwiseXor { get { return TokenType.BitwiseXor; } }
         private static Condition BitwiseXorEqual { get { return TokenType.BitwiseXorEqual; } }
         private static Condition BitwiseOr { get { return TokenType.BitwiseOr; } }
-        private static Condition Or { get { return TokenType.Or; } }
         private static Condition BitwiseOrEqual { get { return TokenType.BitwiseOrEqual; } }
         private static Condition LeftShiftEqual { get { return TokenType.LeftShiftEqual; } }
         private static Condition LeftShift { get { return TokenType.LeftShift; } }
         private static Condition LessOrEqual { get { return TokenType.LessOrEqual; } }
         private static Condition Less { get { return TokenType.Less; } }
+        private static Condition LogicalAnd { get { return TokenType.LogicalAnd; } }
+        private static Condition LogicalAndEqual { get { return TokenType.LogicalAndEqual; } }
+        private static Condition LogicalOr { get { return TokenType.LogicalOr; } }
+        private static Condition LogicalOrEqual { get { return TokenType.LogicalOrEqual; } }
         private static Condition More { get { return TokenType.More; } }
         private static Condition RightShift { get { return TokenType.RightShift; } }
         private static Condition RightShiftEqual { get { return TokenType.RightShiftEqual; } }
@@ -596,7 +599,7 @@ namespace Lexer
         private static Condition Struct { get { return TokenType.Struct; } }
         private static Condition True { get { return TokenType.True; } }
         private static Condition Try { get { return TokenType.Try; } }
-        private static Condition Using { get { return TokenType.Using; } }
+        private static Condition Use { get { return TokenType.Use; } }
         private static Condition Virtual { get { return TokenType.Virtual; } }
         private static Condition While { get { return TokenType.While; } }
         private static Condition Static { get { return TokenType.Static; } }
@@ -607,6 +610,7 @@ namespace Lexer
         private static Condition CodeBlockNode { get { return TokenType.CodeBlockNode; } }
         private static Condition DeclarationNode { get { return TokenType.DeclarationNode; } }
         private static Condition DeclarationSubnode { get { return TokenType.DeclarationSubnode; } }
+        private static Condition UseNode { get { return TokenType.UseNode; } }
         private static Condition ValueStatementNode { get { return TokenType.ValueStatementNode; } }
         private static Condition ReturnNode { get { return TokenType.ReturnNode; } }
         private static Condition RootNode { get { return TokenType.RootNode; } }
