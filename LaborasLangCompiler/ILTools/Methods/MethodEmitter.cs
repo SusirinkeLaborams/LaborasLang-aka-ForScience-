@@ -1079,7 +1079,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitGreaterEqualThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ExpressionReturnType);
+                EmitGreaterEqualThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand);
             }
         }
 
@@ -1104,7 +1104,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             Ceq();
         }
 
-        protected void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
+        protected void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
 
@@ -1125,7 +1125,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitGreaterThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ExpressionReturnType);
+                EmitGreaterThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand);
             }
         }
 
@@ -1147,7 +1147,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             Cgt();
         }
 
-        protected void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
+        protected void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
             Cgt();
@@ -1165,7 +1165,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitLessEqualThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ExpressionReturnType);
+                EmitLessEqualThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand);
             }
         }
 
@@ -1190,7 +1190,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             Ceq();
         }
 
-        protected void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
+        protected void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
 
@@ -1211,7 +1211,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             }
             else
             {
-                EmitLessThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand, binaryOperator.ExpressionReturnType);
+                EmitLessThanNumeral(binaryOperator.LeftOperand, binaryOperator.RightOperand);
             }
         }
 
@@ -1233,7 +1233,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             Clt();
         }
 
-        protected void EmitLessThanNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
+        protected void EmitLessThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
 
@@ -1369,7 +1369,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 return;
             }
 
-            if (!sourceType.IsPrimitive || !sourceType.IsPrimitive)
+            if (!sourceType.IsPrimitive || !targetType.IsPrimitive)
             {
                 throw new ArgumentException("Can't cast non primitive value types!");
             }

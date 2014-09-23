@@ -69,17 +69,17 @@ namespace LaborasLangCompiler.ILTools.Methods
             body.Instructions.Add(instruction);
         }
 
-        protected Instruction CreateLabel()
+        protected static Instruction CreateLabel()
         {
             return Instruction.Create(OpCodes.Nop);
         }
 
-        protected bool CanEmitAsReference(IExpressionNode node)
+        protected static bool CanEmitAsReference(IExpressionNode node)
         {
             return node.ExpressionType == ExpressionNodeType.LValue && ((ILValueNode)node).LValueType != LValueNodeType.Property;
         }
 
-        protected bool IsAtLeastOneOperandString(IBinaryOperatorNode binaryOperator)
+        protected static bool IsAtLeastOneOperandString(IBinaryOperatorNode binaryOperator)
         {
             var left = binaryOperator.LeftOperand;
             var right = binaryOperator.RightOperand;
@@ -90,7 +90,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             return leftIsString || rightIsString;
         }
 
-        protected bool AreBothOperandsUnsigned(IBinaryOperatorNode binaryOperator)
+        protected static bool AreBothOperandsUnsigned(IBinaryOperatorNode binaryOperator)
         {
             return binaryOperator.LeftOperand.ExpressionReturnType.IsUnsignedInteger() && binaryOperator.RightOperand.ExpressionReturnType.IsUnsignedInteger();
         }
@@ -490,7 +490,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Ldobj(TypeReference targetType)
         {
-            ilProcessor.Emit(OpCodes.Ldobj);
+            ilProcessor.Emit(OpCodes.Ldobj, targetType);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
