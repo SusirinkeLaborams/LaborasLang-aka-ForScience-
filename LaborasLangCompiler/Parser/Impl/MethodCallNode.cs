@@ -33,11 +33,23 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new NotImplementedException("Create not implemented");
             if (lexerNode.Children.Count(x => x.Type == Lexer.TokenType.FunctionArgumentsList) > 1)
                 throw new NotImplementedException("Calling returned functions not supported");
-            var function = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]);
+            var function = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
             var args = new List<ExpressionNode>();
             foreach (var node in lexerNode.Children[1].Children)
             {
-                args.Add(ExpressionNode.Parse(parser, parent, node));
+                switch(node.Type)
+                {
+                    case Lexer.TokenType.LeftParenthesis:
+                    case Lexer.TokenType.RightParenthesis:
+                    case Lexer.TokenType.Comma:
+                        break;
+                    case Lexer.TokenType.Value:
+                        args.Add(ExpressionNode.Parse(parser, parent, node));
+                        break;
+                    default:
+                        throw new ParseException(parser.GetSequencePoint(node), "Unexpected node type {0} in call", node.Type);
+                }
+                
             }
 
             var method = AsMethod(parser, function, args);
@@ -46,6 +58,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (method == null)
                 throw new TypeException(function.SequencePoint, "Method expected");
+
             var returnType = method.TypeWrapper.FunctorReturnType;
             return new MethodCallNode(method, returnType, args, parser.GetSequencePoint(lexerNode));
         }
@@ -65,11 +78,14 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private static ExpressionNode AsMethod(Parser parser, ExpressionNode node, IEnumerable<ExpressionNode> args)
         {
-            var method = node as AmbiguousMethodNode;
-            if (method == null)
+            if (node is MethodNode)
+                return node;
+
+            var ambiguous = node as AmbiguousMethodNode;
+            if (ambiguous == null)
                 return null;
 
-            return method.RemoveAmbiguity(parser, new FunctorTypeWrapper(parser.Assembly, null, args.Select(a => a.TypeWrapper)));
+            return ambiguous.RemoveAmbiguity(parser, new FunctorTypeWrapper(parser.Assembly, null, args.Select(a => a.TypeWrapper)));
         }
         public override string ToString()
         {

@@ -36,6 +36,8 @@ namespace LaborasLangCompiler.Parser.Impl
                     return MethodNode.Parse(parser, parent, lexerNode);
                 case Lexer.TokenType.AssignmentOperatorNode:
                     return AssignmentOperatorNode.Parse(parser, parent, lexerNode);
+                case Lexer.TokenType.FunctionCallNode:
+                    return MethodCallNode.Parse(parser, parent, lexerNode);
                 case Lexer.TokenType.LogicalOrNode:
                 case Lexer.TokenType.LogicalAndNode:
                 case Lexer.TokenType.BitwiseOrNode:

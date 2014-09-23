@@ -217,7 +217,7 @@ namespace LaborasLangCompiler.Parser.Impl
             field.TypeWrapper = TypeNode.Parse(parser, this, declaration.Type);
 
             if (field.TypeWrapper == null && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
-                field.TypeWrapper = FunctionDeclarationNode.ParseFunctorType(parser, this, declaration.Initializer);
+                field.TypeWrapper = FunctionDeclarationNode.ParseFunctorType(parser, this, declaration.Initializer.Children[0]);
 
             fields.Add(field.Name, field);
         }

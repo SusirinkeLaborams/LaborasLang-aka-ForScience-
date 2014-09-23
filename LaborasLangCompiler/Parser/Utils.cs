@@ -12,14 +12,7 @@ namespace LaborasLangCompiler.Parser
     {
         public static bool IsFunctionDeclaration(this AstNode node)
         {
-            if(node.Type == Lexer.TokenType.DeclarationNode)
-            {
-                return node.Children.Any(n => n.Type == Lexer.TokenType.Function);
-            }
-            else
-            {
-                return false;
-            }
+            return node.Type == Lexer.TokenType.Value && node.Children[0].Type == Lexer.TokenType.Function;
         }
 
         public static string GetSingleSymbolOrThrow(this AstNode node)

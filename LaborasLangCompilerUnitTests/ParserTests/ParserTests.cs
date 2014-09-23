@@ -59,7 +59,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
 	                Main(4);
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void(System.Int32 arg)(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.Int32 4) Function: (LValueNode: Field Main $Functors.$System_Void$System_Int32))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void$System_Int32 Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void(System.Int32 arg)(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.Int32 4) Function: (LValueNode: Field Main $Functors.$System_Void$System_Int32))))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
@@ -98,7 +98,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
 	                System.Console.WriteLine(""Hello, World!"");
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!) Function: (MethodNode: Instance: null, Method: WriteLine))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!) Function: (MethodNode: Instance: null, Method: WriteLine))))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
@@ -109,7 +109,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
 	                System.Console.WriteLine(""Hello, World!"", ""Hello, World!"", ""Hello, World!"", ""Hello, World!"", ""Hello, World!"", ""Hello, World!"", ""Hello, World!"", ""Hello, World!"", ""Hello, World!"", ""Hello, World!"");
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!) Function: (MethodNode: Instance: null, Method: WriteLine))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!) Function: (MethodNode: Instance: null, Method: WriteLine))))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
@@ -121,7 +121,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 	                auto a = 5;
                     auto str = a.ToString();
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: (System.Int32 a, System.String str) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 5)), (Declaration: (LValueNode: LocalVariable str System.String) = (MethodCall: Return: System.String Args:  Function: (MethodNode: Instance: (LValueNode: LocalVariable a System.Int32), Method: ToString)))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: (System.Int32 a, System.String str) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 5)), (Declaration: (LValueNode: LocalVariable str System.String) = (MethodCall: Return: System.String Args:  Function: (MethodNode: Instance: (LValueNode: LocalVariable a System.Int32), Method: ToString)))))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
@@ -204,7 +204,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                         return a;
 	                };
                 };";
-            string expected = @"(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b = (LValueNode: Field a System.Int32), $Functors.$System_Void$System_Int32 Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void(System.Int32 arg)(CodeBlock: Symbols: (System.Int32 a, $Functors.$System_Int32$System_Int32$System_Single f) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 20)), (UnaryOp: VoidOperator (Assignment: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 10))), (Declaration: (LValueNode: LocalVariable f $Functors.$System_Int32$System_Int32$System_Single) = (MethodNode: Instance: null, Method: $Lambda_0)))))(Method: $Lambda_0 System.Int32(System.Int32 a, System.Single b)(CodeBlock: Symbols: (System.Single c) Nodes: ((Declaration: (LValueNode: LocalVariable c System.Single) = (BinaryOp: (LValueNode: FunctionArgument a System.Int32) Multiplication (LValueNode: FunctionArgument b System.Single))), (ReturnNode: (LValueNode: FunctionArgument a System.Int32))))))";
+            string expected = @"(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b = (LValueNode: Field a System.Int32), $Functors.$System_Void$System_Int32 Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void(System.Int32 arg)(CodeBlock: Symbols: (System.Int32 a, $Functors.$System_Int32$System_Int32$System_Single f) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 20)), (UnaryOp: VoidOperator (Assignment: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 10))), (Declaration: (LValueNode: LocalVariable f $Functors.$System_Int32$System_Int32$System_Single) = (MethodNode: Instance: null, Method: $Lambda_1)))))(Method: $Lambda_1 System.Int32(System.Int32 a, System.Single b)(CodeBlock: Symbols: (System.Single c) Nodes: ((Declaration: (LValueNode: LocalVariable c System.Single) = (BinaryOp: (LValueNode: FunctionArgument a System.Int32) Multiplication (LValueNode: FunctionArgument b System.Single))), (ReturnNode: (LValueNode: FunctionArgument a System.Int32))))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
@@ -465,7 +465,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 	                Console.WriteLine(""Hello, World!"");
                     File.Exists("""");
                 };";
-            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!) Function: (MethodNode: Instance: null, Method: WriteLine)), (UnaryOp: VoidOperator (MethodCall: Return: System.Boolean Args: (Literal: System.String ) Function: (MethodNode: Instance: null, Method: Exists)))))))";
+            string expected = "(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!) Function: (MethodNode: Instance: null, Method: WriteLine)), (UnaryOp: VoidOperator (MethodCall: Return: System.Boolean Args: (Literal: System.String ) Function: (MethodNode: Instance: null, Method: Exists)))))))";
             CompareTrees(source, expected);
         }
         [TestMethod, TestCategory("Parser")]
@@ -478,7 +478,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     string() func = a.ToString;
 	                System.Console.WriteLine(func());
                 };";
-            string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Main) Methods: (Method: $Main System.Void()(CodeBlock: Symbols: ($Functors.$System_String func) Nodes: ((Declaration: (LValueNode: LocalVariable func $Functors.$System_String) = (MethodNode: Instance: (LValueNode: Field a System.Int32), Method: ToString)), (MethodCall: Return: System.Void Args: (MethodCall: Return: System.String Args:  Function: (LValueNode: LocalVariable func $Functors.$System_String)) Function: (MethodNode: Instance: null, Method: WriteLine))))))";
+            string expected = "(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: ($Functors.$System_String func) Nodes: ((Declaration: (LValueNode: LocalVariable func $Functors.$System_String) = (MethodNode: Instance: (LValueNode: Field a System.Int32), Method: ToString)), (MethodCall: Return: System.Void Args: (MethodCall: Return: System.String Args:  Function: (LValueNode: LocalVariable func $Functors.$System_String)) Function: (MethodNode: Instance: null, Method: WriteLine))))))";
             CompareTrees(source, expected);
         }
         private void CompareTrees(string source, string expected, [CallerMemberName]string name = "")
