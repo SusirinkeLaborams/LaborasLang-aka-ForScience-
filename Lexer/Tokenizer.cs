@@ -745,6 +745,7 @@ namespace Lexer
             keywordTypeMap[(FastStringBuilder)"do"] = (int)TokenType.Do;
             keywordTypeMap[(FastStringBuilder)"extern"] = (int)TokenType.Extern;
             keywordTypeMap[(FastStringBuilder)"else"] = (int)TokenType.Else;
+            keywordTypeMap[(FastStringBuilder)"entry"] = (int)TokenType.Entry;
             keywordTypeMap[(FastStringBuilder)"enum"] = (int)TokenType.Enum;
             keywordTypeMap[(FastStringBuilder)"false"] = (int)TokenType.False;
             keywordTypeMap[(FastStringBuilder)"finally"] = (int)TokenType.Finally;
