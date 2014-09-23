@@ -72,14 +72,11 @@ namespace LaborasLangCompilerUnitTests.LexerTests
                 if(!visited[i])
                 {
                     var token = (TokenType)i;
-                    if (!token.IsTerminal())
-                    {
-                        unreachableTokens.Add(token);
-                    }
+                    unreachableTokens.Add(token);
                 }
             }
 
-            var stringified = unreachableTokens.Aggregate("", (a, b) => a + " " + b.ToString());
+            var stringified = unreachableTokens.Aggregate("", (a, b) => a + "\n" + b.ToString());
             Assert.AreEqual(0, unreachableTokens.Count, "Unreachable rules: " + stringified);
         }
     }

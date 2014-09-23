@@ -1,4 +1,4 @@
-﻿//#define REMATCH
+﻿#define REMATCH
 using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -55,6 +55,13 @@ a = 5;
         public void DeclareFunctionTest()
         {
             var source = @"int(int, bool) foo;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void DeclareEntryFunctionTest()
+        {
+            var source = @"entry int() foo;";
             ExecuteTest(source);
         }
 
