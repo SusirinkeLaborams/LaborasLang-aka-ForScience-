@@ -1,0 +1,1 @@
+(ClassNode: Fields: $Functors.$System_Void$System_Int32 Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void(System.Int32 arg)(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.Int32 4) Function: (LValueNode: Field Main $Functors.$System_Void$System_Int32))))))

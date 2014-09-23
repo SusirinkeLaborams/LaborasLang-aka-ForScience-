@@ -1,0 +1,1 @@
+(ClassNode: Fields: System.Int32 i = (BinaryOp: (Literal: System.Int32 1) BinaryXor (Literal: System.Int32 2)), System.Int32 a = (BinaryOp: (LValueNode: Field i System.Int32) BinaryAnd (LValueNode: Field i System.Int32)), System.Int32 c = (BinaryOp: (LValueNode: Field i System.Int32) BinaryOr (LValueNode: Field a System.Int32)) Methods: )

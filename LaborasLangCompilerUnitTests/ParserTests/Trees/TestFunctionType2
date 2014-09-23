@@ -1,0 +1,1 @@
+(ClassNode: Fields: $Functors.$System_Int32$System_Single a = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Int32(System.Single x)(CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 4))))))

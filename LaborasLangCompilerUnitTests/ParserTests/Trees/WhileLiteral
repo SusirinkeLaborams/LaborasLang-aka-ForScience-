@@ -1,0 +1,1 @@
+(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: () Nodes: ((WhileBlock: Condition: (Literal: System.Boolean True), Block: (CodeBlock: Symbols: () Nodes: ())))))

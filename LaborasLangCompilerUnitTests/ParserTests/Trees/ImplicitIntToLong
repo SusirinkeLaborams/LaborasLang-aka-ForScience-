@@ -1,0 +1,1 @@
+(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int64 b = (LValueNode: Field a System.Int32) Methods: )

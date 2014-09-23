@@ -1,0 +1,1 @@
+(ClassNode: Fields: System.Boolean i = (BinaryOp: (Literal: System.Boolean True) LogicalAnd (Literal: System.Boolean False)), System.Boolean a = (BinaryOp: (LValueNode: Field i System.Boolean) LogicalOr (Literal: System.Boolean True)) Methods: )

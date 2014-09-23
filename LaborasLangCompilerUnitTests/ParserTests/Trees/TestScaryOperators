@@ -1,0 +1,1 @@
+(ClassNode: Fields: System.Int32 a = (BinaryOp: (BinaryOp: (BinaryOp: (BinaryOp: (Literal: System.Int32 1) Multiplication (Literal: System.Int32 2)) Division (Literal: System.Int32 3)) Multiplication (Literal: System.Int32 4)) Modulus (Literal: System.Int32 5)) Methods: )

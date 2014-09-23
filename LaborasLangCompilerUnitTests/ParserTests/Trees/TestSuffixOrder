@@ -1,0 +1,1 @@
+(ClassNode: Fields: System.Int32 i = (Literal: System.Int32 1), System.Int32 a = (UnaryOp: PostDecrement (UnaryOp: PostIncrement (LValueNode: Field i System.Int32))) Methods: )
