@@ -401,7 +401,7 @@ b &&= a;";
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestFunctionCallOnOperatorResult()
         {
-            var source = @"(5 + 6).ToString()";
+            var source = @"(5 + 6).ToString(aaa);";
 
             ExecuteTest(source);
         }
