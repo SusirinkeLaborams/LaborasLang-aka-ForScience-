@@ -390,6 +390,14 @@ b &&= a;";
 
             ExecuteTest(source);
         }
+        
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestFunctionCallOnOperatorResult()
+        {
+            var source = @"(5 + 6).ToString()";
+
+            ExecuteTest(source);
+        }
 
         #endregion tests
 
