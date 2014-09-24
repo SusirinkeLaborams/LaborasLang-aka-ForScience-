@@ -1,1 +1,53 @@
-(ClassNode: Fields: System.Boolean i = (BinaryOp: (Literal: System.Boolean True) LogicalAnd (Literal: System.Boolean False)), System.Boolean a = (BinaryOp: (LValueNode: Field i System.Boolean) LogicalOr (Literal: System.Boolean True)) Methods: )
+Class:
+	Fields:
+		Field:
+			Type:
+				System.Boolean
+			Name:
+				i
+			Initializer:
+				BinaryOperator:
+					Left:
+						Literal:
+							Type:
+								System.Boolean
+							Value:
+								True
+
+					Operator:
+						LogicalAnd
+					Right:
+						Literal:
+							Type:
+								System.Boolean
+							Value:
+								False
+
+
+
+		Field:
+			Type:
+				System.Boolean
+			Name:
+				a
+			Initializer:
+				BinaryOperator:
+					Left:
+						Field:
+							Name:
+								i
+							Type:
+								System.Boolean
+
+					Operator:
+						LogicalOr
+					Right:
+						Literal:
+							Type:
+								System.Boolean
+							Value:
+								True
+
+
+
+	Methods:

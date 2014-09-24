@@ -1,1 +1,103 @@
-(ClassNode: Fields: System.Boolean i = (BinaryOp: (Literal: System.Boolean True) Equals (Literal: System.Boolean False)), System.Boolean a = (BinaryOp: (LValueNode: Field i System.Boolean) NotEquals (Literal: System.Boolean True)), System.Boolean c = (BinaryOp: (Literal: System.Int32 5) GreaterThan (Literal: System.Int32 6)), System.Boolean b = (BinaryOp: (Literal: System.Int32 8) LessEqualThan (Literal: System.Int32 10)) Methods: )
+Class:
+	Fields:
+		Field:
+			Type:
+				System.Boolean
+			Name:
+				i
+			Initializer:
+				BinaryOperator:
+					Left:
+						Literal:
+							Type:
+								System.Boolean
+							Value:
+								True
+
+					Operator:
+						Equals
+					Right:
+						Literal:
+							Type:
+								System.Boolean
+							Value:
+								False
+
+
+
+		Field:
+			Type:
+				System.Boolean
+			Name:
+				a
+			Initializer:
+				BinaryOperator:
+					Left:
+						Field:
+							Name:
+								i
+							Type:
+								System.Boolean
+
+					Operator:
+						NotEquals
+					Right:
+						Literal:
+							Type:
+								System.Boolean
+							Value:
+								True
+
+
+
+		Field:
+			Type:
+				System.Boolean
+			Name:
+				c
+			Initializer:
+				BinaryOperator:
+					Left:
+						Literal:
+							Type:
+								System.Int32
+							Value:
+								5
+
+					Operator:
+						GreaterThan
+					Right:
+						Literal:
+							Type:
+								System.Int32
+							Value:
+								6
+
+
+
+		Field:
+			Type:
+				System.Boolean
+			Name:
+				b
+			Initializer:
+				BinaryOperator:
+					Left:
+						Literal:
+							Type:
+								System.Int32
+							Value:
+								8
+
+					Operator:
+						LessEqualThan
+					Right:
+						Literal:
+							Type:
+								System.Int32
+							Value:
+								10
+
+
+
+	Methods:

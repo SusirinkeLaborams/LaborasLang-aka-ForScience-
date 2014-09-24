@@ -37,9 +37,18 @@ namespace LaborasLangCompiler.Parser.Impl
                 instance.falseBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[6]);
             return instance;
         }
-        public override string ToString()
+        public override string ToString(int indent)
         {
-            return String.Format("(ConditionBlock: Condition: {0}, True: {1}, False: {2}", Condition, TrueBlock, FalseBlock);
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("Condition:");
+            builder.Indent(indent + 1).AppendLine("True:");
+            builder.AppendLine(trueBlock.ToString(indent + 2));
+            if (falseBlock != null)
+            {
+                builder.Indent(indent + 1).AppendLine("False:");
+                builder.AppendLine(falseBlock.ToString(indent + 2));
+            }
+            return builder.ToString();
         }
     }
 }

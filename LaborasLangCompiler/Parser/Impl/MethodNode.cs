@@ -16,26 +16,36 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.Function; } }
         public override TypeWrapper TypeWrapper { get { return method.FunctorType; } }
-        public IExpressionNode ObjectInstance { get; private set; }
+        public IExpressionNode ObjectInstance { get { return instance; } }
         public MethodReference Method { get { return method.MethodReference; } }
         public MethodWrapper MethodWrapper { get { return method; } }
 
         private MethodWrapper method;
+        private ExpressionNode instance;
 
-        public MethodNode(MethodWrapper method, IExpressionNode instance, SequencePoint point)
+        public MethodNode(MethodWrapper method, ExpressionNode instance, SequencePoint point)
             : base(point)
         {
             this.method = method;
-            this.ObjectInstance = instance;
+            this.instance = instance;
         }
         public static MethodNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode, string name = null)
         {
             var method = FunctionDeclarationNode.Parse(parser, parent, lexerNode, name);
             return new MethodNode(method, null, method.SequencePoint);
         }
-        public override string ToString()
+        public override string ToString(int indent)
         {
-            return String.Format("(MethodNode: Instance: {0}, Method: {1})", ObjectInstance == null ? "null" : ObjectInstance.ToString(), method.MethodReference.Name);
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("Method:");
+            if (instance != null)
+            {
+                builder.Indent(indent + 1).AppendLine("Instance:");
+                builder.AppendLine(instance.ToString(indent + 2));
+            }
+            builder.Indent(indent + 1).AppendLine("Method:");
+            builder.Indent(indent + 2).AppendLine(Method.ToString());
+            return builder.ToString();
         }
     }
 }

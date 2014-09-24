@@ -1,1 +1,36 @@
-(ClassNode: Fields: $Functors.$System_Int32$System_Single a = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Int32(System.Single x)(CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 4))))))
+Class:
+	Fields:
+		Field:
+			Type:
+				$Functors.$System_Int32$System_Single
+			Name:
+				a
+			Initializer:
+				Method:
+					Method:
+						System.Int32 test::$Lambda_0(System.Single)
+
+
+	Methods:
+		Method:
+			Name:
+				$Lambda_0
+			Return:
+				System.Int32
+			Params:
+				System.Single x
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						Return:
+							Expression:
+								Literal:
+									Type:
+										System.Int32
+									Value:
+										4
+
+
+
+

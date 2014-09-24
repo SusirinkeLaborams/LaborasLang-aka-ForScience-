@@ -25,6 +25,10 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             return new SymbolNode(lexerNode.Content.ToString(), parser.GetSequencePoint(lexerNode));
         }
+        public override string ToString(int indent)
+        {
+            throw new InvalidOperationException();
+        }
     }
     class NamespaceNode : ExpressionNode
     {
@@ -34,6 +38,10 @@ namespace LaborasLangCompiler.Parser.Impl
         public NamespaceNode(NamespaceWrapper namespaze, SequencePoint point) : base(point)
         {
             this.Namespace = namespaze;
+        }
+        public override string ToString(int indent)
+        {
+            throw new InvalidOperationException();
         }
     }
     class SymbolCallNode : SymbolNode

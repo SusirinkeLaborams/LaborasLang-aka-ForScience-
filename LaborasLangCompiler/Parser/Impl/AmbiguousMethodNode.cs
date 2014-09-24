@@ -54,5 +54,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
+
+        public override string ToString(int indent)
+        {
+            throw new InvalidOperationException();
+        }
     }
 }

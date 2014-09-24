@@ -111,23 +111,20 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return instance;
         }
-        public override string ToString()
+        public override string ToString(int indent)
         {
-            StringBuilder builder = new StringBuilder("(CodeBlock: Symbols: (");
-            string delim = "";
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("CodeBlock:");
+            builder.Indent(indent + 1).AppendLine("Symbols:");
             foreach(var symbol in symbols)
             {
-                builder.Append(String.Format("{0}{1} {2}", delim, symbol.Value.TypeWrapper, symbol.Key));
-                delim = ", ";
+                builder.Indent(2 + indent).AppendFormat("{0} {1}", symbol.Value.TypeWrapper, symbol.Key).AppendLine();
             }
-            delim = "";
-            builder.Append(") Nodes: (");
+            builder.Indent(1 + indent).AppendLine("Nodes:");
             foreach(var node in nodes)
             {
-                builder.Append(delim).Append(node.ToString());
-                delim = ", ";
+                builder.AppendLine(node.ToString(indent + 2));
             }
-            builder.Append("))");
             return builder.ToString();
         }
     }

@@ -1,1 +1,68 @@
-(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: (System.Int32 a, System.String str) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Int32) = (Literal: System.Int32 5)), (Declaration: (LValueNode: LocalVariable str System.String) = (MethodCall: Return: System.String Args:  Function: (MethodNode: Instance: (LValueNode: LocalVariable a System.Int32), Method: ToString)))))))
+Class:
+	Fields:
+		Field:
+			Type:
+				$Functors.$System_Void
+			Name:
+				Main
+			Initializer:
+				Method:
+					Method:
+						System.Void test::$Lambda_0()
+
+
+	Methods:
+		Method:
+			Name:
+				$Lambda_0
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+						System.Int32 a
+						System.String str
+					Nodes:
+						VariableDeclaration:
+							Symbol:
+								Local:
+									Name:
+										a
+									Type:
+										System.Int32
+
+							Initializer:
+								Literal:
+									Type:
+										System.Int32
+									Value:
+										5
+
+
+						VariableDeclaration:
+							Symbol:
+								Local:
+									Name:
+										str
+									Type:
+										System.String
+
+							Initializer:
+								MethodCall:
+									ReturnType: System.String									Args:									Function:
+										Method:
+											Instance:
+												Local:
+													Name:
+														a
+													Type:
+														System.Int32
+
+											Method:
+												System.String System.Int32::ToString()
+
+
+
+
+

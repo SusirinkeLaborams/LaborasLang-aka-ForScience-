@@ -27,9 +27,15 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.block = CodeBlockNode.Parse(parser, parent, lexerNode.Children[4]);
             return instance;
         }
-        public override string ToString()
+        public override string ToString(int indent)
         {
-            return String.Format("(WhileBlock: Condition: {0}, Block: {1}", Condition, ExecutedBlock);
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("While:");
+            builder.Indent(indent + 1).AppendLine("Condition:");
+            builder.AppendLine(condition.ToString(indent + 2));
+            builder.Indent(indent + 1).AppendLine("Block:");
+            builder.AppendLine(block.ToString(indent + 2));
+            return builder.ToString();
         }
     }
 }

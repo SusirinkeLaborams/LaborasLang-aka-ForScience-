@@ -1,1 +1,15 @@
-(ClassNode: Fields: $Functors.$System_Int32 a, $Functors.$System_Void$$Functors_$System_Single$System_Double$System_Int32 b Methods: )
+Class:
+	Fields:
+		Field:
+			Type:
+				$Functors.$System_Int32
+			Name:
+				a
+
+		Field:
+			Type:
+				$Functors.$System_Void$$Functors_$System_Single$System_Double$System_Int32
+			Name:
+				b
+
+	Methods:

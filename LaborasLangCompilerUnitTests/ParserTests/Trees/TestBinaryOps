@@ -1,1 +1,78 @@
-(ClassNode: Fields: System.Int32 i = (BinaryOp: (Literal: System.Int32 1) BinaryXor (Literal: System.Int32 2)), System.Int32 a = (BinaryOp: (LValueNode: Field i System.Int32) BinaryAnd (LValueNode: Field i System.Int32)), System.Int32 c = (BinaryOp: (LValueNode: Field i System.Int32) BinaryOr (LValueNode: Field a System.Int32)) Methods: )
+Class:
+	Fields:
+		Field:
+			Type:
+				System.Int32
+			Name:
+				i
+			Initializer:
+				BinaryOperator:
+					Left:
+						Literal:
+							Type:
+								System.Int32
+							Value:
+								1
+
+					Operator:
+						BinaryXor
+					Right:
+						Literal:
+							Type:
+								System.Int32
+							Value:
+								2
+
+
+
+		Field:
+			Type:
+				System.Int32
+			Name:
+				a
+			Initializer:
+				BinaryOperator:
+					Left:
+						Field:
+							Name:
+								i
+							Type:
+								System.Int32
+
+					Operator:
+						BinaryAnd
+					Right:
+						Field:
+							Name:
+								i
+							Type:
+								System.Int32
+
+
+
+		Field:
+			Type:
+				System.Int32
+			Name:
+				c
+			Initializer:
+				BinaryOperator:
+					Left:
+						Field:
+							Name:
+								i
+							Type:
+								System.Int32
+
+					Operator:
+						BinaryOr
+					Right:
+						Field:
+							Name:
+								a
+							Type:
+								System.Int32
+
+
+
+	Methods:

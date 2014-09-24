@@ -301,5 +301,22 @@ namespace LaborasLangCompiler.Parser.Impl
             
             return builder.Append(")").ToString();
         }
+
+        public override string ToString(int indent)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("Class:");
+            builder.Indent(indent + 1).AppendLine("Fields:");
+            foreach(var field in fields.Values)
+            {
+                builder.AppendLine(field.ToString(indent + 2));
+            }
+            builder.Indent(indent + 1).AppendLine("Methods:");
+            foreach(var method in methods.Values)
+            {
+                builder.AppendLine(method.ToString(indent + 2));
+            }
+            return builder.ToString();
+        }
     }
 }

@@ -15,6 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
         public abstract LValueNodeType LValueType { get; }
+        public abstract string Name { get; }
         protected LValueNode(SequencePoint point) : base(point) { }
     }
 
@@ -23,6 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override LValueNodeType LValueType { get { return LValueNodeType.LocalVariable; } }
         public VariableDefinition LocalVariable { get { return variable.VariableDefinition; } }
         public override TypeWrapper TypeWrapper { get { return variable.TypeWrapper; } }
+        public override string Name {get { return LocalVariable.Name; } }
 
         private VariableWrapper variable;
         public LocalVariableNode(SequencePoint point, VariableWrapper variable)
@@ -30,9 +32,15 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             this.variable = variable;
         }
-        public override string ToString()
+        public override string ToString(int indent)
         {
-            return String.Format("(LValueNode: {0} {1} {2})", LValueType, LocalVariable.Name, ExpressionReturnType);
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("Local:");
+            builder.Indent(indent + 1).AppendLine("Name:");
+            builder.Indent(indent + 2).AppendLine(Name);
+            builder.Indent(indent + 1).AppendLine("Type:");
+            builder.Indent(indent + 2).AppendLine(TypeWrapper.FullName);
+            return builder.ToString();
         }
     }
 
@@ -42,6 +50,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public ParameterDefinition Param { get { return parameter.ParameterDefinition; } }
         public bool IsMethodStatic { get; set; }
         public override TypeWrapper TypeWrapper { get { return parameter.TypeWrapper; } }
+        public override string Name { get { return Param.Name; } }
 
         private ParameterWrapper parameter;
         public FunctionArgumentNode(ParameterWrapper param, bool isFunctionStatic, SequencePoint point)
@@ -50,9 +59,15 @@ namespace LaborasLangCompiler.Parser.Impl
             this.parameter = param;
             IsMethodStatic = isFunctionStatic;
         }
-        public override string ToString()
+        public override string ToString(int indent)
         {
-            return String.Format("(LValueNode: {0} {1} {2})", LValueType, Param.Name, ExpressionReturnType);
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("Param:");
+            builder.Indent(indent + 1).AppendLine("Name:");
+            builder.Indent(indent + 2).AppendLine(Name);
+            builder.Indent(indent + 1).AppendLine("Type:");
+            builder.Indent(indent + 2).AppendLine(TypeWrapper.FullName);
+            return builder.ToString();
         }
     }
 
@@ -62,6 +77,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public IExpressionNode ObjectInstance { get; private set; }
         public FieldReference Field { get { return field.FieldReference; } }
         public override TypeWrapper TypeWrapper { get { return field.TypeWrapper; } }
+        public override string Name { get { return Field.FullName; } }
 
         private FieldWrapper field;
         public FieldNode(IExpressionNode instance, FieldWrapper field, SequencePoint point)
@@ -70,9 +86,15 @@ namespace LaborasLangCompiler.Parser.Impl
             ObjectInstance = instance;
             this.field = field;
         }
-        public override string ToString()
+        public override string ToString(int indent)
         {
-            return String.Format("(LValueNode: {0} {1} {2})", LValueType, field.Name, ExpressionReturnType);
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("Field:");
+            builder.Indent(indent + 1).AppendLine("Name:");
+            builder.Indent(indent + 2).AppendLine(field.Name);
+            builder.Indent(indent + 1).AppendLine("Type:");
+            builder.Indent(indent + 2).AppendLine(TypeWrapper.FullName);
+            return builder.ToString();
         }
     }
     /*

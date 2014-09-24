@@ -1,1 +1,29 @@
-(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int64 b = (LValueNode: Field a System.Int32) Methods: )
+Class:
+	Fields:
+		Field:
+			Type:
+				System.Int32
+			Name:
+				a
+			Initializer:
+				Literal:
+					Type:
+						System.Int32
+					Value:
+						5
+
+
+		Field:
+			Type:
+				System.Int64
+			Name:
+				b
+			Initializer:
+				Field:
+					Name:
+						a
+					Type:
+						System.Int32
+
+
+	Methods:

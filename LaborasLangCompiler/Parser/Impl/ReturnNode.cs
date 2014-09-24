@@ -36,9 +36,14 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return instance;
         }
-        public override string ToString()
+
+        public override string ToString(int indent)
         {
-            return String.Format("(ReturnNode: {0})", Expression);
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("Return:");
+            builder.Indent(indent + 1).AppendLine("Expression:");
+            builder.AppendLine(expression.ToString(indent + 2));
+            return builder.ToString();
         }
     }
 }

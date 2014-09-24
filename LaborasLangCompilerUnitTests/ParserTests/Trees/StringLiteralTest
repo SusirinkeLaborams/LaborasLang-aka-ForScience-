@@ -1,1 +1,16 @@
-(ClassNode: Fields: System.String a = (Literal: System.String word) Methods: )
+Class:
+	Fields:
+		Field:
+			Type:
+				System.String
+			Name:
+				a
+			Initializer:
+				Literal:
+					Type:
+						System.String
+					Value:
+						word
+
+
+	Methods:

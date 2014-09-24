@@ -1,1 +1,57 @@
-(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: (System.Boolean a) Nodes: ((Declaration: (LValueNode: LocalVariable a System.Boolean) = (Literal: System.Boolean True)), (WhileBlock: Condition: (LValueNode: LocalVariable a System.Boolean), Block: (CodeBlock: Symbols: () Nodes: ())))))
+Class:
+	Fields:
+		Field:
+			Type:
+				$Functors.$System_Void
+			Name:
+				Main
+			Initializer:
+				Method:
+					Method:
+						System.Void test::$Lambda_0()
+
+
+	Methods:
+		Method:
+			Name:
+				$Lambda_0
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+						System.Boolean a
+					Nodes:
+						VariableDeclaration:
+							Symbol:
+								Local:
+									Name:
+										a
+									Type:
+										System.Boolean
+
+							Initializer:
+								Literal:
+									Type:
+										System.Boolean
+									Value:
+										True
+
+
+						While:
+							Condition:
+								Local:
+									Name:
+										a
+									Type:
+										System.Boolean
+
+							Block:
+								CodeBlock:
+									Symbols:
+									Nodes:
+
+
+
+

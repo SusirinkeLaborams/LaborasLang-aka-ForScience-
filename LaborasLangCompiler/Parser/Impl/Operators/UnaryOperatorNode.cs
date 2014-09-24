@@ -143,9 +143,15 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             return new UnaryOperatorNode(UnaryOperatorNodeType.VoidOperator, expression);
         }
-        public override string ToString()
+        public override string ToString(int indent)
         {
-            return String.Format("(UnaryOp: {0} {1})", UnaryOperatorType, Operand);
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("UnaryOperator:");
+            builder.Indent(indent + 1).AppendLine("Operator:");
+            builder.Indent(indent + 2).AppendLine(UnaryOperatorType.ToString());
+            builder.Indent(indent + 1).AppendLine("Operand:");
+            builder.AppendLine(operand.ToString(indent + 2));
+            return builder.ToString();
         }
         public static Dictionary<Lexer.TokenType, UnaryOperatorNodeType> SuffixOperators;
         public static Dictionary<Lexer.TokenType, UnaryOperatorNodeType> PrefixOperators;

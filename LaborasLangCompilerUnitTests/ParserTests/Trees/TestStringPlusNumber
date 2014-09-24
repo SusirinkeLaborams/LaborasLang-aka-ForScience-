@@ -1,1 +1,28 @@
-(ClassNode: Fields: System.String a = (BinaryOp: (Literal: System.Int32 5) Addition (Literal: System.String something)) Methods: )
+Class:
+	Fields:
+		Field:
+			Type:
+				System.String
+			Name:
+				a
+			Initializer:
+				BinaryOperator:
+					Left:
+						Literal:
+							Type:
+								System.Int32
+							Value:
+								5
+
+					Operator:
+						Addition
+					Right:
+						Literal:
+							Type:
+								System.String
+							Value:
+								something
+
+
+
+	Methods:

@@ -69,9 +69,18 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return new SymbolDeclarationNode(symbol, initializer, parser.GetSequencePoint(lexerNode));
         }
-        public override string ToString()
+        public override string ToString(int indent)
         {
-            return String.Format("(Declaration: {0} = {1})", DeclaredSymbol.ToString(), Initializer != null ? Initializer.ToString() : "");
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("VariableDeclaration:");
+            builder.Indent(indent + 1).AppendLine("Symbol:");
+            builder.AppendLine(declaredSymbol.ToString(indent + 2));
+            if(initializer != null)
+            {
+                builder.Indent(indent + 1).AppendLine("Initializer:");
+                builder.AppendLine(initializer.ToString(indent + 2));
+            }
+            return builder.ToString();
         }
     }
 }

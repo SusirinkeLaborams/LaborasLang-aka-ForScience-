@@ -1,4 +1,4 @@
-﻿//#define REWRITE
+﻿#define REWRITE
 using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser;
@@ -450,7 +450,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             using(var tree = Lexer.Lexer.Lex(source))
             {
                 Parser parser = new Parser(assembly, tree, "test", true);
-                string result = parser.Root.ToString();
+                string result = parser.Root.ToString(0);
 #if REWRITE
                 System.IO.File.WriteAllText(file, result);
 #else

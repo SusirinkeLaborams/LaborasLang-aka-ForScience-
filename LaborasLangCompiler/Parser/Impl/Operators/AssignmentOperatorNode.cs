@@ -46,9 +46,15 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.left = left;
             return instance;    
         }
-        public override string ToString()
+        public override string ToString(int indent)
         {
-            return String.Format("(Assignment: {0} = {1})", LeftOperand, RightOperand);
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("Assignment:");
+            builder.Indent(indent + 1).AppendLine("Left:");
+            builder.AppendLine(left.ToString(indent + 2));
+            builder.Indent(indent + 1).AppendLine("Right:");
+            builder.AppendLine(right.ToString(indent + 2));
+            return builder.ToString();
         }
 
         public static Dictionary<Lexer.TokenType, BinaryOperatorNodeType> Operators;

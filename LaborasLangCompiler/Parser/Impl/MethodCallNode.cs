@@ -16,15 +16,17 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override RValueNodeType RValueType { get { return RValueNodeType.Call; } }
         public override TypeWrapper TypeWrapper { get { return type; } }
-        public IReadOnlyList<IExpressionNode> Args { get; private set; }
-        public IExpressionNode Function { get; private set; }
+        public IReadOnlyList<IExpressionNode> Args { get { return args; } }
+        public IExpressionNode Function { get { return function; } }
 
         private TypeWrapper type;
-        public MethodCallNode(IExpressionNode function, TypeWrapper returnType, IReadOnlyList<IExpressionNode> args, SequencePoint point)
+        private List<ExpressionNode> args;
+        private ExpressionNode function;
+        public MethodCallNode(ExpressionNode function, TypeWrapper returnType, List<ExpressionNode> args, SequencePoint point)
             : base(point)
         {
-            Function = function;
-            Args = args;
+            this.function = function;
+            this.args = args;
             this.type = returnType;
         }
         public static new MethodCallNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
@@ -87,18 +89,18 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return ambiguous.RemoveAmbiguity(parser, new FunctorTypeWrapper(parser.Assembly, null, args.Select(a => a.TypeWrapper)));
         }
-        public override string ToString()
+        public override string ToString(int indent)
         {
-            StringBuilder builder = new StringBuilder("(MethodCall: Return: ");
-            builder.Append(ExpressionReturnType)
-                .Append(" Args: ");
-            string delim = "";
-            foreach(var arg in Args)
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("MethodCall:");
+            builder.Indent(indent + 1).AppendFormat("ReturnType: {0}", TypeWrapper);
+            builder.Indent(indent + 1).Append("Args:");
+            foreach(var arg in args)
             {
-                builder.Append(delim).Append(arg);
-                delim = ", ";
+                builder.AppendLine(arg.ToString(indent + 2));
             }
-            builder.Append(" Function: ").Append(Function).Append(")");
+            builder.Indent(indent + 1).AppendLine("Function:");
+            builder.AppendLine(function.ToString(indent + 2));
             return builder.ToString();
         }
     }

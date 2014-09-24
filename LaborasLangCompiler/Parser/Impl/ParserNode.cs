@@ -16,5 +16,6 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             SequencePoint = sequencePoint;
         }
+        public abstract string ToString(int indent);
     }
 }

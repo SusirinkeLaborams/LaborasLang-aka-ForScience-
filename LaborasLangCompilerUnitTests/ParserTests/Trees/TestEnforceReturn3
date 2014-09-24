@@ -1,1 +1,51 @@
-(ClassNode: Fields: $Functors.$System_Int32 Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Int32()(CodeBlock: Symbols: () Nodes: ((ConditionBlock: Condition: (Literal: System.Boolean True), True: (CodeBlock: Symbols: () Nodes: ((ReturnNode: (Literal: System.Int32 1)))), False: , (ReturnNode: (Literal: System.Int32 0))))))
+Class:
+	Fields:
+		Field:
+			Type:
+				$Functors.$System_Int32
+			Name:
+				Main
+			Initializer:
+				Method:
+					Method:
+						System.Int32 test::$Lambda_0()
+
+
+	Methods:
+		Method:
+			Name:
+				$Lambda_0
+			Return:
+				System.Int32
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						Condition:
+							True:
+								CodeBlock:
+									Symbols:
+									Nodes:
+										Return:
+											Expression:
+												Literal:
+													Type:
+														System.Int32
+													Value:
+														1
+
+
+
+
+						Return:
+							Expression:
+								Literal:
+									Type:
+										System.Int32
+									Value:
+										0
+
+
+
+

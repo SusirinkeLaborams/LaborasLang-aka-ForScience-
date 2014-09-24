@@ -152,10 +152,19 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new TypeException(SequencePoint, "Logical operations only allowed on booleans, operands: {0}, {1}",
                     left.TypeWrapper, right.TypeWrapper);
         }
-        public override string ToString()
+        public override string ToString(int indent)
         {
-            return String.Format("(BinaryOp: {0} {1} {2})", LeftOperand, BinaryOperatorType, RightOperand);
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("BinaryOperator:");
+            builder.Indent(indent + 1).AppendLine("Left:");
+            builder.AppendLine(left.ToString(indent + 2));
+            builder.Indent(indent + 1).AppendLine("Operator:");
+            builder.Indent(indent + 2).AppendLine(BinaryOperatorType.ToString());
+            builder.Indent(indent + 1).AppendLine("Right:");
+            builder.AppendLine(right.ToString(indent + 2));
+            return builder.ToString();
         }
+
         public static Dictionary<Lexer.TokenType, BinaryOperatorNodeType> Operators;
         static BinaryOperatorNode()
         {

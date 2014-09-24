@@ -1,1 +1,93 @@
-(ClassNode: Fields: $Functors.$System_Void Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void()(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!), (Literal: System.String Hello, World!) Function: (MethodNode: Instance: null, Method: WriteLine))))))
+Class:
+	Fields:
+		Field:
+			Type:
+				$Functors.$System_Void
+			Name:
+				Main
+			Initializer:
+				Method:
+					Method:
+						System.Void test::$Lambda_0()
+
+
+	Methods:
+		Method:
+			Name:
+				$Lambda_0
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						MethodCall:
+							ReturnType: System.Void							Args:								Literal:
+									Type:
+										System.String
+									Value:
+										Hello, World!
+
+								Literal:
+									Type:
+										System.String
+									Value:
+										Hello, World!
+
+								Literal:
+									Type:
+										System.String
+									Value:
+										Hello, World!
+
+								Literal:
+									Type:
+										System.String
+									Value:
+										Hello, World!
+
+								Literal:
+									Type:
+										System.String
+									Value:
+										Hello, World!
+
+								Literal:
+									Type:
+										System.String
+									Value:
+										Hello, World!
+
+								Literal:
+									Type:
+										System.String
+									Value:
+										Hello, World!
+
+								Literal:
+									Type:
+										System.String
+									Value:
+										Hello, World!
+
+								Literal:
+									Type:
+										System.String
+									Value:
+										Hello, World!
+
+								Literal:
+									Type:
+										System.String
+									Value:
+										Hello, World!
+
+							Function:
+								Method:
+									Method:
+										System.Void System.Console::WriteLine(System.String,System.Object[])
+
+
+
+

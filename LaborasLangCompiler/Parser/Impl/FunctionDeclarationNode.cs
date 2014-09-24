@@ -111,18 +111,21 @@ namespace LaborasLangCompiler.Parser.Impl
             return new FunctorTypeWrapper(parser.Assembly, ret, args);
         }
 
-        public override string ToString()
+        public override string ToString(int indent)
         {
-            StringBuilder builder = new StringBuilder("(Method: ");
-            builder.Append(MethodReference.Name).Append(" ");
-            builder.Append(MethodReturnType).Append("(");
-            string delim = "";
-            foreach(var arg in emitter.Get().Parameters)
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("Method:");
+            builder.Indent(indent + 1).AppendLine("Name:");
+            builder.Indent(indent + 2).AppendLine(MethodReference.Name);
+            builder.Indent(indent + 1).AppendLine("Return:");
+            builder.Indent(indent + 2).AppendLine(MethodReturnType.FullName);
+            builder.Indent(indent + 1).AppendLine("Params:");
+            foreach(var param in MethodReference.Parameters)
             {
-                builder.AppendFormat("{0}{1} {2}", delim, arg.ParameterType, arg.Name);
-                delim = ", ";
+                builder.Indent(indent + 2).AppendFormat("{0} {1}{2}", param.ParameterType.FullName, param.Name, Environment.NewLine);
             }
-            builder.Append(")").Append(body.ToString()).Append(")");
+            builder.Indent(indent + 1).AppendLine("Body:");
+            builder.AppendLine(body.ToString(indent + 2));
             return builder.ToString();
         }
 

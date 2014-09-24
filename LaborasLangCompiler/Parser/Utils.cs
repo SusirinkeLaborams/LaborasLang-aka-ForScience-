@@ -30,5 +30,11 @@ namespace LaborasLangCompiler.Parser
         {
             return node.Children.GetEnumerator();
         }
+
+        public static StringBuilder Indent(this StringBuilder builder, int count)
+        {
+            builder.Append('\t', count);
+            return builder;
+        }
     }
 }

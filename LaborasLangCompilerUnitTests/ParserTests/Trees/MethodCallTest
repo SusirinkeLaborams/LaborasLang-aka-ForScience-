@@ -1,1 +1,42 @@
-(ClassNode: Fields: $Functors.$System_Void$System_Int32 Main = (MethodNode: Instance: null, Method: $Lambda_0) Methods: (Method: $Lambda_0 System.Void(System.Int32 arg)(CodeBlock: Symbols: () Nodes: ((MethodCall: Return: System.Void Args: (Literal: System.Int32 4) Function: (LValueNode: Field Main $Functors.$System_Void$System_Int32))))))
+Class:
+	Fields:
+		Field:
+			Type:
+				$Functors.$System_Void$System_Int32
+			Name:
+				Main
+			Initializer:
+				Method:
+					Method:
+						System.Void test::$Lambda_0(System.Int32)
+
+
+	Methods:
+		Method:
+			Name:
+				$Lambda_0
+			Return:
+				System.Void
+			Params:
+				System.Int32 arg
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						MethodCall:
+							ReturnType: System.Void							Args:								Literal:
+									Type:
+										System.Int32
+									Value:
+										4
+
+							Function:
+								Field:
+									Name:
+										Main
+									Type:
+										$Functors.$System_Void$System_Int32
+
+
+
+

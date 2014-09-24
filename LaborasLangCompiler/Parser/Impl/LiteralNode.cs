@@ -102,9 +102,16 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new ParseException(point, "Could not parse {0} as {1}, format error", value, type.FullName);
             }
         }
-        public override string ToString()
+
+        public override string ToString(int indent)
         {
-            return "(Literal: " + TypeWrapper.FullName + " " + Value + ")";
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("Literal:");
+            builder.Indent(indent + 1).AppendLine("Type:");
+            builder.Indent(indent + 2).AppendLine(TypeWrapper.FullName);
+            builder.Indent(indent + 1).AppendLine("Value:");
+            builder.Indent(indent + 2).AppendLine(Value.ToString());
+            return builder.ToString();
         }
     }
 }

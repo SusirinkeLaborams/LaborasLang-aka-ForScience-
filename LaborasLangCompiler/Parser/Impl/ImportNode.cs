@@ -22,5 +22,9 @@ namespace LaborasLangCompiler.Parser.Impl
             else
                 throw new ParseException(parser.GetSequencePoint(lexerNode), "Namespace {0} not found", lexerNode.Children[1].FullContent);
         }
+        public override string ToString(int indent)
+        {
+            throw new InvalidOperationException();
+        }
     }
 }

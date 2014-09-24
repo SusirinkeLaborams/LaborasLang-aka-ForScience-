@@ -22,5 +22,20 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             this.Declaration = declaration;
             this.IsStatic = true;
         }
+        public string ToString(int indent)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("Field:");
+            builder.Indent(indent + 1).AppendLine("Type:");
+            builder.Indent(indent + 2).AppendLine(TypeWrapper.FullName);
+            builder.Indent(indent + 1).AppendLine("Name:");
+            builder.Indent(indent + 2).AppendLine(Name);
+            if(Initializer != null)
+            {
+                builder.Indent(indent + 1).AppendLine("Initializer:");
+                builder.AppendLine(Initializer.ToString(indent + 2));
+            }
+            return builder.ToString();
+        }
     }
 }

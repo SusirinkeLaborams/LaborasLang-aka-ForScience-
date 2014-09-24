@@ -1,1 +1,35 @@
-(ClassNode: Fields: System.Int32 a = (Literal: System.Int32 5), System.Int32 b, System.Int32 c = (Literal: System.Int32 10) Methods: )
+Class:
+	Fields:
+		Field:
+			Type:
+				System.Int32
+			Name:
+				a
+			Initializer:
+				Literal:
+					Type:
+						System.Int32
+					Value:
+						5
+
+
+		Field:
+			Type:
+				System.Int32
+			Name:
+				b
+
+		Field:
+			Type:
+				System.Int32
+			Name:
+				c
+			Initializer:
+				Literal:
+					Type:
+						System.Int32
+					Value:
+						10
+
+
+	Methods:
