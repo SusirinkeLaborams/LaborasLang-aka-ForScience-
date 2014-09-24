@@ -59,6 +59,13 @@ a = 5;
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void DeclareEntryFunctionTest()
+        {
+            var source = @"entry int() foo;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void FunctionCall()
         {
             var source =
@@ -387,6 +394,14 @@ use Windows.Security.Cryptography.Core; use Windows;";
 b = false || true;
 a ||= true;
 b &&= a;";
+
+            ExecuteTest(source);
+        }
+        
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestFunctionCallOnOperatorResult()
+        {
+            var source = @"(5 + 6).ToString(aaa);";
 
             ExecuteTest(source);
         }

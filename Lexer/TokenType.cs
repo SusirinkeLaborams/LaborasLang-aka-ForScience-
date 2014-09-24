@@ -70,6 +70,7 @@
         Extern,
         Else,
         Enum,
+        Entry,
         False,
         Finally,
         For,

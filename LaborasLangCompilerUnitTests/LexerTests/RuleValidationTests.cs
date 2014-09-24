@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using Lexer;
 using System.Collections.Generic;
+using System.Text;
 
 namespace LaborasLangCompilerUnitTests.LexerTests
 {
@@ -72,15 +73,67 @@ namespace LaborasLangCompilerUnitTests.LexerTests
                 if(!visited[i])
                 {
                     var token = (TokenType)i;
-                    if (!token.IsTerminal())
-                    {
-                        unreachableTokens.Add(token);
-                    }
+                    unreachableTokens.Add(token);
                 }
             }
 
-            var stringified = unreachableTokens.Aggregate("", (a, b) => a + " " + b.ToString());
+            var stringified = unreachableTokens.Aggregate("", (a, b) => a + "\n" + b.ToString());
             Assert.AreEqual(0, unreachableTokens.Count, "Unreachable rules: " + stringified);
+        }
+
+        [TestMethod, TestCategory("Lexer")]
+        public void TestNoInfiniteRecursionInRules()
+        {
+            var rules = new ParseRule[(int)TokenType.TokenTypeCount];
+            var visited = new bool[rules.Length];
+
+            foreach (var rule in SyntaxMatcher.ParseRulePool)
+            {
+                rules[(int)rule.Result] = rule;
+            }
+
+            foreach (var rule in SyntaxMatcher.ParseRulePool)
+            {
+                TraverseRules(rules, visited, new Stack<ParseRule>(), (int)rule.Result);
+            }
+        }
+
+        void TraverseRules(ParseRule[] rules, bool[] visited, Stack<ParseRule> traverseStack, int token)
+        {
+            traverseStack.Push(rules[token]);
+            visited[token] = true;
+            {
+                var rule = rules[token];
+
+                if (rule.RequiredTokens != null)
+                {
+                    foreach (var dependency in rule.RequiredTokens)
+                    {
+                        var nextToken = (int)dependency[0].Token;
+                        if (!visited[nextToken])
+                        {
+                            TraverseRules(rules, visited, traverseStack, nextToken);
+                        }
+                        else
+                        {
+                            var error = new StringBuilder();
+                            error.AppendLine("Circular dependency found:");
+                            traverseStack.Push(rules[nextToken]);
+
+                            do
+                            {
+                                error.AppendLine(string.Format("\t{0}", traverseStack.Pop().Result));
+                            }
+                            while (traverseStack.Peek().Result != (TokenType)nextToken);
+
+                            error.AppendLine(string.Format("\t{0}", traverseStack.Pop().Result));
+                            throw new Exception(error.ToString());
+                        }
+                    }
+                }
+            }
+            visited[token] = false;
+            traverseStack.Pop();
         }
     }
 }

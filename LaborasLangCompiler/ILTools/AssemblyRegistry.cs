@@ -340,7 +340,7 @@ namespace LaborasLangCompiler.ILTools
 
         public static FieldReference GetField(AssemblyEmitter assembly, string typeName, string fieldName)
         {
-            return GetField(assembly, FindTypeInternal(fieldName), fieldName);
+            return GetField(assembly, FindTypeInternal(typeName), fieldName);
         }
         public static FieldReference GetField(AssemblyEmitter assembly, TypeEmitter type, string fieldName)
         {
