@@ -32,9 +32,12 @@ Children:
 				Content: Type: Value, Start: 1, 19, End: 1, 20, Content: ""
 				Type: Value
 				Children:
-					Content: Type: Integer, Start: 1, 19, End: 1, 20, Content: "5"
-					Type: Integer
+					Content: Type: LiteralNode, Start: 1, 19, End: 1, 20, Content: ""
+					Type: LiteralNode
 					Children:
+						Content: Type: Integer, Start: 1, 19, End: 1, 20, Content: "5"
+						Type: Integer
+						Children:
 
 				Content: Type: RightParenthesis, Start: 1, 20, End: 1, 21, Content: ")"
 				Type: RightParenthesis
