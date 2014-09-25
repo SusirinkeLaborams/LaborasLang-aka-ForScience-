@@ -21,7 +21,7 @@ Class:
 			Initializer:
 				Method:
 					Method:
-						System.Void test::$Lambda_0()
+						System.Void TestMethodInferrence::$Lambda_0()
 
 
 	Methods:

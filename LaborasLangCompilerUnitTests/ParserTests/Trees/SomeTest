@@ -34,7 +34,7 @@ Class:
 			Initializer:
 				Method:
 					Method:
-						System.Void test::$Lambda_0(System.Int32)
+						System.Void SomeTest::$Lambda_0(System.Int32)
 
 
 	Methods:
@@ -99,7 +99,7 @@ Class:
 							Initializer:
 								Method:
 									Method:
-										System.Int32 test::$Lambda_1(System.Int32,System.Single)
+										System.Int32 SomeTest::$Lambda_1(System.Int32,System.Single)
 
 
 

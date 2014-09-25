@@ -8,7 +8,7 @@ Class:
 			Initializer:
 				Method:
 					Method:
-						System.Void test::$Lambda_0()
+						System.Void WhileSymbol::$Lambda_0()
 
 
 	Methods:

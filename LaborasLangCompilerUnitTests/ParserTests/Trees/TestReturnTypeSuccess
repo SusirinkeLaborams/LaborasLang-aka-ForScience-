@@ -8,7 +8,7 @@ Class:
 			Initializer:
 				Method:
 					Method:
-						System.Int32 test::$Lambda_0()
+						System.Int32 TestReturnTypeSuccess::$Lambda_0()
 
 
 	Methods:

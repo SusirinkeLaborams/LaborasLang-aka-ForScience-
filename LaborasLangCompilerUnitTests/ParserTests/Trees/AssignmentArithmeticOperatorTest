@@ -21,7 +21,7 @@ Class:
 			Initializer:
 				Method:
 					Method:
-						System.Void test::$Lambda_0(System.Int32)
+						System.Void AssignmentArithmeticOperatorTest::$Lambda_0(System.Int32)
 
 
 	Methods:
