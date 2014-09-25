@@ -105,6 +105,7 @@
     <Compile Include="LexerTests\TokenizerTests.cs" />
     <Compile Include="LexerTests\SyntaxMatcherTests.cs" />
     <Compile Include="LexerTests\RuleValidationTests.cs" />
+    <Compile Include="ParserTests\ParserStressTests.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="ParserTests\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

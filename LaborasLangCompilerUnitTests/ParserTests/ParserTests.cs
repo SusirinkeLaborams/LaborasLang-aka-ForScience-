@@ -239,24 +239,6 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             CompareTrees(source);
         }
         [TestMethod, TestCategory("Parser")]
-        public void HarderBetterFasterStronger()
-        {
-            string source = @"
-                auto i = 1;
-                auto a = ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-                         i
-                         ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++;";
-            CanParse(source);
-        }
-        [TestMethod, TestCategory("Parser")]
         public void TestMixedSuffixPrefix()
         {
             string source = @"
@@ -442,7 +424,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CompareTrees(source);
         }
-        private void CompareTrees(string source, [CallerMemberName] string name = "")
+        private static void CompareTrees(string source, [CallerMemberName] string name = "")
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
             var assembly = new AssemblyEmitter(compilerArgs);
@@ -464,7 +446,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 #endif
             }
         }
-        private void CanParse(string source, [CallerMemberName] string name = "")
+        public static void CanParse(string source, [CallerMemberName] string name = "")
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
             var assembly = new AssemblyEmitter(compilerArgs);
