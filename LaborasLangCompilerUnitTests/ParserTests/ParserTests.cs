@@ -47,7 +47,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         public void TypeExceptionTest()
         {
             string source = "int a = 0.0;";
-            CompareTrees(source);
+            CanParse(source);
         }
         [TestMethod, TestCategory("Parser")]
         public void MethodCallTest()
@@ -254,7 +254,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++;";
-            CompareTrees(source);
+            CanParse(source);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestMixedSuffixPrefix()
@@ -303,7 +303,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string source = @"
                 auto Main = int(){return 4.0;};";
-            CompareTrees(source);
+            CanParse(source);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestReturnTypeSuccess()
@@ -340,7 +340,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                         return 1;
                     }
                 };";
-            CompareTrees(source);
+            CanParse(source);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestEnforceReturn3()
@@ -397,7 +397,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {  
                     return 5;
                 };";
-            CompareTrees(source);
+            CanParse(source);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestImport()
@@ -449,7 +449,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             var file = path + name;
             using(var tree = Lexer.Lexer.Lex(source))
             {
-                Parser parser = new Parser(assembly, tree, "test", true);
+                Parser parser = new Parser(assembly, tree, name, true);
                 string result = parser.Root.ToString(0);
 #if REWRITE
                 System.IO.File.WriteAllText(file, result);
@@ -462,6 +462,15 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 catch { }
                 Assert.AreEqual(expected, result);
 #endif
+            }
+        }
+        private void CanParse(string source, [CallerMemberName] string name = "")
+        {
+            var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
+            var assembly = new AssemblyEmitter(compilerArgs);
+            using(var tree = Lexer.Lexer.Lex(source))
+            {
+                Parser parser = new Parser(assembly, tree, name, true);
             }
         }
     }
