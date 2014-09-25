@@ -16,34 +16,27 @@ namespace LaborasLangCompiler.Parser.Impl
         public AstNode Type { get; private set; }
         public AstNode Initializer { get; private set; }
         public AstNode SymbolName { get; private set; }
-
-        protected DeclarationInfo(AstNode name, AstNode type, AstNode init, SequencePoint point)
-        {
-            this.Initializer = init;
-            this.SymbolName = name;
-            this.Type = type;
-        }
+        public Modifier Modifiers { get; private set; }
 
         public static DeclarationInfo Parse(Parser parser, AstNode lexerNode)
         {
-            AstNode type = new AstNode();
-            AstNode name = new AstNode();
-            AstNode init = new AstNode();
+            DeclarationInfo instance = new DeclarationInfo();
 
             foreach(var node in lexerNode.Children)
             {
                 switch (node.Type)
                 {
                     case Lexer.TokenType.VariableModifier:
-                        throw new NotImplementedException("Modifiers not implemented");
+                        instance.Modifiers = instance.Modifiers.AddModifier(parser, node);
+                        break;
                     case Lexer.TokenType.Symbol:
-                        name = node;
+                        instance.SymbolName = node;
                         break;
                     case Lexer.TokenType.Type:
-                        type = node;
+                        instance.Type = node;
                         break;
                     case Lexer.TokenType.Value:
-                        init = node;
+                        instance.Initializer = node;
                         break;
                     case Lexer.TokenType.Assignment:
                     case Lexer.TokenType.EndOfLine:
@@ -53,10 +46,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            if(name.IsNull || type.IsNull)
+            if(instance.SymbolName.IsNull || instance.Type.IsNull)
                 throw new ParseException(parser.GetSequencePoint(lexerNode), "Missing elements in declaration {0}, lexer messed up", lexerNode.Content);
 
-            return new DeclarationInfo(name, type, init, parser.GetSequencePoint(lexerNode));
+            return instance;
         }
     }
 }
