@@ -32,6 +32,7 @@ namespace Lexer.Containers
         {
             if (!m_Disposed)
             {
+                GC.SuppressFinalize(this);
                 m_Disposed = true;
                 Allocator.Cleanup();
                 NodePool.Cleanup();
