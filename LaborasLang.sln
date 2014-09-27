@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaborasLangCompiler", "LaborasLangCompiler\LaborasLangCompiler.csproj", "{977BD47D-3ED4-499A-B9BA-89AEC2EB0F7A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaborasLangCompilerUnitTests", "LaborasLangCompilerUnitTests\LaborasLangCompilerUnitTests.csproj", "{AE4D15A9-9B29-4F75-B648-E9F70631AF38}"
