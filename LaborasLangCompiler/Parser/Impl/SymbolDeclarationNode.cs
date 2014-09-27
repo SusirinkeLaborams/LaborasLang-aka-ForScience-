@@ -34,6 +34,9 @@ namespace LaborasLangCompiler.Parser.Impl
             var declaredType = TypeNode.Parse(parser, parent, info.Type);
             ExpressionNode initializer = info.Initializer.IsNull ? null : ExpressionNode.Parse(parser, parent, info.Initializer);
 
+            if (info.Modifiers != 0)
+                throw new NotImplementedException("Modifiers not implemented for local variables");
+
             if (declaredType == null && (initializer == null || initializer.TypeWrapper == null))
                 throw new TypeException(parser.GetSequencePoint(lexerNode), "Type inference requires initialization");
 

@@ -1,20 +1,9 @@
 Class:
 	Fields:
-		Field:
-			Type:
-				$Functors.$System_Int32
-			Name:
-				Main
-			Initializer:
-				Method:
-					Method:
-						System.Int32 TestEnforceReturn4::$Lambda_0()
-
-
 	Methods:
 		Method:
 			Name:
-				$Lambda_0
+				Main
 			Return:
 				System.Int32
 			Params:

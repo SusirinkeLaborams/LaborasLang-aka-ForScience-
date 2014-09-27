@@ -26,21 +26,10 @@ Class:
 						System.Int32
 
 
-		Field:
-			Type:
-				$Functors.$System_Void$System_Int32
-			Name:
-				Main
-			Initializer:
-				Method:
-					Method:
-						System.Void SomeTest::$Lambda_0(System.Int32)
-
-
 	Methods:
 		Method:
 			Name:
-				$Lambda_0
+				Main
 			Return:
 				System.Void
 			Params:
@@ -99,14 +88,14 @@ Class:
 							Initializer:
 								Method:
 									Method:
-										System.Int32 SomeTest::$Lambda_1(System.Int32,System.Single)
+										System.Int32 SomeTest::$Lambda_0(System.Int32,System.Single)
 
 
 
 
 		Method:
 			Name:
-				$Lambda_1
+				$Lambda_0
 			Return:
 				System.Int32
 			Params:

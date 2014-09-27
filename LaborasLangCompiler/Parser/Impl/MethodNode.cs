@@ -29,9 +29,9 @@ namespace LaborasLangCompiler.Parser.Impl
             this.method = method;
             this.instance = instance;
         }
-        public static MethodNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode, string name = null)
+        public static new MethodNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            var method = FunctionDeclarationNode.Parse(parser, parent, lexerNode, name);
+            var method = FunctionDeclarationNode.ParseAsFunctor(parser, parent, lexerNode);
             return new MethodNode(method, null, method.SequencePoint);
         }
         public override string ToString(int indent)

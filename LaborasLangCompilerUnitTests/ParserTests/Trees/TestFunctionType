@@ -1,20 +1,9 @@
 Class:
 	Fields:
-		Field:
-			Type:
-				$Functors.$System_Void
-			Name:
-				a
-			Initializer:
-				Method:
-					Method:
-						System.Void TestFunctionType::$Lambda_0()
-
-
 	Methods:
 		Method:
 			Name:
-				$Lambda_0
+				a
 			Return:
 				System.Void
 			Params:

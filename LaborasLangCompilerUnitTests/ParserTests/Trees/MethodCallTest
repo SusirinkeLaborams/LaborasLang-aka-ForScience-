@@ -1,20 +1,9 @@
 Class:
 	Fields:
-		Field:
-			Type:
-				$Functors.$System_Void$System_Int32
-			Name:
-				Main
-			Initializer:
-				Method:
-					Method:
-						System.Void MethodCallTest::$Lambda_0(System.Int32)
-
-
 	Methods:
 		Method:
 			Name:
-				$Lambda_0
+				Main
 			Return:
 				System.Void
 			Params:
@@ -31,11 +20,9 @@ Class:
 										4
 
 							Function:
-								Field:
-									Name:
-										Main
-									Type:
-										$Functors.$System_Void$System_Int32
+								Method:
+									Method:
+										System.Void MethodCallTest::Main(System.Int32)
 
 
 

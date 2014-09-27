@@ -1,20 +1,9 @@
 Class:
 	Fields:
-		Field:
-			Type:
-				$Functors.$System_Void
-			Name:
-				Main
-			Initializer:
-				Method:
-					Method:
-						System.Void DeclarationInsideMethod::$Lambda_0()
-
-
 	Methods:
 		Method:
 			Name:
-				$Lambda_0
+				Main
 			Return:
 				System.Void
 			Params:

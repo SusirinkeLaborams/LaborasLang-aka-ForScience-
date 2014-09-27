@@ -13,21 +13,10 @@ Class:
 						5
 
 
-		Field:
-			Type:
-				$Functors.$System_Void$System_Int32
-			Name:
-				Main
-			Initializer:
-				Method:
-					Method:
-						System.Void AssignmentArithmeticOperatorTest::$Lambda_0(System.Int32)
-
-
 	Methods:
 		Method:
 			Name:
-				$Lambda_0
+				Main
 			Return:
 				System.Void
 			Params:

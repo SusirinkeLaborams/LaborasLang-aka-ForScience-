@@ -936,7 +936,7 @@ namespace LaborasLangCompiler.ILTools.Methods
                 return;
             }
 
-            Emit((ILValueNode)unaryOperator.Operand, false);
+            Emit(unaryOperator.Operand, false);
 
             switch (unaryOperator.UnaryOperatorType)
             {

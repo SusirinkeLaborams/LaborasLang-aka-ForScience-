@@ -12,7 +12,13 @@ namespace LaborasLangCompiler.Parser
     {
         public static bool IsFunctionDeclaration(this AstNode node)
         {
-            return node.Type == Lexer.TokenType.Value && node.Children[0].Type == Lexer.TokenType.Function;
+            if (node.Type == Lexer.TokenType.Function)
+                return true;
+
+            if (node.Type == Lexer.TokenType.Value)
+                return node.Children[0].IsFunctionDeclaration();
+
+            return false;
         }
 
         public static string GetSingleSymbolOrThrow(this AstNode node)
@@ -24,11 +30,6 @@ namespace LaborasLangCompiler.Parser
                 return node.Children[0].Content.ToString();
 
             throw new InvalidOperationException("Node not a single symbol node");
-        }
-
-        public static IEnumerator<AstNode> GetEnumerator(this AstNode node)
-        {
-            return node.Children.GetEnumerator();
         }
 
         public static StringBuilder Indent(this StringBuilder builder, int count)

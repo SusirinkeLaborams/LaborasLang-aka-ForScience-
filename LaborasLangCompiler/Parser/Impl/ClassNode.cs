@@ -18,10 +18,11 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         #region fields
         private Dictionary<string, InternalField> fields;
+        private List<FunctionDeclarationNode> declaredMethods;
         private List<NamespaceWrapper> globalImports;
         private ClassNode parent;
         private Parser parser;
-        private Dictionary<string, FunctionDeclarationNode> methods = new Dictionary<string, FunctionDeclarationNode>();
+        private Dictionary<string, FunctionDeclarationNode> methods;
         private int lambdaCounter = 0;
         #endregion fields
 
@@ -38,6 +39,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 parser.Root = this;
             this.parent = parent;
             this.parser = parser;
+            this.declaredMethods = new List<FunctionDeclarationNode>();
+            this.methods = new Dictionary<string, FunctionDeclarationNode>();
             fields = new Dictionary<string, InternalField>();
             globalImports = new List<NamespaceWrapper>();
             FullName = parser.Filename;
@@ -211,18 +214,28 @@ namespace LaborasLangCompiler.Parser.Impl
         private void ParseDeclaration(AstNode lexerNode)
         {
             var declaration = DeclarationInfo.Parse(parser, lexerNode);
-            var field = new InternalField(declaration);
 
-            field.Name = declaration.SymbolName.GetSingleSymbolOrThrow();
-            field.TypeWrapper = TypeNode.Parse(parser, this, declaration.Type);
+            if(!declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration() && !declaration.Modifiers.HasFlag(Modifier.Mutable))
+            {
+                //method
+                var method = FunctionDeclarationNode.ParseAsMethod(parser, this, declaration);
+                declaredMethods.Add(method);
+            }
+            else
+            {
+                //field
+                var field = new InternalField(declaration);
+                field.Name = declaration.SymbolName.GetSingleSymbolOrThrow();
+                field.TypeWrapper = TypeNode.Parse(parser, this, declaration.Type);
 
-            if (field.TypeWrapper == null && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
-                field.TypeWrapper = FunctionDeclarationNode.ParseFunctorType(parser, this, declaration.Initializer.Children[0]);
+                if (field.TypeWrapper == null && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
+                    field.TypeWrapper = FunctionDeclarationNode.ParseFunctorType(parser, this, declaration.Initializer.Children[0]);
 
-            fields.Add(field.Name, field);
+                fields.Add(field.Name, field);
+            }
         }
 
-        public void ParseBody(AstNode lexerNode)
+        public void ParseInitializersAndDeclare()
         {
             foreach(var field in fields.Values)
             {
@@ -241,14 +254,6 @@ namespace LaborasLangCompiler.Parser.Impl
                             throw new TypeException(field.Initializer.SequencePoint, "Type mismatch, field " + field.Name + " type " + field.TypeWrapper.FullName + " initialized with " + field.Initializer.TypeWrapper.FullName);
                     }
                 }
-            }
-        }
-
-        public void DeclareMembers()
-        {
-            foreach (var f in fields)
-            {
-                var field = f.Value;
                 field.FieldDefinition = new FieldDefinition(field.Name, FieldAttributes.Private | FieldAttributes.Static, field.TypeWrapper.TypeReference);
                 AddFieldToEmitter(field);
             }
@@ -256,17 +261,14 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public void Emit()
         {
-            foreach (var m in methods)
-            {
-                m.Value.Emit(m.Key == "$Main");
-            }
+            declaredMethods.ForEach(m => m.Emit());
         }
 
         #endregion parsing
 
-        public void AddMethod(FunctionDeclarationNode method, string name)
+        public void AddMethod(FunctionDeclarationNode method)
         {
-            methods.Add(name, method);
+            methods.Add(method.MethodReference.Name, method);
         }
 
         private void AddFieldToEmitter(InternalField field)

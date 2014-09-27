@@ -55,41 +55,21 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new SymbolNotFoundException(node.SequencePoint, "Symbol {0} not found", nod.Value);
             }
         }
-        /*
-         * to be used maybe later
-        private bool AppendCall(SymbolCallNode node)
+        private bool AppendMethod(SymbolNode node)
         {
-            var types = node.Arguments.Select(arg => arg.TypeWrapper);
-            if (AppendLValue(node))
+            if(builtNode == null)
             {
-                if (!builtNode.TypeWrapper.IsFunctorType())
-                    return false;
-
-                if(builtNode.TypeWrapper.MatchesArgumentList(types))
+                var methods = parent.GetClass().GetMethods(node.Value);
+                if (methods.Count() != 0)
                 {
-                    builtNode = new MethodCallNode(builtNode, builtNode.TypeWrapper.FunctorReturnType, node.Arguments, node.SequencePoint);
+                    builtNode = new AmbiguousMethodNode(methods, null, node.SequencePoint);
                     return true;
                 }
                 else
                 {
                     return false;
                 }
-            }
-            if (AppendMethod(node))
-            {
-                var method = ((AmbiguousMethodNode)builtNode).RemoveAmbiguity(parser, types);
-                builtNode = new MethodCallNode(method, method.MethodWrapper.MethodReturnType, node.Arguments, node.SequencePoint);
-                return true;
-            }
-            return false;
-        }
-         */
-        private bool AppendMethod(SymbolNode node)
-        {
-            if(builtNode == null)
-            {
-                //metodu kaip ir neturim dar
-                return false;
+                
             }
             else
             {
@@ -231,54 +211,5 @@ namespace LaborasLangCompiler.Parser.Impl
                 return false;
             }
         }
-        /*public ExpressionNode ExtractExpression(bool allowAmbiguous)
-        {
-            if (builtNode.TypeWrapper == null && !allowAmbiguous)
-                throw new ParseException(builtNode.SequencePoint, "Expression expected");
-            else
-                return builtNode;
-        }
-        public NamespaceWrapper ExtractNamespace()
-        {
-            if (!(builtNode is NamespaceNode))
-                throw new ParseException(builtNode.SequencePoint, "Namespace expected");
-            else
-                return ((NamespaceNode)builtNode).Namespace;
-        }
-        public TypeWrapper ExtractType()
-        {
-            if (!(builtNode is TypeNode))
-                throw new ParseException(builtNode.SequencePoint, "Type expected");
-            else
-                return ((TypeNode)builtNode).ParsedType;
-        }
-        public LValueNode ExtractLValue()
-        {
-            if (!(builtNode is LValueNode))
-                throw new ParseException(builtNode.SequencePoint, "LValue expected");
-            else
-                return (LValueNode)builtNode;
-        }
-        public ExpressionNode ExtractMethod(IEnumerable<ExpressionNode> args)
-        {
-            ExpressionNode method = null;
-            if (builtNode is LValueNode)
-            {
-                if (builtNode.TypeWrapper.IsFunctorType())
-                {
-                    if (builtNode.TypeWrapper.MatchesArgumentList(args.Select(a => a.TypeWrapper)))
-                    {
-                        method = builtNode;
-                    }
-                }
-            }
-            if (builtNode is AmbiguousMethodNode)
-            {
-                method = ((AmbiguousMethodNode)builtNode).RemoveAmbiguity(parser, new FunctorTypeWrapper(parser.Assembly, null, args.Select(a => a.TypeWrapper)));
-            }
-            if(method == null)
-                throw new ParseException(builtNode.SequencePoint, "Method expected");
-            return method;
-        }*/
     }
 }
