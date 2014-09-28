@@ -70,6 +70,7 @@
         Static,
         Private,
         Public,
+        Mutable,
         
         //Non terminals
         NonTerminalToken,

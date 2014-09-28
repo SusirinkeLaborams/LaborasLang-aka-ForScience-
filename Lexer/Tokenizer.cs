@@ -738,6 +738,7 @@ namespace Lexer
             keywordTypeMap[(FastStringBuilder)"false"] = (int)TokenType.False;
             keywordTypeMap[(FastStringBuilder)"if"] = (int)TokenType.If;
             keywordTypeMap[(FastStringBuilder)"internal"] = (int)TokenType.Internal;
+            keywordTypeMap[(FastStringBuilder)"mutable"] = (int)TokenType.Mutable;
             keywordTypeMap[(FastStringBuilder)"private"] = (int)TokenType.Private;
             keywordTypeMap[(FastStringBuilder)"public"] = (int)TokenType.Public;
             keywordTypeMap[(FastStringBuilder)"return"] = (int)TokenType.Return;
@@ -745,7 +746,7 @@ namespace Lexer
             keywordTypeMap[(FastStringBuilder)"true"] = (int)TokenType.True;
             keywordTypeMap[(FastStringBuilder)"use"] = (int)TokenType.Use;
             keywordTypeMap[(FastStringBuilder)"virtual"] = (int)TokenType.Virtual;
-            keywordTypeMap[(FastStringBuilder)"while"] = (int)TokenType.While;
+            keywordTypeMap[(FastStringBuilder)"while"] = (int)TokenType.While;            
         }
 
         class StringBuilderCacheField

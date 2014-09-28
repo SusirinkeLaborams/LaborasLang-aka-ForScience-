@@ -66,7 +66,8 @@ namespace Lexer
                         Protected,
                         Static,
                         Virtual,
-                        Entry),
+                        Entry,
+                        Mutable),
                                 
                     AlwaysCollapsableParseRule(AssignmentOperator,
                         Assignment,
@@ -638,6 +639,7 @@ namespace Lexer
         private static Condition FunctionCallNode { get { return TokenType.FunctionCallNode; } }
         private static Condition FunctionArgumentsList { get { return TokenType.FunctionArgumentsList; } }
         private static Condition Entry { get { return TokenType.Entry; } }
+        private static Condition Mutable { get { return TokenType.Mutable; } }
         #endregion
 
     }
