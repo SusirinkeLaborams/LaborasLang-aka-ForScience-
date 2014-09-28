@@ -31,8 +31,6 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static new MethodCallNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            if (lexerNode.Children[0].Type == Lexer.TokenType.New)
-                throw new NotImplementedException("Create not implemented");
             if (lexerNode.Children.Count(x => x.Type == Lexer.TokenType.FunctionArgumentsList) > 1)
                 throw new NotImplementedException("Calling returned functions not supported");
             var function = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);

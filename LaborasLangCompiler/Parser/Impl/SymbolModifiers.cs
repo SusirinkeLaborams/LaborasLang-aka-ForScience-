@@ -9,13 +9,13 @@ namespace LaborasLangCompiler.Parser.Impl
     [Flags]
     enum Modifiers
     {
-        Public    = 1 << 0,
-        Private   = 1 << 1,
-        Protected = 1 << 2,
-        Const     = 1 << 3,
-        Mutable   = 1 << 4,
-        Static    = 1 << 5,
-        Entry     = 1 << 6
+        Public     = 1 << 0,
+        Private    = 1 << 1,
+        Protected  = 1 << 2,
+        Const      = 1 << 3,
+        Mutable    = 1 << 4,
+        NoInstance = 1 << 5,
+        Entry      = 1 << 6
     }
     static class ModifierUtils
     {
@@ -36,17 +36,17 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static bool HasStorage(this Modifiers modifiers)
         {
-            return modifiers.HasFlag(Modifiers.Static);
+            return modifiers.HasFlag(Modifiers.NoInstance);
         }
 
         public static Dictionary<Lexer.TokenType, Modifiers> FromToken = new Dictionary<Lexer.TokenType, Modifiers>()
         {
-            { Lexer.TokenType.Public,    Modifiers.Public },
-            { Lexer.TokenType.Private,   Modifiers.Private },
-            { Lexer.TokenType.Protected, Modifiers.Protected },
-            { Lexer.TokenType.Const,     Modifiers.Const },
-            { Lexer.TokenType.Static,    Modifiers.Static },
-            { Lexer.TokenType.Entry,     Modifiers.Entry }
+            { Lexer.TokenType.Public,     Modifiers.Public },
+            { Lexer.TokenType.Private,    Modifiers.Private },
+            { Lexer.TokenType.Protected,  Modifiers.Protected },
+            { Lexer.TokenType.Const,      Modifiers.Const },
+            { Lexer.TokenType.NoInstance, Modifiers.NoInstance },
+            { Lexer.TokenType.Entry,      Modifiers.Entry }
         };
     }
 }

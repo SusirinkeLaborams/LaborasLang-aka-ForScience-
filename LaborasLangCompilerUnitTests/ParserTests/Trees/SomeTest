@@ -31,7 +31,7 @@ Class:
 			Name:
 				Main
 			Modifiers:
-				Private, Static
+				Private, NoInstance
 			Return:
 				System.Void
 			Params:
@@ -99,7 +99,7 @@ Class:
 			Name:
 				$Lambda_0
 			Modifiers:
-				Private, Static
+				Private, NoInstance
 			Return:
 				System.Int32
 			Params:

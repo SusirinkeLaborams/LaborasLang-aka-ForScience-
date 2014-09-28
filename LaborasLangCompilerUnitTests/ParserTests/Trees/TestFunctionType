@@ -5,7 +5,7 @@ Class:
 			Name:
 				a
 			Modifiers:
-				Private, Static
+				Private, NoInstance
 			Return:
 				System.Void
 			Params:

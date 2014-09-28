@@ -99,7 +99,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static FunctionDeclarationNode ParseAsFunctor(Parser parser, ContainerNode parent, AstNode function)
         {
-            var instance = new FunctionDeclarationNode(parser, parent, Modifiers.Static | Modifiers.Private, parent.GetClass().NewFunctionName(), function);
+            var instance = new FunctionDeclarationNode(parser, parent, Modifiers.NoInstance | Modifiers.Private, parent.GetClass().NewFunctionName(), function);
             instance.Emit();
             return instance;
         }
@@ -127,7 +127,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             if(!modifiers.HasStorage())
             {
-                modifiers |= Modifiers.Static;
+                modifiers |= Modifiers.NoInstance;
             }
 
             if (modifiers.HasFlag(Modifiers.Private))
@@ -149,7 +149,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     ret |= MethodAttributes.Family;
             }
 
-            if(modifiers.HasFlag(Modifiers.Static))
+            if(modifiers.HasFlag(Modifiers.NoInstance))
             {
                 ret |= MethodAttributes.Static;
             }

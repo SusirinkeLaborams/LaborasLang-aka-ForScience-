@@ -18,7 +18,7 @@ Class:
 			Name:
 				Main
 			Modifiers:
-				Private, Static
+				Private, NoInstance
 			Return:
 				System.Void
 			Params:
