@@ -67,7 +67,7 @@
         While,
 
 
-        Static,
+        NoInstance,
         Private,
         Public,
         Mutable,

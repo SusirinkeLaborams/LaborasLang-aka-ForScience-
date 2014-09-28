@@ -742,7 +742,7 @@ namespace Lexer
             keywordTypeMap[(FastStringBuilder)"private"] = (int)TokenType.Private;
             keywordTypeMap[(FastStringBuilder)"public"] = (int)TokenType.Public;
             keywordTypeMap[(FastStringBuilder)"return"] = (int)TokenType.Return;
-            keywordTypeMap[(FastStringBuilder)"static"] = (int)TokenType.Static;
+            keywordTypeMap[(FastStringBuilder)"noinstance"] = (int)TokenType.NoInstance;
             keywordTypeMap[(FastStringBuilder)"true"] = (int)TokenType.True;
             keywordTypeMap[(FastStringBuilder)"use"] = (int)TokenType.Use;
             keywordTypeMap[(FastStringBuilder)"virtual"] = (int)TokenType.Virtual;

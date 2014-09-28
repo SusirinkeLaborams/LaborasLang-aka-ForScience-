@@ -64,7 +64,7 @@ namespace Lexer
                         Private,
                         Public,
                         Protected,
-                        Static,
+                        NoInstance,
                         Virtual,
                         Entry,
                         Mutable),
@@ -573,7 +573,7 @@ namespace Lexer
         private static Condition Use { get { return TokenType.Use; } }
         private static Condition Virtual { get { return TokenType.Virtual; } }
         private static Condition While { get { return TokenType.While; } }
-        private static Condition Static { get { return TokenType.Static; } }
+        private static Condition NoInstance { get { return TokenType.NoInstance; } }
         private static Condition Private { get { return TokenType.Private; } }
         private static Condition Public { get { return TokenType.Public; } }
         private static Condition NonTerminalToken { get { return TokenType.NonTerminalToken; } }
