@@ -64,9 +64,10 @@ namespace Lexer
                         Private,
                         Public,
                         Protected,
-                        Static,
+                        NoInstance,
                         Virtual,
-                        Entry),
+                        Entry,
+                        Mutable),
                                 
                     AlwaysCollapsableParseRule(AssignmentOperator,
                         Assignment,
@@ -114,7 +115,8 @@ namespace Lexer
                         PlusPlus, 
                         MinusMinus, 
                         Minus, 
-                        Not),
+                        Not,
+                        BitwiseComplement),
                         
                     CollapsableParseRule(CodeBlockNode,
                         LeftCurlyBrace + ZeroOrMore(StatementNode) + RightCurlyBrace),
@@ -517,7 +519,6 @@ namespace Lexer
         private static Condition EndOfLine { get { return TokenType.EndOfLine; } }
         private static Condition Comma { get { return TokenType.Comma; } }
         private static Condition Period { get { return TokenType.Period; } }
-        private static Condition Comment { get { return TokenType.Comment; } }
         private static Condition BitwiseAnd { get { return TokenType.BitwiseAnd; } }
         private static Condition BitwiseAndEqual { get { return TokenType.BitwiseAndEqual; } }
         private static Condition Plus { get { return TokenType.Plus; } }
@@ -527,7 +528,6 @@ namespace Lexer
         private static Condition MinusEqual { get { return TokenType.MinusEqual; } }
         private static Condition NotEqual { get { return TokenType.NotEqual; } }
         private static Condition Not { get { return TokenType.Not; } }
-        private static Condition Whitespace { get { return TokenType.Whitespace; } }
         private static Condition PlusEqual { get { return TokenType.PlusEqual; } }
         private static Condition StringLiteral { get { return TokenType.StringLiteral; } }
         private static Condition BitwiseComplement { get { return TokenType.BitwiseComplement; } }
@@ -559,54 +559,24 @@ namespace Lexer
         private static Condition RightCurlyBrace { get { return TokenType.RightCurlyBrace; } }
         private static Condition LeftParenthesis { get { return TokenType.LeftParenthesis; } }
         private static Condition RightParenthesis { get { return TokenType.RightParenthesis; } }
-        private static Condition Unknown { get { return TokenType.Unknown; } }
         private static Condition Integer { get { return TokenType.Integer; } }
         private static Condition Float { get { return TokenType.Float; } }
         private static Condition Long { get { return TokenType.Long; } }
         private static Condition Double { get { return TokenType.Double; } }
-        private static Condition MalformedToken { get { return TokenType.MalformedToken; } }
         private static Condition Symbol { get { return TokenType.Symbol; } }
-        private static Condition Abstract { get { return TokenType.Abstract; } }
-        private static Condition As { get { return TokenType.As; } }
-        private static Condition Base { get { return TokenType.Base; } }
-        private static Condition Break { get { return TokenType.Break; } }
-        private static Condition Case { get { return TokenType.Case; } }
-        private static Condition Catch { get { return TokenType.Catch; } }
-        private static Condition Class { get { return TokenType.Class; } }
         private static Condition Const { get { return TokenType.Const; } }
-        private static Condition Continue { get { return TokenType.Continue; } }
-        private static Condition Default { get { return TokenType.Default; } }
-        private static Condition Do { get { return TokenType.Do; } }
-        private static Condition Extern { get { return TokenType.Extern; } }
         private static Condition Else { get { return TokenType.Else; } }
-        private static Condition Enum { get { return TokenType.Enum; } }
         private static Condition False { get { return TokenType.False; } }
-        private static Condition Finally { get { return TokenType.Finally; } }
-        private static Condition For { get { return TokenType.For; } }
-        private static Condition Goto { get { return TokenType.Goto; } }
         private static Condition If { get { return TokenType.If; } }
-        private static Condition Interface { get { return TokenType.Interface; } }
         private static Condition Internal { get { return TokenType.Internal; } }
-        private static Condition Is { get { return TokenType.Is; } }
-        private static Condition New { get { return TokenType.New; } }
-        private static Condition Null { get { return TokenType.Null; } }
-        private static Condition Namespace { get { return TokenType.Namespace; } }
-        private static Condition Out { get { return TokenType.Out; } }
-        private static Condition Override { get { return TokenType.Override; } }
+
         private static Condition Protected { get { return TokenType.Protected; } }
-        private static Condition Ref { get { return TokenType.Ref; } }
         private static Condition Return { get { return TokenType.Return; } }
-        private static Condition Switch { get { return TokenType.Switch; } }
-        private static Condition Sealed { get { return TokenType.Sealed; } }
-        private static Condition This { get { return TokenType.This; } }
-        private static Condition Throw { get { return TokenType.Throw; } }
-        private static Condition Struct { get { return TokenType.Struct; } }
         private static Condition True { get { return TokenType.True; } }
-        private static Condition Try { get { return TokenType.Try; } }
         private static Condition Use { get { return TokenType.Use; } }
         private static Condition Virtual { get { return TokenType.Virtual; } }
         private static Condition While { get { return TokenType.While; } }
-        private static Condition Static { get { return TokenType.Static; } }
+        private static Condition NoInstance { get { return TokenType.NoInstance; } }
         private static Condition Private { get { return TokenType.Private; } }
         private static Condition Public { get { return TokenType.Public; } }
         private static Condition NonTerminalToken { get { return TokenType.NonTerminalToken; } }
@@ -673,6 +643,7 @@ namespace Lexer
         private static Condition FunctionArgumentsList { get { return TokenType.FunctionArgumentsList; } }
         private static Condition LiteralNode { get { return TokenType.LiteralNode; } }
         private static Condition Entry { get { return TokenType.Entry; } }
+        private static Condition Mutable { get { return TokenType.Mutable; } }
         #endregion
 
     }

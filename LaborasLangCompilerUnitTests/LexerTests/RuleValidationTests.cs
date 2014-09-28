@@ -43,7 +43,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             visited[(int)TokenType.RootNode] = true;
             visited[(int)TokenType.LexerInternalTokens] = true;
             visited[(int)TokenType.NonTerminalToken] = true;
-            
+            visited[(int)TokenType.MalformedToken] = true;
             var stack = new Stack<TokenType>();
             stack.Push(TokenType.StatementNode);
             
