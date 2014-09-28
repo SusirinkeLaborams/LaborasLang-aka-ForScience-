@@ -1,4 +1,4 @@
-﻿auto Main = void()
+﻿entry auto Main = void()
 {
 	auto quit = false;
 	System.Console.WriteLine("Enter 0 at any time to quit.");

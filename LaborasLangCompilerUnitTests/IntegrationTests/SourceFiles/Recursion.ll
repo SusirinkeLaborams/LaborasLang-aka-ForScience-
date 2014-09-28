@@ -22,7 +22,7 @@ auto Func = void(int i)
 	}
 };
 
-auto Main = int()
+entry auto Main = int()
 {
 	Func(0);
 	return 0;

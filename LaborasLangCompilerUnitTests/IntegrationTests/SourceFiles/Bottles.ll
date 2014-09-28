@@ -1,4 +1,4 @@
-﻿auto Main = int()
+﻿entry auto Main = int()
 {
 	auto count = 99;
 	System.Console.WriteLine("{0} on the wall, {0}.", bottles(count));

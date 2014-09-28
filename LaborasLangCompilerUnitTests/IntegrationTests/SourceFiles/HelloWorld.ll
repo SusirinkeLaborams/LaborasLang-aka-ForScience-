@@ -1,4 +1,4 @@
-﻿auto Main = void()
+﻿entry auto Main = void()
 {
 	System.Console.WriteLine("Hello, world!");
 };
