@@ -424,6 +424,18 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestAccessModifiers()
+        {
+            string source = @"
+                private auto bar = void()
+                {
+                };
+                public auto foo = void()
+                {
+                };";
+            CompareTrees(source);
+        }
         private static void CompareTrees(string source, [CallerMemberName] string name = "")
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });

@@ -4,9 +4,12 @@ Children:
 	Content: Type: DeclarationNode, Start: 1, 1, End: 1, 17, Content: ""
 	Type: DeclarationNode
 	Children:
-		Content: Type: Entry, Start: 1, 1, End: 1, 6, Content: "entry"
-		Type: Entry
+		Content: Type: VariableModifier, Start: 1, 1, End: 1, 6, Content: ""
+		Type: VariableModifier
 		Children:
+			Content: Type: Entry, Start: 1, 1, End: 1, 6, Content: "entry"
+			Type: Entry
+			Children:
 
 		Content: Type: Type, Start: 1, 7, End: 1, 12, Content: ""
 		Type: Type

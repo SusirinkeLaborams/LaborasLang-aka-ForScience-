@@ -58,7 +58,7 @@ namespace Lexer
                     ParseRule(ReturnNode,
                         Return + Value + EndOfLine),
 
-                    AlwaysCollapsableParseRule(VariableModifier, 
+                    ParseRule(VariableModifier, 
                         Const,
                         Internal,
                         Private,

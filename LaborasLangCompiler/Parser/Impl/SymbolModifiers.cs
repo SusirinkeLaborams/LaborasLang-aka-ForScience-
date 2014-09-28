@@ -21,7 +21,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public static Modifiers AddModifier(this Modifiers modifiers, Parser parser, AstNode node)
         {
-            var toAdd = FromToken[node.Type];
+            var toAdd = FromToken[node.Children[0].Type];
             if((modifiers & toAdd) != 0)
             {
                 throw new ParseException(parser.GetSequencePoint(node), "Cannot add modifier {0} twice", toAdd);
@@ -31,12 +31,12 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static bool HasAccess(this Modifiers modifiers)
         {
-            return modifiers.HasFlag(Modifiers.Public | Modifiers.Private | Modifiers.Protected);
+            return (modifiers & (Modifiers.Public | Modifiers.Private | Modifiers.Protected)) != 0;
         }
 
         public static bool HasStorage(this Modifiers modifiers)
         {
-            return modifiers.HasFlag(Modifiers.NoInstance);
+            return (modifiers & Modifiers.NoInstance) != 0;
         }
 
         public static Dictionary<Lexer.TokenType, Modifiers> FromToken = new Dictionary<Lexer.TokenType, Modifiers>()
