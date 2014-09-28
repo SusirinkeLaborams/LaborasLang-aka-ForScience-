@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace LaborasLangCompiler.Parser.Impl
 {
     [Flags]
-    enum Modifier
+    enum Modifiers
     {
         Public    = 1 << 0,
         Private   = 1 << 1,
@@ -19,7 +19,7 @@ namespace LaborasLangCompiler.Parser.Impl
     }
     static class ModifierUtils
     {
-        public static Modifier AddModifier(this Modifier modifiers, Parser parser, AstNode node)
+        public static Modifiers AddModifier(this Modifiers modifiers, Parser parser, AstNode node)
         {
             var toAdd = FromToken[node.Type];
             if((modifiers & toAdd) != 0)
@@ -29,14 +29,24 @@ namespace LaborasLangCompiler.Parser.Impl
             return modifiers | toAdd;
         }
 
-        public static Dictionary<Lexer.TokenType, Modifier> FromToken = new Dictionary<Lexer.TokenType, Modifier>()
+        public static bool HasAccess(this Modifiers modifiers)
         {
-            { Lexer.TokenType.Public,    Modifier.Public },
-            { Lexer.TokenType.Private,   Modifier.Private },
-            { Lexer.TokenType.Protected, Modifier.Protected },
-            { Lexer.TokenType.Const,     Modifier.Const },
-            { Lexer.TokenType.Static,    Modifier.Static },
-            { Lexer.TokenType.Entry,     Modifier.Entry }
+            return modifiers.HasFlag(Modifiers.Public | Modifiers.Private | Modifiers.Protected);
+        }
+
+        public static bool HasStorage(this Modifiers modifiers)
+        {
+            return modifiers.HasFlag(Modifiers.Static);
+        }
+
+        public static Dictionary<Lexer.TokenType, Modifiers> FromToken = new Dictionary<Lexer.TokenType, Modifiers>()
+        {
+            { Lexer.TokenType.Public,    Modifiers.Public },
+            { Lexer.TokenType.Private,   Modifiers.Private },
+            { Lexer.TokenType.Protected, Modifiers.Protected },
+            { Lexer.TokenType.Const,     Modifiers.Const },
+            { Lexer.TokenType.Static,    Modifiers.Static },
+            { Lexer.TokenType.Entry,     Modifiers.Entry }
         };
     }
 }

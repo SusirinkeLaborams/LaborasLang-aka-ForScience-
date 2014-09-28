@@ -40,7 +40,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private Parser parser;
         private FunctorTypeWrapper functorType;
 
-        private FunctionDeclarationNode(Parser parser, ContainerNode parent, Modifier modifiers, string name, AstNode method)
+        private FunctionDeclarationNode(Parser parser, ContainerNode parent, Modifiers modifiers, string name, AstNode method)
             : base(parser.GetSequencePoint(method))
         {
             this.parent = parent.GetClass();
@@ -58,13 +58,15 @@ namespace LaborasLangCompiler.Parser.Impl
             emitter.ParseTree(parsedBody);
         }
 
-        private void ParseHeader(Modifier mods, AstNode lexerNode, string methodName)
+        private void ParseHeader(Modifiers mods, AstNode lexerNode, string methodName)
         {
-            //TODO set entry point
-            //and actually use modifiers
             var info = new FunctionDeclarationInfo(parser, lexerNode);
             MethodReturnType = TypeNode.Parse(parser, parent, info.ReturnType); 
-            emitter = new MethodEmitter(parent.TypeEmitter, methodName, MethodReturnType.TypeReference, MethodAttributes.Static | MethodAttributes.Private);
+            emitter = new MethodEmitter(parent.TypeEmitter, methodName, MethodReturnType.TypeReference, AttributesFromModifiers(parser.GetSequencePoint(lexerNode), mods));
+
+            if (mods.HasFlag(Modifiers.Entry))
+                emitter.SetAsEntryPoint();
+
             foreach(var p in info.Params)
             {
                 var param = ParseParameter(parent, p.Type, p.Name);
@@ -96,7 +98,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static FunctionDeclarationNode ParseAsFunctor(Parser parser, ContainerNode parent, AstNode function)
         {
-            var instance = new FunctionDeclarationNode(parser, parent, Modifier.Static | Modifier.Private, parent.GetClass().NewFunctionName(), function);
+            var instance = new FunctionDeclarationNode(parser, parent, Modifiers.Static | Modifiers.Private, parent.GetClass().NewFunctionName(), function);
             instance.Emit();
             return instance;
         }
@@ -113,6 +115,34 @@ namespace LaborasLangCompiler.Parser.Impl
             var ret = TypeNode.Parse(parser, parent, info.ReturnType);
             var args = info.Params.Select(p => TypeNode.Parse(parser, parent, p.Type));
             return new FunctorTypeWrapper(parser.Assembly, ret, args);
+        }
+
+        private static MethodAttributes AttributesFromModifiers(SequencePoint point, Modifiers modifiers)
+        {
+            MethodAttributes ret = 0;
+            if (!modifiers.HasAccess() || modifiers.HasFlag(Modifiers.Private))
+            {
+                ret |= MethodAttributes.Private;
+            }
+            else if(modifiers.HasFlag(Modifiers.Public))
+            {
+                if (modifiers.HasFlag(Modifiers.Private))
+                    throw new ParseException(point, "Illegal method declaration, only one access modifier allowed");
+                else
+                    ret |= MethodAttributes.Public;
+            }
+            else if(modifiers.HasFlag(Modifiers.Protected))
+            {
+                if (modifiers.HasFlag(Modifiers.Private | Modifiers.Public))
+                    throw new ParseException(point, "Illegal method declaration, only one access modifier allowed");
+                else
+                    ret |= MethodAttributes.Family;
+            }
+
+            //TODO implement storage stuff
+            ret |= MethodAttributes.Static;
+
+            return ret;
         }
 
         public override string ToString(int indent)

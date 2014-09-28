@@ -215,7 +215,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var declaration = DeclarationInfo.Parse(parser, lexerNode);
 
-            if(!declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration() && !declaration.Modifiers.HasFlag(Modifier.Mutable))
+            if(!declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration() && !declaration.Modifiers.HasFlag(Modifiers.Mutable))
             {
                 //method
                 var method = FunctionDeclarationNode.ParseAsMethod(parser, this, declaration);

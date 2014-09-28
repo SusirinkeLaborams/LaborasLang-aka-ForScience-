@@ -16,7 +16,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public AstNode Type { get; private set; }
         public AstNode Initializer { get; private set; }
         public AstNode SymbolName { get; private set; }
-        public Modifier Modifiers { get; private set; }
+        public Modifiers Modifiers { get; private set; }
 
         public static DeclarationInfo Parse(Parser parser, AstNode lexerNode)
         {
