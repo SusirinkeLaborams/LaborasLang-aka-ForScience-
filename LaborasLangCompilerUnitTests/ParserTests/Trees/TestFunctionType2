@@ -4,6 +4,8 @@ Class:
 		Method:
 			Name:
 				a
+			Modifiers:
+				Private, Static
 			Return:
 				System.Int32
 			Params:

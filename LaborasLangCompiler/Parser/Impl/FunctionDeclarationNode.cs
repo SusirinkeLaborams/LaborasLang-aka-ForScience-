@@ -39,6 +39,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private Dictionary<string, ParameterWrapper> symbols;
         private Parser parser;
         private FunctorTypeWrapper functorType;
+        private Modifiers modifiers;
 
         private FunctionDeclarationNode(Parser parser, ContainerNode parent, Modifiers modifiers, string name, AstNode method)
             : base(parser.GetSequencePoint(method))
@@ -117,10 +118,19 @@ namespace LaborasLangCompiler.Parser.Impl
             return new FunctorTypeWrapper(parser.Assembly, ret, args);
         }
 
-        private static MethodAttributes AttributesFromModifiers(SequencePoint point, Modifiers modifiers)
+        private MethodAttributes AttributesFromModifiers(SequencePoint point, Modifiers modifiers)
         {
             MethodAttributes ret = 0;
-            if (!modifiers.HasAccess() || modifiers.HasFlag(Modifiers.Private))
+            if(!modifiers.HasAccess())
+            {
+                modifiers |= Modifiers.Private;
+            }
+            if(!modifiers.HasStorage())
+            {
+                modifiers |= Modifiers.Static;
+            }
+
+            if (modifiers.HasFlag(Modifiers.Private))
             {
                 ret |= MethodAttributes.Private;
             }
@@ -139,9 +149,16 @@ namespace LaborasLangCompiler.Parser.Impl
                     ret |= MethodAttributes.Family;
             }
 
-            //TODO implement storage stuff
-            ret |= MethodAttributes.Static;
+            if(modifiers.HasFlag(Modifiers.Static))
+            {
+                ret |= MethodAttributes.Static;
+            }
+            else
+            {
+                throw new NotImplementedException("Only static methods allowed");
+            }
 
+            this.modifiers = modifiers;
             return ret;
         }
 
@@ -151,6 +168,8 @@ namespace LaborasLangCompiler.Parser.Impl
             builder.Indent(indent).AppendLine("Method:");
             builder.Indent(indent + 1).AppendLine("Name:");
             builder.Indent(indent + 2).AppendLine(MethodReference.Name);
+            builder.Indent(indent + 1).AppendLine("Modifiers:");
+            builder.Indent(indent + 2).AppendLine(modifiers.ToString());
             builder.Indent(indent + 1).AppendLine("Return:");
             builder.Indent(indent + 2).AppendLine(MethodReturnType.FullName);
             builder.Indent(indent + 1).AppendLine("Params:");

@@ -17,6 +17,8 @@ Class:
 		Method:
 			Name:
 				Main
+			Modifiers:
+				Private, Static
 			Return:
 				System.Void
 			Params:

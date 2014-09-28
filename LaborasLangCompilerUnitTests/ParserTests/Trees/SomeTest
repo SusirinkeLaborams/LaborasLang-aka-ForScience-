@@ -30,6 +30,8 @@ Class:
 		Method:
 			Name:
 				Main
+			Modifiers:
+				Private, Static
 			Return:
 				System.Void
 			Params:
@@ -96,6 +98,8 @@ Class:
 		Method:
 			Name:
 				$Lambda_0
+			Modifiers:
+				Private, Static
 			Return:
 				System.Int32
 			Params:

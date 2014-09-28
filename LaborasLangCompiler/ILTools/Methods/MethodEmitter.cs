@@ -51,6 +51,11 @@ namespace LaborasLangCompiler.ILTools.Methods
             methodDefinition.DeclaringType.Module.EntryPoint = methodDefinition;
         }
 
+        public bool IsEntryPoint()
+        {
+            return methodDefinition.DeclaringType.Module.EntryPoint == methodDefinition;
+        }
+
         #region Emitters
 
         protected void Emit(IParserNode node, bool emitReference)
