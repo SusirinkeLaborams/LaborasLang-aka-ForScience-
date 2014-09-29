@@ -56,7 +56,8 @@ namespace Lexer
                         Value + EndOfLine),
 
                     ParseRule(ReturnNode,
-                        Return + Value + EndOfLine),
+                        Return + Value + EndOfLine,
+                        Return + EndOfLine),
 
                     ParseRule(VariableModifier, 
                         Const,

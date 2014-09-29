@@ -413,6 +413,15 @@ b &&= a;";
             ExecuteTest(source);
         }
 
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestReturn()
+        {
+            var source = @"
+        return;
+        return 5;";
+            ExecuteTest(source);
+        }
+
         #endregion tests
 
         private void ExecuteTest(string source, [CallerMemberName] string fileName = "")
