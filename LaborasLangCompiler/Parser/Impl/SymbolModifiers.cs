@@ -39,14 +39,20 @@ namespace LaborasLangCompiler.Parser.Impl
             return (modifiers & Modifiers.NoInstance) != 0;
         }
 
+        public static bool HasMutability(this Modifiers modifiers)
+        {
+            return (modifiers & (Modifiers.Const | Modifiers.Mutable)) != 0;
+        }
+
         public static Dictionary<Lexer.TokenType, Modifiers> FromToken = new Dictionary<Lexer.TokenType, Modifiers>()
         {
             { Lexer.TokenType.Public,     Modifiers.Public },
             { Lexer.TokenType.Private,    Modifiers.Private },
             { Lexer.TokenType.Protected,  Modifiers.Protected },
             { Lexer.TokenType.Const,      Modifiers.Const },
-            { Lexer.TokenType.NoInstance, Modifiers.NoInstance },
-            { Lexer.TokenType.Entry,      Modifiers.Entry }
+            { Lexer.TokenType.Entry,      Modifiers.Entry },
+            { Lexer.TokenType.Mutable,    Modifiers.Mutable },
+            { Lexer.TokenType.NoInstance, Modifiers.NoInstance }
         };
     }
 }
