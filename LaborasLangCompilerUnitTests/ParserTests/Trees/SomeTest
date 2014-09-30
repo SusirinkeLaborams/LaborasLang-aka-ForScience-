@@ -44,7 +44,7 @@ Class:
 				CodeBlock:
 					Symbols:
 						System.Int32 a
-						$Functors.$System_Int32$System_Int32$System_Single f
+						$Functors.$System_Int32*System_Int32*System_Single? f
 					Nodes:
 						VariableDeclaration:
 							Symbol:
@@ -89,7 +89,7 @@ Class:
 									Name:
 										f
 									Type:
-										$Functors.$System_Int32$System_Int32$System_Single
+										$Functors.$System_Int32*System_Int32*System_Single?
 
 							Initializer:
 								Method:

@@ -27,7 +27,7 @@ Class:
 			Body:
 				CodeBlock:
 					Symbols:
-						$Functors.$System_String func
+						$Functors.$System_String? func
 					Nodes:
 						VariableDeclaration:
 							Symbol:
@@ -35,7 +35,7 @@ Class:
 									Name:
 										func
 									Type:
-										$Functors.$System_String
+										$Functors.$System_String?
 
 							Initializer:
 								Method:
@@ -57,7 +57,7 @@ Class:
 											Name:
 												func
 											Type:
-												$Functors.$System_String
+												$Functors.$System_String?
 
 
 							Function:

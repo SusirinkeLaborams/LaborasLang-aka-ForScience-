@@ -2,7 +2,7 @@ Class:
 	Fields:
 		Field:
 			Type:
-				$Functors.$System_Int32
+				$Functors.$System_Int32?
 			Name:
 				a
 			Modifiers:
@@ -10,7 +10,7 @@ Class:
 
 		Field:
 			Type:
-				$Functors.$System_Void$$Functors_$System_Single$System_Double$System_Int32
+				$Functors.$System_Void*$Functors_$System_Single*System_Double?*System_Int32?
 			Name:
 				b
 			Modifiers:
