@@ -5,6 +5,8 @@ Class:
 				System.Int32
 			Name:
 				a
+			Modifiers:
+				Private, Mutable, NoInstance
 			Initializer:
 				Literal:
 					Type:
@@ -18,12 +20,16 @@ Class:
 				System.Int32
 			Name:
 				b
+			Modifiers:
+				Private, Mutable, NoInstance
 
 		Field:
 			Type:
 				System.Int32
 			Name:
 				c
+			Modifiers:
+				Private, Mutable, NoInstance
 			Initializer:
 				Literal:
 					Type:

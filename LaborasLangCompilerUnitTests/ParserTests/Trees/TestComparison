@@ -5,6 +5,8 @@ Class:
 				System.Boolean
 			Name:
 				i
+			Modifiers:
+				Private, Mutable, NoInstance
 			Initializer:
 				BinaryOperator:
 					Left:
@@ -30,6 +32,8 @@ Class:
 				System.Boolean
 			Name:
 				a
+			Modifiers:
+				Private, Mutable, NoInstance
 			Initializer:
 				BinaryOperator:
 					Left:
@@ -55,6 +59,8 @@ Class:
 				System.Boolean
 			Name:
 				c
+			Modifiers:
+				Private, Mutable, NoInstance
 			Initializer:
 				BinaryOperator:
 					Left:
@@ -80,6 +86,8 @@ Class:
 				System.Boolean
 			Name:
 				b
+			Modifiers:
+				Private, Mutable, NoInstance
 			Initializer:
 				BinaryOperator:
 					Left:

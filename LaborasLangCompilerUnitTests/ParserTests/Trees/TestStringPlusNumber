@@ -5,6 +5,8 @@ Class:
 				System.String
 			Name:
 				a
+			Modifiers:
+				Private, Mutable, NoInstance
 			Initializer:
 				BinaryOperator:
 					Left:

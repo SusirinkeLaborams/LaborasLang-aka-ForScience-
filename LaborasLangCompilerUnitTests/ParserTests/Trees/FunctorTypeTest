@@ -5,11 +5,15 @@ Class:
 				$Functors.$System_Int32
 			Name:
 				a
+			Modifiers:
+				Private, Const, NoInstance
 
 		Field:
 			Type:
 				$Functors.$System_Void$$Functors_$System_Single$System_Double$System_Int32
 			Name:
 				b
+			Modifiers:
+				Private, Const, NoInstance
 
 	Methods:

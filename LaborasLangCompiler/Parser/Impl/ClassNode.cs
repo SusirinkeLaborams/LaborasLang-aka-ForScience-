@@ -224,7 +224,7 @@ namespace LaborasLangCompiler.Parser.Impl
             else
             {
                 //field
-                var field = new InternalField(declaration);
+                var field = new InternalField(declaration, parser.GetSequencePoint(lexerNode));
                 field.Name = declaration.SymbolName.GetSingleSymbolOrThrow();
                 field.TypeWrapper = TypeNode.Parse(parser, this, declaration.Type);
 
@@ -254,7 +254,7 @@ namespace LaborasLangCompiler.Parser.Impl
                             throw new TypeException(field.Initializer.SequencePoint, "Type mismatch, field " + field.Name + " type " + field.TypeWrapper.FullName + " initialized with " + field.Initializer.TypeWrapper.FullName);
                     }
                 }
-                field.FieldDefinition = new FieldDefinition(field.Name, FieldAttributes.Private | FieldAttributes.Static, field.TypeWrapper.TypeReference);
+                field.FieldDefinition = new FieldDefinition(field.Name, field.GetAttributes(), field.TypeWrapper.TypeReference);
                 AddFieldToEmitter(field);
             }
         }
