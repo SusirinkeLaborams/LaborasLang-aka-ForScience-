@@ -1,4 +1,4 @@
-﻿#define REWRITE
+﻿//#define REWRITE
 using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser;
@@ -27,6 +27,15 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto a = 5; 
                 int b; 
                 int c = 10;";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void FieldModifierTest()
+        {
+            string source = @"
+                private auto a = 5; 
+                public int b; 
+                public noinstance mutable int c = 10;";
             CompareTrees(source);
         }
         [TestMethod, TestCategory("Parser")]

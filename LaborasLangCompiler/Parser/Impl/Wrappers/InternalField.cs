@@ -26,6 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             this.Declaration = declaration;
             this.IsStatic = true;
             this.point = point;
+            this.modifiers = declaration.Modifiers;
         }
 
         public FieldAttributes GetAttributes()
