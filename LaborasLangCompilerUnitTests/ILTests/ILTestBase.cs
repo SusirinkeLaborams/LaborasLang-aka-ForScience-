@@ -34,7 +34,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
                 MethodAttributes.Static | MethodAttributes.Private);
         }
 
-        protected virtual void Test()
+        protected virtual void ExecuteAndAssertSuccess()
         {
             if (BodyCodeBlock == null)
             {

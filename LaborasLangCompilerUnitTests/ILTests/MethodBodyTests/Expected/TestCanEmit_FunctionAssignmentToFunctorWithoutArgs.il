@@ -13,7 +13,7 @@ System.Void klass::.cctor()
 .maxstack 8
 
 IL_0000: newobj instance void klass/dummy$Invoker::.ctor()
-IL_0005: stsfld class $Functors.$System_Void klass::myFunction
+IL_0005: stsfld class $Functors.$System_Void? klass::myFunction
 IL_000a: ret
 
 
@@ -23,7 +23,7 @@ System.Void klass/dummy$Invoker::.ctor()
 .maxstack 8
 
 IL_0000: ldarg.0
-IL_0001: call instance void $Functors.$System_Void::.ctor()
+IL_0001: call instance void $Functors.$System_Void?::.ctor()
 IL_0006: ret
 
 
@@ -37,18 +37,18 @@ IL_0002: call void klass::dummy()
 IL_0007: ret
 
 
-$Functors.$System_Void/Delegate klass/dummy$Invoker::AsDelegate()
+$Functors.$System_Void?/Delegate klass/dummy$Invoker::AsDelegate()
 // Method begins at RVA 0x2074
 // Code size 13 (0xd)
 .maxstack 8
 
 IL_0000: ldnull
 IL_0001: ldftn void klass::dummy()
-IL_0007: newobj instance void $Functors.$System_Void/Delegate::.ctor(object, native int)
+IL_0007: newobj instance void $Functors.$System_Void?/Delegate::.ctor(object, native int)
 IL_000c: ret
 
 
-System.Void $Functors.$System_Void::.ctor()
+System.Void $Functors.$System_Void?::.ctor()
 // Method begins at RVA 0x2084
 // Code size 7 (0x7)
 .maxstack 8

@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.ILTools.Types
             var delegateType = DelegateEmitter.Create(assembly, typeDefinition, returnType, arguments);
             typeDefinition.NestedTypes.Add(delegateType);
 
-            new ConstructorEmitter(this, false, CtorAttributes).Get().Resolve(); // Added to type by emitter
+            new ConstructorEmitter(this, false, CtorAttributes); // Added to type by emitter
             var invokeMethod = new MethodDefinition("Invoke", AbstractMethodAttributes, returnType);
             
             foreach (var argument in arguments)

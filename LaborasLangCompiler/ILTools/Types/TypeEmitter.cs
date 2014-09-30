@@ -133,10 +133,12 @@ namespace LaborasLangCompiler.ILTools.Types
 
             foreach (var argument in arguments)
             {
-                name.Append("$" + argument.FullName);
+                name.Append("*" + argument.FullName);
             }
 
             name.Replace('.', '_');
+            name.Append('?');
+
             return name.ToString();
         }
 

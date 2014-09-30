@@ -97,6 +97,7 @@
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_LogicalAnd_LogicalOr.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_LogicalNot.il" />
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_Multiplication.il" />
+    <Compile Include="ILTests\MethodBodyTests\FunctorTests.cs" />
     <Compile Include="ILTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="ILTests\ILHelpersTests.cs" />
     <Compile Include="ILTests\PEVerifyRunner.cs" />
@@ -106,6 +107,8 @@
     <Compile Include="LexerTests\SyntaxMatcherTests.cs" />
     <Compile Include="LexerTests\RuleValidationTests.cs" />
     <Compile Include="ParserTests\ParserStressTests.cs" />
+    <None Include="ILTests\MethodBodyTests\Expected\Test_FunctorNamesDoNotClash.il" />
+    <None Include="IntegrationTests\SourceFiles\StdInWorks.ll" />
     <Compile Include="TestBase.cs" />
     <Compile Include="ParserTests\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
