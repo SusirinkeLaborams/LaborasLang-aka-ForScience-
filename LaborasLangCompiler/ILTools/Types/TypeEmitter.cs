@@ -55,21 +55,20 @@ namespace LaborasLangCompiler.ILTools.Types
             typeDefinition.Methods.Add(method);
         }
 
-        public void AddField(FieldDefinition field, IExpressionNode initializer = null)
+        public void AddField(FieldDefinition field)
         {
             CheckForDuplicates(field.Name);
             typeDefinition.Fields.Add(field);
-
-            if (initializer != null)
+        }
+        public void AddFieldInitializer(FieldDefinition field, IExpressionNode initializer)
+        {
+            if (field.IsStatic)
             {
-                if (field.IsStatic)
-                {
-                    GetStaticConstructor().AddFieldInitializer(field, initializer);
-                }
-                else
-                {
-                    GetInstanceConstructor().AddFieldInitializer(field, initializer);
-                }
+                GetStaticConstructor().AddFieldInitializer(field, initializer);
+            }
+            else
+            {
+                GetInstanceConstructor().AddFieldInitializer(field, initializer);
             }
         }
 

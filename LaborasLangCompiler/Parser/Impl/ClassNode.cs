@@ -273,7 +273,8 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private void AddFieldToEmitter(InternalField field)
         {
-            TypeEmitter.AddField(field.FieldDefinition, field.Initializer);
+            TypeEmitter.AddField(field.FieldDefinition);
+            TypeEmitter.AddFieldInitializer(field.FieldDefinition, field.Initializer);
         }
 
         public string NewFunctionName()
