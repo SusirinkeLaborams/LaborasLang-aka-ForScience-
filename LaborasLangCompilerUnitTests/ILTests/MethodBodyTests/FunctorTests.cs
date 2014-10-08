@@ -82,7 +82,8 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 ExpressionReturnType = functorType
             };
 
-            typeEmitter.AddField(field, initializer);
+            typeEmitter.AddField(field);
+            typeEmitter.AddFieldInitializer(field, initializer);
 
             ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToFunctorWithoutArgs.il";
             ExecuteAndAssertSuccess();
@@ -128,7 +129,8 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 ExpressionReturnType = functorType
             };
 
-            typeEmitter.AddField(field, initializer);
+            typeEmitter.AddField(field);
+            typeEmitter.AddFieldInitializer(field, initializer);
 
             ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToFunctorWithArgs.il";
             ExecuteAndAssertSuccess();

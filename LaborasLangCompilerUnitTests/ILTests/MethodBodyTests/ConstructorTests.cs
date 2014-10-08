@@ -26,7 +26,8 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var field = new FieldDefinition("testField", FieldAttributes.FamANDAssem | FieldAttributes.Family, intType);
 
-            typeEmitter.AddField(field, initializer);
+            typeEmitter.AddField(field);
+            typeEmitter.AddFieldInitializer(field, initializer);
 
             ExpectedILFilePath = "TestCanEmit_InstanceFieldInitializer.il";
             ExecuteAndAssertSuccess();
@@ -45,7 +46,8 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
 
             var field = new FieldDefinition("testField", FieldAttributes.FamANDAssem | FieldAttributes.Family | FieldAttributes.Static, floatType);
 
-            typeEmitter.AddField(field, initializer);
+            typeEmitter.AddField(field);
+            typeEmitter.AddFieldInitializer(field, initializer);
 
             ExpectedILFilePath = "TestCanEmit_StaticFieldInitializer.il";
             ExecuteAndAssertSuccess();
