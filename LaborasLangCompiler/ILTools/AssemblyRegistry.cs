@@ -194,7 +194,7 @@ namespace LaborasLangCompiler.ILTools
 
             return instance.functorImplementationTypes[key];
         }
-
+        
         public static MethodReference GetMethod(AssemblyEmitter assembly, string typeName, string methodName)
         {
             return GetMethods(assembly, FindTypeInternal(typeName), methodName).Single();
@@ -214,6 +214,7 @@ namespace LaborasLangCompiler.ILTools
         {
             return GetMethods(assembly, FindTypeInternal(typeName), methodName);
         }
+
         public static List<MethodReference> GetMethods(AssemblyEmitter assembly, TypeEmitter type, string methodName)
         {
             return GetMethods(assembly, type.Get(assembly), methodName);
@@ -291,6 +292,66 @@ namespace LaborasLangCompiler.ILTools
 
             return filtered.Single();
         }
+
+        public static MethodReference GetConstructor(AssemblyEmitter assembly, string typeName, bool staticCtor = false)
+        {
+            return staticCtor ? GetMethod(assembly, typeName, ".cctor") : GetMethod(assembly, typeName, ".ctor");
+        }
+
+        public static MethodReference GetConstructor(AssemblyEmitter assembly, TypeEmitter type, bool staticCtor = false)
+        {
+            return staticCtor ? GetMethod(assembly, type, ".cctor") : GetMethod(assembly, type, ".ctor");
+        }
+
+        public static MethodReference GetConstructor(AssemblyEmitter assembly, TypeReference type, bool staticCtor = false)
+        {
+            return staticCtor ? GetMethod(assembly, type, ".cctor") : GetMethod(assembly, type, ".ctor");
+        }
+
+        public static List<MethodReference> GetConstructors(AssemblyEmitter assembly, string typeName)
+        {
+            return GetMethods(assembly, typeName, ".ctor");
+        }
+
+        public static List<MethodReference> GetConstructors(AssemblyEmitter assembly, TypeEmitter type)
+        {
+            return GetMethods(assembly, type, ".ctor");
+        }
+
+        public static List<MethodReference> GetConstructors(AssemblyEmitter assembly, TypeReference type)
+        {
+            return GetMethods(assembly, type, ".ctor");
+        }
+
+        public static MethodReference GetCompatibleConstructor(AssemblyEmitter assembly, string typeName, IReadOnlyList<string> arguments)
+        {
+            return GetCompatibleMethod(assembly, typeName, ".ctor", arguments);
+        }
+
+        public static MethodReference GetCompatibleConstructor(AssemblyEmitter assembly, TypeEmitter type, IReadOnlyList<string> arguments)
+        {
+            return GetCompatibleMethod(assembly, type, ".ctor", arguments);
+        }
+
+        public static MethodReference GetCompatibleConstructor(AssemblyEmitter assembly, TypeReference type, IReadOnlyList<string> arguments)
+        {
+            return GetCompatibleMethod(assembly, type, ".ctor", arguments);
+        }
+
+        public static MethodReference GetCompatibleConstructor(AssemblyEmitter assembly, string typeName, IReadOnlyList<TypeReference> arguments)
+        {
+            return GetCompatibleMethod(assembly, typeName, ".ctor", arguments);
+        }
+
+        public static MethodReference GetCompatibleConstructor(AssemblyEmitter assembly, TypeEmitter type, IReadOnlyList<TypeReference> arguments)
+        {
+            return GetCompatibleMethod(assembly, type, ".ctor", arguments);
+        }
+
+        public static MethodReference GetCompatibleConstructor(AssemblyEmitter assembly, TypeReference type, IReadOnlyList<TypeReference> arguments)
+        {
+            return GetCompatibleMethod(assembly, type, ".ctor", arguments);
+        }        
 
         public static PropertyReference GetProperty(AssemblyEmitter assembly, string typeName, string propertyName)
         {
