@@ -84,7 +84,7 @@ namespace LaborasLangCompiler.Parser
 
             Root = new ClassNode(this, null, GetSequencePoint(tree));
             Root.ParseDeclarations(tree);
-            Root.ParseInitializersAndDeclare();
+            Root.ParseInitializers();
             Root.Emit();
         }
 

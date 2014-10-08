@@ -72,6 +72,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return new SymbolDeclarationNode(symbol, initializer, parser.GetSequencePoint(lexerNode));
         }
+
         public override string ToString(int indent)
         {
             StringBuilder builder = new StringBuilder();

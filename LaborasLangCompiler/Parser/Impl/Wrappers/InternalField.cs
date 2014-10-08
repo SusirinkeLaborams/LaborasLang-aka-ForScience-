@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.Parser.Exceptions;
+using Lexer.Containers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
@@ -12,21 +13,63 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     class InternalField : FieldWrapper
     {
         public FieldReference FieldReference { get { return FieldDefinition; } }
-        public FieldDefinition FieldDefinition { get; set; }
+        public FieldDefinition FieldDefinition { 
+            get 
+            {
+                if (field == null)
+                    field = new FieldDefinition(Name, GetAttributes(), TypeWrapper.TypeReference);
+                return field;
+            } 
+        }
         public TypeWrapper TypeWrapper { get; set; }
         public string Name { get; set; }
         public ExpressionNode Initializer { get; set; }
         public bool IsStatic { get; set; }
-        public DeclarationInfo Declaration { get; private set; }
 
         private Modifiers modifiers;
         private SequencePoint point;
-        public InternalField(DeclarationInfo declaration, SequencePoint point)
+        private AstNode initializer;
+        private FieldDefinition field;
+
+        public InternalField(Parser parser, ClassNode parent, DeclarationInfo declaration, SequencePoint point)
         {
-            this.Declaration = declaration;
             this.IsStatic = true;
             this.point = point;
             this.modifiers = declaration.Modifiers;
+            this.initializer = declaration.Initializer;
+            this.Name = declaration.SymbolName.GetSingleSymbolOrThrow();
+            this.TypeWrapper = TypeNode.Parse(parser, parent, declaration.Type);
+
+            if (TypeWrapper == null && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
+                TypeWrapper = FunctionDeclarationNode.ParseFunctorType(parser, parent, declaration.Initializer);
+
+            if (TypeWrapper != null)
+                parent.TypeEmitter.AddField(FieldDefinition);
+        }
+
+        public void Initialize(Parser parser, ClassNode parent)
+        {
+            if(initializer.IsNull)
+            {
+                if (TypeWrapper == null)
+                    throw new TypeException(point, "Type inference requires initialization");
+                return;
+            }
+
+            Initializer = ExpressionNode.Parse(parser, parent, initializer);
+
+            if(TypeWrapper == null)
+            {
+                TypeWrapper = Initializer.TypeWrapper;
+                parent.TypeEmitter.AddField(FieldDefinition);
+            }
+            else
+            {
+                if (!Initializer.TypeWrapper.IsAssignableTo(TypeWrapper))
+                    throw new TypeException(Initializer.SequencePoint, "Field of type {0} initialized with {1}", TypeWrapper, Initializer.TypeWrapper);
+            }
+
+            parent.TypeEmitter.AddFieldInitializer(FieldDefinition, Initializer);
         }
 
         public FieldAttributes GetAttributes()

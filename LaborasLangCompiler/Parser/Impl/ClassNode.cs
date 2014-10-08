@@ -224,38 +224,16 @@ namespace LaborasLangCompiler.Parser.Impl
             else
             {
                 //field
-                var field = new InternalField(declaration, parser.GetSequencePoint(lexerNode));
-                field.Name = declaration.SymbolName.GetSingleSymbolOrThrow();
-                field.TypeWrapper = TypeNode.Parse(parser, this, declaration.Type);
-
-                if (field.TypeWrapper == null && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
-                    field.TypeWrapper = FunctionDeclarationNode.ParseFunctorType(parser, this, declaration.Initializer.Children[0]);
-
+                var field = new InternalField(parser, this, declaration, parser.GetSequencePoint(lexerNode));
                 fields.Add(field.Name, field);
             }
         }
 
-        public void ParseInitializersAndDeclare()
+        public void ParseInitializers()
         {
             foreach(var field in fields.Values)
             {
-                var init = field.Declaration.Initializer;
-                if (!init.IsNull)
-                {
-                    field.Initializer = ExpressionNode.Parse(parser, this, init);
-
-                    if(field.TypeWrapper == null)
-                    {
-                        field.TypeWrapper = field.Initializer.TypeWrapper;
-                    }
-                    else
-                    {
-                        if (!field.Initializer.TypeWrapper.IsAssignableTo(field.TypeWrapper))
-                            throw new TypeException(field.Initializer.SequencePoint, "Type mismatch, field " + field.Name + " type " + field.TypeWrapper.FullName + " initialized with " + field.Initializer.TypeWrapper.FullName);
-                    }
-                }
-                field.FieldDefinition = new FieldDefinition(field.Name, field.GetAttributes(), field.TypeWrapper.TypeReference);
-                AddFieldToEmitter(field);
+                field.Initialize(parser, this);
             }
         }
 
@@ -269,12 +247,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public void AddMethod(FunctionDeclarationNode method)
         {
             methods.Add(method.MethodReference.Name, method);
-        }
-
-        private void AddFieldToEmitter(InternalField field)
-        {
-            TypeEmitter.AddField(field.FieldDefinition);
-            TypeEmitter.AddFieldInitializer(field.FieldDefinition, field.Initializer);
         }
 
         public string NewFunctionName()
