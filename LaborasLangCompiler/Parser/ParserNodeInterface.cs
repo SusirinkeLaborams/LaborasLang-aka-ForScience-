@@ -77,6 +77,7 @@ namespace LaborasLangCompiler.Parser
 
     interface IObjectCreationNode : IRValueNode
     {
+        MethodReference Constructor { get; }
         IReadOnlyList<IExpressionNode> Args { get; }
     }
 

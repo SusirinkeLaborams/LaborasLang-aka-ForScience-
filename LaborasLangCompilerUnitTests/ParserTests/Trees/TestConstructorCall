@@ -1,0 +1,18 @@
+Class:
+	Fields:
+		Field:
+			Type:
+				System.Collections.ArrayList
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ObjectCreation:
+					Type: System.Collections.ArrayList
+					Args:
+					Constructor:
+						System.Void System.Collections.ArrayList::.ctor()
+
+
+	Methods:

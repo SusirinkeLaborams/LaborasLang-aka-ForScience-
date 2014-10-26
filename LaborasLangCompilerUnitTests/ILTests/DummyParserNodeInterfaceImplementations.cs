@@ -81,6 +81,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public RValueNodeType RValueType { get { return RValueNodeType.ObjectCreation; } }
 
         public TypeReference ExpressionReturnType { get; set; }
+        public MethodReference Constructor { get { return null; } }
 
         public IReadOnlyList<IExpressionNode> Args
         {
