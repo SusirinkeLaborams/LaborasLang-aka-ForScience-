@@ -69,7 +69,8 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
                     throw new TypeException(Initializer.SequencePoint, "Field of type {0} initialized with {1}", TypeWrapper, Initializer.TypeWrapper);
             }
 
-            parent.TypeEmitter.AddFieldInitializer(FieldDefinition, Initializer);
+            if(parser.ShouldEmit)
+                parent.TypeEmitter.AddFieldInitializer(FieldDefinition, Initializer);
         }
 
         public FieldAttributes GetAttributes()

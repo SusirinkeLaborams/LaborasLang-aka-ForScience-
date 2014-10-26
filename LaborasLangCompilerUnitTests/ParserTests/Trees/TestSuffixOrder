@@ -5,6 +5,8 @@ Class:
 				System.Int32
 			Name:
 				i
+			Modifiers:
+				Private, Mutable, NoInstance
 			Initializer:
 				Literal:
 					Type:
@@ -18,6 +20,8 @@ Class:
 				System.Int32
 			Name:
 				a
+			Modifiers:
+				Private, Mutable, NoInstance
 			Initializer:
 				UnaryOperator:
 					Operator:

@@ -461,7 +461,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             var file = path + name;
             using(var tree = Lexer.Lexer.Lex(source))
             {
-                Parser parser = new Parser(assembly, tree, name);
+                Parser parser = new Parser(assembly, tree, name, false);
                 string result = parser.Root.ToString(0);
 #if REWRITE
                 System.IO.File.WriteAllText(file, result);
@@ -482,7 +482,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             var assembly = new AssemblyEmitter(compilerArgs);
             using(var tree = Lexer.Lexer.Lex(source))
             {
-                Parser parser = new Parser(assembly, tree, name);
+                Parser parser = new Parser(assembly, tree, name, false);
             }
         }
     }

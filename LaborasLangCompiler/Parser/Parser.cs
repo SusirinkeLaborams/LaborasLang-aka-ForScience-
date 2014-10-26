@@ -20,6 +20,7 @@ namespace LaborasLangCompiler.Parser
         public ClassNode Root { get; set; }
         public string Filename { get; private set; }
         public Document Document { get; private set; }
+        public bool ShouldEmit { get; private set; }
 
         private Dictionary<string, TypeWrapper> primitives;
 
@@ -45,7 +46,7 @@ namespace LaborasLangCompiler.Parser
 
         #endregion types
 
-        public Parser(AssemblyEmitter assembly, RootNode root, string filePath)
+        public Parser(AssemblyEmitter assembly, RootNode root, string filePath, bool emit = true)
         {
             Assembly = assembly;
             Filename = Path.GetFileNameWithoutExtension(filePath);
@@ -53,6 +54,7 @@ namespace LaborasLangCompiler.Parser
             Document.Language = DocumentLanguage.Other;
             Document.LanguageVendor = DocumentLanguageVendor.Other;
             Document.Type = DocumentType.Text;
+            ShouldEmit = emit;
             this.primitives = new Dictionary<string, TypeWrapper>();
 
             primitives["bool"] = Bool = new ExternalType(assembly, typeof(bool));
