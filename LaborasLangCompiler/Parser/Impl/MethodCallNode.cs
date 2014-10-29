@@ -22,6 +22,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private TypeWrapper type;
         private List<ExpressionNode> args;
         private ExpressionNode function;
+
         public MethodCallNode(ExpressionNode function, TypeWrapper returnType, List<ExpressionNode> args, SequencePoint point)
             : base(point)
         {
@@ -29,16 +30,24 @@ namespace LaborasLangCompiler.Parser.Impl
             this.args = args;
             this.type = returnType;
         }
+
         public static new ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            if (lexerNode.Children.Count(x => x.Type == Lexer.TokenType.FunctionArgumentsList) > 1)
-                throw new NotImplementedException("Calling returned functions not supported");
             var function = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
-            var args = new List<ExpressionNode>();
-            var point = parser.GetSequencePoint(lexerNode);
-            foreach (var node in lexerNode.Children[1].Children)
+            for(int i = 1; i < lexerNode.Children.Count; i++)
             {
-                switch(node.Type)
+                var args = ParseArgList(parser, parent, lexerNode.Children[i]);
+                function = Call(parser, function, args);
+            }
+            return function;
+        }
+
+        private static List<ExpressionNode> ParseArgList(Parser parser, ContainerNode parent, AstNode lexerNode)
+        {
+            var args = new List<ExpressionNode>();
+            foreach (var node in lexerNode.Children)
+            {
+                switch (node.Type)
                 {
                     case Lexer.TokenType.LeftParenthesis:
                     case Lexer.TokenType.RightParenthesis:
@@ -50,9 +59,14 @@ namespace LaborasLangCompiler.Parser.Impl
                     default:
                         throw new ParseException(parser.GetSequencePoint(node), "Unexpected node type {0} in call", node.Type);
                 }
-                
-            }
 
+            }
+            return args;
+        }
+
+        private static ExpressionNode Call(Parser parser, ExpressionNode function, List<ExpressionNode> args)
+        {
+            var point = parser.GetSequencePoint(function.SequencePoint, args.Count == 0 ? function.SequencePoint : args.Last().SequencePoint);
             var method = AsObjectCreation(parser, function, args, point);
             if (method != null)
                 return method;
@@ -66,10 +80,11 @@ namespace LaborasLangCompiler.Parser.Impl
                 return method;
 
             if (method == null)
-                throw new TypeException(point, "Unable to call {0} as a method or constructor", lexerNode.FullContent);
+                throw new TypeException(point, "Unable to call as a method or constructor");
 
             return method;
         }
+
         private static ExpressionNode AsFunctor(ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)
         {
             if (node.TypeWrapper == null)
@@ -86,6 +101,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return null;
             }
         }
+
         private static ExpressionNode AsMethod(Parser parser, ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)
         {
             if (node is MethodNode)
@@ -98,6 +114,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var method = ambiguous.RemoveAmbiguity(parser, new FunctorTypeWrapper(parser.Assembly, null, args.Select(a => a.TypeWrapper)));
             return new MethodCallNode(method, method.TypeWrapper.FunctorReturnType, args.ToList(), point);
         }
+
         private static ExpressionNode AsObjectCreation(Parser parser, ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)
         {
             var type = node as TypeNode;
@@ -109,6 +126,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return null;
             return new ObjectCreationNode(type.ParsedType, args.ToList(), new ExternalMethod(parser.Assembly, method), point);
         }
+
         public override string ToString(int indent)
         {
             StringBuilder builder = new StringBuilder();
