@@ -16,12 +16,7 @@ Class:
 					Nodes:
 						VariableDeclaration:
 							Symbol:
-								Local:
-									Name:
-										a
-									Type:
-										System.Boolean
-
+								System.Boolean a
 							Initializer:
 								Literal:
 									Type:

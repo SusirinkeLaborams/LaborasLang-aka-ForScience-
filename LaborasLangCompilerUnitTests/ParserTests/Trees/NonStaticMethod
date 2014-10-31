@@ -17,12 +17,7 @@ Class:
 					Nodes:
 						VariableDeclaration:
 							Symbol:
-								Local:
-									Name:
-										a
-									Type:
-										System.Int32
-
+								System.Int32 a
 							Initializer:
 								Literal:
 									Type:
@@ -33,12 +28,7 @@ Class:
 
 						VariableDeclaration:
 							Symbol:
-								Local:
-									Name:
-										str
-									Type:
-										System.String
-
+								System.String str
 							Initializer:
 								MethodCall:
 									ReturnType: System.String									Args:									Function:

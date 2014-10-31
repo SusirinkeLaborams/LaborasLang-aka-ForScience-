@@ -31,12 +31,7 @@ Class:
 					Nodes:
 						VariableDeclaration:
 							Symbol:
-								Local:
-									Name:
-										func
-									Type:
-										$Functors.$System_String?
-
+								$Functors.$System_String? func
 							Initializer:
 								Method:
 									Instance:

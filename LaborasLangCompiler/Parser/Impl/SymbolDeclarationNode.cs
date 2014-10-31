@@ -78,7 +78,7 @@ namespace LaborasLangCompiler.Parser.Impl
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("VariableDeclaration:");
             builder.Indent(indent + 1).AppendLine("Symbol:");
-            builder.Indent(indent + 2).AppendLine(declaredSymbol.ToString());
+            builder.Indent(indent + 2).AppendFormat("{0} {1}", declaredSymbol.ExpressionReturnType, declaredSymbol.Name).AppendLine();
             if(initializer != null)
             {
                 builder.Indent(indent + 1).AppendLine("Initializer:");

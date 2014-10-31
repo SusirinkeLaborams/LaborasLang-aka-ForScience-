@@ -48,12 +48,7 @@ Class:
 					Nodes:
 						VariableDeclaration:
 							Symbol:
-								Local:
-									Name:
-										a
-									Type:
-										System.Int32
-
+								System.Int32 a
 							Initializer:
 								Literal:
 									Type:
@@ -85,12 +80,7 @@ Class:
 
 						VariableDeclaration:
 							Symbol:
-								Local:
-									Name:
-										f
-									Type:
-										$Functors.$System_Int32*System_Int32*System_Single?
-
+								$Functors.$System_Int32*System_Int32*System_Single? f
 							Initializer:
 								Method:
 									Method:
@@ -116,12 +106,7 @@ Class:
 					Nodes:
 						VariableDeclaration:
 							Symbol:
-								Local:
-									Name:
-										c
-									Type:
-										System.Single
-
+								System.Single c
 							Initializer:
 								BinaryOperator:
 									Left:

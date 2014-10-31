@@ -16,12 +16,7 @@ Class:
 					Nodes:
 						VariableDeclaration:
 							Symbol:
-								Local:
-									Name:
-										foo
-									Type:
-										System.Collections.ArrayList
-
+								System.Collections.ArrayList foo
 
 
 
