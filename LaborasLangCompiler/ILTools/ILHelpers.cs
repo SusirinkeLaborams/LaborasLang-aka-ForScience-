@@ -181,6 +181,16 @@ namespace LaborasLangCompiler.ILTools
             return child.BaseType.DerivesFrom(parent);
         }
 
+        public static bool DeclaredBy(this TypeReference nestedType, TypeReference type)
+        {
+            while (nestedType != type && nestedType != null)
+            {
+                nestedType = nestedType.DeclaringType;
+            }
+
+            return nestedType == type;
+        }
+
         public static bool MatchesArgumentList(TypeReference functorType, IReadOnlyList<TypeReference> desiredParameters)
         {
             return functorType.Resolve().Methods.Single(method => method.Name == "Invoke").MatchesArgumentList(desiredParameters);
@@ -310,9 +320,101 @@ namespace LaborasLangCompiler.ILTools
             return invokeMethod.ReturnType;
         }
 
-        public static bool IsAccessible(MemberReference target, TypeReference scope)
+        public static bool IsAccessible(FieldReference target, TypeReference scope)
         {
-            throw new NotImplementedException();
+            var field = target.Resolve();
+            var targetType = target.DeclaringType;
+
+            switch (field.Attributes & FieldAttributes.FieldAccessMask)
+            {
+                case FieldAttributes.CompilerControlled:
+                    return false;
+
+                case FieldAttributes.Private:
+                    return scope.DeclaredBy(targetType);
+
+                case FieldAttributes.FamANDAssem:
+                    return targetType.Module == scope.Resolve().Module && (scope.DeclaredBy(targetType) || scope.DerivesFrom(targetType));
+
+                case FieldAttributes.Assembly:
+                    return targetType.Module == scope.Resolve().Module;
+
+                case FieldAttributes.Family:
+                    return scope.DeclaredBy(targetType) || scope.DerivesFrom(targetType);
+
+                case FieldAttributes.FamORAssem:
+                    return targetType.Module == scope.Resolve().Module || scope.DeclaredBy(targetType) || scope.DerivesFrom(targetType);
+
+                case FieldAttributes.Public:
+                    return true;
+
+                default:
+                    throw new NotSupportedException(string.Format("Unknown field visibility: {0}", field.Attributes & FieldAttributes.FieldAccessMask));
+            }
+        }
+
+        public static bool IsAccessible(MethodReference target, TypeReference scope)
+        {
+            var method = target.Resolve();
+            var targetType = method.DeclaringType;
+
+            switch (method.Attributes & MethodAttributes.MemberAccessMask)
+            {
+                case MethodAttributes.CompilerControlled:
+                    return false;
+
+                case MethodAttributes.Private:
+                    return scope.DeclaredBy(targetType);
+
+                case MethodAttributes.FamANDAssem:
+                    return targetType.Module == scope.Resolve().Module && (scope.DeclaredBy(targetType) || scope.DerivesFrom(targetType));
+
+                case MethodAttributes.Assembly:
+                    return targetType.Module == scope.Resolve().Module;
+
+                case MethodAttributes.Family:
+                    return scope.DeclaredBy(targetType) || scope.DerivesFrom(targetType);
+
+                case MethodAttributes.FamORAssem:
+                    return targetType.Module == scope.Resolve().Module || scope.DeclaredBy(targetType) || scope.DerivesFrom(targetType);
+
+                case MethodAttributes.Public:
+                    return true;
+                    
+                default:
+                    throw new NotSupportedException(string.Format("Unknown method visibility: {0}", method.Attributes & MethodAttributes.MemberAccessMask));
+            }
+        }
+
+        public static bool IsAccessible(TypeReference target, TypeReference scope)
+        {
+            var type = target.Resolve();
+
+            switch (type.Attributes & TypeAttributes.VisibilityMask)
+            {
+                case TypeAttributes.NotPublic:
+                case TypeAttributes.NestedAssembly:
+                    return type.Module == scope.Module;
+
+                case TypeAttributes.Public:
+                case TypeAttributes.NestedPublic:
+                    return true;
+
+                case TypeAttributes.NestedPrivate:
+                    return scope.DeclaredBy(type);
+
+                case TypeAttributes.NestedFamily:
+                    return scope.DerivesFrom(type);
+
+                case TypeAttributes.NestedFamANDAssem:
+                    return scope.DerivesFrom(type) && type.Module == scope.Module;
+
+                case TypeAttributes.NestedFamORAssem:
+                    return scope.DerivesFrom(type) || type.Module == scope.Module;
+
+                default:
+                    throw new NotSupportedException(string.Format("Unknown type visibility: {0}", type.Attributes & TypeAttributes.VisibilityMask));
+            }
         }
 
         static ILHelpers()
