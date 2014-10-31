@@ -30,18 +30,6 @@ namespace LaborasLangCompiler.Parser
 
     public enum ExpressionNodeType
     {
-        LValue,
-        RValue,
-        ParserInternal//used by the parser with incompletely parsed node
-    }
-
-    interface IExpressionNode : IParserNode
-    {
-        ExpressionNodeType ExpressionType { get; }
-        TypeReference ExpressionReturnType { get; }
-    }
-    public enum RValueNodeType
-    {
         Literal,
         Function,
         Call,
@@ -50,32 +38,37 @@ namespace LaborasLangCompiler.Parser
         UnaryOperator,
         AssignmentOperator,
         This,
+        LocalVariable,
+        Field,
+        Property,
+        FunctionArgument,
         ParserInternal
     }
 
-    interface IRValueNode : IExpressionNode
+    interface IExpressionNode : IParserNode
     {
-        RValueNodeType RValueType { get; }
+        ExpressionNodeType ExpressionType { get; }
+        TypeReference ExpressionReturnType { get; }
     }
 
-    interface ILiteralNode : IRValueNode
+    interface ILiteralNode : IExpressionNode
     {
         dynamic Value { get; }
     }
 
-    interface IMethodNode : IRValueNode
+    interface IMethodNode : IExpressionNode
     {
         IExpressionNode ObjectInstance { get; }
         MethodReference Method { get; }
     }
 
-    interface IFunctionCallNode : IRValueNode
+    interface IFunctionCallNode : IExpressionNode
     {
         IReadOnlyList<IExpressionNode> Args { get; }
         IExpressionNode Function { get; }
     }
 
-    interface IObjectCreationNode : IRValueNode
+    interface IObjectCreationNode : IExpressionNode
     {
         MethodReference Constructor { get; }
         IReadOnlyList<IExpressionNode> Args { get; }
@@ -94,37 +87,24 @@ namespace LaborasLangCompiler.Parser
         ICodeBlockNode FalseBlock { get; }
     }
 
-    public enum LValueNodeType
-    {
-        LocalVariable,
-        Field,
-        Property,
-        FunctionArgument
-    }
-
-    interface ILValueNode : IExpressionNode
-    {
-        LValueNodeType LValueType { get; }
-    }
-
-    interface ILocalVariableNode : ILValueNode
+    interface ILocalVariableNode : IExpressionNode
     {
         VariableDefinition LocalVariable { get; }
     }
 
-    interface IFieldNode : ILValueNode
+    interface IFieldNode : IExpressionNode
     {
         IExpressionNode ObjectInstance { get; }
         FieldReference Field { get; }
     }
 
-    interface IPropertyNode : ILValueNode
+    interface IPropertyNode : IExpressionNode
     {
         IExpressionNode ObjectInstance { get; }
         PropertyReference Property { get; }
     }
 
-    interface IMethodParamNode : ILValueNode
+    interface IMethodParamNode : IExpressionNode
     {
         ParameterDefinition Param { get; }
         bool IsMethodStatic { get; }
@@ -152,7 +132,7 @@ namespace LaborasLangCompiler.Parser
         ShiftLeft
     }
 
-    interface IBinaryOperatorNode : IRValueNode
+    interface IBinaryOperatorNode : IExpressionNode
     {
         BinaryOperatorNodeType BinaryOperatorType { get; }
         IExpressionNode LeftOperand { get; }
@@ -171,21 +151,21 @@ namespace LaborasLangCompiler.Parser
         VoidOperator    // Discards Operand result
     }
 
-    interface IUnaryOperatorNode : IRValueNode
+    interface IUnaryOperatorNode : IExpressionNode
     {
         UnaryOperatorNodeType UnaryOperatorType { get; }
         IExpressionNode Operand { get; }
     }
 
-    interface IAssignmentOperatorNode : IRValueNode
+    interface IAssignmentOperatorNode : IExpressionNode
     {
-        ILValueNode LeftOperand { get; }
+        IExpressionNode LeftOperand { get; }
         IExpressionNode RightOperand { get; }
     }
 
     interface ISymbolDeclarationNode : IParserNode
     {
-        ILValueNode DeclaredSymbol { get; }
+        ILocalVariableNode DeclaredSymbol { get; }
         IExpressionNode Initializer { get; }
     }
 

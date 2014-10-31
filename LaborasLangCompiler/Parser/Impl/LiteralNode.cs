@@ -13,9 +13,9 @@ using Lexer.Containers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class LiteralNode : RValueNode, ILiteralNode
+    class LiteralNode : ExpressionNode, ILiteralNode
     {
-        public override RValueNodeType RValueType { get { return RValueNodeType.Literal; } }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Literal; } }
         public dynamic Value { get; private set; }
         public override TypeWrapper TypeWrapper { get { return returnType; } }
 

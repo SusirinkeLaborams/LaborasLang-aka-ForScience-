@@ -11,11 +11,10 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class AmbiguousMethodNode : RValueNode, AmbiguousNode
+    class AmbiguousMethodNode : ExpressionNode, AmbiguousNode
     {
         public override TypeWrapper TypeWrapper { get { return null; } }
-        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
-        public override RValueNodeType RValueType { get { return RValueNodeType.ParserInternal; } }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
 
         private IEnumerable<MethodWrapper> methods;
         private ExpressionNode instance;

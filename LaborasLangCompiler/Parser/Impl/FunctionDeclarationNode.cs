@@ -90,7 +90,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public ClassNode GetClass() { return parent.GetClass(); }
 
-        public LValueNode GetSymbol(string name, SequencePoint point)
+        public ExpressionNode GetSymbol(string name, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
                 return new FunctionArgumentNode(symbols[name], true, point);

@@ -12,9 +12,9 @@ using Lexer.Containers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class UnaryOperatorNode : RValueNode, IUnaryOperatorNode
+    class UnaryOperatorNode : ExpressionNode, IUnaryOperatorNode
     {
-        public override RValueNodeType RValueType { get { return RValueNodeType.UnaryOperator; } }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.UnaryOperator; } }
         public override TypeWrapper TypeWrapper { get { return operand.TypeWrapper; } }
         public UnaryOperatorNodeType UnaryOperatorType { get; private set; }
         public IExpressionNode Operand { get { return operand; } }

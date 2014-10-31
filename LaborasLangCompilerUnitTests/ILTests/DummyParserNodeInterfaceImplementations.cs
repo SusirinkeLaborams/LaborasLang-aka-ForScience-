@@ -9,12 +9,11 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompilerUnitTests.ILTests
 {
-    class ThisNode : IRValueNode
+    class ThisNode : IExpressionNode
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
-        public RValueNodeType RValueType { get { return RValueNodeType.This; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.This; } }
 
         public TypeReference ExpressionReturnType { get; set; }
     }
@@ -23,8 +22,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
-        public RValueNodeType RValueType { get { return RValueNodeType.Literal; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Literal; } }
 
         public TypeReference ExpressionReturnType { get; set; }
         public dynamic Value { get; set; }
@@ -34,8 +32,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
-        public RValueNodeType RValueType { get { return RValueNodeType.Function; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Function; } }
 
         public TypeReference ExpressionReturnType { get; set; }
         public IExpressionNode ObjectInstance { get; set; }
@@ -48,8 +45,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         private List<IExpressionNode> arguments;
 
         public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
-        public RValueNodeType RValueType { get { return RValueNodeType.Call; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Call; } }
 
         public TypeReference ExpressionReturnType { get; set; }
         public IExpressionNode Function { get; set; }
@@ -77,8 +73,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         private List<IExpressionNode> arguments;
 
         public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
-        public RValueNodeType RValueType { get { return RValueNodeType.ObjectCreation; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ObjectCreation; } }
 
         public TypeReference ExpressionReturnType { get; set; }
         public MethodReference Constructor { get { return null; } }
@@ -104,8 +99,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
-        public LValueNodeType LValueType { get { return LValueNodeType.LocalVariable; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LocalVariable; } }
 
         public TypeReference ExpressionReturnType { get { return LocalVariable.VariableType; } }
         public VariableDefinition LocalVariable { get; set; }
@@ -115,8 +109,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
-        public LValueNodeType LValueType { get { return LValueNodeType.Field; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Field; } }
 
         public TypeReference ExpressionReturnType { get { return Field.FieldType; } }
         public IExpressionNode ObjectInstance { get; set; }
@@ -127,8 +120,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
-        public LValueNodeType LValueType { get { return LValueNodeType.Property; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Property; } }
 
         public TypeReference ExpressionReturnType { get { return Property.PropertyType; } }
         public IExpressionNode ObjectInstance { get; set; }
@@ -139,8 +131,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
-        public LValueNodeType LValueType { get { return LValueNodeType.FunctionArgument; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.FunctionArgument; } }
 
         public TypeReference ExpressionReturnType { get { return Param.ParameterType; } }
         public ParameterDefinition Param { get; set; }
@@ -151,8 +142,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
-        public RValueNodeType RValueType { get { return RValueNodeType.BinaryOperator; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.BinaryOperator; } }
 
         public TypeReference ExpressionReturnType { get; set; }
         public BinaryOperatorNodeType BinaryOperatorType { get; set; }
@@ -164,8 +154,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
-        public RValueNodeType RValueType { get { return RValueNodeType.UnaryOperator; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.UnaryOperator; } }
 
         public TypeReference ExpressionReturnType { get; set; }
         public UnaryOperatorNodeType UnaryOperatorType { get; set; }
@@ -176,11 +165,10 @@ namespace LaborasLangCompilerUnitTests.ILTests
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
-        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.RValue; } }
-        public RValueNodeType RValueType { get { return RValueNodeType.AssignmentOperator; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.AssignmentOperator; } }
 
         public TypeReference ExpressionReturnType { get { return LeftOperand.ExpressionReturnType; } }
-        public ILValueNode LeftOperand { get; set; }
+        public IExpressionNode LeftOperand { get; set; }
         public IExpressionNode RightOperand { get; set; }
     }
 
@@ -190,7 +178,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public NodeType Type { get { return NodeType.SymbolDeclaration; } }
 
         public TypeReference ReturnType { get { return DeclaredSymbol.ExpressionReturnType; } }
-        public ILValueNode DeclaredSymbol { get; set; }
+        public ILocalVariableNode DeclaredSymbol { get; set; }
         public IExpressionNode Initializer { get; set; }
     }
 

@@ -11,6 +11,6 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         FunctionDeclarationNode GetFunction();
         ClassNode GetClass();
-        LValueNode GetSymbol(string name, SequencePoint point);
+        ExpressionNode GetSymbol(string name, SequencePoint point);
     }
 }

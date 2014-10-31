@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ObjectCreationNode : RValueNode, IObjectCreationNode
+    class ObjectCreationNode : ExpressionNode, IObjectCreationNode
     {
-        public override RValueNodeType RValueType { get { return RValueNodeType.ObjectCreation; } }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ObjectCreation; } }
         public override TypeWrapper TypeWrapper { get { return type; } }
         public IReadOnlyList<IExpressionNode> Args { get { return args; } }
         public MethodReference Constructor { get { return constructor.MethodReference; } }

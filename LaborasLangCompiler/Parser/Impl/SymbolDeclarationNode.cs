@@ -15,12 +15,12 @@ namespace LaborasLangCompiler.Parser.Impl
     class SymbolDeclarationNode : ParserNode, ISymbolDeclarationNode
     {
         public override NodeType Type { get { return NodeType.SymbolDeclaration; } }
-        public ILValueNode DeclaredSymbol { get { return declaredSymbol; } }
+        public ILocalVariableNode DeclaredSymbol { get { return declaredSymbol; } }
         public IExpressionNode Initializer { get { return initializer; } }
 
         private ExpressionNode initializer;
-        private LValueNode declaredSymbol;
-        private SymbolDeclarationNode(LValueNode symbol, ExpressionNode init, SequencePoint point)
+        private LocalVariableNode declaredSymbol;
+        private SymbolDeclarationNode(LocalVariableNode symbol, ExpressionNode init, SequencePoint point)
             : base(point)
         {
             this.declaredSymbol = symbol;
@@ -28,7 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static SymbolDeclarationNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            LValueNode symbol = null;
+            LocalVariableNode symbol = null;
             var info = DeclarationInfo.Parse(parser, lexerNode);
             var name = info.SymbolName.GetSingleSymbolOrThrow();
             var declaredType = TypeNode.Parse(parser, parent, info.Type);
@@ -78,7 +78,7 @@ namespace LaborasLangCompiler.Parser.Impl
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("VariableDeclaration:");
             builder.Indent(indent + 1).AppendLine("Symbol:");
-            builder.AppendLine(declaredSymbol.ToString(indent + 2));
+            builder.Indent(indent + 2).AppendLine(declaredSymbol.ToString());
             if(initializer != null)
             {
                 builder.Indent(indent + 1).AppendLine("Initializer:");

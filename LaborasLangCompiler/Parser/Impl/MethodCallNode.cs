@@ -12,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class MethodCallNode : RValueNode, IFunctionCallNode
+    class MethodCallNode : ExpressionNode, IFunctionCallNode
     {
-        public override RValueNodeType RValueType { get { return RValueNodeType.Call; } }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Call; } }
         public override TypeWrapper TypeWrapper { get { return type; } }
         public IReadOnlyList<IExpressionNode> Args { get { return args; } }
         public IExpressionNode Function { get { return function; } }

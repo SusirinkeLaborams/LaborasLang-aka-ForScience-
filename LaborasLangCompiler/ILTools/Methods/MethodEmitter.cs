@@ -142,12 +142,52 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             switch (expression.ExpressionType)
             {
-                case ExpressionNodeType.LValue:
-                    Emit((ILValueNode)expression, emitReference);
+                case ExpressionNodeType.Field:
+                    Emit((IFieldNode)expression, emitReference);
                     return;
 
-                case ExpressionNodeType.RValue:
-                    Emit((IRValueNode)expression);
+                case ExpressionNodeType.FunctionArgument:
+                    Emit((IMethodParamNode)expression, emitReference);
+                    return;
+
+                case ExpressionNodeType.LocalVariable:
+                    Emit((ILocalVariableNode)expression, emitReference);
+                    return;
+
+                case ExpressionNodeType.Property:
+                    Emit((IPropertyNode)expression);
+                    return;
+
+                case ExpressionNodeType.AssignmentOperator:
+                    Emit((IAssignmentOperatorNode)expression);
+                    return;
+
+                case ExpressionNodeType.BinaryOperator:
+                    Emit((IBinaryOperatorNode)expression);
+                    return;
+
+                case ExpressionNodeType.Call:
+                    Emit((IFunctionCallNode)expression);
+                    return;
+
+                case ExpressionNodeType.Function:
+                    Emit((IMethodNode)expression);
+                    return;
+
+                case ExpressionNodeType.Literal:
+                    Emit((ILiteralNode)expression);
+                    return;
+
+                case ExpressionNodeType.ObjectCreation:
+                    Emit((IObjectCreationNode)expression);
+                    return;
+
+                case ExpressionNodeType.This:
+                    EmitThis();
+                    return;
+
+                case ExpressionNodeType.UnaryOperator:
+                    Emit((IUnaryOperatorNode)expression);
                     return;
 
                 default:
@@ -167,21 +207,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Emit(ISymbolDeclarationNode symbolDeclaration)
         {
-            switch (symbolDeclaration.DeclaredSymbol.LValueType)
-            {
-                case LValueNodeType.LocalVariable:
-                    body.Variables.Add(((ILocalVariableNode)symbolDeclaration.DeclaredSymbol).LocalVariable);
-                    break;
-
-                case LValueNodeType.FunctionArgument:
-                    throw new NotSupportedException("Can't declare argument.");
-
-                case LValueNodeType.Field:
-                    throw new NotSupportedException("Can't declare field inside of a method.");
-
-                default:
-                    throw new NotSupportedException(string.Format("Unknown lvalue type: {0}.", symbolDeclaration.DeclaredSymbol.LValueType));
-            }
+            body.Variables.Add(symbolDeclaration.DeclaredSymbol.LocalVariable);
 
             if (symbolDeclaration.Initializer != null)
             {
@@ -210,102 +236,33 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #region Expression node
 
-        protected void Emit(ILValueNode lvalue, bool emitReference)
+
+        protected void EmitStore(IExpressionNode expression)
         {
-            switch (lvalue.LValueType)
+            switch (expression.ExpressionType)
             {
-                case LValueNodeType.Field:
-                    Emit((IFieldNode)lvalue, emitReference);
+                case ExpressionNodeType.Field:
+                    EmitStore((IFieldNode)expression);
                     return;
 
-                case LValueNodeType.FunctionArgument:
-                    Emit((IMethodParamNode)lvalue, emitReference);
+                case ExpressionNodeType.FunctionArgument:
+                    EmitStore((IMethodParamNode)expression);
                     return;
 
-                case LValueNodeType.LocalVariable:
-                    Emit((ILocalVariableNode)lvalue, emitReference);
+                case ExpressionNodeType.LocalVariable:
+                    EmitStore((ILocalVariableNode)expression);
                     return;
 
-                case LValueNodeType.Property:
-                    Emit((IPropertyNode)lvalue);
+                case ExpressionNodeType.Property:
+                    EmitStore((IPropertyNode)expression);
                     return;
 
                 default:
-                    throw new NotSupportedException(string.Format("Unknown lvalue node type: {0}.", lvalue.LValueType));
+                    throw new NotSupportedException(string.Format("Cannot store {0} ExpressionNode.", expression.ExpressionType));
             }
         }
 
-        protected void EmitStore(ILValueNode lvalue)
-        {
-            switch (lvalue.LValueType)
-            {
-                case LValueNodeType.Field:
-                    EmitStore((IFieldNode)lvalue);
-                    return;
-
-                case LValueNodeType.FunctionArgument:
-                    EmitStore((IMethodParamNode)lvalue);
-                    return;
-
-                case LValueNodeType.LocalVariable:
-                    EmitStore((ILocalVariableNode)lvalue);
-                    return;
-
-                case LValueNodeType.Property:
-                    EmitStore((IPropertyNode)lvalue);
-                    return;
-
-                default:
-                    throw new NotSupportedException(string.Format("Unknown lvalue node type: {0}.", lvalue.LValueType));
-            }
-        }
-
-        protected void Emit(IRValueNode rvalue)
-        {
-            switch (rvalue.RValueType)
-            {
-                case RValueNodeType.AssignmentOperator:
-                    Emit((IAssignmentOperatorNode)rvalue);
-                    return;
-
-                case RValueNodeType.BinaryOperator:
-                    Emit((IBinaryOperatorNode)rvalue);
-                    return;
-
-                case RValueNodeType.Call:
-                    Emit((IFunctionCallNode)rvalue);
-                    return;
-
-                case RValueNodeType.Function:
-                    Emit((IMethodNode)rvalue);
-                    return;
-
-                case RValueNodeType.Literal:
-                    Emit((ILiteralNode)rvalue);
-                    return;
-
-                case RValueNodeType.ObjectCreation:
-                    Emit((IObjectCreationNode)rvalue);
-                    return;
-
-                case RValueNodeType.This:
-                    EmitThis();
-                    return;
-
-                case RValueNodeType.UnaryOperator:
-                    Emit((IUnaryOperatorNode)rvalue);
-                    return;
-
-                default:
-                    throw new NotSupportedException(string.Format("Unknown RValue node type: {0}.", rvalue.RValueType));
-            }
-        }
-
-        #endregion
-
-        #region LValue node
-
-        #region Load lvalue node
+        #region Load expression node
 
         protected void Emit(IFieldNode field, bool emitReference)
         {
@@ -385,48 +342,6 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         #endregion
 
-        #region Store lvalue node
-
-        protected void EmitStore(IFieldNode field)
-        {
-            if (!field.Field.Resolve().IsStatic)
-            {
-                Stfld(field.Field);
-            }
-            else
-            {
-                Stsfld(field.Field);
-            }
-        }
-
-        protected void EmitStore(IMethodParamNode argument)
-        {
-            Starg(argument.Param.Index);
-        }
-
-        protected void EmitStore(ILocalVariableNode variable)
-        {
-            Stloc(variable.LocalVariable.Index);
-        }
-
-        protected void EmitStore(IPropertyNode property)
-        {
-            var setter = AssemblyRegistry.GetPropertySetter(Assembly, property.Property);
-
-            if (setter == null)
-            {
-                throw new ArgumentException(string.Format("Property {0} has no setter.", property.Property.FullName));
-            }
-
-            Call(setter);
-        }
-
-        #endregion
-
-        #endregion
-
-        #region RValue node
-
         #region Assignment
 
         // There are 2 types of assignment
@@ -462,8 +377,8 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             // If we're storing to field or property and it's not static, we need to load object instance now
             // and if we're also duplicating value, we got to save it to temp variable
-            bool isField = assignmentOperator.LeftOperand.LValueType == LValueNodeType.Field;
-            bool isProperty = assignmentOperator.LeftOperand.LValueType == LValueNodeType.Property;
+            bool isField = assignmentOperator.LeftOperand.ExpressionType == ExpressionNodeType.Field;
+            bool isProperty = assignmentOperator.LeftOperand.ExpressionType == ExpressionNodeType.Property;
             IExpressionNode objectInstance = null;
             VariableDefinition tempVariable = null;
 
@@ -538,8 +453,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         private void EmitExpressionWithTargetType(IExpressionNode expression, TypeReference targetType, bool emitAsReference = false)
         {
-            bool expressionIsFunction = expression.ExpressionType == ExpressionNodeType.RValue &&
-                ((IRValueNode)expression).RValueType == RValueNodeType.Function;
+            bool expressionIsFunction = expression.ExpressionType == ExpressionNodeType.Function;
             bool expressionIsFunctor = expression.ExpressionReturnType.IsFunctorType();
             bool canEmitExpressionAsReference = CanEmitAsReference(expression);
 
@@ -709,7 +623,7 @@ namespace LaborasLangCompiler.ILTools.Methods
         {
             var function = functionCall.Function;
 
-            if (function.ExpressionType == ExpressionNodeType.RValue && ((IRValueNode)function).RValueType == RValueNodeType.Function)
+            if (function.ExpressionType == ExpressionNodeType.Function)
             {   // Direct call
                 var functionNode = (IMethodNode)function;
 
@@ -962,28 +876,28 @@ namespace LaborasLangCompiler.ILTools.Methods
                     Dup();
                     Ldc_I4(-1);
                     Add();
-                    EmitStore((ILValueNode)unaryOperator.Operand);
+                    EmitStore(unaryOperator.Operand);
                     return;
 
                 case UnaryOperatorNodeType.PostIncrement:
                     Dup();
                     Ldc_I4(1);
                     Add();
-                    EmitStore((ILValueNode)unaryOperator.Operand);
+                    EmitStore(unaryOperator.Operand);
                     return;
 
                 case UnaryOperatorNodeType.PreDecrement:
                     Ldc_I4(-1);
                     Add();
                     Dup();
-                    EmitStore((ILValueNode)unaryOperator.Operand);
+                    EmitStore(unaryOperator.Operand);
                     return;
 
                 case UnaryOperatorNodeType.PreIncrement:
                     Ldc_I4(1);
                     Add();
                     Dup();
-                    EmitStore((ILValueNode)unaryOperator.Operand);
+                    EmitStore(unaryOperator.Operand);
                     return;
 
                 default:
@@ -1299,8 +1213,7 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void EmitVoidOperator(IUnaryOperatorNode binaryOperator)
         {
-            if (binaryOperator.Operand.ExpressionType == ExpressionNodeType.RValue &&
-                ((IRValueNode)binaryOperator.Operand).RValueType == RValueNodeType.AssignmentOperator)
+            if (binaryOperator.Operand.ExpressionType == ExpressionNodeType.AssignmentOperator)
             {
                 Emit(((IAssignmentOperatorNode)binaryOperator.Operand), false);
             }
@@ -1309,6 +1222,44 @@ namespace LaborasLangCompiler.ILTools.Methods
                 Emit(binaryOperator.Operand, false);
                 Pop();
             }
+        }
+
+        #endregion
+
+        #region Store expression node
+
+        protected void EmitStore(IFieldNode field)
+        {
+            if (!field.Field.Resolve().IsStatic)
+            {
+                Stfld(field.Field);
+            }
+            else
+            {
+                Stsfld(field.Field);
+            }
+        }
+
+        protected void EmitStore(IMethodParamNode argument)
+        {
+            Starg(argument.Param.Index);
+        }
+
+        protected void EmitStore(ILocalVariableNode variable)
+        {
+            Stloc(variable.LocalVariable.Index);
+        }
+
+        protected void EmitStore(IPropertyNode property)
+        {
+            var setter = AssemblyRegistry.GetPropertySetter(Assembly, property.Property);
+
+            if (setter == null)
+            {
+                throw new ArgumentException(string.Format("Property {0} has no setter.", property.Property.FullName));
+            }
+
+            Call(setter);
         }
 
         #endregion

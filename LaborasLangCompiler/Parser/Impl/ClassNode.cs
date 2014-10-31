@@ -92,7 +92,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return null;
         }
 
-        public LValueNode GetSymbol(string name, SequencePoint point)
+        public ExpressionNode GetSymbol(string name, SequencePoint point)
         {
             var field = GetField(name);
             if (field != null)

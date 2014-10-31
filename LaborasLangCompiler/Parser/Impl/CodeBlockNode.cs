@@ -30,14 +30,14 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public ClassNode GetClass() { return parent.GetClass(); }
         public FunctionDeclarationNode GetFunction() { return parent.GetFunction(); }
-        public LValueNode GetSymbol(string name, SequencePoint point)
+        public ExpressionNode GetSymbol(string name, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
                 return new LocalVariableNode(point, symbols[name]);
 
             return parent.GetSymbol(name, point);
         }
-        public virtual LValueNode AddVariable(TypeWrapper type, string name, SequencePoint point)
+        public virtual LocalVariableNode AddVariable(TypeWrapper type, string name, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
                 throw new SymbolAlreadyDeclaredException(point, "Var {0} already declared", name);

@@ -76,7 +76,9 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected static bool CanEmitAsReference(IExpressionNode node)
         {
-            return node.ExpressionType == ExpressionNodeType.LValue && ((ILValueNode)node).LValueType != LValueNodeType.Property;
+            return node.ExpressionType == ExpressionNodeType.LocalVariable ||
+                node.ExpressionType == ExpressionNodeType.Field ||
+                node.ExpressionType == ExpressionNodeType.FunctionArgument;
         }
 
         protected static bool IsAtLeastOneOperandString(IBinaryOperatorNode binaryOperator)

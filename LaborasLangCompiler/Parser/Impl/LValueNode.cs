@@ -11,20 +11,12 @@ using LaborasLangCompiler.Parser.Impl.Wrappers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    abstract class LValueNode : ExpressionNode, ILValueNode
+    class LocalVariableNode : ExpressionNode, ILocalVariableNode
     {
-        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LValue; } }
-        public abstract LValueNodeType LValueType { get; }
-        public abstract string Name { get; }
-        protected LValueNode(SequencePoint point) : base(point) { }
-    }
-
-    class LocalVariableNode : LValueNode, ILocalVariableNode
-    {
-        public override LValueNodeType LValueType { get { return LValueNodeType.LocalVariable; } }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LocalVariable; } }
         public VariableDefinition LocalVariable { get { return variable.VariableDefinition; } }
         public override TypeWrapper TypeWrapper { get { return variable.TypeWrapper; } }
-        public override string Name {get { return LocalVariable.Name; } }
+        public string Name {get { return LocalVariable.Name; } }
 
         private VariableWrapper variable;
         public LocalVariableNode(SequencePoint point, VariableWrapper variable)
@@ -44,13 +36,13 @@ namespace LaborasLangCompiler.Parser.Impl
         }
     }
 
-    class FunctionArgumentNode : LValueNode, IMethodParamNode
+    class FunctionArgumentNode : ExpressionNode, IMethodParamNode
     {
-        public override LValueNodeType LValueType { get { return LValueNodeType.FunctionArgument; } }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.FunctionArgument; } }
         public ParameterDefinition Param { get { return parameter.ParameterDefinition; } }
         public bool IsMethodStatic { get; set; }
         public override TypeWrapper TypeWrapper { get { return parameter.TypeWrapper; } }
-        public override string Name { get { return Param.Name; } }
+        public string Name { get { return Param.Name; } }
 
         private ParameterWrapper parameter;
         public FunctionArgumentNode(ParameterWrapper param, bool isFunctionStatic, SequencePoint point)
@@ -71,13 +63,13 @@ namespace LaborasLangCompiler.Parser.Impl
         }
     }
 
-    class FieldNode : LValueNode, IFieldNode
+    class FieldNode : ExpressionNode, IFieldNode
     {
-        public override LValueNodeType LValueType { get { return LValueNodeType.Field; } }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Field; } }
         public IExpressionNode ObjectInstance { get; private set; }
         public FieldReference Field { get { return field.FieldReference; } }
         public override TypeWrapper TypeWrapper { get { return field.TypeWrapper; } }
-        public override string Name { get { return Field.FullName; } }
+        public string Name { get { return Field.FullName; } }
 
         private FieldWrapper field;
         public FieldNode(IExpressionNode instance, FieldWrapper field, SequencePoint point)

@@ -310,6 +310,11 @@ namespace LaborasLangCompiler.ILTools
             return invokeMethod.ReturnType;
         }
 
+        public static bool IsAccessible(MemberReference target, TypeReference scope)
+        {
+            throw new NotImplementedException();
+        }
+
         static ILHelpers()
         {
             assignmentMap = new Dictionary<string, string[]>();

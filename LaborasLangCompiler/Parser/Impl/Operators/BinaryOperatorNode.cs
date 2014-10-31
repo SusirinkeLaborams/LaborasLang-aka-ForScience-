@@ -13,11 +13,11 @@ using Lexer.Containers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class BinaryOperatorNode : RValueNode, IBinaryOperatorNode
+    class BinaryOperatorNode : ExpressionNode, IBinaryOperatorNode
     {
         public IExpressionNode RightOperand { get { return right; } }
         public IExpressionNode LeftOperand { get { return left; } }
-        public override RValueNodeType RValueType { get { return RValueNodeType.BinaryOperator; } }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.BinaryOperator; } }
         public BinaryOperatorNodeType BinaryOperatorType { get; private set; }
         public override TypeWrapper TypeWrapper { get { return typeWrapper; } }
 

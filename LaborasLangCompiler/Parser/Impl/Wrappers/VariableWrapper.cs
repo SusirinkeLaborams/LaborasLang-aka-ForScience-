@@ -30,5 +30,10 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             this.name = name;
             this.TypeWrapper = parameterType;
         }
+
+        public override string ToString()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -12,21 +12,21 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class AssignmentOperatorNode : RValueNode, IAssignmentOperatorNode
+    class AssignmentOperatorNode : ExpressionNode, IAssignmentOperatorNode
     {
-        public override RValueNodeType RValueType { get { return RValueNodeType.AssignmentOperator; } }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.AssignmentOperator; } }
         public override TypeWrapper TypeWrapper { get { return type; } }
-        public ILValueNode LeftOperand { get { return left; } }
+        public IExpressionNode LeftOperand { get { return left; } }
         public IExpressionNode RightOperand { get { return right; } }
 
         private TypeWrapper type;
-        private LValueNode left;
+        private ExpressionNode left;
         private ExpressionNode right;
         protected AssignmentOperatorNode(SequencePoint point) : base(point) { }
         public static new AssignmentOperatorNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var instance = new AssignmentOperatorNode(parser.GetSequencePoint(lexerNode));
-            var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]) as LValueNode;
+            var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]) as ExpressionNode;
             if (left == null)
                 throw new ParseException(left.SequencePoint, "LValue expected");
             var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
