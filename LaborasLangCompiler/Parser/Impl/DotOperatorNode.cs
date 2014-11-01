@@ -96,6 +96,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 else
                 {
                     //non-static methods
+                    if (!builtNode.IsGettable)
+                        return false;
                     var methods = builtNode.TypeWrapper.GetMethods(node.Name);
                     methods = methods.Where(m => !m.IsStatic);
                     if (methods.Count() != 0)
@@ -131,7 +133,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
                 if (type != null)
                 {
-                    builtNode = new TypeNode(type, scope, node.SequencePoint);
+                    builtNode = new TypeNode(parser, type, scope, node.SequencePoint);
                     return true;
                 }
                 else
@@ -186,7 +188,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 else if(builtNode.ExpressionType != ExpressionNodeType.ParserInternal)
                 {
                     field = builtNode.TypeWrapper.GetField(node.Name);
-                    if (field != null && field.IsStatic)
+                    if (field != null && field.IsStatic || !builtNode.IsGettable)
                         field = null;
                 }
 

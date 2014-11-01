@@ -24,7 +24,13 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public override bool IsSettable
         {
-            get { return false; }
+            get 
+            { 
+                return UnaryOperatorType == UnaryOperatorNodeType.PostDecrement || 
+                    UnaryOperatorType == UnaryOperatorNodeType.PostIncrement || 
+                    UnaryOperatorType == UnaryOperatorNodeType.PreDecrement || 
+                    UnaryOperatorType == UnaryOperatorNodeType.PreIncrement;
+            }
         }
 
         private ExpressionNode operand;

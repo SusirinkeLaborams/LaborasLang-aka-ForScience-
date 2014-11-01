@@ -79,6 +79,12 @@ namespace LaborasLangCompiler.Parser.Impl
             if (method != null)
                 return method;
 
+            foreach(var arg in args)
+            {
+                if (!arg.IsGettable)
+                    throw new TypeException(arg.SequencePoint, "Arguments must be gettable");
+            }
+
             method = AsMethod(parser, function, args, point);
             if (method != null)
                 return method;

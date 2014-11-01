@@ -14,12 +14,15 @@ namespace LaborasLangCompiler.Parser.Impl
     class TypeNode : SymbolNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
-        public override TypeWrapper TypeWrapper { get { return null; } }
+        public override TypeWrapper TypeWrapper { get { return typeWrapper; } }
         public TypeWrapper ParsedType { get; private set; }
         public override bool IsGettable { get { return true; } }
-        public TypeNode(TypeWrapper type, TypeReference scope, SequencePoint point)
+
+        private TypeWrapper typeWrapper;
+        public TypeNode(Parser parser, TypeWrapper type, TypeReference scope, SequencePoint point)
             : base(type != null ? type.FullName : null, scope, point)
         {
+            typeWrapper = new ExternalType(parser.Assembly, typeof(Type));
             ParsedType = type;
             if(type != null)
                 Utils.VerifyAccessible(ParsedType.TypeReference, Scope, point);

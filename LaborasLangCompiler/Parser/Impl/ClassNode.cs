@@ -115,7 +115,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             //primitives
             if (parser.IsPrimitive(name))
-                type = new TypeNode(parser.GetPrimitive(name), scope, point);
+                type = new TypeNode(parser, parser.GetPrimitive(name), scope, point);
 
             //imports
             if (type == null)
@@ -124,7 +124,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 try
                 {
                     if (types.Count() != 0)
-                        type = new TypeNode(types.Single(), scope, point);
+                        type = new TypeNode(parser, types.Single(), scope, point);
                 }
                 catch (InvalidOperationException)
                 {

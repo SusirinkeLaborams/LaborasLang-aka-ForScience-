@@ -42,9 +42,13 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 ExpressionNode left, right;
                 left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
+                if (!left.IsGettable)
+                    throw new TypeException(left.SequencePoint, "Binary operands must be gettable");
                 for (int i = 1; i < lexerNode.Children.Count; i += 2)
                 {
                     right = ExpressionNode.Parse(parser, parent, lexerNode.Children[i + 1]);
+                    if (!right.IsGettable)
+                        throw new TypeException(left.SequencePoint, "Binary operands must be gettable");
                     left = Parse(parser, Operators[lexerNode.Children[i].Type], left, right);
                 }
                 return left;

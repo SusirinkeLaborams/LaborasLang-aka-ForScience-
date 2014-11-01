@@ -42,6 +42,7 @@ namespace LaborasLangCompiler.Parser
         Field,
         Property,
         FunctionArgument,
+        Type,
         ParserInternal
     }
 

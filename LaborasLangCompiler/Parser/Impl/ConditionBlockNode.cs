@@ -30,8 +30,8 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var instance = new ConditionBlockNode(parser.GetSequencePoint(lexerNode));
             instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
-            if (!instance.condition.TypeWrapper.IsAssignableTo(parser.Bool))
-                throw new TypeException(instance.SequencePoint, "Condition must be a boolean expression");
+            if (!instance.condition.TypeWrapper.IsAssignableTo(parser.Bool) || !instance.condition.IsGettable)
+                throw new TypeException(instance.SequencePoint, "Condition must be a gettable boolean expression");
             instance.trueBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[4]);
             if (lexerNode.Children.Count > 5)
                 instance.falseBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[6]);

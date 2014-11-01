@@ -31,7 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (lexerNode.Children.Count == 3)
             {
                 instance.expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[1]);
-                if (!instance.expression.TypeWrapper.IsAssignableTo(returnType)) 
+                if (!instance.expression.TypeWrapper.IsAssignableTo(returnType) || !instance.expression.IsGettable) 
                     throw new TypeException(instance.SequencePoint, "Function returns {0}, cannot return {1}", returnType, instance.expression.TypeWrapper);
             }
             return instance;

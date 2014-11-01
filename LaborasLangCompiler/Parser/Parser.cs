@@ -116,7 +116,7 @@ namespace LaborasLangCompiler.Parser
         {
             var type = AssemblyRegistry.FindType(Assembly, fullname);
             if (type != null)
-                return new TypeNode(new ExternalType(Assembly, type), scope, point);
+                return new TypeNode(this, new ExternalType(Assembly, type), scope, point);
             else
                 return null;
         }

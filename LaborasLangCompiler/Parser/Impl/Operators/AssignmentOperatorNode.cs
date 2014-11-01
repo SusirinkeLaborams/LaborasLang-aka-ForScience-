@@ -35,15 +35,21 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var instance = new AssignmentOperatorNode(parser.GetSequencePoint(lexerNode));
             var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]) as ExpressionNode;
-            if (left == null)
-                throw new ParseException(left.SequencePoint, "LValue expected");
+            if (left == null || !left.IsSettable)
+                throw new TypeException(parser.GetSequencePoint(lexerNode.Children[0]), "Left of assignment operator must be settable");
             var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
+            if(!right.IsGettable)
+                throw new TypeException(right.SequencePoint, "Right of assignment operator must be gettable");
             instance.type = left.TypeWrapper;
 
             //use properties from lexer instead of string comparisons here
             var op = lexerNode.Children[1];
             if (op.Type != Lexer.TokenType.Assignment)
+            {
+                if(!left.IsGettable)
+                    throw new TypeException(right.SequencePoint, "Left of this type of assignment operator must be gettable");
                 right = BinaryOperatorNode.Parse(parser, Operators[op.Type], left, right);
+            }
 
             if (right is AmbiguousNode)
                 right = ((AmbiguousNode)right).RemoveAmbiguity(parser, left.TypeWrapper);
