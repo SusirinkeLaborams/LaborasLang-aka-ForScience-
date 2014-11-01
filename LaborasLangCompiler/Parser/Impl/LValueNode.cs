@@ -63,17 +63,16 @@ namespace LaborasLangCompiler.Parser.Impl
         }
     }
 
-    class FieldNode : ExpressionNode, IFieldNode
+    class FieldNode : SymbolNode, IFieldNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Field; } }
         public IExpressionNode ObjectInstance { get; private set; }
         public FieldReference Field { get { return field.FieldReference; } }
         public override TypeWrapper TypeWrapper { get { return field.TypeWrapper; } }
-        public string Name { get { return Field.FullName; } }
 
         private FieldWrapper field;
-        public FieldNode(IExpressionNode instance, FieldWrapper field, SequencePoint point)
-            : base(point)
+        public FieldNode(IExpressionNode instance, FieldWrapper field, TypeReference scope, SequencePoint point)
+            : base(field.Name, scope, point)
         {
             ObjectInstance = instance;
             this.field = field;
@@ -90,7 +89,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
     }
     /*
-    class PropertyNode : LValueNode, IPropertyNode
+    class PropertyNode : SymbolNode, IPropertyNode
     {
         public override LValueNodeType LValueType { get { return LValueNodeType.Property; } }
         public IExpressionNode ObjectInstance { get; }

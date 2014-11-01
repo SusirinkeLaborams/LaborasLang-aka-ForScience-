@@ -1,6 +1,7 @@
 ﻿using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,13 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class TypeNode : ExpressionNode
+    class TypeNode : SymbolNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
         public override TypeWrapper TypeWrapper { get { return null; } }
         public TypeWrapper ParsedType { get; private set; }
-        public TypeNode(TypeWrapper type, SequencePoint point)
-            : base(point)
+        public TypeNode(TypeWrapper type, TypeReference scope, SequencePoint point)
+            : base(type != null ? type.FullName : null, scope, point)
         {
             ParsedType = type;
         }

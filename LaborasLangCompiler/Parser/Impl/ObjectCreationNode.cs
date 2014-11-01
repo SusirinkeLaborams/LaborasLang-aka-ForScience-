@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ObjectCreationNode : ExpressionNode, IObjectCreationNode
+    class ObjectCreationNode : SymbolNode, IObjectCreationNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ObjectCreation; } }
         public override TypeWrapper TypeWrapper { get { return type; } }
@@ -20,8 +20,8 @@ namespace LaborasLangCompiler.Parser.Impl
         private List<ExpressionNode> args;
         private MethodWrapper constructor;
 
-        public ObjectCreationNode(TypeWrapper type, List<ExpressionNode> args, MethodWrapper constructor, SequencePoint point)
-            :base(point)
+        public ObjectCreationNode(TypeWrapper type, List<ExpressionNode> args, MethodWrapper constructor, TypeReference scope, SequencePoint point)
+            :base(type.FullName, scope, point)
         {
             this.type = type;
             this.args = args;

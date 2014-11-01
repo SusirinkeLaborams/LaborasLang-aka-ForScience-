@@ -84,7 +84,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public ClassNode GetClass() 
         { 
             return this;
-        
         }
 
         public FunctionDeclarationNode GetFunction() 
@@ -92,14 +91,14 @@ namespace LaborasLangCompiler.Parser.Impl
             return null;
         }
 
-        public ExpressionNode GetSymbol(string name, SequencePoint point)
+        public ExpressionNode GetSymbol(string name, TypeReference scope, SequencePoint point)
         {
             var field = GetField(name);
             if (field != null)
-                return new FieldNode(null, field, point);
+                return new FieldNode(null, field, scope, point);
 
             if (parent != null)
-                return parent.GetSymbol(name, point);
+                return parent.GetSymbol(name, scope, point);
 
             return null;
         }
@@ -108,7 +107,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #region type/namespace lookup
 
-        public TypeNode FindType(string name, SequencePoint point)
+        public TypeNode FindType(string name, TypeReference scope, SequencePoint point)
         {
             TypeNode type = null;
 
@@ -116,7 +115,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             //primitives
             if (parser.IsPrimitive(name))
-                type = new TypeNode(parser.GetPrimitive(name), point);
+                type = new TypeNode(parser.GetPrimitive(name), scope, point);
 
             //imports
             if (type == null)
@@ -125,7 +124,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 try
                 {
                     if (types.Count() != 0)
-                        type = new TypeNode(types.Single(), point);
+                        type = new TypeNode(types.Single(), scope, point);
                 }
                 catch (InvalidOperationException)
                 {
@@ -142,9 +141,9 @@ namespace LaborasLangCompiler.Parser.Impl
             if (type == null)
             {
                 if (parent != null)
-                    type = parent.FindType(name, point);
+                    type = parent.FindType(name, scope, point);
                 else
-                    parser.FindType(name, point);
+                    parser.FindType(name, scope, point);
             }
 
             return type;

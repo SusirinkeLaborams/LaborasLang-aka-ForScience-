@@ -11,15 +11,15 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class AmbiguousMethodNode : ExpressionNode, AmbiguousNode
+    class AmbiguousMethodNode : SymbolNode, AmbiguousNode
     {
         public override TypeWrapper TypeWrapper { get { return null; } }
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
 
         private IEnumerable<MethodWrapper> methods;
         private ExpressionNode instance;
-        public AmbiguousMethodNode(IEnumerable<MethodWrapper> methods, ExpressionNode instance, SequencePoint sequencePoint)
-            : base(sequencePoint)
+        public AmbiguousMethodNode(IEnumerable<MethodWrapper> methods, ExpressionNode instance, TypeReference scope, SequencePoint sequencePoint)
+            : base(null, scope, sequencePoint)
         {
             this.methods = methods;
             this.instance = instance;
@@ -33,7 +33,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 try
                 {
                     var method = methods.Single();
-                    return new MethodNode(method, instance, SequencePoint);
+                    return new MethodNode(method, instance, Scope, SequencePoint);
                 }
                 catch(InvalidOperationException)
                 {
@@ -45,7 +45,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 try
                 {
                     var method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), expectedType.FunctorParamTypes.Select(t => t.TypeReference).ToList());
-                    return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, SequencePoint);
+                    return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, Scope, SequencePoint);
                 }
                 catch(Exception)
                 {

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class MethodNode : ExpressionNode, IMethodNode
+    class MethodNode : SymbolNode, IMethodNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Function; } }
         public override TypeWrapper TypeWrapper { get { return method.FunctorType; } }
@@ -23,8 +23,8 @@ namespace LaborasLangCompiler.Parser.Impl
         private MethodWrapper method;
         private ExpressionNode instance;
 
-        public MethodNode(MethodWrapper method, ExpressionNode instance, SequencePoint point)
-            : base(point)
+        public MethodNode(MethodWrapper method, ExpressionNode instance, TypeReference scope, SequencePoint point)
+            : base(method.MethodReference.FullName, scope, point)
         {
             this.method = method;
             this.instance = instance;
@@ -32,7 +32,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public static new MethodNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var method = FunctionDeclarationNode.ParseAsFunctor(parser, parent, lexerNode);
-            return new MethodNode(method, null, method.SequencePoint);
+            return new MethodNode(method, null, parent.GetClass().TypeReference, method.SequencePoint);
         }
         public override string ToString(int indent)
         {

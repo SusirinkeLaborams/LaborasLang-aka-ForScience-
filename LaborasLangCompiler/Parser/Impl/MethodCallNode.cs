@@ -124,7 +124,8 @@ namespace LaborasLangCompiler.Parser.Impl
             var method = AssemblyRegistry.GetCompatibleConstructor(parser.Assembly, type.ParsedType.TypeReference, args.Select(a => a.ExpressionReturnType).ToList());
             if (method == null)
                 return null;
-            return new ObjectCreationNode(type.ParsedType, args.ToList(), new ExternalMethod(parser.Assembly, method), point);
+
+            return new ObjectCreationNode(type.ParsedType, args.ToList(), new ExternalMethod(parser.Assembly, method), type.Scope, point);
         }
 
         public override string ToString(int indent)

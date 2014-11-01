@@ -1,4 +1,5 @@
-﻿using Mono.Cecil.Cil;
+﻿using Mono.Cecil;
+using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,6 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         FunctionDeclarationNode GetFunction();
         ClassNode GetClass();
-        ExpressionNode GetSymbol(string name, SequencePoint point);
+        ExpressionNode GetSymbol(string name, TypeReference scope, SequencePoint point);
     }
 }
