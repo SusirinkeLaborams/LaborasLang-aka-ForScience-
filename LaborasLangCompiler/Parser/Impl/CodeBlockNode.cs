@@ -33,7 +33,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public ExpressionNode GetSymbol(string name, TypeReference scope, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
-                return new LocalVariableNode(point, symbols[name]);
+                return new LocalVariableNode(point, symbols[name], false);
 
             return parent.GetSymbol(name, scope, point);
         }
@@ -42,7 +42,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (symbols.ContainsKey(name))
                 throw new SymbolAlreadyDeclaredException(point, "Var {0} already declared", name);
             symbols.Add(name, new VariableWrapper(name, type));
-            return new LocalVariableNode(point, symbols[name]);
+            return new LocalVariableNode(point, symbols[name], false);
         }
         private void AddNode(ParserNode node)
         {

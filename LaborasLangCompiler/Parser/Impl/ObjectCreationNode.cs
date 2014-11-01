@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser.Impl.Wrappers;
+﻿using LaborasLangCompiler.Parser.Exceptions;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
@@ -15,6 +16,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeWrapper TypeWrapper { get { return type; } }
         public IReadOnlyList<IExpressionNode> Args { get { return args; } }
         public MethodReference Constructor { get { return constructor.MethodReference; } }
+        public override bool IsGettable { get { return true; } }
 
         private TypeWrapper type;
         private List<ExpressionNode> args;
@@ -26,6 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.type = type;
             this.args = args;
             this.constructor = constructor;
+            Utils.VerifyAccessible(Constructor, Scope, point);
         }
 
         public override string ToString(int indent)

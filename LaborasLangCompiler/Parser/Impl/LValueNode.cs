@@ -17,12 +17,22 @@ namespace LaborasLangCompiler.Parser.Impl
         public VariableDefinition LocalVariable { get { return variable.VariableDefinition; } }
         public override TypeWrapper TypeWrapper { get { return variable.TypeWrapper; } }
         public string Name {get { return LocalVariable.Name; } }
+        public override bool IsGettable
+        {
+            get { return true; }
+        }
+        public override bool IsSettable
+        {
+            get { return !isConst; }
+        }
 
         private VariableWrapper variable;
-        public LocalVariableNode(SequencePoint point, VariableWrapper variable)
+        private bool isConst;
+        public LocalVariableNode(SequencePoint point, VariableWrapper variable, bool isConst)
             : base(point)
         {
             this.variable = variable;
+            this.isConst = isConst;
         }
         public override string ToString(int indent)
         {
@@ -43,6 +53,14 @@ namespace LaborasLangCompiler.Parser.Impl
         public bool IsMethodStatic { get; set; }
         public override TypeWrapper TypeWrapper { get { return parameter.TypeWrapper; } }
         public string Name { get { return Param.Name; } }
+        public override bool IsGettable
+        {
+            get { return true; }
+        }
+        public override bool IsSettable
+        {
+            get { return true; }
+        }
 
         private ParameterWrapper parameter;
         public FunctionArgumentNode(ParameterWrapper param, bool isFunctionStatic, SequencePoint point)
@@ -69,6 +87,20 @@ namespace LaborasLangCompiler.Parser.Impl
         public IExpressionNode ObjectInstance { get; private set; }
         public FieldReference Field { get { return field.FieldReference; } }
         public override TypeWrapper TypeWrapper { get { return field.TypeWrapper; } }
+        public override bool IsGettable
+        {
+            get
+            {
+                return true;
+            }
+        }
+        public override bool IsSettable
+        {
+            get
+            {
+                return !Field.Resolve().Attributes.HasFlag(FieldAttributes.Literal | FieldAttributes.InitOnly);
+            }
+        }
 
         private FieldWrapper field;
         public FieldNode(IExpressionNode instance, FieldWrapper field, TypeReference scope, SequencePoint point)

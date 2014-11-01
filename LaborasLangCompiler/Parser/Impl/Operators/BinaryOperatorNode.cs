@@ -20,6 +20,14 @@ namespace LaborasLangCompiler.Parser.Impl
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.BinaryOperator; } }
         public BinaryOperatorNodeType BinaryOperatorType { get; private set; }
         public override TypeWrapper TypeWrapper { get { return typeWrapper; } }
+        public override bool IsGettable
+        {
+            get { return true; }
+        }
+        public override bool IsSettable
+        {
+            get { return false; }
+        }
 
         private TypeWrapper typeWrapper;
         private ExpressionNode left, right;

@@ -18,6 +18,14 @@ namespace LaborasLangCompiler.Parser.Impl
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Literal; } }
         public dynamic Value { get; private set; }
         public override TypeWrapper TypeWrapper { get { return returnType; } }
+        public override bool IsGettable
+        {
+            get { return true; }
+        }
+        public override bool IsSettable
+        {
+            get { return false; }
+        }
 
         private TypeWrapper returnType;
         private LiteralNode(dynamic value, TypeWrapper type, SequencePoint point)

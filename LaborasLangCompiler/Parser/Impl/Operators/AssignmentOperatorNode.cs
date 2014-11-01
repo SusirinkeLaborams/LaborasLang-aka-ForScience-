@@ -18,6 +18,14 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeWrapper TypeWrapper { get { return type; } }
         public IExpressionNode LeftOperand { get { return left; } }
         public IExpressionNode RightOperand { get { return right; } }
+        public override bool IsSettable
+        {
+            get { return false; }
+        }
+        public override bool IsGettable
+        {
+            get { return true; }
+        }
 
         private TypeWrapper type;
         private ExpressionNode left;

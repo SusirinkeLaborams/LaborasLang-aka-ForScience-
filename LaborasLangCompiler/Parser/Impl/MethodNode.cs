@@ -19,6 +19,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public IExpressionNode ObjectInstance { get { return instance; } }
         public MethodReference Method { get { return method.MethodReference; } }
         public MethodWrapper MethodWrapper { get { return method; } }
+        public override bool IsGettable { get { return true; } }
 
         private MethodWrapper method;
         private ExpressionNode instance;
@@ -28,6 +29,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             this.method = method;
             this.instance = instance;
+            Utils.VerifyAccessible(Method, Scope, point);
         }
         public static new MethodNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {

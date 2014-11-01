@@ -18,6 +18,14 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeWrapper TypeWrapper { get { return operand.TypeWrapper; } }
         public UnaryOperatorNodeType UnaryOperatorType { get; private set; }
         public IExpressionNode Operand { get { return operand; } }
+        public override bool IsGettable
+        {
+            get { return true; }
+        }
+        public override bool IsSettable
+        {
+            get { return false; }
+        }
 
         private ExpressionNode operand;
         private UnaryOperatorNode(UnaryOperatorNodeType type, ExpressionNode operand)

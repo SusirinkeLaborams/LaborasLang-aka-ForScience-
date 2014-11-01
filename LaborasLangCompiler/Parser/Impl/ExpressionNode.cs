@@ -18,6 +18,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public abstract ExpressionNodeType ExpressionType { get; }
         public TypeReference ExpressionReturnType { get { return TypeWrapper != null ? TypeWrapper.TypeReference : null; } }
         public abstract TypeWrapper TypeWrapper { get; }
+        public abstract bool IsGettable { get; }
+        public abstract bool IsSettable { get; }
         protected ExpressionNode(SequencePoint sequencePoint) : base(sequencePoint) { }
         public static ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {

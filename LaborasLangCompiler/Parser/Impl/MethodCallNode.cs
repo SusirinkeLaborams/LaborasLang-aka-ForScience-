@@ -18,6 +18,14 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeWrapper TypeWrapper { get { return type; } }
         public IReadOnlyList<IExpressionNode> Args { get { return args; } }
         public IExpressionNode Function { get { return function; } }
+        public override bool IsSettable { get { return false; } }
+        public override bool IsGettable
+        {
+            get
+            {
+                return ExpressionReturnType.FullName != "System.Void";
+            }
+        }
 
         private TypeWrapper type;
         private List<ExpressionNode> args;

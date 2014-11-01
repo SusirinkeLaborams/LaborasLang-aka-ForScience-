@@ -1,5 +1,8 @@
-﻿using LaborasLangCompiler.Parser.Exceptions;
+﻿using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Parser.Exceptions;
 using Lexer.Containers;
+using Mono.Cecil;
+using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,6 +39,24 @@ namespace LaborasLangCompiler.Parser
         {
             builder.Append('\t', count);
             return builder;
+        }
+
+        public static void VerifyAccessible(MethodReference method, TypeReference scope, SequencePoint point)
+        {
+            if (!ILHelpers.IsAccessible(method, scope))
+                throw new TypeException(point, "Method {0} is inaccessible from {1}", method, scope);
+        }
+
+        public static void VerifyAccessible(TypeReference type, TypeReference scope, SequencePoint point)
+        {
+            if (!ILHelpers.IsAccessible(type, scope))
+                throw new TypeException(point, "Type {0} is inaccessible from {1}", type, scope);
+        }
+
+        public static void VerifyAccessible(FieldReference field, TypeReference scope, SequencePoint point)
+        {
+            if (!ILHelpers.IsAccessible(field, scope))
+                throw new TypeException(point, "Field {0} is inaccessible from {1}", field, scope);
         }
     }
 }

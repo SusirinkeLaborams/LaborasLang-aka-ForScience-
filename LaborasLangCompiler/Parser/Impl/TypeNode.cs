@@ -16,10 +16,13 @@ namespace LaborasLangCompiler.Parser.Impl
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
         public override TypeWrapper TypeWrapper { get { return null; } }
         public TypeWrapper ParsedType { get; private set; }
+        public override bool IsGettable { get { return true; } }
         public TypeNode(TypeWrapper type, TypeReference scope, SequencePoint point)
             : base(type != null ? type.FullName : null, scope, point)
         {
             ParsedType = type;
+            if(type != null)
+                Utils.VerifyAccessible(ParsedType.TypeReference, Scope, point);
         }
         public static new TypeWrapper Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {

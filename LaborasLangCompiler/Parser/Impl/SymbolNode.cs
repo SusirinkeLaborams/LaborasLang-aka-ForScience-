@@ -17,6 +17,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeWrapper TypeWrapper { get { return null; } }
         public string Name { get; private set; }
         public TypeReference Scope { get; private set; }
+        public override bool IsGettable { get { return false; } }
+        public override bool IsSettable { get { return false; } }
         protected SymbolNode(string value, TypeReference scope, SequencePoint point)
             : base(point)
         {
@@ -29,7 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public override string ToString(int indent)
         {
-            throw new NotImplementedException();
+            throw new InvalidOperationException();
         }
     }
     class NamespaceNode : ExpressionNode
@@ -37,6 +39,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
         public override TypeWrapper TypeWrapper { get { return null; } }
         public NamespaceWrapper Namespace { get; private set; }
+        public override bool IsGettable { get { return false; } }
+        public override bool IsSettable { get { return false; } }
         public NamespaceNode(NamespaceWrapper namespaze, SequencePoint point) : base(point)
         {
             this.Namespace = namespaze;
