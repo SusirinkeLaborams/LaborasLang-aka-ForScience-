@@ -492,6 +492,39 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 }";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Declared a local var of type void")]
+        public void TestLocalVariableVoid()
+        {
+            string source = @"
+                auto foo = void()
+                {
+                    void a;
+                };";
+            CanParse(source);
+        }
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Declared a local var of type void")]
+        public void TestFieldoid()
+        {
+            string source = @"
+                void a;";
+            CanParse(source);
+        }
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Declared a local var of type void")]
+        public void TestVoidParamFunctorType()
+        {
+            string source = @"
+                mutable void(void) foo;";
+            CanParse(source);
+        }
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Declared a local var of type void")]
+        public void TestVoidParamMethod()
+        {
+            string source = @"
+                auto foo = void(void a)
+                {
+                };";
+            CanParse(source);
+        }
         private static void CompareTrees(string source, [CallerMemberName] string name = "")
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });

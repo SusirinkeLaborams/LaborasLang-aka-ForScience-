@@ -72,6 +72,8 @@ namespace LaborasLangCompiler.Parser.Impl
             foreach(var p in info.Params)
             {
                 var param = ParseParameter(parent, p.Type, p.Name);
+                if (param.TypeWrapper.FullName == parser.Void.FullName)
+                    throw new TypeException(parser.GetSequencePoint(p.Type), "Cannot declare a parameter of type void");
                 emitter.AddArgument(param.ParameterDefinition);
                 symbols.Add(param.Name, param);
             }

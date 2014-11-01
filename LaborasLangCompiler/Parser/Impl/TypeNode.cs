@@ -62,6 +62,8 @@ namespace LaborasLangCompiler.Parser.Impl
                             throw new ParseException(parser.GetSequencePoint(arg), "Unexpected node type, {0}", arg.Type);
                     }
                 }
+                if (args.Any(a => a.FullName == parser.Void.FullName))
+                    throw new TypeException(parser.GetSequencePoint(lexerNode), "Cannot declare method parameter of type void");
 
                 ret = new FunctorTypeWrapper(parser.Assembly, ret, args);
             }

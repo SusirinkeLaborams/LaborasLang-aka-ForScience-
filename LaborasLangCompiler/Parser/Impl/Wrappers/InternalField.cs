@@ -44,7 +44,11 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
                 TypeWrapper = FunctionDeclarationNode.ParseFunctorType(parser, parent, declaration.Initializer);
 
             if (TypeWrapper != null)
+            {
+                if (TypeWrapper.FullName == parser.Void.FullName)
+                    throw new TypeException(point, "Cannot declare a field of type void");
                 parent.TypeEmitter.AddField(FieldDefinition);
+            }
         }
 
         public void Initialize(Parser parser, ClassNode parent)
