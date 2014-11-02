@@ -1,4 +1,4 @@
-﻿//#define REWRITE
+﻿#define REWRITE
 using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser;
@@ -516,6 +516,41 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                 };";
             CanParse(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestUnaryOnCall()
+        {
+            string source = @"
+                mutable int() foo;
+                auto a = -foo();";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Invalid unary operation")]
+        public void TestUnaryInvalid1()
+        {
+            string source = @"
+                mutable int() foo;
+                auto a = foo()++;";
+            CanParse(source);
+        }
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Invalid unary operation")]
+        public void TestUnaryInvalid2()
+        {
+            string source = @"
+                mutable int() foo;
+                auto a = ++foo();";
+            CanParse(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestAssignToUnary()
+        {
+            string source = @"
+                auto foo = void()
+                {
+                    int a = 5;
+                    ++a = 8;
+                };";
+            CompareTrees(source);
         }
         private static void CompareTrees(string source, [CallerMemberName] string name = "")
         {
