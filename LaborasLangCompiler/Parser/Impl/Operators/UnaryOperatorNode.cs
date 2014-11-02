@@ -26,9 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             get 
             { 
-                return UnaryOperatorType == UnaryOperatorNodeType.PostDecrement || 
-                    UnaryOperatorType == UnaryOperatorNodeType.PostIncrement || 
-                    UnaryOperatorType == UnaryOperatorNodeType.PreDecrement || 
+                return UnaryOperatorType == UnaryOperatorNodeType.PreDecrement || 
                     UnaryOperatorType == UnaryOperatorNodeType.PreIncrement;
             }
         }
@@ -106,6 +104,17 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private static UnaryOperatorNode ParseUnary(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
         {
+            if(!expression.IsGettable)
+            {
+                throw new TypeException(expression.SequencePoint, "Expression must be gettable");
+            }
+            if(op != UnaryOperatorNodeType.BinaryNot && 
+                op != UnaryOperatorNodeType.LogicalNot && 
+                op != UnaryOperatorNodeType.Negation && 
+                !expression.IsSettable)
+            {
+                throw new TypeException(expression.SequencePoint, "Expression must be settable");
+            }
             var instance = new UnaryOperatorNode(op, expression);
             switch(op)
             {
