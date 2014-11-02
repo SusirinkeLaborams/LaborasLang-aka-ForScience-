@@ -14,7 +14,9 @@ Class:
 					Symbols:
 					Nodes:
 						MethodCall:
-							ReturnType: System.Void							Args:								Literal:
+							ReturnType: System.Void
+							Args:
+								Literal:
 									Type:
 										System.String
 									Value:

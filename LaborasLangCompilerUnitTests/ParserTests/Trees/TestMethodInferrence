@@ -46,8 +46,12 @@ Class:
 
 
 						MethodCall:
-							ReturnType: System.Void							Args:								MethodCall:
-									ReturnType: System.String									Args:									Function:
+							ReturnType: System.Void
+							Args:
+								MethodCall:
+									ReturnType: System.String
+									Args:
+									Function:
 										Local:
 											Name:
 												func

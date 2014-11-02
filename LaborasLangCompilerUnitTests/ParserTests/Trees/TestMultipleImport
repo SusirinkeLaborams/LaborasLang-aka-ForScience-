@@ -14,7 +14,9 @@ Class:
 					Symbols:
 					Nodes:
 						MethodCall:
-							ReturnType: System.Void							Args:								Literal:
+							ReturnType: System.Void
+							Args:
+								Literal:
 									Type:
 										System.String
 									Value:
@@ -31,7 +33,9 @@ Class:
 								VoidOperator
 							Operand:
 								MethodCall:
-									ReturnType: System.Boolean									Args:										Literal:
+									ReturnType: System.Boolean
+									Args:
+										Literal:
 											Type:
 												System.String
 											Value:

@@ -146,8 +146,8 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("MethodCall:");
-            builder.Indent(indent + 1).AppendFormat("ReturnType: {0}", TypeWrapper);
-            builder.Indent(indent + 1).Append("Args:");
+            builder.Indent(indent + 1).AppendFormat("ReturnType: {0}", TypeWrapper).AppendLine();
+            builder.Indent(indent + 1).Append("Args:").AppendLine();
             foreach(var arg in args)
             {
                 builder.AppendLine(arg.ToString(indent + 2));

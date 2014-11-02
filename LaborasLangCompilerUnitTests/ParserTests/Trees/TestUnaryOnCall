@@ -21,7 +21,9 @@ Class:
 						Negation
 					Operand:
 						MethodCall:
-							ReturnType: System.Int32							Args:							Function:
+							ReturnType: System.Int32
+							Args:
+							Function:
 								Field:
 									Name:
 										foo

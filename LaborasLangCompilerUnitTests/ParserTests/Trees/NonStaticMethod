@@ -31,7 +31,9 @@ Class:
 								System.String str
 							Initializer:
 								MethodCall:
-									ReturnType: System.String									Args:									Function:
+									ReturnType: System.String
+									Args:
+									Function:
 										Method:
 											Instance:
 												Local:
