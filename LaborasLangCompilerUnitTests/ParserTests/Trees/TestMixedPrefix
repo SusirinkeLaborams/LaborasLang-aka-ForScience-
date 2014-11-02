@@ -1,0 +1,43 @@
+Class:
+	Fields:
+		Field:
+			Type:
+				System.Int32
+			Name:
+				i
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Literal:
+					Type:
+						System.Int32
+					Value:
+						1
+
+
+		Field:
+			Type:
+				System.Int32
+			Name:
+				a
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				UnaryOperator:
+					Operator:
+						Negation
+					Operand:
+						UnaryOperator:
+							Operator:
+								PreIncrement
+							Operand:
+								Field:
+									Name:
+										i
+									Type:
+										System.Int32
+
+
+
+
+	Methods:

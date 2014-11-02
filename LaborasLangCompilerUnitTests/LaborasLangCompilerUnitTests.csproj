@@ -106,7 +106,6 @@
     <Compile Include="LexerTests\TokenizerTests.cs" />
     <Compile Include="LexerTests\SyntaxMatcherTests.cs" />
     <Compile Include="LexerTests\RuleValidationTests.cs" />
-    <Compile Include="ParserTests\ParserStressTests.cs" />
     <None Include="ILTests\MethodBodyTests\Expected\Test_FunctorNamesDoNotClash.il" />
     <None Include="IntegrationTests\SourceFiles\StdInWorks.ll" />
     <Compile Include="TestBase.cs" />

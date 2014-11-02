@@ -240,19 +240,11 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             CompareTrees(source);
         }
         [TestMethod, TestCategory("Parser")]
-        public void TestSuffixOrder()
+        public void TestMixedPrefix()
         {
             string source = @"
                 auto i = 1;
-                auto a = i++--;";
-            CompareTrees(source);
-        }
-        [TestMethod, TestCategory("Parser")]
-        public void TestMixedSuffixPrefix()
-        {
-            string source = @"
-                auto i = 1;
-                auto a = -++i--;";
+                auto a = -++i;";
             CompareTrees(source);
         }
         [TestMethod, TestCategory("Parser")]
