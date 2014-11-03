@@ -60,7 +60,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
                 return;
             }
 
-            Initializer = ExpressionNode.Parse(parser, parent, initializer);
+            Initializer = ExpressionNode.Parse(parser, parent, initializer, TypeWrapper);
 
             if(TypeWrapper == null)
             {

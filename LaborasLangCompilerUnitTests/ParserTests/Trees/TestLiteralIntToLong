@@ -1,0 +1,18 @@
+Class:
+	Fields:
+		Field:
+			Type:
+				System.Int64
+			Name:
+				a
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Literal:
+					Type:
+						System.Int64
+					Value:
+						5
+
+
+	Methods:

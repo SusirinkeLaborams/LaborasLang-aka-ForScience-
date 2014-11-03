@@ -13,7 +13,7 @@ using Lexer.Containers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class LiteralNode : ExpressionNode, ILiteralNode
+    class LiteralNode : ExpressionNode, ILiteralNode, AmbiguousNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Literal; } }
         public dynamic Value { get; private set; }
@@ -28,13 +28,15 @@ namespace LaborasLangCompiler.Parser.Impl
         }
 
         private TypeWrapper returnType;
+
         private LiteralNode(dynamic value, TypeWrapper type, SequencePoint point)
             : base(point)
         {
             this.returnType = type;
             this.Value = value;
         }
-        public static new LiteralNode Parse(Parser parser, ContainerNode parentBlock, AstNode lexerNode)
+
+        public static LiteralNode Parse(Parser parser, ContainerNode parentBlock, AstNode lexerNode)
         {
             lexerNode = lexerNode.Children[0];
             var point = parser.GetSequencePoint(lexerNode);
@@ -89,7 +91,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         return Convert.ToUInt32(value);
                     case "System.Int64":
                         return Convert.ToInt64(value);
-                    case "System.Uint64":
+                    case "System.UInt64":
                         return Convert.ToUInt64(value);
                     case "System.Single":
                         return Convert.ToSingle(value);
@@ -108,6 +110,57 @@ namespace LaborasLangCompiler.Parser.Impl
             catch(FormatException)
             {
                 throw new ParseException(point, "Could not parse {0} as {1}, format error", value, type.FullName);
+            }
+        }
+
+        public ExpressionNode RemoveAmbiguity(Parser parser, TypeWrapper expectedType)
+        {
+            if (expectedType == TypeWrapper)
+                return this;
+
+            if (!TypeWrapper.IsAssignableTo(expectedType))
+                throw new TypeException(SequencePoint, "Cannot assign {0} which is {1} to {2}", Value, TypeWrapper, expectedType);
+
+            return new LiteralNode(ConvertLiteral(this, expectedType), expectedType, SequencePoint);
+        }
+
+        private static dynamic ConvertLiteral(LiteralNode node, TypeWrapper type)
+        {
+            dynamic value = node.Value;
+            if(node.TypeWrapper.FullName == "System.String")
+            {
+                return ParseValue((string)value, type, node.SequencePoint);
+            }
+            switch (type.FullName)
+            {
+                case "System.Boolean":
+                    return (Boolean)value;
+                case "System.Char":
+                    return (Char)value;
+                case "System.SByte":
+                    return (SByte)value;
+                case "System.Byte":
+                    return (Byte)value;
+                case "System.Int16":
+                    return (Int16)value;
+                case "System.Uint16":
+                    return (UInt16)value;
+                case "System.Int32":
+                    return (Int32)value;
+                case "System.UInt32":
+                    return (UInt32)value;
+                case "System.Int64":
+                    return (Int64)value;
+                case "System.UInt64":
+                    return (UInt64)value;
+                case "System.Single":
+                    return (Single)value;
+                case "System.Double":
+                    return (Double)value;
+                case "System.Decimal":
+                    return (Decimal)value;
+                default:
+                    throw new TypeException(node.SequencePoint, "Expected type {0} is not a LaborasLang literal type", type);
             }
         }
 

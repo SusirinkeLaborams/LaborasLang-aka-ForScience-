@@ -32,7 +32,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var info = DeclarationInfo.Parse(parser, lexerNode);
             var name = info.SymbolName.GetSingleSymbolOrThrow();
             var declaredType = TypeNode.Parse(parser, parent, info.Type);
-            ExpressionNode initializer = info.Initializer.IsNull ? null : ExpressionNode.Parse(parser, parent, info.Initializer);
+            ExpressionNode initializer = info.Initializer.IsNull ? null : ExpressionNode.Parse(parser, parent, info.Initializer, declaredType);
 
             if (declaredType != null && declaredType.FullName == parser.Void.FullName)
                 throw new TypeException(parser.GetSequencePoint(lexerNode), "Cannot declare a variable of type void");
@@ -45,15 +45,6 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (initializer != null)
             {
-                if (declaredType != null && initializer is AmbiguousNode)
-                {
-                    initializer = ((AmbiguousNode)initializer).RemoveAmbiguity(parser, declaredType);
-                    if(initializer.TypeWrapper == null)
-                    {
-                        throw new ParseException(initializer.SequencePoint, "Ambiguous result, {0}", initializer);
-                    }
-                }
-
                 if (declaredType == null)
                 {
                     declaredType = initializer.TypeWrapper;

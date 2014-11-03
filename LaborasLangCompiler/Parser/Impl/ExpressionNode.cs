@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
+using LaborasLangCompiler.ILTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -21,25 +22,33 @@ namespace LaborasLangCompiler.Parser.Impl
         public abstract bool IsGettable { get; }
         public abstract bool IsSettable { get; }
         protected ExpressionNode(SequencePoint sequencePoint) : base(sequencePoint) { }
-        public static ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode, TypeWrapper expectedType = null)
         {
+            ExpressionNode ret = null;
             switch (lexerNode.Type)
             {
                 case Lexer.TokenType.PeriodNode:
                 case Lexer.TokenType.FullSymbol:
-                    return DotOperatorNode.Parse(parser, parent, lexerNode);
+                    ret = DotOperatorNode.Parse(parser, parent, lexerNode);
+                    break;
                 case Lexer.TokenType.Symbol:
-                    return SymbolNode.Parse(parser, parent, lexerNode);
+                    ret = SymbolNode.Parse(parser, parent, lexerNode);
+                    break;
                 case Lexer.TokenType.LiteralNode:
-                    return LiteralNode.Parse(parser, parent, lexerNode);
+                    ret = LiteralNode.Parse(parser, parent, lexerNode);
+                    break;
                 case Lexer.TokenType.Value:
-                    return ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
+                    ret = ExpressionNode.Parse(parser, parent, lexerNode.Children[0], expectedType);
+                    break;
                 case Lexer.TokenType.Function:
-                    return MethodNode.Parse(parser, parent, lexerNode);
+                    ret = MethodNode.Parse(parser, parent, lexerNode);
+                    break;
                 case Lexer.TokenType.AssignmentOperatorNode:
-                    return AssignmentOperatorNode.Parse(parser, parent, lexerNode);
+                    ret = AssignmentOperatorNode.Parse(parser, parent, lexerNode);
+                    break;
                 case Lexer.TokenType.FunctionCallNode:
-                    return MethodCallNode.Parse(parser, parent, lexerNode);
+                    ret = MethodCallNode.Parse(parser, parent, lexerNode);
+                    break;
                 case Lexer.TokenType.LogicalOrNode:
                 case Lexer.TokenType.LogicalAndNode:
                 case Lexer.TokenType.BitwiseOrNode:
@@ -50,15 +59,32 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.ShiftOperatorNode:
                 case Lexer.TokenType.AdditiveOperatorNode:
                 case Lexer.TokenType.MultiplicativeOperatorNode:
-                    return BinaryOperatorNode.Parse(parser, parent, lexerNode);
+                    ret = BinaryOperatorNode.Parse(parser, parent, lexerNode);
+                    break;
                 case Lexer.TokenType.PostfixNode:
                 case Lexer.TokenType.PrefixNode:
-                    return UnaryOperatorNode.Parse(parser, parent, lexerNode);
+                    ret = UnaryOperatorNode.Parse(parser, parent, lexerNode);
+                    break;
                 case Lexer.TokenType.ParenthesesNode:
-                    return ExpressionNode.Parse(parser, parent, lexerNode.Children[1]);
+                    ret = ExpressionNode.Parse(parser, parent, lexerNode.Children[1], expectedType);
+                    break;
                 default:
                     throw new NotImplementedException();
             }
+            if(expectedType != null)
+            {
+                var ambiguous = ret as AmbiguousNode;
+                if(ambiguous != null)
+                {
+                    if(ambiguous.ExpressionReturnType == null || 
+                        ambiguous.ExpressionReturnType.IsAssignableTo(expectedType.TypeReference))
+                    {
+                        ret = ambiguous.RemoveAmbiguity(parser, expectedType);
+                    }
+                }
+            }
+
+            return ret;
         }
         public override string ToString()
         {

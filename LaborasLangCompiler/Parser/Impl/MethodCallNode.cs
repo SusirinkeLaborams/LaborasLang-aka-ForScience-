@@ -39,7 +39,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.type = returnType;
         }
 
-        public static new ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var function = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
             for(int i = 1; i < lexerNode.Children.Count; i++)

@@ -30,14 +30,16 @@ namespace LaborasLangCompiler.Parser.Impl
         private TypeWrapper type;
         private ExpressionNode left;
         private ExpressionNode right;
+
         protected AssignmentOperatorNode(SequencePoint point) : base(point) { }
-        public static new AssignmentOperatorNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+
+        public static AssignmentOperatorNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
             var instance = new AssignmentOperatorNode(parser.GetSequencePoint(lexerNode));
             var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]) as ExpressionNode;
             if (left == null || !left.IsSettable)
                 throw new TypeException(parser.GetSequencePoint(lexerNode.Children[0]), "Left of assignment operator must be settable");
-            var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
+            var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2], left.TypeWrapper);
             if(!right.IsGettable)
                 throw new TypeException(right.SequencePoint, "Right of assignment operator must be gettable");
             instance.type = left.TypeWrapper;
@@ -50,9 +52,6 @@ namespace LaborasLangCompiler.Parser.Impl
                     throw new TypeException(right.SequencePoint, "Left of this type of assignment operator must be gettable");
                 right = BinaryOperatorNode.Parse(parser, Operators[op.Type], left, right);
             }
-
-            if (right is AmbiguousNode)
-                right = ((AmbiguousNode)right).RemoveAmbiguity(parser, left.TypeWrapper);
 
             if (!right.TypeWrapper.IsAssignableTo(left.TypeWrapper))
                 throw new TypeException(instance.SequencePoint, "Assigned {0} to {1}", instance.right.TypeWrapper, instance.left.TypeWrapper);

@@ -1,4 +1,4 @@
-﻿//#define REWRITE
+﻿#define REWRITE
 using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser;
@@ -550,6 +550,13 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     int a = 5;
                     ++a = 8;
                 };";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestLiteralIntToLong()
+        {
+            string source = @"
+                long a = 5;";
             CompareTrees(source);
         }
         private static void CompareTrees(string source, [CallerMemberName] string name = "")
