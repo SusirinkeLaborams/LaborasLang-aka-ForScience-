@@ -1,4 +1,4 @@
-﻿#define REWRITE
+﻿//#define REWRITE
 using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser;
