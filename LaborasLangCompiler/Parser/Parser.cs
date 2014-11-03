@@ -21,6 +21,7 @@ namespace LaborasLangCompiler.Parser
         public string Filename { get; private set; }
         public Document Document { get; private set; }
         public bool ShouldEmit { get; private set; }
+        public IReadOnlyDictionary<string, TypeWrapper> Primitives { get; private set; }
 
         private Dictionary<string, TypeWrapper> primitives;
 
@@ -56,6 +57,7 @@ namespace LaborasLangCompiler.Parser
             Document.Type = DocumentType.Text;
             ShouldEmit = emit;
             this.primitives = new Dictionary<string, TypeWrapper>();
+            this.Primitives = primitives;
 
             primitives["bool"] = Bool = new ExternalType(assembly, typeof(bool));
 

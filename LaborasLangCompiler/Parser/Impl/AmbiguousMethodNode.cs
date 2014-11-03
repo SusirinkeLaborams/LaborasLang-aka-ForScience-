@@ -15,7 +15,6 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override TypeWrapper TypeWrapper { get { return null; } }
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
-        public TypeWrapper MainType { get { return null; } }
 
         private IEnumerable<MethodWrapper> methods;
         private ExpressionNode instance;
