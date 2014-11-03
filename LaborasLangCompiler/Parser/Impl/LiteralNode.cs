@@ -28,54 +28,78 @@ namespace LaborasLangCompiler.Parser.Impl
         }
 
         private TypeWrapper returnType;
-        private Type type;
-        private LiteralNode(Parser parser, dynamic value, Type type, SequencePoint point)
+        private LiteralNode(dynamic value, TypeWrapper type, SequencePoint point)
             : base(point)
         {
-            this.type = type;
+            this.returnType = type;
             this.Value = value;
-            this.returnType = new ExternalType(parser.Assembly, type);
         }
         public static new LiteralNode Parse(Parser parser, ContainerNode parentBlock, AstNode lexerNode)
         {
             lexerNode = lexerNode.Children[0];
             var point = parser.GetSequencePoint(lexerNode);
             var type = ParseLiteralType(parser, lexerNode);
-            dynamic value = ParseValue(parser, lexerNode.Content.ToString(), type, point);
-            return new LiteralNode(parser, value, type, point);
+            dynamic value = ParseValue(lexerNode.Content.ToString(), type, point);
+            return new LiteralNode(value, type, point);
         }
 
-        private static Type ParseLiteralType(Parser parser, AstNode lexerNode)
+        private static TypeWrapper ParseLiteralType(Parser parser, AstNode lexerNode)
         {
             switch(lexerNode.Type)
             {
                 case Lexer.TokenType.Integer:
-                    return typeof(Int32);
+                    return parser.Int32;
                 case Lexer.TokenType.StringLiteral:
-                    return typeof(string);
+                    return parser.String;
                 case Lexer.TokenType.Float:
-                    return typeof(float);
+                    return parser.Float;
                 case Lexer.TokenType.True:
                 case Lexer.TokenType.False:
-                    return typeof(bool);
+                    return parser.Bool;
                 case Lexer.TokenType.Double:
-                    return typeof(double);
+                    return parser.Double;
                 default:
                     throw new ParseException(parser.GetSequencePoint(lexerNode), "Unknown lexer type {0}", lexerNode.Type);
             }
         }
 
-        private static dynamic ParseValue(Parser parser, string value, Type type, SequencePoint point)
+        private static dynamic ParseValue(string value, TypeWrapper type, SequencePoint point)
         {
             try
             {
-                if (type == typeof(string))
-                    return value.Substring(1, value.Length - 2);
-#if DEBUG
-                if (!parser.Primitives.Values.Any(t => t.FullName == type.FullName))
-                    throw new ParseException(point, "Type {0} is not a primite LaborasLang type", type.FullName);
-#endif
-                return Convert.ChangeType(value, type);
+                switch (type.FullName)
+                {
+                    case "System.String":
+                        return value.Substring(1, value.Length - 2);
+                    case "System.Boolean":
+                        return Convert.ToBoolean(value);
+                    case "System.Char":
+                        return Convert.ToChar(value);
+                    case "System.SByte":
+                        return Convert.ToSByte(value);
+                    case "System.Byte":
+                        return Convert.ToByte(value);
+                    case "System.Int16":
+                        return Convert.ToInt16(value);
+                    case "System.Uint16":
+                        return Convert.ToUInt16(value);
+                    case "System.Int32":
+                        return Convert.ToInt32(value);
+                    case "System.UInt32":
+                        return Convert.ToUInt32(value);
+                    case "System.Int64":
+                        return Convert.ToInt64(value);
+                    case "System.Uint64":
+                        return Convert.ToUInt64(value);
+                    case "System.Single":
+                        return Convert.ToSingle(value);
+                    case "System.Double":
+                        return Convert.ToDouble(value);
+                    case "System.Decimal":
+                        return Convert.ToDecimal(value);
+                    default:
+                        throw new TypeException(point, "Cannot parse literal of type {0}", type.FullName);
+                }
             }
             catch(OverflowException)
             {
