@@ -15,6 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override TypeWrapper TypeWrapper { get { return null; } }
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
+        public TypeWrapper MainType { get { return null; } }
 
         private IEnumerable<MethodWrapper> methods;
         private ExpressionNode instance;
@@ -24,33 +25,18 @@ namespace LaborasLangCompiler.Parser.Impl
             this.methods = methods;
             this.instance = instance;
         }
-        public ExpressionNode RemoveAmbiguity(Parser parser, TypeWrapper expectedType = null)
+        public ExpressionNode RemoveAmbiguity(Parser parser, TypeWrapper expectedType)
         {
             if (!expectedType.IsFunctorType())
                 throw new TypeException(SequencePoint, "Cannot cast functor to type {0}", expectedType.FullName);
-            if (expectedType == null)
+            try
             {
-                try
-                {
-                    var method = methods.Single();
-                    return new MethodNode(method, instance, Scope, SequencePoint);
-                }
-                catch(InvalidOperationException)
-                {
-                    return this;
-                }
+                var method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), expectedType.FunctorParamTypes.Select(t => t.TypeReference).ToList());
+                return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, Scope, SequencePoint);
             }
-            else
+            catch (Exception)
             {
-                try
-                {
-                    var method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), expectedType.FunctorParamTypes.Select(t => t.TypeReference).ToList());
-                    return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, Scope, SequencePoint);
-                }
-                catch(Exception)
-                {
-                    throw new TypeException(SequencePoint, "Ambiguous method result");
-                }
+                throw new TypeException(SequencePoint, "Ambiguous method result");
             }
         }
 

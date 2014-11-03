@@ -9,6 +9,7 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     interface AmbiguousNode
     {
-        ExpressionNode RemoveAmbiguity(Parser parser, TypeWrapper expectedType = null);
+        TypeWrapper MainType { get; }
+        ExpressionNode RemoveAmbiguity(Parser parser, TypeWrapper expectedType);
     }
 }
