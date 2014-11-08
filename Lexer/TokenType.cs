@@ -1,5 +1,5 @@
 ﻿namespace Lexer
-{ 
+{
     public enum TokenType
     {
 
@@ -71,17 +71,17 @@
         Private,
         Public,
         Mutable,
-        
+
         //Non terminals
         NonTerminalToken,
-        
+
         CodeBlockNode,
         DeclarationNode,
         ReturnNode,
         Value,
 
         RootNode,
-        
+
         FullSymbol,
         Type,
         UseNode,
@@ -97,7 +97,7 @@
         BitwiseXorNode,
         BitwiseAndNode,
         PeriodNode,
-        PrefixNode, 
+        PrefixNode,
         PostfixNode,
         InlineFunctionCallNode,
         FunctionCallNode,
@@ -116,6 +116,7 @@
         DeclarationSubnode,
         ValueStatementNode,
 
+        TypeParameters,
         TypeSubnode,
         TypeAndSymbolSubnode,
         CommaAndValue,

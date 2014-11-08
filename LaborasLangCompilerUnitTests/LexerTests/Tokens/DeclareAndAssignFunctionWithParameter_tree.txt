@@ -38,27 +38,30 @@ Children:
 						Type: Symbol
 						Children:
 
-					Content: Type: LeftParenthesis, Start: 1, 15, End: 1, 16, Content: "("
-					Type: LeftParenthesis
+					Content: Type: TypeParameters, Start: 1, 15, End: 1, 24, Content: ""
+					Type: TypeParameters
 					Children:
-
-					Content: Type: Type, Start: 1, 16, End: 1, 21, Content: ""
-					Type: Type
-					Children:
-						Content: Type: FullSymbol, Start: 1, 16, End: 1, 21, Content: ""
-						Type: FullSymbol
+						Content: Type: LeftParenthesis, Start: 1, 15, End: 1, 16, Content: "("
+						Type: LeftParenthesis
 						Children:
-							Content: Type: Symbol, Start: 1, 16, End: 1, 21, Content: "param"
-							Type: Symbol
+
+						Content: Type: Type, Start: 1, 16, End: 1, 21, Content: ""
+						Type: Type
+						Children:
+							Content: Type: FullSymbol, Start: 1, 16, End: 1, 21, Content: ""
+							Type: FullSymbol
 							Children:
+								Content: Type: Symbol, Start: 1, 16, End: 1, 21, Content: "param"
+								Type: Symbol
+								Children:
 
-					Content: Type: Symbol, Start: 1, 22, End: 1, 23, Content: "p"
-					Type: Symbol
-					Children:
+						Content: Type: Symbol, Start: 1, 22, End: 1, 23, Content: "p"
+						Type: Symbol
+						Children:
 
-					Content: Type: RightParenthesis, Start: 1, 23, End: 1, 24, Content: ")"
-					Type: RightParenthesis
-					Children:
+						Content: Type: RightParenthesis, Start: 1, 23, End: 1, 24, Content: ")"
+						Type: RightParenthesis
+						Children:
 
 				Content: Type: CodeBlockNode, Start: 1, 25, End: 1, 33, Content: ""
 				Type: CodeBlockNode

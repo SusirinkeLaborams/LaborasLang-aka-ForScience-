@@ -264,10 +264,14 @@ namespace Lexer
                     AlwaysCollapsableParseRule(SubSymbol,
                         Period + Symbol),
 
+                    ParseRule(TypeParameters,
+                        LeftParenthesis + Type + ZeroOrMore(TypeSubnode) + RightParenthesis,
+                        LeftParenthesis + Type + Symbol + ZeroOrMore(TypeAndSymbolSubnode) + RightParenthesis,
+                        LeftParenthesis + RightParenthesis
+                    ),
+
                     ParseRule(Type,
-                        FullSymbol + LeftParenthesis + Type + ZeroOrMore(TypeSubnode) + RightParenthesis,
-                        FullSymbol + LeftParenthesis + Type + Symbol + ZeroOrMore(TypeAndSymbolSubnode) + RightParenthesis,
-                        FullSymbol + Optional(LeftParenthesis + RightParenthesis)),
+                        FullSymbol + ZeroOrMore(TypeParameters)),
 
                     AlwaysCollapsableParseRule(TypeSubnode,
                         Comma + Type),
@@ -593,6 +597,7 @@ namespace Lexer
         private static Condition SubSymbol { get { return TokenType.SubSymbol; } }
         private static Condition Value { get { return TokenType.Value; } }
         private static Condition Type { get { return TokenType.Type; } }
+        public static Condition TypeParameters { get { return TokenType.TypeParameters; } }
         private static Condition VariableModifier { get { return TokenType.VariableModifier; } }
         private static Condition WhileLoop { get { return TokenType.WhileLoop; } }
         private static Condition TypeSubnode { get { return TokenType.TypeSubnode; } }
