@@ -38,13 +38,16 @@ Children:
 						Type: Symbol
 						Children:
 
-					Content: Type: LeftParenthesis, Start: 1, 15, End: 1, 16, Content: "("
-					Type: LeftParenthesis
+					Content: Type: TypeParameters, Start: 1, 15, End: 1, 17, Content: ""
+					Type: TypeParameters
 					Children:
+						Content: Type: LeftParenthesis, Start: 1, 15, End: 1, 16, Content: "("
+						Type: LeftParenthesis
+						Children:
 
-					Content: Type: RightParenthesis, Start: 1, 16, End: 1, 17, Content: ")"
-					Type: RightParenthesis
-					Children:
+						Content: Type: RightParenthesis, Start: 1, 16, End: 1, 17, Content: ")"
+						Type: RightParenthesis
+						Children:
 
 				Content: Type: CodeBlockNode, Start: 1, 18, End: 1, 26, Content: ""
 				Type: CodeBlockNode

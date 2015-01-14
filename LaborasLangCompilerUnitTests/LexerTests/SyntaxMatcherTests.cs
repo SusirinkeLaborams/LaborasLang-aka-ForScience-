@@ -422,6 +422,19 @@ b &&= a;";
             ExecuteTest(source);
         }
 
+        
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestReturnFunction()
+        {
+            var source = @"
+auto foo = void()()
+{
+    return void(){};
+};
+";
+            ExecuteTest(source);
+        }
+
         #endregion tests
 
         private void ExecuteTest(string source, [CallerMemberName] string fileName = "")
