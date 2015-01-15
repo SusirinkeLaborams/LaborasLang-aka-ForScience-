@@ -1,0 +1,38 @@
+Class:
+	Fields:
+	Methods:
+		Method:
+			Name:
+				foo
+			Modifiers:
+				Private, NoInstance
+			Return:
+				$Functors.$System_Void?
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						Return:
+							Expression:
+								Method:
+									Method:
+										System.Void TestHigherOrderFunctor::$Lambda_0()
+
+
+
+
+		Method:
+			Name:
+				$Lambda_0
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+
+

@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -39,6 +40,11 @@ namespace LaborasLangCompiler.Parser
         {
             builder.Append('\t', count);
             return builder;
+        }
+
+        public static bool IsVoid(this TypeWrapper type)
+        {
+            return type.FullName == typeof(void).FullName;
         }
 
         public static void VerifyAccessible(MethodReference method, TypeReference scope, SequencePoint point)

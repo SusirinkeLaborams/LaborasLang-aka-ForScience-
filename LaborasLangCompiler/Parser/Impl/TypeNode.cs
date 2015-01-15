@@ -27,55 +27,86 @@ namespace LaborasLangCompiler.Parser.Impl
             if(type != null)
                 Utils.VerifyAccessible(ParsedType.TypeReference, Scope, point);
         }
+
         public static new TypeWrapper Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            TypeNode node = null;
-            if(lexerNode.Type == Lexer.TokenType.FullSymbol)
+            if (lexerNode.Type == Lexer.TokenType.FullSymbol)
             {
-                node = DotOperatorNode.Parse(parser, parent, lexerNode) as TypeNode;
+                TypeNode node = DotOperatorNode.Parse(parser, parent, lexerNode) as TypeNode;
                 if (node != null)
                     return node.ParsedType;
                 else
                     throw new ParseException(parser.GetSequencePoint(lexerNode), "Type expected");
             }
 
-            TypeWrapper ret = null;
-            node = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]) as TypeNode;
-            if (node != null)
-                ret = node.ParsedType;
-            else
-                throw new ParseException(parser.GetSequencePoint(lexerNode.Children[0]), "Type expected");
-
-            if(lexerNode.ChildrenCount != 1)
+            TypeBuilder builder = new TypeBuilder(parser, parent);
+            foreach(AstNode node in lexerNode.Children)
             {
-                var args = new List<TypeWrapper>();
-                for(int i = 1; i < lexerNode.ChildrenCount; i++)
-                {
-                    var arg = lexerNode.Children[i];
-                    switch(arg.Type)
-                    {
-                        case Lexer.TokenType.LeftParenthesis:
-                        case Lexer.TokenType.RightParenthesis:
-                        case Lexer.TokenType.Comma:
-                            break;
-                        case Lexer.TokenType.Type:
-                            args.Add(Parse(parser, parent, arg));
-                            break;
-                        default:
-                            throw new ParseException(parser.GetSequencePoint(arg), "Unexpected node type, {0}", arg.Type);
-                    }
-                }
-                if (args.Any(a => a.FullName == parser.Void.FullName))
-                    throw new TypeException(parser.GetSequencePoint(lexerNode), "Cannot declare method parameter of type void");
-
-                ret = new FunctorTypeWrapper(parser.Assembly, ret, args);
+                builder.Append(node);
             }
 
-            return ret;
+            return builder.Type;
         }
+
+        private static List<TypeWrapper> ParseArgumentList(Parser parser, ContainerNode parent, AstNode lexerNode)
+        {
+            var args = new List<TypeWrapper>();
+            foreach(AstNode node in lexerNode.Children)
+            {
+                switch (node.Type)
+                {
+                    case Lexer.TokenType.LeftParenthesis:
+                    case Lexer.TokenType.RightParenthesis:
+                    case Lexer.TokenType.Comma:
+                        break;
+                    case Lexer.TokenType.Type:
+                        args.Add(Parse(parser, parent, node));
+                        break;
+                    default:
+                        throw new ParseException(parser.GetSequencePoint(node), "Unexpected node type, {0}", node.Type);
+                }
+            }
+            return args;
+        }
+
         public override string ToString(int indent)
         {
             throw new InvalidOperationException();
+        }
+
+        public class TypeBuilder
+        {
+            public TypeWrapper Type { get; private set; }
+
+            private Parser parser;
+            private ContainerNode parent;
+
+            public TypeBuilder(Parser parser, ContainerNode parent)
+            {
+                this.parser = parser;
+                this.parent = parent;
+            }
+
+            public void Append(AstNode node)
+            {
+                if(Type == null)
+                {
+                    Type = TypeNode.Parse(parser, parent, node);
+                }
+                else
+                {
+                    var args = ParseArgumentList(parser, parent, node);
+                    if(args.Any(a => a.IsVoid()))
+                        throw new TypeException(parser.GetSequencePoint(node), "Cannot declare method parameter of type void");
+
+                    Type = new FunctorTypeWrapper(parser.Assembly, Type, args);
+                }
+            }
+
+            public void Append(IEnumerable<TypeWrapper> paramz)
+            {
+                Type = new FunctorTypeWrapper(parser.Assembly, Type, paramz);
+            }
         }
     }
 }

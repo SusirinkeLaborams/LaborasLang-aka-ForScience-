@@ -62,17 +62,24 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private void ParseHeader(Modifiers mods, AstNode lexerNode, string methodName)
         {
-            var info = new FunctionDeclarationInfo(parser, lexerNode);
-            MethodReturnType = TypeNode.Parse(parser, parent, info.ReturnType); 
+            var builder = new TypeNode.TypeBuilder(parser, parent);
+            int count = lexerNode.ChildrenCount;
+            var paramz = ParseParams(parser, parent, lexerNode.Children[count - 1]);
+            for (int i = 0; i < count - 1; i++)
+            {
+                builder.Append(lexerNode.Children[i]);
+            }
+
+            MethodReturnType = builder.Type;
             emitter = new MethodEmitter(parent.TypeEmitter, methodName, MethodReturnType.TypeReference, AttributesFromModifiers(parser.GetSequencePoint(lexerNode), mods));
 
             if (mods.HasFlag(Modifiers.Entry))
                 emitter.SetAsEntryPoint();
 
-            foreach(var p in info.Params)
+            foreach(var p in paramz)
             {
                 var param = ParseParameter(parent, p.Type, p.Name);
-                if (param.TypeWrapper.FullName == parser.Void.FullName)
+                if (Utils.IsVoid(param.TypeWrapper))
                     throw new TypeException(parser.GetSequencePoint(p.Type), "Cannot declare a parameter of type void");
                 emitter.AddArgument(param.ParameterDefinition);
                 symbols.Add(param.Name, param);
@@ -113,12 +120,17 @@ namespace LaborasLangCompiler.Parser.Impl
             return instance;
         }
 
-        public static FunctorTypeWrapper ParseFunctorType(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static TypeWrapper ParseFunctorType(Parser parser, ContainerNode parent, AstNode lexerNode)
         {
-            var info = new FunctionDeclarationInfo(parser, lexerNode.Children[0]);
-            var ret = TypeNode.Parse(parser, parent, info.ReturnType);
-            var args = info.Params.Select(p => TypeNode.Parse(parser, parent, p.Type));
-            return new FunctorTypeWrapper(parser.Assembly, ret, args);
+            var builder = new TypeNode.TypeBuilder(parser, parent);
+            int count = lexerNode.ChildrenCount;
+            for (int i = 0; i < count - 1; i++)
+            {
+                builder.Append(lexerNode.Children[i]);
+            }
+            builder.Append(ParseParams(parser, parent, lexerNode.Children[count - 1]).Select(p => TypeNode.Parse(parser, parent, p.Type)));
+
+            return builder.Type;
         }
 
         private MethodAttributes AttributesFromModifiers(SequencePoint point, Modifiers modifiers)
@@ -185,40 +197,35 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.ToString();
         }
 
-        class FunctionDeclarationInfo
+        private static List<FunctionParamInfo> ParseParams(Parser parser, ContainerNode container, AstNode lexerNode)
         {
-            public AstNode ReturnType { get; private set; }
-            public List<FunctionParamInfo> Params { get; private set; }
-
-            public FunctionDeclarationInfo(Parser parser, AstNode lexerNode)
+            var ret = new List<FunctionParamInfo>();
+            int i = 1;
+            while (i < lexerNode.ChildrenCount)
             {
-                ReturnType = lexerNode.Children[0];
-                Params = new List<FunctionParamInfo>();
-                int i = 1;
-                while (i < lexerNode.ChildrenCount)
+                var param = lexerNode.Children[i];
+                switch (param.Type)
                 {
-                    var param = lexerNode.Children[i];
-                    switch(param.Type)
-                    {
-                        case Lexer.TokenType.LeftParenthesis:
-                        case Lexer.TokenType.RightParenthesis:
-                        case Lexer.TokenType.Comma:
-                            i++;
-                            break;
-                        case Lexer.TokenType.Type:
-                            var next = lexerNode.Children[i + 1];
-                            if(next.Type != Lexer.TokenType.Symbol)
-                                throw new ParseException(parser.GetSequencePoint(lexerNode), "Not a valid method definition, {0}", lexerNode.FullContent);
-                            else
-                                Params.Add(new FunctionParamInfo(param, next));
-                            i += 2;
-                            break;
-                        default:
-                            throw new ParseException(parser.GetSequencePoint(lexerNode), "Unexpected node type, {0} in {1}", param.Type, lexerNode.FullContent);
-                    }
+                    case Lexer.TokenType.LeftParenthesis:
+                    case Lexer.TokenType.RightParenthesis:
+                    case Lexer.TokenType.Comma:
+                        i++;
+                        break;
+                    case Lexer.TokenType.Type:
+                        var next = lexerNode.Children[i + 1];
+                        if (next.Type != Lexer.TokenType.Symbol)
+                            throw new ParseException(parser.GetSequencePoint(lexerNode), "Not a valid method definition, {0}", lexerNode.FullContent);
+                        else
+                            ret.Add(new FunctionParamInfo(param, next));
+                        i += 2;
+                        break;
+                    default:
+                        throw new ParseException(parser.GetSequencePoint(lexerNode), "Unexpected node type, {0} in {1}", param.Type, lexerNode.FullContent);
                 }
             }
+            return ret;
         }
+
         struct FunctionParamInfo
         {
             public AstNode Type { get; private set; }

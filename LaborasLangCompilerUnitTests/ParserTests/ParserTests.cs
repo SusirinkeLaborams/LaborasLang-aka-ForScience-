@@ -481,7 +481,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto bar = void()
                 {
                     foo()();
-                }";
+                };";
             CompareTrees(source);
         }
         [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Declared a local var of type void")]
@@ -564,7 +564,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
             var assembly = new AssemblyEmitter(compilerArgs);
             var file = path + name;
-            using(var tree = Lexer.Lexer.Lex(source))
+            using (var tree = Lexer.Lexer.Lex(source))
             {
                 Parser parser = new Parser(assembly, tree, name, false);
                 string result = parser.Root.ToString(0);
@@ -585,7 +585,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
             var assembly = new AssemblyEmitter(compilerArgs);
-            using(var tree = Lexer.Lexer.Lex(source))
+            using (var tree = Lexer.Lexer.Lex(source))
             {
                 Parser parser = new Parser(assembly, tree, name, false);
             }

@@ -102,6 +102,16 @@ namespace LaborasLangCompiler.Parser
             return sequencePoint; 
         }
 
+        public SequencePoint GetSequencePoint(AstNode start, AstNode end)
+        {
+            var sequencePoint = new SequencePoint(Document);
+            sequencePoint.StartLine = start.Token.Start.Row;
+            sequencePoint.StartColumn = start.Token.Start.Column;
+            sequencePoint.EndLine = end.Token.Start.Row;
+            sequencePoint.EndColumn = end.Token.Start.Column + 1;
+            return sequencePoint;
+        }
+
         public SequencePoint GetSequencePoint(SequencePoint start, SequencePoint end)
         {
             var sequencePoint = new SequencePoint(start.Document);
