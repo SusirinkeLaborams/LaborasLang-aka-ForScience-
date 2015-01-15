@@ -64,7 +64,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 var methods = parent.GetClass().GetMethods(node.Name);
                 if (methods.Count() != 0)
                 {
-                    builtNode = new AmbiguousMethodNode(methods, null, scope, node.SequencePoint);
+                    builtNode = AmbiguousMethodNode.Create(methods, null, scope, node.SequencePoint);
                     return true;
                 }
                 else
@@ -85,7 +85,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     methods = methods.Where(m => m.IsStatic);
                     if (methods.Count() != 0)
                     {
-                        builtNode = new AmbiguousMethodNode(methods, null, scope, builtNode.SequencePoint);
+                        builtNode = AmbiguousMethodNode.Create(methods, null, scope, builtNode.SequencePoint);
                         return true;
                     }
                     else
@@ -102,7 +102,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     methods = methods.Where(m => !m.IsStatic);
                     if (methods.Count() != 0)
                     {
-                        builtNode = new AmbiguousMethodNode(methods, builtNode, scope, builtNode.SequencePoint);
+                        builtNode = AmbiguousMethodNode.Create(methods, builtNode, scope, builtNode.SequencePoint);
                         return true;
                     }
                     else

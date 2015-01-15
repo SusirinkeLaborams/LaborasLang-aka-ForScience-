@@ -68,6 +68,11 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             Test(testInfo);
         }
 
+        [TestMethod, TestCategory("Integration Tests")]
+        public void Test_InlineFunctorCall()
+        {
+            Test("InlineFunctorCall.ll", "It Works!");
+        }
 
         #region Helpers
         

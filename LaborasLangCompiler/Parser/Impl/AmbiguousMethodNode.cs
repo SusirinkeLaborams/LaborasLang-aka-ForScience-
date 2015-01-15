@@ -18,12 +18,14 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private IEnumerable<MethodWrapper> methods;
         private ExpressionNode instance;
-        public AmbiguousMethodNode(IEnumerable<MethodWrapper> methods, ExpressionNode instance, TypeReference scope, SequencePoint sequencePoint)
+
+        private  AmbiguousMethodNode(IEnumerable<MethodWrapper> methods, ExpressionNode instance, TypeReference scope, SequencePoint sequencePoint)
             : base(null, scope, sequencePoint)
         {
             this.methods = methods;
             this.instance = instance;
         }
+
         public ExpressionNode RemoveAmbiguity(Parser parser, TypeWrapper expectedType)
         {
             if (!expectedType.IsFunctorType())
@@ -36,6 +38,18 @@ namespace LaborasLangCompiler.Parser.Impl
             catch (Exception)
             {
                 throw new TypeException(SequencePoint, "Ambiguous method result");
+            }
+        }
+
+        public static ExpressionNode Create(IEnumerable<MethodWrapper> methods, ExpressionNode instance, TypeReference scope, SequencePoint sequencePoint)
+        {
+            if(methods.Count() == 1)
+            {
+                return new MethodNode(methods.Single(), instance, scope, sequencePoint);
+            }
+            else
+            {
+                return new AmbiguousMethodNode(methods, instance, scope, sequencePoint);
             }
         }
 

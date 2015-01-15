@@ -559,6 +559,21 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 long a = 5;";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestReturnMemberMethod()
+        {
+            //return foo would result in null ptr before
+            string source = @"
+                auto foo = void()
+                {
+                };
+
+                auto getFoo = void()()
+                {
+	                return foo;
+                };";
+            CompareTrees(source);
+        }
         private static void CompareTrees(string source, [CallerMemberName] string name = "")
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
