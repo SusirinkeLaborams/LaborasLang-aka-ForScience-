@@ -435,6 +435,13 @@ auto foo = void()()
             ExecuteTest(source);
         }
 
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestAssignToIncrement()
+        {
+            var source = @"++foo = 5;";
+            ExecuteTest(source);
+        }
+
         #endregion tests
 
         private void ExecuteTest(string source, [CallerMemberName] string fileName = "")
