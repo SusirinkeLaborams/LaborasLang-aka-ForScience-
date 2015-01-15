@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
-    class InternalField : FieldWrapper
+    class InternalField : FieldWrapper, Context
     {
         public FieldReference FieldReference { get { return FieldDefinition; } }
         public FieldDefinition FieldDefinition { 
@@ -30,6 +30,27 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         private SequencePoint point;
         private AstNode initializer;
         private FieldDefinition field;
+        private ClassNode parent;
+
+        public FunctionDeclarationNode GetMethod()
+        {
+            return null;
+        }
+
+        public ClassNode GetClass()
+        {
+            return parent.GetClass();
+        }
+
+        public ExpressionNode GetSymbol(string name, TypeReference scope, SequencePoint point)
+        {
+            return parent.GetSymbol(name, scope, point);
+        }
+
+        public bool IsStaticContext()
+        {
+            return IsStatic;
+        }
 
         public InternalField(Parser parser, ClassNode parent, DeclarationInfo declaration, SequencePoint point)
         {
@@ -39,6 +60,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             this.initializer = declaration.Initializer;
             this.Name = declaration.SymbolName.GetSingleSymbolOrThrow();
             this.TypeWrapper = TypeNode.Parse(parser, parent, declaration.Type);
+            this.parent = parent;
 
             if (TypeWrapper == null && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
                 TypeWrapper = FunctionDeclarationNode.ParseFunctorType(parser, parent, declaration.Initializer);
@@ -51,7 +73,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             }
         }
 
-        public void Initialize(Parser parser, ClassNode parent)
+        public void Initialize(Parser parser)
         {
             if(initializer.IsNull)
             {
@@ -60,7 +82,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
                 return;
             }
 
-            Initializer = ExpressionNode.Parse(parser, parent, initializer, TypeWrapper);
+            Initializer = ExpressionNode.Parse(parser, this, initializer, TypeWrapper);
 
             if(TypeWrapper == null)
             {

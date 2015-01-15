@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    interface ContainerNode
+    interface Context
     {
-        FunctionDeclarationNode GetFunction();
+        FunctionDeclarationNode GetMethod();
         ClassNode GetClass();
         ExpressionNode GetSymbol(string name, TypeReference scope, SequencePoint point);
+        bool IsStaticContext();
     }
 }

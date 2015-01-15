@@ -14,7 +14,7 @@ using Lexer.Containers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ClassNode : ParserNode, ContainerNode
+    class ClassNode : ParserNode, Context
     {
         #region fields
         private Dictionary<string, InternalField> fields;
@@ -27,10 +27,13 @@ namespace LaborasLangCompiler.Parser.Impl
         #endregion fields
 
         #region properties
+
         public override NodeType Type { get { return NodeType.ParserInternal; } }
         public TypeEmitter TypeEmitter { get; private set; }
         public string FullName { get; private set; }
         public TypeReference TypeReference { get { return TypeEmitter.Get(parser.Assembly); } }
+        public bool IsStatic { get; private set; }
+
         #endregion properties
 
         public ClassNode(Parser parser, ClassNode parent, SequencePoint point) : base(point)
@@ -58,10 +61,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public IEnumerable<MethodWrapper> GetMethods(string name)
         {
-            var ret = new List<MethodWrapper>(1);
-            if (methods.ContainsKey(name))
-                ret.Add(methods[name]);
-            return ret;
+            return methods.Where(kv => kv.Key == name).Select(kv => kv.Value);
         }
 
         public MethodWrapper GetMethod(string name)
@@ -79,14 +79,14 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #endregion typewrapper
 
-        #region container
+        #region context
 
         public ClassNode GetClass() 
         { 
             return this;
         }
 
-        public FunctionDeclarationNode GetFunction() 
+        public FunctionDeclarationNode GetMethod() 
         {
             return null;
         }
@@ -103,7 +103,12 @@ namespace LaborasLangCompiler.Parser.Impl
             return null;
         }
 
-        #endregion container
+        public bool IsStaticContext()
+        {
+            throw new InvalidOperationException("ClassNode is not a complete execution context");
+        }
+
+        #endregion context
 
         #region type/namespace lookup
 
@@ -232,7 +237,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             foreach(var field in fields.Values)
             {
-                field.Initialize(parser, this);
+                field.Initialize(parser);
             }
         }
 

@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Name = value;
             Scope = scope;
         }
-        public static SymbolNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static SymbolNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             return new SymbolNode(lexerNode.Content.ToString(), parent.GetClass().TypeReference, parser.GetSequencePoint(lexerNode));
         }

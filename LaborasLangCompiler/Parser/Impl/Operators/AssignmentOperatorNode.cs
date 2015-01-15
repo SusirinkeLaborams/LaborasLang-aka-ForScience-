@@ -33,7 +33,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         protected AssignmentOperatorNode(SequencePoint point) : base(point) { }
 
-        public static AssignmentOperatorNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static AssignmentOperatorNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             var instance = new AssignmentOperatorNode(parser.GetSequencePoint(lexerNode));
             var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]) as ExpressionNode;

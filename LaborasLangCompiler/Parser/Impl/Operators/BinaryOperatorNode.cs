@@ -34,7 +34,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         protected BinaryOperatorNode(SequencePoint point) : base(point) { }
 
-        public static ExpressionNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static ExpressionNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             if (lexerNode.Children.Count == 1)
             {

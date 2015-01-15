@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class FunctionDeclarationNode : ParserNode, ContainerNode, MethodWrapper
+    class FunctionDeclarationNode : ParserNode, Context, MethodWrapper
     {
         public MethodReference MethodReference { get { return emitter.Get(); } }
         public override NodeType Type { get { return NodeType.ParserInternal; } }
@@ -41,7 +41,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private FunctorTypeWrapper functorType;
         private Modifiers modifiers;
 
-        private FunctionDeclarationNode(Parser parser, ContainerNode parent, Modifiers modifiers, string name, AstNode method)
+        private FunctionDeclarationNode(Parser parser, Context parent, Modifiers modifiers, string name, AstNode method)
             : base(parser.GetSequencePoint(method))
         {
             this.parent = parent.GetClass();
@@ -88,14 +88,14 @@ namespace LaborasLangCompiler.Parser.Impl
             parent.AddMethod(this);
         }
 
-        private ParameterWrapper ParseParameter(ContainerNode parent, AstNode typeNode, AstNode nameNode)
+        private ParameterWrapper ParseParameter(Context parent, AstNode typeNode, AstNode nameNode)
         {
             var type = TypeNode.Parse(parser, parent, typeNode);
             var name = nameNode.GetSingleSymbolOrThrow();
             return new ParameterWrapper(name, ParameterAttributes.None, type);
         }
 
-        public FunctionDeclarationNode GetFunction() { return this; }
+        public FunctionDeclarationNode GetMethod() { return this; }
 
         public ClassNode GetClass() { return parent.GetClass(); }
 
@@ -107,7 +107,12 @@ namespace LaborasLangCompiler.Parser.Impl
             return parent.GetSymbol(name, scope, point); 
         }
 
-        public static FunctionDeclarationNode ParseAsFunctor(Parser parser, ContainerNode parent, AstNode function)
+        public bool IsStaticContext()
+        {
+            return IsStatic;
+        }
+
+        public static FunctionDeclarationNode ParseAsFunctor(Parser parser, Context parent, AstNode function)
         {
             var instance = new FunctionDeclarationNode(parser, parent, Modifiers.NoInstance | Modifiers.Private, parent.GetClass().NewFunctionName(), function);
             instance.Emit();
@@ -120,7 +125,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return instance;
         }
 
-        public static TypeWrapper ParseFunctorType(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static TypeWrapper ParseFunctorType(Parser parser, Context parent, AstNode lexerNode)
         {
             var builder = new TypeNode.TypeBuilder(parser, parent);
             int count = lexerNode.ChildrenCount;
@@ -197,7 +202,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.ToString();
         }
 
-        private static List<FunctionParamInfo> ParseParams(Parser parser, ContainerNode container, AstNode lexerNode)
+        private static List<FunctionParamInfo> ParseParams(Parser parser, Context container, AstNode lexerNode)
         {
             var ret = new List<FunctionParamInfo>();
             int i = 1;

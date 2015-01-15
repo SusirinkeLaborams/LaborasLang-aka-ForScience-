@@ -21,9 +21,9 @@ namespace LaborasLangCompiler.Parser.Impl
         private ExpressionNode expression;
         protected ReturnNode(SequencePoint point) : base(point) { }
 
-        public static ReturnNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static ReturnNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
-            var returnType = parent.GetFunction().MethodReturnType;
+            var returnType = parent.GetMethod().MethodReturnType;
             var instance = new ReturnNode(parser.GetSequencePoint(lexerNode));
             if (returnType == parser.Void && lexerNode.ChildrenCount != 2)
                 throw new TypeException(instance.SequencePoint, "Cannot return value in a void method");

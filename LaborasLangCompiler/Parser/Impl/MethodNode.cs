@@ -31,7 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.instance = instance;
             Utils.VerifyAccessible(Method, Scope, point);
         }
-        public static new MethodNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static new MethodNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             var method = FunctionDeclarationNode.ParseAsFunctor(parser, parent, lexerNode);
             return new MethodNode(method, null, parent.GetClass().TypeReference, method.SequencePoint);

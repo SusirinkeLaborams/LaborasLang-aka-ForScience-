@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class CodeBlockNode : ParserNode, ICodeBlockNode, ContainerNode, ReturningNode
+    class CodeBlockNode : ParserNode, ICodeBlockNode, Context, ReturningNode
     {
         public override NodeType Type { get { return NodeType.CodeBlockNode; } }
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
@@ -20,16 +20,21 @@ namespace LaborasLangCompiler.Parser.Impl
 
         protected List<ParserNode> nodes;
         protected Dictionary<string, VariableWrapper> symbols;
-        private ContainerNode parent;
-        protected CodeBlockNode(ContainerNode parent, SequencePoint point) : base(point)
+        private Context parent;
+
+
+        protected CodeBlockNode(Context parent, SequencePoint point) : base(point)
         {
             nodes = new List<ParserNode>();
             symbols = new Dictionary<string, VariableWrapper>();
             this.parent = parent;
             Returns = false;
         }
+
         public ClassNode GetClass() { return parent.GetClass(); }
-        public FunctionDeclarationNode GetFunction() { return parent.GetFunction(); }
+
+        public FunctionDeclarationNode GetMethod() { return parent.GetMethod(); }
+
         public ExpressionNode GetSymbol(string name, TypeReference scope, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
@@ -37,6 +42,12 @@ namespace LaborasLangCompiler.Parser.Impl
 
             return parent.GetSymbol(name, scope, point);
         }
+
+        public bool IsStaticContext()
+        {
+            return parent.IsStaticContext();
+        }
+
         public virtual LocalVariableNode AddVariable(TypeWrapper type, string name, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
@@ -44,6 +55,7 @@ namespace LaborasLangCompiler.Parser.Impl
             symbols.Add(name, new VariableWrapper(name, type));
             return new LocalVariableNode(point, symbols[name], false);
         }
+
         private void AddNode(ParserNode node)
         {
             if (node is ReturningNode)
@@ -51,6 +63,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     Returns = true;
             nodes.Add(node);
         }
+
         private void AddExpression(ExpressionNode node, Parser parser)
         {
             if (node.TypeWrapper.FullName == parser.Void.FullName)
@@ -58,6 +71,7 @@ namespace LaborasLangCompiler.Parser.Impl
             else
                 AddNode(UnaryOperatorNode.Void(node));
         }
+
         private void AddNode(Parser parser, AstNode lexerNode)
         {
             switch (lexerNode.Type)
@@ -84,7 +98,8 @@ namespace LaborasLangCompiler.Parser.Impl
                     throw new ParseException(parser.GetSequencePoint(lexerNode), "Node " + lexerNode.Type + " in sentence, dafuq");
             }
         }
-        public static CodeBlockNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+
+        public static CodeBlockNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             CodeBlockNode instance = null;
             if(lexerNode.Type == Lexer.TokenType.CodeBlockNode)
@@ -111,6 +126,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return instance;
         }
+
         public override string ToString(int indent)
         {
             StringBuilder builder = new StringBuilder();

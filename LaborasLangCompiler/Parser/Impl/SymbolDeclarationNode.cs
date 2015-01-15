@@ -26,7 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.declaredSymbol = symbol;
             this.initializer = init;
         }
-        public static SymbolDeclarationNode Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static SymbolDeclarationNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             LocalVariableNode symbol = null;
             var info = DeclarationInfo.Parse(parser, lexerNode);

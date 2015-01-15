@@ -28,7 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 Utils.VerifyAccessible(ParsedType.TypeReference, Scope, point);
         }
 
-        public static new TypeWrapper Parse(Parser parser, ContainerNode parent, AstNode lexerNode)
+        public static new TypeWrapper Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             if (lexerNode.Type == Lexer.TokenType.FullSymbol)
             {
@@ -48,7 +48,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.Type;
         }
 
-        private static List<TypeWrapper> ParseArgumentList(Parser parser, ContainerNode parent, AstNode lexerNode)
+        private static List<TypeWrapper> ParseArgumentList(Parser parser, Context parent, AstNode lexerNode)
         {
             var args = new List<TypeWrapper>();
             foreach(AstNode node in lexerNode.Children)
@@ -79,9 +79,9 @@ namespace LaborasLangCompiler.Parser.Impl
             public TypeWrapper Type { get; private set; }
 
             private Parser parser;
-            private ContainerNode parent;
+            private Context parent;
 
-            public TypeBuilder(Parser parser, ContainerNode parent)
+            public TypeBuilder(Parser parser, Context parent)
             {
                 this.parser = parser;
                 this.parent = parent;
