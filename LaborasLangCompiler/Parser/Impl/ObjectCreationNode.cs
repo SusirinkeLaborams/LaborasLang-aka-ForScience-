@@ -22,7 +22,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private List<ExpressionNode> args;
         private MethodWrapper constructor;
 
-        public ObjectCreationNode(TypeWrapper type, List<ExpressionNode> args, MethodWrapper constructor, TypeReference scope, SequencePoint point)
+        public ObjectCreationNode(TypeWrapper type, List<ExpressionNode> args, MethodWrapper constructor, Context scope, SequencePoint point)
             :base(type.FullName, scope, point)
         {
             this.type = type;

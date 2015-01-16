@@ -18,12 +18,14 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private IEnumerable<MethodWrapper> methods;
         private ExpressionNode instance;
+        private Context parent;
 
-        private  AmbiguousMethodNode(IEnumerable<MethodWrapper> methods, ExpressionNode instance, TypeReference scope, SequencePoint sequencePoint)
-            : base(null, scope, sequencePoint)
+        private  AmbiguousMethodNode(IEnumerable<MethodWrapper> methods, ExpressionNode instance, Context parent, SequencePoint sequencePoint)
+            : base(null, parent, sequencePoint)
         {
             this.methods = methods;
             this.instance = instance;
+            this.parent = parent;
         }
 
         public ExpressionNode RemoveAmbiguity(Parser parser, TypeWrapper expectedType)
@@ -33,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
             try
             {
                 var method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), expectedType.FunctorParamTypes.Select(t => t.TypeReference).ToList());
-                return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, Scope, SequencePoint);
+                return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, parent, SequencePoint);
             }
             catch (Exception)
             {
@@ -41,15 +43,15 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public static ExpressionNode Create(IEnumerable<MethodWrapper> methods, ExpressionNode instance, TypeReference scope, SequencePoint sequencePoint)
+        public static ExpressionNode Create(IEnumerable<MethodWrapper> methods, Context parent, ExpressionNode instance, SequencePoint sequencePoint)
         {
             if(methods.Count() == 1)
             {
-                return new MethodNode(methods.Single(), instance, scope, sequencePoint);
+                return new MethodNode(methods.Single(), instance, parent, sequencePoint);
             }
             else
             {
-                return new AmbiguousMethodNode(methods, instance, scope, sequencePoint);
+                return new AmbiguousMethodNode(methods, instance, parent, sequencePoint);
             }
         }
 

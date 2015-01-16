@@ -25,6 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         public string Name { get; set; }
         public ExpressionNode Initializer { get; set; }
         public bool IsStatic { get; set; }
+        public TypeWrapper DeclaringType { get { return parent.TypeWrapper; } }
 
         private Modifiers modifiers;
         private SequencePoint point;
@@ -42,7 +43,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             return parent.GetClass();
         }
 
-        public ExpressionNode GetSymbol(string name, TypeReference scope, SequencePoint point)
+        public ExpressionNode GetSymbol(string name, Context scope, SequencePoint point)
         {
             return parent.GetSymbol(name, scope, point);
         }
@@ -59,8 +60,8 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             this.modifiers = declaration.Modifiers;
             this.initializer = declaration.Initializer;
             this.Name = declaration.SymbolName.GetSingleSymbolOrThrow();
-            this.TypeWrapper = TypeNode.Parse(parser, parent, declaration.Type);
             this.parent = parent;
+            this.TypeWrapper = TypeNode.Parse(parser, this, declaration.Type);
 
             if (TypeWrapper == null && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
                 TypeWrapper = FunctionDeclarationNode.ParseFunctorType(parser, parent, declaration.Initializer);

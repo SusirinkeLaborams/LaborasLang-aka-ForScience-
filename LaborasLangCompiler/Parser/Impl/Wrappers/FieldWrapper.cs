@@ -11,6 +11,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     {
         FieldReference FieldReference { get; }
         TypeWrapper TypeWrapper { get; }
+        TypeWrapper DeclaringType { get; }
         string Name { get; }
         bool IsStatic { get; }
     }

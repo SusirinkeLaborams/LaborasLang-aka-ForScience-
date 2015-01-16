@@ -24,18 +24,24 @@ namespace LaborasLangCompiler.Parser.Impl
         private MethodWrapper method;
         private ExpressionNode instance;
 
-        public MethodNode(MethodWrapper method, ExpressionNode instance, TypeReference scope, SequencePoint point)
-            : base(method.MethodReference.FullName, scope, point)
+        public MethodNode(MethodWrapper method, ExpressionNode instance, Context parent, SequencePoint point)
+            : base(method.MethodReference.FullName, parent, point)
         {
             this.method = method;
             this.instance = instance;
+            if(instance == null && !method.IsStatic)
+            {
+                this.instance = new ThisNode(method.DeclaringType, point);
+            }
             Utils.VerifyAccessible(Method, Scope, point);
         }
+
         public static new MethodNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             var method = FunctionDeclarationNode.ParseAsFunctor(parser, parent, lexerNode);
-            return new MethodNode(method, null, parent.GetClass().TypeReference, method.SequencePoint);
+            return new MethodNode(method, null, parent, method.SequencePoint);
         }
+
         public override string ToString(int indent)
         {
             StringBuilder builder = new StringBuilder();

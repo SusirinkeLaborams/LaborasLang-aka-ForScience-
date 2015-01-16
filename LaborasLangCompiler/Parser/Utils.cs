@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
+using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using Mono.Cecil;
@@ -47,21 +48,21 @@ namespace LaborasLangCompiler.Parser
             return type.FullName == typeof(void).FullName;
         }
 
-        public static void VerifyAccessible(MethodReference method, TypeReference scope, SequencePoint point)
+        public static void VerifyAccessible(MethodReference method, Context scope, SequencePoint point)
         {
-            if (!ILHelpers.IsAccessible(method, scope))
+            if (!ILHelpers.IsAccessible(method, scope.GetClass().TypeReference))
                 throw new TypeException(point, "Method {0} is inaccessible from {1}", method, scope);
         }
 
-        public static void VerifyAccessible(TypeReference type, TypeReference scope, SequencePoint point)
+        public static void VerifyAccessible(TypeReference type, Context scope, SequencePoint point)
         {
-            if (!ILHelpers.IsAccessible(type, scope))
+            if (!ILHelpers.IsAccessible(type, scope.GetClass().TypeReference))
                 throw new TypeException(point, "Type {0} is inaccessible from {1}", type, scope);
         }
 
-        public static void VerifyAccessible(FieldReference field, TypeReference scope, SequencePoint point)
+        public static void VerifyAccessible(FieldReference field, Context scope, SequencePoint point)
         {
-            if (!ILHelpers.IsAccessible(field, scope))
+            if (!ILHelpers.IsAccessible(field, scope.GetClass().TypeReference))
                 throw new TypeException(point, "Field {0} is inaccessible from {1}", field, scope);
         }
     }

@@ -16,10 +16,12 @@ namespace LaborasLangCompiler.Parser.Impl
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
         public override TypeWrapper TypeWrapper { get { return null; } }
         public string Name { get; private set; }
-        public TypeReference Scope { get; private set; }
+        public Context Scope { get; private set; }
         public override bool IsGettable { get { return false; } }
         public override bool IsSettable { get { return false; } }
-        protected SymbolNode(string value, TypeReference scope, SequencePoint point)
+
+
+        protected SymbolNode(string value, Context scope, SequencePoint point)
             : base(point)
         {
             Name = value;
@@ -27,7 +29,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         public static SymbolNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
-            return new SymbolNode(lexerNode.Content.ToString(), parent.GetClass().TypeReference, parser.GetSequencePoint(lexerNode));
+            return new SymbolNode(lexerNode.Content.ToString(), parent, parser.GetSequencePoint(lexerNode));
         }
         public override string ToString(int indent)
         {

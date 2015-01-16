@@ -35,6 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             } 
         }
         public bool IsStatic { get { return MethodReference.Resolve().IsStatic; } }
+        public TypeWrapper DeclaringType { get; private set; }
 
         private TypeWrapper methodReturnType;
         private FunctorTypeWrapper functorType;
@@ -43,6 +44,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         {
             this.MethodReference = method;
             this.methodReturnType = new ExternalType(assembly, method.ReturnType);
+            this.DeclaringType = new ExternalType(assembly, method.DeclaringType);
         }
     }
 }

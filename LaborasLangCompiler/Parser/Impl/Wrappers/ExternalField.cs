@@ -14,12 +14,14 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         public TypeWrapper TypeWrapper { get { return typeWrapper; } }
         public string Name { get { return FieldReference.Name; } }
         public bool IsStatic { get { return FieldReference.Resolve().IsStatic; } }
+        public TypeWrapper DeclaringType { get; private set; }
 
         private TypeWrapper typeWrapper;
         public ExternalField(AssemblyEmitter assembly, FieldReference field) : base(assembly)
         {
             this.FieldReference = field;
             this.typeWrapper = new ExternalType(assembly, field.FieldType);
+            DeclaringType = new ExternalType(assembly, field.FieldType);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public FunctionDeclarationNode GetMethod() { return parent.GetMethod(); }
 
-        public ExpressionNode GetSymbol(string name, TypeReference scope, SequencePoint point)
+        public ExpressionNode GetSymbol(string name, Context scope, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
                 return new LocalVariableNode(point, symbols[name], false);

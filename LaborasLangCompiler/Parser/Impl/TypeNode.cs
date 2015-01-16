@@ -19,7 +19,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override bool IsGettable { get { return true; } }
 
         private TypeWrapper typeWrapper;
-        public TypeNode(Parser parser, TypeWrapper type, TypeReference scope, SequencePoint point)
+        public TypeNode(Parser parser, TypeWrapper type, Context scope, SequencePoint point)
             : base(type != null ? type.FullName : null, scope, point)
         {
             typeWrapper = new ExternalType(parser.Assembly, typeof(Type));

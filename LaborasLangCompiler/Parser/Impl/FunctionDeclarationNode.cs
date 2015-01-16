@@ -31,6 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public bool IsStatic { get { return true; } }
         public IEnumerable<TypeWrapper> ParamTypes { get; private set; }
         public TypeWrapper MethodReturnType { get; private set; }
+        public TypeWrapper DeclaringType { get; private set; }
 
         private AstNode body;
         private CodeBlockNode parsedBody;
@@ -48,6 +49,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.symbols = new Dictionary<string, ParameterWrapper>();
             this.parser = parser;
             this.body = method.Children[1];
+            this.DeclaringType = parent.GetClass().TypeWrapper;
             ParseHeader(modifiers, method.Children[0], name);
         }
 
@@ -99,7 +101,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public ClassNode GetClass() { return parent.GetClass(); }
 
-        public ExpressionNode GetSymbol(string name, TypeReference scope, SequencePoint point)
+        public ExpressionNode GetSymbol(string name, Context scope, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
                 return new FunctionArgumentNode(symbols[name], true, point);

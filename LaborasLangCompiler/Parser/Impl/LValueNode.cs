@@ -103,10 +103,19 @@ namespace LaborasLangCompiler.Parser.Impl
         }
 
         private FieldWrapper field;
-        public FieldNode(IExpressionNode instance, FieldWrapper field, TypeReference scope, SequencePoint point)
-            : base(field.Name, scope, point)
+        public FieldNode(ExpressionNode instance, FieldWrapper field, Context parent, SequencePoint point)
+            : base(field.Name, parent, point)
         {
             ObjectInstance = instance;
+            //non-static field without an instance
+            if(instance == null && !field.IsStatic)
+            {
+                //we're accessing a field from the same or derived class, insert "this"
+                if(!parent.IsStaticContext() && parent.GetClass().TypeWrapper.IsAssignableTo(field.DeclaringType))
+                {
+                    ObjectInstance = new ThisNode(field.DeclaringType, point);
+                }
+            }
             this.field = field;
         }
         public override string ToString(int indent)

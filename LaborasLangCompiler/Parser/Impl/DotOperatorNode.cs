@@ -17,15 +17,14 @@ namespace LaborasLangCompiler.Parser.Impl
         private Parser parser;
         private ClassNode cls;
         private Context parent;
-        private TypeReference scope;
 
         private DotOperatorNode(Parser parser, Context parent)
         {
             this.parser = parser;
             this.parent = parent;
             this.cls = parent.GetClass();
-            this.scope = cls.TypeReference;
         }
+
         public static ExpressionNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             var instance = new DotOperatorNode(parser, parent);
@@ -36,6 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return instance.builtNode;
         }
+
         private void Append(ExpressionNode node)
         {
             if(node.ExpressionType != ExpressionNodeType.ParserInternal)
@@ -57,14 +57,19 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new SymbolNotFoundException(node.SequencePoint, "Symbol {0} not found", nod.Name);
             }
         }
+
         private bool AppendMethod(SymbolNode node)
         {
             if(builtNode == null)
             {
                 var methods = parent.GetClass().GetMethods(node.Name);
+                if(parent.IsStaticContext())
+                {
+                    methods = methods.Where(m => m.IsStatic);
+                }
                 if (methods.Count() != 0)
                 {
-                    builtNode = AmbiguousMethodNode.Create(methods, null, scope, node.SequencePoint);
+                    builtNode = AmbiguousMethodNode.Create(methods, parent, null, node.SequencePoint);
                     return true;
                 }
                 else
@@ -85,7 +90,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     methods = methods.Where(m => m.IsStatic);
                     if (methods.Count() != 0)
                     {
-                        builtNode = AmbiguousMethodNode.Create(methods, null, scope, builtNode.SequencePoint);
+                        builtNode = AmbiguousMethodNode.Create(methods, parent, null, builtNode.SequencePoint);
                         return true;
                     }
                     else
@@ -102,7 +107,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     methods = methods.Where(m => !m.IsStatic);
                     if (methods.Count() != 0)
                     {
-                        builtNode = AmbiguousMethodNode.Create(methods, builtNode, scope, builtNode.SequencePoint);
+                        builtNode = AmbiguousMethodNode.Create(methods, parent, builtNode, builtNode.SequencePoint);
                         return true;
                     }
                     else
@@ -112,11 +117,12 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
+
         private bool AppendType(SymbolNode node)
         {
             if(builtNode == null)
             {
-                builtNode = cls.FindType(node.Name, scope, node.SequencePoint);
+                builtNode = cls.FindType(node.Name, parent, node.SequencePoint);
                 return builtNode != null;
             }
             else
@@ -133,7 +139,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
                 if (type != null)
                 {
-                    builtNode = new TypeNode(parser, type, scope, node.SequencePoint);
+                    builtNode = new TypeNode(parser, type, parent, node.SequencePoint);
                     return true;
                 }
                 else
@@ -142,6 +148,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
+
         private bool AppendNamespace(SymbolNode node)
         {
             if (builtNode == null)
@@ -168,12 +175,14 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
+
         private bool AppendLValue(SymbolNode node)
         {
             string name = node.Name;
             if(builtNode == null)
             {
-                return (builtNode = parent.GetSymbol(name, scope, node.SequencePoint)) != null;
+                builtNode = parent.GetSymbol(name, parent, node.SequencePoint);
+                return builtNode != null;
             }
             else
             {
@@ -194,7 +203,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
                 if (field != null)
                 {
-                    builtNode = new FieldNode(field.IsStatic ? null : builtNode, field, scope, builtNode.SequencePoint);
+                    builtNode = new FieldNode(field.IsStatic ? null : builtNode, field, parent, builtNode.SequencePoint);
                     return true;
                 }
                 else
@@ -203,6 +212,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
+
         private bool AppendExpression(ExpressionNode node)
         {
             if(builtNode == null)

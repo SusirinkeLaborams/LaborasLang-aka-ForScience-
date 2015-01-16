@@ -12,7 +12,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         FunctionDeclarationNode GetMethod();
         ClassNode GetClass();
-        ExpressionNode GetSymbol(string name, TypeReference scope, SequencePoint point);
+        ExpressionNode GetSymbol(string name, Context scope, SequencePoint point);
         bool IsStaticContext();
     }
 }

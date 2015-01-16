@@ -122,7 +122,7 @@ namespace LaborasLangCompiler.Parser
             return sequencePoint;
         }
 
-        public TypeNode FindType(string fullname, TypeReference scope, SequencePoint point)
+        public TypeNode FindType(string fullname, Context scope, SequencePoint point)
         {
             var type = AssemblyRegistry.FindType(Assembly, fullname);
             if (type != null)

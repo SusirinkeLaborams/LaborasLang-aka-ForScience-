@@ -32,7 +32,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeEmitter TypeEmitter { get; private set; }
         public string FullName { get; private set; }
         public TypeReference TypeReference { get { return TypeEmitter.Get(parser.Assembly); } }
-        public bool IsStatic { get; private set; }
+        public TypeWrapper TypeWrapper { get; private set; }
 
         #endregion properties
 
@@ -44,11 +44,13 @@ namespace LaborasLangCompiler.Parser.Impl
             this.parser = parser;
             this.declaredMethods = new List<FunctionDeclarationNode>();
             this.methods = new Dictionary<string, FunctionDeclarationNode>();
+            this.TypeWrapper = new InternalType(parser.Assembly, this);
             fields = new Dictionary<string, InternalField>();
             globalImports = new List<NamespaceWrapper>();
             FullName = parser.Filename;
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
+
         #region type wrapper
 
         public FieldWrapper GetField(string name)
@@ -91,7 +93,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return null;
         }
 
-        public ExpressionNode GetSymbol(string name, TypeReference scope, SequencePoint point)
+        public ExpressionNode GetSymbol(string name, Context scope, SequencePoint point)
         {
             var field = GetField(name);
             if (field != null)
@@ -105,14 +107,15 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public bool IsStaticContext()
         {
-            throw new InvalidOperationException("ClassNode is not a complete execution context");
+            //used while parsing types
+            return false;
         }
 
         #endregion context
 
         #region type/namespace lookup
 
-        public TypeNode FindType(string name, TypeReference scope, SequencePoint point)
+        public TypeNode FindType(string name, Context scope, SequencePoint point)
         {
             TypeNode type = null;
 

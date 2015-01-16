@@ -12,6 +12,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         MethodReference MethodReference { get; }
         FunctorTypeWrapper FunctorType { get; }
         TypeWrapper MethodReturnType { get; }
+        TypeWrapper DeclaringType { get; }
         bool IsStatic { get; }
         IEnumerable<TypeWrapper> ParamTypes { get; }
     }
