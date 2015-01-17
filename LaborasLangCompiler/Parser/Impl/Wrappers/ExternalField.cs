@@ -15,6 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         public string Name { get { return FieldReference.Name; } }
         public bool IsStatic { get { return FieldReference.Resolve().IsStatic; } }
         public TypeWrapper DeclaringType { get; private set; }
+        public MemberReference MemberReference { get { return FieldReference; } }
 
         private TypeWrapper typeWrapper;
         public ExternalField(AssemblyEmitter assembly, FieldReference field) : base(assembly)

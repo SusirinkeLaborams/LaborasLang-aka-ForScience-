@@ -26,6 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         public ExpressionNode Initializer { get; set; }
         public bool IsStatic { get; set; }
         public TypeWrapper DeclaringType { get { return parent.TypeWrapper; } }
+        public MemberReference MemberReference { get { return FieldReference; } }
 
         private Modifiers modifiers;
         private SequencePoint point;

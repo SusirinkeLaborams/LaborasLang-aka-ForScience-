@@ -40,6 +40,12 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             }
         }
 
+        public override TypeWrapper DeclaringType
+        {
+            get { return declaringType; }
+        }
+
+        private TypeWrapper declaringType;
         private TypeReference typeReference;
         private TypeWrapper functorReturnType;
         private IEnumerable<TypeWrapper> functorParamTypes;
@@ -47,11 +53,25 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         public ExternalType(AssemblyEmitter assembly, TypeReference type) : base(assembly)
         {
             this.typeReference = type;
+            this.declaringType = CreateType(assembly, typeReference.DeclaringType);
         }
 
         public ExternalType(AssemblyEmitter assembly, Type type) : base(assembly)
         {
             this.typeReference = assembly.TypeToTypeReference(type);
+            this.declaringType = CreateType(assembly, typeReference.DeclaringType);
+        }
+
+        public static ExternalType CreateType(AssemblyEmitter assembly, TypeReference type)
+        {
+            if(type != null)
+            {
+                return new ExternalType(assembly, type);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public override TypeWrapper GetContainedType(string name)
@@ -62,6 +82,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             else
                 return null;
         }
+
         public override FieldWrapper GetField(string name)
         {
             var field = AssemblyRegistry.GetField(Assembly, TypeReference, name);
@@ -70,6 +91,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             else
                 return null;
         }
+
         public override MethodWrapper GetMethod(string name)
         {
             var method = AssemblyRegistry.GetMethod(Assembly, TypeReference, name);
@@ -77,6 +99,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
                 return new ExternalMethod(Assembly, method);
             return null;
         }
+
         public override IEnumerable<MethodWrapper> GetMethods(string name)
         {
             return AssemblyRegistry.GetMethods(Assembly, TypeReference, name).Select(m => new ExternalMethod(Assembly, m));

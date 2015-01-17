@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
-    interface FieldWrapper : MemberWrapper
+    interface MemberWrapper
     {
-        FieldReference FieldReference { get; }
-        TypeWrapper TypeWrapper { get; }
-        string Name { get; }
+        TypeWrapper DeclaringType { get; }
+        bool IsStatic { get; }
+        MemberReference MemberReference { get; }
     }
 }

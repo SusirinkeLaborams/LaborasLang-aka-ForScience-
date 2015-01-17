@@ -125,7 +125,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (ambiguous == null)
                 return null;
 
-            var method = ambiguous.RemoveAmbiguity(parser, new FunctorTypeWrapper(parser.Assembly, null, args.Select(a => a.TypeWrapper)));
+            var method = ambiguous.RemoveAmbiguity(parser, args.Select(a => a.TypeWrapper));
             return new MethodCallNode(method, method.TypeWrapper.FunctorReturnType, args.ToList(), point);
         }
 

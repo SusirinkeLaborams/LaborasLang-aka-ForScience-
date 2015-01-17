@@ -7,13 +7,11 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
-    interface MethodWrapper
+    interface MethodWrapper : MemberWrapper
     {
         MethodReference MethodReference { get; }
         FunctorTypeWrapper FunctorType { get; }
         TypeWrapper MethodReturnType { get; }
-        TypeWrapper DeclaringType { get; }
-        bool IsStatic { get; }
         IEnumerable<TypeWrapper> ParamTypes { get; }
     }
 }

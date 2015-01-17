@@ -83,6 +83,7 @@
     <Compile Include="Parser\Exceptions\TypeException.cs" />
     <Compile Include="Parser\Impl\AmbiguousMethodNode.cs" />
     <Compile Include="Parser\Impl\AmbiguousNode.cs" />
+    <Compile Include="Parser\Impl\MemberNode.cs" />
     <Compile Include="Parser\Impl\ObjectCreationNode.cs" />
     <Compile Include="Parser\Impl\SymbolModifiers.cs" />
     <Compile Include="Parser\Impl\ConditionBlockNode.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="Parser\Impl\Wrappers\FunctorTypeWrapper.cs" />
     <Compile Include="Parser\Impl\Wrappers\InternalField.cs" />
     <Compile Include="Parser\Impl\Wrappers\InternalType.cs" />
+    <Compile Include="Parser\Impl\Wrappers\MemberWrapper.cs" />
     <Compile Include="Parser\Impl\Wrappers\MethodWrapper.cs" />
     <Compile Include="Parser\Impl\Wrappers\NamespaceWrapper.cs" />
     <Compile Include="Parser\Impl\Wrappers\ParameterWrapper.cs" />

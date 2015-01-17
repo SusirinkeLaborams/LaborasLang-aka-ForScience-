@@ -43,6 +43,19 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
+        public ExpressionNode RemoveAmbiguity(Parser parser, IEnumerable<TypeWrapper> args)
+        {
+            try
+            {
+                var method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), args.Select(t => t.TypeReference).ToList());
+                return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, parent, SequencePoint);
+            }
+            catch (Exception)
+            {
+                throw new TypeException(SequencePoint, "Ambiguous method result");
+            }
+        }
+
         public static ExpressionNode Create(IEnumerable<MethodWrapper> methods, Context parent, ExpressionNode instance, SequencePoint sequencePoint)
         {
             if(methods.Count() == 1)

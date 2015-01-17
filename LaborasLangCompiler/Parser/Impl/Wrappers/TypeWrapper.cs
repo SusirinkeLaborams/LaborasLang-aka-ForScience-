@@ -8,7 +8,7 @@ using LaborasLangCompiler.ILTools;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
-    abstract class TypeWrapper : ExternalWrapperBase
+    abstract class TypeWrapper : ExternalWrapperBase, MemberWrapper
     {
         public abstract TypeReference TypeReference { get; }
         public abstract string FullName { get; }
@@ -18,6 +18,9 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         public abstract TypeWrapper GetContainedType(string name);
         public abstract MethodWrapper GetMethod(string name);
         public abstract IEnumerable<MethodWrapper> GetMethods(string name);
+        public abstract TypeWrapper DeclaringType { get; }
+        public MemberReference MemberReference { get { return TypeReference; } }
+        public bool IsStatic { get { return true; } }
 
         public TypeWrapper(AssemblyEmitter assembly) : base(assembly) { }
 

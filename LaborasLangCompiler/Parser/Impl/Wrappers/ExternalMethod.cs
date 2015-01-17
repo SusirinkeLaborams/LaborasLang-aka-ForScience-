@@ -35,6 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             } 
         }
         public bool IsStatic { get { return MethodReference.Resolve().IsStatic; } }
+        public MemberReference MemberReference { get { return MethodReference; } }
         public TypeWrapper DeclaringType { get; private set; }
 
         private TypeWrapper methodReturnType;

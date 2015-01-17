@@ -16,6 +16,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class FunctionDeclarationNode : ParserNode, Context, MethodWrapper
     {
         public MethodReference MethodReference { get { return emitter.Get(); } }
+        public MemberReference MemberReference { get { return MethodReference; } }
         public override NodeType Type { get { return NodeType.ParserInternal; } }
         public FunctorTypeWrapper FunctorType 
         {

@@ -65,5 +65,25 @@ namespace LaborasLangCompiler.Parser
             if (!ILHelpers.IsAccessible(field, scope.GetClass().TypeReference))
                 throw new TypeException(point, "Field {0} is inaccessible from {1}", field, scope);
         }
+
+        public static void VerifyAccessible(MemberReference member, Context scope, SequencePoint point)
+        {
+            if(member is MethodReference)
+            {
+                VerifyAccessible((MethodReference)member, scope, point);
+            }
+            else if(member is TypeReference)
+            {
+                VerifyAccessible((TypeReference)member, scope, point);
+            }
+            else if(member is FieldReference)
+            {
+                VerifyAccessible((FieldReference)member, scope, point);
+            }
+            else
+            {
+                throw new NotImplementedException("VerifyAccessible not impemented for this type");
+            }
+        }
     }
 }

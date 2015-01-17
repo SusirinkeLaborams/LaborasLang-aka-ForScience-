@@ -24,7 +24,12 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         public override string FullName { get { return TypeReference.FullName; } }
         public override TypeWrapper FunctorReturnType { get { return functorReturnType; } }
         public override IEnumerable<TypeWrapper> FunctorParamTypes { get { return functorParamTypes; } }
+        public override TypeWrapper DeclaringType
+        {
+            get { return declaringType; }
+        }
 
+        private TypeWrapper declaringType;
         private TypeReference typeReference;
         private TypeWrapper functorReturnType;
         private IEnumerable<TypeWrapper> functorParamTypes;
@@ -33,6 +38,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         {
             this.functorReturnType = returnType;
             this.functorParamTypes = parameters;
+            this.declaringType = ExternalType.CreateType(assembly, TypeReference.DeclaringType);
         }
 
         //tipo optimizacija

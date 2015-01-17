@@ -24,6 +24,11 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             get { throw new InvalidOperationException("Type is not a functor type"); }
         }
 
+        public override TypeWrapper DeclaringType
+        {
+            get { return null; }
+        }
+
         public ClassNode Class { get; private set; }
 
         public InternalType(AssemblyEmitter assembly, ClassNode classNode) : base(assembly)
