@@ -115,6 +115,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     ObjectInstance = new ThisNode(field.DeclaringType, point);
                 }
+                else
+                {
+                    throw new ParseException(point, "Cannot access non-static field {0} from a static context", field.Name);
+                }
             }
             this.field = field;
         }
