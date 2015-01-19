@@ -14,11 +14,11 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeWrapper DeclaringType { get; private set; }
         public abstract MemberWrapper MemberWrapper { get; }
 
-        protected MemberNode(TypeWrapper declaringType, MemberWrapper member, Context scope, SequencePoint point)
+        protected MemberNode(MemberWrapper member, Context scope, SequencePoint point)
             :base(point)
         {
             Scope = scope;
-            DeclaringType = declaringType;
+            DeclaringType = member.DeclaringType;
             Utils.VerifyAccessible(member.MemberReference, scope, point);
         }
     }

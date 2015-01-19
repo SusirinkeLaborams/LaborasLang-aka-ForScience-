@@ -36,6 +36,7 @@ namespace LaborasLangCompiler.Parser.Impl
             throw new InvalidOperationException();
         }
     }
+
     class NamespaceNode : ExpressionNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }

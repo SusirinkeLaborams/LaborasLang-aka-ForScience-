@@ -12,31 +12,28 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class MethodNode : SymbolNode, IMethodNode
+    class MethodNode : MemberNode, IMethodNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Function; } }
         public override TypeWrapper TypeWrapper { get { return method.FunctorType; } }
         public IExpressionNode ObjectInstance { get { return instance; } }
         public MethodReference Method { get { return method.MethodReference; } }
         public MethodWrapper MethodWrapper { get { return method; } }
+        public override MemberWrapper MemberWrapper { get { return MethodWrapper; } }
         public override bool IsGettable { get { return true; } }
+        public override bool IsSettable { get { return false; } }
 
         private MethodWrapper method;
         private ExpressionNode instance;
 
         public MethodNode(MethodWrapper method, ExpressionNode instance, Context parent, SequencePoint point)
-            : base(method.MethodReference.FullName, parent, point)
+            : base(method, parent, point)
         {
             this.method = method;
-            this.instance = instance;
-            if(instance == null && !method.IsStatic)
-            {
-                this.instance = new ThisNode(method.DeclaringType, point);
-            }
-            Utils.VerifyAccessible(Method, Scope, point);
+            this.instance = ThisNode.GetAccessingInstance(method, instance, parent, point);
         }
 
-        public static new MethodNode Parse(Parser parser, Context parent, AstNode lexerNode)
+        public static MethodNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             var method = FunctionDeclarationNode.ParseAsFunctor(parser, parent, lexerNode);
             return new MethodNode(method, null, parent, method.SequencePoint);

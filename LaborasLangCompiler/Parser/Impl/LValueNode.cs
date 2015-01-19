@@ -81,12 +81,13 @@ namespace LaborasLangCompiler.Parser.Impl
         }
     }
 
-    class FieldNode : SymbolNode, IFieldNode
+    class FieldNode : MemberNode, IFieldNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Field; } }
         public IExpressionNode ObjectInstance { get; private set; }
         public FieldReference Field { get { return field.FieldReference; } }
         public override TypeWrapper TypeWrapper { get { return field.TypeWrapper; } }
+        public override MemberWrapper MemberWrapper { get { return field; } }
         public override bool IsGettable
         {
             get
@@ -104,22 +105,9 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private FieldWrapper field;
         public FieldNode(ExpressionNode instance, FieldWrapper field, Context parent, SequencePoint point)
-            : base(field.Name, parent, point)
+            : base(field, parent, point)
         {
-            ObjectInstance = instance;
-            //non-static field without an instance
-            if(instance == null && !field.IsStatic)
-            {
-                //we're accessing a field from the same or derived class, insert "this"
-                if(!parent.IsStaticContext() && parent.GetClass().TypeWrapper.IsAssignableTo(field.DeclaringType))
-                {
-                    ObjectInstance = new ThisNode(field.DeclaringType, point);
-                }
-                else
-                {
-                    throw new ParseException(point, "Cannot access non-static field {0} from a static context", field.Name);
-                }
-            }
+            ObjectInstance = ThisNode.GetAccessingInstance(field, instance, parent, point);
             this.field = field;
         }
         public override string ToString(int indent)
