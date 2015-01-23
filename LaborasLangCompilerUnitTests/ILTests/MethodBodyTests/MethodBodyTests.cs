@@ -86,10 +86,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new SymbolDeclarationNode()
                     {
-                        DeclaredSymbol = new LocalVariableNode()
-                        {
-                            LocalVariable = new VariableDefinition("floatValue", assemblyEmitter.TypeToTypeReference(typeof(float)))                            
-                        },
+                        Variable = new VariableDefinition("floatValue", assemblyEmitter.TypeToTypeReference(typeof(float))),
                         Initializer = new LiteralNode()
                         {
                             ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(float)),
@@ -149,10 +146,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new SymbolDeclarationNode()
                     {
-                        DeclaredSymbol = new LocalVariableNode()
-                        {
-                            LocalVariable = new VariableDefinition("intLocal", assemblyEmitter.TypeToTypeReference(typeof(int)))
-                        },
+                        Variable = new VariableDefinition("intLocal", assemblyEmitter.TypeToTypeReference(typeof(int))),
                         Initializer = new FieldNode()
                         {
                             Field = field
@@ -213,10 +207,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new SymbolDeclarationNode()
                     {
-                        DeclaredSymbol = new LocalVariableNode()
-                        {
-                            LocalVariable = localVariable,
-                        },
+                        Variable = localVariable,
                         Initializer = new LiteralNode
                         {
                             ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(double)),
@@ -502,10 +493,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new SymbolDeclarationNode()
                     {
-                        DeclaredSymbol = new LocalVariableNode()
-                        {
-                            LocalVariable = localVariable
-                        }
+                        Variable = localVariable
                     },
                     new UnaryOperatorNode()
                     {
@@ -556,10 +544,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new SymbolDeclarationNode()
                     {
-                        DeclaredSymbol = new LocalVariableNode()
-                        {
-                            LocalVariable = localVariable
-                        }
+                        Variable = localVariable
                     },
                     new UnaryOperatorNode()
                     {
@@ -1012,10 +997,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new SymbolDeclarationNode()
                     {
-                        DeclaredSymbol = new LocalVariableNode()
-                        {
-                            LocalVariable = localA
-                        },
+                        Variable = localA,
                         Initializer = new LiteralNode()
                         {
                             ExpressionReturnType = literalType,
@@ -1024,10 +1006,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                     },
                     new SymbolDeclarationNode()
                     {
-                        DeclaredSymbol = new LocalVariableNode()
-                        {
-                            LocalVariable = localB
-                        },
+                        Variable = localB,
                         Initializer = new LiteralNode()
                         {
                             ExpressionReturnType = literalType,
@@ -1380,14 +1359,18 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
             var booleanType = assemblyEmitter.TypeToTypeReference(typeof(bool));
 
+            var variableDef1 = new VariableDefinition("a", booleanType);
+
             var variable1 = new LocalVariableNode()
             {
-                LocalVariable = new VariableDefinition("a", booleanType)
+                LocalVariable = variableDef1
             };
+
+            var variableDef2 = new VariableDefinition("b", booleanType);
 
             var variable2 = new LocalVariableNode()
             {
-                LocalVariable = new VariableDefinition("b", booleanType)
+                LocalVariable = variableDef2
             };
 
             var literal1 = new LiteralNode()
@@ -1408,12 +1391,12 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new SymbolDeclarationNode()
                     {
-                        DeclaredSymbol = variable1,
+                        Variable = variableDef1,
                         Initializer = literal1
                     },
                     new SymbolDeclarationNode()
                     {
-                        DeclaredSymbol = variable2,
+                        Variable = variableDef2,
                         Initializer = literal2
                     },
 
@@ -1489,15 +1472,18 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 uintType
             });
 
+            var variableDef1 = new VariableDefinition("a", uintType);
 
             var variable1 = new LocalVariableNode()
             {
-                LocalVariable = new VariableDefinition("a", uintType)
+                LocalVariable = variableDef1
             };
+
+            var variableDef2 = new VariableDefinition("b", uintType);
 
             var variable2 = new LocalVariableNode()
             {
-                LocalVariable = new VariableDefinition("b", uintType)
+                LocalVariable = variableDef2
             };
 
             var literal1 = new LiteralNode()
@@ -1518,12 +1504,12 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new SymbolDeclarationNode()
                     {
-                        DeclaredSymbol = variable1,
+                        Variable = variableDef1,
                         Initializer = literal1
                     },
                     new SymbolDeclarationNode()
                     {
-                        DeclaredSymbol = variable2,
+                        Variable = variableDef2,
                         Initializer = literal2
                     },
 
@@ -1631,15 +1617,17 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 intType
             });
 
-            var variables = new List<LocalVariableNode>();
+            var variableDefs = new List<VariableDefinition>();
 
-            for (int i = 0; i < 7; i++)
+            for(int i = 0; i < 7; i++)
             {
-                variables.Add(new LocalVariableNode()
-                {
-                    LocalVariable = new VariableDefinition(((char)i + 'a').ToString(), intType)
-                });
+                variableDefs.Add(new VariableDefinition(((char)i + 'a').ToString(), intType));
             }
+
+            var variables = variableDefs.Select(def => new LocalVariableNode()
+                {
+                    LocalVariable = def
+                }).ToList();
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -1647,7 +1635,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new SymbolDeclarationNode()
                     {
-                        DeclaredSymbol = variables[0],
+                        Variable = variableDefs[0],
                         Initializer = new LiteralNode()
                         {
                             ExpressionReturnType = intType,
@@ -1672,7 +1660,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             {
                 nodes.Add(new SymbolDeclarationNode()
                 {
-                    DeclaredSymbol = variables[i],
+                    Variable = variableDefs[i],
                     Initializer = new UnaryOperatorNode()
                     {
                         UnaryOperatorType = operators[i - 1],
@@ -1771,9 +1759,11 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 intType
             });
 
+            var localVariableDef = new VariableDefinition("counter", intType);
+
             var localVariable = new LocalVariableNode()
             {
-                LocalVariable = new VariableDefinition("counter", intType)
+                LocalVariable = localVariableDef
             };
 
             BodyCodeBlock = new CodeBlockNode()
@@ -1782,7 +1772,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new SymbolDeclarationNode()
                     {
-                        DeclaredSymbol = localVariable,
+                        Variable = localVariableDef,
                         Initializer = new LiteralNode()
                         {
                             ExpressionReturnType = intType,
@@ -1979,10 +1969,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
                 {
                     new SymbolDeclarationNode()
                     {
-                        DeclaredSymbol = new LocalVariableNode()
-                        {
-                            LocalVariable = new VariableDefinition("myInstance", myType)
-                        },
+                        Variable = new VariableDefinition("myInstance", myType),
                         Initializer = new ObjectCreationNode()
                         {
                             ExpressionReturnType = myType,

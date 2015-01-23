@@ -20,7 +20,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public override bool IsGettable { get { return false; } }
         public override bool IsSettable { get { return false; } }
 
-
         protected SymbolNode(string value, Context scope, SequencePoint point)
             : base(point)
         {

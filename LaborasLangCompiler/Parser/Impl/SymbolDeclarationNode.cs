@@ -15,26 +15,26 @@ namespace LaborasLangCompiler.Parser.Impl
     class SymbolDeclarationNode : ParserNode, ISymbolDeclarationNode
     {
         public override NodeType Type { get { return NodeType.SymbolDeclaration; } }
-        public ILocalVariableNode DeclaredSymbol { get { return declaredSymbol; } }
+        public VariableDefinition Variable { get { return variable.VariableDefinition; } }
         public IExpressionNode Initializer { get { return initializer; } }
 
         private ExpressionNode initializer;
-        private LocalVariableNode declaredSymbol;
-        private SymbolDeclarationNode(LocalVariableNode symbol, ExpressionNode init, SequencePoint point)
+        private VariableWrapper variable;
+
+        private SymbolDeclarationNode(VariableWrapper variable, ExpressionNode init, SequencePoint point)
             : base(point)
         {
-            this.declaredSymbol = symbol;
+            this.variable = variable;
             this.initializer = init;
         }
         public static SymbolDeclarationNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
-            LocalVariableNode symbol = null;
             var info = DeclarationInfo.Parse(parser, lexerNode);
             var name = info.SymbolName.GetSingleSymbolOrThrow();
             var declaredType = TypeNode.Parse(parser, parent, info.Type);
             ExpressionNode initializer = info.Initializer.IsNull ? null : ExpressionNode.Parse(parser, parent, info.Initializer, declaredType);
 
-            if (declaredType != null && declaredType.FullName == parser.Void.FullName)
+            if (declaredType != null && declaredType.IsVoid())
                 throw new TypeException(parser.GetSequencePoint(lexerNode), "Cannot declare a variable of type void");
 
             if (info.Modifiers != 0)
@@ -55,16 +55,19 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
+            VariableWrapper variable = null;
+
             if (parent is CodeBlockNode)
             {
-                symbol = ((CodeBlockNode)parent).AddVariable(declaredType, name, parser.GetSequencePoint(lexerNode));
+                variable = new VariableWrapper(name, declaredType);
+                ((CodeBlockNode)parent).AddVariable(variable, parser.GetSequencePoint(lexerNode));
             }
             else
             {
                 throw new ParseException(parser.GetSequencePoint(lexerNode), "SymbolDeclarationNode somehow parsed not in a code block");
             }
 
-            return new SymbolDeclarationNode(symbol, initializer, parser.GetSequencePoint(lexerNode));
+            return new SymbolDeclarationNode(variable, initializer, parser.GetSequencePoint(lexerNode));
         }
 
         public override string ToString(int indent)
@@ -72,7 +75,7 @@ namespace LaborasLangCompiler.Parser.Impl
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("VariableDeclaration:");
             builder.Indent(indent + 1).AppendLine("Symbol:");
-            builder.Indent(indent + 2).AppendFormat("{0} {1}", declaredSymbol.ExpressionReturnType, declaredSymbol.Name).AppendLine();
+            builder.Indent(indent + 2).AppendFormat("{0} {1}", variable.TypeWrapper, variable.Name).AppendLine();
             if(initializer != null)
             {
                 builder.Indent(indent + 1).AppendLine("Initializer:");

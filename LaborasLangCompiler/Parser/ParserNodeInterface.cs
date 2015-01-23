@@ -166,7 +166,7 @@ namespace LaborasLangCompiler.Parser
 
     interface ISymbolDeclarationNode : IParserNode
     {
-        ILocalVariableNode DeclaredSymbol { get; }
+        VariableDefinition Variable { get; }
         IExpressionNode Initializer { get; }
     }
 
@@ -174,6 +174,7 @@ namespace LaborasLangCompiler.Parser
     {
         IReadOnlyList<IParserNode> Nodes { get; }
     }
+
     interface IReturnNode : IParserNode
     {
         IExpressionNode Expression { get; }

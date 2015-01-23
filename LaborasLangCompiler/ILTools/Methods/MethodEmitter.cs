@@ -207,12 +207,12 @@ namespace LaborasLangCompiler.ILTools.Methods
 
         protected void Emit(ISymbolDeclarationNode symbolDeclaration)
         {
-            body.Variables.Add(symbolDeclaration.DeclaredSymbol.LocalVariable);
+            body.Variables.Add(symbolDeclaration.Variable);
 
             if (symbolDeclaration.Initializer != null)
             {
-                EmitExpressionWithTargetType(symbolDeclaration.Initializer, symbolDeclaration.DeclaredSymbol.ExpressionReturnType);
-                EmitStore(symbolDeclaration.DeclaredSymbol);
+                EmitExpressionWithTargetType(symbolDeclaration.Initializer, symbolDeclaration.Variable.VariableType);
+                Stloc(symbolDeclaration.Variable.Index);
             }
         }
 

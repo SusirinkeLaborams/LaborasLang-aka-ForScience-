@@ -48,12 +48,11 @@ namespace LaborasLangCompiler.Parser.Impl
             return parent.IsStaticContext();
         }
 
-        public virtual LocalVariableNode AddVariable(TypeWrapper type, string name, SequencePoint point)
+        public virtual void AddVariable(VariableWrapper variable, SequencePoint point)
         {
-            if (symbols.ContainsKey(name))
-                throw new SymbolAlreadyDeclaredException(point, "Var {0} already declared", name);
-            symbols.Add(name, new VariableWrapper(name, type));
-            return new LocalVariableNode(point, symbols[name], false);
+            if (symbols.ContainsKey(variable.Name))
+                throw new SymbolAlreadyDeclaredException(point, "Var {0} already declared", variable.Name);
+            symbols.Add(variable.Name, variable);
         }
 
         private void AddNode(ParserNode node)

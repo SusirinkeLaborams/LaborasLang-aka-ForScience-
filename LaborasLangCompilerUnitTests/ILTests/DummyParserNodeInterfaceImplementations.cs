@@ -177,8 +177,8 @@ namespace LaborasLangCompilerUnitTests.ILTests
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.SymbolDeclaration; } }
 
-        public TypeReference ReturnType { get { return DeclaredSymbol.ExpressionReturnType; } }
-        public ILocalVariableNode DeclaredSymbol { get; set; }
+        public TypeReference ReturnType { get { return Variable.VariableType; } }
+        public VariableDefinition Variable { get; set; }
         public IExpressionNode Initializer { get; set; }
     }
 

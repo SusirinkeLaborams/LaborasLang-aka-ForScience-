@@ -15,19 +15,19 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             {
                 if(definition == null)
                 {
-                    definition = new VariableDefinition(name, TypeWrapper.TypeReference);
+                    definition = new VariableDefinition(Name, TypeWrapper.TypeReference);
                 }
                 return definition;
             }
         }
         public TypeWrapper TypeWrapper { get; private set; }
+        public string Name { get; private set; }
 
-        private string name;
         private VariableDefinition definition;
 
         public VariableWrapper(string name, TypeWrapper parameterType)
         {
-            this.name = name;
+            Name = name;
             this.TypeWrapper = parameterType;
         }
 
