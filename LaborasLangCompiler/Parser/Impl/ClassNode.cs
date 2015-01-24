@@ -24,6 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private Parser parser;
         private Dictionary<string, FunctionDeclarationNode> methods;
         private int lambdaCounter = 0;
+        private AstNode lexerNode;
         #endregion fields
 
         #region properties
@@ -36,10 +37,11 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #endregion properties
 
-        public ClassNode(Parser parser, ClassNode parent, SequencePoint point) : base(point)
+        public ClassNode(Parser parser, ClassNode parent, AstNode lexerNode) : base(parser.GetSequencePoint(lexerNode))
         {
             if (parser.Root == null)
                 parser.Root = this;
+            this.lexerNode = lexerNode;
             this.parent = parent;
             this.parser = parser;
             this.declaredMethods = new List<FunctionDeclarationNode>();
@@ -200,7 +202,8 @@ namespace LaborasLangCompiler.Parser.Impl
         #endregion type/namespace lookup
 
         #region parsing
-        public void ParseDeclarations(AstNode lexerNode)
+
+        public void ParseDeclarations()
         {
             foreach (var node in lexerNode.Children)
             {

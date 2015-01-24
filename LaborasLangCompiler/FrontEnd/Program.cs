@@ -21,12 +21,12 @@ namespace LaborasLangCompiler.FrontEnd
                 var compilerArgs = CompilerArguments.Parse(args);
                 AssemblyRegistry.Create(compilerArgs.References);
                 var assembly = new AssemblyEmitter(compilerArgs);
-                
+
                 foreach (var file in compilerArgs.SourceFiles)
                 {
-                    using(var tree = Lexer.Lexer.Lex(System.IO.File.ReadAllText(file)))
+                    using (var tree = Lexer.Lexer.Lex(System.IO.File.ReadAllText(file)))
                     {
-                        var parser = new Parser.Parser(assembly, tree, file);
+                        Parser.Parser.ParseAll(assembly, tree, file);
                     }
                 }
 

@@ -46,7 +46,7 @@ namespace LaborasLangCompiler.Parser
 
         #endregion types
 
-        public Parser(AssemblyEmitter assembly, RootNode root, string filePath, bool emit = true)
+        private Parser(AssemblyEmitter assembly, RootNode root, string filePath, bool emit = true)
         {
             Assembly = assembly;
             Filename = Path.GetFileNameWithoutExtension(filePath);
@@ -84,10 +84,16 @@ namespace LaborasLangCompiler.Parser
 
             var tree = root.Node;
 
-            Root = new ClassNode(this, null, GetSequencePoint(tree));
-            Root.ParseDeclarations(tree);
-            Root.ParseInitializers();
-            Root.Emit();
+            Root = new ClassNode(this, null, tree);
+        }
+
+        public static Parser ParseAll(AssemblyEmitter assembly, RootNode root, string filePath, bool emit = true)
+        {
+            Parser parser = new Parser(assembly, root, filePath, emit);
+            parser.Root.ParseDeclarations();
+            parser.Root.ParseInitializers();
+            parser.Root.Emit();
+            return parser;
         }
 
         public SequencePoint GetSequencePoint(AstNode lexerNode)
