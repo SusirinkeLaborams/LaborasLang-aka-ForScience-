@@ -13,15 +13,8 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     class InternalField : FieldWrapper, Context
     {
         public FieldReference FieldReference { get { return FieldDefinition; } }
-        public FieldDefinition FieldDefinition { 
-            get 
-            {
-                if (field == null)
-                    field = new FieldDefinition(Name, GetAttributes(), TypeWrapper.TypeReference);
-                return field;
-            } 
-        }
-        public TypeWrapper TypeWrapper { get; set; }
+        public FieldDefinition FieldDefinition { get { return field.Value; } }
+        public TypeWrapper TypeWrapper { get; private set; }
         public string Name { get; set; }
         public ExpressionNode Initializer { get; set; }
         public bool IsStatic { get; set; }
@@ -31,7 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         private Modifiers modifiers;
         private SequencePoint point;
         private AstNode initializer;
-        private FieldDefinition field;
+        private Lazy<FieldDefinition> field;
         private ClassNode parent;
 
         public FunctionDeclarationNode GetMethod()
@@ -63,6 +56,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             this.Name = declaration.SymbolName.GetSingleSymbolOrThrow();
             this.parent = parent;
             this.TypeWrapper = TypeNode.Parse(parser, this, declaration.Type);
+            this.field = new Lazy<FieldDefinition>(() => new FieldDefinition(Name, GetAttributes(), TypeWrapper.TypeReference));
 
             if (TypeWrapper == null && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
                 TypeWrapper = FunctionDeclarationNode.ParseFunctorType(parser, parent, declaration.Initializer);
@@ -73,6 +67,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
                     throw new TypeException(point, "Cannot declare a field of type void");
                 parent.TypeEmitter.AddField(FieldDefinition);
             }
+
         }
 
         public void Initialize(Parser parser)

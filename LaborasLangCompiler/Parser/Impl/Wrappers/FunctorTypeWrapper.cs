@@ -10,17 +10,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
     class FunctorTypeWrapper : TypeWrapper
     {
-        public override TypeReference TypeReference 
-        {
-            get
-            {
-                if(typeReference == null)
-                {
-                    typeReference = AssemblyRegistry.GetFunctorType(Assembly, FunctorReturnType.TypeReference, FunctorParamTypes.Select(t => t.TypeReference).ToList());
-                }
-                return typeReference;
-            }
-        }
+        public override TypeReference TypeReference { get { return typeReference.Value; } }
         public override string FullName { get { return TypeReference.FullName; } }
         public override TypeWrapper FunctorReturnType { get { return functorReturnType; } }
         public override IEnumerable<TypeWrapper> FunctorParamTypes { get { return functorParamTypes; } }
@@ -30,7 +20,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         }
 
         private TypeWrapper declaringType;
-        private TypeReference typeReference;
+        private Lazy<TypeReference> typeReference;
         private TypeWrapper functorReturnType;
         private IEnumerable<TypeWrapper> functorParamTypes;
 
@@ -38,6 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         {
             this.functorReturnType = returnType;
             this.functorParamTypes = parameters;
+            this.typeReference = new Lazy<TypeReference>(() => AssemblyRegistry.GetFunctorType(Assembly, FunctorReturnType.TypeReference, FunctorParamTypes.Select(t => t.TypeReference).ToList()));
             this.declaringType = ExternalType.CreateType(assembly, TypeReference.DeclaringType);
         }
 

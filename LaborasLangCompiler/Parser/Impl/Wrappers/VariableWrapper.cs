@@ -9,26 +9,17 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
     class VariableWrapper
     {
-        public VariableDefinition VariableDefinition 
-        { 
-            get
-            {
-                if(definition == null)
-                {
-                    definition = new VariableDefinition(Name, TypeWrapper.TypeReference);
-                }
-                return definition;
-            }
-        }
+        public VariableDefinition VariableDefinition { get { return definition.Value; } }
         public TypeWrapper TypeWrapper { get; private set; }
         public string Name { get; private set; }
 
-        private VariableDefinition definition;
+        private Lazy<VariableDefinition> definition;
 
         public VariableWrapper(string name, TypeWrapper parameterType)
         {
             Name = name;
             this.TypeWrapper = parameterType;
+            definition = new Lazy<VariableDefinition>(() => new VariableDefinition(Name, TypeWrapper.TypeReference));
         }
 
         public override string ToString()

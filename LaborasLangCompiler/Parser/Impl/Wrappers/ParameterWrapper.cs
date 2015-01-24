@@ -9,28 +9,19 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
     class ParameterWrapper
     {
-        public ParameterDefinition ParameterDefinition 
-        { 
-            get
-            {
-                if(definition == null)
-                {
-                    definition = new ParameterDefinition(Name, attributes, TypeWrapper.TypeReference);
-                }
-                return definition;
-            }
-        }
+        public ParameterDefinition ParameterDefinition { get { return definition.Value; } }
         public TypeWrapper TypeWrapper { get; private set; }
         public string Name { get; private set; }
 
         private ParameterAttributes attributes;
-        private ParameterDefinition definition;
+        private Lazy<ParameterDefinition> definition;
 
         public ParameterWrapper(string name, ParameterAttributes attributes, TypeWrapper parameterType)
         {
             this.Name = name;
             this.attributes = attributes;
             this.TypeWrapper = parameterType;
+            definition = new Lazy<ParameterDefinition>(() => new ParameterDefinition(Name, this.attributes, TypeWrapper.TypeReference));
         }
     }
 }
