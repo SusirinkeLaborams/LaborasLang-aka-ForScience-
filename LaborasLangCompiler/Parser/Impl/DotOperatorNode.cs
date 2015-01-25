@@ -38,186 +38,149 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private void Append(ExpressionNode node)
         {
-            if(node.ExpressionType != ExpressionNodeType.ParserInternal)
+            if(builtNode == null)
             {
-                if (!AppendExpression((ExpressionNode)node))
-                    throw new ParseException(node.SequencePoint, "Expressions only allowed on left of dot operator");
+                AppendFirst(node);
             }
-            else if(node is SymbolNode)
+            else
             {
-                var nod = (SymbolNode)node;
-                if (AppendLValue(nod))
+                if(node.ExpressionType != ExpressionNodeType.ParserInternal)
+                    throw new ParseException(node.SequencePoint, "Expressions only allowed on left of dot operator");
+
+                var symbol = node as SymbolNode;
+                if (AppendLValue(symbol))
                     return;
-                if (AppendMethod(nod))
+                if (AppendMethod(symbol))
                     return;
-                if (AppendType(nod))
+                if (AppendType(symbol))
                     return;
-                if (AppendNamespace(nod))
+                if (AppendNamespace(symbol))
                     return;
-                throw new SymbolNotFoundException(node.SequencePoint, "Symbol {0} not found", nod.Name);
+                throw new SymbolNotFoundException(node.SequencePoint, "Symbol {0} not found", symbol.Name);
+            }
+        }
+
+        private bool AppendFirst(ExpressionNode node)
+        {
+            if (node.ExpressionType != ExpressionNodeType.ParserInternal)
+            {
+                //non-symbol expressions
+                builtNode = node;
+                return true;
+            }
+            else if (node is SymbolNode)
+            {
+                SymbolNode symbol = node as SymbolNode;
+                builtNode = parent.GetSymbol(symbol.Name, parent, node.SequencePoint);
+                return builtNode != null;
+            }
+            else
+            {
+                throw new ParseException(node.SequencePoint, "Unexpected node type {0} in dot operator", node.ExpressionType);
             }
         }
 
         private bool AppendMethod(SymbolNode node)
         {
-            if(builtNode == null)
+            if (builtNode is NamespaceNode)
+                return false;
+
+            if (builtNode is TypeNode)
             {
-                var methods = parent.GetClass().GetMethods(node.Name);
-                if(parent.IsStaticContext())
-                {
-                    methods = methods.Where(m => m.IsStatic);
-                }
+                //static methods
+                var methods = ((TypeNode)builtNode).ParsedType.GetMethods(node.Name);
+                methods = methods.Where(m => m.IsStatic);
                 if (methods.Count() != 0)
                 {
-                    builtNode = AmbiguousMethodNode.Create(methods, parent, null, node.SequencePoint);
+                    builtNode = AmbiguousMethodNode.Create(methods, parent, null, builtNode.SequencePoint);
                     return true;
                 }
                 else
                 {
                     return false;
                 }
-                
             }
             else
             {
-                if (builtNode is NamespaceNode)
+                //non-static methods
+                if (!builtNode.IsGettable)
                     return false;
-                
-                if(builtNode is TypeNode)
+                var methods = builtNode.TypeWrapper.GetMethods(node.Name);
+                methods = methods.Where(m => !m.IsStatic);
+                if (methods.Count() != 0)
                 {
-                    //static methods
-                    var methods = ((TypeNode)builtNode).ParsedType.GetMethods(node.Name);
-                    methods = methods.Where(m => m.IsStatic);
-                    if (methods.Count() != 0)
-                    {
-                        builtNode = AmbiguousMethodNode.Create(methods, parent, null, builtNode.SequencePoint);
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    builtNode = AmbiguousMethodNode.Create(methods, parent, builtNode, builtNode.SequencePoint);
+                    return true;
                 }
                 else
                 {
-                    //non-static methods
-                    if (!builtNode.IsGettable)
-                        return false;
-                    var methods = builtNode.TypeWrapper.GetMethods(node.Name);
-                    methods = methods.Where(m => !m.IsStatic);
-                    if (methods.Count() != 0)
-                    {
-                        builtNode = AmbiguousMethodNode.Create(methods, parent, builtNode, builtNode.SequencePoint);
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
         }
 
         private bool AppendType(SymbolNode node)
         {
-            if(builtNode == null)
+            TypeWrapper type = null;
+            if (builtNode is NamespaceNode)
             {
-                builtNode = cls.FindType(node.Name, parent, node.SequencePoint);
-                return builtNode != null;
+                type = ((NamespaceNode)builtNode).Namespace.GetContainedType(node.Name);
+            }
+            if (builtNode is TypeNode)
+            {
+                type = ((TypeNode)builtNode).ParsedType.GetContainedType(node.Name);
+            }
+
+            if (type != null)
+            {
+                builtNode = new TypeNode(parser, type, parent, node.SequencePoint);
+                return true;
             }
             else
             {
-                TypeWrapper type = null;
-                if(builtNode is NamespaceNode)
-                {
-                    type = ((NamespaceNode)builtNode).Namespace.GetContainedType(node.Name);
-                }
-                if(builtNode is TypeNode)
-                {
-                    type = ((TypeNode)builtNode).ParsedType.GetContainedType(node.Name);
-                }
-
-                if (type != null)
-                {
-                    builtNode = new TypeNode(parser, type, parent, node.SequencePoint);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
         }
 
         private bool AppendNamespace(SymbolNode node)
         {
-            if (builtNode == null)
+            NamespaceWrapper found = null;
+            if (builtNode is NamespaceNode)
             {
-                builtNode = cls.FindNamespace(node.Name, node.SequencePoint);
-                return builtNode != null;
+                found = ((NamespaceNode)builtNode).Namespace.GetContainedNamespace(node.Name);
+            }
+
+            if (found != null)
+            {
+                builtNode = new NamespaceNode(found, node.SequencePoint);
+                return true;
             }
             else
             {
-                NamespaceWrapper found = null;
-                if(builtNode is NamespaceNode)
-                {
-                    found = ((NamespaceNode)builtNode).Namespace.GetContainedNamespace(node.Name);
-                }
-
-                if(found != null)
-                {
-                    builtNode = new NamespaceNode(found, node.SequencePoint);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
         }
 
         private bool AppendLValue(SymbolNode node)
         {
-            string name = node.Name;
-            if(builtNode == null)
+            FieldWrapper field = null;
+
+            if (builtNode is TypeNode)
             {
-                builtNode = parent.GetSymbol(name, parent, node.SequencePoint);
-                return builtNode != null;
+                field = ((TypeNode)builtNode).ParsedType.GetField(node.Name);
+                if (field != null && !field.IsStatic)
+                    field = null;
             }
-            else
+            else if (builtNode.ExpressionType != ExpressionNodeType.ParserInternal)
             {
-                FieldWrapper field = null;
-
-                if(builtNode is TypeNode)
-                {
-                    field = ((TypeNode)builtNode).ParsedType.GetField(node.Name);
-                    if (field != null && !field.IsStatic)
-                        field = null;
-                }
-                else if(builtNode.ExpressionType != ExpressionNodeType.ParserInternal)
-                {
-                    field = builtNode.TypeWrapper.GetField(node.Name);
-                    if (field != null && field.IsStatic || !builtNode.IsGettable)
-                        field = null;
-                }
-
-                if (field != null)
-                {
-                    builtNode = new FieldNode(field.IsStatic ? null : builtNode, field, parent, builtNode.SequencePoint);
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                field = builtNode.TypeWrapper.GetField(node.Name);
+                if (field != null && field.IsStatic || !builtNode.IsGettable)
+                    field = null;
             }
-        }
 
-        private bool AppendExpression(ExpressionNode node)
-        {
-            if(builtNode == null)
+            if (field != null)
             {
-                builtNode = node;
+                builtNode = new FieldNode(field.IsStatic ? null : builtNode, field, parent, builtNode.SequencePoint);
                 return true;
             }
             else

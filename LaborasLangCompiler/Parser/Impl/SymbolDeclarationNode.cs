@@ -34,18 +34,18 @@ namespace LaborasLangCompiler.Parser.Impl
             var declaredType = TypeNode.Parse(parser, parent, info.Type);
             ExpressionNode initializer = info.Initializer.IsNull ? null : ExpressionNode.Parse(parser, parent, info.Initializer, declaredType);
 
-            if (declaredType != null && declaredType.IsVoid())
+            if (declaredType.IsVoid())
                 throw new TypeException(parser.GetSequencePoint(lexerNode), "Cannot declare a variable of type void");
 
             if (info.Modifiers != 0)
                 throw new NotImplementedException("Modifiers not implemented for local variables");
 
-            if (declaredType == null && (initializer == null || initializer.TypeWrapper == null))
+            if (declaredType.IsAuto() && (initializer == null || initializer.TypeWrapper == null))
                 throw new TypeException(parser.GetSequencePoint(lexerNode), "Type inference requires initialization");
 
             if (initializer != null)
             {
-                if (declaredType == null)
+                if (declaredType.IsAuto())
                 {
                     declaredType = initializer.TypeWrapper;
                 }

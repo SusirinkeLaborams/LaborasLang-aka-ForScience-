@@ -80,7 +80,7 @@ namespace LaborasLangCompiler.Parser
             primitives["object"] = Object = new ExternalType(assembly, typeof(object));
 
             primitives["void"] = Void = new ExternalType(assembly, typeof(void));
-            primitives["auto"] = Auto = null;
+            primitives["auto"] = Auto = AutoType.Instance;
 
             var tree = root.Node;
 
@@ -128,19 +128,19 @@ namespace LaborasLangCompiler.Parser
             return sequencePoint;
         }
 
-        public TypeNode FindType(string fullname, Context scope, SequencePoint point)
+        public TypeWrapper FindType(string fullname)
         {
             var type = AssemblyRegistry.FindType(Assembly, fullname);
             if (type != null)
-                return new TypeNode(this, new ExternalType(Assembly, type), scope, point);
+                return new ExternalType(Assembly, type);
             else
                 return null;
         }
 
-        public NamespaceNode FindNamespace(string fullname, SequencePoint point)
+        public NamespaceWrapper FindNamespace(string fullname)
         {
             if (AssemblyRegistry.IsNamespaceKnown(fullname))
-                return new NamespaceNode(new ExternalNamespace(fullname, Assembly), point);
+                return new ExternalNamespace(fullname, Assembly);
             else
                 return null;
         }

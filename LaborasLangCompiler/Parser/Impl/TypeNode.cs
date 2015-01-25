@@ -24,7 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             typeWrapper = new ExternalType(parser.Assembly, typeof(Type));
             ParsedType = type;
-            if(type != null)
+            if(!type.IsAuto())
                 Utils.VerifyAccessible(ParsedType.TypeReference, Scope, point);
         }
 

@@ -92,14 +92,6 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
                 return null;
         }
 
-        public override MethodWrapper GetMethod(string name)
-        {
-            var method = AssemblyRegistry.GetMethod(Assembly, TypeReference, name);
-            if(method != null)
-                return new ExternalMethod(Assembly, method);
-            return null;
-        }
-
         public override IEnumerable<MethodWrapper> GetMethods(string name)
         {
             return AssemblyRegistry.GetMethods(Assembly, TypeReference, name).Select(m => new ExternalMethod(Assembly, m));

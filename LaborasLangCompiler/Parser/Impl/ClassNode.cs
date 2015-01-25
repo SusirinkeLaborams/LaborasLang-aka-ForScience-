@@ -17,12 +17,12 @@ namespace LaborasLangCompiler.Parser.Impl
     class ClassNode : ParserNode, Context
     {
         #region fields
-        private Dictionary<string, InternalField> fields;
+        private List<InternalField> fields;
         private List<FunctionDeclarationNode> declaredMethods;
         private List<NamespaceWrapper> globalImports;
         private ClassNode parent;
         private Parser parser;
-        private Dictionary<string, FunctionDeclarationNode> methods;
+        private List<FunctionDeclarationNode> methods;
         private int lambdaCounter = 0;
         private AstNode lexerNode;
         #endregion fields
@@ -45,9 +45,9 @@ namespace LaborasLangCompiler.Parser.Impl
             this.parent = parent;
             this.parser = parser;
             this.declaredMethods = new List<FunctionDeclarationNode>();
-            this.methods = new Dictionary<string, FunctionDeclarationNode>();
+            this.methods = new List<FunctionDeclarationNode>();
             this.TypeWrapper = new InternalType(parser.Assembly, this);
-            fields = new Dictionary<string, InternalField>();
+            fields = new List<InternalField>();
             globalImports = new List<NamespaceWrapper>();
             FullName = parser.Filename;
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
@@ -57,23 +57,16 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public FieldWrapper GetField(string name)
         {
-            if (fields.ContainsKey(name))
-                return fields[name];
+            FieldReference field = AssemblyRegistry.GetField(parser.Assembly, TypeEmitter, name);
+            if(field != null)
+                return new ExternalField(parser.Assembly, field);
 
             return null;
         }
 
         public IEnumerable<MethodWrapper> GetMethods(string name)
         {
-            return methods.Where(kv => kv.Key == name).Select(kv => kv.Value);
-        }
-
-        public MethodWrapper GetMethod(string name)
-        {
-            if (methods.ContainsKey(name))
-                return methods[name];
-            else
-                return null;
+            return AssemblyRegistry.GetMethods(parser.Assembly, TypeEmitter, name).Select(m => new ExternalMethod(parser.Assembly, m));
         }
 
         public TypeWrapper GetContainedType(string name)
@@ -101,6 +94,25 @@ namespace LaborasLangCompiler.Parser.Impl
             if (field != null)
                 return new FieldNode(null, field, scope, point);
 
+            var methods = GetMethods(name);
+            if (scope.IsStaticContext())
+                methods = methods.Where(m => m.IsStatic);
+
+            if (methods.Count() > 0)
+                return AmbiguousMethodNode.Create(methods, scope, null, point);
+
+            var type = GetContainedType(name);
+            if (type != null)
+                return new TypeNode(parser, type, scope, point);
+
+            type = FindType(name, point);
+            if(type != null)
+                return new TypeNode(parser, type, scope, point);
+
+            var namespaze = FindNamespace(name, point);
+            if (namespaze != null)
+                return new NamespaceNode(namespaze, point);
+
             if (parent != null)
                 return parent.GetSymbol(name, scope, point);
 
@@ -117,57 +129,49 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #region type/namespace lookup
 
-        public TypeNode FindType(string name, Context scope, SequencePoint point)
+        public TypeWrapper FindType(string name, SequencePoint point)
         {
-            TypeNode type = null;
-
             //local types not implemented
 
             //primitives
             if (parser.IsPrimitive(name))
-                type = new TypeNode(parser, parser.GetPrimitive(name), scope, point);
+                return parser.GetPrimitive(name);
 
             //imports
-            if (type == null)
+            var types = globalImports.Select(namespaze => namespaze.GetContainedType(name)).Where(t => t != null);
+            try
             {
-                var types = globalImports.Select(namespaze => namespaze.GetContainedType(name)).Where(t => t != null);
-                try
+                if (types.Count() != 0)
+                    return types.Single();
+            }
+            catch (InvalidOperationException)
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.AppendFormat("Ambigious type {0}\n Could be:\n", name);
+                foreach (var t in types)
                 {
-                    if (types.Count() != 0)
-                        type = new TypeNode(parser, types.Single(), scope, point);
+                    builder.Append(t.FullName);
                 }
-                catch (InvalidOperationException)
-                {
-                    StringBuilder builder = new StringBuilder();
-                    builder.AppendFormat("Ambigious type {0}\n Could be:\n", name);
-                    foreach (var t in types)
-                    {
-                        builder.Append(t.FullName);
-                    }
-                    throw new TypeException(point, builder.ToString());
-                }
+                throw new TypeException(point, builder.ToString());
             }
 
-            if (type == null)
+            if (parent == null)
             {
-                if (parent != null)
-                    type = parent.FindType(name, scope, point);
-                else
-                    parser.FindType(name, scope, point);
+                return parser.FindType(name);
             }
 
-            return type;
+            return null;
         }
 
-        public NamespaceNode FindNamespace(string name, SequencePoint point)
+        public NamespaceWrapper FindNamespace(string name, SequencePoint point)
         {
-            NamespaceNode namespaze = null;
+            NamespaceWrapper namespaze = null;
 
             var namespazes = globalImports.Select(import => import.GetContainedNamespace(name)).Where(n => n != null);
             try
             {
                 if (namespazes.Count() != 0)
-                    namespaze = new NamespaceNode(namespazes.Single(), point);
+                    namespaze = namespazes.Single();
             }
             catch (InvalidOperationException)
             {
@@ -180,12 +184,9 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new TypeException(point, builder.ToString());
             }
 
-            if (namespaze == null)
+            if (namespaze == null && parent == null)
             {
-                if (parent != null)
-                    namespaze = parent.FindNamespace(name, point);
-                else
-                    namespaze = parser.FindNamespace(name, point);
+                namespaze = parser.FindNamespace(name);
             }
 
             return namespaze;
@@ -235,13 +236,13 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 //field
                 var field = new InternalField(parser, this, declaration, parser.GetSequencePoint(lexerNode));
-                fields.Add(field.Name, field);
+                fields.Add(field);
             }
         }
 
         public void ParseInitializers()
         {
-            foreach(var field in fields.Values)
+            foreach(var field in fields)
             {
                 field.Initialize(parser);
             }
@@ -256,7 +257,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public void AddMethod(FunctionDeclarationNode method)
         {
-            methods.Add(method.MethodReference.Name, method);
+            methods.Add(method);
         }
 
         public string NewFunctionName()
@@ -270,15 +271,15 @@ namespace LaborasLangCompiler.Parser.Impl
             StringBuilder builder = new StringBuilder("(ClassNode: Fields: ");
             foreach(var field in fields)
             {
-                builder.Append(String.Format("{0}{1} {2}", delim, field.Value.TypeWrapper.FullName, field.Key));
-                if (field.Value.Initializer != null)
-                    builder.Append(" = ").Append(field.Value.Initializer.ToString());
+                builder.Append(String.Format("{0}{1} {2}", delim, field.TypeWrapper.FullName, field.Name));
+                if (field.Initializer != null)
+                    builder.Append(" = ").Append(field.Initializer.ToString());
                 delim = ", ";
             }
 
             builder.Append(" Methods: ");
             delim = "";
-            foreach(var method in methods.Values)
+            foreach(var method in methods)
             {
                 builder.Append(method);
                 delim = ", ";
@@ -292,12 +293,12 @@ namespace LaborasLangCompiler.Parser.Impl
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("Class:");
             builder.Indent(indent + 1).AppendLine("Fields:");
-            foreach(var field in fields.Values)
+            foreach(var field in fields)
             {
                 builder.AppendLine(field.ToString(indent + 2));
             }
             builder.Indent(indent + 1).AppendLine("Methods:");
-            foreach(var method in methods.Values)
+            foreach(var method in methods)
             {
                 builder.AppendLine(method.ToString(indent + 2));
             }

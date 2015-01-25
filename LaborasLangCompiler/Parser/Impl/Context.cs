@@ -1,4 +1,5 @@
-﻿using Mono.Cecil;
+﻿using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,8 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         FunctionDeclarationNode GetMethod();
         ClassNode GetClass();
-        ExpressionNode GetSymbol(string name, Context scope, SequencePoint point);
         bool IsStaticContext();
+
+        ExpressionNode GetSymbol(string name, Context scope, SequencePoint point);
     }
 }

@@ -71,7 +71,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 default:
                     throw new NotImplementedException();
             }
-            if(expectedType != null)
+            if(!(expectedType == null || expectedType.IsAuto()))
             {
                 var ambiguous = ret as AmbiguousNode;
                 if(ambiguous != null)

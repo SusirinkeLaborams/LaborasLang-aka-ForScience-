@@ -46,11 +46,6 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             return Class.GetField(name);
         }
 
-        public override MethodWrapper GetMethod(string name)
-        {
-            return Class.GetMethod(name);
-        }
-
         public override IEnumerable<MethodWrapper> GetMethods(string name)
         {
             return Class.GetMethods(name);

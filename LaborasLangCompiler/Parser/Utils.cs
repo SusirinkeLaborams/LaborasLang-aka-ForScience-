@@ -48,6 +48,11 @@ namespace LaborasLangCompiler.Parser
             return type.FullName == typeof(void).FullName;
         }
 
+        public static bool IsAuto(this TypeWrapper type)
+        {
+            return type is AutoType;
+        }
+
         public static void VerifyAccessible(MethodReference method, Context scope, SequencePoint point)
         {
             if (!ILHelpers.IsAccessible(method, scope.GetClass().TypeReference))

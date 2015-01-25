@@ -42,7 +42,6 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         //pagal parser, functor nelabai tipas
         public override FieldWrapper GetField(string name) { return null; }
         public override TypeWrapper GetContainedType(string name) { return null; }
-        public override MethodWrapper GetMethod(string name) { return null; }
         public override IEnumerable<MethodWrapper> GetMethods(string name) { return new List<MethodWrapper>(); }
         #endregion class stuff
     }

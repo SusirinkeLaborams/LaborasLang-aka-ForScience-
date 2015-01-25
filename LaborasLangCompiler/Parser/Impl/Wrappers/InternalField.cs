@@ -58,12 +58,12 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             this.TypeWrapper = TypeNode.Parse(parser, this, declaration.Type);
             this.field = new Lazy<FieldDefinition>(() => new FieldDefinition(Name, GetAttributes(), TypeWrapper.TypeReference));
 
-            if (TypeWrapper == null && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
+            if (TypeWrapper.IsAuto() && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
                 TypeWrapper = FunctionDeclarationNode.ParseFunctorType(parser, parent, declaration.Initializer);
 
-            if (TypeWrapper != null)
+            if (!TypeWrapper.IsAuto())
             {
-                if (TypeWrapper.FullName == parser.Void.FullName)
+                if (TypeWrapper.IsVoid())
                     throw new TypeException(point, "Cannot declare a field of type void");
                 parent.TypeEmitter.AddField(FieldDefinition);
             }
@@ -74,14 +74,14 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         {
             if(initializer.IsNull)
             {
-                if (TypeWrapper == null)
+                if (TypeWrapper.IsAuto())
                     throw new TypeException(point, "Type inference requires initialization");
                 return;
             }
 
             Initializer = ExpressionNode.Parse(parser, this, initializer, TypeWrapper);
 
-            if(TypeWrapper == null)
+            if(TypeWrapper.IsAuto())
             {
                 TypeWrapper = Initializer.TypeWrapper;
                 parent.TypeEmitter.AddField(FieldDefinition);
