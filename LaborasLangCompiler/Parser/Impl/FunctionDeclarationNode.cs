@@ -88,7 +88,6 @@ namespace LaborasLangCompiler.Parser.Impl
                 symbols.Add(param.Name, param);
             }
             ParamTypes = symbols.Values.Select(p => p.TypeWrapper);
-            parent.AddMethod(this);
         }
 
         private ParameterWrapper ParseParameter(Context parent, AstNode typeNode, AstNode nameNode)
@@ -118,6 +117,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public static FunctionDeclarationNode ParseAsFunctor(Parser parser, Context parent, AstNode function)
         {
             var instance = new FunctionDeclarationNode(parser, parent, Modifiers.NoInstance | Modifiers.Private, parent.GetClass().NewFunctionName(), function);
+            parent.GetClass().AddLambda(instance);
             instance.Emit();
             return instance;
         }

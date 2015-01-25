@@ -19,10 +19,10 @@ namespace LaborasLangCompiler.Parser.Impl
         #region fields
         private List<InternalField> fields;
         private List<FunctionDeclarationNode> declaredMethods;
+        private List<FunctionDeclarationNode> lambdas;
         private List<NamespaceWrapper> globalImports;
         private ClassNode parent;
         private Parser parser;
-        private List<FunctionDeclarationNode> methods;
         private int lambdaCounter = 0;
         private AstNode lexerNode;
         #endregion fields
@@ -45,7 +45,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.parent = parent;
             this.parser = parser;
             this.declaredMethods = new List<FunctionDeclarationNode>();
-            this.methods = new List<FunctionDeclarationNode>();
+            this.lambdas = new List<FunctionDeclarationNode>();
             this.TypeWrapper = new InternalType(parser.Assembly, this);
             fields = new List<InternalField>();
             globalImports = new List<NamespaceWrapper>();
@@ -248,6 +248,11 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
+        public void AddLambda(FunctionDeclarationNode lambda)
+        {
+            lambdas.Add(lambda);
+        }
+
         public void Emit()
         {
             declaredMethods.ForEach(m => m.Emit());
@@ -255,37 +260,9 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #endregion parsing
 
-        public void AddMethod(FunctionDeclarationNode method)
-        {
-            methods.Add(method);
-        }
-
         public string NewFunctionName()
         {
             return "$Lambda_" + lambdaCounter++.ToString();
-        }
-
-        public override string ToString()
-        {
-            string delim = "";
-            StringBuilder builder = new StringBuilder("(ClassNode: Fields: ");
-            foreach(var field in fields)
-            {
-                builder.Append(String.Format("{0}{1} {2}", delim, field.TypeWrapper.FullName, field.Name));
-                if (field.Initializer != null)
-                    builder.Append(" = ").Append(field.Initializer.ToString());
-                delim = ", ";
-            }
-
-            builder.Append(" Methods: ");
-            delim = "";
-            foreach(var method in methods)
-            {
-                builder.Append(method);
-                delim = ", ";
-            }
-            
-            return builder.Append(")").ToString();
         }
 
         public override string ToString(int indent)
@@ -298,7 +275,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 builder.AppendLine(field.ToString(indent + 2));
             }
             builder.Indent(indent + 1).AppendLine("Methods:");
-            foreach(var method in methods)
+            foreach(var method in declaredMethods.Union(lambdas))
             {
                 builder.AppendLine(method.ToString(indent + 2));
             }
