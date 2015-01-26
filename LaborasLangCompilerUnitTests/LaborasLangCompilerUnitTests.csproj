@@ -107,6 +107,10 @@
     <Compile Include="LexerTests\SyntaxMatcherTests.cs" />
     <Compile Include="LexerTests\RuleValidationTests.cs" />
     <None Include="ILTests\MethodBodyTests\Expected\Test_FunctorNamesDoNotClash.il" />
+    <None Include="IntegrationTests\SourceFiles\Bottles.ll" />
+    <None Include="IntegrationTests\SourceFiles\HelloWorld.ll" />
+    <None Include="IntegrationTests\SourceFiles\InlineFunctorCall.ll" />
+    <None Include="IntegrationTests\SourceFiles\Recursion.ll" />
     <None Include="IntegrationTests\SourceFiles\StdInWorks.ll" />
     <Compile Include="TestBase.cs" />
     <Compile Include="ParserTests\ParserTests.cs" />
@@ -159,7 +163,9 @@
   <ItemGroup>
     <None Include="ILTests\MethodBodyTests\Expected\TestCanEmit_StoreField_LoadIntLiteral.il" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="IntegrationTests\ExpectedOutput\Bottles.txt" />
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

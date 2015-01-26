@@ -192,11 +192,7 @@
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ProjectBase\Diagrams\" />
-    <Folder Include="ProjectBase\LangProj\" />
-    <Folder Include="ProjectBase\misc\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <COMReference Include="RichEditObjectModel">
       <Guid>{8CC497C9-A1DF-11CE-8098-00AA0047BE5D}</Guid>
