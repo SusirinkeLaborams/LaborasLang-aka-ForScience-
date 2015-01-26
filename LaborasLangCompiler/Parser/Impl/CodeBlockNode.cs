@@ -19,14 +19,14 @@ namespace LaborasLangCompiler.Parser.Impl
         public bool Returns { get; private set; }
 
         protected List<ParserNode> nodes;
-        protected Dictionary<string, VariableWrapper> symbols;
+        protected Dictionary<string, SymbolDeclarationNode> symbols;
         private Context parent;
 
 
         protected CodeBlockNode(Context parent, SequencePoint point) : base(point)
         {
             nodes = new List<ParserNode>();
-            symbols = new Dictionary<string, VariableWrapper>();
+            symbols = new Dictionary<string, SymbolDeclarationNode>();
             this.parent = parent;
             Returns = false;
         }
@@ -38,7 +38,10 @@ namespace LaborasLangCompiler.Parser.Impl
         public ExpressionNode GetSymbol(string name, Context scope, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
-                return new LocalVariableNode(point, symbols[name], false);
+            {
+                SymbolDeclarationNode node = symbols[name];
+                return new LocalVariableNode(point, node.VarialbeWrapper, node.IsConst);
+            }
 
             return parent.GetSymbol(name, scope, point);
         }
@@ -48,11 +51,11 @@ namespace LaborasLangCompiler.Parser.Impl
             return parent.IsStaticContext();
         }
 
-        public virtual void AddVariable(VariableWrapper variable, SequencePoint point)
+        public void AddVariable(SymbolDeclarationNode variable)
         {
-            if (symbols.ContainsKey(variable.Name))
-                throw new SymbolAlreadyDeclaredException(point, "Var {0} already declared", variable.Name);
-            symbols.Add(variable.Name, variable);
+            if (symbols.ContainsKey(variable.Variable.Name))
+                throw new SymbolAlreadyDeclaredException(variable.SequencePoint, "Var {0} already declared", variable.Variable.Name);
+            symbols.Add(variable.Variable.Name, variable);
         }
 
         private void AddNode(ParserNode node)
@@ -131,9 +134,9 @@ namespace LaborasLangCompiler.Parser.Impl
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("CodeBlock:");
             builder.Indent(indent + 1).AppendLine("Symbols:");
-            foreach(var symbol in symbols)
+            foreach(var symbol in symbols.Values)
             {
-                builder.Indent(2 + indent).AppendFormat("{0} {1}", symbol.Value.TypeWrapper, symbol.Key).AppendLine();
+                builder.Indent(2 + indent).Append(symbol.GetSignature()).AppendLine();
             }
             builder.Indent(1 + indent).AppendLine("Nodes:");
             foreach(var node in nodes)

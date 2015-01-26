@@ -1,0 +1,29 @@
+Class:
+	Fields:
+	Methods:
+		Method:
+			Name:
+				foo
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+						const System.String bar
+					Nodes:
+						VariableDeclaration:
+							Symbol:
+								const System.String bar
+							Initializer:
+								Literal:
+									Type:
+										System.String
+									Value:
+										bar
+
+
+
+

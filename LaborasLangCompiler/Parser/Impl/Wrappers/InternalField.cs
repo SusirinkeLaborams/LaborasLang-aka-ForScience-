@@ -51,11 +51,11 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         {
             this.IsStatic = true;
             this.point = point;
-            this.modifiers = declaration.Modifiers;
             this.initializer = declaration.Initializer;
             this.Name = declaration.SymbolName.GetSingleSymbolOrThrow();
             this.parent = parent;
             this.TypeWrapper = TypeNode.Parse(parser, this, declaration.Type);
+            this.modifiers = declaration.Modifiers;
             this.field = new Lazy<FieldDefinition>(() => new FieldDefinition(Name, GetAttributes(), TypeWrapper.TypeReference));
 
             if (TypeWrapper.IsAuto() && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
