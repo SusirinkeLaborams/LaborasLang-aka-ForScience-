@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
+VisualStudioVersion = 12.0.30501.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaborasLangCompiler", "LaborasLangCompiler\LaborasLangCompiler.csproj", "{977BD47D-3ED4-499A-B9BA-89AEC2EB0F7A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaborasLangCompilerUnitTests", "LaborasLangCompilerUnitTests\LaborasLangCompilerUnitTests.csproj", "{AE4D15A9-9B29-4F75-B648-E9F70631AF38}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lexer", "Lexer\Lexer.csproj", "{0C7187D8-8048-4539-9F3D-F781C5C5BF1D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LaborasLangPackage", "LaborasLangPackage\LaborasLangPackage.csproj", "{A6C82017-A7D5-4D6C-8167-231815BD7647}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,6 +29,10 @@ Global
 		{0C7187D8-8048-4539-9F3D-F781C5C5BF1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C7187D8-8048-4539-9F3D-F781C5C5BF1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C7187D8-8048-4539-9F3D-F781C5C5BF1D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6C82017-A7D5-4D6C-8167-231815BD7647}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6C82017-A7D5-4D6C-8167-231815BD7647}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6C82017-A7D5-4D6C-8167-231815BD7647}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6C82017-A7D5-4D6C-8167-231815BD7647}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
