@@ -1,0 +1,17 @@
+Class:
+	Fields:
+	Methods:
+		Method:
+			Name:
+				foo
+			Modifiers:
+				Private, NoInstance, Entry
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+
+

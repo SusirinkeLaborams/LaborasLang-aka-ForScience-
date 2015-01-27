@@ -635,6 +635,45 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CanParse(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestVoidEntry()
+        {
+            string source = @"
+                entry auto foo = void()
+                {
+                };";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestIntEntry()
+        {
+            string source = @"
+                entry auto foo = int()
+                {
+                    return 0;
+                };";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestUIntEntry()
+        {
+            string source = @"
+                entry auto foo = uint()
+                {
+                    uint bar;
+                    return bar;
+                };";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException))]
+        public void TestFloatEntry()
+        {
+            string source = @"
+                entry auto foo = float()
+                {
+                };";
+            CanParse(source);
+        }
         private static void CompareTrees(string source, [CallerMemberName] string name = "")
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });

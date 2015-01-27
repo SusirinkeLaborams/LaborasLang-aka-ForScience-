@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.ILTools.Methods;
+﻿using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.ILTools.Methods;
 using LaborasLangCompiler.ILTools.Types;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
@@ -76,9 +77,6 @@ namespace LaborasLangCompiler.Parser.Impl
             MethodReturnType = builder.Type;
             emitter = new MethodEmitter(parent.TypeEmitter, methodName, MethodReturnType.TypeReference, AttributesFromModifiers(parser.GetSequencePoint(lexerNode), mods));
 
-            if (mods.HasFlag(Modifiers.Entry))
-                emitter.SetAsEntryPoint();
-
             foreach(var p in paramz)
             {
                 var param = ParseParameter(parent, p.Type, p.Name);
@@ -88,6 +86,22 @@ namespace LaborasLangCompiler.Parser.Impl
                 symbols.Add(param.Name, param);
             }
             ParamTypes = symbols.Values.Select(p => p.TypeWrapper);
+
+            if (mods.HasFlag(Modifiers.Entry))
+            {
+                if (MethodReturnType != parser.Int32 && MethodReturnType != parser.UInt32 && MethodReturnType != parser.Void)
+                    throw new TypeException(parser.GetSequencePoint(lexerNode), "Illegal entrypoint return type {0}, must be int, uint or void", MethodReturnType.FullName);
+                emitter.SetAsEntryPoint();
+                if(ParamTypes.Count() == 1 && ParamTypes.First().FullName != parser.Assembly.TypeToTypeReference(typeof(String[])).FullName)
+                {
+                    throw new TypeException(parser.GetSequencePoint(lexerNode), "Illegal entrypoint parameter type {0}, must be parameterless or string[]", ParamTypes.First().FullName);
+                }
+                else if(ParamTypes.Count() > 1)
+                {
+                    throw new TypeException(parser.GetSequencePoint(lexerNode), "Illegal entrypoint parameter type {0}, must be parameterless or string[]", ParamTypes.First().FullName);
+                }
+            }
+
         }
 
         private ParameterWrapper ParseParameter(Context parent, AstNode typeNode, AstNode nameNode)

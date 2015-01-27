@@ -75,5 +75,40 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         {
             return FullName;
         }
+
+        public override bool Equals(object obj)
+        {
+            TypeWrapper that = obj as TypeWrapper;
+
+            if (that == null)
+                return false;
+
+            return FullName == that.FullName;
+        }
+
+        public override int GetHashCode()
+        {
+            return FullName.GetHashCode();
+        }
+
+        public static bool operator==(TypeWrapper left, TypeWrapper right)
+        {
+            if(ReferenceEquals(left, right))
+            {
+                return true;
+            }
+
+            if ((object)left == null || (object)right == null)
+            {
+                return false;
+            }
+
+            return left.FullName == right.FullName;
+        }
+
+        public static bool operator!=(TypeWrapper left, TypeWrapper right)
+        {
+            return !(left == right);
+        }
     }
 }

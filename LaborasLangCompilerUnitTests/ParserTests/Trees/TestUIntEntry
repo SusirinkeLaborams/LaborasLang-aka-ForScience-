@@ -1,0 +1,31 @@
+Class:
+	Fields:
+	Methods:
+		Method:
+			Name:
+				foo
+			Modifiers:
+				Private, NoInstance, Entry
+			Return:
+				System.UInt32
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+						System.UInt32 bar
+					Nodes:
+						VariableDeclaration:
+							Symbol:
+								System.UInt32 bar
+
+						Return:
+							Expression:
+								Local:
+									Name:
+										bar
+									Type:
+										System.UInt32
+
+
+
+

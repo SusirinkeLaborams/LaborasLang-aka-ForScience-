@@ -1,0 +1,26 @@
+Class:
+	Fields:
+	Methods:
+		Method:
+			Name:
+				foo
+			Modifiers:
+				Private, NoInstance, Entry
+			Return:
+				System.Int32
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						Return:
+							Expression:
+								Literal:
+									Type:
+										System.Int32
+									Value:
+										0
+
+
+
+
