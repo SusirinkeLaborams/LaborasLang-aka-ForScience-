@@ -25,14 +25,14 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var returnType = parent.GetMethod().MethodReturnType;
             var instance = new ReturnNode(parser.GetSequencePoint(lexerNode));
-            if (returnType == parser.Void && lexerNode.ChildrenCount != 2)
+            if (Utils.TypesEqual(returnType, parser.Void) && lexerNode.ChildrenCount != 2)
                 throw new TypeException(instance.SequencePoint, "Cannot return value in a void method");
 
             if (lexerNode.Children.Count == 3)
             {
                 instance.expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[1], returnType);
-                if (!instance.expression.TypeWrapper.IsAssignableTo(returnType) || !instance.expression.IsGettable) 
-                    throw new TypeException(instance.SequencePoint, "Function returns {0}, cannot return {1}", returnType, instance.expression.TypeWrapper);
+                if (!instance.expression.ExpressionReturnType.IsAssignableTo(returnType) || !instance.expression.IsGettable) 
+                    throw new TypeException(instance.SequencePoint, "Function returns {0}, cannot return {1}", returnType, instance.expression.ExpressionReturnType);
             }
             return instance;
         }

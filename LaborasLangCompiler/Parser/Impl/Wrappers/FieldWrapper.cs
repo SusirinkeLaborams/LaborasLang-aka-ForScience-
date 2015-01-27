@@ -10,7 +10,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     interface FieldWrapper : MemberWrapper
     {
         FieldReference FieldReference { get; }
-        TypeWrapper TypeWrapper { get; }
+        TypeReference TypeReference { get; }
         string Name { get; }
     }
 }

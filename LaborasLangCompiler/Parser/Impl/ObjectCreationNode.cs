@@ -13,18 +13,18 @@ namespace LaborasLangCompiler.Parser.Impl
     class ObjectCreationNode : MemberNode, IObjectCreationNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ObjectCreation; } }
-        public override TypeWrapper TypeWrapper { get { return type; } }
+        public override TypeReference ExpressionReturnType { get { return type; } }
         public IReadOnlyList<IExpressionNode> Args { get { return args; } }
         public MethodReference Constructor { get { return constructor.MethodReference; } }
         public override bool IsGettable { get { return true; } }
         public override bool IsSettable { get { return false; } }
         public override MemberWrapper MemberWrapper { get { return constructor; } }
 
-        private TypeWrapper type;
+        private TypeReference type;
         private List<ExpressionNode> args;
         private MethodWrapper constructor;
 
-        public ObjectCreationNode(TypeWrapper type, List<ExpressionNode> args, MethodWrapper constructor, Context scope, SequencePoint point)
+        public ObjectCreationNode(TypeReference type, List<ExpressionNode> args, MethodWrapper constructor, Context scope, SequencePoint point)
             :base(constructor, scope, point)
         {
             this.type = type;
@@ -36,7 +36,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("ObjectCreation:");
-            builder.Indent(indent + 1).AppendFormat("Type: {0}", TypeWrapper).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("Type: {0}", type).AppendLine();
             builder.Indent(indent + 1).AppendLine("Args:");
             foreach (var arg in args)
             {

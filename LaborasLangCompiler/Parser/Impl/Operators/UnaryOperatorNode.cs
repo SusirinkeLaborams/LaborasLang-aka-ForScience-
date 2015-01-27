@@ -15,7 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class UnaryOperatorNode : ExpressionNode, IUnaryOperatorNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.UnaryOperator; } }
-        public override TypeWrapper TypeWrapper { get { return operand.TypeWrapper; } }
+        public override TypeReference ExpressionReturnType { get { return operand.ExpressionReturnType; } }
         public UnaryOperatorNodeType UnaryOperatorType { get; private set; }
         public IExpressionNode Operand { get { return operand; } }
         public override bool IsGettable
@@ -142,27 +142,27 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private void ParseInc(Parser parser)
         {
-            if (!TypeWrapper.IsNumericType() || Operand is LiteralNode)
+            if (!ExpressionReturnType.IsNumericType() || !operand.IsSettable)
                 throw new TypeException(SequencePoint, "Increment/Decrement ops only allowed on numeric typed variables, {0} received",
-                    TypeWrapper);
+                    ExpressionReturnType);
         }
         private void ParseNegation(Parser parser)
         {
-            if (!TypeWrapper.IsNumericType())
+            if (!ExpressionReturnType.IsNumericType())
                 throw new TypeException(SequencePoint, "Arithmetic ops only allowed on numeric types, {0} received",
-                    TypeWrapper);
+                    ExpressionReturnType);
         }
         private void ParseLogical(Parser parser)
         {
-            if (!TypeWrapper.IsBooleanType())
+            if (!ExpressionReturnType.IsBooleanType())
                 throw new TypeException(SequencePoint, "Logical ops only allowed on boolean types, {0} received",
-                    TypeWrapper);
+                    ExpressionReturnType);
         }
         private void ParseBinary(Parser parser)
         {
-            if (!TypeWrapper.IsIntegerType())
+            if (!ExpressionReturnType.IsIntegerType())
                 throw new TypeException(SequencePoint, "Binary ops only allowed on integer types, {0} received",
-                    TypeWrapper);
+                    ExpressionReturnType);
         }
         public static UnaryOperatorNode Void(ExpressionNode expression)
         {

@@ -33,7 +33,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeEmitter TypeEmitter { get; private set; }
         public string FullName { get; private set; }
         public TypeReference TypeReference { get { return TypeEmitter.Get(parser.Assembly); } }
-        public TypeWrapper TypeWrapper { get; private set; }
 
         #endregion properties
 
@@ -46,7 +45,6 @@ namespace LaborasLangCompiler.Parser.Impl
             this.parser = parser;
             this.declaredMethods = new List<FunctionDeclarationNode>();
             this.lambdas = new List<FunctionDeclarationNode>();
-            this.TypeWrapper = new InternalType(parser.Assembly, this);
             fields = new List<InternalField>();
             globalImports = new List<NamespaceWrapper>();
             FullName = parser.Filename;
@@ -69,7 +67,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return AssemblyRegistry.GetMethods(parser.Assembly, TypeEmitter, name).Select(m => new ExternalMethod(parser.Assembly, m));
         }
 
-        public TypeWrapper GetContainedType(string name)
+        public TypeReference GetContainedType(string name)
         {
             return null; 
         }
@@ -129,7 +127,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #region type/namespace lookup
 
-        public TypeWrapper FindType(string name, SequencePoint point)
+        public TypeReference FindType(string name, SequencePoint point)
         {
             //local types not implemented
 

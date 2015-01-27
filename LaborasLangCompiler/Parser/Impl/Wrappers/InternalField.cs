@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.ILTools;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
@@ -14,11 +15,11 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     {
         public FieldReference FieldReference { get { return FieldDefinition; } }
         public FieldDefinition FieldDefinition { get { return field.Value; } }
-        public TypeWrapper TypeWrapper { get; private set; }
+        public TypeReference TypeReference { get; private set; }
         public string Name { get; set; }
         public ExpressionNode Initializer { get; set; }
         public bool IsStatic { get; set; }
-        public TypeWrapper DeclaringType { get { return parent.TypeWrapper; } }
+        public TypeReference DeclaringType { get { return parent.TypeReference; } }
         public MemberReference MemberReference { get { return FieldReference; } }
 
         private Modifiers modifiers;
@@ -54,16 +55,16 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             this.initializer = declaration.Initializer;
             this.Name = declaration.SymbolName.GetSingleSymbolOrThrow();
             this.parent = parent;
-            this.TypeWrapper = TypeNode.Parse(parser, this, declaration.Type);
+            this.TypeReference = TypeNode.Parse(parser, this, declaration.Type);
             this.modifiers = declaration.Modifiers;
-            this.field = new Lazy<FieldDefinition>(() => new FieldDefinition(Name, GetAttributes(), TypeWrapper.TypeReference));
+            this.field = new Lazy<FieldDefinition>(() => new FieldDefinition(Name, GetAttributes(), TypeReference));
 
-            if (TypeWrapper.IsAuto() && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
-                TypeWrapper = FunctionDeclarationNode.ParseFunctorType(parser, parent, declaration.Initializer);
+            if (TypeReference.IsAuto() && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
+                TypeReference = FunctionDeclarationNode.ParseFunctorType(parser, parent, declaration.Initializer);
 
-            if (!TypeWrapper.IsAuto())
+            if (!TypeReference.IsAuto())
             {
-                if (TypeWrapper.IsVoid())
+                if (TypeReference.IsVoid())
                     throw new TypeException(point, "Cannot declare a field of type void");
                 parent.TypeEmitter.AddField(FieldDefinition);
             }
@@ -74,22 +75,22 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         {
             if(initializer.IsNull)
             {
-                if (TypeWrapper.IsAuto())
+                if (TypeReference.IsAuto())
                     throw new TypeException(point, "Type inference requires initialization");
                 return;
             }
 
-            Initializer = ExpressionNode.Parse(parser, this, initializer, TypeWrapper);
+            Initializer = ExpressionNode.Parse(parser, this, initializer, TypeReference);
 
-            if(TypeWrapper.IsAuto())
+            if (TypeReference.IsAuto())
             {
-                TypeWrapper = Initializer.TypeWrapper;
+                TypeReference = Initializer.ExpressionReturnType;
                 parent.TypeEmitter.AddField(FieldDefinition);
             }
             else
             {
-                if (!Initializer.TypeWrapper.IsAssignableTo(TypeWrapper))
-                    throw new TypeException(Initializer.SequencePoint, "Field of type {0} initialized with {1}", TypeWrapper, Initializer.TypeWrapper);
+                if (!Initializer.ExpressionReturnType.IsAssignableTo(TypeReference))
+                    throw new TypeException(Initializer.SequencePoint, "Field of type {0} initialized with {1}", TypeReference, Initializer.ExpressionReturnType);
             }
 
             if(parser.ShouldEmit)
@@ -109,7 +110,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             }
             if(!modifiers.HasMutability())
             {
-                if (TypeWrapper.IsFunctorType())
+                if (TypeReference.IsFunctorType())
                     modifiers |= Modifiers.Const;
                 else
                     modifiers |= Modifiers.Mutable;
@@ -156,7 +157,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("Field:");
             builder.Indent(indent + 1).AppendLine("Type:");
-            builder.Indent(indent + 2).AppendLine(TypeWrapper.FullName);
+            builder.Indent(indent + 2).AppendLine(TypeReference.FullName);
             builder.Indent(indent + 1).AppendLine("Name:");
             builder.Indent(indent + 2).AppendLine(Name); 
             builder.Indent(indent + 1).AppendLine("Modifiers:");

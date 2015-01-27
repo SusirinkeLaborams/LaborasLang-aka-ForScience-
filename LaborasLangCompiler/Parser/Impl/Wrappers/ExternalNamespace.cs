@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.ILTools;
+using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,14 +21,10 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
                 return null;
         }
 
-        public TypeWrapper GetContainedType(string name)
+        public TypeReference GetContainedType(string name)
         {
             var full = Namespace + "." + name;
-            var type = AssemblyRegistry.FindType(Assembly, full);
-            if (type != null)
-                return new ExternalType(Assembly, type);
-            else
-                return null;
+            return AssemblyRegistry.FindType(Assembly, full);
         }
 
         public ExternalNamespace(string namespaze, AssemblyEmitter assembly) : base(assembly)

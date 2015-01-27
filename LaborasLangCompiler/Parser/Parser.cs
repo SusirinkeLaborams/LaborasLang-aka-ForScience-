@@ -22,27 +22,27 @@ namespace LaborasLangCompiler.Parser
         public Document Document { get; private set; }
         public bool ShouldEmit { get; private set; }
 
-        private Dictionary<string, TypeWrapper> primitives;
+        private Dictionary<string, TypeReference> primitives;
 
         #region types
 
-        public TypeWrapper Bool { get; private set; }
-        public TypeWrapper Char { get; private set; }
-        public TypeWrapper Int8 { get; private set; }
-        public TypeWrapper UInt8 { get; private set; }
-        public TypeWrapper Int16 { get; private set; }
-        public TypeWrapper UInt16 { get; private set; }
-        public TypeWrapper Int32 { get; private set; }
-        public TypeWrapper UInt32 { get; private set; }
-        public TypeWrapper Int64 { get; private set; }
-        public TypeWrapper UInt64 { get; private set; }
-        public TypeWrapper Float { get; private set; }
-        public TypeWrapper Double { get; private set; }
-        public TypeWrapper Decimal { get; private set; }
-        public TypeWrapper String { get; private set; }
-        public TypeWrapper Void { get; private set; }
-        public TypeWrapper Auto { get; private set; }
-        public TypeWrapper Object { get; private set; }
+        public TypeReference Bool { get; private set; }
+        public TypeReference Char { get; private set; }
+        public TypeReference Int8 { get; private set; }
+        public TypeReference UInt8 { get; private set; }
+        public TypeReference Int16 { get; private set; }
+        public TypeReference UInt16 { get; private set; }
+        public TypeReference Int32 { get; private set; }
+        public TypeReference UInt32 { get; private set; }
+        public TypeReference Int64 { get; private set; }
+        public TypeReference UInt64 { get; private set; }
+        public TypeReference Float { get; private set; }
+        public TypeReference Double { get; private set; }
+        public TypeReference Decimal { get; private set; }
+        public TypeReference String { get; private set; }
+        public TypeReference Void { get; private set; }
+        public TypeReference Auto { get; private set; }
+        public TypeReference Object { get; private set; }
 
         #endregion types
 
@@ -55,31 +55,31 @@ namespace LaborasLangCompiler.Parser
             Document.LanguageVendor = DocumentLanguageVendor.Other;
             Document.Type = DocumentType.Text;
             ShouldEmit = emit;
-            this.primitives = new Dictionary<string, TypeWrapper>();
+            this.primitives = new Dictionary<string, TypeReference>();
 
-            primitives["bool"] = Bool = new ExternalType(assembly, typeof(bool));
+            primitives["bool"] = Bool = assembly.TypeToTypeReference(typeof(bool));
 
-            primitives["char"] = Char = new ExternalType(assembly, typeof(char));
-            primitives["int8"] = Int8 = new ExternalType(assembly, typeof(sbyte));
-            primitives["uint8"] = UInt8 = new ExternalType(assembly, typeof(byte));
+            primitives["char"] = Char = assembly.TypeToTypeReference(typeof(char));
+            primitives["int8"] = Int8 = assembly.TypeToTypeReference(typeof(sbyte));
+            primitives["uint8"] = UInt8 = assembly.TypeToTypeReference(typeof(byte));
 
-            primitives["int16"] = Int16 = new ExternalType(assembly, typeof(short));
-            primitives["uint16"] = UInt16 = new ExternalType(assembly, typeof(ushort));
+            primitives["int16"] = Int16 = assembly.TypeToTypeReference(typeof(short));
+            primitives["uint16"] = UInt16 = assembly.TypeToTypeReference(typeof(ushort));
 
-            primitives["int32"] = primitives["int"] = Int32 = new ExternalType(assembly, typeof(int));
-            primitives["uint32"] = primitives["uint"] = UInt32 = new ExternalType(assembly, typeof(uint));
+            primitives["int32"] = primitives["int"] = Int32 = assembly.TypeToTypeReference(typeof(int));
+            primitives["uint32"] = primitives["uint"] = UInt32 = assembly.TypeToTypeReference(typeof(uint));
 
-            primitives["int64"] = primitives["long"] = Int64 = new ExternalType(assembly, typeof(long));
-            primitives["uint64"] = primitives["ulong"] = UInt64 = new ExternalType(assembly, typeof(ulong));
+            primitives["int64"] = primitives["long"] = Int64 = assembly.TypeToTypeReference(typeof(long));
+            primitives["uint64"] = primitives["ulong"] = UInt64 = assembly.TypeToTypeReference(typeof(ulong));
 
-            primitives["float"] = Float = new ExternalType(assembly, typeof(float));
-            primitives["double"] = Double = new ExternalType(assembly, typeof(double));
-            primitives["decimal"] = Decimal = new ExternalType(assembly, typeof(decimal));
+            primitives["float"] = Float = assembly.TypeToTypeReference(typeof(float));
+            primitives["double"] = Double = assembly.TypeToTypeReference(typeof(double));
+            primitives["decimal"] = Decimal = assembly.TypeToTypeReference(typeof(decimal));
 
-            primitives["string"] = String = new ExternalType(assembly, typeof(string));
-            primitives["object"] = Object = new ExternalType(assembly, typeof(object));
+            primitives["string"] = String = assembly.TypeToTypeReference(typeof(string));
+            primitives["object"] = Object = assembly.TypeToTypeReference(typeof(object));
 
-            primitives["void"] = Void = new ExternalType(assembly, typeof(void));
+            primitives["void"] = Void = assembly.TypeToTypeReference(typeof(void));
             primitives["auto"] = Auto = AutoType.Instance;
 
             var tree = root.Node;
@@ -128,13 +128,9 @@ namespace LaborasLangCompiler.Parser
             return sequencePoint;
         }
 
-        public TypeWrapper FindType(string fullname)
+        public TypeReference FindType(string fullname)
         {
-            var type = AssemblyRegistry.FindType(Assembly, fullname);
-            if (type != null)
-                return new ExternalType(Assembly, type);
-            else
-                return null;
+            return AssemblyRegistry.FindType(Assembly, fullname);
         }
 
         public NamespaceWrapper FindNamespace(string fullname)
@@ -150,7 +146,7 @@ namespace LaborasLangCompiler.Parser
             return primitives.ContainsKey(name);
         }
 
-        public TypeWrapper GetPrimitive(string name)
+        public TypeReference GetPrimitive(string name)
         {
             if (!IsPrimitive(name))
                 return null;

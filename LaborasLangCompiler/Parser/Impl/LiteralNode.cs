@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
+using LaborasLangCompiler.ILTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -17,7 +18,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Literal; } }
         public dynamic Value { get; private set; }
-        public override TypeWrapper TypeWrapper { get { return returnType; } }
+        public override TypeReference ExpressionReturnType { get { return type; } }
         public override bool IsGettable
         {
             get { return true; }
@@ -27,12 +28,12 @@ namespace LaborasLangCompiler.Parser.Impl
             get { return false; }
         }
 
-        private TypeWrapper returnType;
+        private TypeReference type;
 
-        private LiteralNode(dynamic value, TypeWrapper type, SequencePoint point)
+        private LiteralNode(dynamic value, TypeReference type, SequencePoint point)
             : base(point)
         {
-            this.returnType = type;
+            this.type = type;
             this.Value = value;
         }
 
@@ -45,7 +46,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return new LiteralNode(value, type, point);
         }
 
-        private static TypeWrapper ParseLiteralType(Parser parser, AstNode lexerNode)
+        private static TypeReference ParseLiteralType(Parser parser, AstNode lexerNode)
         {
             switch(lexerNode.Type)
             {
@@ -65,7 +66,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private static dynamic ParseValue(string value, TypeWrapper type, SequencePoint point)
+        private static dynamic ParseValue(string value, TypeReference type, SequencePoint point)
         {
             try
             {
@@ -113,21 +114,21 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public ExpressionNode RemoveAmbiguity(Parser parser, TypeWrapper expectedType)
+        public ExpressionNode RemoveAmbiguity(Parser parser, TypeReference expectedType)
         {
-            if (expectedType == TypeWrapper)
+            if (expectedType.FullName == type.FullName)
                 return this;
 
-            if (!TypeWrapper.IsAssignableTo(expectedType))
-                throw new TypeException(SequencePoint, "Cannot assign {0} which is {1} to {2}", Value, TypeWrapper, expectedType);
+            if (!type.IsAssignableTo(expectedType))
+                throw new TypeException(SequencePoint, "Cannot assign {0} which is {1} to {2}", Value, type, expectedType);
 
-            return new LiteralNode(ConvertLiteral(this, expectedType), expectedType, SequencePoint);
+            return new LiteralNode(ConvertLiteral(parser, this, expectedType), expectedType, SequencePoint);
         }
 
-        private static dynamic ConvertLiteral(LiteralNode node, TypeWrapper type)
+        private static dynamic ConvertLiteral(Parser parser, LiteralNode node, TypeReference type)
         {
             dynamic value = node.Value;
-            if(node.TypeWrapper.FullName == "System.String")
+            if(node.ExpressionReturnType == parser.String)
             {
                 return ParseValue((string)value, type, node.SequencePoint);
             }
@@ -169,7 +170,7 @@ namespace LaborasLangCompiler.Parser.Impl
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("Literal:");
             builder.Indent(indent + 1).AppendLine("Type:");
-            builder.Indent(indent + 2).AppendLine(TypeWrapper.FullName);
+            builder.Indent(indent + 2).AppendLine(type.FullName);
             builder.Indent(indent + 1).AppendLine("Value:");
             builder.Indent(indent + 2).AppendLine(Value.ToString());
             return builder.ToString();

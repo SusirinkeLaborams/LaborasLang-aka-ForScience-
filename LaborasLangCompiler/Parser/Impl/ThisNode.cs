@@ -1,12 +1,14 @@
 ﻿using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.ILTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -15,11 +17,12 @@ namespace LaborasLangCompiler.Parser.Impl
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.This; } }
         public override bool IsGettable { get { return true; } }
         public override bool IsSettable { get { return false; } }
-        public override TypeWrapper TypeWrapper { get { return type; } }
+        public override TypeReference ExpressionReturnType { get { return type; } }
 
-        private TypeWrapper type;
+        private TypeReference type;
 
-        public ThisNode(TypeWrapper type, SequencePoint point) : base(point)
+        public ThisNode(TypeReference type, SequencePoint point)
+            : base(point)
         {
             this.type = type;
         }
@@ -32,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                return new ThisNode(parent.GetClass().TypeWrapper, parser.GetSequencePoint(lexerNode));
+                return new ThisNode(parent.GetClass().TypeReference, parser.GetSequencePoint(lexerNode));
             }
         }
 
@@ -53,7 +56,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return null;
             }
 
-            if(!context.IsStaticContext() && context.GetClass().TypeWrapper.IsAssignableTo(member.DeclaringType))
+            if (!context.IsStaticContext() && context.GetClass().TypeReference.IsAssignableTo(member.DeclaringType))
             {
                 return new ThisNode(member.DeclaringType, point);
             }

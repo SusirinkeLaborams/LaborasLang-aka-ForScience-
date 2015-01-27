@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mono.Cecil;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
-    class AutoType : InternalType
+    class AutoType : TypeReference
     {
-        public static TypeWrapper Instance { get; private set; }
+        public static TypeReference Instance { get; private set; }
 
         public override string FullName { get { return "auto"; } }
 
-        private AutoType() : base(null, null)
+        private AutoType() : base("", "auto")
         {
         }
 

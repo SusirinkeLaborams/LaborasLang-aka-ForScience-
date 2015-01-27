@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
-    class FunctorTypeWrapper : TypeWrapper
+    /*class FunctorTypeWrapper : TypeWrapper
     {
         public override TypeReference TypeReference { get { return typeReference.Value; } }
         public override string FullName { get { return TypeReference.FullName; } }
@@ -44,5 +44,5 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
         public override TypeWrapper GetContainedType(string name) { return null; }
         public override IEnumerable<MethodWrapper> GetMethods(string name) { return new List<MethodWrapper>(); }
         #endregion class stuff
-    }
+    }*/
 }

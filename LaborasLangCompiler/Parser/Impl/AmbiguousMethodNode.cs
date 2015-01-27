@@ -13,7 +13,6 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class AmbiguousMethodNode : SymbolNode, AmbiguousNode
     {
-        public override TypeWrapper TypeWrapper { get { return null; } }
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
 
         private IEnumerable<MethodWrapper> methods;
@@ -28,13 +27,16 @@ namespace LaborasLangCompiler.Parser.Impl
             this.parent = parent;
         }
 
-        public ExpressionNode RemoveAmbiguity(Parser parser, TypeWrapper expectedType)
+        public ExpressionNode RemoveAmbiguity(Parser parser, TypeReference expectedType)
         {
             if (!expectedType.IsFunctorType())
                 throw new TypeException(SequencePoint, "Cannot cast functor to type {0}", expectedType.FullName);
             try
             {
-                var method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), expectedType.FunctorParamTypes.Select(t => t.TypeReference).ToList());
+#warning move this to ILHelpers
+                var paramz = new List<TypeReference>();
+                ILHelpers.GetFunctorReturnTypeAndArguments(parser.Assembly, expectedType, out paramz);
+                var method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), paramz);
                 return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, parent, SequencePoint);
             }
             catch (Exception)
@@ -43,11 +45,11 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public ExpressionNode RemoveAmbiguity(Parser parser, IEnumerable<TypeWrapper> args)
+        public MethodNode RemoveAmbiguity(Parser parser, IEnumerable<TypeReference> args)
         {
             try
             {
-                var method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), args.Select(t => t.TypeReference).ToList());
+                var method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), args.ToList());
                 return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, parent, SequencePoint);
             }
             catch (Exception)

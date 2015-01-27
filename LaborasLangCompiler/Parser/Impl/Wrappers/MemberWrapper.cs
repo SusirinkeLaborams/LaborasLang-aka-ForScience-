@@ -9,7 +9,7 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
     interface MemberWrapper
     {
-        TypeWrapper DeclaringType { get; }
+        TypeReference DeclaringType { get; }
         bool IsStatic { get; }
         MemberReference MemberReference { get; }
     }

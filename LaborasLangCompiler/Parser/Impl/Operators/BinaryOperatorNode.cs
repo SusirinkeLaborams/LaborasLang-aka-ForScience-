@@ -19,7 +19,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public IExpressionNode LeftOperand { get { return left; } }
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.BinaryOperator; } }
         public BinaryOperatorNodeType BinaryOperatorType { get; private set; }
-        public override TypeWrapper TypeWrapper { get { return typeWrapper; } }
+        public override TypeReference ExpressionReturnType { get { return type; } }
         public override bool IsGettable
         {
             get { return true; }
@@ -29,7 +29,7 @@ namespace LaborasLangCompiler.Parser.Impl
             get { return false; }
         }
 
-        private TypeWrapper typeWrapper;
+        private TypeReference type;
         private ExpressionNode left, right;
 
         protected BinaryOperatorNode(SequencePoint point) : base(point) { }
@@ -99,72 +99,72 @@ namespace LaborasLangCompiler.Parser.Impl
         }
         private void VerifyArithmetic(Parser parser)
         {
-            if (left.TypeWrapper.IsNumericType() && right.TypeWrapper.IsNumericType())
+            if (left.ExpressionReturnType.IsNumericType() && right.ExpressionReturnType.IsNumericType())
             {
-                if (left.TypeWrapper.IsAssignableTo(right.TypeWrapper))
-                    typeWrapper = right.TypeWrapper;
-                else if (right.TypeWrapper.IsAssignableTo(left.TypeWrapper))
-                    typeWrapper = left.TypeWrapper;
+                if (left.IsAssignableTo(right))
+                    type = right.ExpressionReturnType;
+                else if (right.IsAssignableTo(left))
+                    type = left.ExpressionReturnType;
                 else
                     throw new TypeException(SequencePoint, "Incompatible operand types, {0} and {1} received",
-                        left.TypeWrapper.FullName, right.TypeWrapper.FullName);
+                        left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName);
             }
-            else if ((left.TypeWrapper.IsStringType() || right.TypeWrapper.IsStringType()) && BinaryOperatorType == BinaryOperatorNodeType.Addition)
+            else if ((left.ExpressionReturnType.IsStringType() || right.ExpressionReturnType.IsStringType()) && BinaryOperatorType == BinaryOperatorNodeType.Addition)
             {
-                typeWrapper = parser.String;
+                type = parser.String;
             }
             else
             {
                 throw new TypeException(SequencePoint, "Incompatible operand types, {0} and {1} for operator {2}",
-                    left.TypeWrapper.FullName, right.TypeWrapper.FullName, BinaryOperatorType);
+                    left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName, BinaryOperatorType);
             }
         }
         private void VerifyComparison(Parser parser)
         {
-            typeWrapper = parser.Bool;
+            type = parser.Bool;
 
-            bool comparable = left.TypeWrapper.IsNumericType() && right.TypeWrapper.IsNumericType();
-
-            if (!comparable)
-                comparable = left.TypeWrapper.IsStringType() && right.TypeWrapper.IsStringType();
+            bool comparable = left.ExpressionReturnType.IsNumericType() && right.ExpressionReturnType.IsNumericType();
 
             if (!comparable)
-                comparable = left.TypeWrapper.IsBooleanType() && right.TypeWrapper.IsBooleanType();
+                comparable = left.ExpressionReturnType.IsStringType() && right.ExpressionReturnType.IsStringType();
+
+            if (!comparable)
+                comparable = left.ExpressionReturnType.IsBooleanType() && right.ExpressionReturnType.IsBooleanType();
 
             if (comparable)
-                comparable = left.TypeWrapper.IsAssignableTo(right.TypeWrapper) || right.TypeWrapper.IsAssignableTo(left.TypeWrapper);
+                comparable = left.IsAssignableTo(right) || right.IsAssignableTo(left);
 
             if (!comparable)
                 throw new TypeException(SequencePoint, "Types {0} and {1} cannot be compared with op {2}",
-                    left.TypeWrapper, right.TypeWrapper, BinaryOperatorType);
+                    left.ExpressionReturnType, right.ExpressionReturnType, BinaryOperatorType);
         }
         private void VerifyShift(Parser parser)
         {
-            typeWrapper = left.TypeWrapper;
-            if (right.TypeWrapper.FullName != parser.Int32.FullName)
+            type = left.ExpressionReturnType;
+            if (right.ExpressionReturnType.FullName != parser.Int32.FullName)
                 throw new TypeException(SequencePoint, "Right shift operand must be of signed 32bit integer type");
-            if (!left.TypeWrapper.IsIntegerType())
+            if (!left.ExpressionReturnType.IsIntegerType())
                 throw new TypeException(SequencePoint, "Left shift operand must be of integer type");
         }
         private void VerifyBinary(Parser parser)
         {
-            typeWrapper = left.TypeWrapper;
+            type = left.ExpressionReturnType;
 
-            if (!(left.TypeWrapper.IsIntegerType() && right.TypeWrapper.IsIntegerType()))
+            if (!(left.ExpressionReturnType.IsIntegerType() && right.ExpressionReturnType.IsIntegerType()))
                 throw new TypeException(SequencePoint, "Binary operations only allowed on equal length integers, operands: {0}, {1}",
-                    left.TypeWrapper, right.TypeWrapper);
+                    left.ExpressionReturnType, right.ExpressionReturnType);
 
-            if (left.TypeWrapper.GetIntegerWidth() != right.TypeWrapper.GetIntegerWidth())
+            if (left.ExpressionReturnType.GetIntegerWidth() != right.ExpressionReturnType.GetIntegerWidth())
                 throw new TypeException(SequencePoint, "Binary operations only allowed on equal length integers, operands: {0}, {1}",
-                    left.TypeWrapper, right.TypeWrapper);
+                    left.ExpressionReturnType, right.ExpressionReturnType);
         }
         private void VerifyLogical(Parser parser)
         {
-            typeWrapper = parser.Bool;
+            type = parser.Bool;
 
-            if (!(left.TypeWrapper.IsBooleanType() && right.TypeWrapper.IsBooleanType()))
+            if (!(left.ExpressionReturnType.IsBooleanType() && right.ExpressionReturnType.IsBooleanType()))
                 throw new TypeException(SequencePoint, "Logical operations only allowed on booleans, operands: {0}, {1}",
-                    left.TypeWrapper, right.TypeWrapper);
+                    left.ExpressionReturnType, right.ExpressionReturnType);
         }
         public override string ToString(int indent)
         {

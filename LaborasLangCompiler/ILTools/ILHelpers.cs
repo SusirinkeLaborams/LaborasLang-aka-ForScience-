@@ -191,7 +191,7 @@ namespace LaborasLangCompiler.ILTools
             return nestedType == type;
         }
 
-        public static bool MatchesArgumentList(TypeReference functorType, IReadOnlyList<TypeReference> desiredParameters)
+        public static bool MatchesArgumentList(this TypeReference functorType, IReadOnlyList<TypeReference> desiredParameters)
         {
             return functorType.Resolve().Methods.Single(method => method.Name == "Invoke").MatchesArgumentList(desiredParameters);
         }

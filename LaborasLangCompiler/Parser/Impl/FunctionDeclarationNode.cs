@@ -19,21 +19,11 @@ namespace LaborasLangCompiler.Parser.Impl
         public MethodReference MethodReference { get { return emitter.Get(); } }
         public MemberReference MemberReference { get { return MethodReference; } }
         public override NodeType Type { get { return NodeType.ParserInternal; } }
-        public FunctorTypeWrapper FunctorType 
-        {
-            get
-            { 
-                if(functorType == null)
-                {
-                    functorType = new FunctorTypeWrapper(parser.Assembly, MethodReturnType, ParamTypes);
-                }
-                return functorType;
-            }
-        }
+        public TypeReference FunctorType { get { return functorType.Value; } }
         public bool IsStatic { get { return true; } }
-        public IEnumerable<TypeWrapper> ParamTypes { get; private set; }
-        public TypeWrapper MethodReturnType { get; private set; }
-        public TypeWrapper DeclaringType { get; private set; }
+        public IEnumerable<TypeReference> ParamTypes { get; private set; }
+        public TypeReference MethodReturnType { get; private set; }
+        public TypeReference DeclaringType { get; private set; }
 
         private AstNode body;
         private CodeBlockNode parsedBody;
@@ -41,7 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private ClassNode parent;
         private Dictionary<string, ParameterWrapper> symbols;
         private Parser parser;
-        private FunctorTypeWrapper functorType;
+        private Lazy<TypeReference> functorType;
         private Modifiers modifiers;
 
         private FunctionDeclarationNode(Parser parser, Context parent, Modifiers modifiers, string name, AstNode method)
@@ -51,8 +41,9 @@ namespace LaborasLangCompiler.Parser.Impl
             this.symbols = new Dictionary<string, ParameterWrapper>();
             this.parser = parser;
             this.body = method.Children[1];
-            this.DeclaringType = parent.GetClass().TypeWrapper;
+            this.DeclaringType = parent.GetClass().TypeReference;
             ParseHeader(modifiers, method.Children[0], name);
+            this.functorType = new Lazy<TypeReference>(() => AssemblyRegistry.GetFunctorType(parser.Assembly, emitter.Get()));
         }
 
         public void Emit()
@@ -75,17 +66,17 @@ namespace LaborasLangCompiler.Parser.Impl
             }
 
             MethodReturnType = builder.Type;
-            emitter = new MethodEmitter(parent.TypeEmitter, methodName, MethodReturnType.TypeReference, AttributesFromModifiers(parser.GetSequencePoint(lexerNode), mods));
+            emitter = new MethodEmitter(parent.TypeEmitter, methodName, MethodReturnType, AttributesFromModifiers(parser.GetSequencePoint(lexerNode), mods));
 
             foreach(var p in paramz)
             {
                 var param = ParseParameter(parent, p.Type, p.Name);
-                if (Utils.IsVoid(param.TypeWrapper))
+                if (Utils.IsVoid(param.TypeReference))
                     throw new TypeException(parser.GetSequencePoint(p.Type), "Cannot declare a parameter of type void");
                 emitter.AddArgument(param.ParameterDefinition);
                 symbols.Add(param.Name, param);
             }
-            ParamTypes = symbols.Values.Select(p => p.TypeWrapper);
+            ParamTypes = symbols.Values.Select(p => p.TypeReference);
 
             if (mods.HasFlag(Modifiers.Entry))
             {
@@ -142,7 +133,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return instance;
         }
 
-        public static TypeWrapper ParseFunctorType(Parser parser, Context parent, AstNode lexerNode)
+        public static TypeReference ParseFunctorType(Parser parser, Context parent, AstNode lexerNode)
         {
             var builder = new TypeNode.TypeBuilder(parser, parent);
             int count = lexerNode.ChildrenCount;

@@ -15,7 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LocalVariable; } }
         public VariableDefinition LocalVariable { get { return variable.VariableDefinition; } }
-        public override TypeWrapper TypeWrapper { get { return variable.TypeWrapper; } }
+        public override TypeReference ExpressionReturnType { get { return variable.TypeReference; } }
         public string Name {get { return LocalVariable.Name; } }
         public override bool IsGettable
         {
@@ -41,7 +41,7 @@ namespace LaborasLangCompiler.Parser.Impl
             builder.Indent(indent + 1).AppendLine("Name:");
             builder.Indent(indent + 2).AppendLine(Name);
             builder.Indent(indent + 1).AppendLine("Type:");
-            builder.Indent(indent + 2).AppendLine(TypeWrapper.FullName);
+            builder.Indent(indent + 2).AppendLine(ExpressionReturnType.FullName);
             return builder.ToString();
         }
     }
@@ -51,7 +51,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.FunctionArgument; } }
         public ParameterDefinition Param { get { return parameter.ParameterDefinition; } }
         public bool IsMethodStatic { get; set; }
-        public override TypeWrapper TypeWrapper { get { return parameter.TypeWrapper; } }
+        public override TypeReference ExpressionReturnType { get { return parameter.TypeReference; } }
         public string Name { get { return Param.Name; } }
         public override bool IsGettable
         {
@@ -76,7 +76,7 @@ namespace LaborasLangCompiler.Parser.Impl
             builder.Indent(indent + 1).AppendLine("Name:");
             builder.Indent(indent + 2).AppendLine(Name);
             builder.Indent(indent + 1).AppendLine("Type:");
-            builder.Indent(indent + 2).AppendLine(TypeWrapper.FullName);
+            builder.Indent(indent + 2).AppendLine(ExpressionReturnType.FullName);
             return builder.ToString();
         }
     }
@@ -86,7 +86,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Field; } }
         public IExpressionNode ObjectInstance { get; private set; }
         public FieldReference Field { get { return field.FieldReference; } }
-        public override TypeWrapper TypeWrapper { get { return field.TypeWrapper; } }
+        public override TypeReference ExpressionReturnType { get { return field.TypeReference; } }
         public override MemberWrapper MemberWrapper { get { return field; } }
         public override bool IsGettable
         {
@@ -117,7 +117,7 @@ namespace LaborasLangCompiler.Parser.Impl
             builder.Indent(indent + 1).AppendLine("Name:");
             builder.Indent(indent + 2).AppendLine(field.Name);
             builder.Indent(indent + 1).AppendLine("Type:");
-            builder.Indent(indent + 2).AppendLine(TypeWrapper.FullName);
+            builder.Indent(indent + 2).AppendLine(ExpressionReturnType.FullName);
             return builder.ToString();
         }
     }

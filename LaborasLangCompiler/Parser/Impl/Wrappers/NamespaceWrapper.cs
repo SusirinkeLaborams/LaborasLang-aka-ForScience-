@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mono.Cecil;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,6 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     {
         string Namespace { get; }
         NamespaceWrapper GetContainedNamespace(string name);
-        TypeWrapper GetContainedType(string name);
+        TypeReference GetContainedType(string name);
     }
 }

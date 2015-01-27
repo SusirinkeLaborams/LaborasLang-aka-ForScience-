@@ -45,16 +45,16 @@ namespace LaborasLangCompiler.Parser.Impl
             if (isConst && initializer == null)
                 throw new ParseException(point, "Const variables require initialization");
 
-            if (declaredType.IsAuto() && (initializer == null || initializer.TypeWrapper == null))
+            if (declaredType.IsAuto() && (initializer == null || initializer.ExpressionReturnType == null))
                 throw new TypeException(point, "Type inference requires initialization");
 
             if (initializer != null)
             {
                 if (declaredType.IsAuto())
                 {
-                    declaredType = initializer.TypeWrapper;
+                    declaredType = initializer.ExpressionReturnType;
                 }
-                else if (!initializer.TypeWrapper.IsAssignableTo(declaredType))
+                else if (!initializer.ExpressionReturnType.IsAssignableTo(declaredType))
                 {
                     throw new TypeException(point, "Type mismatch, type " + declaredType.FullName + " initialized with " + initializer.ExpressionReturnType.FullName);
                 }
@@ -99,7 +99,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public string GetSignature()
         {
-            return String.Format("{0}{1} {2}", IsConst ? "const " : "", VarialbeWrapper.TypeWrapper, VarialbeWrapper.Name);
+            return String.Format("{0}{1} {2}", IsConst ? "const " : "", VarialbeWrapper.TypeReference, VarialbeWrapper.Name);
         }
     }
 }

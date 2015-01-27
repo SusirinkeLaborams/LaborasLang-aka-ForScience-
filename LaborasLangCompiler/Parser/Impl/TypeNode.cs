@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser.Exceptions;
+﻿using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using Mono.Cecil;
@@ -14,21 +15,18 @@ namespace LaborasLangCompiler.Parser.Impl
     class TypeNode : SymbolNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
-        public override TypeWrapper TypeWrapper { get { return typeWrapper; } }
-        public TypeWrapper ParsedType { get; private set; }
+        public TypeReference ParsedType { get; private set; }
         public override bool IsGettable { get { return true; } }
 
-        private TypeWrapper typeWrapper;
-        public TypeNode(Parser parser, TypeWrapper type, Context scope, SequencePoint point)
+        public TypeNode(Parser parser, TypeReference type, Context scope, SequencePoint point)
             : base(type != null ? type.FullName : null, scope, point)
         {
-            typeWrapper = new ExternalType(parser.Assembly, typeof(Type));
             ParsedType = type;
             if(!type.IsAuto())
-                Utils.VerifyAccessible(ParsedType.TypeReference, Scope, point);
+                Utils.VerifyAccessible(ParsedType, Scope, point);
         }
 
-        public static new TypeWrapper Parse(Parser parser, Context parent, AstNode lexerNode)
+        public static new TypeReference Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             if (lexerNode.Type == Lexer.TokenType.FullSymbol)
             {
@@ -48,9 +46,9 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.Type;
         }
 
-        private static List<TypeWrapper> ParseArgumentList(Parser parser, Context parent, AstNode lexerNode)
+        private static List<TypeReference> ParseArgumentList(Parser parser, Context parent, AstNode lexerNode)
         {
-            var args = new List<TypeWrapper>();
+            var args = new List<TypeReference>();
             foreach(AstNode node in lexerNode.Children)
             {
                 switch (node.Type)
@@ -76,7 +74,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public class TypeBuilder
         {
-            public TypeWrapper Type { get; private set; }
+            public TypeReference Type { get; private set; }
 
             private Parser parser;
             private Context parent;
@@ -99,13 +97,13 @@ namespace LaborasLangCompiler.Parser.Impl
                     if(args.Any(a => a.IsVoid()))
                         throw new TypeException(parser.GetSequencePoint(node), "Cannot declare method parameter of type void");
 
-                    Type = new FunctorTypeWrapper(parser.Assembly, Type, args);
+                    Type = AssemblyRegistry.GetFunctorType(parser.Assembly, Type, args);
                 }
             }
 
-            public void Append(IEnumerable<TypeWrapper> paramz)
+            public void Append(IEnumerable<TypeReference> paramz)
             {
-                Type = new FunctorTypeWrapper(parser.Assembly, Type, paramz);
+                Type = AssemblyRegistry.GetFunctorType(parser.Assembly, Type, paramz.ToList());
             }
         }
     }

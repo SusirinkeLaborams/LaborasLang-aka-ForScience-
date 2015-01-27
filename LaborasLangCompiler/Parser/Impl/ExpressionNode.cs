@@ -17,12 +17,11 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override NodeType Type { get { return NodeType.Expression; } }
         public abstract ExpressionNodeType ExpressionType { get; }
-        public TypeReference ExpressionReturnType { get { return TypeWrapper != null ? TypeWrapper.TypeReference : null; } }
-        public abstract TypeWrapper TypeWrapper { get; }
+        public abstract TypeReference ExpressionReturnType { get; }
         public abstract bool IsGettable { get; }
         public abstract bool IsSettable { get; }
         protected ExpressionNode(SequencePoint sequencePoint) : base(sequencePoint) { }
-        public static ExpressionNode Parse(Parser parser, Context parent, AstNode lexerNode, TypeWrapper expectedType = null)
+        public static ExpressionNode Parse(Parser parser, Context parent, AstNode lexerNode, TypeReference expectedType = null)
         {
             ExpressionNode ret = null;
             switch (lexerNode.Type)
@@ -77,7 +76,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 if(ambiguous != null)
                 {
                     if(ambiguous.ExpressionReturnType == null || 
-                        ambiguous.ExpressionReturnType.IsAssignableTo(expectedType.TypeReference))
+                        ambiguous.ExpressionReturnType.IsAssignableTo(expectedType))
                     {
                         ret = ambiguous.RemoveAmbiguity(parser, expectedType);
                     }

@@ -1,4 +1,5 @@
-﻿using Mono.Cecil.Cil;
+﻿using Mono.Cecil;
+using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,16 +11,16 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     class VariableWrapper
     {
         public VariableDefinition VariableDefinition { get { return definition.Value; } }
-        public TypeWrapper TypeWrapper { get; private set; }
+        public TypeReference TypeReference { get; private set; }
         public string Name { get; private set; }
 
         private Lazy<VariableDefinition> definition;
 
-        public VariableWrapper(string name, TypeWrapper parameterType)
+        public VariableWrapper(string name, TypeReference parameterType)
         {
             Name = name;
-            this.TypeWrapper = parameterType;
-            definition = new Lazy<VariableDefinition>(() => new VariableDefinition(Name, TypeWrapper.TypeReference));
+            this.TypeReference = parameterType;
+            definition = new Lazy<VariableDefinition>(() => new VariableDefinition(Name, TypeReference));
         }
 
         public override string ToString()

@@ -15,7 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class MethodCallNode : ExpressionNode, IFunctionCallNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Call; } }
-        public override TypeWrapper TypeWrapper { get { return type; } }
+        public override TypeReference ExpressionReturnType { get { return type; } }
         public IReadOnlyList<IExpressionNode> Args { get { return args; } }
         public IExpressionNode Function { get { return function; } }
         public override bool IsSettable { get { return false; } }
@@ -27,11 +27,11 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private TypeWrapper type;
+        private TypeReference type;
         private List<ExpressionNode> args;
         private ExpressionNode function;
 
-        public MethodCallNode(ExpressionNode function, TypeWrapper returnType, List<ExpressionNode> args, SequencePoint point)
+        public MethodCallNode(ExpressionNode function, TypeReference returnType, List<ExpressionNode> args, SequencePoint point)
             : base(point)
         {
             this.function = function;
@@ -89,7 +89,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (method != null)
                 return method;
 
-            method = AsFunctor(function, args, point);
+            method = AsFunctor(parser, function, args, point);
             if (method != null)
                 return method;
 
@@ -99,14 +99,14 @@ namespace LaborasLangCompiler.Parser.Impl
             return method;
         }
 
-        private static ExpressionNode AsFunctor(ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)
+        private static ExpressionNode AsFunctor(Parser parser, ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)
         {
-            if (node.TypeWrapper == null)
+            if (node.ExpressionReturnType == null)
                 return null;
-            if(node.TypeWrapper.IsFunctorType())
+            if (node.ExpressionReturnType.IsFunctorType())
             {
-                if (node.TypeWrapper.MatchesArgumentList(args.Select(a => a.TypeWrapper)))
-                    return new MethodCallNode(node, node.TypeWrapper.FunctorReturnType, args.ToList(), point);
+                if (node.ExpressionReturnType.MatchesArgumentList(args.Select(a => a.ExpressionReturnType).ToList()))
+                    return new MethodCallNode(node, ILHelpers.GetFunctorReturnType(parser.Assembly, node.ExpressionReturnType), args.ToList(), point);
                 else
                     return null;
             }
@@ -119,14 +119,14 @@ namespace LaborasLangCompiler.Parser.Impl
         private static ExpressionNode AsMethod(Parser parser, ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)
         {
             if (node is MethodNode)
-                return new MethodCallNode(node, node.TypeWrapper.FunctorReturnType, args.ToList(), point);
+                return new MethodCallNode(node, ILHelpers.GetFunctorReturnType(parser.Assembly, node.ExpressionReturnType), args.ToList(), point);
 
             var ambiguous = node as AmbiguousMethodNode;
             if (ambiguous == null)
                 return null;
 
-            var method = ambiguous.RemoveAmbiguity(parser, args.Select(a => a.TypeWrapper));
-            return new MethodCallNode(method, method.TypeWrapper.FunctorReturnType, args.ToList(), point);
+            var method = ambiguous.RemoveAmbiguity(parser, args.Select(a => a.ExpressionReturnType));
+            return new MethodCallNode(method, ILHelpers.GetFunctorReturnType(parser.Assembly, method.ExpressionReturnType), args.ToList(), point);
         }
 
         private static ExpressionNode AsObjectCreation(Parser parser, ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)
@@ -135,7 +135,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (type == null)
                 return null;
 
-            var method = AssemblyRegistry.GetCompatibleConstructor(parser.Assembly, type.ParsedType.TypeReference, args.Select(a => a.ExpressionReturnType).ToList());
+            var method = AssemblyRegistry.GetCompatibleConstructor(parser.Assembly, type.ParsedType, args.Select(a => a.ExpressionReturnType).ToList());
             if (method == null)
                 return null;
 
@@ -146,7 +146,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("MethodCall:");
-            builder.Indent(indent + 1).AppendFormat("ReturnType: {0}", TypeWrapper).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("ReturnType: {0}", type).AppendLine();
             builder.Indent(indent + 1).Append("Args:").AppendLine();
             foreach(var arg in args)
             {

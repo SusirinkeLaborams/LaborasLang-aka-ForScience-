@@ -43,14 +43,29 @@ namespace LaborasLangCompiler.Parser
             return builder;
         }
 
-        public static bool IsVoid(this TypeWrapper type)
+        public static bool IsVoid(this TypeReference type)
         {
             return type.FullName == typeof(void).FullName;
         }
 
-        public static bool IsAuto(this TypeWrapper type)
+        public static bool IsAuto(this TypeReference type)
         {
             return type is AutoType;
+        }
+
+        public static TypeReference GetNestedType(this TypeReference type, AssemblyEmitter assembly, string name)
+        {
+            return AssemblyRegistry.FindType(assembly, type.FullName + "." + name);
+        }
+
+        public static bool TypesEqual(TypeReference left, TypeReference right)
+        {
+            return left.FullName == right.FullName;
+        }
+
+        public static bool IsAssignableTo(this IExpressionNode right, IExpressionNode left)
+        {
+            return right.ExpressionReturnType.IsAssignableTo(left.ExpressionReturnType);
         }
 
         public static void VerifyAccessible(MethodReference method, Context scope, SequencePoint point)

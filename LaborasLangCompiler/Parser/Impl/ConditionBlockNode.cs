@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.ILTools;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -30,7 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var instance = new ConditionBlockNode(parser.GetSequencePoint(lexerNode));
             instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
-            if (!instance.condition.TypeWrapper.IsAssignableTo(parser.Bool) || !instance.condition.IsGettable)
+            if (!instance.condition.ExpressionReturnType.IsAssignableTo(parser.Bool) || !instance.condition.IsGettable)
                 throw new TypeException(instance.SequencePoint, "Condition must be a gettable boolean expression");
             instance.trueBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[4]);
             if (lexerNode.Children.Count > 5)

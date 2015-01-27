@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     interface AmbiguousNode : IExpressionNode
     {
-        ExpressionNode RemoveAmbiguity(Parser parser, TypeWrapper expectedType);
+        ExpressionNode RemoveAmbiguity(Parser parser, TypeReference expectedType);
     }
 }

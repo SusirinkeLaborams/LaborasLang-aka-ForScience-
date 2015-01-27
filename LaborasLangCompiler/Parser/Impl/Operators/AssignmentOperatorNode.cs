@@ -15,7 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class AssignmentOperatorNode : ExpressionNode, IAssignmentOperatorNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.AssignmentOperator; } }
-        public override TypeWrapper TypeWrapper { get { return type; } }
+        public override TypeReference ExpressionReturnType { get { return type; } }
         public IExpressionNode LeftOperand { get { return left; } }
         public IExpressionNode RightOperand { get { return right; } }
         public override bool IsSettable
@@ -27,7 +27,7 @@ namespace LaborasLangCompiler.Parser.Impl
             get { return true; }
         }
 
-        private TypeWrapper type;
+        private TypeReference type;
         private ExpressionNode left;
         private ExpressionNode right;
 
@@ -39,10 +39,10 @@ namespace LaborasLangCompiler.Parser.Impl
             var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]) as ExpressionNode;
             if (left == null || !left.IsSettable)
                 throw new TypeException(parser.GetSequencePoint(lexerNode.Children[0]), "Left of assignment operator must be settable");
-            var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2], left.TypeWrapper);
+            var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2], left.ExpressionReturnType);
             if(!right.IsGettable)
                 throw new TypeException(right.SequencePoint, "Right of assignment operator must be gettable");
-            instance.type = left.TypeWrapper;
+            instance.type = left.ExpressionReturnType;
 
             //use properties from lexer instead of string comparisons here
             var op = lexerNode.Children[1];
@@ -53,8 +53,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 right = BinaryOperatorNode.Parse(parser, Operators[op.Type], left, right);
             }
 
-            if (!right.TypeWrapper.IsAssignableTo(left.TypeWrapper))
-                throw new TypeException(instance.SequencePoint, "Assigned {0} to {1}", instance.right.TypeWrapper, instance.left.TypeWrapper);
+            if (!right.ExpressionReturnType.IsAssignableTo(left.ExpressionReturnType))
+                throw new TypeException(instance.SequencePoint, "Assigned {0} to {1}", instance.right.ExpressionReturnType, instance.left.ExpressionReturnType);
             instance.right = right;
             instance.left = left;
             return instance;    

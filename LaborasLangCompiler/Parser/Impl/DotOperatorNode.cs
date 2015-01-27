@@ -86,7 +86,8 @@ namespace LaborasLangCompiler.Parser.Impl
             if (builtNode is TypeNode)
             {
                 //static methods
-                var methods = ((TypeNode)builtNode).ParsedType.GetMethods(node.Name);
+
+                IEnumerable<MethodWrapper> methods = AssemblyRegistry.GetMethods(parser.Assembly, ((TypeNode)builtNode).ParsedType, node.Name).Select(m => new ExternalMethod(parser.Assembly, m));
                 methods = methods.Where(m => m.IsStatic);
                 if (methods.Count() != 0)
                 {
@@ -103,7 +104,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 //non-static methods
                 if (!builtNode.IsGettable)
                     return false;
-                var methods = builtNode.TypeWrapper.GetMethods(node.Name);
+                var methods = AssemblyRegistry.GetMethods(parser.Assembly, builtNode.ExpressionReturnType, node.Name).Select(m => new ExternalMethod(parser.Assembly, m));
                 methods = methods.Where(m => !m.IsStatic);
                 if (methods.Count() != 0)
                 {
@@ -119,14 +120,15 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private bool AppendType(SymbolNode node)
         {
-            TypeWrapper type = null;
+            TypeReference type = null;
             if (builtNode is NamespaceNode)
             {
                 type = ((NamespaceNode)builtNode).Namespace.GetContainedType(node.Name);
             }
             if (builtNode is TypeNode)
             {
-                type = ((TypeNode)builtNode).ParsedType.GetContainedType(node.Name);
+
+                type = ((TypeNode)builtNode).ParsedType.GetNestedType(parser.Assembly, node.Name);
             }
 
             if (type != null)
@@ -165,13 +167,14 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (builtNode is TypeNode)
             {
-                field = ((TypeNode)builtNode).ParsedType.GetField(node.Name);
+                field = ExternalField.Get(parser.Assembly, AssemblyRegistry.GetField(parser.Assembly, ((TypeNode)builtNode).ParsedType, node.Name));
                 if (field != null && !field.IsStatic)
                     field = null;
             }
             else if (builtNode.ExpressionType != ExpressionNodeType.ParserInternal)
             {
-                field = builtNode.TypeWrapper.GetField(node.Name);
+
+                field = ExternalField.Get(parser.Assembly, AssemblyRegistry.GetField(parser.Assembly, builtNode.ExpressionReturnType, node.Name));
                 if (field != null && field.IsStatic || !builtNode.IsGettable)
                     field = null;
             }

@@ -15,7 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class MethodNode : MemberNode, IMethodNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Function; } }
-        public override TypeWrapper TypeWrapper { get { return method.FunctorType; } }
+        public override TypeReference ExpressionReturnType { get { return method.FunctorType; } }
         public IExpressionNode ObjectInstance { get { return instance; } }
         public MethodReference Method { get { return method.MethodReference; } }
         public MethodWrapper MethodWrapper { get { return method; } }

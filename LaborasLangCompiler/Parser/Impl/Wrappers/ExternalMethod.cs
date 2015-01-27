@@ -11,41 +11,42 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
     class ExternalMethod : ExternalWrapperBase, MethodWrapper
     {
         public MethodReference MethodReference { get; private set; }
-        public FunctorTypeWrapper FunctorType 
+        public TypeReference FunctorType 
         {
             get 
             {
                 if(functorType == null)
                 {
-                    functorType = new FunctorTypeWrapper(Assembly, MethodReturnType, ParamTypes);
+                    functorType = AssemblyRegistry.GetFunctorType(Assembly, MethodReturnType, ParamTypes.ToList());
                 }
                 return functorType;
             } 
         }
-        public TypeWrapper MethodReturnType { get { return methodReturnType; } }
-        public IEnumerable<TypeWrapper> ParamTypes
+        public TypeReference MethodReturnType { get; private set; }
+        public IEnumerable<TypeReference> ParamTypes
         { 
             get 
             { 
                 if(paramTypes == null)
                 {
-                    paramTypes = MethodReference.Parameters.Select(p => new ExternalType(Assembly, p.ParameterType));
+                    paramTypes = MethodReference.Parameters.Select(p => p.ParameterType);
                 }
                 return paramTypes;
             } 
         }
         public bool IsStatic { get { return MethodReference.Resolve().IsStatic; } }
         public MemberReference MemberReference { get { return MethodReference; } }
-        public TypeWrapper DeclaringType { get; private set; }
+        public TypeReference DeclaringType { get; private set; }
 
-        private TypeWrapper methodReturnType;
-        private FunctorTypeWrapper functorType;
-        private IEnumerable<TypeWrapper> paramTypes;
+        private TypeReference functorType;
+        private IEnumerable<TypeReference> paramTypes;
+
         public ExternalMethod(AssemblyEmitter assembly, MethodReference method) : base(assembly)
         {
             this.MethodReference = method;
-            this.methodReturnType = new ExternalType(assembly, method.ReturnType);
-            this.DeclaringType = new ExternalType(assembly, method.DeclaringType);
+            MethodReturnType = method.ReturnType;
+            DeclaringType = method.DeclaringType;
+
         }
     }
 }
