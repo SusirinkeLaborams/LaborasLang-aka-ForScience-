@@ -83,6 +83,7 @@
     <Compile Include="Parser\Exceptions\TypeException.cs" />
     <Compile Include="Parser\Impl\AmbiguousMethodNode.cs" />
     <Compile Include="Parser\Impl\AmbiguousNode.cs" />
+    <Compile Include="Parser\Impl\FieldDeclarationNode.cs" />
     <Compile Include="Parser\Impl\MemberNode.cs" />
     <Compile Include="Parser\Impl\ObjectCreationNode.cs" />
     <Compile Include="Parser\Impl\SymbolModifiers.cs" />

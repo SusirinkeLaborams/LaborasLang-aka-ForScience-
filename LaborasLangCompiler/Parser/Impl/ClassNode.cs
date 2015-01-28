@@ -233,7 +233,7 @@ namespace LaborasLangCompiler.Parser.Impl
             else
             {
                 //field
-                var field = new InternalField(parser, this, declaration, parser.GetSequencePoint(lexerNode));
+                var field = new InternalField(new FieldDeclarationNode(parser, this, declaration, parser.GetSequencePoint(lexerNode)));
                 fields.Add(field);
             }
         }
