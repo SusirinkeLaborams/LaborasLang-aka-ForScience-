@@ -193,7 +193,7 @@ namespace LaborasLangCompiler.ILTools
 
         public static bool MatchesArgumentList(this TypeReference functorType, AssemblyEmitter assemblyScope, IReadOnlyList<TypeReference> desiredParameters)
         {
-            var invokeMethod = GetFunctorInvokemethod(assemblyScope, functorType);
+            var invokeMethod = GetFunctorInvokeMethod(assemblyScope, functorType);
             return invokeMethod.MatchesArgumentList(desiredParameters);
         }
 
@@ -299,21 +299,21 @@ namespace LaborasLangCompiler.ILTools
 
         public static TypeReference GetFunctorReturnType(AssemblyEmitter assemblyScope, TypeReference functorType)
         {
-            var invokeMethod = GetFunctorInvokemethod(assemblyScope, functorType);
+            var invokeMethod = GetFunctorInvokeMethod(assemblyScope, functorType);
             return invokeMethod.ReturnType;
         }
 
         public static TypeReference GetFunctorReturnTypeAndArguments(AssemblyEmitter assemblyScope, TypeReference functorType, 
             out List<TypeReference> arguments)
         {
-            var invokeMethod = GetFunctorInvokemethod(assemblyScope, functorType);      
+            var invokeMethod = GetFunctorInvokeMethod(assemblyScope, functorType);      
             arguments = invokeMethod.Parameters.Select(parameter => parameter.ParameterType).ToList();
             return invokeMethod.ReturnType;
         }
 
         public static List<TypeReference> GetFunctorParamTypes(AssemblyEmitter assemblyScope, TypeReference functorType)
         {
-            var invokeMethod = GetFunctorInvokemethod(assemblyScope, functorType);
+            var invokeMethod = GetFunctorInvokeMethod(assemblyScope, functorType);
             return invokeMethod.Parameters.Select(param => param.ParameterType).ToList();
         }
 
