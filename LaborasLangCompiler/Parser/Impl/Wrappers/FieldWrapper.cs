@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
+    [Obsolete]
     interface FieldWrapper : MemberWrapper
     {
         FieldReference FieldReference { get; }

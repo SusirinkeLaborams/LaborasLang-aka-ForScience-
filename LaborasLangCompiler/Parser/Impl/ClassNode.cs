@@ -17,7 +17,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class ClassNode : ParserNode, Context
     {
         #region fields
-        private List<InternalField> fields;
+        private List<FieldDeclarationNode> fields;
         private List<FunctionDeclarationNode> declaredMethods;
         private List<FunctionDeclarationNode> lambdas;
         private List<NamespaceWrapper> globalImports;
@@ -45,7 +45,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.parser = parser;
             this.declaredMethods = new List<FunctionDeclarationNode>();
             this.lambdas = new List<FunctionDeclarationNode>();
-            fields = new List<InternalField>();
+            fields = new List<FieldDeclarationNode>();
             globalImports = new List<NamespaceWrapper>();
             FullName = parser.Filename;
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
@@ -53,13 +53,9 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #region type wrapper
 
-        public FieldWrapper GetField(string name)
+        public FieldReference GetField(string name)
         {
-            FieldReference field = AssemblyRegistry.GetField(parser.Assembly, TypeEmitter, name);
-            if(field != null)
-                return new ExternalField(parser.Assembly, field);
-
-            return null;
+            return AssemblyRegistry.GetField(parser.Assembly, TypeEmitter, name);
         }
 
         public IEnumerable<MethodWrapper> GetMethods(string name)
@@ -90,7 +86,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var field = GetField(name);
             if (field != null)
-                return new FieldNode(null, field, scope, point);
+                return new FieldNode(parser, null, field, scope, point);
 
             var methods = GetMethods(name);
             if (scope.IsStaticContext())
@@ -233,7 +229,7 @@ namespace LaborasLangCompiler.Parser.Impl
             else
             {
                 //field
-                var field = new InternalField(new FieldDeclarationNode(parser, this, declaration, parser.GetSequencePoint(lexerNode)));
+                var field = new FieldDeclarationNode(parser, this, declaration, parser.GetSequencePoint(lexerNode));
                 fields.Add(field);
             }
         }

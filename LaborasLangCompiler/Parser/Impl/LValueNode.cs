@@ -85,9 +85,9 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Field; } }
         public IExpressionNode ObjectInstance { get; private set; }
-        public FieldReference Field { get { return field.FieldReference; } }
-        public override TypeReference ExpressionReturnType { get { return field.TypeReference; } }
-        public override MemberWrapper MemberWrapper { get { return field; } }
+        public FieldReference Field { get; private set; }
+        public override TypeReference ExpressionReturnType { get { return Field.FieldType; } }
+        public override MemberWrapper MemberWrapper { get { return new ExternalField(parser.Assembly, Field); } }
         public override bool IsGettable
         {
             get
@@ -103,19 +103,20 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private FieldWrapper field;
-        public FieldNode(ExpressionNode instance, FieldWrapper field, Context parent, SequencePoint point)
-            : base(field, parent, point)
+        private Parser parser;
+        public FieldNode(Parser parser, ExpressionNode instance, FieldReference field, Context parent, SequencePoint point)
+            : base(new ExternalField(parser.Assembly, field), parent, point)
         {
             ObjectInstance = ThisNode.GetAccessingInstance(field, instance, parent, point);
-            this.field = field;
+            this.Field = field;
+            this.parser = parser;
         }
         public override string ToString(int indent)
         {
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("Field:");
             builder.Indent(indent + 1).AppendLine("Name:");
-            builder.Indent(indent + 2).AppendLine(field.Name);
+            builder.Indent(indent + 2).AppendLine(Field.Name);
             builder.Indent(indent + 1).AppendLine("Type:");
             builder.Indent(indent + 2).AppendLine(ExpressionReturnType.FullName);
             return builder.ToString();

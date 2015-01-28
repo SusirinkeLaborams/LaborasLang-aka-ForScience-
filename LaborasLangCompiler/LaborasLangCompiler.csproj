@@ -118,7 +118,6 @@
     <Compile Include="Parser\Impl\Wrappers\ExternalWrapperBase.cs" />
     <Compile Include="Parser\Impl\Wrappers\FieldWrapper.cs" />
     <Compile Include="Parser\Impl\Wrappers\FunctorTypeWrapper.cs" />
-    <Compile Include="Parser\Impl\Wrappers\InternalField.cs" />
     <Compile Include="Parser\Impl\Wrappers\MemberWrapper.cs" />
     <Compile Include="Parser\Impl\Wrappers\MethodWrapper.cs" />
     <Compile Include="Parser\Impl\Wrappers\NamespaceWrapper.cs" />

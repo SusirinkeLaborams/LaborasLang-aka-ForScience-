@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
+    [Obsolete]
     class ExternalField : ExternalWrapperBase, FieldWrapper
     {
         public FieldReference FieldReference { get; private set; }

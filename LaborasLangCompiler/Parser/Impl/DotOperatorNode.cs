@@ -163,25 +163,25 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private bool AppendLValue(SymbolNode node)
         {
-            FieldWrapper field = null;
+            FieldReference field = null;
 
             if (builtNode is TypeNode)
             {
-                field = ExternalField.Get(parser.Assembly, AssemblyRegistry.GetField(parser.Assembly, ((TypeNode)builtNode).ParsedType, node.Name));
-                if (field != null && !field.IsStatic)
+                field = AssemblyRegistry.GetField(parser.Assembly, ((TypeNode)builtNode).ParsedType, node.Name);
+                if (field != null && !field.IsStatic())
                     field = null;
             }
             else if (builtNode.ExpressionType != ExpressionNodeType.ParserInternal)
             {
 
-                field = ExternalField.Get(parser.Assembly, AssemblyRegistry.GetField(parser.Assembly, builtNode.ExpressionReturnType, node.Name));
-                if (field != null && field.IsStatic || !builtNode.IsGettable)
+                field = AssemblyRegistry.GetField(parser.Assembly, builtNode.ExpressionReturnType, node.Name);
+                if (field != null && field.IsStatic() || !builtNode.IsGettable)
                     field = null;
             }
 
             if (field != null)
             {
-                builtNode = new FieldNode(field.IsStatic ? null : builtNode, field, parent, builtNode.SequencePoint);
+                builtNode = new FieldNode(parser, field.IsStatic() ? null : builtNode, field, parent, builtNode.SequencePoint);
                 return true;
             }
             else

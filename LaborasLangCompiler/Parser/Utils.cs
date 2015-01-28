@@ -105,5 +105,34 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException("VerifyAccessible not impemented for this type");
             }
         }
+
+        public static bool IsStatic(this MemberReference member)
+        {
+            if(member is FieldReference)
+            {
+                return ((FieldReference)member).Resolve().IsStatic;
+            }else if(member is MethodReference)
+            {
+                return ((MethodReference)member).Resolve().IsStatic;
+            }else if(member is TypeReference)
+            {
+                return true;
+            }else if(member is PropertyReference)
+            {
+                var definition = ((PropertyReference)member).Resolve();
+
+                var setter = definition.SetMethod;
+                if (setter != null)
+                    return setter.IsStatic;
+
+                var getter = definition.GetMethod;
+                if (getter != null)
+                    return getter.IsStatic;
+                throw new InvalidOperationException("Propery with no getter and no setter");
+            }else
+            {
+                throw new ArgumentException();
+            }
+        }
     }
 }
