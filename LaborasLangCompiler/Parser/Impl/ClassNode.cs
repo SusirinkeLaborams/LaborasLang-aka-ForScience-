@@ -20,7 +20,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private List<FieldDeclarationNode> fields;
         private List<FunctionDeclarationNode> declaredMethods;
         private List<FunctionDeclarationNode> lambdas;
-        private List<NamespaceWrapper> globalImports;
+        private List<Namespace> globalImports;
         private ClassNode parent;
         private Parser parser;
         private int lambdaCounter = 0;
@@ -46,7 +46,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.declaredMethods = new List<FunctionDeclarationNode>();
             this.lambdas = new List<FunctionDeclarationNode>();
             fields = new List<FieldDeclarationNode>();
-            globalImports = new List<NamespaceWrapper>();
+            globalImports = new List<Namespace>();
             FullName = parser.Filename;
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
@@ -157,9 +157,9 @@ namespace LaborasLangCompiler.Parser.Impl
             return null;
         }
 
-        public NamespaceWrapper FindNamespace(string name, SequencePoint point)
+        public Namespace FindNamespace(string name, SequencePoint point)
         {
-            NamespaceWrapper namespaze = null;
+            Namespace namespaze = null;
 
             var namespazes = globalImports.Select(import => import.GetContainedNamespace(name)).Where(n => n != null);
             try
@@ -188,7 +188,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public void AddImport(NamespaceNode namespaze, SequencePoint point)
         {
-            if (globalImports.Any(n => n.Namespace == namespaze.Namespace.Namespace))
+            if (globalImports.Any(n => n.Name == namespaze.Namespace.Name))
                 throw new ParseException(point, "Namespace {0} already imported", namespaze);
 
             globalImports.Add(namespaze.Namespace);

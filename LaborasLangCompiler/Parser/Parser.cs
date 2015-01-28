@@ -133,10 +133,10 @@ namespace LaborasLangCompiler.Parser
             return AssemblyRegistry.FindType(Assembly, fullname);
         }
 
-        public NamespaceWrapper FindNamespace(string fullname)
+        public Namespace FindNamespace(string fullname)
         {
             if (AssemblyRegistry.IsNamespaceKnown(fullname))
-                return new ExternalNamespace(fullname, Assembly);
+                return new Namespace(fullname, Assembly);
             else
                 return null;
         }

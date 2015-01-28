@@ -8,28 +8,29 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
-    class ExternalNamespace : ExternalWrapperBase, NamespaceWrapper
+    class Namespace : ExternalWrapperBase
     {
-        public string Namespace {get; private set;}
+        public string Name {get; private set;}
 
-        public NamespaceWrapper GetContainedNamespace(string name)
+        public Namespace GetContainedNamespace(string name)
         {
-            var full = Namespace + "." + name;
+            var full = Name + "." + name;
             if (AssemblyRegistry.IsNamespaceKnown(full))
-                return new ExternalNamespace(full, Assembly);
+                return new Namespace(full, Assembly);
             else
                 return null;
         }
 
         public TypeReference GetContainedType(string name)
         {
-            var full = Namespace + "." + name;
+            var full = Name + "." + name;
             return AssemblyRegistry.FindType(Assembly, full);
         }
 
-        public ExternalNamespace(string namespaze, AssemblyEmitter assembly) : base(assembly)
+        public Namespace(string namespaze, AssemblyEmitter assembly)
+            : base(assembly)
         {
-            Namespace = namespaze;
+            Name = namespaze;
         }
     }
 }

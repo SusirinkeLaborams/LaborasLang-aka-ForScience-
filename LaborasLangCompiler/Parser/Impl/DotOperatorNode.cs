@@ -144,7 +144,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private bool AppendNamespace(SymbolNode node)
         {
-            NamespaceWrapper found = null;
+            Namespace found = null;
             if (builtNode is NamespaceNode)
             {
                 found = ((NamespaceNode)builtNode).Namespace.GetContainedNamespace(node.Name);

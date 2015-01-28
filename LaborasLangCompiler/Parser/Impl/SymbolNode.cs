@@ -40,10 +40,11 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
         public override TypeReference ExpressionReturnType { get { return null; } }
-        public NamespaceWrapper Namespace { get; private set; }
+        public Namespace Namespace { get; private set; }
         public override bool IsGettable { get { return false; } }
         public override bool IsSettable { get { return false; } }
-        public NamespaceNode(NamespaceWrapper namespaze, SequencePoint point) : base(point)
+        public NamespaceNode(Namespace namespaze, SequencePoint point)
+            : base(point)
         {
             this.Namespace = namespaze;
         }
