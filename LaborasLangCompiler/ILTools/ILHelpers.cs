@@ -191,9 +191,10 @@ namespace LaborasLangCompiler.ILTools
             return nestedType == type;
         }
 
-        public static bool MatchesArgumentList(this TypeReference functorType, IReadOnlyList<TypeReference> desiredParameters)
+        public static bool MatchesArgumentList(this TypeReference functorType, AssemblyEmitter assemblyScope, IReadOnlyList<TypeReference> desiredParameters)
         {
-            return functorType.Resolve().Methods.Single(method => method.Name == "Invoke").MatchesArgumentList(desiredParameters);
+            var invokeMethod = GetFunctorInvokemethod(assemblyScope, functorType);
+            return invokeMethod.MatchesArgumentList(desiredParameters);
         }
 
         public static bool MatchesArgumentList(this MethodReference method, IReadOnlyList<TypeReference> desiredParameters)
@@ -298,37 +299,32 @@ namespace LaborasLangCompiler.ILTools
 
         public static TypeReference GetFunctorReturnType(AssemblyEmitter assemblyScope, TypeReference functorType)
         {
-            if (!functorType.IsFunctorType())
-            {
-                throw new ArgumentException("functorType isn't a functor type!");
-            }
-
-            var invokeMethod = AssemblyRegistry.GetMethod(assemblyScope, functorType, "Invoke");
+            var invokeMethod = GetFunctorInvokemethod(assemblyScope, functorType);
             return invokeMethod.ReturnType;
         }
 
         public static TypeReference GetFunctorReturnTypeAndArguments(AssemblyEmitter assemblyScope, TypeReference functorType, 
             out List<TypeReference> arguments)
         {
-            if (!functorType.IsFunctorType())
-            {
-                throw new ArgumentException("functorType isn't a functor type!");
-            }
-
-            var invokeMethod = AssemblyRegistry.GetMethod(assemblyScope, functorType, "Invoke");            
+            var invokeMethod = GetFunctorInvokemethod(assemblyScope, functorType);      
             arguments = invokeMethod.Parameters.Select(parameter => parameter.ParameterType).ToList();
             return invokeMethod.ReturnType;
         }
 
         public static List<TypeReference> GetFunctorParamTypes(AssemblyEmitter assemblyScope, TypeReference functorType)
         {
+            var invokeMethod = GetFunctorInvokemethod(assemblyScope, functorType);
+            return invokeMethod.Parameters.Select(param => param.ParameterType).ToList();
+        }
+
+        private static MethodReference GetFunctorInvokemethod(AssemblyEmitter assemblyScope, TypeReference functorType)
+        {
             if (!functorType.IsFunctorType())
             {
                 throw new ArgumentException("functorType isn't a functor type!");
             }
 
-            var invokeMethod = AssemblyRegistry.GetMethod(assemblyScope, functorType, "Invoke");
-            return invokeMethod.Parameters.Select(param => param.ParameterType).ToList();
+            return AssemblyRegistry.GetMethod(assemblyScope, functorType, "Invoke");
         }
 
         public static bool IsAccessible(FieldReference target, TypeReference scope)

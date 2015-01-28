@@ -105,7 +105,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return null;
             if (node.ExpressionReturnType.IsFunctorType())
             {
-                if (node.ExpressionReturnType.MatchesArgumentList(args.Select(a => a.ExpressionReturnType).ToList()))
+                if (node.ExpressionReturnType.MatchesArgumentList(parser.Assembly, args.Select(a => a.ExpressionReturnType).ToList()))
                     return new MethodCallNode(node, ILHelpers.GetFunctorReturnType(parser.Assembly, node.ExpressionReturnType), args.ToList(), point);
                 else
                     return null;
