@@ -33,9 +33,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 throw new TypeException(SequencePoint, "Cannot cast functor to type {0}", expectedType.FullName);
             try
             {
-#warning move this to ILHelpers
-                var paramz = new List<TypeReference>();
-                ILHelpers.GetFunctorReturnTypeAndArguments(parser.Assembly, expectedType, out paramz);
+                var paramz = ILHelpers.GetFunctorParamTypes(parser.Assembly, expectedType);
                 var method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), paramz);
                 return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, parent, SequencePoint);
             }

@@ -320,6 +320,17 @@ namespace LaborasLangCompiler.ILTools
             return invokeMethod.ReturnType;
         }
 
+        public static List<TypeReference> GetFunctorParamTypes(AssemblyEmitter assemblyScope, TypeReference functorType)
+        {
+            if (!functorType.IsFunctorType())
+            {
+                throw new ArgumentException("functorType isn't a functor type!");
+            }
+
+            var invokeMethod = AssemblyRegistry.GetMethod(assemblyScope, functorType, "Invoke");
+            return invokeMethod.Parameters.Select(param => param.ParameterType).ToList();
+        }
+
         public static bool IsAccessible(FieldReference target, TypeReference scope)
         {
             var field = target.Resolve();
