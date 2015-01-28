@@ -317,7 +317,7 @@ namespace LaborasLangCompiler.ILTools
             return invokeMethod.Parameters.Select(param => param.ParameterType).ToList();
         }
 
-        private static MethodReference GetFunctorInvokemethod(AssemblyEmitter assemblyScope, TypeReference functorType)
+        private static MethodReference GetFunctorInvokeMethod(AssemblyEmitter assemblyScope, TypeReference functorType)
         {
             if (!functorType.IsFunctorType())
             {
