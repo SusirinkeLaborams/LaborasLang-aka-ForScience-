@@ -60,9 +60,9 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private void AddNode(ParserNode node)
         {
-            if (node is ReturningNode)
-                if (((ReturningNode)node).Returns)
-                    Returns = true;
+            var nod = node as ReturningNode;
+            if (nod != null && nod.Returns)
+                Returns = true;
             nodes.Add(node);
         }
 

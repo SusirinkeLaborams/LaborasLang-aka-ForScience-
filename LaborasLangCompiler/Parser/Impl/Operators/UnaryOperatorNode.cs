@@ -121,44 +121,44 @@ namespace LaborasLangCompiler.Parser.Impl
             switch(op)
             {
                 case UnaryOperatorNodeType.BinaryNot:
-                    instance.ParseBinary(parser);
+                    instance.ParseBinary();
                     break;
                 case UnaryOperatorNodeType.LogicalNot:
-                    instance.ParseLogical(parser);
+                    instance.ParseLogical();
                     break;
                 case UnaryOperatorNodeType.Negation:
-                    instance.ParseNegation(parser);
+                    instance.ParseNegation();
                     break;
                 case UnaryOperatorNodeType.PostDecrement:
                 case UnaryOperatorNodeType.PostIncrement:
                 case UnaryOperatorNodeType.PreDecrement:
                 case UnaryOperatorNodeType.PreIncrement:
-                    instance.ParseInc(parser);
+                    instance.ParseInc();
                     break;
                 default:
                     throw new ParseException(null, "Unary op expected, " + op + " received");
             }
             return instance;
         }
-        private void ParseInc(Parser parser)
+        private void ParseInc()
         {
             if (!ExpressionReturnType.IsNumericType() || !operand.IsSettable)
                 throw new TypeException(SequencePoint, "Increment/Decrement ops only allowed on numeric typed variables, {0} received",
                     ExpressionReturnType);
         }
-        private void ParseNegation(Parser parser)
+        private void ParseNegation()
         {
             if (!ExpressionReturnType.IsNumericType())
                 throw new TypeException(SequencePoint, "Arithmetic ops only allowed on numeric types, {0} received",
                     ExpressionReturnType);
         }
-        private void ParseLogical(Parser parser)
+        private void ParseLogical()
         {
             if (!ExpressionReturnType.IsBooleanType())
                 throw new TypeException(SequencePoint, "Logical ops only allowed on boolean types, {0} received",
                     ExpressionReturnType);
         }
-        private void ParseBinary(Parser parser)
+        private void ParseBinary()
         {
             if (!ExpressionReturnType.IsIntegerType())
                 throw new TypeException(SequencePoint, "Binary ops only allowed on integer types, {0} received",
@@ -178,21 +178,19 @@ namespace LaborasLangCompiler.Parser.Impl
             builder.AppendLine(operand.ToString(indent + 2));
             return builder.ToString();
         }
-        public static Dictionary<Lexer.TokenType, UnaryOperatorNodeType> SuffixOperators;
-        public static Dictionary<Lexer.TokenType, UnaryOperatorNodeType> PrefixOperators;
-        static UnaryOperatorNode()
+        public static Dictionary<Lexer.TokenType, UnaryOperatorNodeType> SuffixOperators = new Dictionary<Lexer.TokenType, UnaryOperatorNodeType>()
         {
-            SuffixOperators = new Dictionary<Lexer.TokenType, UnaryOperatorNodeType>();
-            PrefixOperators = new Dictionary<Lexer.TokenType, UnaryOperatorNodeType>();
-
-            SuffixOperators[Lexer.TokenType.PlusPlus] = UnaryOperatorNodeType.PostIncrement;
-            SuffixOperators[Lexer.TokenType.MinusMinus] = UnaryOperatorNodeType.PostDecrement;
-
-            PrefixOperators[Lexer.TokenType.PlusPlus] = UnaryOperatorNodeType.PreIncrement;
-            PrefixOperators[Lexer.TokenType.MinusMinus] = UnaryOperatorNodeType.PreDecrement;
-            PrefixOperators[Lexer.TokenType.Minus] = UnaryOperatorNodeType.Negation;
-            PrefixOperators[Lexer.TokenType.Not] = UnaryOperatorNodeType.LogicalNot;
-            PrefixOperators[Lexer.TokenType.BitwiseComplement] = UnaryOperatorNodeType.BinaryNot;
-        }
+            
+            {Lexer.TokenType.PlusPlus, UnaryOperatorNodeType.PostIncrement},
+            {Lexer.TokenType.MinusMinus, UnaryOperatorNodeType.PostDecrement}
+        };
+        public static Dictionary<Lexer.TokenType, UnaryOperatorNodeType> PrefixOperators = new Dictionary<Lexer.TokenType, UnaryOperatorNodeType>()
+        {
+            {Lexer.TokenType.PlusPlus, UnaryOperatorNodeType.PreIncrement},
+            {Lexer.TokenType.MinusMinus, UnaryOperatorNodeType.PreDecrement},
+            {Lexer.TokenType.Minus, UnaryOperatorNodeType.Negation},
+            {Lexer.TokenType.Not, UnaryOperatorNodeType.LogicalNot},
+            {Lexer.TokenType.BitwiseComplement, UnaryOperatorNodeType.BinaryNot}
+        };
     }
 }

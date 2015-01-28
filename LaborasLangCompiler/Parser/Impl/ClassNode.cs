@@ -86,7 +86,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var field = GetField(name);
             if (field != null)
-                return new FieldNode(parser, null, field, scope, point);
+                return new FieldNode(null, field, scope, point);
 
             var methods = GetMethods(name);
             if (scope.IsStaticContext())
@@ -97,11 +97,11 @@ namespace LaborasLangCompiler.Parser.Impl
 
             var type = GetContainedType(name);
             if (type != null)
-                return new TypeNode(parser, type, scope, point);
+                return new TypeNode(type, scope, point);
 
             type = FindType(name, point);
             if(type != null)
-                return new TypeNode(parser, type, scope, point);
+                return new TypeNode(type, scope, point);
 
             var namespaze = FindNamespace(name, point);
             if (namespaze != null)

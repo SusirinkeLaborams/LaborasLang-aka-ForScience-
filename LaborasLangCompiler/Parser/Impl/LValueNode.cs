@@ -101,13 +101,11 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private Parser parser;
-        public FieldNode(Parser parser, ExpressionNode instance, FieldReference field, Context parent, SequencePoint point)
+        public FieldNode(ExpressionNode instance, FieldReference field, Context parent, SequencePoint point)
             : base(field, parent, point)
         {
             ObjectInstance = ThisNode.GetAccessingInstance(field, instance, parent, point);
             this.Field = field;
-            this.parser = parser;
         }
         public override string ToString(int indent)
         {

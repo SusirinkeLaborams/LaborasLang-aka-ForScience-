@@ -118,7 +118,7 @@ namespace LaborasLangCompiler.Parser
             return sequencePoint;
         }
 
-        public SequencePoint GetSequencePoint(SequencePoint start, SequencePoint end)
+        public static SequencePoint GetSequencePoint(SequencePoint start, SequencePoint end)
         {
             var sequencePoint = new SequencePoint(start.Document);
             sequencePoint.StartLine = start.StartLine;

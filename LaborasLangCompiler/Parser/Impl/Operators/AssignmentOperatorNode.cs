@@ -70,20 +70,18 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.ToString();
         }
 
-        public static Dictionary<Lexer.TokenType, BinaryOperatorNodeType> Operators;
-        static AssignmentOperatorNode()
+        public static Dictionary<Lexer.TokenType, BinaryOperatorNodeType> Operators = new Dictionary<Lexer.TokenType, BinaryOperatorNodeType>()
         {
-            Operators = new Dictionary<Lexer.TokenType, BinaryOperatorNodeType>();
-            Operators[Lexer.TokenType.PlusEqual]  = BinaryOperatorNodeType.Addition;
-            Operators[Lexer.TokenType.MinusEqual]  = BinaryOperatorNodeType.Subtraction;
-            Operators[Lexer.TokenType.MultiplyEqual] = BinaryOperatorNodeType.Multiplication;
-            Operators[Lexer.TokenType.DivideEqual]  = BinaryOperatorNodeType.Division;
-            Operators[Lexer.TokenType.RemainderEqual]  = BinaryOperatorNodeType.Modulus;
-            Operators[Lexer.TokenType.BitwiseOrEqual]  = BinaryOperatorNodeType.BinaryOr;
-            Operators[Lexer.TokenType.BitwiseAndEqual]  = BinaryOperatorNodeType.BinaryAnd;
-            Operators[Lexer.TokenType.BitwiseXorEqual]  = BinaryOperatorNodeType.BinaryXor;
-            Operators[Lexer.TokenType.RightShiftEqual] = BinaryOperatorNodeType.ShiftRight;
-            Operators[Lexer.TokenType.LeftShiftEqual] = BinaryOperatorNodeType.ShiftLeft;
-        }
+            {Lexer.TokenType.PlusEqual, BinaryOperatorNodeType.Addition},
+            {Lexer.TokenType.MinusEqual, BinaryOperatorNodeType.Subtraction},
+            {Lexer.TokenType.MultiplyEqual, BinaryOperatorNodeType.Multiplication},
+            {Lexer.TokenType.DivideEqual, BinaryOperatorNodeType.Division},
+            {Lexer.TokenType.RemainderEqual, BinaryOperatorNodeType.Modulus},
+            {Lexer.TokenType.BitwiseOrEqual, BinaryOperatorNodeType.BinaryOr},
+            {Lexer.TokenType.BitwiseAndEqual, BinaryOperatorNodeType.BinaryAnd},
+            {Lexer.TokenType.BitwiseXorEqual, BinaryOperatorNodeType.BinaryXor},
+            {Lexer.TokenType.RightShiftEqual, BinaryOperatorNodeType.ShiftRight},
+            {Lexer.TokenType.LeftShiftEqual, BinaryOperatorNodeType.ShiftLeft}
+        };
     }
 }

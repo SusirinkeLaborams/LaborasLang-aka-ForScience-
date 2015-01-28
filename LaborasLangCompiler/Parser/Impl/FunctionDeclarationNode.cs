@@ -52,7 +52,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var builder = new TypeNode.TypeBuilder(parser, parent);
             int count = lexerNode.ChildrenCount;
-            var paramz = ParseParams(parser, parent, lexerNode.Children[count - 1]);
+            var paramz = ParseParams(parser, lexerNode.Children[count - 1]);
             for (int i = 0; i < count - 1; i++)
             {
                 builder.Append(lexerNode.Children[i]);
@@ -135,7 +135,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 builder.Append(lexerNode.Children[i]);
             }
-            builder.Append(ParseParams(parser, parent, lexerNode.Children[count - 1]).Select(p => TypeNode.Parse(parser, parent, p.Type)));
+            builder.Append(ParseParams(parser, lexerNode.Children[count - 1]).Select(p => TypeNode.Parse(parser, parent, p.Type)));
 
             return builder.Type;
         }
@@ -204,7 +204,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.ToString();
         }
 
-        private static List<FunctionParamInfo> ParseParams(Parser parser, Context container, AstNode lexerNode)
+        private static List<FunctionParamInfo> ParseParams(Parser parser, AstNode lexerNode)
         {
             var ret = new List<FunctionParamInfo>();
             int i = 1;

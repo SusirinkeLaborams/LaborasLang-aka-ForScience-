@@ -18,7 +18,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeReference ParsedType { get; private set; }
         public override bool IsGettable { get { return true; } }
 
-        public TypeNode(Parser parser, TypeReference type, Context scope, SequencePoint point)
+        public TypeNode(TypeReference type, Context scope, SequencePoint point)
             : base(type != null ? type.FullName : null, scope, point)
         {
             ParsedType = type;

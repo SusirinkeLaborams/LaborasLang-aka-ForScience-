@@ -133,7 +133,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (type != null)
             {
-                builtNode = new TypeNode(parser, type, parent, node.SequencePoint);
+                builtNode = new TypeNode(type, parent, node.SequencePoint);
                 return true;
             }
             else
@@ -181,7 +181,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (field != null)
             {
-                builtNode = new FieldNode(parser, field.IsStatic() ? null : builtNode, field, parent, builtNode.SequencePoint);
+                builtNode = new FieldNode(field.IsStatic() ? null : builtNode, field, parent, builtNode.SequencePoint);
                 return true;
             }
             else

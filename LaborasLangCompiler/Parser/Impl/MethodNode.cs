@@ -23,7 +23,6 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private Lazy<TypeReference> functorType;
         private ExpressionNode instance;
-        private Parser parser;
 
         public MethodNode(Parser parser, MethodReference method, ExpressionNode instance, Context parent, SequencePoint point)
             : base(method, parent, point)
@@ -31,7 +30,6 @@ namespace LaborasLangCompiler.Parser.Impl
             this.Method = method;
             this.instance = ThisNode.GetAccessingInstance(method, instance, parent, point);
             this.functorType = new Lazy<TypeReference>(() => AssemblyRegistry.GetFunctorType(parser.Assembly, Method));
-            this.parser = parser;
         }
 
         public static MethodNode Parse(Parser parser, Context parent, AstNode lexerNode)

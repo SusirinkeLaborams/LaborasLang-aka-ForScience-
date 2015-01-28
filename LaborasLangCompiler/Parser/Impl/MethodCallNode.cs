@@ -74,7 +74,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static ExpressionNode Call(Parser parser, ExpressionNode function, List<ExpressionNode> args)
         {
-            var point = parser.GetSequencePoint(function.SequencePoint, args.Count == 0 ? function.SequencePoint : args.Last().SequencePoint);
+            var point = Parser.GetSequencePoint(function.SequencePoint, args.Count == 0 ? function.SequencePoint : args.Last().SequencePoint);
             var method = AsObjectCreation(parser, function, args, point);
             if (method != null)
                 return method;
@@ -139,7 +139,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (method == null)
                 return null;
 
-            return new ObjectCreationNode(parser, args.ToList(), method, type.Scope, point);
+            return new ObjectCreationNode(args.ToList(), method, type.Scope, point);
         }
 
         public override string ToString(int indent)

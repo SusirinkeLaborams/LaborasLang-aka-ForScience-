@@ -87,7 +87,7 @@ namespace LaborasLangCompiler.ILTools.Methods
             var right = binaryOperator.RightOperand;
 
             bool leftIsString = left.ExpressionReturnType.FullName == "System.String";
-            bool rightIsString = left.ExpressionReturnType.FullName == "System.String";
+            bool rightIsString = right.ExpressionReturnType.FullName == "System.String";
 
             return leftIsString || rightIsString;
         }

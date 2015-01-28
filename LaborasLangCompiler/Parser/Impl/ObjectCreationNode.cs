@@ -21,15 +21,13 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private TypeReference type;
         private List<ExpressionNode> args;
-        private Parser parser;
 
-        public ObjectCreationNode(Parser parser, List<ExpressionNode> args, MethodReference constructor, Context scope, SequencePoint point)
+        public ObjectCreationNode(List<ExpressionNode> args, MethodReference constructor, Context scope, SequencePoint point)
             :base(constructor, scope, point)
         {
             this.type = constructor.DeclaringType;
             this.args = args;
             this.Constructor = constructor;
-            this.parser = parser;
         }
 
         public override string ToString(int indent)
