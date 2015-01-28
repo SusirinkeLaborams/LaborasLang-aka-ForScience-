@@ -58,9 +58,9 @@ namespace LaborasLangCompiler.Parser.Impl
             return AssemblyRegistry.GetField(parser.Assembly, TypeEmitter, name);
         }
 
-        public IEnumerable<MethodWrapper> GetMethods(string name)
+        public IEnumerable<MethodReference> GetMethods(string name)
         {
-            return AssemblyRegistry.GetMethods(parser.Assembly, TypeEmitter, name).Select(m => new ExternalMethod(parser.Assembly, m));
+            return AssemblyRegistry.GetMethods(parser.Assembly, TypeEmitter, name);
         }
 
         public TypeReference GetContainedType(string name)
@@ -90,10 +90,10 @@ namespace LaborasLangCompiler.Parser.Impl
 
             var methods = GetMethods(name);
             if (scope.IsStaticContext())
-                methods = methods.Where(m => m.IsStatic);
+                methods = methods.Where(m => m.IsStatic());
 
             if (methods.Count() > 0)
-                return AmbiguousMethodNode.Create(methods, scope, null, point);
+                return AmbiguousMethodNode.Create(parser, methods, scope, null, point);
 
             var type = GetContainedType(name);
             if (type != null)

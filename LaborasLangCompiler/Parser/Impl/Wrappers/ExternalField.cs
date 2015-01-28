@@ -24,12 +24,5 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
             TypeReference = field.FieldType;
             DeclaringType = field.DeclaringType;
         }
-
-        public static ExternalField Get(AssemblyEmitter assembly, FieldReference field)
-        {
-            if (field != null)
-                return new ExternalField(assembly, field);
-            return null;
-        }
     }
 }

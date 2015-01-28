@@ -15,11 +15,11 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
 
-        private IEnumerable<MethodWrapper> methods;
+        private IEnumerable<MethodReference> methods;
         private ExpressionNode instance;
         private Context parent;
 
-        private  AmbiguousMethodNode(IEnumerable<MethodWrapper> methods, ExpressionNode instance, Context parent, SequencePoint sequencePoint)
+        private AmbiguousMethodNode(IEnumerable<MethodReference> methods, ExpressionNode instance, Context parent, SequencePoint sequencePoint)
             : base(null, parent, sequencePoint)
         {
             this.methods = methods;
@@ -34,8 +34,8 @@ namespace LaborasLangCompiler.Parser.Impl
             try
             {
                 var paramz = ILHelpers.GetFunctorParamTypes(parser.Assembly, expectedType);
-                var method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), paramz);
-                return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, parent, SequencePoint);
+                var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), paramz);
+                return new MethodNode(parser, method, instance, parent, SequencePoint);
             }
             catch (Exception)
             {
@@ -47,8 +47,8 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             try
             {
-                var method = AssemblyRegistry.GetCompatibleMethod(methods.Select(m => m.MethodReference), args.ToList());
-                return new MethodNode(new ExternalMethod(parser.Assembly, method), instance, parent, SequencePoint);
+                var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), args.ToList());
+                return new MethodNode(parser, method, instance, parent, SequencePoint);
             }
             catch (Exception)
             {
@@ -56,11 +56,11 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public static ExpressionNode Create(IEnumerable<MethodWrapper> methods, Context parent, ExpressionNode instance, SequencePoint sequencePoint)
+        public static ExpressionNode Create(Parser parser, IEnumerable<MethodReference> methods, Context parent, ExpressionNode instance, SequencePoint sequencePoint)
         {
             if(methods.Count() == 1)
             {
-                return new MethodNode(methods.Single(), instance, parent, sequencePoint);
+                return new MethodNode(parser, methods.Single(), instance, parent, sequencePoint);
             }
             else
             {

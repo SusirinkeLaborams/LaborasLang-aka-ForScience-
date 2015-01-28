@@ -14,16 +14,12 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class FunctionDeclarationNode : ParserNode, Context, MethodWrapper
+    class FunctionDeclarationNode : ParserNode, Context
     {
         public MethodReference MethodReference { get { return emitter.Get(); } }
-        public MemberReference MemberReference { get { return MethodReference; } }
         public override NodeType Type { get { return NodeType.ParserInternal; } }
-        public TypeReference FunctorType { get { return functorType.Value; } }
-        public bool IsStatic { get { return true; } }
         public IEnumerable<TypeReference> ParamTypes { get; private set; }
         public TypeReference MethodReturnType { get; private set; }
-        public TypeReference DeclaringType { get; private set; }
 
         private AstNode body;
         private CodeBlockNode parsedBody;
@@ -31,7 +27,6 @@ namespace LaborasLangCompiler.Parser.Impl
         private ClassNode parent;
         private Dictionary<string, ParameterWrapper> symbols;
         private Parser parser;
-        private Lazy<TypeReference> functorType;
         private Modifiers modifiers;
 
         private FunctionDeclarationNode(Parser parser, Context parent, Modifiers modifiers, string name, AstNode method)
@@ -41,9 +36,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.symbols = new Dictionary<string, ParameterWrapper>();
             this.parser = parser;
             this.body = method.Children[1];
-            this.DeclaringType = parent.GetClass().TypeReference;
             ParseHeader(modifiers, method.Children[0], name);
-            this.functorType = new Lazy<TypeReference>(() => AssemblyRegistry.GetFunctorType(parser.Assembly, emitter.Get()));
         }
 
         public void Emit()
@@ -116,7 +109,8 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public bool IsStaticContext()
         {
-            return IsStatic;
+#warning TODO: implement
+            return true;
         }
 
         public static FunctionDeclarationNode ParseAsFunctor(Parser parser, Context parent, AstNode function)

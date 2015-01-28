@@ -15,21 +15,22 @@ namespace LaborasLangCompiler.Parser.Impl
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ObjectCreation; } }
         public override TypeReference ExpressionReturnType { get { return type; } }
         public IReadOnlyList<IExpressionNode> Args { get { return args; } }
-        public MethodReference Constructor { get { return constructor.MethodReference; } }
+        public MethodReference Constructor { get; private set; }
         public override bool IsGettable { get { return true; } }
         public override bool IsSettable { get { return false; } }
-        public override MemberWrapper MemberWrapper { get { return constructor; } }
+        public override MemberWrapper MemberWrapper { get { return new ExternalMethod(parser.Assembly, Constructor); } }
 
         private TypeReference type;
         private List<ExpressionNode> args;
-        private MethodWrapper constructor;
+        private Parser parser;
 
-        public ObjectCreationNode(TypeReference type, List<ExpressionNode> args, MethodWrapper constructor, Context scope, SequencePoint point)
-            :base(constructor, scope, point)
+        public ObjectCreationNode(Parser parser, List<ExpressionNode> args, MethodReference constructor, Context scope, SequencePoint point)
+            :base(new ExternalMethod(parser.Assembly, constructor), scope, point)
         {
-            this.type = type;
+            this.type = constructor.DeclaringType;
             this.args = args;
-            this.constructor = constructor;
+            this.Constructor = constructor;
+            this.parser = parser;
         }
 
         public override string ToString(int indent)

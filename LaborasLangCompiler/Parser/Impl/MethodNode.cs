@@ -15,28 +15,30 @@ namespace LaborasLangCompiler.Parser.Impl
     class MethodNode : MemberNode, IMethodNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Function; } }
-        public override TypeReference ExpressionReturnType { get { return method.FunctorType; } }
+        public override TypeReference ExpressionReturnType { get { return functorType.Value; } }
         public IExpressionNode ObjectInstance { get { return instance; } }
-        public MethodReference Method { get { return method.MethodReference; } }
-        public MethodWrapper MethodWrapper { get { return method; } }
-        public override MemberWrapper MemberWrapper { get { return MethodWrapper; } }
+        public MethodReference Method { get; private set; }
+        public override MemberWrapper MemberWrapper { get { return new ExternalMethod(parser.Assembly, Method); } }
         public override bool IsGettable { get { return true; } }
         public override bool IsSettable { get { return false; } }
 
-        private MethodWrapper method;
+        private Lazy<TypeReference> functorType;
         private ExpressionNode instance;
+        private Parser parser;
 
-        public MethodNode(MethodWrapper method, ExpressionNode instance, Context parent, SequencePoint point)
-            : base(method, parent, point)
+        public MethodNode(Parser parser, MethodReference method, ExpressionNode instance, Context parent, SequencePoint point)
+            : base(new ExternalMethod(parser.Assembly, method), parent, point)
         {
-            this.method = method;
+            this.Method = method;
             this.instance = ThisNode.GetAccessingInstance(method, instance, parent, point);
+            this.functorType = new Lazy<TypeReference>(() => AssemblyRegistry.GetFunctorType(parser.Assembly, Method));
+            this.parser = parser;
         }
 
         public static MethodNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             var method = FunctionDeclarationNode.ParseAsFunctor(parser, parent, lexerNode);
-            return new MethodNode(method, null, parent, method.SequencePoint);
+            return new MethodNode(parser, method.MethodReference, null, parent, method.SequencePoint);
         }
 
         public override string ToString(int indent)

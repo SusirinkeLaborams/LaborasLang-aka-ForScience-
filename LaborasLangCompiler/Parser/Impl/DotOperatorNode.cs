@@ -87,11 +87,11 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 //static methods
 
-                IEnumerable<MethodWrapper> methods = AssemblyRegistry.GetMethods(parser.Assembly, ((TypeNode)builtNode).ParsedType, node.Name).Select(m => new ExternalMethod(parser.Assembly, m));
-                methods = methods.Where(m => m.IsStatic);
+                IEnumerable<MethodReference> methods = AssemblyRegistry.GetMethods(parser.Assembly, ((TypeNode)builtNode).ParsedType, node.Name);
+                methods = methods.Where(m => m.IsStatic());
                 if (methods.Count() != 0)
                 {
-                    builtNode = AmbiguousMethodNode.Create(methods, parent, null, builtNode.SequencePoint);
+                    builtNode = AmbiguousMethodNode.Create(parser, methods, parent, null, builtNode.SequencePoint);
                     return true;
                 }
                 else
@@ -104,11 +104,11 @@ namespace LaborasLangCompiler.Parser.Impl
                 //non-static methods
                 if (!builtNode.IsGettable)
                     return false;
-                var methods = AssemblyRegistry.GetMethods(parser.Assembly, builtNode.ExpressionReturnType, node.Name).Select(m => new ExternalMethod(parser.Assembly, m));
-                methods = methods.Where(m => !m.IsStatic);
+                IEnumerable<MethodReference> methods = AssemblyRegistry.GetMethods(parser.Assembly, builtNode.ExpressionReturnType, node.Name);
+                methods = methods.Where(m => !m.IsStatic());
                 if (methods.Count() != 0)
                 {
-                    builtNode = AmbiguousMethodNode.Create(methods, parent, builtNode, builtNode.SequencePoint);
+                    builtNode = AmbiguousMethodNode.Create(parser, methods, parent, builtNode, builtNode.SequencePoint);
                     return true;
                 }
                 else

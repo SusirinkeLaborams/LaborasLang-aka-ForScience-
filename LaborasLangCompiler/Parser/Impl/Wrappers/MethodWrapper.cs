@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
+    [Obsolete]
     interface MethodWrapper : MemberWrapper
     {
         MethodReference MethodReference { get; }

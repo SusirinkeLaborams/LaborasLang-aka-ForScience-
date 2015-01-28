@@ -139,7 +139,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (method == null)
                 return null;
 
-            return new ObjectCreationNode(type.ParsedType, args.ToList(), new ExternalMethod(parser.Assembly, method), type.Scope, point);
+            return new ObjectCreationNode(parser, args.ToList(), method, type.Scope, point);
         }
 
         public override string ToString(int indent)

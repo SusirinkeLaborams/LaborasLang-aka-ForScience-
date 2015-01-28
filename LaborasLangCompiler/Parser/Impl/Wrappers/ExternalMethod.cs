@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
+    [Obsolete]
     class ExternalMethod : ExternalWrapperBase, MethodWrapper
     {
         public MethodReference MethodReference { get; private set; }
