@@ -13,14 +13,15 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public Context Scope { get; private set; }
         public TypeReference DeclaringType { get; private set; }
-        public abstract MemberWrapper MemberWrapper { get; }
+        public MemberReference Member { get; private set; }
 
-        protected MemberNode(MemberWrapper member, Context scope, SequencePoint point)
+        protected MemberNode(MemberReference member, Context scope, SequencePoint point)
             :base(point)
         {
             Scope = scope;
             DeclaringType = member.DeclaringType;
-            Utils.VerifyAccessible(member.MemberReference, scope, point);
+            Member = member;
+            Utils.VerifyAccessible(Member, scope, point);
         }
     }
 }

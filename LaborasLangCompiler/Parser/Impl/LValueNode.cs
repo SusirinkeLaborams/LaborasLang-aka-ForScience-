@@ -86,7 +86,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public IExpressionNode ObjectInstance { get; private set; }
         public FieldReference Field { get; private set; }
         public override TypeReference ExpressionReturnType { get { return Field.FieldType; } }
-        public override MemberWrapper MemberWrapper { get { return new ExternalField(parser.Assembly, Field); } }
         public override bool IsGettable
         {
             get
@@ -104,7 +103,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private Parser parser;
         public FieldNode(Parser parser, ExpressionNode instance, FieldReference field, Context parent, SequencePoint point)
-            : base(new ExternalField(parser.Assembly, field), parent, point)
+            : base(field, parent, point)
         {
             ObjectInstance = ThisNode.GetAccessingInstance(field, instance, parent, point);
             this.Field = field;

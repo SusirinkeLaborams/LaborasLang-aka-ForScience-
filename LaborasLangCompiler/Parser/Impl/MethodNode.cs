@@ -18,7 +18,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ExpressionReturnType { get { return functorType.Value; } }
         public IExpressionNode ObjectInstance { get { return instance; } }
         public MethodReference Method { get; private set; }
-        public override MemberWrapper MemberWrapper { get { return new ExternalMethod(parser.Assembly, Method); } }
         public override bool IsGettable { get { return true; } }
         public override bool IsSettable { get { return false; } }
 
@@ -27,7 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private Parser parser;
 
         public MethodNode(Parser parser, MethodReference method, ExpressionNode instance, Context parent, SequencePoint point)
-            : base(new ExternalMethod(parser.Assembly, method), parent, point)
+            : base(method, parent, point)
         {
             this.Method = method;
             this.instance = ThisNode.GetAccessingInstance(method, instance, parent, point);

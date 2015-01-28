@@ -18,14 +18,13 @@ namespace LaborasLangCompiler.Parser.Impl
         public MethodReference Constructor { get; private set; }
         public override bool IsGettable { get { return true; } }
         public override bool IsSettable { get { return false; } }
-        public override MemberWrapper MemberWrapper { get { return new ExternalMethod(parser.Assembly, Constructor); } }
 
         private TypeReference type;
         private List<ExpressionNode> args;
         private Parser parser;
 
         public ObjectCreationNode(Parser parser, List<ExpressionNode> args, MethodReference constructor, Context scope, SequencePoint point)
-            :base(new ExternalMethod(parser.Assembly, constructor), scope, point)
+            :base(constructor, scope, point)
         {
             this.type = constructor.DeclaringType;
             this.args = args;
