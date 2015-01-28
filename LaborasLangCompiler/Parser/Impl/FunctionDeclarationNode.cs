@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private CodeBlockNode parsedBody;
         private MethodEmitter emitter;
         private ClassNode parent;
-        private Dictionary<string, ParameterWrapper> symbols;
+        private Dictionary<string, ParameterDefinition> symbols;
         private Parser parser;
         private Modifiers modifiers;
 
@@ -33,7 +33,7 @@ namespace LaborasLangCompiler.Parser.Impl
             : base(parser.GetSequencePoint(method))
         {
             this.parent = parent.GetClass();
-            this.symbols = new Dictionary<string, ParameterWrapper>();
+            this.symbols = new Dictionary<string, ParameterDefinition>();
             this.parser = parser;
             this.body = method.Children[1];
             ParseHeader(modifiers, method.Children[0], name);
@@ -64,12 +64,12 @@ namespace LaborasLangCompiler.Parser.Impl
             foreach(var p in paramz)
             {
                 var param = ParseParameter(parent, p.Type, p.Name);
-                if (Utils.IsVoid(param.TypeReference))
+                if (Utils.IsVoid(param.ParameterType))
                     throw new TypeException(parser.GetSequencePoint(p.Type), "Cannot declare a parameter of type void");
-                emitter.AddArgument(param.ParameterDefinition);
+                emitter.AddArgument(param);
                 symbols.Add(param.Name, param);
             }
-            ParamTypes = symbols.Values.Select(p => p.TypeReference);
+            ParamTypes = symbols.Values.Select(p => p.ParameterType);
 
             if (mods.HasFlag(Modifiers.Entry))
             {
@@ -88,11 +88,11 @@ namespace LaborasLangCompiler.Parser.Impl
 
         }
 
-        private ParameterWrapper ParseParameter(Context parent, AstNode typeNode, AstNode nameNode)
+        private ParameterDefinition ParseParameter(Context parent, AstNode typeNode, AstNode nameNode)
         {
             var type = TypeNode.Parse(parser, parent, typeNode);
             var name = nameNode.GetSingleSymbolOrThrow();
-            return new ParameterWrapper(name, ParameterAttributes.None, type);
+            return new ParameterDefinition(name, ParameterAttributes.None, type);
         }
 
         public FunctionDeclarationNode GetMethod() { return this; }

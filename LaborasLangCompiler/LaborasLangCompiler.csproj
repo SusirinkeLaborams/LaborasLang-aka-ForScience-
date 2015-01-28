@@ -117,11 +117,9 @@
     <Compile Include="Parser\Impl\Wrappers\ExternalNamespace.cs" />
     <Compile Include="Parser\Impl\Wrappers\ExternalWrapperBase.cs" />
     <Compile Include="Parser\Impl\Wrappers\FieldWrapper.cs" />
-    <Compile Include="Parser\Impl\Wrappers\FunctorTypeWrapper.cs" />
     <Compile Include="Parser\Impl\Wrappers\MemberWrapper.cs" />
     <Compile Include="Parser\Impl\Wrappers\MethodWrapper.cs" />
     <Compile Include="Parser\Impl\Wrappers\NamespaceWrapper.cs" />
-    <Compile Include="Parser\Impl\Wrappers\ParameterWrapper.cs" />
     <Compile Include="Parser\Impl\Wrappers\VariableWrapper.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParserNodeInterface.cs" />
