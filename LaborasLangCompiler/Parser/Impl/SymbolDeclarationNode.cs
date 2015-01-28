@@ -15,17 +15,16 @@ namespace LaborasLangCompiler.Parser.Impl
     class SymbolDeclarationNode : ParserNode, ISymbolDeclarationNode
     {
         public override NodeType Type { get { return NodeType.SymbolDeclaration; } }
-        public VariableDefinition Variable { get { return VarialbeWrapper.VariableDefinition; } }
-        public VariableWrapper VarialbeWrapper { get; private set; }
+        public VariableDefinition Variable { get; private set; }
         public IExpressionNode Initializer { get { return initializer; } }
         public bool IsConst { get; private set; }
 
         private ExpressionNode initializer;
 
-        private SymbolDeclarationNode(VariableWrapper variable, bool isConst, ExpressionNode init, SequencePoint point)
+        private SymbolDeclarationNode(VariableDefinition variable, bool isConst, ExpressionNode init, SequencePoint point)
             : base(point)
         {
-            this.VarialbeWrapper = variable;
+            this.Variable = variable;
             this.initializer = init;
             this.IsConst = isConst;
         }
@@ -60,7 +59,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            SymbolDeclarationNode node = new SymbolDeclarationNode(new VariableWrapper(name, declaredType), isConst, initializer, point);
+            SymbolDeclarationNode node = new SymbolDeclarationNode(new VariableDefinition(name, declaredType), isConst, initializer, point);
 
             if (parent is CodeBlockNode)
             {
@@ -99,7 +98,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public string GetSignature()
         {
-            return String.Format("{0}{1} {2}", IsConst ? "const " : "", VarialbeWrapper.TypeReference, VarialbeWrapper.Name);
+            return String.Format("{0}{1} {2}", IsConst ? "const " : "", Variable.VariableType, Variable.Name);
         }
     }
 }

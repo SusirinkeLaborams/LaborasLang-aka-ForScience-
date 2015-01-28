@@ -120,7 +120,6 @@
     <Compile Include="Parser\Impl\Wrappers\MemberWrapper.cs" />
     <Compile Include="Parser\Impl\Wrappers\MethodWrapper.cs" />
     <Compile Include="Parser\Impl\Wrappers\NamespaceWrapper.cs" />
-    <Compile Include="Parser\Impl\Wrappers\VariableWrapper.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParserNodeInterface.cs" />
     <Compile Include="Parser\Utils.cs" />

@@ -14,8 +14,8 @@ namespace LaborasLangCompiler.Parser.Impl
     class LocalVariableNode : ExpressionNode, ILocalVariableNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.LocalVariable; } }
-        public VariableDefinition LocalVariable { get { return variable.VariableDefinition; } }
-        public override TypeReference ExpressionReturnType { get { return variable.TypeReference; } }
+        public VariableDefinition LocalVariable { get; private set; }
+        public override TypeReference ExpressionReturnType { get { return LocalVariable.VariableType; } }
         public string Name {get { return LocalVariable.Name; } }
         public override bool IsGettable
         {
@@ -26,12 +26,11 @@ namespace LaborasLangCompiler.Parser.Impl
             get { return !isConst; }
         }
 
-        private VariableWrapper variable;
         private bool isConst;
-        public LocalVariableNode(SequencePoint point, VariableWrapper variable, bool isConst)
+        public LocalVariableNode(SequencePoint point, VariableDefinition variable, bool isConst)
             : base(point)
         {
-            this.variable = variable;
+            this.LocalVariable = variable;
             this.isConst = isConst;
         }
         public override string ToString(int indent)

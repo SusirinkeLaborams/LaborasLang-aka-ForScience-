@@ -40,7 +40,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (symbols.ContainsKey(name))
             {
                 SymbolDeclarationNode node = symbols[name];
-                return new LocalVariableNode(point, node.VarialbeWrapper, node.IsConst);
+                return new LocalVariableNode(point, node.Variable, node.IsConst);
             }
 
             return parent.GetSymbol(name, scope, point);
