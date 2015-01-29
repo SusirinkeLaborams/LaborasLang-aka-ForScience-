@@ -118,11 +118,52 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.ToString();
         }
     }
-    /*
-    class PropertyNode : SymbolNode, IPropertyNode
+
+    class PropertyNode : MemberNode, IPropertyNode
     {
-        public override LValueNodeType LValueType { get { return LValueNodeType.Property; } }
-        public IExpressionNode ObjectInstance { get; }
-        public PropertyReference Property { get; }
-    }*/
+        public override ExpressionNodeType ExpressionType
+        {
+            get { return ExpressionNodeType.Property; }
+        }
+
+        public override TypeReference ExpressionReturnType
+        {
+            get { return IsGettable ? Property.PropertyType : null; }
+        }
+
+        public override bool IsSettable
+        {
+            get { return definition.SetMethod != null && Utils.IsAccessbile(definition.SetMethod, Scope.GetClass().TypeReference); }
+        }
+
+        public override bool IsGettable
+        {
+            get { return definition.GetMethod != null && Utils.IsAccessbile(definition.GetMethod, Scope.GetClass().TypeReference); }
+        }
+
+        public IExpressionNode ObjectInstance { get { return instance; } }
+        public PropertyReference Property { get; private set; }
+
+        private ExpressionNode instance;
+        private PropertyDefinition definition;
+
+        public PropertyNode(ExpressionNode instance, PropertyReference property, Context scope, SequencePoint point)
+            :base(property, scope, point)
+        {
+            this.instance = instance;
+            this.Property = property;
+            this.definition = property.Resolve();
+        }
+
+        public override string ToString(int indent)
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("Property:");
+            builder.Indent(indent + 1).AppendLine("Name:");
+            builder.Indent(indent + 2).AppendLine(Property.Name);
+            builder.Indent(indent + 1).AppendLine("Type:");
+            builder.Indent(indent + 2).AppendLine(ExpressionReturnType.FullName);
+            return builder.ToString();
+        }
+    }
 }

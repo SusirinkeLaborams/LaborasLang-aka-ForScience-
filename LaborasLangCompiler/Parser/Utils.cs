@@ -68,41 +68,34 @@ namespace LaborasLangCompiler.Parser
             return right.ExpressionReturnType.IsAssignableTo(left.ExpressionReturnType);
         }
 
-        public static void VerifyAccessible(MethodReference method, Context scope, SequencePoint point)
+        public static void VerifyAccessible(MemberReference member, TypeReference scope, SequencePoint point)
         {
-            if (!ILHelpers.IsAccessible(method, scope.GetClass().TypeReference))
-                throw new TypeException(point, "Method {0} is inaccessible from {1}", method, scope);
+            if(!IsAccessbile(member, scope))
+                throw new TypeException(point, "Member {0} is inaccessible from {1}", member, scope);
         }
 
-        public static void VerifyAccessible(TypeReference type, Context scope, SequencePoint point)
-        {
-            if (!ILHelpers.IsAccessible(type, scope.GetClass().TypeReference))
-                throw new TypeException(point, "Type {0} is inaccessible from {1}", type, scope);
-        }
-
-        public static void VerifyAccessible(FieldReference field, Context scope, SequencePoint point)
-        {
-            if (!ILHelpers.IsAccessible(field, scope.GetClass().TypeReference))
-                throw new TypeException(point, "Field {0} is inaccessible from {1}", field, scope);
-        }
-
-        public static void VerifyAccessible(MemberReference member, Context scope, SequencePoint point)
+        public static bool IsAccessbile(MemberReference member, TypeReference scope)
         {
             if(member is MethodReference)
             {
-                VerifyAccessible((MethodReference)member, scope, point);
+                return ILHelpers.IsAccessible((MethodReference)member, scope);
             }
             else if(member is TypeReference)
             {
-                VerifyAccessible((TypeReference)member, scope, point);
+                return ILHelpers.IsAccessible((TypeReference)member, scope);
             }
             else if(member is FieldReference)
             {
-                VerifyAccessible((FieldReference)member, scope, point);
+                return ILHelpers.IsAccessible((FieldReference)member, scope);
+            }
+            else if(member is PropertyReference)
+            {
+                var definition = ((PropertyReference)member).Resolve();
+                return IsAccessbile(definition.SetMethod, scope) || IsAccessbile(definition.GetMethod, scope);
             }
             else
             {
-                throw new NotImplementedException("VerifyAccessible not impemented for this type");
+                throw new ArgumentException(String.Format("Unexpected member {0}", member.GetType().FullName));
             }
         }
 

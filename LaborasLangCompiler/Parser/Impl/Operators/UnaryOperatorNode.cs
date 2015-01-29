@@ -136,7 +136,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     instance.ParseInc();
                     break;
                 default:
-                    throw new ParseException(null, "Unary op expected, " + op + " received");
+                    throw new ParseException(instance.SequencePoint, "Unary op expected, " + op + " received");
             }
             return instance;
         }
