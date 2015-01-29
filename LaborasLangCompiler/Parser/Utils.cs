@@ -91,7 +91,9 @@ namespace LaborasLangCompiler.Parser
             else if(member is PropertyReference)
             {
                 var definition = ((PropertyReference)member).Resolve();
-                return IsAccessbile(definition.SetMethod, scope) || IsAccessbile(definition.GetMethod, scope);
+                var setter = definition.SetMethod;
+                var getter = definition.GetMethod;
+                return (setter != null && IsAccessbile(setter, scope)) || (getter != null && IsAccessbile(getter, scope));
             }
             else
             {

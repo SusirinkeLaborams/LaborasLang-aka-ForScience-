@@ -46,13 +46,15 @@ namespace LaborasLangCompiler.Parser.Impl
                     throw new ParseException(node.SequencePoint, "Expressions only allowed on left of dot operator");
 
                 var symbol = node as SymbolNode;
-                if (AppendLValue(symbol))
+                if (AppendField(symbol))
                     return;
                 if (AppendMethod(symbol))
                     return;
                 if (AppendType(symbol))
                     return;
                 if (AppendNamespace(symbol))
+                    return;
+                if (AppendProperty(symbol))
                     return;
                 throw new SymbolNotFoundException(node.SequencePoint, "Symbol {0} not found", symbol.Name);
             }
@@ -161,7 +163,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private bool AppendLValue(SymbolNode node)
+        private bool AppendField(SymbolNode node)
         {
             FieldReference field = null;
 
@@ -182,6 +184,34 @@ namespace LaborasLangCompiler.Parser.Impl
             if (field != null)
             {
                 builtNode = new FieldNode(field.IsStatic() ? null : builtNode, field, parent, builtNode.SequencePoint);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool AppendProperty(SymbolNode node)
+        {
+            PropertyReference property = null;
+
+            if(builtNode is TypeNode)
+            {
+                property = AssemblyRegistry.GetProperty(parser.Assembly, ((TypeNode)builtNode).ParsedType, node.Name);
+                if (property != null && !property.IsStatic())
+                    property = null;
+            }
+            else if(builtNode.ExpressionType != ExpressionNodeType.ParserInternal)
+            {
+                property = AssemblyRegistry.GetProperty(parser.Assembly, builtNode.ExpressionReturnType, node.Name);
+                if (property != null && property.IsStatic() || !builtNode.IsGettable)
+                    property = null;
+            }
+
+            if (property != null)
+            {
+                builtNode = new PropertyNode(property.IsStatic() ? null : builtNode, property, parent, builtNode.SequencePoint);
                 return true;
             }
             else

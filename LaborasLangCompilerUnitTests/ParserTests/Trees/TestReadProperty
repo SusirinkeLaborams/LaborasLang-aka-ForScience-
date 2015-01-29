@@ -1,0 +1,33 @@
+Class:
+	Fields:
+		Field:
+			Type:
+				System.Collections.ArrayList
+			Name:
+				lst
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ObjectCreation:
+					Type: System.Collections.ArrayList
+					Args:
+					Constructor:
+						System.Void System.Collections.ArrayList::.ctor()
+
+
+		Field:
+			Type:
+				System.Int32
+			Name:
+				count
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Property:
+					Name:
+						Count
+					Type:
+						System.Int32
+
+
+	Methods:

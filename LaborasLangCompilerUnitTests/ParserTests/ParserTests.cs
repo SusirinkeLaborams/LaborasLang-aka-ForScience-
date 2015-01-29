@@ -674,6 +674,36 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CanParse(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestReadProperty()
+        {
+            string source = @"
+                auto lst = System.Collections.ArrayList();
+                auto count = lst.Count;";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException))]
+        public void TestWriteNoSetterProperty()
+        {
+            string source = @"
+                auto lst = System.Collections.ArrayList();
+                auto foo = void()
+                {
+                    lst.Count = 5;
+                };";
+            CanParse(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestWriteProperty()
+        {
+            string source = @"
+                auto lst = System.Collections.ArrayList();
+                auto foo = void()
+                {
+                    lst.Capacity = 5;
+                };";
+            CompareTrees(source);
+        }
         private static void CompareTrees(string source, [CallerMemberName] string name = "")
         {
             var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });

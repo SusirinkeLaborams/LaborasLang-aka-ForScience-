@@ -1,0 +1,53 @@
+Class:
+	Fields:
+		Field:
+			Type:
+				System.Collections.ArrayList
+			Name:
+				lst
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ObjectCreation:
+					Type: System.Collections.ArrayList
+					Args:
+					Constructor:
+						System.Void System.Collections.ArrayList::.ctor()
+
+
+	Methods:
+		Method:
+			Name:
+				foo
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						UnaryOperator:
+							Operator:
+								VoidOperator
+							Operand:
+								Assignment:
+									Left:
+										Property:
+											Name:
+												Capacity
+											Type:
+												System.Int32
+
+									Right:
+										Literal:
+											Type:
+												System.Int32
+											Value:
+												5
+
+
+
+
+
