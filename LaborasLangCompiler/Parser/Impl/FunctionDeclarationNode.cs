@@ -109,8 +109,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public bool IsStaticContext()
         {
-#warning TODO: implement
-            return true;
+            return MethodReference.IsStatic();
         }
 
         public static FunctionDeclarationNode ParseAsFunctor(Parser parser, Context parent, AstNode function)
