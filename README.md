@@ -51,19 +51,24 @@ entry auto main = void() {
 ```
 
 ###Conditional statements
+```
 if(true) {
 
 } else {
 
 }
+```
 ###Structures
 ###Loops
+```
 while(condition) {
 
 }
+```
 ##Statements
 ###Operators
 ###Operator precedence
+```
 Parentheses
 Period
 PostfixOperator
@@ -79,3 +84,4 @@ BitwiseOr
 And
 Or
 Assignment operator
+```
