@@ -18,11 +18,64 @@ This hello world program, without having any groundbreaking changes, shows some 
 
 ##Basic syntax
 ###Variables
-###Procedures
+```
+int foo;
+foo = 5;
+```
+```
+auto foo = 5;
+```
+
+```
+void() bar;
+bar = void() {
+};
+```
+```
+auto bar = void() {
+};
+```
+
+
+```
+auto something_complex = int()() {
+	return int() {
+		return 5;
+	}
+}
+```
+
+```
+entry auto main = void() {
+}
+```
+
 ###Conditional statements
+if(true) {
+
+} else {
+
+}
 ###Structures
 ###Loops
+while(condition) {
 
+}
 ##Statements
 ###Operators
 ###Operator precedence
+Parentheses
+Period
+PostfixOperator
+PrefixOperator
+MultiplicativeOperator (Remainder, Division, Multiplication)
+AdditiveOperator (Minus, Plus)
+ShiftOperator (LeftShift, RightShift)
+RelationalOperator (LessOrEqual, MoreOrEqual, Less, More)
+EqualityOperator (Equal, NotEqual)
+BitwiseAnd
+BitwiseXor
+BitwiseOr
+And
+Or
+Assignment operator
