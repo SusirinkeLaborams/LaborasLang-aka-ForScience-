@@ -438,7 +438,21 @@ auto foo = void()()
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestAssignToIncrement()
         {
-            var source = @"++foo = 5;";
+            var source = @" ++foo = 5;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestAssignToFunctionResult()
+        {
+            var source = @"foo().bar = 5;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestAssignToSum()
+        {
+            var source = @"(foo + bar) = 5;";
             ExecuteTest(source);
         }
 

@@ -221,7 +221,7 @@ namespace Lexer
 
                     // Assignment operator is evaluated right to left
                     CollapsableParseRule(AssignmentOperatorNode,
-                        PeriodNode + AssignmentOperator + AssignmentOperatorNode,
+                        LogicalOrNode + AssignmentOperator + AssignmentOperatorNode,
                         LogicalOrNode),
  
                     #endregion
