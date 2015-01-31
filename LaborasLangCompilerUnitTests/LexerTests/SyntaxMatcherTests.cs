@@ -456,6 +456,33 @@ auto foo = void()()
             ExecuteTest(source);
         }
 
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestErrorousStatement()
+        {
+            var source = @"sudo bring me beer;";
+            ExecuteTest(source);
+        }
+        
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestErrorousBlock()
+        {
+            var source = @"
+            auto foo = + {
+                should = work;
+            };
+            int a = 0;
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestErrorousStatements()
+        {
+            var source = @"int i = 4;
+sudo bring me beer;";
+            ExecuteTest(source);
+        }
+
         #endregion tests
 
         private void ExecuteTest(string source, [CallerMemberName] string fileName = "")

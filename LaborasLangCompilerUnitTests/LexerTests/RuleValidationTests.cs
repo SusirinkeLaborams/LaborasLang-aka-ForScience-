@@ -14,7 +14,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         public void TestRulePoolContainsAllRules()
         {
             var missingRules = new List<TokenType>();
-            var notRequiredRules = new TokenType[] { TokenType.RootNode, TokenType.TokenTypeCount, TokenType.LexerInternalTokens, TokenType.NonTerminalToken };
+            var notRequiredRules = new TokenType[] { TokenType.RootNode, TokenType.TokenTypeCount, TokenType.LexerInternalTokens, TokenType.NonTerminalToken, TokenType.UnknownNode };
             var allTokens = System.Enum.GetValues(typeof(TokenType)).Cast<TokenType>();
             var requiredRules = allTokens.Where(t => !t.IsTerminal() && !notRequiredRules.Contains(t));
             foreach (var token in requiredRules)
@@ -44,6 +44,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             visited[(int)TokenType.LexerInternalTokens] = true;
             visited[(int)TokenType.NonTerminalToken] = true;
             visited[(int)TokenType.MalformedToken] = true;
+            visited[(int)TokenType.UnknownNode] = true;
             var stack = new Stack<TokenType>();
             stack.Push(TokenType.StatementNode);
             
