@@ -109,7 +109,7 @@
         MultiplicativeOperatorNode,
         ParenthesesNode,
         LiteralNode,
-
+        UnknownNode,
         LexerInternalTokens,    // Lexer internal-only tokens start from here
 
         StatementNode,
@@ -155,6 +155,19 @@
         {
             // PERF: CompareTo is expensive
             return (int)token < (int)TokenType.NonTerminalToken;
+        }
+
+        public static bool IsRecoveryPoint(this TokenType token)
+        {            
+            switch (token)
+            {
+                case TokenType.EndOfLine:
+                case TokenType.RightCurlyBrace:
+                case TokenType.LeftCurlyBrace:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
     

@@ -1,0 +1,25 @@
+Content: Type: RootNode, Start: 1, 1, End: 1, 20, Content: ""
+Type: RootNode
+Children:
+	Content: Type: UnknownNode, Start: 1, 1, End: 1, 20, Content: ""
+	Type: UnknownNode
+	Children:
+		Content: Type: Symbol, Start: 1, 1, End: 1, 5, Content: "sudo"
+		Type: Symbol
+		Children:
+
+		Content: Type: Symbol, Start: 1, 6, End: 1, 11, Content: "bring"
+		Type: Symbol
+		Children:
+
+		Content: Type: Symbol, Start: 1, 12, End: 1, 14, Content: "me"
+		Type: Symbol
+		Children:
+
+		Content: Type: Symbol, Start: 1, 15, End: 1, 19, Content: "beer"
+		Type: Symbol
+		Children:
+
+		Content: Type: EndOfLine, Start: 1, 19, End: 1, 20, Content: ";"
+		Type: EndOfLine
+		Children:

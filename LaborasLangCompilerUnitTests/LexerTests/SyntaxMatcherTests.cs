@@ -438,7 +438,48 @@ auto foo = void()()
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestAssignToIncrement()
         {
-            var source = @"++foo = 5;";
+            var source = @" ++foo = 5;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestAssignToFunctionResult()
+        {
+            var source = @"foo().bar = 5;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestAssignToSum()
+        {
+            var source = @"(foo + bar) = 5;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestErrorousStatement()
+        {
+            var source = @"sudo bring me beer;";
+            ExecuteTest(source);
+        }
+        
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestErrorousBlock()
+        {
+            var source = @"
+            auto foo = + {
+                should = work;
+            };
+            int a = 0;
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void TestErrorousStatements()
+        {
+            var source = @"int i = 4;
+sudo bring me beer;";
             ExecuteTest(source);
         }
 

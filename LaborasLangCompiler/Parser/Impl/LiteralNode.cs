@@ -74,31 +74,31 @@ namespace LaborasLangCompiler.Parser.Impl
                     case "System.String":
                         return value.Substring(1, value.Length - 2);
                     case "System.Boolean":
-                        return Convert.ToBoolean(value);
+                        return Convert.ToBoolean(value, CultureInfo.InvariantCulture);
                     case "System.Char":
-                        return Convert.ToChar(value);
+                        return Convert.ToChar(value, CultureInfo.InvariantCulture);
                     case "System.SByte":
-                        return Convert.ToSByte(value);
+                        return Convert.ToSByte(value, CultureInfo.InvariantCulture);
                     case "System.Byte":
-                        return Convert.ToByte(value);
+                        return Convert.ToByte(value, CultureInfo.InvariantCulture);
                     case "System.Int16":
-                        return Convert.ToInt16(value);
+                        return Convert.ToInt16(value, CultureInfo.InvariantCulture);
                     case "System.Uint16":
-                        return Convert.ToUInt16(value);
+                        return Convert.ToUInt16(value, CultureInfo.InvariantCulture);
                     case "System.Int32":
-                        return Convert.ToInt32(value);
+                        return Convert.ToInt32(value, CultureInfo.InvariantCulture);
                     case "System.UInt32":
-                        return Convert.ToUInt32(value);
+                        return Convert.ToUInt32(value, CultureInfo.InvariantCulture);
                     case "System.Int64":
-                        return Convert.ToInt64(value);
+                        return Convert.ToInt64(value, CultureInfo.InvariantCulture);
                     case "System.UInt64":
-                        return Convert.ToUInt64(value);
+                        return Convert.ToUInt64(value, CultureInfo.InvariantCulture);
                     case "System.Single":
-                        return Convert.ToSingle(value);
+                        return Convert.ToSingle(value, CultureInfo.InvariantCulture);
                     case "System.Double":
-                        return Convert.ToDouble(value);
+                        return Convert.ToDouble(value, CultureInfo.InvariantCulture);
                     case "System.Decimal":
-                        return Convert.ToDecimal(value);
+                        return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
                     default:
                         throw new TypeException(point, "Cannot parse literal of type {0}", type.FullName);
                 }

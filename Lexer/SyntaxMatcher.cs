@@ -221,7 +221,7 @@ namespace Lexer
 
                     // Assignment operator is evaluated right to left
                     CollapsableParseRule(AssignmentOperatorNode,
-                        PeriodNode + AssignmentOperator + AssignmentOperatorNode,
+                        LogicalOrNode + AssignmentOperator + AssignmentOperatorNode,
                         LogicalOrNode),
  
                     #endregion
@@ -309,21 +309,74 @@ namespace Lexer
             m_RootNode = rootNode;
             m_Source = sourceTokens;
         }
-
+        
         public AstNode Match()
         {
+            var defaultConditions = new Condition[] { new Condition(TokenType.StatementNode, ConditionType.OneOrMore) };
             var tokensConsumed = 0;
 
-            AstNode matchedNode = Match(0, new Condition[] { new Condition(TokenType.StatementNode, ConditionType.OneOrMore) }, ref tokensConsumed);
-
-            if (matchedNode.IsNull || tokensConsumed != m_Source.Length)
+            AstNode matchedNode = Match(0, defaultConditions, ref tokensConsumed);
+            if (matchedNode.IsNull)
             {
-                throw new Exception(String.Format("Could not match all  tokens, last matched token {0} - {1}, line {2}, column {3}", LastMatched, m_Source[LastMatched - 1].Content, m_Source[LastMatched - 1].Start.Row, m_Source[LastMatched - 1].Start.Column));
+                matchedNode = m_RootNode.NodePool.ProvideNode();
             }
 
-            matchedNode.Type = TokenType.RootNode;
+            while(tokensConsumed < m_Source.Length) 
+            {
+                var tokensSkipped = 0;
+                matchedNode.AddChild(m_RootNode, SkipToRecovery(tokensConsumed, ref tokensSkipped));
+
+                tokensConsumed += tokensSkipped;
+
+                var consumed = 0;
+                var matchResult = Match(tokensConsumed, defaultConditions, ref consumed);
+                
+                tokensConsumed += consumed;
+
+                if (!matchResult.IsNull)
+                {
+                    foreach(var child in matchResult.Children) {
+                        matchedNode.AddChild(m_RootNode, child);
+                    }
+                }                
+            }
+
+            var token = m_RootNode.ProvideToken();
+
+            token.Start = m_Source[0].Start;
+            token.End = m_Source[tokensConsumed - 1].End;
+            token.Content = FastString.Empty;
+            token.Type = TokenType.RootNode;
+
+            matchedNode.Token = token;
+            
             m_RootNode.SetNode(matchedNode);
             return matchedNode;
+        }
+
+        private AstNode SkipToRecovery(int offset, ref int tokensConsumed)
+        {
+            var node = m_RootNode.NodePool.ProvideNode();
+            
+            tokensConsumed = 1;
+            for (int i = offset; i < m_Source.Length; i++, tokensConsumed++)
+            {                
+                node.AddTerminal(m_RootNode, m_Source[i]);
+                if (m_Source[i].Type.IsRecoveryPoint())
+                {
+                    break;
+                }
+            }
+
+            var token = m_RootNode.ProvideToken();
+            
+            token.Start = m_Source[offset].Start;
+            token.End = m_Source[offset + tokensConsumed - 1].End;
+            token.Content = FastString.Empty;
+            token.Type = TokenType.UnknownNode;
+
+            node.Token = token;
+            return node;
         }
 
         private AstNode Match(int sourceOffset, Condition[] rule, ref int tokensConsumed)
@@ -352,8 +405,8 @@ namespace Lexer
             }
 
             var token = m_RootNode.ProvideToken();
-            token.Start = node.Children[0].Token.Start;
-            token.End = node.Children[node.ChildrenCount - 1].Token.End;
+            token.Start = m_Source[sourceOffset].Start;
+            token.End = m_Source[sourceOffset + tokensConsumed - 1].End;
             token.Content = FastString.Empty;
             node.Token = token;
 
@@ -650,6 +703,7 @@ namespace Lexer
         private static Condition LiteralNode { get { return TokenType.LiteralNode; } }
         private static Condition Entry { get { return TokenType.Entry; } }
         private static Condition Mutable { get { return TokenType.Mutable; } }
+        private static Condition UnknownNode { get { return TokenType.UnknownNode; } }
         #endregion
 
     }
