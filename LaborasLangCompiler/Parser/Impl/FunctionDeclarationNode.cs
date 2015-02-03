@@ -44,7 +44,7 @@ namespace LaborasLangCompiler.Parser.Impl
             parsedBody = CodeBlockNode.Parse(parser, this, body);
             if (MethodReturnType.FullName != parser.Void.FullName && !parsedBody.Returns)
                 throw new ParseException(SequencePoint, "Not all control paths return a value");
-            if(parser.ShouldEmit)
+            if(parser.ProjectParser.ShouldEmit)
                 emitter.ParseTree(parsedBody);
         }
 

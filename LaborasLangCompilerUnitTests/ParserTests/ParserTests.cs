@@ -3,6 +3,7 @@ using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser;
 using LaborasLangCompiler.Parser.Exceptions;
+using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompilerUnitTests.ILTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -704,36 +705,45 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CompareTrees(source);
         }
+
         private static void CompareTrees(string source, [CallerMemberName] string name = "")
         {
-            var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
-            var assembly = new AssemblyEmitter(compilerArgs);
-            var file = path + name;
-            using (var tree = Lexer.Lexer.Lex(source))
-            {
-                Parser parser = Parser.ParseAll(assembly, tree, name, false);
-                string result = parser.Root.ToString(0);
-#if REWRITE
-                System.IO.File.WriteAllText(file, result);
-#else
-                string expected = "";
-                try
-                {
-                    expected = System.IO.File.ReadAllText(file);
-                }
-                catch { }
-                Assert.AreEqual(expected, result);
-#endif
-            }
+            CompareTrees(new string[]{source}, new string[]{name}, name);
         }
-        public static void CanParse(string source, [CallerMemberName] string name = "")
+
+        private static void CanParse(string source, [CallerMemberName] string name = "")
         {
-            var compilerArgs = CompilerArguments.Parse(new[] { name + ".ll" });
+            CanParse(new string[] { source }, new string[] { name });
+        }
+
+        private static void CanParse(string[] sources, string[] names)
+        {
+            var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").ToArray());
             var assembly = new AssemblyEmitter(compilerArgs);
-            using (var tree = Lexer.Lexer.Lex(source))
+            ProjectParser.ParseAll(assembly, sources, names, false);
+        }
+
+        private static void CompareTrees(string[] sources, string[] names, string testName)
+        {
+            var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").ToArray());
+            var assembly = new AssemblyEmitter(compilerArgs);
+            var file = path + testName;
+
+            var parser = ProjectParser.ParseAll(assembly, sources, names, false);
+            string result = parser.ToString();
+
+#if REWRITE
+            System.IO.File.WriteAllText(file, result);
+#else
+
+            string expected = "";
+            try
             {
-                Parser.ParseAll(assembly, tree, name, false);
+                expected = System.IO.File.ReadAllText(file);
             }
+            catch { }
+            Assert.AreEqual(expected, result);
+#endif
         }
     }
 }

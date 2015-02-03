@@ -14,86 +14,45 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser
 {
-    class Parser
+    class Parser : IDisposable
     {
-        public AssemblyEmitter Assembly { get; private set; }
+        public ProjectParser ProjectParser { get; private set; }
+        public AssemblyEmitter Assembly { get { return ProjectParser.Assembly; } }
         public ClassNode Root { get; set; }
         public string Filename { get; private set; }
         public Document Document { get; private set; }
-        public bool ShouldEmit { get; private set; }
 
-        private Dictionary<string, TypeReference> primitives;
+        public TypeReference Bool { get { return ProjectParser.Bool; } }
+        public TypeReference Char { get { return ProjectParser.Char; } }
+        public TypeReference Int8 { get { return ProjectParser.Int8; } }
+        public TypeReference UInt8 { get { return ProjectParser.UInt8; } }
+        public TypeReference Int16 { get { return ProjectParser.Int16; } }
+        public TypeReference UInt16 { get { return ProjectParser.UInt16; } }
+        public TypeReference Int32 { get { return ProjectParser.Int32; } }
+        public TypeReference UInt32 { get { return ProjectParser.UInt32; } }
+        public TypeReference Int64 { get { return ProjectParser.Int64; } }
+        public TypeReference UInt64 { get { return ProjectParser.UInt64; } }
+        public TypeReference Float { get { return ProjectParser.Float; } }
+        public TypeReference Double { get { return ProjectParser.Double; } }
+        public TypeReference Decimal { get { return ProjectParser.Decimal; } }
+        public TypeReference String { get { return ProjectParser.String; } }
+        public TypeReference Void { get { return ProjectParser.Void; } }
+        public TypeReference Auto { get { return ProjectParser.Auto; } }
+        public TypeReference Object { get { return ProjectParser.Object; } }
 
-        #region types
+        private RootNode lexerRoot;
 
-        public TypeReference Bool { get; private set; }
-        public TypeReference Char { get; private set; }
-        public TypeReference Int8 { get; private set; }
-        public TypeReference UInt8 { get; private set; }
-        public TypeReference Int16 { get; private set; }
-        public TypeReference UInt16 { get; private set; }
-        public TypeReference Int32 { get; private set; }
-        public TypeReference UInt32 { get; private set; }
-        public TypeReference Int64 { get; private set; }
-        public TypeReference UInt64 { get; private set; }
-        public TypeReference Float { get; private set; }
-        public TypeReference Double { get; private set; }
-        public TypeReference Decimal { get; private set; }
-        public TypeReference String { get; private set; }
-        public TypeReference Void { get; private set; }
-        public TypeReference Auto { get; private set; }
-        public TypeReference Object { get; private set; }
-
-        #endregion types
-
-        private Parser(AssemblyEmitter assembly, RootNode root, string filePath, bool emit = true)
+        public Parser(ProjectParser parser, RootNode root, string filePath)
         {
-            Assembly = assembly;
             Filename = Path.GetFileNameWithoutExtension(filePath);
             Document = new Document(filePath);
             Document.Language = DocumentLanguage.Other;
             Document.LanguageVendor = DocumentLanguageVendor.Other;
             Document.Type = DocumentType.Text;
-            ShouldEmit = emit;
-            this.primitives = new Dictionary<string, TypeReference>();
+            ProjectParser = parser;
 
-            primitives["bool"] = Bool = assembly.TypeToTypeReference(typeof(bool));
-
-            primitives["char"] = Char = assembly.TypeToTypeReference(typeof(char));
-            primitives["int8"] = Int8 = assembly.TypeToTypeReference(typeof(sbyte));
-            primitives["uint8"] = UInt8 = assembly.TypeToTypeReference(typeof(byte));
-
-            primitives["int16"] = Int16 = assembly.TypeToTypeReference(typeof(short));
-            primitives["uint16"] = UInt16 = assembly.TypeToTypeReference(typeof(ushort));
-
-            primitives["int32"] = primitives["int"] = Int32 = assembly.TypeToTypeReference(typeof(int));
-            primitives["uint32"] = primitives["uint"] = UInt32 = assembly.TypeToTypeReference(typeof(uint));
-
-            primitives["int64"] = primitives["long"] = Int64 = assembly.TypeToTypeReference(typeof(long));
-            primitives["uint64"] = primitives["ulong"] = UInt64 = assembly.TypeToTypeReference(typeof(ulong));
-
-            primitives["float"] = Float = assembly.TypeToTypeReference(typeof(float));
-            primitives["double"] = Double = assembly.TypeToTypeReference(typeof(double));
-            primitives["decimal"] = Decimal = assembly.TypeToTypeReference(typeof(decimal));
-
-            primitives["string"] = String = assembly.TypeToTypeReference(typeof(string));
-            primitives["object"] = Object = assembly.TypeToTypeReference(typeof(object));
-
-            primitives["void"] = Void = assembly.TypeToTypeReference(typeof(void));
-            primitives["auto"] = Auto = AutoType.Instance;
-
-            var tree = root.Node;
-
-            Root = new ClassNode(this, null, tree);
-        }
-
-        public static Parser ParseAll(AssemblyEmitter assembly, RootNode root, string filePath, bool emit = true)
-        {
-            Parser parser = new Parser(assembly, root, filePath, emit);
-            parser.Root.ParseDeclarations();
-            parser.Root.ParseInitializers();
-            parser.Root.Emit();
-            return parser;
+            lexerRoot = root;
+            Root = new ClassNode(this, null, root.Node);
         }
 
         public SequencePoint GetSequencePoint(AstNode lexerNode)
@@ -128,30 +87,19 @@ namespace LaborasLangCompiler.Parser
             return sequencePoint;
         }
 
-        public TypeReference FindType(string fullname)
-        {
-            return AssemblyRegistry.FindType(Assembly, fullname);
-        }
-
-        public Namespace FindNamespace(string fullname)
-        {
-            if (AssemblyRegistry.IsNamespaceKnown(fullname))
-                return new Namespace(fullname, Assembly);
-            else
-                return null;
-        }
-
         public bool IsPrimitive(string name)
         {
-            return primitives.ContainsKey(name);
+            return ProjectParser.IsPrimitive(name);
         }
 
         public TypeReference GetPrimitive(string name)
         {
-            if (!IsPrimitive(name))
-                return null;
-            else
-                return primitives[name];
+            return ProjectParser.GetPrimitive(name);
+        }
+
+        public void Dispose()
+        {
+            lexerRoot.Dispose();
         }
     }
 }

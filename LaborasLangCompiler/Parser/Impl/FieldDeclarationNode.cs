@@ -95,7 +95,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     throw new TypeException(Initializer.SequencePoint, "Field of type {0} initialized with {1}", TypeReference, Initializer.ExpressionReturnType);
             }
 
-            if(parser.ShouldEmit)
+            if(parser.ProjectParser.ShouldEmit)
                 parent.TypeEmitter.AddFieldInitializer(FieldDefinition, Initializer);
         }
 

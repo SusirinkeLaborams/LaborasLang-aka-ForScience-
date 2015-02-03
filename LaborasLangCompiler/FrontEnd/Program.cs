@@ -9,6 +9,7 @@ using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using LaborasLangCompiler.ILTools.Types;
 using LaborasLangCompiler.ILTools.Methods;
+using LaborasLangCompiler.Parser.Impl;
 
 namespace LaborasLangCompiler.FrontEnd
 {
@@ -22,13 +23,7 @@ namespace LaborasLangCompiler.FrontEnd
                 AssemblyRegistry.Create(compilerArgs.References);
                 var assembly = new AssemblyEmitter(compilerArgs);
 
-                foreach (var file in compilerArgs.SourceFiles)
-                {
-                    using (var tree = Lexer.Lexer.Lex(System.IO.File.ReadAllText(file)))
-                    {
-                        Parser.Parser.ParseAll(assembly, tree, file);
-                    }
-                }
+                ProjectParser.ParseAll(assembly, compilerArgs.SourceFiles, true);
 
                 assembly.Save();
             }

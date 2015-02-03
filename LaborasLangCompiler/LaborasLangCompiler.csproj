@@ -87,6 +87,7 @@
     <Compile Include="Parser\Impl\FieldDeclarationNode.cs" />
     <Compile Include="Parser\Impl\MemberNode.cs" />
     <Compile Include="Parser\Impl\ObjectCreationNode.cs" />
+    <Compile Include="Parser\ProjectParser.cs" />
     <Compile Include="Parser\Impl\SymbolModifiers.cs" />
     <Compile Include="Parser\Impl\ConditionBlockNode.cs" />
     <Compile Include="Parser\Impl\DeclarationInfo.cs" />

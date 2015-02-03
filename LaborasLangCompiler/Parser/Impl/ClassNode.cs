@@ -151,7 +151,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (parent == null)
             {
-                return parser.FindType(name);
+                return parser.ProjectParser.FindType(name);
             }
 
             return null;
@@ -180,7 +180,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (namespaze == null && parent == null)
             {
-                namespaze = parser.FindNamespace(name);
+                namespaze = parser.ProjectParser.FindNamespace(name);
             }
 
             return namespaze;
