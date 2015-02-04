@@ -162,10 +162,12 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("Property:");
-            builder.Indent(indent + 1).AppendLine("Name:");
-            builder.Indent(indent + 2).AppendLine(Property.Name);
-            builder.Indent(indent + 1).AppendLine("Type:");
-            builder.Indent(indent + 2).AppendLine(ExpressionReturnType.FullName);
+            builder.Indent(indent + 1).AppendLine(Property.FullName);
+            builder.Indent(indent + 1).AppendLine("Instance:");
+            if (instance == null)
+                builder.Indent(indent + 2).Append("null");
+            else
+                builder.AppendLine(instance.ToString(indent + 2));
             return builder.ToString();
         }
     }

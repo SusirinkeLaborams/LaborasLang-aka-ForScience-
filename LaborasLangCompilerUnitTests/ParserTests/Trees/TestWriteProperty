@@ -36,10 +36,12 @@ Class:
 								Assignment:
 									Left:
 										Property:
-											Name:
-												Capacity
-											Type:
-												System.Int32
+											System.Int32 System.Collections.ArrayList::Capacity()
+											Instance:
+												Field:
+													System.Collections.ArrayList TestWriteProperty::lst
+													Instance:
+														null
 
 									Right:
 										Literal:

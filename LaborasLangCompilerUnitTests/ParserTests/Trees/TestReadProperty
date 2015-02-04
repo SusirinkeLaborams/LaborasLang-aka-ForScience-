@@ -25,10 +25,12 @@ Class:
 				Private, Mutable, NoInstance
 			Initializer:
 				Property:
-					Name:
-						Count
-					Type:
-						System.Int32
+					System.Int32 System.Collections.ArrayList::Count()
+					Instance:
+						Field:
+							System.Collections.ArrayList TestReadProperty::lst
+							Instance:
+								null
 
 
 	Methods:
