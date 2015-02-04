@@ -53,6 +53,11 @@ namespace LaborasLangCompiler.Parser
             return type is AutoType;
         }
 
+        public static IEnumerable<T> Yield<T>(this T item)
+        {
+            yield return item;
+        }
+
         public static TypeReference GetNestedType(this TypeReference type, AssemblyEmitter assembly, string name)
         {
             return AssemblyRegistry.FindType(assembly, type.FullName + "." + name);

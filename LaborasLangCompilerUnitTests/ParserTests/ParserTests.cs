@@ -705,6 +705,13 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestTwoFiles()
+        {
+            string file1 = @"auto foo = 5;";
+            string file2 = @"auto foo = ""asfasfa"";";
+            CompareTrees(new string[] { file1, file2 }, new string[] { "file1", "file2" });
+        }
 
         private static void CompareTrees(string source, [CallerMemberName] string name = "")
         {
@@ -718,16 +725,16 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 
         private static void CanParse(string[] sources, string[] names)
         {
-            var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").ToArray());
+            var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").Union("/out:out.exe".Yield()).ToArray());
             var assembly = new AssemblyEmitter(compilerArgs);
             ProjectParser.ParseAll(assembly, sources, names, false);
         }
 
-        private static void CompareTrees(string[] sources, string[] names, string testName)
+        private static void CompareTrees(string[] sources, string[] names, [CallerMemberName] string name = "")
         {
-            var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").ToArray());
+            var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").Union("/out:out.exe".Yield()).ToArray());
             var assembly = new AssemblyEmitter(compilerArgs);
-            var file = path + testName;
+            var file = path + name;
 
             var parser = ProjectParser.ParseAll(assembly, sources, names, false);
             string result = parser.ToString();
