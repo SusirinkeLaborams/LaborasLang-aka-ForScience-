@@ -157,7 +157,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override string ToString(int indent)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Indent(indent).AppendLine("Field:");
+            builder.Indent(indent).AppendLine("FieldDeclaration:");
             builder.Indent(indent + 1).AppendLine("Type:");
             builder.Indent(indent + 2).AppendLine(TypeReference.FullName);
             builder.Indent(indent + 1).AppendLine("Name:");

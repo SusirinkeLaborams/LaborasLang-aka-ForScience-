@@ -1,7 +1,7 @@
 Class:
 	AssignmentArithmeticOperatorTest
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:
@@ -37,20 +37,16 @@ Class:
 								Assignment:
 									Left:
 										Field:
-											Name:
-												a
-											Type:
-												System.Int32
-
+											System.Int32 AssignmentArithmeticOperatorTest::a
+											Instance:
+												null
 									Right:
 										BinaryOperator:
 											Left:
 												Field:
-													Name:
-														a
-													Type:
-														System.Int32
-
+													System.Int32 AssignmentArithmeticOperatorTest::a
+													Instance:
+														null
 											Operator:
 												Addition
 											Right:
@@ -88,11 +84,9 @@ Class:
 												Multiplication
 											Right:
 												Field:
-													Name:
-														a
-													Type:
-														System.Int32
-
+													System.Int32 AssignmentArithmeticOperatorTest::a
+													Instance:
+														null
 
 
 
@@ -103,20 +97,16 @@ Class:
 								Assignment:
 									Left:
 										Field:
-											Name:
-												a
-											Type:
-												System.Int32
-
+											System.Int32 AssignmentArithmeticOperatorTest::a
+											Instance:
+												null
 									Right:
 										BinaryOperator:
 											Left:
 												Field:
-													Name:
-														a
-													Type:
-														System.Int32
-
+													System.Int32 AssignmentArithmeticOperatorTest::a
+													Instance:
+														null
 											Operator:
 												Division
 											Right:
@@ -136,20 +126,16 @@ Class:
 								Assignment:
 									Left:
 										Field:
-											Name:
-												a
-											Type:
-												System.Int32
-
+											System.Int32 AssignmentArithmeticOperatorTest::a
+											Instance:
+												null
 									Right:
 										BinaryOperator:
 											Left:
 												Field:
-													Name:
-														a
-													Type:
-														System.Int32
-
+													System.Int32 AssignmentArithmeticOperatorTest::a
+													Instance:
+														null
 											Operator:
 												Subtraction
 											Right:

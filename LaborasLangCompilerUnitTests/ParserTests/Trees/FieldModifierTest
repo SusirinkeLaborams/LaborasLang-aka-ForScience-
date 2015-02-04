@@ -1,7 +1,7 @@
 Class:
 	FieldModifierTest
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:
@@ -16,7 +16,7 @@ Class:
 						5
 
 
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:
@@ -24,7 +24,7 @@ Class:
 			Modifiers:
 				Public, Mutable, NoInstance
 
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:

@@ -1,7 +1,7 @@
 Class:
 	TestComparison
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Boolean
 			Name:
@@ -28,7 +28,7 @@ Class:
 
 
 
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Boolean
 			Name:
@@ -39,11 +39,9 @@ Class:
 				BinaryOperator:
 					Left:
 						Field:
-							Name:
-								i
-							Type:
-								System.Boolean
-
+							System.Boolean TestComparison::i
+							Instance:
+								null
 					Operator:
 						NotEquals
 					Right:
@@ -55,7 +53,7 @@ Class:
 
 
 
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Boolean
 			Name:
@@ -82,7 +80,7 @@ Class:
 
 
 
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Boolean
 			Name:

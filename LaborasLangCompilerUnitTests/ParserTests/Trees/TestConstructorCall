@@ -1,7 +1,7 @@
 Class:
 	TestConstructorCall
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Collections.ArrayList
 			Name:

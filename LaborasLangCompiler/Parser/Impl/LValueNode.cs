@@ -83,7 +83,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class FieldNode : MemberNode, IFieldNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Field; } }
-        public IExpressionNode ObjectInstance { get; private set; }
+        public IExpressionNode ObjectInstance { get { return instance; } }
         public FieldReference Field { get; private set; }
         public override TypeReference ExpressionReturnType { get { return Field.FieldType; } }
         public override bool IsGettable
@@ -101,20 +101,23 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
+        private ExpressionNode instance;
         public FieldNode(ExpressionNode instance, FieldReference field, Context parent, SequencePoint point)
             : base(field, parent, point)
         {
-            ObjectInstance = ThisNode.GetAccessingInstance(field, instance, parent, point);
+            this.instance = ThisNode.GetAccessingInstance(field, instance, parent, point);
             this.Field = field;
         }
         public override string ToString(int indent)
         {
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("Field:");
-            builder.Indent(indent + 1).AppendLine("Name:");
-            builder.Indent(indent + 2).AppendLine(Field.Name);
-            builder.Indent(indent + 1).AppendLine("Type:");
-            builder.Indent(indent + 2).AppendLine(ExpressionReturnType.FullName);
+            builder.Indent(indent + 1).AppendLine(Field.FullName);
+            builder.Indent(indent + 1).AppendLine("Instance:");
+            if (instance == null)
+                builder.Indent(indent + 2).Append("null");
+            else
+                builder.AppendLine(instance.ToString(indent + 2));
             return builder.ToString();
         }
     }

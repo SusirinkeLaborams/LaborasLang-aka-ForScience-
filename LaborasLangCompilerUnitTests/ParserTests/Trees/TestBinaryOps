@@ -1,7 +1,7 @@
 Class:
 	TestBinaryOps
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:
@@ -28,7 +28,7 @@ Class:
 
 
 
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:
@@ -39,23 +39,19 @@ Class:
 				BinaryOperator:
 					Left:
 						Field:
-							Name:
-								i
-							Type:
-								System.Int32
-
+							System.Int32 TestBinaryOps::i
+							Instance:
+								null
 					Operator:
 						BinaryAnd
 					Right:
 						Field:
-							Name:
-								i
-							Type:
-								System.Int32
+							System.Int32 TestBinaryOps::i
+							Instance:
+								null
 
 
-
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:
@@ -66,20 +62,16 @@ Class:
 				BinaryOperator:
 					Left:
 						Field:
-							Name:
-								i
-							Type:
-								System.Int32
-
+							System.Int32 TestBinaryOps::i
+							Instance:
+								null
 					Operator:
 						BinaryOr
 					Right:
 						Field:
-							Name:
-								a
-							Type:
-								System.Int32
-
+							System.Int32 TestBinaryOps::a
+							Instance:
+								null
 
 
 	Methods:

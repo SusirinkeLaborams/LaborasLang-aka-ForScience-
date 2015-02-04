@@ -1,7 +1,7 @@
 Class:
 	TestPrecedence
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:

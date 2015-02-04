@@ -1,4 +1,4 @@
-﻿//#define REWRITE
+﻿#define REWRITE
 using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser;
@@ -710,6 +710,13 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string file1 = @"auto foo = 5;";
             string file2 = @"auto foo = ""asfasfa"";";
+            CompareTrees(new string[] { file1, file2 }, new string[] { "file1", "file2" });
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestTwoFilesFieldVisibility()
+        {
+            string file1 = @"public auto foo = 5;";
+            string file2 = @"auto foo = file1.foo;";
             CompareTrees(new string[] { file1, file2 }, new string[] { "file1", "file2" });
         }
 

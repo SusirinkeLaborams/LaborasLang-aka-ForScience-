@@ -1,7 +1,7 @@
 Class:
 	TestReadProperty
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Collections.ArrayList
 			Name:
@@ -16,7 +16,7 @@ Class:
 						System.Void System.Collections.ArrayList::.ctor()
 
 
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:

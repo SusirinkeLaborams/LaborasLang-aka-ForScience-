@@ -1,7 +1,7 @@
 Class:
 	file1
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:
@@ -21,7 +21,7 @@ Class:
 Class:
 	file2
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				System.String
 			Name:

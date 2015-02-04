@@ -1,7 +1,7 @@
 Class:
 	TestMethodInferrence
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:
@@ -37,11 +37,9 @@ Class:
 								Method:
 									Instance:
 										Field:
-											Name:
-												a
-											Type:
-												System.Int32
-
+											System.Int32 TestMethodInferrence::a
+											Instance:
+												null
 									Method:
 										System.String System.Int32::ToString()
 

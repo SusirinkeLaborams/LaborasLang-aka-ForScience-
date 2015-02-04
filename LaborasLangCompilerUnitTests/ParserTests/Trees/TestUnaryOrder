@@ -1,7 +1,7 @@
 Class:
 	TestUnaryOrder
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:
@@ -16,7 +16,7 @@ Class:
 						1
 
 
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:
@@ -33,11 +33,9 @@ Class:
 								PreDecrement
 							Operand:
 								Field:
-									Name:
-										i
-									Type:
-										System.Int32
-
+									System.Int32 TestUnaryOrder::i
+									Instance:
+										null
 
 
 

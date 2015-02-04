@@ -1,7 +1,7 @@
 Class:
 	ImplicitIntToLong
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:
@@ -16,7 +16,7 @@ Class:
 						5
 
 
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int64
 			Name:
@@ -25,10 +25,8 @@ Class:
 				Private, Mutable, NoInstance
 			Initializer:
 				Field:
-					Name:
-						a
-					Type:
-						System.Int32
-
+					System.Int32 ImplicitIntToLong::a
+					Instance:
+						null
 
 	Methods:

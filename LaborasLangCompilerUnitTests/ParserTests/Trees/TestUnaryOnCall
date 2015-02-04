@@ -1,7 +1,7 @@
 Class:
 	TestUnaryOnCall
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				$Functors.$System_Int32?
 			Name:
@@ -9,7 +9,7 @@ Class:
 			Modifiers:
 				Private, Mutable, NoInstance
 
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int32
 			Name:
@@ -26,11 +26,9 @@ Class:
 							Args:
 							Function:
 								Field:
-									Name:
-										foo
-									Type:
-										$Functors.$System_Int32?
-
+									$Functors.$System_Int32? TestUnaryOnCall::foo
+									Instance:
+										null
 
 
 

@@ -1,7 +1,7 @@
 Class:
 	TestLiteralIntToLong
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				System.Int64
 			Name:

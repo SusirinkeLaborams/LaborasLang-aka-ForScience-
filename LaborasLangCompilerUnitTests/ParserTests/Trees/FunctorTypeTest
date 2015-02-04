@@ -1,7 +1,7 @@
 Class:
 	FunctorTypeTest
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				$Functors.$System_Int32?
 			Name:
@@ -9,7 +9,7 @@ Class:
 			Modifiers:
 				Private, Const, NoInstance
 
-		Field:
+		FieldDeclaration:
 			Type:
 				$Functors.$System_Void*$Functors_$System_Single*System_Double?*System_Int32?
 			Name:

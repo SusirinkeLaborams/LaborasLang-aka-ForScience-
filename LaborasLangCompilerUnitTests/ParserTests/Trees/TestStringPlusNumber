@@ -1,7 +1,7 @@
 Class:
 	TestStringPlusNumber
 	Fields:
-		Field:
+		FieldDeclaration:
 			Type:
 				System.String
 			Name:
