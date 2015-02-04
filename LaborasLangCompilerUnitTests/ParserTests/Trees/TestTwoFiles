@@ -1,4 +1,5 @@
 Class:
+	file1
 	Fields:
 		Field:
 			Type:
@@ -18,6 +19,7 @@ Class:
 	Methods:
 
 Class:
+	file2
 	Fields:
 		Field:
 			Type:

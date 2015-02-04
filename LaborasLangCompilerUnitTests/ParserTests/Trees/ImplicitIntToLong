@@ -1,4 +1,5 @@
 Class:
+	ImplicitIntToLong
 	Fields:
 		Field:
 			Type:

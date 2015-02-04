@@ -263,6 +263,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("Class:");
+            builder.Indent(indent + 1).Append(FullName).AppendLine();
             builder.Indent(indent + 1).AppendLine("Fields:");
             foreach(var field in fields)
             {

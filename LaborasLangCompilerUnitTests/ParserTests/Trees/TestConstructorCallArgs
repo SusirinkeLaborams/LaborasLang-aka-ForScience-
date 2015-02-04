@@ -1,4 +1,5 @@
 Class:
+	TestConstructorCallArgs
 	Fields:
 		Field:
 			Type:

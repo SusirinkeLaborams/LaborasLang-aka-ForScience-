@@ -1,4 +1,5 @@
 Class:
+	TestMixedPrefix
 	Fields:
 		Field:
 			Type:
