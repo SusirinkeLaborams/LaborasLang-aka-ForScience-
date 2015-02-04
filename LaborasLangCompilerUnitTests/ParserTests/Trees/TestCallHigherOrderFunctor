@@ -17,6 +17,8 @@ Class:
 						Return:
 							Expression:
 								Method:
+									Instance:
+										null
 									Method:
 										System.Void TestCallHigherOrderFunctor::$Lambda_0()
 
@@ -44,6 +46,8 @@ Class:
 									Args:
 									Function:
 										Method:
+											Instance:
+												null
 											Method:
 												$Functors.$System_Void? TestCallHigherOrderFunctor::foo()
 

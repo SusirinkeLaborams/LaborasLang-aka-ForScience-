@@ -17,6 +17,8 @@ Class:
 						Return:
 							Expression:
 								Method:
+									Instance:
+										null
 									Method:
 										System.Void TestHigherOrderFunctor::$Lambda_0()
 

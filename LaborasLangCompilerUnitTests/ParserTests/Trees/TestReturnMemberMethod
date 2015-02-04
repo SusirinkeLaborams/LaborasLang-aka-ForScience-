@@ -31,6 +31,8 @@ Class:
 						Return:
 							Expression:
 								Method:
+									Instance:
+										null
 									Method:
 										System.Void TestReturnMemberMethod::foo()
 

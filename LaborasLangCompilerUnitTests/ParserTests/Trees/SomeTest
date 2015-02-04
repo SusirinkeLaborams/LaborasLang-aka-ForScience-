@@ -82,6 +82,8 @@ Class:
 								$Functors.$System_Int32*System_Int32*System_Single? f
 							Initializer:
 								Method:
+									Instance:
+										null
 									Method:
 										System.Int32 SomeTest::$Lambda_0(System.Int32,System.Single)
 

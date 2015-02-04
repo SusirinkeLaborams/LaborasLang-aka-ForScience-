@@ -42,9 +42,13 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("Method:");
-            if (instance != null)
+            builder.Indent(indent + 1).AppendLine("Instance:");
+            if (instance == null)
             {
-                builder.Indent(indent + 1).AppendLine("Instance:");
+                builder.Indent(indent + 2).AppendLine("null");
+            }
+            else
+            {
                 builder.AppendLine(instance.ToString(indent + 2));
             }
             builder.Indent(indent + 1).AppendLine("Method:");

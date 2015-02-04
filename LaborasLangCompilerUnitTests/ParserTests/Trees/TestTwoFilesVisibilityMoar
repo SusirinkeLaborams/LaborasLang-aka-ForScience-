@@ -19,6 +19,8 @@ Class:
 							Args:
 							Function:
 								Method:
+									Instance:
+										null
 									Method:
 										System.Void file2::foo()
 
@@ -47,6 +49,8 @@ Class:
 							Args:
 							Function:
 								Method:
+									Instance:
+										null
 									Method:
 										System.Void file1::foo()
 

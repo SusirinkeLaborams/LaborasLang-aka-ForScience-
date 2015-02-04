@@ -14,6 +14,8 @@ Class:
 					Args:
 					Function:
 						Method:
+							Instance:
+								null
 							Method:
 								System.Int32 file2::foo()
 

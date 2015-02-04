@@ -26,6 +26,8 @@ Class:
 
 							Function:
 								Method:
+									Instance:
+										null
 									Method:
 										System.Void MethodCallTest::Main(System.Int32)
 

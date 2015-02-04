@@ -79,6 +79,8 @@ Class:
 
 							Function:
 								Method:
+									Instance:
+										null
 									Method:
 										System.Void System.Console::WriteLine(System.String,System.Object[])
 
