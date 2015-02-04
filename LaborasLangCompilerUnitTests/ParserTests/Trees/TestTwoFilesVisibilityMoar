@@ -1,0 +1,55 @@
+Class:
+	file1
+	Fields:
+	Methods:
+		Method:
+			Name:
+				foo
+			Modifiers:
+				Public, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						MethodCall:
+							ReturnType: System.Void
+							Args:
+							Function:
+								Method:
+									Method:
+										System.Void file2::foo()
+
+
+
+
+
+Class:
+	file2
+	Fields:
+	Methods:
+		Method:
+			Name:
+				foo
+			Modifiers:
+				Public, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						MethodCall:
+							ReturnType: System.Void
+							Args:
+							Function:
+								Method:
+									Method:
+										System.Void file1::foo()
+
+
+
+

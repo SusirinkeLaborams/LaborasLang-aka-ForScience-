@@ -719,6 +719,28 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string file2 = @"auto foo = file1.foo;";
             CompareTrees(new string[] { file1, file2 }, new string[] { "file1", "file2" });
         }
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(SymbolNotFoundException))]
+        public void TestTwoFilesFieldCircularVisibility()
+        {
+            //one of the foos is not found because type inferrence delays field declaration
+            string file1 = @"public auto foo = file2.foo;";
+            string file2 = @"public auto foo = file1.foo;";
+            CompareTrees(new string[] { file1, file2 }, new string[] { "file1", "file2" });
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestTwoFilesMethodVisibility()
+        {
+            string file1 = @"public auto foo = file2.foo();";
+            string file2 = @"public auto foo = int(){return 4;};";
+            CompareTrees(new string[] { file1, file2 }, new string[] { "file1", "file2" });
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestTwoFilesVisibilityMoar()
+        {
+            string file1 = @"public auto foo = void(){file2.foo();};";
+            string file2 = @"public auto foo = void(){file1.foo();};";
+            CompareTrees(new string[] { file1, file2 }, new string[] { "file1", "file2" });
+        }
 
         private static void CompareTrees(string source, [CallerMemberName] string name = "")
         {

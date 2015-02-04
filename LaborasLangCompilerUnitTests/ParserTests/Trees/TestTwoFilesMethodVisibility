@@ -1,0 +1,50 @@
+Class:
+	file1
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Int32
+			Name:
+				foo
+			Modifiers:
+				Public, Mutable, NoInstance
+			Initializer:
+				MethodCall:
+					ReturnType: System.Int32
+					Args:
+					Function:
+						Method:
+							Method:
+								System.Int32 file2::foo()
+
+
+
+	Methods:
+
+Class:
+	file2
+	Fields:
+	Methods:
+		Method:
+			Name:
+				foo
+			Modifiers:
+				Public, NoInstance
+			Return:
+				System.Int32
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						Return:
+							Expression:
+								Literal:
+									Type:
+										System.Int32
+									Value:
+										4
+
+
+
+
