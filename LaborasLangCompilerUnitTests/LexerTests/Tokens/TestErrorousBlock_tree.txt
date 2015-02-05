@@ -1,0 +1,102 @@
+Content: Type: RootNode, Start: 2, 13, End: 5, 23, Content: ""
+Type: RootNode
+Children:
+	Content: Type: UnknownNode, Start: 2, 13, End: 2, 27, Content: ""
+	Type: UnknownNode
+	Children:
+		Content: Type: Symbol, Start: 2, 13, End: 2, 17, Content: "auto"
+		Type: Symbol
+		Children:
+
+		Content: Type: Symbol, Start: 2, 18, End: 2, 21, Content: "foo"
+		Type: Symbol
+		Children:
+
+		Content: Type: Assignment, Start: 2, 22, End: 2, 23, Content: "="
+		Type: Assignment
+		Children:
+
+		Content: Type: Plus, Start: 2, 24, End: 2, 25, Content: "+"
+		Type: Plus
+		Children:
+
+		Content: Type: LeftCurlyBrace, Start: 2, 26, End: 2, 27, Content: "{"
+		Type: LeftCurlyBrace
+		Children:
+
+	Content: Type: Value, Start: 3, 17, End: 3, 30, Content: ""
+	Type: Value
+	Children:
+		Content: Type: AssignmentOperatorNode, Start: 3, 17, End: 3, 30, Content: ""
+		Type: AssignmentOperatorNode
+		Children:
+			Content: Type: FullSymbol, Start: 3, 17, End: 3, 23, Content: ""
+			Type: FullSymbol
+			Children:
+				Content: Type: Symbol, Start: 3, 17, End: 3, 23, Content: "should"
+				Type: Symbol
+				Children:
+
+			Content: Type: Assignment, Start: 3, 24, End: 3, 25, Content: "="
+			Type: Assignment
+			Children:
+
+			Content: Type: FullSymbol, Start: 3, 26, End: 3, 30, Content: ""
+			Type: FullSymbol
+			Children:
+				Content: Type: Symbol, Start: 3, 26, End: 3, 30, Content: "work"
+				Type: Symbol
+				Children:
+
+	Content: Type: EndOfLine, Start: 3, 30, End: 3, 31, Content: ";"
+	Type: EndOfLine
+	Children:
+
+	Content: Type: UnknownNode, Start: 4, 13, End: 4, 14, Content: ""
+	Type: UnknownNode
+	Children:
+		Content: Type: RightCurlyBrace, Start: 4, 13, End: 4, 14, Content: "}"
+		Type: RightCurlyBrace
+		Children:
+
+	Content: Type: UnknownNode, Start: 4, 14, End: 4, 15, Content: ""
+	Type: UnknownNode
+	Children:
+		Content: Type: EndOfLine, Start: 4, 14, End: 4, 15, Content: ";"
+		Type: EndOfLine
+		Children:
+
+	Content: Type: DeclarationNode, Start: 5, 13, End: 5, 23, Content: ""
+	Type: DeclarationNode
+	Children:
+		Content: Type: Type, Start: 5, 13, End: 5, 16, Content: ""
+		Type: Type
+		Children:
+			Content: Type: FullSymbol, Start: 5, 13, End: 5, 16, Content: ""
+			Type: FullSymbol
+			Children:
+				Content: Type: Symbol, Start: 5, 13, End: 5, 16, Content: "int"
+				Type: Symbol
+				Children:
+
+		Content: Type: Symbol, Start: 5, 17, End: 5, 18, Content: "a"
+		Type: Symbol
+		Children:
+
+		Content: Type: Assignment, Start: 5, 19, End: 5, 20, Content: "="
+		Type: Assignment
+		Children:
+
+		Content: Type: Value, Start: 5, 21, End: 5, 22, Content: ""
+		Type: Value
+		Children:
+			Content: Type: LiteralNode, Start: 5, 21, End: 5, 22, Content: ""
+			Type: LiteralNode
+			Children:
+				Content: Type: Integer, Start: 5, 21, End: 5, 22, Content: "0"
+				Type: Integer
+				Children:
+
+		Content: Type: EndOfLine, Start: 5, 22, End: 5, 23, Content: ";"
+		Type: EndOfLine
+		Children:
