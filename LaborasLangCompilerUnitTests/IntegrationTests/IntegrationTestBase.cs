@@ -27,25 +27,25 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
 
         protected class IntegrationTestInfo
         {
-            public string SourceFile { get; private set; }
+            public IEnumerable<string> SourceFiles { get; private set; }
             
             public string[] Arguments { get; set; }
             public string StdIn { get; set; }
             public string StdOut { get; set; }
 
-            public IntegrationTestInfo(string sourceFile)
+            public IntegrationTestInfo(IEnumerable<string> sourceFiles)
             {
-                SourceFile = sourceFile;
+                SourceFiles = sourceFiles;
             }
 
-            public IntegrationTestInfo(string sourceFile, string expectedOutput)
+            public IntegrationTestInfo(IEnumerable<string> sourceFiles, string expectedOutput)
             {
-                SourceFile = sourceFile;
+                SourceFiles = sourceFiles;
                 StdOut = expectedOutput;
             }
         }
 
-        protected void Test(string sourceFile, string expectedOutput)
+        protected void Test(IEnumerable<string> sourceFile, string expectedOutput)
         {
             Test(new IntegrationTestInfo(sourceFile, expectedOutput));
         }
@@ -56,11 +56,11 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             var exePath = temp + ".exe";
             var pdbPath = temp + ".pdb";
 
-            var sourceFile = Path.Combine(IntegrationTestsPath, "SourceFiles", testInfo.SourceFile);
+            var files = testInfo.SourceFiles.Select(file => Path.Combine(IntegrationTestsPath, "SourceFiles", file));
             
             try
             {
-                Build(sourceFile, exePath);
+                Build(files, exePath);
                 PEVerifyRunner.Run(exePath);
                 Run(exePath, testInfo);
             }
@@ -71,9 +71,9 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             }
         }
 
-        private void Build(string sourceFile, string outPath)
+        private void Build(IEnumerable<string> sourceFiles, string outPath)
         {
-            CreateProcessAndRun("LaborasLangCompiler.exe", new[] { sourceFile, "/console", "/out:" + outPath }, null, kBuildTimeOut);
+            CreateProcessAndRun("LaborasLangCompiler.exe", sourceFiles.Union(new[] { "/console", "/out:" + outPath }).ToArray(), null, kBuildTimeOut);
         }
 
         private void Run(string path, IntegrationTestInfo testInfo)

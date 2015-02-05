@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.Parser;
 
 namespace LaborasLangCompilerUnitTests.IntegrationTests
 {
@@ -14,7 +15,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         [TestMethod, TestCategory("Integration Tests")]
         public void Test_HelloWorld()
         {
-            Test("HelloWorld.ll", "Hello, world!" + Environment.NewLine);
+            Test("HelloWorld.ll".Yield(), "Hello, world!" + Environment.NewLine);
         }
 
         [TestMethod, TestCategory("Integration Tests")]
@@ -31,13 +32,13 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
 3 is odd
 8 is even
 ";
-            Test("Recursion.ll", expectedOutput);
+            Test("Recursion.ll".Yield(), expectedOutput);
         }
 
         [TestMethod, TestCategory("Integration Tests")]
         public void Test_StdInWorks()
         {
-            var testInfo = new IntegrationTestInfo("StdInWorks.ll");
+            var testInfo = new IntegrationTestInfo("StdInWorks.ll".Yield());
 
             testInfo.StdIn =
 @"2
@@ -71,7 +72,13 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         [TestMethod, TestCategory("Integration Tests")]
         public void Test_InlineFunctorCall()
         {
-            Test("InlineFunctorCall.ll", "It Works!");
+            Test("InlineFunctorCall.ll".Yield(), "It Works!");
+        }
+
+        [TestMethod, TestCategory("Integration Tests")]
+        public void Test_MultipleFiles()
+        {
+            Test(new string[]{"InlineFunctorCall.ll", "MultipleFiles.ll"}, "It Works!");
         }
 
         #region Helpers
@@ -87,7 +94,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         private void TestAgainstOutputInFile(string testName)
         {
             var expectedOutput = File.ReadAllText(Path.Combine(ExpectedOutputPath, testName) + ".txt");
-            Test(testName + ".ll", expectedOutput);
+            Test((testName + ".ll").Yield(), expectedOutput);
         }
 
         #endregion

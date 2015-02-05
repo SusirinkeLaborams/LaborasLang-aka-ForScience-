@@ -9,7 +9,7 @@ auto foo = void()
 	Console.Write("It Works!");
 };
 
-auto getFoo = void()()
+public auto getFoo = void()()
 {
 	return foo;
 };

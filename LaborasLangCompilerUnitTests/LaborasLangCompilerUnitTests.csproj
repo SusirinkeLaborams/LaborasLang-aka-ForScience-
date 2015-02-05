@@ -110,6 +110,7 @@
     <None Include="IntegrationTests\SourceFiles\Bottles.ll" />
     <None Include="IntegrationTests\SourceFiles\HelloWorld.ll" />
     <None Include="IntegrationTests\SourceFiles\InlineFunctorCall.ll" />
+    <None Include="IntegrationTests\SourceFiles\MultipleFiles.ll" />
     <None Include="IntegrationTests\SourceFiles\Recursion.ll" />
     <None Include="IntegrationTests\SourceFiles\StdInWorks.ll" />
     <Compile Include="TestBase.cs" />
