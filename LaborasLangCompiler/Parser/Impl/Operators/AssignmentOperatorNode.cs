@@ -36,8 +36,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public static AssignmentOperatorNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             var instance = new AssignmentOperatorNode(parser.GetSequencePoint(lexerNode));
-            var left = DotOperatorNode.Parse(parser, parent, lexerNode.Children[0]) as ExpressionNode;
-            if (left == null || !left.IsSettable)
+            var left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
+            if (!left.IsSettable)
                 throw new TypeException(parser.GetSequencePoint(lexerNode.Children[0]), "Left of assignment operator must be settable");
             var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2], left.ExpressionReturnType);
             if(!right.IsGettable)
