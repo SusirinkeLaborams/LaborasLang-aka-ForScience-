@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Exceptions
 {
+    [Obsolete]
     class SymbolAlreadyDeclaredException : CompilerException
     {
         public SymbolAlreadyDeclaredException(SequencePoint point, string message) : base(point, message) { }

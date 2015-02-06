@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Exceptions
 {
+    [Obsolete]
     class CompilerException : System.Exception
     {
         public CompilerException(SequencePoint point, string message) : base(message + Environment.NewLine + point.ToString()){}

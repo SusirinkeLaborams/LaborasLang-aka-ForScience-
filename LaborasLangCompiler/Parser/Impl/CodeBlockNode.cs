@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser;
+﻿using LaborasLangCompiler.Common;
+using LaborasLangCompiler.Parser;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
@@ -54,8 +55,17 @@ namespace LaborasLangCompiler.Parser.Impl
         public void AddVariable(SymbolDeclarationNode variable)
         {
             if (symbols.ContainsKey(variable.Variable.Name))
-                throw new SymbolAlreadyDeclaredException(variable.SequencePoint, "Var {0} already declared", variable.Variable.Name);
+            {
+                ErrorHandling.Report(ErrorCode.SymbolAlreadyDeclared, variable.SequencePoint,
+                    String.Format("Variable {0} already declared in this scope", variable.Variable.Name));
+            }
             symbols.Add(variable.Variable.Name, variable);
+        }
+
+        private void AddNode(SymbolDeclarationNode node)
+        {
+            AddVariable(node);
+            nodes.Add(node);
         }
 
         private void AddNode(ParserNode node)

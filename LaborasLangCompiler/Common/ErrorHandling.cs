@@ -9,6 +9,7 @@ namespace LaborasLangCompiler.Common
 {
     public enum ErrorCode
     {
+        SymbolAlreadyDeclared = 0001
     }
 
     public static class ErrorHandling
@@ -58,7 +59,7 @@ namespace LaborasLangCompiler.Common
                 {
                     builder.Append(Point).Append(": ");
                 }
-                builder.AppendFormat("error {0:4}: {2}", ErrorCode, Message);
+                builder.AppendFormat("error LL{0:4}: {2}", ErrorCode, Message);
                 return builder.ToString();
             }
         }

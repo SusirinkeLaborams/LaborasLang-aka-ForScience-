@@ -61,15 +61,6 @@ namespace LaborasLangCompiler.Parser.Impl
 
             SymbolDeclarationNode node = new SymbolDeclarationNode(new VariableDefinition(name, declaredType), isConst, initializer, point);
 
-            if (parent is CodeBlockNode)
-            {
-                ((CodeBlockNode)parent).AddVariable(node);
-            }
-            else
-            {
-                throw new ParseException(point, "SymbolDeclarationNode somehow parsed not in a code block");
-            }
-
             return node;
         }
 
