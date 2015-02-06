@@ -25,6 +25,7 @@ namespace LaborasLangCompiler.Common
             errors.Add(newError);
 
             Console.WriteLine(newError);
+            throw new CompilerException();
         }
 
         public static void Report(ErrorCode error, string message)
