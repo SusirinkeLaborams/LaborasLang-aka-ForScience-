@@ -113,6 +113,7 @@
     <None Include="IntegrationTests\SourceFiles\MultipleFiles.ll" />
     <None Include="IntegrationTests\SourceFiles\Recursion.ll" />
     <None Include="IntegrationTests\SourceFiles\StdInWorks.ll" />
+    <Compile Include="ParserTests\ParserTestBase.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="ParserTests\ParserTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

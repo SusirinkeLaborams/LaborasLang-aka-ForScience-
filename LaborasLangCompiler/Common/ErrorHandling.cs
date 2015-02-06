@@ -57,7 +57,7 @@ namespace LaborasLangCompiler.Common
                 StringBuilder builder = new StringBuilder();
                 if(Point != null)
                 {
-                    builder.Append(Point).Append(": ");
+                    builder.AppendFormat("{0}({1},{2},{3},{4}): ", Point.Document.Url, Point.StartLine, Point.StartColumn, Point.EndLine, Point.EndColumn);
                 }
                 builder.AppendFormat("error LL{0:4}: {2}", ErrorCode, Message);
                 return builder.ToString();

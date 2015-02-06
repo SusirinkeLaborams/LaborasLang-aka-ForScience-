@@ -58,6 +58,11 @@ namespace LaborasLangCompiler.Parser
             yield return item;
         }
 
+        public static HashSet<T> ToHashSet<T>(this IEnumerable<T> collection)
+        {
+            return new HashSet<T>(collection);
+        }
+
         public static TypeReference GetNestedType(this TypeReference type, AssemblyEmitter assembly, string name)
         {
             return AssemblyRegistry.FindType(assembly, type.FullName + "." + name);

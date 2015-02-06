@@ -1,4 +1,5 @@
-﻿//#define REWRITE
+﻿using LaborasLangCompiler.Common;
+//#define REWRITE
 using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser;
@@ -17,9 +18,8 @@ using System.Threading.Tasks;
 namespace LaborasLangCompilerUnitTests.ParserTests
 {
     [TestClass]
-    public class ParserTests : TestBase
+    public class ParserTests : ParserTestBase
     {
-        private const string path = @"..\..\ParserTests\Trees\";
 
         [TestMethod, TestCategory("Parser")]
         public void FieldDeclarationTest()
@@ -740,46 +740,6 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string file1 = @"public auto foo = void(){file2.foo();};";
             string file2 = @"public auto foo = void(){file1.foo();};";
             CompareTrees(new string[] { file1, file2 }, new string[] { "file1", "file2" });
-        }
-
-        private static void CompareTrees(string source, [CallerMemberName] string name = "")
-        {
-            CompareTrees(new string[]{source}, new string[]{name}, name);
-        }
-
-        private static void CanParse(string source, [CallerMemberName] string name = "")
-        {
-            CanParse(new string[] { source }, new string[] { name });
-        }
-
-        private static void CanParse(string[] sources, string[] names)
-        {
-            var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").Union("/out:out.exe".Yield()).ToArray());
-            var assembly = new AssemblyEmitter(compilerArgs);
-            ProjectParser.ParseAll(assembly, sources, names, false);
-        }
-
-        private static void CompareTrees(string[] sources, string[] names, [CallerMemberName] string name = "")
-        {
-            var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").Union("/out:out.exe".Yield()).ToArray());
-            var assembly = new AssemblyEmitter(compilerArgs);
-            var file = path + name;
-
-            var parser = ProjectParser.ParseAll(assembly, sources, names, false);
-            string result = parser.ToString();
-
-#if REWRITE
-            System.IO.File.WriteAllText(file, result);
-#else
-
-            string expected = "";
-            try
-            {
-                expected = System.IO.File.ReadAllText(file);
-            }
-            catch { }
-            Assert.AreEqual(expected, result);
-#endif
         }
     }
 }

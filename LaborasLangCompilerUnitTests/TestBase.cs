@@ -15,9 +15,5 @@ namespace LaborasLangCompilerUnitTests.ILTests
             var compilerArgs = CompilerArguments.Parse(new[] { "dummy.il" });
             AssemblyRegistry.CreateAndOverrideIfNeeded(compilerArgs.References);
         }
-
-        static TestBase()
-        {
-        }
     }
 }
