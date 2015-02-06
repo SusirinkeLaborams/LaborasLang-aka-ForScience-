@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.ILTools;
+﻿using LaborasLangCompiler.Common;
+using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
@@ -30,30 +31,19 @@ namespace LaborasLangCompiler.Parser.Impl
         public ExpressionNode RemoveAmbiguity(Parser parser, TypeReference expectedType)
         {
             if (!expectedType.IsFunctorType())
-                throw new TypeException(SequencePoint, "Cannot cast functor to type {0}", expectedType.FullName);
-            try
             {
-                var paramz = ILHelpers.GetFunctorParamTypes(parser.Assembly, expectedType);
-                var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), paramz);
-                return new MethodNode(parser, method, instance, parent, SequencePoint);
+                ErrorHandling.Report(ErrorCode.IllegalCast, SequencePoint,
+                    String.Format("Cannot cast functor to type {0}", expectedType.FullName));
             }
-            catch (Exception)
-            {
-                throw new TypeException(SequencePoint, "Ambiguous method result");
-            }
+            var paramz = ILHelpers.GetFunctorParamTypes(parser.Assembly, expectedType);
+            var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), paramz);
+            return new MethodNode(parser, method, instance, parent, SequencePoint);
         }
 
         public MethodNode RemoveAmbiguity(Parser parser, IEnumerable<TypeReference> args)
         {
-            try
-            {
-                var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), args.ToList());
-                return new MethodNode(parser, method, instance, parent, SequencePoint);
-            }
-            catch (Exception)
-            {
-                throw new TypeException(SequencePoint, "Ambiguous method result");
-            }
+            var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), args.ToList());
+            return new MethodNode(parser, method, instance, parent, SequencePoint);
         }
 
         public static ExpressionNode Create(Parser parser, IEnumerable<MethodReference> methods, Context parent, ExpressionNode instance, SequencePoint sequencePoint)

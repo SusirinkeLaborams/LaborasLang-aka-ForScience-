@@ -313,7 +313,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(ParseException), "Not all method paths return")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestEnforceReturn2()
         {
             string source = @"
@@ -324,7 +324,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                         return 1;
                     }
                 };";
-            CanParse(source);
+            CanParse(source, ErrorCode.MissingReturn.Yield());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestEnforceReturn3()
@@ -509,14 +509,14 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 mutable void(void) foo;";
             CanParse(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Declared a local var of type void")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestVoidParamMethod()
         {
             string source = @"
                 auto foo = void(void a)
                 {
                 };";
-            CanParse(source);
+            CanParse(source, ErrorCode.IllegalMethodParam.Yield());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestUnaryOnCall()
@@ -666,14 +666,14 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException))]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestFloatEntry()
         {
             string source = @"
                 entry auto foo = float()
                 {
                 };";
-            CanParse(source);
+            CanParse(source, ErrorCode.InvalidEntryParams.Yield());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestReadProperty()
@@ -710,14 +710,14 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string file1 = @"auto foo = 5;";
             string file2 = @"auto foo = ""asfasfa"";";
-            CompareTrees(new string[] { file1, file2 }, new string[] { "file1", "file2" });
+            CompareTrees(Utils.Enumerate(file1, file2), Utils.Enumerate("file1", "file2"));
         }
         [TestMethod, TestCategory("Parser")]
         public void TestTwoFilesFieldVisibility()
         {
             string file1 = @"public auto foo = 5;";
             string file2 = @"auto foo = file1.foo;";
-            CompareTrees(new string[] { file1, file2 }, new string[] { "file1", "file2" });
+            CompareTrees(Utils.Enumerate(file1, file2), Utils.Enumerate("file1", "file2"));
         }
         [TestMethod, TestCategory("Parser"), ExpectedException(typeof(SymbolNotFoundException))]
         public void TestTwoFilesFieldCircularVisibility()
@@ -725,21 +725,21 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             //one of the foos is not found because type inferrence delays field declaration
             string file1 = @"public auto foo = file2.foo;";
             string file2 = @"public auto foo = file1.foo;";
-            CompareTrees(new string[] { file1, file2 }, new string[] { "file1", "file2" });
+            CompareTrees(Utils.Enumerate(file1, file2), Utils.Enumerate("file1", "file2"));
         }
         [TestMethod, TestCategory("Parser")]
         public void TestTwoFilesMethodVisibility()
         {
             string file1 = @"public auto foo = file2.foo();";
             string file2 = @"public auto foo = int(){return 4;};";
-            CompareTrees(new string[] { file1, file2 }, new string[] { "file1", "file2" });
+            CompareTrees(Utils.Enumerate(file1, file2), Utils.Enumerate("file1", "file2"));
         }
         [TestMethod, TestCategory("Parser")]
         public void TestTwoFilesVisibilityMoar()
         {
             string file1 = @"public auto foo = void(){file2.foo();};";
             string file2 = @"public auto foo = void(){file1.foo();};";
-            CompareTrees(new string[] { file1, file2 }, new string[] { "file1", "file2" });
+            CompareTrees(Utils.Enumerate(file1, file2), Utils.Enumerate("file1", "file2"));
         }
     }
 }

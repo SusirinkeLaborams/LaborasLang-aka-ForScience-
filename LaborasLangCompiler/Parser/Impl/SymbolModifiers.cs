@@ -19,6 +19,11 @@ namespace LaborasLangCompiler.Parser.Impl
     }
     static class ModifierUtils
     {
+        public static Modifiers GetAccess()
+        {
+            return Modifiers.Private | Modifiers.Protected | Modifiers.Public;
+        }
+
         public static Modifiers AddModifier(this Modifiers modifiers, Parser parser, AstNode node)
         {
             var toAdd = FromToken[node.Children[0].Type];
@@ -31,7 +36,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static bool HasAccess(this Modifiers modifiers)
         {
-            return (modifiers & (Modifiers.Public | Modifiers.Private | Modifiers.Protected)) != 0;
+            return (modifiers & (GetAccess())) != 0;
         }
 
         public static bool HasStorage(this Modifiers modifiers)

@@ -3,6 +3,7 @@ using LaborasLangCompiler.ILTools.Methods;
 using LaborasLangCompiler.ILTools.Types;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using LaborasLangCompiler.Parser;
 using Lexer.Containers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -11,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.Common;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -43,13 +45,14 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             parsedBody = CodeBlockNode.Parse(parser, this, body);
             if (MethodReturnType.FullName != parser.Void.FullName && !parsedBody.Returns)
-                throw new ParseException(SequencePoint, "Not all control paths return a value");
+                ErrorHandling.Report(ErrorCode.MissingReturn, SequencePoint, "Not all control paths return a value");
             if(parser.ProjectParser.ShouldEmit)
                 emitter.ParseTree(parsedBody);
         }
 
         private void ParseHeader(Modifiers mods, AstNode lexerNode, string methodName)
         {
+            var point = parser.GetSequencePoint(lexerNode);
             var builder = new TypeNode.TypeBuilder(parser, parent);
             int count = lexerNode.ChildrenCount;
             var paramz = ParseParams(parser, lexerNode.Children[count - 1]);
@@ -65,7 +68,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 var param = ParseParameter(parent, p.Type, p.Name);
                 if (Utils.IsVoid(param.ParameterType))
-                    throw new TypeException(parser.GetSequencePoint(p.Type), "Cannot declare a parameter of type void");
+                    ErrorHandling.Report(ErrorCode.IllegalMethodParam, point, "Illegal method parameter type void");
                 emitter.AddArgument(param);
                 symbols.Add(param.Name, param);
             }
@@ -74,15 +77,12 @@ namespace LaborasLangCompiler.Parser.Impl
             if (mods.HasFlag(Modifiers.Entry))
             {
                 if (MethodReturnType != parser.Int32 && MethodReturnType != parser.UInt32 && MethodReturnType != parser.Void)
-                    throw new TypeException(parser.GetSequencePoint(lexerNode), "Illegal entrypoint return type {0}, must be int, uint or void", MethodReturnType.FullName);
+                    InvalidEntryReturn(SequencePoint, MethodReturnType);
                 emitter.SetAsEntryPoint();
-                if(ParamTypes.Count() == 1 && ParamTypes.First().FullName != parser.Assembly.TypeToTypeReference(typeof(String[])).FullName)
+
+                if((ParamTypes.Count() > 1) || (ParamTypes.Count() == 1 && !ParamTypes.First().TypeEquals(parser.Assembly.TypeToTypeReference(typeof(string[])))))
                 {
-                    throw new TypeException(parser.GetSequencePoint(lexerNode), "Illegal entrypoint parameter type {0}, must be parameterless or string[]", ParamTypes.First().FullName);
-                }
-                else if(ParamTypes.Count() > 1)
-                {
-                    throw new TypeException(parser.GetSequencePoint(lexerNode), "Illegal entrypoint parameter type {0}, must be parameterless or string[]", ParamTypes.First().FullName);
+                    InvalidEntryParams(point, ParamTypes);
                 }
             }
 
@@ -158,14 +158,14 @@ namespace LaborasLangCompiler.Parser.Impl
             else if(modifiers.HasFlag(Modifiers.Public))
             {
                 if (modifiers.HasFlag(Modifiers.Private))
-                    throw new ParseException(point, "Illegal method declaration, only one access modifier allowed");
+                    TooManyAccessMods(point, modifiers);
                 else
                     ret |= MethodAttributes.Public;
             }
             else if(modifiers.HasFlag(Modifiers.Protected))
             {
                 if (modifiers.HasFlag(Modifiers.Private | Modifiers.Public))
-                    throw new ParseException(point, "Illegal method declaration, only one access modifier allowed");
+                    TooManyAccessMods(point, modifiers);
                 else
                     ret |= MethodAttributes.Family;
             }
@@ -220,13 +220,14 @@ namespace LaborasLangCompiler.Parser.Impl
                     case Lexer.TokenType.Type:
                         var next = lexerNode.Children[i + 1];
                         if (next.Type != Lexer.TokenType.Symbol)
-                            throw new ParseException(parser.GetSequencePoint(lexerNode), "Not a valid method definition, {0}", lexerNode.FullContent);
+                            ErrorHandling.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode), String.Format("Not a valid method definition, {0}", lexerNode.FullContent));
                         else
                             ret.Add(new FunctionParamInfo(param, next));
                         i += 2;
                         break;
                     default:
-                        throw new ParseException(parser.GetSequencePoint(lexerNode), "Unexpected node type, {0} in {1}", param.Type, lexerNode.FullContent);
+                        ErrorHandling.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode), String.Format("Unexpected node {0} in {1}", param.Type, lexerNode.FullContent));
+                        break;
                 }
             }
             return ret;
@@ -242,6 +243,28 @@ namespace LaborasLangCompiler.Parser.Impl
                 Type = type;
                 Name = name;
             }
+        }
+
+        private static void InvalidEntryReturn(SequencePoint point, TypeReference type)
+        {
+            ErrorHandling.Report(ErrorCode.InvalidEntryReturn, point, String.Format("Illegal entrypoint return type {0}, must be int, uint or void", type.FullName));
+        }
+
+        private static void InvalidEntryParams(SequencePoint point, IEnumerable<TypeReference> paramz)
+        {
+            ErrorHandling.Report(ErrorCode.InvalidEntryParams, point,
+                String.Format("Illegal entrypoint parameter types {0}, must be string[] or without params", String.Join(", ", paramz.Select(p => p.FullName))));
+        }
+
+        private static void TooManyAccessMods(SequencePoint point, Modifiers mods)
+        {
+            var all = ModifierUtils.GetAccess();
+            ErrorHandling.Report(ErrorCode.InvalidMethodMods, point, String.Format("Only one of {0} is allowed, {1} found", all, mods | all));
+        }
+
+        private static void InvalidMethodDefinition(Parser parser, AstNode lexerNode)
+        {
+            ErrorHandling.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode), String.Format("Not a valid method definition, {0}", lexerNode.FullContent));
         }
     }
 }

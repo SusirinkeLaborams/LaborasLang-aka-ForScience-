@@ -78,7 +78,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private void AddExpression(ExpressionNode node, Parser parser)
         {
-            if (Utils.TypesEqual(node.ExpressionReturnType, parser.Void))
+            if (node.ExpressionReturnType.TypeEquals(parser.Void))
                 AddNode(node);
             else
                 AddNode(UnaryOperatorNode.Void(node));

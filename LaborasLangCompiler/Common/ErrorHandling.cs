@@ -9,7 +9,14 @@ namespace LaborasLangCompiler.Common
 {
     public enum ErrorCode
     {
-        SymbolAlreadyDeclared = 0001
+        SymbolAlreadyDeclared = 0001,
+        IllegalCast = 0002,
+        IllegalMethodParam = 0003,
+        MissingReturn = 0004,
+        InvalidEntryReturn = 0005,
+        InvalidEntryParams = 0006,
+        InvalidMethodMods = 0007,
+        InvalidStructure = 0008
     }
 
     public static class ErrorHandling
@@ -59,7 +66,7 @@ namespace LaborasLangCompiler.Common
                 {
                     builder.AppendFormat("{0}({1},{2},{3},{4}): ", Point.Document.Url, Point.StartLine, Point.StartColumn, Point.EndLine, Point.EndColumn);
                 }
-                builder.AppendFormat("error LL{0:4}: {2}", ErrorCode, Message);
+                builder.AppendFormat("error LL{0:0000}: {1}", (int)ErrorCode, Message);
                 return builder.ToString();
             }
         }

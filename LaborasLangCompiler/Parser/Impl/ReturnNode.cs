@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var returnType = parent.GetMethod().MethodReturnType;
             var instance = new ReturnNode(parser.GetSequencePoint(lexerNode));
-            if (Utils.TypesEqual(returnType, parser.Void) && lexerNode.ChildrenCount != 2)
+            if (returnType.TypeEquals(parser.Void) && lexerNode.ChildrenCount != 2)
                 throw new TypeException(instance.SequencePoint, "Cannot return value in a void method");
 
             if (lexerNode.Children.Count == 3)

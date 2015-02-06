@@ -10,6 +10,7 @@ using Mono.Cecil;
 using LaborasLangCompiler.ILTools.Types;
 using LaborasLangCompiler.ILTools.Methods;
 using LaborasLangCompiler.Parser.Impl;
+using LaborasLangCompiler.Common;
 
 namespace LaborasLangCompiler.FrontEnd
 {
@@ -19,6 +20,7 @@ namespace LaborasLangCompiler.FrontEnd
         {
             try
             {
+                ErrorHandling.Clear();
                 var compilerArgs = CompilerArguments.Parse(args);
                 AssemblyRegistry.Create(compilerArgs.References);
                 var assembly = new AssemblyEmitter(compilerArgs);

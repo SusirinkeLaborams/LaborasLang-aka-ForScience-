@@ -50,10 +50,10 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 
         protected static void CompareTrees(string source, [CallerMemberName] string name = "")
         {
-            CompareTrees(new string[] { source }, new string[] { name }, name);
+            CompareTrees(source.Yield(), name.Yield(), name);
         }
 
-        protected static void CompareTrees(string[] sources, string[] names, [CallerMemberName] string name = "")
+        protected static void CompareTrees(IEnumerable<string> sources, IEnumerable<string> names, [CallerMemberName] string name = "")
         {
             ErrorHandling.Clear();
 
@@ -61,7 +61,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             var assembly = new AssemblyEmitter(compilerArgs);
             var file = path + name;
 
-            var parser = ProjectParser.ParseAll(assembly, sources, names, false);
+            var parser = ProjectParser.ParseAll(assembly, sources.ToArray(), names.ToArray(), false);
             string result = parser.ToString();
 
 #if REWRITE

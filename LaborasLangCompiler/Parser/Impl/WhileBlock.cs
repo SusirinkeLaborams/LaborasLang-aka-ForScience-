@@ -22,7 +22,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var instance = new WhileBlock(parser.GetSequencePoint(lexerNode));
             instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
-            if (!Utils.TypesEqual(instance.condition.ExpressionReturnType, parser.Bool) || !instance.condition.IsGettable)
+            if (!instance.condition.ExpressionReturnType.TypeEquals(parser.Bool) || !instance.condition.IsGettable)
                 throw new TypeException(instance.SequencePoint, "Condition must be a gettable boolean expression");
             instance.block = CodeBlockNode.Parse(parser, parent, lexerNode.Children[4]);
             return instance;

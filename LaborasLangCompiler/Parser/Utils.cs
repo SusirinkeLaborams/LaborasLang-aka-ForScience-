@@ -63,12 +63,17 @@ namespace LaborasLangCompiler.Parser
             return new HashSet<T>(collection);
         }
 
+        public static IEnumerable<T> Enumerate<T>(params T[] stuff)
+        {
+            return stuff;
+        }
+
         public static TypeReference GetNestedType(this TypeReference type, AssemblyEmitter assembly, string name)
         {
             return AssemblyRegistry.FindType(assembly, type.FullName + "." + name);
         }
 
-        public static bool TypesEqual(TypeReference left, TypeReference right)
+        public static bool TypeEquals(this TypeReference left, TypeReference right)
         {
             return left.FullName == right.FullName;
         }
