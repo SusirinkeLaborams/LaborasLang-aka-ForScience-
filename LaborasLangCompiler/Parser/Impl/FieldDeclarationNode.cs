@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Common;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -67,7 +68,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (!TypeReference.IsAuto())
             {
                 if (TypeReference.IsVoid())
-                    throw new TypeException(point, "Cannot declare a field of type void");
+                    ErrorHandling.Report(ErrorCode.VoidLValue, point, "Cannot declare a field of type void");
                 parent.TypeEmitter.AddField(FieldDefinition);
             }
 
@@ -78,7 +79,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if(initializer.IsNull)
             {
                 if (TypeReference.IsAuto())
-                    throw new TypeException(point, "Type inference requires initialization");
+                    ErrorHandling.Report(ErrorCode.MissingInit, point, "Type inference requires initialization");
                 return;
             }
 
@@ -92,7 +93,10 @@ namespace LaborasLangCompiler.Parser.Impl
             else
             {
                 if (!Initializer.ExpressionReturnType.IsAssignableTo(TypeReference))
-                    throw new TypeException(Initializer.SequencePoint, "Field of type {0} initialized with {1}", TypeReference, Initializer.ExpressionReturnType);
+                {
+                    Utils.Report(ErrorCode.TypeMissmatch, Initializer.SequencePoint, 
+                        "Field of type {0} initialized with {1}", TypeReference, Initializer.ExpressionReturnType);
+                }
             }
 
             if(parser.ProjectParser.ShouldEmit)
@@ -125,14 +129,14 @@ namespace LaborasLangCompiler.Parser.Impl
             else if (modifiers.HasFlag(Modifiers.Public))
             {
                 if (modifiers.HasFlag(Modifiers.Private))
-                    throw new ParseException(point, "Illegal method declaration, only one access modifier allowed");
+                    TooManyAccessMods(point, modifiers);
                 else
                     ret |= FieldAttributes.Public;
             }
             else if (modifiers.HasFlag(Modifiers.Protected))
             {
                 if (modifiers.HasFlag(Modifiers.Private | Modifiers.Public))
-                    throw new ParseException(point, "Illegal method declaration, only one access modifier allowed");
+                    TooManyAccessMods(point, modifiers);
                 else
                     ret |= FieldAttributes.Family;
             }
@@ -170,6 +174,12 @@ namespace LaborasLangCompiler.Parser.Impl
                 builder.AppendLine(Initializer.ToString(indent + 2));
             }
             return builder.ToString();
+        }
+
+        private static void TooManyAccessMods(SequencePoint point, Modifiers mods)
+        {
+            var all = ModifierUtils.GetAccess();
+            ErrorHandling.Report(ErrorCode.InvalidFieldMods, point, String.Format("Only one of {0} is allowed, {1} found", all, mods | all));
         }
     }
 }

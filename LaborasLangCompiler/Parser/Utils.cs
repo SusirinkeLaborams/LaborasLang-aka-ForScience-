@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.ILTools;
+﻿using LaborasLangCompiler.Common;
+using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
@@ -143,6 +144,11 @@ namespace LaborasLangCompiler.Parser
             {
                 throw new ArgumentException();
             }
+        }
+
+        public static void Report(ErrorCode error, SequencePoint point, string format, params object[] args)
+        {
+            ErrorHandling.Report(error, point, String.Format(format, args));
         }
     }
 }

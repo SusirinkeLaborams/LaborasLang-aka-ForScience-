@@ -16,7 +16,16 @@ namespace LaborasLangCompiler.Common
         InvalidEntryReturn = 0005,
         InvalidEntryParams = 0006,
         InvalidMethodMods = 0007,
-        InvalidStructure = 0008
+        InvalidStructure = 0008,
+        VoidLValue = 0009,
+        MissingInit = 0010,
+        TypeMissmatch = 0011,
+        InvalidFieldMods = 0012,
+        DuplicateMods = 0013,
+        InvalidCondition = 0014,
+        SymbolNotFound = 0015,
+        NotAnRValue = 0016,
+        NotCallable = 0017
     }
 
     public static class ErrorHandling

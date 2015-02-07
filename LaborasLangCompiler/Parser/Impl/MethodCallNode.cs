@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.ILTools;
+﻿using LaborasLangCompiler.Common;
+using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
@@ -65,7 +66,8 @@ namespace LaborasLangCompiler.Parser.Impl
                         args.Add(ExpressionNode.Parse(parser, parent, node));
                         break;
                     default:
-                        throw new ParseException(parser.GetSequencePoint(node), "Unexpected node type {0} in call", node.Type);
+                        Utils.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(node), "Unexpected node type {0} in call", node.Type);
+                        break;
                 }
 
             }
@@ -82,7 +84,9 @@ namespace LaborasLangCompiler.Parser.Impl
             foreach(var arg in args)
             {
                 if (!arg.IsGettable)
-                    throw new TypeException(arg.SequencePoint, "Arguments must be gettable");
+                {
+                    Utils.Report(ErrorCode.NotAnRValue, arg.SequencePoint, "Arguments must be gettable");
+                }
             }
 
             method = AsMethod(parser, function, args, point);
@@ -94,7 +98,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return method;
 
             if (method == null)
-                throw new TypeException(point, "Unable to call as a method or constructor");
+                Utils.Report(ErrorCode.NotCallable, point, "Unable to call symbol");
 
             return method;
         }

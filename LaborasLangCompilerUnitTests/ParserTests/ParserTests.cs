@@ -53,11 +53,11 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 void(float(double), int) b;";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Assigned double to int")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TypeExceptionTest()
         {
             string source = "int a = 0.0;";
-            CanParse(source);
+            CanParse(source, ErrorCode.TypeMissmatch.Yield());
         }
         [TestMethod, TestCategory("Parser")]
         public void MethodCallTest()
@@ -495,12 +495,12 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CanParse(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Declared a local var of type void")]
-        public void TestFieldoid()
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        public void TestFieldVoid()
         {
             string source = @"
                 void a;";
-            CanParse(source);
+            CanParse(source, ErrorCode.VoidLValue.Yield());
         }
         [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Declared a local var of type void")]
         public void TestVoidParamFunctorType()

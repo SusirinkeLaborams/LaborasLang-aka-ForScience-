@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Parser;
+using LaborasLangCompiler.Common;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -42,12 +43,16 @@ namespace LaborasLangCompiler.Parser.Impl
                     case Lexer.TokenType.EndOfLine:
                         break;
                     default:
-                        throw new ParseException(parser.GetSequencePoint(node), "Unexpected node in declaration: {0}", node.Type);
+                        ErrorHandling.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(node), String.Format("Unexpected node in declaration: {0}", node.Type));
+                        break;
                 }
             }
 
-            if(instance.SymbolName.IsNull || instance.Type.IsNull)
-                throw new ParseException(parser.GetSequencePoint(lexerNode), "Missing elements in declaration {0}, lexer messed up", lexerNode.Content);
+            if (instance.SymbolName.IsNull || instance.Type.IsNull)
+            {
+                ErrorHandling.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode),
+                    String.Format("Missing elements in declaration {0}, lexer messed up", lexerNode.Content));
+            }
 
             return instance;
         }

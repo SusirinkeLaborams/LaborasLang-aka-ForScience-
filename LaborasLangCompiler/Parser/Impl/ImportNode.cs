@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.ILTools;
+﻿using LaborasLangCompiler.Common;
+using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser.Exceptions;
 using Lexer.Containers;
 using Mono.Cecil.Cil;
@@ -17,10 +18,15 @@ namespace LaborasLangCompiler.Parser.Impl
         public static void Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             var namespaze = DotOperatorNode.Parse(parser, parent, lexerNode.Children[1]) as NamespaceNode;
+            var point = parser.GetSequencePoint(lexerNode);
             if (namespaze != null)
-                parent.GetClass().AddImport(namespaze, parser.GetSequencePoint(lexerNode));
+            {
+                parent.GetClass().AddImport(namespaze, point);
+            }
             else
-                throw new ParseException(parser.GetSequencePoint(lexerNode), "Namespace {0} not found", lexerNode.Children[1].FullContent);
+            {
+                ErrorHandling.Report(ErrorCode.SymbolNotFound, point, String.Format("Namespace {0} not found", lexerNode.Children[1].FullContent));
+            }
         }
         public override string ToString(int indent)
         {

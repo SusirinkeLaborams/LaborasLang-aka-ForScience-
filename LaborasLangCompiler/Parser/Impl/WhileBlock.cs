@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser.Exceptions;
+﻿using LaborasLangCompiler.Common;
+using LaborasLangCompiler.Parser.Exceptions;
 using Lexer.Containers;
 using Mono.Cecil.Cil;
 using System;
@@ -20,10 +21,11 @@ namespace LaborasLangCompiler.Parser.Impl
         protected WhileBlock(SequencePoint point) : base(point) { }
         public static WhileBlock Parse(Parser parser, Context parent, AstNode lexerNode)
         {
-            var instance = new WhileBlock(parser.GetSequencePoint(lexerNode));
+            var point = parser.GetSequencePoint(lexerNode);
+            var instance = new WhileBlock(point);
             instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
             if (!instance.condition.ExpressionReturnType.TypeEquals(parser.Bool) || !instance.condition.IsGettable)
-                throw new TypeException(instance.SequencePoint, "Condition must be a gettable boolean expression");
+                ErrorHandling.Report(ErrorCode.InvalidCondition, point, "Condition must be a gettable boolean expression");
             instance.block = CodeBlockNode.Parse(parser, parent, lexerNode.Children[4]);
             return instance;
         }

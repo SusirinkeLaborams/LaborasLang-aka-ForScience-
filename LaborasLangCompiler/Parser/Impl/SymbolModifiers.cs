@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser.Exceptions;
+﻿using LaborasLangCompiler.Common;
+using LaborasLangCompiler.Parser.Exceptions;
 using Lexer.Containers;
 using Mono.Cecil.Cil;
 using System;
@@ -29,7 +30,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var toAdd = FromToken[node.Children[0].Type];
             if((modifiers & toAdd) != 0)
             {
-                throw new ParseException(parser.GetSequencePoint(node), "Cannot add modifier {0} twice", toAdd);
+                ErrorHandling.Report(ErrorCode.DuplicateMods, parser.GetSequencePoint(node), String.Format("Cannot add modifier {0} twice", toAdd));
             }
             return modifiers | toAdd;
         }
