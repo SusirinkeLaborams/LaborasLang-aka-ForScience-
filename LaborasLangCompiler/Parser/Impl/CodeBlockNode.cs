@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.Common;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -107,7 +108,8 @@ namespace LaborasLangCompiler.Parser.Impl
                     AddNode(ReturnNode.Parse(parser, this, lexerNode));
                     break;
                 default:
-                    throw new ParseException(parser.GetSequencePoint(lexerNode), "Node " + lexerNode.Type + " in sentence, dafuq");
+                    Utils.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode), "Unexpected node {0} in while parsing code block", lexerNode.Type);
+                    break;//unreachable
             }
         }
 

@@ -10,6 +10,7 @@ using LaborasLangCompiler.ILTools;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
+using LaborasLangCompiler.Common;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -45,12 +46,12 @@ namespace LaborasLangCompiler.Parser.Impl
                 ExpressionNode left, right;
                 left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
                 if (!left.IsGettable)
-                    throw new TypeException(left.SequencePoint, "Binary operands must be gettable");
+                    Utils.Report(ErrorCode.NotAnRValue, left.SequencePoint, "Binary operand is not gettable");
                 for (int i = 1; i < lexerNode.Children.Count; i += 2)
                 {
                     right = ExpressionNode.Parse(parser, parent, lexerNode.Children[i + 1]);
                     if (!right.IsGettable)
-                        throw new TypeException(left.SequencePoint, "Binary operands must be gettable");
+                        Utils.Report(ErrorCode.NotAnRValue, right.SequencePoint, "Binary operand is not gettable");
                     left = Parse(parser, Operators[lexerNode.Children[i].Type], left, right);
                 }
                 return left;
@@ -93,7 +94,8 @@ namespace LaborasLangCompiler.Parser.Impl
                     instance.VerifyBinary();
                     break;
                 default:
-                    throw new ParseException(instance.SequencePoint, "Binary op expected, '{0}' received", op);
+                    Utils.Report(ErrorCode.InvalidStructure, instance.SequencePoint, "Binary op expected, '{0} found", op);
+                    break;//unreachable
             }
             return instance;
         }
@@ -102,12 +104,17 @@ namespace LaborasLangCompiler.Parser.Impl
             if (left.ExpressionReturnType.IsNumericType() && right.ExpressionReturnType.IsNumericType())
             {
                 if (left.IsAssignableTo(right))
+                {
                     type = right.ExpressionReturnType;
+                }
                 else if (right.IsAssignableTo(left))
+                {
                     type = left.ExpressionReturnType;
+                }
                 else
-                    throw new TypeException(SequencePoint, "Incompatible operand types, {0} and {1} received",
-                        left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName);
+                {
+                    ArithmeticMissmatch();
+                }
             }
             else if ((left.ExpressionReturnType.IsStringType() || right.ExpressionReturnType.IsStringType()) && BinaryOperatorType == BinaryOperatorNodeType.Addition)
             {
@@ -115,8 +122,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                throw new TypeException(SequencePoint, "Incompatible operand types, {0} and {1} for operator {2}",
-                    left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName, BinaryOperatorType);
+                ArithmeticMissmatch();
             }
         }
         private void VerifyComparison(Parser parser)
@@ -135,36 +141,32 @@ namespace LaborasLangCompiler.Parser.Impl
                 comparable = left.IsAssignableTo(right) || right.IsAssignableTo(left);
 
             if (!comparable)
-                throw new TypeException(SequencePoint, "Types {0} and {1} cannot be compared with op {2}",
-                    left.ExpressionReturnType, right.ExpressionReturnType, BinaryOperatorType);
+                ComparisonMissmatch();
         }
         private void VerifyShift(Parser parser)
         {
             type = left.ExpressionReturnType;
             if (right.ExpressionReturnType.FullName != parser.Int32.FullName)
-                throw new TypeException(SequencePoint, "Right shift operand must be of signed 32bit integer type");
+                ShiftMissmatch();
             if (!left.ExpressionReturnType.IsIntegerType())
-                throw new TypeException(SequencePoint, "Left shift operand must be of integer type");
+                ShiftMissmatch();
         }
         private void VerifyBinary()
         {
             type = left.ExpressionReturnType;
 
             if (!(left.ExpressionReturnType.IsIntegerType() && right.ExpressionReturnType.IsIntegerType()))
-                throw new TypeException(SequencePoint, "Binary operations only allowed on equal length integers, operands: {0}, {1}",
-                    left.ExpressionReturnType, right.ExpressionReturnType);
+                BinaryMissmatch();
 
             if (left.ExpressionReturnType.GetIntegerWidth() != right.ExpressionReturnType.GetIntegerWidth())
-                throw new TypeException(SequencePoint, "Binary operations only allowed on equal length integers, operands: {0}, {1}",
-                    left.ExpressionReturnType, right.ExpressionReturnType);
+                BinaryMissmatch();
         }
         private void VerifyLogical(Parser parser)
         {
             type = parser.Bool;
 
             if (!(left.ExpressionReturnType.IsBooleanType() && right.ExpressionReturnType.IsBooleanType()))
-                throw new TypeException(SequencePoint, "Logical operations only allowed on booleans, operands: {0}, {1}",
-                    left.ExpressionReturnType, right.ExpressionReturnType);
+                LogicalMissmatch();
         }
         public override string ToString(int indent)
         {
@@ -177,6 +179,41 @@ namespace LaborasLangCompiler.Parser.Impl
             builder.Indent(indent + 1).AppendLine("Right:");
             builder.AppendLine(right.ToString(indent + 2));
             return builder.ToString();
+        }
+
+        private void ArithmeticMissmatch()
+        {
+            Utils.Report(ErrorCode.TypeMissmatch, SequencePoint,
+                "Cannot perform arithmetic operation '{0}' on types {1} and {2}", 
+                BinaryOperatorType, LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
+        }
+
+        private void ComparisonMissmatch()
+        {
+            Utils.Report(ErrorCode.TypeMissmatch, SequencePoint,
+                "Cannot perform comparison on types {0} and {1}",
+                LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
+        }
+
+        private void LogicalMissmatch()
+        {
+            Utils.Report(ErrorCode.TypeMissmatch, SequencePoint,
+                "Cannot perform logical operations on types {0} and {1}, boolean required",
+                LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
+        }
+
+        private void BinaryMissmatch()
+        {
+            Utils.Report(ErrorCode.TypeMissmatch, SequencePoint,
+                "Cannot perform binary operations on types {0} and {1}, integers of equal length required",
+                LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
+        }
+
+        private void ShiftMissmatch()
+        {
+            Utils.Report(ErrorCode.TypeMissmatch, SequencePoint,
+                "Cannot perform shift operations on types {0} and {1}, left must be an integer, right must be an integer up to 32 bytes long",
+                LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
         }
 
         public static Dictionary<Lexer.TokenType, BinaryOperatorNodeType> Operators = new Dictionary<Lexer.TokenType, BinaryOperatorNodeType>()

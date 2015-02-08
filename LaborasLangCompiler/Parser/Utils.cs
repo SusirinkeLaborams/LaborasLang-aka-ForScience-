@@ -54,7 +54,7 @@ namespace LaborasLangCompiler.Parser
             return type is AutoType;
         }
 
-        public static IEnumerable<T> Yield<T>(this T item)
+        public static IEnumerable<T> Enumerate<T>(this T item)
         {
             yield return item;
         }

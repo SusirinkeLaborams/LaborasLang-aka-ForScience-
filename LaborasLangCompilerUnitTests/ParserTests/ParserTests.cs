@@ -57,7 +57,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         public void TypeExceptionTest()
         {
             string source = "int a = 0.0;";
-            CanParse(source, ErrorCode.TypeMissmatch.Yield());
+            CanParse(source, ErrorCode.TypeMissmatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void MethodCallTest()
@@ -324,7 +324,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                         return 1;
                     }
                 };";
-            CanParse(source, ErrorCode.MissingReturn.Yield());
+            CanParse(source, ErrorCode.MissingReturn.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestEnforceReturn3()
@@ -500,7 +500,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string source = @"
                 void a;";
-            CanParse(source, ErrorCode.VoidLValue.Yield());
+            CanParse(source, ErrorCode.VoidLValue.Enumerate());
         }
         [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Declared a local var of type void")]
         public void TestVoidParamFunctorType()
@@ -516,7 +516,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto foo = void(void a)
                 {
                 };";
-            CanParse(source, ErrorCode.IllegalMethodParam.Yield());
+            CanParse(source, ErrorCode.IllegalMethodParam.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestUnaryOnCall()
@@ -615,7 +615,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CanParse(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException))]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestAsignToConstLocal()
         {
             string source = @"
@@ -624,7 +624,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     const int bar = 5;
                     bar = 8;
                 };";
-            CanParse(source);
+            CanParse(source, ErrorCode.NotAnLValue.Enumerate());
         }
         [TestMethod, TestCategory("Parser"), ExpectedException(typeof(ParseException))]
         public void TestPrivateLocal()
@@ -673,7 +673,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 entry auto foo = float()
                 {
                 };";
-            CanParse(source, ErrorCode.InvalidEntryParams.Yield());
+            CanParse(source, ErrorCode.InvalidEntryParams.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestReadProperty()
@@ -683,7 +683,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto count = lst.Count;";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException))]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestWriteNoSetterProperty()
         {
             string source = @"
@@ -692,7 +692,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     lst.Count = 5;
                 };";
-            CanParse(source);
+            CanParse(source, ErrorCode.NotAnLValue.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestWriteProperty()
@@ -719,13 +719,13 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string file2 = @"auto foo = file1.foo;";
             CompareTrees(Utils.Enumerate(file1, file2), Utils.Enumerate("file1", "file2"));
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(SymbolNotFoundException))]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestTwoFilesFieldCircularVisibility()
         {
             //one of the foos is not found because type inferrence delays field declaration
             string file1 = @"public auto foo = file2.foo;";
             string file2 = @"public auto foo = file1.foo;";
-            CompareTrees(Utils.Enumerate(file1, file2), Utils.Enumerate("file1", "file2"));
+            CanParse(Utils.Enumerate(file1, file2), Utils.Enumerate("file1", "file2"), ErrorCode.SymbolNotFound.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestTwoFilesMethodVisibility()

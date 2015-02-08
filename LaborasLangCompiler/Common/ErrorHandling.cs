@@ -25,7 +25,9 @@ namespace LaborasLangCompiler.Common
         InvalidCondition = 0014,
         SymbolNotFound = 0015,
         NotAnRValue = 0016,
-        NotCallable = 0017
+        NotCallable = 0017,
+        InvalidDot = 0018,
+        NotAnLValue = 0019
     }
 
     public static class Errors

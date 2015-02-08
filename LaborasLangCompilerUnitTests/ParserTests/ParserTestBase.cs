@@ -25,21 +25,21 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 
         protected static void CanParse(string source, IEnumerable<ErrorCode> errors, [CallerMemberName] string name = "")
         {
-            CanParse(new string[] { source }, new string[] { name }, errors);
+            CanParse(source.Enumerate(), name.Enumerate(), errors);
         }
 
-        protected static void CanParse(string[] sources, string[] names)
+        protected static void CanParse(IEnumerable<string> sources, IEnumerable<string> names)
         {
             CanParse(sources, names, Enumerable.Empty<ErrorCode>());
         }
 
-        protected static void CanParse(string[] sources, string[] names, IEnumerable<ErrorCode> errors)
+        protected static void CanParse(IEnumerable<string> sources, IEnumerable<string> names, IEnumerable<ErrorCode> errors)
         {
             Errors.Clear();
 
-            var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").Union("/out:out.exe".Yield()).ToArray());
+            var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").Union("/out:out.exe".Enumerate()).ToArray());
             var assembly = new AssemblyEmitter(compilerArgs);
-            ProjectParser.ParseAll(assembly, sources, names, false);
+            ProjectParser.ParseAll(assembly, sources.ToArray(), names.ToArray(), false);
 
             var foundErrors = Errors.Reported.Select(e => e.ErrorCode).ToHashSet();
             var expectedErrors = errors.ToHashSet();
@@ -50,14 +50,14 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 
         protected static void CompareTrees(string source, [CallerMemberName] string name = "")
         {
-            CompareTrees(source.Yield(), name.Yield(), name);
+            CompareTrees(source.Enumerate(), name.Enumerate(), name);
         }
 
         protected static void CompareTrees(IEnumerable<string> sources, IEnumerable<string> names, [CallerMemberName] string name = "")
         {
             Errors.Clear();
 
-            var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").Union("/out:out.exe".Yield()).ToArray());
+            var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").Union("/out:out.exe".Enumerate()).ToArray());
             var assembly = new AssemblyEmitter(compilerArgs);
             var file = path + name;
 
