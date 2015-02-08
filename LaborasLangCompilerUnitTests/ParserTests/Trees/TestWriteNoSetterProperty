@@ -1,0 +1,33 @@
+Class:
+	TestWriteNoSetterProperty
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Collections.ArrayList
+			Name:
+				lst
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ObjectCreation:
+					Type: System.Collections.ArrayList
+					Args:
+					Constructor:
+						System.Void System.Collections.ArrayList::.ctor()
+
+
+	Methods:
+		Method:
+			Name:
+				foo
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+
+

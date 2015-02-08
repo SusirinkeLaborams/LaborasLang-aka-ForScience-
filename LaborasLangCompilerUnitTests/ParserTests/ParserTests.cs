@@ -1,9 +1,7 @@
 ﻿using LaborasLangCompiler.Common;
-//#define REWRITE
 using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser;
-
 using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompilerUnitTests.ILTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -57,7 +55,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         public void TypeExceptionTest()
         {
             string source = "int a = 0.0;";
-            CanParse(source, ErrorCode.TypeMissmatch.Enumerate());
+            CompareTrees(source, ErrorCode.TypeMissmatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void MethodCallTest()
@@ -287,7 +285,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string source = @"
                 auto Main = int(){return 4.0;};";
-            CanParse(source, Utils.Enumerate(ErrorCode.TypeMissmatch, ErrorCode.MissingReturn));
+            CompareTrees(source, Utils.Enumerate(ErrorCode.TypeMissmatch, ErrorCode.MissingReturn));
         }
         [TestMethod, TestCategory("Parser")]
         public void TestReturnTypeSuccess()
@@ -324,7 +322,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                         return 1;
                     }
                 };";
-            CanParse(source, ErrorCode.MissingReturn.Enumerate());
+            CompareTrees(source, ErrorCode.MissingReturn.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestEnforceReturn3()
@@ -381,7 +379,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {  
                     return 5;
                 };";
-            CanParse(source, ErrorCode.TypeMissmatch.Enumerate());
+            CompareTrees(source, ErrorCode.TypeMissmatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestImport()
@@ -493,21 +491,21 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     void a;
                 };";
-            CanParse(source, ErrorCode.VoidLValue.Enumerate());
+            CompareTrees(source, ErrorCode.VoidLValue.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestFieldVoid()
         {
             string source = @"
                 void a;";
-            CanParse(source, ErrorCode.VoidLValue.Enumerate());
+            CompareTrees(source, ErrorCode.VoidLValue.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestVoidParamFunctorType()
         {
             string source = @"
                 mutable void(void) foo;";
-            CanParse(source, ErrorCode.IllegalMethodParam.Enumerate());
+            CompareTrees(source, ErrorCode.IllegalMethodParam.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestVoidParamMethod()
@@ -516,7 +514,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto foo = void(void a)
                 {
                 };";
-            CanParse(source, ErrorCode.IllegalMethodParam.Enumerate());
+            CompareTrees(source, ErrorCode.IllegalMethodParam.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestUnaryOnCall()
@@ -532,7 +530,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 mutable int() foo;
                 auto a = foo()++;";
-            CanParse(source, ErrorCode.NotAnLValue.Enumerate());
+            CompareTrees(source, ErrorCode.NotAnLValue.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestUnaryInvalid2()
@@ -540,7 +538,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 mutable int() foo;
                 auto a = ++foo();";
-            CanParse(source, ErrorCode.NotAnLValue.Enumerate());
+            CompareTrees(source, ErrorCode.NotAnLValue.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestAssignToUnary()
@@ -603,7 +601,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     const int bar;
                 };";
-            CanParse(source, ErrorCode.MissingInit.Enumerate());
+            CompareTrees(source, ErrorCode.MissingInit.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestMutableLocal()
@@ -613,7 +611,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     mutable int bar;
                 };";
-            CanParse(source);
+            CompareTrees(source);
         }
         [TestMethod, TestCategory("Parser")]
         public void TestAsignToConstLocal()
@@ -624,7 +622,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     const int bar = 5;
                     bar = 8;
                 };";
-            CanParse(source, ErrorCode.NotAnLValue.Enumerate());
+            CompareTrees(source, ErrorCode.NotAnLValue.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestPrivateLocal()
@@ -634,7 +632,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     private const int bar = 5;
                 };";
-            CanParse(source, ErrorCode.InvalidVariableMods.Enumerate());
+            CompareTrees(source, ErrorCode.InvalidVariableMods.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestVoidEntry()
@@ -673,7 +671,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 entry auto foo = float()
                 {
                 };";
-            CanParse(source, ErrorCode.InvalidEntryReturn.Enumerate());
+            CompareTrees(source, ErrorCode.InvalidEntryReturn.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestReadProperty()
@@ -692,7 +690,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     lst.Count = 5;
                 };";
-            CanParse(source, ErrorCode.NotAnLValue.Enumerate());
+            CompareTrees(source, ErrorCode.NotAnLValue.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestWriteProperty()
@@ -725,7 +723,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             //one of the foos is not found because type inferrence delays field declaration
             string file1 = @"public auto foo = file2.foo;";
             string file2 = @"public auto foo = file1.foo;";
-            CanParse(Utils.Enumerate(file1, file2), Utils.Enumerate("file1", "file2"), ErrorCode.SymbolNotFound.Enumerate());
+            CompareTrees(Utils.Enumerate(file1, file2), Utils.Enumerate("file1", "file2"), ErrorCode.SymbolNotFound.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestTwoFilesMethodVisibility()

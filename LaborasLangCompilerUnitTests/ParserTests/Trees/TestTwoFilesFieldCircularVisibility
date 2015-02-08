@@ -1,0 +1,25 @@
+Class:
+	file1
+	Fields:
+		FieldDeclaration:
+			Type:
+				auto
+			Name:
+				foo
+			Modifiers:
+				Public
+
+	Methods:
+
+Class:
+	file2
+	Fields:
+		FieldDeclaration:
+			Type:
+				auto
+			Name:
+				foo
+			Modifiers:
+				Public
+
+	Methods:

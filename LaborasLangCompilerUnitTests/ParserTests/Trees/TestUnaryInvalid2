@@ -1,0 +1,20 @@
+Class:
+	TestUnaryInvalid2
+	Fields:
+		FieldDeclaration:
+			Type:
+				$Functors.$System_Int32?
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+
+		FieldDeclaration:
+			Type:
+				auto
+			Name:
+				a
+			Modifiers:
+				0
+
+	Methods:
