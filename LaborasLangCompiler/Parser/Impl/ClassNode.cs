@@ -196,18 +196,22 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             foreach (var node in lexerNode.Children)
             {
-                switch (node.Type)
+                try
                 {
-                    case Lexer.TokenType.UseNode:
-                        ImportNode.Parse(parser, this, node);
-                        break;
-                    case Lexer.TokenType.DeclarationNode:
-                        ParseDeclaration(node);
-                        break;
-                    default:
-                        ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(node), "Import or declaration expected, {0} received", node.Type);
-                        break;//unreachable
+                    switch (node.Type)
+                    {
+                        case Lexer.TokenType.UseNode:
+                            ImportNode.Parse(parser, this, node);
+                            break;
+                        case Lexer.TokenType.DeclarationNode:
+                            ParseDeclaration(node);
+                            break;
+                        default:
+                            ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(node), "Import or declaration expected, {0} received", node.Type);
+                            break;//unreachable
+                    }
                 }
+                catch (CompilerException) { }//recover, continue
             }
         }
 
@@ -233,7 +237,11 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             foreach(var field in fields)
             {
-                field.Initialize(parser);
+                try
+                {
+                    field.Initialize(parser);
+                }
+                catch (CompilerException) { }//recover, continue
             }
         }
 
@@ -244,7 +252,14 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public void Emit()
         {
-            declaredMethods.ForEach(m => m.Emit());
+            foreach(var method in declaredMethods)
+            {
+                try
+                {
+                    method.Emit();
+                }
+                catch (CompilerException) { }//recover, continue
+            }
         }
 
         #endregion parsing

@@ -23,7 +23,6 @@ namespace LaborasLangCompiler.Parser.Impl
         protected Dictionary<string, SymbolDeclarationNode> symbols;
         private Context parent;
 
-
         protected CodeBlockNode(Context parent, SequencePoint point) : base(point)
         {
             nodes = new List<ParserNode>();
@@ -120,16 +119,20 @@ namespace LaborasLangCompiler.Parser.Impl
                 instance = new CodeBlockNode(parent, parser.GetSequencePoint(lexerNode));
                 foreach(var node in lexerNode.Children)
                 {
-                    switch(node.Type)
+                    try
                     {
-                        case Lexer.TokenType.LeftCurlyBrace:
-                        case Lexer.TokenType.RightCurlyBrace:
-                        case Lexer.TokenType.EndOfLine:
-                            break;
-                        default:
-                            instance.AddNode(parser, node);
-                            break;
+                        switch (node.Type)
+                        {
+                            case Lexer.TokenType.LeftCurlyBrace:
+                            case Lexer.TokenType.RightCurlyBrace:
+                            case Lexer.TokenType.EndOfLine:
+                                break;
+                            default:
+                                instance.AddNode(parser, node);
+                                break;
+                        }
                     }
+                    catch (CompilerException) { }//recover, continue parsing
                 }
             }
             else if(lexerNode.Type == Lexer.TokenType.StatementNode)

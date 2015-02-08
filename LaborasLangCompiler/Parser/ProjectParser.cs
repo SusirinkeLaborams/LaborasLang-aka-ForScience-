@@ -75,6 +75,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ProjectParser ParseAll(AssemblyEmitter assembly, string[] sources, string[] names, bool emit)
         {
+            
             ProjectParser projectParser = new ProjectParser(assembly, emit);
             for(int i = 0; i < sources.Length; i++)
             {

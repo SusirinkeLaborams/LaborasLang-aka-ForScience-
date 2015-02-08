@@ -53,7 +53,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 void(float(double), int) b;";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TypeExceptionTest()
         {
             string source = "int a = 0.0;";
@@ -282,12 +282,12 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto b = 8 <= 10;";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestReturnTypeFailure()
         {
             string source = @"
                 auto Main = int(){return 4.0;};";
-            CanParse(source, ErrorCode.TypeMissmatch.Enumerate());
+            CanParse(source, Utils.Enumerate(ErrorCode.TypeMissmatch, ErrorCode.MissingReturn));
         }
         [TestMethod, TestCategory("Parser")]
         public void TestReturnTypeSuccess()
@@ -313,7 +313,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestEnforceReturn2()
         {
             string source = @"
@@ -373,7 +373,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 int(float) a = int(float x){return 4;};";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestReturnVoid()
         {
             string source = @"
@@ -485,7 +485,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestLocalVariableVoid()
         {
             string source = @"
@@ -495,21 +495,21 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CanParse(source, ErrorCode.VoidLValue.Enumerate());
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestFieldVoid()
         {
             string source = @"
                 void a;";
             CanParse(source, ErrorCode.VoidLValue.Enumerate());
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestVoidParamFunctorType()
         {
             string source = @"
                 mutable void(void) foo;";
             CanParse(source, ErrorCode.IllegalMethodParam.Enumerate());
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestVoidParamMethod()
         {
             string source = @"
@@ -526,7 +526,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto a = -foo();";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestUnaryInvalid1()
         {
             string source = @"
@@ -534,7 +534,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto a = foo()++;";
             CanParse(source, ErrorCode.NotAnLValue.Enumerate());
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestUnaryInvalid2()
         {
             string source = @"
@@ -595,7 +595,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestUninitializedLocal()
         {
             string source = @"
@@ -615,7 +615,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CanParse(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestAsignToConstLocal()
         {
             string source = @"
@@ -626,7 +626,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CanParse(source, ErrorCode.NotAnLValue.Enumerate());
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestPrivateLocal()
         {
             string source = @"
@@ -666,14 +666,14 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestFloatEntry()
         {
             string source = @"
                 entry auto foo = float()
                 {
                 };";
-            CanParse(source, ErrorCode.InvalidEntryParams.Enumerate());
+            CanParse(source, ErrorCode.InvalidEntryReturn.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestReadProperty()
@@ -683,7 +683,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto count = lst.Count;";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestWriteNoSetterProperty()
         {
             string source = @"
@@ -719,7 +719,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string file2 = @"auto foo = file1.foo;";
             CompareTrees(Utils.Enumerate(file1, file2), Utils.Enumerate("file1", "file2"));
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
+        [TestMethod, TestCategory("Parser")]
         public void TestTwoFilesFieldCircularVisibility()
         {
             //one of the foos is not found because type inferrence delays field declaration
