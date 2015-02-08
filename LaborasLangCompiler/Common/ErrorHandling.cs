@@ -9,31 +9,44 @@ namespace LaborasLangCompiler.Common
 {
     public enum ErrorCode
     {
-        SymbolAlreadyDeclared = 0001,
-        IllegalCast = 0002,
-        IllegalMethodParam = 0003,
-        MissingReturn = 0004,
-        InvalidEntryReturn = 0005,
-        InvalidEntryParams = 0006,
-        InvalidMethodMods = 0007,
-        InvalidStructure = 0008,
-        VoidLValue = 0009,
-        MissingInit = 0010,
-        TypeMissmatch = 0011,
-        InvalidFieldMods = 0012,
-        DuplicateMods = 0013,
-        InvalidCondition = 0014,
-        SymbolNotFound = 0015,
-        NotAnRValue = 0016,
-        NotCallable = 0017,
-        InvalidDot = 0018,
-        NotAnLValue = 0019,
-        InvalidVariableMods = 0020,
-        MissingInstance = 0021,
+        InvalidStructure = 0001,
+        SymbolAlreadyDeclared = 0002,
+        SymbolNotFound = 0003,
+
+        TypeMissmatch = 0004,
+        IllegalCast = 0005,
+        NotCallable = 0006,
+
+        MissingInit = 0007,
+        VoidLValue = 0008,
+
+        NotAnRValue = 0009,
+        NotAnLValue = 0010,
+
+        DuplicateMods = 0011,
+
+        MissingReturn = 0012,
+        IllegalMethodParam = 0013,
+        InvalidMethodMods = 0014,
+
+        InvalidEntryReturn = 0015,
+        InvalidEntryParams = 0016,
+
+        InvalidFieldMods = 0017,
+
+        InvalidVariableMods = 0018,
+
+        InvalidCondition = 0019,
+        
+        TypeExpected = 0020,
+        AmbiguousSymbol = 0021,
         UnreachableMember = 0022,
-        AmbiguousSymbol = 0023,
-        DuplicateImport = 0024,
-        TypeExpected = 0025
+
+        MissingInstance = 0023,
+
+        InvalidDot = 0024,
+
+        DuplicateImport = 0025
     }
 
     public static class Errors
