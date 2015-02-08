@@ -43,14 +43,14 @@ namespace LaborasLangCompiler.Parser.Impl
                     case Lexer.TokenType.EndOfLine:
                         break;
                     default:
-                        ErrorHandling.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(node), String.Format("Unexpected node in declaration: {0}", node.Type));
+                        Errors.ReportAndThrow(ErrorCode.InvalidStructure, parser.GetSequencePoint(node), String.Format("Unexpected node in declaration: {0}", node.Type));
                         break;
                 }
             }
 
             if (instance.SymbolName.IsNull || instance.Type.IsNull)
             {
-                ErrorHandling.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode),
+                Errors.ReportAndThrow(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode),
                     String.Format("Missing elements in declaration {0}, lexer messed up", lexerNode.Content));
             }
 

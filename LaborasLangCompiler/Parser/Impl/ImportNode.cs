@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                ErrorHandling.Report(ErrorCode.SymbolNotFound, point, String.Format("Namespace {0} not found", lexerNode.Children[1].FullContent));
+                Errors.ReportAndThrow(ErrorCode.SymbolNotFound, point, String.Format("Namespace {0} not found", lexerNode.Children[1].FullContent));
             }
         }
         public override string ToString(int indent)

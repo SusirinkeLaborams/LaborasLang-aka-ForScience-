@@ -148,7 +148,7 @@ namespace LaborasLangCompiler.Parser
 
         public static void Report(ErrorCode error, SequencePoint point, string format, params object[] args)
         {
-            ErrorHandling.Report(error, point, String.Format(format, args));
+            Errors.ReportAndThrow(error, point, String.Format(format, args));
         }
     }
 }

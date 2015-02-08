@@ -32,7 +32,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             if (!expectedType.IsFunctorType())
             {
-                ErrorHandling.Report(ErrorCode.IllegalCast, SequencePoint,
+                Errors.ReportAndThrow(ErrorCode.IllegalCast, SequencePoint,
                     String.Format("Cannot cast functor to type {0}", expectedType.FullName));
             }
             var paramz = ILHelpers.GetFunctorParamTypes(parser.Assembly, expectedType);

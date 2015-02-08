@@ -35,13 +35,13 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 
         protected static void CanParse(string[] sources, string[] names, IEnumerable<ErrorCode> errors)
         {
-            ErrorHandling.Clear();
+            Errors.Clear();
 
             var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").Union("/out:out.exe".Yield()).ToArray());
             var assembly = new AssemblyEmitter(compilerArgs);
             ProjectParser.ParseAll(assembly, sources, names, false);
 
-            var foundErrors = ErrorHandling.Errors.Select(e => e.ErrorCode).ToHashSet();
+            var foundErrors = Errors.Reported.Select(e => e.ErrorCode).ToHashSet();
             var expectedErrors = errors.ToHashSet();
 
             Assert.IsTrue(foundErrors.SetEquals(expectedErrors));
@@ -55,7 +55,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 
         protected static void CompareTrees(IEnumerable<string> sources, IEnumerable<string> names, [CallerMemberName] string name = "")
         {
-            ErrorHandling.Clear();
+            Errors.Clear();
 
             var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").Union("/out:out.exe".Yield()).ToArray());
             var assembly = new AssemblyEmitter(compilerArgs);
@@ -76,7 +76,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             catch { }
             Assert.AreEqual(expected, result);
 #endif
-            Assert.IsTrue(ErrorHandling.Errors.Count == 0);
+            Assert.IsTrue(Errors.Reported.Count == 0);
         }
     }
 }

@@ -45,7 +45,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             parsedBody = CodeBlockNode.Parse(parser, this, body);
             if (MethodReturnType.FullName != parser.Void.FullName && !parsedBody.Returns)
-                ErrorHandling.Report(ErrorCode.MissingReturn, SequencePoint, "Not all control paths return a value");
+                Errors.ReportAndThrow(ErrorCode.MissingReturn, SequencePoint, "Not all control paths return a value");
             if(parser.ProjectParser.ShouldEmit)
                 emitter.ParseTree(parsedBody);
         }
@@ -68,7 +68,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 var param = ParseParameter(parent, p.Type, p.Name);
                 if (Utils.IsVoid(param.ParameterType))
-                    ErrorHandling.Report(ErrorCode.IllegalMethodParam, point, "Illegal method parameter type void");
+                    Errors.ReportAndThrow(ErrorCode.IllegalMethodParam, point, "Illegal method parameter type void");
                 emitter.AddArgument(param);
                 symbols.Add(param.Name, param);
             }
@@ -220,13 +220,13 @@ namespace LaborasLangCompiler.Parser.Impl
                     case Lexer.TokenType.Type:
                         var next = lexerNode.Children[i + 1];
                         if (next.Type != Lexer.TokenType.Symbol)
-                            ErrorHandling.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode), String.Format("Not a valid method definition, {0}", lexerNode.FullContent));
+                            Errors.ReportAndThrow(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode), String.Format("Not a valid method definition, {0}", lexerNode.FullContent));
                         else
                             ret.Add(new FunctionParamInfo(param, next));
                         i += 2;
                         break;
                     default:
-                        ErrorHandling.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode), String.Format("Unexpected node {0} in {1}", param.Type, lexerNode.FullContent));
+                        Errors.ReportAndThrow(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode), String.Format("Unexpected node {0} in {1}", param.Type, lexerNode.FullContent));
                         break;
                 }
             }
@@ -247,24 +247,24 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static void InvalidEntryReturn(SequencePoint point, TypeReference type)
         {
-            ErrorHandling.Report(ErrorCode.InvalidEntryReturn, point, String.Format("Illegal entrypoint return type {0}, must be int, uint or void", type.FullName));
+            Errors.ReportAndThrow(ErrorCode.InvalidEntryReturn, point, String.Format("Illegal entrypoint return type {0}, must be int, uint or void", type.FullName));
         }
 
         private static void InvalidEntryParams(SequencePoint point, IEnumerable<TypeReference> paramz)
         {
-            ErrorHandling.Report(ErrorCode.InvalidEntryParams, point,
+            Errors.ReportAndThrow(ErrorCode.InvalidEntryParams, point,
                 String.Format("Illegal entrypoint parameter types {0}, must be string[] or without params", String.Join(", ", paramz.Select(p => p.FullName))));
         }
 
         private static void TooManyAccessMods(SequencePoint point, Modifiers mods)
         {
             var all = ModifierUtils.GetAccess();
-            ErrorHandling.Report(ErrorCode.InvalidMethodMods, point, String.Format("Only one of {0} is allowed, {1} found", all, mods | all));
+            Errors.ReportAndThrow(ErrorCode.InvalidMethodMods, point, String.Format("Only one of {0} is allowed, {1} found", all, mods | all));
         }
 
         private static void InvalidMethodDefinition(Parser parser, AstNode lexerNode)
         {
-            ErrorHandling.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode), String.Format("Not a valid method definition, {0}", lexerNode.FullContent));
+            Errors.ReportAndThrow(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode), String.Format("Not a valid method definition, {0}", lexerNode.FullContent));
         }
     }
 }

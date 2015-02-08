@@ -20,7 +20,7 @@ namespace LaborasLangCompiler.FrontEnd
         {
             try
             {
-                ErrorHandling.Clear();
+                Errors.Clear();
                 var compilerArgs = CompilerArguments.Parse(args);
                 AssemblyRegistry.Create(compilerArgs.References);
                 var assembly = new AssemblyEmitter(compilerArgs);

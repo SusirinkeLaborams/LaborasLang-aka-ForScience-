@@ -68,7 +68,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (!TypeReference.IsAuto())
             {
                 if (TypeReference.IsVoid())
-                    ErrorHandling.Report(ErrorCode.VoidLValue, point, "Cannot declare a field of type void");
+                    Errors.ReportAndThrow(ErrorCode.VoidLValue, point, "Cannot declare a field of type void");
                 parent.TypeEmitter.AddField(FieldDefinition);
             }
 
@@ -79,7 +79,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if(initializer.IsNull)
             {
                 if (TypeReference.IsAuto())
-                    ErrorHandling.Report(ErrorCode.MissingInit, point, "Type inference requires initialization");
+                    Errors.ReportAndThrow(ErrorCode.MissingInit, point, "Type inference requires initialization");
                 return;
             }
 
@@ -179,7 +179,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private static void TooManyAccessMods(SequencePoint point, Modifiers mods)
         {
             var all = ModifierUtils.GetAccess();
-            ErrorHandling.Report(ErrorCode.InvalidFieldMods, point, String.Format("Only one of {0} is allowed, {1} found", all, mods | all));
+            Errors.ReportAndThrow(ErrorCode.InvalidFieldMods, point, String.Format("Only one of {0} is allowed, {1} found", all, mods | all));
         }
     }
 }

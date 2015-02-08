@@ -28,11 +28,27 @@ namespace LaborasLangCompiler.Common
         NotCallable = 0017
     }
 
-    public static class ErrorHandling
+    public static class Errors
     {
-        public static IReadOnlyList<Error> Errors { get { return errors; } }
+        public static IReadOnlyList<Error> Reported { get { return errors; } }
 
         private static List<Error> errors = new List<Error>();
+
+        public static void ReportAndThrow(ErrorCode error, string message)
+        {
+            ReportAndThrow(error, null, message);
+        }
+
+        public static void ReportAndThrow(ErrorCode error, SequencePoint point, string message)
+        {
+            Report(error, point, message);
+            throw new CompilerException();
+        }
+
+        public static void Report(ErrorCode error, string message)
+        {
+            Report(error, null, message);
+        }
 
         public static void Report(ErrorCode error, SequencePoint point, string message)
         {
@@ -42,12 +58,6 @@ namespace LaborasLangCompiler.Common
             errors.Add(newError);
 
             Console.WriteLine(newError);
-            throw new CompilerException();
-        }
-
-        public static void Report(ErrorCode error, string message)
-        {
-            Report(error, null, message);
         }
 
         public static void Clear()

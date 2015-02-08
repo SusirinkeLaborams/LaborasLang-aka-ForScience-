@@ -56,7 +56,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             if (symbols.ContainsKey(variable.Variable.Name))
             {
-                ErrorHandling.Report(ErrorCode.SymbolAlreadyDeclared, variable.SequencePoint,
+                Errors.ReportAndThrow(ErrorCode.SymbolAlreadyDeclared, variable.SequencePoint,
                     String.Format("Variable {0} already declared in this scope", variable.Variable.Name));
             }
             symbols.Add(variable.Variable.Name, variable);

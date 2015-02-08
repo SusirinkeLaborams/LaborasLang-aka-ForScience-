@@ -35,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
             if (!instance.condition.ExpressionReturnType.IsAssignableTo(parser.Bool) || !instance.condition.IsGettable)
             {
-                ErrorHandling.Report(ErrorCode.InvalidCondition, point, "Condition must be a gettable boolean expression");
+                Errors.ReportAndThrow(ErrorCode.InvalidCondition, point, "Condition must be a gettable boolean expression");
             }
             instance.trueBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[4]);
             if (lexerNode.Children.Count > 5)

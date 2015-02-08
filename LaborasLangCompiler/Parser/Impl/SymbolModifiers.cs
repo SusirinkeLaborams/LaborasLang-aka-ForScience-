@@ -30,7 +30,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var toAdd = FromToken[node.Children[0].Type];
             if((modifiers & toAdd) != 0)
             {
-                ErrorHandling.Report(ErrorCode.DuplicateMods, parser.GetSequencePoint(node), String.Format("Cannot add modifier {0} twice", toAdd));
+                Errors.ReportAndThrow(ErrorCode.DuplicateMods, parser.GetSequencePoint(node), String.Format("Cannot add modifier {0} twice", toAdd));
             }
             return modifiers | toAdd;
         }
