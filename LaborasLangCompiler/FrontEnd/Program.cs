@@ -18,31 +18,27 @@ namespace LaborasLangCompiler.FrontEnd
     {
         internal static int Main(params string[] args)
         {
-            try
+            Errors.Clear();
+            var compilerArgs = CompilerArguments.Parse(args);
+            AssemblyRegistry.Create(compilerArgs.References);
+            var assembly = new AssemblyEmitter(compilerArgs);
+
+            ProjectParser.ParseAll(assembly, compilerArgs.SourceFiles, true);
+
+            if (Errors.Reported.Count == 0)
             {
-                Errors.Clear();
-                var compilerArgs = CompilerArguments.Parse(args);
-                AssemblyRegistry.Create(compilerArgs.References);
-                var assembly = new AssemblyEmitter(compilerArgs);
-
-                ProjectParser.ParseAll(assembly, compilerArgs.SourceFiles, true);
-
                 assembly.Save();
+                return 0;
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine(e.Message);
                 Console.WriteLine("Compilation failed. Aborting.");
-
                 if (Debugger.IsAttached)
                 {
                     Console.ReadKey();
                 }
-
                 return -1;
             }
-
-            return 0;
         }
     }
 }
