@@ -52,6 +52,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
                     case "int16":
                         exceptions.Add("int8");
+                        exceptions.Add("uint8");
                         exceptions.Add("int16");
                         break;
 

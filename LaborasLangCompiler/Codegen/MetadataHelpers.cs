@@ -10,76 +10,109 @@ namespace LaborasLangCompiler.Codegen
         // 0 means native
         public static int GetIntegerWidth(this TypeReference type)
         {
-            var typeName = type.FullName;
+            switch (type.MetadataType)
+            {
+                case MetadataType.IntPtr:
+                case MetadataType.UIntPtr:
+                    return 0;
+
+                case MetadataType.SByte:
+                case MetadataType.Byte:
+                    return 1;
+
+                case MetadataType.Char:
+                case MetadataType.Int16:
+                case MetadataType.UInt16:
+                    return 2;
+
+                case MetadataType.Int32:
+                case MetadataType.UInt32:
+                    return 4;
+
+                case MetadataType.Int64:
+                case MetadataType.UInt64:
+                    return 8;
+            }
             
-            if (typeName == "System.IntPtr" || typeName == "System.UIntPtr")
-            {
-                return 0;
-            }
-
-            if (typeName == "System.SByte" || typeName == "System.Byte")
-            {
-                return 1;
-            }
-
-            if (typeName == "System.Int16" || typeName == "System.UInt16" || typeName == "System.Char")
-            {
-                return 2;
-            }
-
-            if (typeName == "System.Int32" || typeName == "System.UInt32")
-            {
-                return 4;
-            }
-
-            if (typeName == "System.Int64" || typeName == "System.UInt64")
-            {
-                return 8;
-            }
-
-            throw new NotSupportedException("Type is not an integer!");
+            throw new NotSupportedException(string.Format("{0} is not an integer!", type.FullName));
         }
 
         public static float GetFloatWidth(TypeReference type)
         {
-            var typeName = type.FullName;
-
-            if (typeName == "System.Single")
+            switch (type.MetadataType)
             {
-                return 4;
-            }
+                case MetadataType.Single:
+                    return 4;
 
-            if (typeName == "System.Double")
-            {
-                return 8;
+                case MetadataType.Double:
+                    return 8;
             }
-
-            if (typeName == "System.Decimal")
-            {
-                return 16;
-            }
-
-            throw new NotSupportedException("Type is not a float!");
+            
+            throw new NotSupportedException(string.Format("{0} is not a float!", type.FullName));
         }
 
         public static bool IsUnsignedInteger(this TypeReference type)
         {
-            return type.IsIntegerType() && !type.IsSignedInteger();
+            switch (type.MetadataType)
+            {
+                case MetadataType.Byte:
+                case MetadataType.Char:
+                case MetadataType.UInt16:
+                case MetadataType.UInt32:
+                case MetadataType.UInt64:
+                case MetadataType.UIntPtr:
+                    return true;
+            }
+
+            return false;
         }
 
         public static bool IsSignedInteger(this TypeReference type)
         {
-            return SignedIntegerTypes.Any(signedIntType => signedIntType == type.FullName);
+            switch (type.MetadataType)
+            {
+                case MetadataType.SByte:
+                case MetadataType.Int16:
+                case MetadataType.Int32:
+                case MetadataType.Int64:
+                case MetadataType.IntPtr:
+                    return true;
+            }
+
+            return false;
         }
 
         public static bool IsIntegerType(this TypeReference type)
         {
-            return IntegerTypes.Any(intType => intType == type.FullName);
+            switch (type.MetadataType)
+            {
+                case MetadataType.SByte:
+                case MetadataType.Byte:
+                case MetadataType.Char:
+                case MetadataType.Int16:
+                case MetadataType.UInt16:
+                case MetadataType.Int32:
+                case MetadataType.UInt32:
+                case MetadataType.Int64:
+                case MetadataType.UInt64:
+                case MetadataType.IntPtr:
+                case MetadataType.UIntPtr:
+                    return true;
+            }
+
+            return false;
         }
 
         public static bool IsFloatingPointType(this TypeReference type)
         {
-            return FloatingPointTypes.Any(floatType => floatType == type.FullName);
+            switch (type.MetadataType)
+            {
+                case MetadataType.Single:
+                case MetadataType.Double:
+                    return true;
+            }
+
+            return false;
         }
 
         public static bool IsNumericType(this TypeReference type)
@@ -89,12 +122,12 @@ namespace LaborasLangCompiler.Codegen
 
         public static bool IsStringType(this TypeReference type)
         {
-            return type.FullName == "System.String";
+            return type.MetadataType == MetadataType.String;
         }
 
         public static bool IsBooleanType(this TypeReference type)
         {
-            return type.FullName == "System.Boolean";
+            return type.MetadataType == MetadataType.Boolean;
         }
 
         public static bool IsFunctorType(this TypeReference type)
@@ -113,19 +146,20 @@ namespace LaborasLangCompiler.Codegen
             {
                 right = right.GetElementType();
             }
-
-            var leftName = left.FullName;
-            var rightName = right.FullName;
-
-            if (leftName == rightName)
+            
+            if (left.FullName == right.FullName)
             {
                 return true;
             }
 
             if (left.IsPrimitive && right.IsPrimitive)
             {
-                return assignmentMap[leftName].Any(assignableType => assignableType == rightName);
+                return assignmentMap[left.MetadataType].Any(type => type == right.MetadataType);
             }
+
+            // We support no type specs atm
+            if (left is TypeSpecification || right is TypeSpecification)
+                return false;
 
             var leftType = left.Resolve();
             var rightType = right.Resolve();
@@ -137,14 +171,14 @@ namespace LaborasLangCompiler.Codegen
 
             if (leftType.IsInterface)
             {
-                return rightType.Interfaces.Any(interfaze => interfaze.FullName == leftName);
+                return rightType.Interfaces.Any(interfaze => interfaze.FullName == leftType.FullName);
             }
                         
             while (rightType.BaseType != null)
             {
                 rightType = rightType.BaseType.Resolve();
 
-                if (leftName == rightType.FullName)
+                if (leftType.FullName == rightType.FullName)
                 {
                     return true;
                 }
@@ -424,131 +458,94 @@ namespace LaborasLangCompiler.Codegen
 
         static MetadataHelpers()
         {
-            assignmentMap = new Dictionary<string, string[]>();
+            assignmentMap = new Dictionary<MetadataType, MetadataType[]>();
 
-            assignmentMap["System.Boolean"] = new string[0];
-            assignmentMap["System.Byte"] = new string[0];
-            assignmentMap["System.SByte"] = new string[0];
-            assignmentMap["System.UIntPtr"] = new string[0];
-            assignmentMap["System.IntPtr"] = new string[0];
+            assignmentMap[MetadataType.Boolean] = new MetadataType[0];
+            assignmentMap[MetadataType.Byte] = new MetadataType[0];
+            assignmentMap[MetadataType.SByte] = new MetadataType[0];
+            assignmentMap[MetadataType.UIntPtr] = new MetadataType[0];
+            assignmentMap[MetadataType.IntPtr] = new MetadataType[0];
 
-            assignmentMap["System.Char"] = new string[]
+            assignmentMap[MetadataType.Char] = new MetadataType[]
             {
-                "System.Byte", 
-                "System.UInt16"
+                MetadataType.Byte,
+                MetadataType.UInt16
             };
 
-            assignmentMap["System.UInt16"] = new string[]
+            assignmentMap[MetadataType.UInt16] = new MetadataType[]
             {
-                "System.Byte", 
-                "System.Char"
-            };
-            
-            assignmentMap["System.UInt32"] = new string[]
-            {
-                "System.Byte", 
-                "System.Char",
-                "System.UInt16"
+                MetadataType.Byte,
+                MetadataType.Char
             };
 
-            assignmentMap["System.UInt64"] = new string[]
+            assignmentMap[MetadataType.UInt32] = new MetadataType[]
             {
-                "System.Byte", 
-                "System.Char",
-                "System.UInt16",
-                "System.UInt32"
+                MetadataType.Byte,
+                MetadataType.Char,
+                MetadataType.UInt16
             };
 
-            assignmentMap["System.Int16"] = new string[]
+            assignmentMap[MetadataType.UInt64] = new MetadataType[]
             {
-                "System.SByte",
+                MetadataType.Byte,
+                MetadataType.Char,
+                MetadataType.UInt16,
+                MetadataType.UInt32
             };
 
-            assignmentMap["System.Int32"] = new string[]
+            assignmentMap[MetadataType.Int16] = new MetadataType[]
             {
-                "System.Char",
-                "System.SByte", 
-                "System.Byte", 
-                "System.Int16",
-                "System.UInt16",
+                MetadataType.SByte,
+                MetadataType.Byte
             };
 
-            assignmentMap["System.Int64"] = new string[]
+            assignmentMap[MetadataType.Int32] = new MetadataType[]
             {
-                "System.Char",
-                "System.SByte", 
-                "System.Byte",
-                "System.Int16",
-                "System.UInt16",
-                "System.Int32",
-                "System.UInt32",
+                MetadataType.SByte,
+                MetadataType.Byte,
+                MetadataType.Char,
+                MetadataType.Int16,
+                MetadataType.UInt16
             };
 
-            assignmentMap["System.Single"] = new string[]
+            assignmentMap[MetadataType.Int64] = new MetadataType[]
             {
-                "System.Char",
-                "System.Byte",
-                "System.SByte",
-                "System.Char",
-                "System.Int16",
-                "System.UInt16",
-                "System.Int32",
-                "System.UInt32",
+                MetadataType.SByte,
+                MetadataType.Byte,
+                MetadataType.Char,
+                MetadataType.Int16,
+                MetadataType.UInt16,
+                MetadataType.Int32,
+                MetadataType.UInt32
             };
 
-            assignmentMap["System.Double"] = new string[]
+            assignmentMap[MetadataType.Single] = new MetadataType[]
             {
-                "System.Single",
-                "System.Char",
-                "System.Byte",
-                "System.SByte",
-                "System.Char",
-                "System.Int16",
-                "System.UInt16",
-                "System.Int32",
-                "System.UInt32",
-                "System.Int64",
-                "System.UInt64",
+                MetadataType.SByte,
+                MetadataType.Byte,
+                MetadataType.Char,
+                MetadataType.Int16,
+                MetadataType.UInt16,
+                MetadataType.Int32,
+                MetadataType.UInt32
             };
 
-            assignmentMap["System.Decimal"] = new string[]
+            assignmentMap[MetadataType.Double] = new MetadataType[]
             {
-                "System.Single"
+                MetadataType.SByte,
+                MetadataType.Byte,
+                MetadataType.Char,
+                MetadataType.Int16,
+                MetadataType.UInt16,
+                MetadataType.Int32,
+                MetadataType.UInt32,
+                MetadataType.Int64,
+                MetadataType.UInt64,
+                MetadataType.Single
             };
         }
 
         // Doesn't include self
-        private static Dictionary<string, string[]> assignmentMap;
-
-        private static readonly string[] IntegerTypes = new string[]
-        {
-            "System.Char",
-            "System.Byte",
-            "System.SByte",
-            "System.Int16",
-            "System.UInt16",
-            "System.Int32",
-            "System.UInt32",
-            "System.Int64",
-            "System.UInt64",
-            "System.IntPtr",
-            "System.UIntPtr"
-        };
-
-        private static readonly string[] SignedIntegerTypes = new string[]
-        {
-            "System.SByte",
-            "System.Int16",
-            "System.Int32",
-            "System.Int64",
-            "System.IntPtr"
-        };
-
-        private static readonly string[] FloatingPointTypes = new string[]
-        {
-            "System.Single",
-            "System.Double",
-            "System.Decimal"
-        };
+        private static Dictionary<MetadataType, MetadataType[]> assignmentMap;
     }
 }

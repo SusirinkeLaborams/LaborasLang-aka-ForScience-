@@ -769,53 +769,53 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Emit(ILiteralNode literal)
         {
-            switch (literal.ExpressionReturnType.FullName)
+            switch (literal.ExpressionReturnType.MetadataType)
             {
-                case "System.Boolean":
+                case MetadataType.Boolean:
                     Ldc_I4(literal.Value ? 1 : 0);
                     return;
 
-                case "System.SByte":
+                case MetadataType.SByte:
                     Ldc_I4((sbyte)literal.Value);
                     return;
 
-                case "System.Int16":
+                case MetadataType.Int16:
                     Ldc_I4((short)literal.Value);
                     return;
 
-                case "System.Int32":
+                case MetadataType.Int32:
                     Ldc_I4((int)literal.Value);
                     return;
 
-                case "System.Int64":
+                case MetadataType.Int64:
                     Ldc_I8((int)literal.Value);
                     return;
 
-                case "System.Byte":
+                case MetadataType.Byte:
                     Ldc_I4((byte)literal.Value);
                     return;
 
-                case "System.UInt16":
+                case MetadataType.UInt16:
                     Ldc_I4((ushort)literal.Value);
                     return;
 
-                case "System.UInt32":
+                case MetadataType.UInt32:
                     Ldc_I4((int)literal.Value);
                     return;
 
-                case "System.UInt64":
+                case MetadataType.UInt64:
                     Ldc_I8((long)literal.Value);
                     return;
 
-                case "System.Single":
+                case MetadataType.Single:
                     Ldc_R4((float)literal.Value);
                     return;
 
-                case "System.Double":
+                case MetadataType.Double:
                     Ldc_R8((double)literal.Value);
                     return;
 
-                case "System.String":
+                case MetadataType.String:
                     Ldstr((string)literal.Value);
                     return;
 
