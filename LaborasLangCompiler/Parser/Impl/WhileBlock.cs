@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var instance = new WhileBlock(point);
             instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
             if (!instance.condition.ExpressionReturnType.TypeEquals(parser.Bool) || !instance.condition.IsGettable)
-                Errors.ReportAndThrow(ErrorCode.InvalidCondition, point, "Condition must be a gettable boolean expression");
+                ErrorCode.InvalidCondition.ReportAndThrow(point, "Condition must be a gettable boolean expression");
             instance.block = CodeBlockNode.Parse(parser, parent, lexerNode.Children[4]);
             return instance;
         }

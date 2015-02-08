@@ -63,7 +63,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.Double:
                     return parser.Double;
                 default:
-                    Utils.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode), "Unexpected literal type {0}", lexerNode.Type);
+                    ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(lexerNode), "Unexpected literal type {0}", lexerNode.Type);
                     return null;//unreachable
             }
         }
@@ -103,18 +103,18 @@ namespace LaborasLangCompiler.Parser.Impl
                     case "System.Decimal":
                         return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
                     default:
-                        Utils.Report(ErrorCode.InvalidStructure, point, "Unexpected literal type {0}", type.FullName);
+                        ErrorCode.InvalidStructure.ReportAndThrow(point, "Unexpected literal type {0}", type.FullName);
                         return null;//unreachable
                 }
             }
             catch(OverflowException)
             {
-                Utils.Report(ErrorCode.InvalidStructure, point, "Could not parse {0} as {1}, overflow", value, type.FullName);
+                ErrorCode.InvalidStructure.ReportAndThrow(point, "Could not parse {0} as {1}, overflow", value, type.FullName);
                 return null;//unreachable
             }
             catch(FormatException)
             {
-                Utils.Report(ErrorCode.InvalidStructure, point, "Could not parse {0} as {1}, format error", value, type.FullName);
+                ErrorCode.InvalidStructure.ReportAndThrow(point, "Could not parse {0} as {1}, format error", value, type.FullName);
                 return null;//unreachable
             }
         }
@@ -125,7 +125,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return this;
 
             if (!type.IsAssignableTo(expectedType))
-                Utils.Report(ErrorCode.TypeMissmatch, SequencePoint, "Cannot assign {0} to {1}", type, expectedType);
+                ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint, "Cannot assign {0} to {1}", type, expectedType);
 
             return new LiteralNode(ConvertLiteral(parser, this, expectedType), expectedType, SequencePoint);
         }
@@ -166,7 +166,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 case "System.Decimal":
                     return (Decimal)value;
                 default:
-                    Utils.Report(ErrorCode.TypeMissmatch, node.SequencePoint, "Type {0} is not a LaborasLang literal type", type.FullName);
+                    ErrorCode.TypeMissmatch.ReportAndThrow(node.SequencePoint, "Type {0} is not a LaborasLang literal type", type.FullName);
                     return null;//unreachable
             }
         }

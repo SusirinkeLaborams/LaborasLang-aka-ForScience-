@@ -87,7 +87,7 @@ namespace LaborasLangCompiler.Parser
         public static void VerifyAccessible(MemberReference member, TypeReference scope, SequencePoint point)
         {
             if (!IsAccessbile(member, scope))
-                Utils.Report(ErrorCode.UnreachableMember, point, "Member {0} is inaccessible from {1}", member, scope);
+                ErrorCode.UnreachableMember.ReportAndThrow(point, "Member {0} is inaccessible from {1}", member, scope);
         }
 
         public static bool IsAccessbile(MemberReference member, TypeReference scope)
@@ -144,11 +144,6 @@ namespace LaborasLangCompiler.Parser
             {
                 throw new ArgumentException();
             }
-        }
-
-        public static void Report(ErrorCode error, SequencePoint point, string format, params object[] args)
-        {
-            Errors.ReportAndThrow(error, point, String.Format(format, args));
         }
     }
 }

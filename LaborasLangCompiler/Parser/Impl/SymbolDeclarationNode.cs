@@ -38,22 +38,22 @@ namespace LaborasLangCompiler.Parser.Impl
             ExpressionNode initializer = info.Initializer.IsNull ? null : ExpressionNode.Parse(parser, parent, info.Initializer, declaredType);
 
             if (declaredType.IsVoid())
-                Utils.Report(ErrorCode.VoidLValue, point, "Cannot declare a variable of type void");
+                ErrorCode.VoidLValue.ReportAndThrow(point, "Cannot declare a variable of type void");
 
             bool isConst = ParseModifiers(info.Modifiers, point);
 
             if (isConst && initializer == null)
-                Utils.Report(ErrorCode.MissingInit, point, "Const variables require initialization");
+                ErrorCode.MissingInit.ReportAndThrow(point, "Const variables require initialization");
 
             if (declaredType.IsAuto() && (initializer == null || initializer.ExpressionReturnType == null))
-                Utils.Report(ErrorCode.MissingInit, point, "Type inference requires initialization");
+                ErrorCode.MissingInit.ReportAndThrow(point, "Type inference requires initialization");
 
             if(declaredType.IsAuto())
             {
                 if(initializer == null)
-                    Utils.Report(ErrorCode.MissingInit, point, "Type inference requires initialization");
+                    ErrorCode.MissingInit.ReportAndThrow(point, "Type inference requires initialization");
                 else if (initializer.ExpressionReturnType == null)
-                    Utils.Report(ErrorCode.MissingInit, point, "Initiliazer type is not defined, inferrence unavailable");
+                    ErrorCode.MissingInit.ReportAndThrow(point, "Initiliazer type is not defined, inferrence unavailable");
             }
 
             if (initializer != null)
@@ -64,7 +64,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 else if (!initializer.ExpressionReturnType.IsAssignableTo(declaredType))
                 {
-                    Utils.Report(ErrorCode.TypeMissmatch, initializer.SequencePoint,
+                    ErrorCode.TypeMissmatch.ReportAndThrow(initializer.SequencePoint,
                         "Variable of type {0} initialized with {1}", declaredType, initializer.ExpressionReturnType);
                 }
             }
@@ -78,7 +78,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             Modifiers mask = ~(Modifiers.Const | Modifiers.Mutable);
             if ((mods & mask) != 0)
-                Utils.Report(ErrorCode.InvalidVariableMods, point, "Only const and mutable modifiers are allowed for local varialbes");
+                ErrorCode.InvalidVariableMods.ReportAndThrow(point, "Only const and mutable modifiers are allowed for local varialbes");
 
             return mods.HasFlag(Modifiers.Const);
         }

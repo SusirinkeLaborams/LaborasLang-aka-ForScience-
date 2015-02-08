@@ -1,5 +1,5 @@
 ﻿using LaborasLangCompiler.ILTools;
-
+using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using System;
@@ -141,7 +141,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 else
                 {
-                    Utils.Report(Common.ErrorCode.AmbiguousSymbol, point,
+                    ErrorCode.AmbiguousSymbol.ReportAndThrow(point,
                         "Ambiguous type {0}, could be {1}", name, String.Join(", ", types.Select(t => t.FullName)));
                 }
             }
@@ -167,7 +167,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 else
                 {
-                    Utils.Report(Common.ErrorCode.AmbiguousSymbol, point,
+                    ErrorCode.AmbiguousSymbol.ReportAndThrow(point,
                         "Ambiguous namespace {0}, could be {1}", name, String.Join(", ", namespazes.Select(t => t.Name)));
                 }
             }
@@ -183,7 +183,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public void AddImport(NamespaceNode namespaze, SequencePoint point)
         {
             if (globalImports.Any(n => n.Name == namespaze.Namespace.Name))
-                Utils.Report(Common.ErrorCode.DuplicateImport, point, "Namespace {0} already imported", namespaze);
+                ErrorCode.DuplicateImport.ReportAndThrow(point, "Namespace {0} already imported", namespaze);
 
             globalImports.Add(namespaze.Namespace);
         }
@@ -205,7 +205,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         ParseDeclaration(node);
                         break;
                     default:
-                        Utils.Report(Common.ErrorCode.InvalidStructure, parser.GetSequencePoint(node), "Import or declaration expected, {0} received", node.Type);
+                        ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(node), "Import or declaration expected, {0} received", node.Type);
                         break;//unreachable
                 }
             }

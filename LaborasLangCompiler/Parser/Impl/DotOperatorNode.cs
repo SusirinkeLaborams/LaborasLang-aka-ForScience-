@@ -44,7 +44,7 @@ namespace LaborasLangCompiler.Parser.Impl
             else
             {
                 if (node.ExpressionType != ExpressionNodeType.ParserInternal)
-                    Utils.Report(ErrorCode.InvalidDot, node.SequencePoint, "Expressions only allowed on left of dot operator");
+                    ErrorCode.InvalidDot.Report(node.SequencePoint, "Expressions only allowed on left of dot operator");
 
                 var symbol = node as SymbolNode;
                 if (AppendField(symbol))
@@ -57,7 +57,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     return;
                 if (AppendProperty(symbol))
                     return;
-                Utils.Report(ErrorCode.SymbolNotFound, node.SequencePoint, "Symbol {0} not found", symbol.Name);
+                ErrorCode.SymbolNotFound.ReportAndThrow(node.SequencePoint, "Symbol {0} not found", symbol.Name);
             }
         }
 
@@ -77,7 +77,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                Utils.Report(ErrorCode.InvalidDot, node.SequencePoint, "Unexpected node type {0}", node.ExpressionType);
+                ErrorCode.InvalidDot.ReportAndThrow(node.SequencePoint, "Unexpected node type {0}", node.ExpressionType);
                 return false;//unreachable
             }
         }

@@ -1,5 +1,4 @@
 ﻿using LaborasLangCompiler.ILTools;
-
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using Mono.Cecil;
@@ -39,10 +38,10 @@ namespace LaborasLangCompiler.Parser.Impl
             var instance = new AssignmentOperatorNode(parser.GetSequencePoint(lexerNode));
             var left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
             if (!left.IsSettable)
-                Utils.Report(ErrorCode.NotAnLValue, left.SequencePoint, "Left of assignment operator must be settable");
+                ErrorCode.NotAnLValue.ReportAndThrow(left.SequencePoint, "Left of assignment operator must be settable");
             var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2], left.ExpressionReturnType);
             if(!right.IsGettable)
-                Utils.Report(ErrorCode.NotAnRValue, right.SequencePoint, "Right of assignment operator must be gettable");
+                ErrorCode.NotAnRValue.ReportAndThrow(right.SequencePoint, "Right of assignment operator must be gettable");
             instance.type = left.ExpressionReturnType;
 
             //use properties from lexer instead of string comparisons here
@@ -50,13 +49,13 @@ namespace LaborasLangCompiler.Parser.Impl
             if (op.Type != Lexer.TokenType.Assignment)
             {
                 if(!left.IsGettable)
-                    Utils.Report(ErrorCode.NotAnRValue, right.SequencePoint, "Left of this type of assignment operator must be gettable");
+                    ErrorCode.NotAnRValue.ReportAndThrow(right.SequencePoint, "Left of this type of assignment operator must be gettable");
                 right = BinaryOperatorNode.Parse(parser, Operators[op.Type], left, right);
             }
 
             if (!right.ExpressionReturnType.IsAssignableTo(left.ExpressionReturnType))
             {
-                Utils.Report(ErrorCode.TypeMissmatch, instance.SequencePoint, 
+                ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, 
                     "Cannot assign {0} to {1}", instance.right.ExpressionReturnType, instance.left.ExpressionReturnType);
             }
             instance.right = right;

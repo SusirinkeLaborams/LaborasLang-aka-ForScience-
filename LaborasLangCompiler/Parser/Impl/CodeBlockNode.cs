@@ -56,7 +56,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             if (symbols.ContainsKey(variable.Variable.Name))
             {
-                Errors.ReportAndThrow(ErrorCode.SymbolAlreadyDeclared, variable.SequencePoint,
+                ErrorCode.SymbolAlreadyDeclared.ReportAndThrow(variable.SequencePoint,
                     String.Format("Variable {0} already declared in this scope", variable.Variable.Name));
             }
             symbols.Add(variable.Variable.Name, variable);
@@ -107,7 +107,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     AddNode(ReturnNode.Parse(parser, this, lexerNode));
                     break;
                 default:
-                    Utils.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode), "Unexpected node {0} in while parsing code block", lexerNode.Type);
+                    ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(lexerNode), "Unexpected node {0} in while parsing code block", lexerNode.Type);
                     break;//unreachable
             }
         }

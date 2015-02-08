@@ -66,7 +66,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         args.Add(ExpressionNode.Parse(parser, parent, node));
                         break;
                     default:
-                        Utils.Report(ErrorCode.InvalidStructure, parser.GetSequencePoint(node), "Unexpected node type {0} in call", node.Type);
+                        ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(node), "Unexpected node type {0} in call", node.Type);
                         break;
                 }
 
@@ -85,7 +85,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if (!arg.IsGettable)
                 {
-                    Utils.Report(ErrorCode.NotAnRValue, arg.SequencePoint, "Arguments must be gettable");
+                    ErrorCode.NotAnRValue.ReportAndThrow(arg.SequencePoint, "Arguments must be gettable");
                 }
             }
 
@@ -98,7 +98,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return method;
 
             if (method == null)
-                Utils.Report(ErrorCode.NotCallable, point, "Unable to call symbol");
+                ErrorCode.NotCallable.ReportAndThrow(point, "Unable to call symbol");
 
             return method;
         }

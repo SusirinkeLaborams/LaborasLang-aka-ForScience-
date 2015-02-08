@@ -28,7 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var instance = new ReturnNode(parser.GetSequencePoint(lexerNode));
             if (returnType.TypeEquals(parser.Void) && lexerNode.ChildrenCount != 2)
             {
-                Utils.Report(ErrorCode.TypeMissmatch, instance.SequencePoint, "Cannot return a value in a void method");
+                ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, "Cannot return a value in a void method");
             }
 
             if (lexerNode.Children.Count == 3)
@@ -36,7 +36,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 instance.expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[1], returnType);
                 if (!instance.expression.ExpressionReturnType.IsAssignableTo(returnType) || !instance.expression.IsGettable)
                 {
-                    Utils.Report(ErrorCode.TypeMissmatch, instance.SequencePoint, "Method returns {0}, cannot return {1}", returnType, instance.Expression.ExpressionReturnType);
+                    ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, "Method returns {0}, cannot return {1}", returnType, instance.Expression.ExpressionReturnType);
                 }
             }
             return instance;

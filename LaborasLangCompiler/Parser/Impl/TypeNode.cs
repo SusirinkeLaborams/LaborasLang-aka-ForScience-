@@ -1,5 +1,5 @@
 ﻿using LaborasLangCompiler.ILTools;
-
+using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using Mono.Cecil;
@@ -34,7 +34,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 if (node != null)
                     return node.ParsedType;
                 else
-                    Utils.Report(Common.ErrorCode.TypeExpected, parser.GetSequencePoint(lexerNode), "Type expected");
+                    ErrorCode.TypeExpected.ReportAndThrow(parser.GetSequencePoint(lexerNode), "Type expected");
             }
 
             TypeBuilder builder = new TypeBuilder(parser, parent);
@@ -61,7 +61,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         args.Add(Parse(parser, parent, node));
                         break;
                     default:
-                        Utils.Report(Common.ErrorCode.InvalidStructure, parser.GetSequencePoint(node), "Unexpected node {0} while parsing functor types", node.Type);
+                        ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(node), "Unexpected node {0} while parsing functor types", node.Type);
                         break;//unreachable
                 }
             }
@@ -96,7 +96,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     var args = ParseArgumentList(parser, parent, node);
                     if (args.Any(a => a.IsVoid()))
-                        Utils.Report(Common.ErrorCode.IllegalMethodParam, parser.GetSequencePoint(node), "Cannot declare method parameter of type void");
+                        ErrorCode.IllegalMethodParam.ReportAndThrow(parser.GetSequencePoint(node), "Cannot declare method parameter of type void");
 
                     Type = AssemblyRegistry.GetFunctorType(parser.Assembly, Type, args);
                 }

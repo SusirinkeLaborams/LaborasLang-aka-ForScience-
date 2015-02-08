@@ -42,23 +42,28 @@ namespace LaborasLangCompiler.Common
 
         private static List<Error> errors = new List<Error>();
 
-        public static void ReportAndThrow(ErrorCode error, string message)
+        public static void ReportAndThrow(this ErrorCode error, string message)
         {
             ReportAndThrow(error, null, message);
         }
 
-        public static void ReportAndThrow(ErrorCode error, SequencePoint point, string message)
+        public static void ReportAndThrow(this ErrorCode error, SequencePoint point, string format, params object[] args)
+        {
+            ReportAndThrow(error, point, String.Format(format, args));
+        }
+
+        public static void ReportAndThrow(this ErrorCode error, SequencePoint point, string message)
         {
             Report(error, point, message);
             throw new CompilerException();
         }
 
-        public static void Report(ErrorCode error, string message)
+        public static void Report(this ErrorCode error, string message)
         {
             Report(error, null, message);
         }
 
-        public static void Report(ErrorCode error, SequencePoint point, string message)
+        public static void Report(this ErrorCode error, SequencePoint point, string message)
         {
             if (message == null)
                 throw new ArgumentNullException("Message must not be null");

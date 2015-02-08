@@ -46,12 +46,12 @@ namespace LaborasLangCompiler.Parser.Impl
                 ExpressionNode left, right;
                 left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
                 if (!left.IsGettable)
-                    Utils.Report(ErrorCode.NotAnRValue, left.SequencePoint, "Binary operand is not gettable");
+                    ErrorCode.NotAnRValue.ReportAndThrow(left.SequencePoint, "Binary operand is not gettable");
                 for (int i = 1; i < lexerNode.Children.Count; i += 2)
                 {
                     right = ExpressionNode.Parse(parser, parent, lexerNode.Children[i + 1]);
                     if (!right.IsGettable)
-                        Utils.Report(ErrorCode.NotAnRValue, right.SequencePoint, "Binary operand is not gettable");
+                        ErrorCode.NotAnRValue.ReportAndThrow(right.SequencePoint, "Binary operand is not gettable");
                     left = Parse(parser, Operators[lexerNode.Children[i].Type], left, right);
                 }
                 return left;
@@ -94,7 +94,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     instance.VerifyBinary();
                     break;
                 default:
-                    Utils.Report(ErrorCode.InvalidStructure, instance.SequencePoint, "Binary op expected, '{0} found", op);
+                    ErrorCode.InvalidStructure.ReportAndThrow(instance.SequencePoint, "Binary op expected, '{0} found", op);
                     break;//unreachable
             }
             return instance;
@@ -183,35 +183,35 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private void ArithmeticMissmatch()
         {
-            Utils.Report(ErrorCode.TypeMissmatch, SequencePoint,
+            ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
                 "Cannot perform arithmetic operation '{0}' on types {1} and {2}", 
                 BinaryOperatorType, LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
         }
 
         private void ComparisonMissmatch()
         {
-            Utils.Report(ErrorCode.TypeMissmatch, SequencePoint,
+            ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
                 "Cannot perform comparison on types {0} and {1}",
                 LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
         }
 
         private void LogicalMissmatch()
         {
-            Utils.Report(ErrorCode.TypeMissmatch, SequencePoint,
+            ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
                 "Cannot perform logical operations on types {0} and {1}, boolean required",
                 LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
         }
 
         private void BinaryMissmatch()
         {
-            Utils.Report(ErrorCode.TypeMissmatch, SequencePoint,
+            ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
                 "Cannot perform binary operations on types {0} and {1}, integers of equal length required",
                 LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
         }
 
         private void ShiftMissmatch()
         {
-            Utils.Report(ErrorCode.TypeMissmatch, SequencePoint,
+            ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
                 "Cannot perform shift operations on types {0} and {1}, left must be an integer, right must be an integer up to 32 bytes long",
                 LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
         }
