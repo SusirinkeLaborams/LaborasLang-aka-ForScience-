@@ -1,11 +1,8 @@
 ﻿using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LaborasLangCompiler.ILTools.MethodBodyOptimizers
+namespace LaborasLangCompiler.Codegen.MethodBodyOptimizers
 {
     internal class EliminateDeadCode : ModifierBase
     {

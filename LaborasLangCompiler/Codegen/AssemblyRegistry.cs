@@ -1,13 +1,11 @@
-﻿using LaborasLangCompiler.ILTools.Types;
+﻿using LaborasLangCompiler.Codegen.Types;
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LaborasLangCompiler.ILTools
+namespace LaborasLangCompiler.Codegen
 {
     internal class AssemblyRegistry
     {

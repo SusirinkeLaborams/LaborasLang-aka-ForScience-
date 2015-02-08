@@ -1,6 +1,6 @@
-﻿using LaborasLangCompiler.ILTools;
-using LaborasLangCompiler.ILTools.Methods;
-using LaborasLangCompiler.ILTools.Types;
+﻿using LaborasLangCompiler.Codegen;
+using LaborasLangCompiler.Codegen.Methods;
+using LaborasLangCompiler.Codegen.Types;
 using LaborasLangCompiler.Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Cecil;
@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
+namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 {
     [TestClass]
     public class FunctorTests : ILTestBase

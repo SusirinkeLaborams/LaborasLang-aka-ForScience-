@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using LaborasLangCompiler.ILTools;
-using LaborasLangCompiler.Parser;
-using Mono.Cecil;
-using LaborasLangCompiler.ILTools.Types;
-using LaborasLangCompiler.ILTools.Methods;
-using LaborasLangCompiler.Parser.Impl;
+﻿using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
+using LaborasLangCompiler.Parser.Impl;
+using System;
+using System.Diagnostics;
 
 namespace LaborasLangCompiler.FrontEnd
 {

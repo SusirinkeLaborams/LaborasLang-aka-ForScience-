@@ -1,10 +1,10 @@
 ﻿//#define REWRITE
 using LaborasLangCompiler.Common;
 using LaborasLangCompiler.FrontEnd;
-using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Parser;
 using LaborasLangCompiler.Parser.Impl;
-using LaborasLangCompilerUnitTests.ILTests;
+using LaborasLangCompilerUnitTests.CodegenTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

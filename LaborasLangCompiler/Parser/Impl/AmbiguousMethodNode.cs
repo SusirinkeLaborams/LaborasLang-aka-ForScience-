@@ -1,5 +1,5 @@
 ﻿using LaborasLangCompiler.Common;
-using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -33,7 +33,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 ErrorCode.IllegalCast.ReportAndThrow(SequencePoint, String.Format("Cannot cast functor to type {0}", expectedType.FullName));
             }
-            var paramz = ILHelpers.GetFunctorParamTypes(parser.Assembly, expectedType);
+            var paramz = MetadataHelpers.GetFunctorParamTypes(parser.Assembly, expectedType);
             var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), paramz);
             return new MethodNode(parser, method, instance, parent, SequencePoint);
         }

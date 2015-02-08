@@ -1,5 +1,5 @@
 ﻿using LaborasLangCompiler.Common;
-using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Codegen;
 
 using Lexer.Containers;
 using Mono.Cecil.Cil;

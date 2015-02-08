@@ -2,12 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LaborasLangCompiler.ILTools
+namespace LaborasLangCompiler.Codegen
 {
-    static class ILHelpers
+    static class MetadataHelpers
     {
         // 0 means native
         public static int GetIntegerWidth(this TypeReference type)
@@ -424,7 +422,7 @@ namespace LaborasLangCompiler.ILTools
             }
         }
 
-        static ILHelpers()
+        static MetadataHelpers()
         {
             assignmentMap = new Dictionary<string, string[]>();
 

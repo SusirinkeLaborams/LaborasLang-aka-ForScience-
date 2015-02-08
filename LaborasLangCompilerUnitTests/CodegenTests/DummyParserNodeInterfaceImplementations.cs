@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LaborasLangCompilerUnitTests.ILTests
+namespace LaborasLangCompilerUnitTests.CodegenTests
 {
     class ThisNode : IExpressionNode
     {

@@ -1,6 +1,6 @@
-﻿using LaborasLangCompiler.ILTools;
-using LaborasLangCompiler.ILTools.Methods;
-using LaborasLangCompiler.ILTools.Types;
+﻿using LaborasLangCompiler.Codegen;
+using LaborasLangCompiler.Codegen.Methods;
+using LaborasLangCompiler.Codegen.Types;
 
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using LaborasLangCompiler.Parser;

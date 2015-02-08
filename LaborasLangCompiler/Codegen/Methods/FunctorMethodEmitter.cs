@@ -1,13 +1,7 @@
-﻿using LaborasLangCompiler.ILTools.Types;
+﻿using LaborasLangCompiler.Codegen.Types;
 using Mono.Cecil;
-using Mono.Cecil.Cil;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LaborasLangCompiler.ILTools.Methods
+namespace LaborasLangCompiler.Codegen.Methods
 {
     internal class FunctorMethodEmitter : MethodEmitterBase
     {

@@ -1,4 +1,4 @@
-﻿using LaborasLangCompilerUnitTests.ILTests;
+﻿using LaborasLangCompilerUnitTests.CodegenTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;

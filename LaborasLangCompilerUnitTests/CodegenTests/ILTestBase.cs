@@ -1,7 +1,7 @@
 ﻿using LaborasLangCompiler.FrontEnd;
-using LaborasLangCompiler.ILTools;
-using LaborasLangCompiler.ILTools.Methods;
-using LaborasLangCompiler.ILTools.Types;
+using LaborasLangCompiler.Codegen;
+using LaborasLangCompiler.Codegen.Methods;
+using LaborasLangCompiler.Codegen.Types;
 using LaborasLangCompiler.Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Cecil;
@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LaborasLangCompilerUnitTests.ILTests
+namespace LaborasLangCompilerUnitTests.CodegenTests
 {
     public class ILTestBase : TestBase
     {
@@ -50,7 +50,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
 
             var il = Disassembler.DisassembleAssembly(assemblyEmitter.OutputPath);
 
-            var expectedILPath = Path.Combine("..", "..", "ILTests", "MethodBodyTests", "Expected", ExpectedILFilePath);
+            var expectedILPath = Path.Combine("..", "..", "CodegenTests", "MethodBodyTests", "Expected", ExpectedILFilePath);
             var expectedIL = File.ReadAllText(expectedILPath, Encoding.UTF8);
 
             try

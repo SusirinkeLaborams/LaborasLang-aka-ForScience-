@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
-using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
 
 namespace LaborasLangCompiler.Parser.Impl

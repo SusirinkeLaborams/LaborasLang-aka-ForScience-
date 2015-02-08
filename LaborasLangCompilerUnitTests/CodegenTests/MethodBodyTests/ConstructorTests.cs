@@ -1,4 +1,4 @@
-﻿using LaborasLangCompiler.ILTools.Methods;
+﻿using LaborasLangCompiler.Codegen.Methods;
 using LaborasLangCompiler.Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Cecil;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
+namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 {
     [TestClass]
     public class ConstructorTests : ILTestBase

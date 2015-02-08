@@ -1,5 +1,5 @@
 ﻿using LaborasLangCompiler.FrontEnd;
-using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -11,10 +11,10 @@ using Mono.Cecil.Cil;
 using System.Text;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
-using LaborasLangCompiler.ILTools.Types;
-using LaborasLangCompiler.ILTools.Methods;
+using LaborasLangCompiler.Codegen.Types;
+using LaborasLangCompiler.Codegen.Methods;
 
-namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
+namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 {
     [TestClass]
     public class MethodBodyTests : ILTestBase

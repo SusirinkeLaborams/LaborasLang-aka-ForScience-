@@ -1,5 +1,5 @@
 ﻿using LaborasLangCompiler.Common;
-using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Codegen;
 
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
@@ -110,7 +110,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (node.ExpressionReturnType.IsFunctorType())
             {
                 if (node.ExpressionReturnType.MatchesArgumentList(parser.Assembly, args.Select(a => a.ExpressionReturnType).ToList()))
-                    return new MethodCallNode(node, ILHelpers.GetFunctorReturnType(parser.Assembly, node.ExpressionReturnType), args.ToList(), point);
+                    return new MethodCallNode(node, MetadataHelpers.GetFunctorReturnType(parser.Assembly, node.ExpressionReturnType), args.ToList(), point);
                 else
                     return null;
             }
@@ -123,14 +123,14 @@ namespace LaborasLangCompiler.Parser.Impl
         private static ExpressionNode AsMethod(Parser parser, ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)
         {
             if (node is MethodNode)
-                return new MethodCallNode(node, ILHelpers.GetFunctorReturnType(parser.Assembly, node.ExpressionReturnType), args.ToList(), point);
+                return new MethodCallNode(node, MetadataHelpers.GetFunctorReturnType(parser.Assembly, node.ExpressionReturnType), args.ToList(), point);
 
             var ambiguous = node as AmbiguousMethodNode;
             if (ambiguous == null)
                 return null;
 
             var method = ambiguous.RemoveAmbiguity(parser, args.Select(a => a.ExpressionReturnType));
-            return new MethodCallNode(method, ILHelpers.GetFunctorReturnType(parser.Assembly, method.ExpressionReturnType), args.ToList(), point);
+            return new MethodCallNode(method, MetadataHelpers.GetFunctorReturnType(parser.Assembly, method.ExpressionReturnType), args.ToList(), point);
         }
 
         private static ExpressionNode AsObjectCreation(Parser parser, ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)

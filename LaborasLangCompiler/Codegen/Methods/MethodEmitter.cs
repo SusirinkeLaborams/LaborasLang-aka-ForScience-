@@ -1,5 +1,5 @@
-﻿using LaborasLangCompiler.ILTools.MethodBodyOptimizers;
-using LaborasLangCompiler.ILTools.Types;
+﻿using LaborasLangCompiler.Codegen.MethodBodyOptimizers;
+using LaborasLangCompiler.Codegen.Types;
 using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LaborasLangCompiler.ILTools.Methods
+namespace LaborasLangCompiler.Codegen.Methods
 {
     internal class MethodEmitter : MethodEmitterBase
     {

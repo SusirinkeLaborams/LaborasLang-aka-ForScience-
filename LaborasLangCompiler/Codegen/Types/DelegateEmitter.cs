@@ -1,12 +1,9 @@
-﻿using LaborasLangCompiler.ILTools.Types;
+﻿using LaborasLangCompiler.Codegen.Types;
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace LaborasLangCompiler.ILTools
+namespace LaborasLangCompiler.Codegen
 {
     internal class DelegateEmitter : TypeEmitter
     {

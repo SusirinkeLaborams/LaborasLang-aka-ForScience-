@@ -1,12 +1,12 @@
 ﻿using LaborasLangCompiler.FrontEnd;
-using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Codegen;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LaborasLangCompilerUnitTests.ILTests
+namespace LaborasLangCompilerUnitTests.CodegenTests
 {
     [TestClass]
     public class ILHelpersTests : TestBase

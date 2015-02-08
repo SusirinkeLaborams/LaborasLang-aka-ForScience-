@@ -1,5 +1,5 @@
 ﻿using LaborasLangCompiler.Common;
-using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Codegen;
 
 using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
@@ -94,15 +94,15 @@ namespace LaborasLangCompiler.Parser
         {
             if(member is MethodReference)
             {
-                return ILHelpers.IsAccessible((MethodReference)member, scope);
+                return MetadataHelpers.IsAccessible((MethodReference)member, scope);
             }
             else if(member is TypeReference)
             {
-                return ILHelpers.IsAccessible((TypeReference)member, scope);
+                return MetadataHelpers.IsAccessible((TypeReference)member, scope);
             }
             else if(member is FieldReference)
             {
-                return ILHelpers.IsAccessible((FieldReference)member, scope);
+                return MetadataHelpers.IsAccessible((FieldReference)member, scope);
             }
             else if(member is PropertyReference)
             {

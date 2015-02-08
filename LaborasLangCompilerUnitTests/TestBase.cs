@@ -1,12 +1,12 @@
 ﻿using LaborasLangCompiler.FrontEnd;
-using LaborasLangCompiler.ILTools;
+using LaborasLangCompiler.Codegen;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LaborasLangCompilerUnitTests.ILTests
+namespace LaborasLangCompilerUnitTests.CodegenTests
 {
     public class TestBase
     {
