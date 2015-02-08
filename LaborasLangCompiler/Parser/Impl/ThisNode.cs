@@ -1,4 +1,4 @@
-﻿using LaborasLangCompiler.Parser.Exceptions;
+﻿
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using Mono.Cecil;
@@ -29,13 +29,15 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ThisNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
+            var point = parser.GetSequencePoint(lexerNode);
             if (parent.IsStaticContext())
             {
-                throw new ParseException(parser.GetSequencePoint(lexerNode), "Cannot use this inside a static context");
+                Utils.Report(Common.ErrorCode.MissingInstance, point, "Cannot use 'this' inside a static context");
+                return null;//unreachable
             }
             else
             {
-                return new ThisNode(parent.GetClass().TypeReference, parser.GetSequencePoint(lexerNode));
+                return new ThisNode(parent.GetClass().TypeReference, point);
             }
         }
 
@@ -62,7 +64,8 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                throw new ParseException(point, "Cannot access non-static member {0} from a static context", member.FullName);
+                Utils.Report(Common.ErrorCode.MissingInstance, point, "Cannot access non-static member {0} from a static context", member.FullName);
+                return null;//unreachable
             }
         }
     }

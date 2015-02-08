@@ -1,5 +1,4 @@
-﻿using LaborasLangCompiler.Parser.Exceptions;
-using LaborasLangCompiler.Parser.Impl.Wrappers;
+﻿using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;

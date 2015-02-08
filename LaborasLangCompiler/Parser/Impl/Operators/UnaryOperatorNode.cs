@@ -1,4 +1,4 @@
-﻿using LaborasLangCompiler.Parser.Exceptions;
+﻿
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
@@ -55,7 +55,8 @@ namespace LaborasLangCompiler.Parser.Impl
                     case Lexer.TokenType.PrefixNode:
                         return ParsePrefix(parser, parent, lexerNode);
                     default:
-                        throw new ParseException(parser.GetSequencePoint(lexerNode), "Unary op node expected, " + lexerNode.Type + " received");
+                        Utils.Report(Common.ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode), "Unary op expected, {0} found", lexerNode.Type);
+                        return null;//unreachable
                 }
             }
         }
@@ -72,7 +73,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 catch(KeyNotFoundException)
                 {
-                    throw new ParseException(parser.GetSequencePoint(lexerNode.Children[i]), "Suffix op expected, '{0}' received", op);
+                    Utils.Report(Common.ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode.Children[i]), "Suffix op expected, '{0}' received", op);
                 }
             }
             return ParseUnary(parser, expression, ops);
@@ -91,7 +92,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 catch (KeyNotFoundException)
                 {
-                    throw new ParseException(parser.GetSequencePoint(lexerNode.Children[i]), "Prefix op expected, '{0}' received", op);
+                    Utils.Report(Common.ErrorCode.InvalidStructure, parser.GetSequencePoint(lexerNode.Children[i]), "Prefix op expected, '{0}' received", op);
                 }
             }
             return ParseUnary(parser, expression, ops);
@@ -108,14 +109,14 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             if(!expression.IsGettable)
             {
-                throw new TypeException(expression.SequencePoint, "Expression must be gettable");
+                Utils.Report(Common.ErrorCode.NotAnRValue, expression.SequencePoint, "Unary operands must be gettable");
             }
             if(op != UnaryOperatorNodeType.BinaryNot && 
                 op != UnaryOperatorNodeType.LogicalNot && 
                 op != UnaryOperatorNodeType.Negation && 
                 !expression.IsSettable)
             {
-                throw new TypeException(expression.SequencePoint, "Expression must be settable");
+                Utils.Report(Common.ErrorCode.NotAnLValue, expression.SequencePoint, "Unary operation {0} requires a settable operand", op);
             }
             var instance = new UnaryOperatorNode(op, expression);
             switch(op)
@@ -136,32 +137,33 @@ namespace LaborasLangCompiler.Parser.Impl
                     instance.ParseInc();
                     break;
                 default:
-                    throw new ParseException(instance.SequencePoint, "Unary op expected, " + op + " received");
+                    Utils.Report(Common.ErrorCode.InvalidStructure, expression.SequencePoint, "Unary op expected, '{0}' received", op);
+                    break;//unreachable
             }
             return instance;
         }
         private void ParseInc()
         {
-            if (!ExpressionReturnType.IsNumericType() || !operand.IsSettable)
-                throw new TypeException(SequencePoint, "Increment/Decrement ops only allowed on numeric typed variables, {0} received",
+            if (!ExpressionReturnType.IsNumericType())
+                Utils.Report(Common.ErrorCode.TypeMissmatch, SequencePoint, "Increment/Decrement ops only allowed on numeric types, {0} received",
                     ExpressionReturnType);
         }
         private void ParseNegation()
         {
             if (!ExpressionReturnType.IsNumericType())
-                throw new TypeException(SequencePoint, "Arithmetic ops only allowed on numeric types, {0} received",
+                Utils.Report(Common.ErrorCode.TypeMissmatch, SequencePoint, "Negation operations only allowed on numeric types, {0} received",
                     ExpressionReturnType);
         }
         private void ParseLogical()
         {
             if (!ExpressionReturnType.IsBooleanType())
-                throw new TypeException(SequencePoint, "Logical ops only allowed on boolean types, {0} received",
+                Utils.Report(Common.ErrorCode.TypeMissmatch, SequencePoint, "Logical ops only allowed on boolean types, {0} received",
                     ExpressionReturnType);
         }
         private void ParseBinary()
         {
             if (!ExpressionReturnType.IsIntegerType())
-                throw new TypeException(SequencePoint, "Binary ops only allowed on integer types, {0} received",
+                Utils.Report(Common.ErrorCode.TypeMissmatch, SequencePoint, "Binary ops only allowed on integer types, {0} received",
                     ExpressionReturnType);
         }
         public static UnaryOperatorNode Void(ExpressionNode expression)

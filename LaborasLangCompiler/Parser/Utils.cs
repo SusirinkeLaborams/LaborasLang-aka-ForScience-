@@ -1,6 +1,6 @@
 ﻿using LaborasLangCompiler.Common;
 using LaborasLangCompiler.ILTools;
-using LaborasLangCompiler.Parser.Exceptions;
+
 using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
@@ -86,8 +86,8 @@ namespace LaborasLangCompiler.Parser
 
         public static void VerifyAccessible(MemberReference member, TypeReference scope, SequencePoint point)
         {
-            if(!IsAccessbile(member, scope))
-                throw new TypeException(point, "Member {0} is inaccessible from {1}", member, scope);
+            if (!IsAccessbile(member, scope))
+                Utils.Report(ErrorCode.UnreachableMember, point, "Member {0} is inaccessible from {1}", member, scope);
         }
 
         public static bool IsAccessbile(MemberReference member, TypeReference scope)

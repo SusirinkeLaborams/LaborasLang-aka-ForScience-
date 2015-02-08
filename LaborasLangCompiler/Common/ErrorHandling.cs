@@ -27,7 +27,13 @@ namespace LaborasLangCompiler.Common
         NotAnRValue = 0016,
         NotCallable = 0017,
         InvalidDot = 0018,
-        NotAnLValue = 0019
+        NotAnLValue = 0019,
+        InvalidVariableMods = 0020,
+        MissingInstance = 0021,
+        UnreachableMember = 0022,
+        AmbiguousSymbol = 0023,
+        DuplicateImport = 0024,
+        TypeExpected = 0025
     }
 
     public static class Errors

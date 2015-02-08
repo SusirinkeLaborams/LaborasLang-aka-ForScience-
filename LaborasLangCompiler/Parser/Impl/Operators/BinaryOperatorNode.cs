@@ -1,5 +1,5 @@
 ﻿using LaborasLangCompiler.Parser;
-using LaborasLangCompiler.Parser.Exceptions;
+
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,6 @@
 ﻿using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Parser;
-using LaborasLangCompiler.Parser.Exceptions;
+
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using Mono.Cecil;
@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LaborasLangCompiler.Common;
 
 namespace LaborasLangCompiler.Parser.Impl
 {

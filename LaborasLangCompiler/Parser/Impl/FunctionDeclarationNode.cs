@@ -1,7 +1,7 @@
 ﻿using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.ILTools.Methods;
 using LaborasLangCompiler.ILTools.Types;
-using LaborasLangCompiler.Parser.Exceptions;
+
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using LaborasLangCompiler.Parser;
 using Lexer.Containers;

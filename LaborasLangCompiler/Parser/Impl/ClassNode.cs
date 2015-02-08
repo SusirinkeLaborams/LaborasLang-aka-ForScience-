@@ -1,5 +1,5 @@
 ﻿using LaborasLangCompiler.ILTools;
-using LaborasLangCompiler.Parser.Exceptions;
+
 using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using System;
@@ -133,20 +133,17 @@ namespace LaborasLangCompiler.Parser.Impl
 
             //imports
             var types = globalImports.Select(namespaze => namespaze.GetContainedType(name)).Where(t => t != null);
-            try
+            if(types.Count() != 0)
             {
-                if (types.Count() != 0)
-                    return types.Single();
-            }
-            catch (InvalidOperationException)
-            {
-                StringBuilder builder = new StringBuilder();
-                builder.AppendFormat("Ambigious type {0}\n Could be:\n", name);
-                foreach (var t in types)
+                if (types.Count() == 1)
                 {
-                    builder.Append(t.FullName);
+                    return types.Single();
                 }
-                throw new TypeException(point, builder.ToString());
+                else
+                {
+                    Utils.Report(Common.ErrorCode.AmbiguousSymbol, point,
+                        "Ambiguous type {0}, could be {1}", name, String.Join(", ", types.Select(t => t.FullName)));
+                }
             }
 
             if (parent == null)
@@ -162,20 +159,17 @@ namespace LaborasLangCompiler.Parser.Impl
             Namespace namespaze = null;
 
             var namespazes = globalImports.Select(import => import.GetContainedNamespace(name)).Where(n => n != null);
-            try
+            if (namespazes.Count() != 0)
             {
-                if (namespazes.Count() != 0)
-                    namespaze = namespazes.Single();
-            }
-            catch (InvalidOperationException)
-            {
-                StringBuilder builder = new StringBuilder();
-                builder.AppendFormat("Ambigious namespace {0}\n Could be:\n", name);
-                foreach (var n in namespazes)
+                if (namespazes.Count() == 1)
                 {
-                    builder.Append(n);
+                    return namespazes.Single();
                 }
-                throw new TypeException(point, builder.ToString());
+                else
+                {
+                    Utils.Report(Common.ErrorCode.AmbiguousSymbol, point,
+                        "Ambiguous namespace {0}, could be {1}", name, String.Join(", ", namespazes.Select(t => t.Name)));
+                }
             }
 
             if (namespaze == null && parent == null)
@@ -189,7 +183,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public void AddImport(NamespaceNode namespaze, SequencePoint point)
         {
             if (globalImports.Any(n => n.Name == namespaze.Namespace.Name))
-                throw new ParseException(point, "Namespace {0} already imported", namespaze);
+                Utils.Report(Common.ErrorCode.DuplicateImport, point, "Namespace {0} already imported", namespaze);
 
             globalImports.Add(namespaze.Namespace);
         }
@@ -211,7 +205,8 @@ namespace LaborasLangCompiler.Parser.Impl
                         ParseDeclaration(node);
                         break;
                     default:
-                        throw new ParseException(parser.GetSequencePoint(node), "Import or declaration expected " + node.Type + " received");
+                        Utils.Report(Common.ErrorCode.InvalidStructure, parser.GetSequencePoint(node), "Import or declaration expected, {0} received", node.Type);
+                        break;//unreachable
                 }
             }
         }

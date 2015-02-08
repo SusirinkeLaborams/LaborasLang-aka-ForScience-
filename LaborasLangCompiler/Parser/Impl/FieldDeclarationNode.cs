@@ -1,5 +1,4 @@
-﻿using LaborasLangCompiler.Parser.Exceptions;
-using Lexer.Containers;
+﻿using Lexer.Containers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;

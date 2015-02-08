@@ -79,11 +79,6 @@
     <Compile Include="ILTools\Methods\MethodEmitter.cs" />
     <Compile Include="ILTools\Types\FunctorImplementationTypeEmitter.cs" />
     <Compile Include="ILTools\Types\TypeEmitter.cs" />
-    <Compile Include="Parser\Exceptions\CompilerException.cs" />
-    <Compile Include="Parser\Exceptions\ParseException.cs" />
-    <Compile Include="Parser\Exceptions\SymbolAlreadyDeclaredException.cs" />
-    <Compile Include="Parser\Exceptions\SymbolNotFoundException.cs" />
-    <Compile Include="Parser\Exceptions\TypeException.cs" />
     <Compile Include="Parser\Impl\AmbiguousMethodNode.cs" />
     <Compile Include="Parser\Impl\AmbiguousNode.cs" />
     <Compile Include="Parser\Impl\FieldDeclarationNode.cs" />

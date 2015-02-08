@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.ILTools;
-using LaborasLangCompiler.Parser.Exceptions;
+
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
+using LaborasLangCompiler.Common;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -26,13 +27,17 @@ namespace LaborasLangCompiler.Parser.Impl
             var returnType = parent.GetMethod().MethodReturnType;
             var instance = new ReturnNode(parser.GetSequencePoint(lexerNode));
             if (returnType.TypeEquals(parser.Void) && lexerNode.ChildrenCount != 2)
-                throw new TypeException(instance.SequencePoint, "Cannot return value in a void method");
+            {
+                Utils.Report(ErrorCode.TypeMissmatch, instance.SequencePoint, "Cannot return a value in a void method");
+            }
 
             if (lexerNode.Children.Count == 3)
             {
                 instance.expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[1], returnType);
-                if (!instance.expression.ExpressionReturnType.IsAssignableTo(returnType) || !instance.expression.IsGettable) 
-                    throw new TypeException(instance.SequencePoint, "Function returns {0}, cannot return {1}", returnType, instance.expression.ExpressionReturnType);
+                if (!instance.expression.ExpressionReturnType.IsAssignableTo(returnType) || !instance.expression.IsGettable)
+                {
+                    Utils.Report(ErrorCode.TypeMissmatch, instance.SequencePoint, "Method returns {0}, cannot return {1}", returnType, instance.Expression.ExpressionReturnType);
+                }
             }
             return instance;
         }

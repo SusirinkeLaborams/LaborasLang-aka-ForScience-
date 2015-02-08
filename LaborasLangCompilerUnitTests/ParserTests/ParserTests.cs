@@ -3,7 +3,7 @@
 using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.ILTools;
 using LaborasLangCompiler.Parser;
-using LaborasLangCompiler.Parser.Exceptions;
+
 using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompilerUnitTests.ILTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -282,12 +282,12 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto b = 8 <= 10;";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Returned double instead of int")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestReturnTypeFailure()
         {
             string source = @"
                 auto Main = int(){return 4.0;};";
-            CanParse(source);
+            CanParse(source, ErrorCode.TypeMissmatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestReturnTypeSuccess()
@@ -373,7 +373,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 int(float) a = int(float x){return 4;};";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Returned value in a void method")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestReturnVoid()
         {
             string source = @"
@@ -381,7 +381,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {  
                     return 5;
                 };";
-            CanParse(source);
+            CanParse(source, ErrorCode.TypeMissmatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestImport()
@@ -485,7 +485,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Declared a local var of type void")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestLocalVariableVoid()
         {
             string source = @"
@@ -493,7 +493,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     void a;
                 };";
-            CanParse(source);
+            CanParse(source, ErrorCode.VoidLValue.Enumerate());
         }
         [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestFieldVoid()
@@ -502,12 +502,12 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 void a;";
             CanParse(source, ErrorCode.VoidLValue.Enumerate());
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Declared a local var of type void")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestVoidParamFunctorType()
         {
             string source = @"
                 mutable void(void) foo;";
-            CanParse(source);
+            CanParse(source, ErrorCode.IllegalMethodParam.Enumerate());
         }
         [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestVoidParamMethod()
@@ -526,21 +526,21 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto a = -foo();";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Invalid unary operation")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestUnaryInvalid1()
         {
             string source = @"
                 mutable int() foo;
                 auto a = foo()++;";
-            CanParse(source);
+            CanParse(source, ErrorCode.NotAnLValue.Enumerate());
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(TypeException), "Invalid unary operation")]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestUnaryInvalid2()
         {
             string source = @"
                 mutable int() foo;
                 auto a = ++foo();";
-            CanParse(source);
+            CanParse(source, ErrorCode.NotAnLValue.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestAssignToUnary()
@@ -595,7 +595,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CompareTrees(source);
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(ParseException))]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestUninitializedLocal()
         {
             string source = @"
@@ -603,7 +603,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     const int bar;
                 };";
-            CanParse(source);
+            CanParse(source, ErrorCode.MissingInit.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestMutableLocal()
@@ -626,7 +626,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CanParse(source, ErrorCode.NotAnLValue.Enumerate());
         }
-        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(ParseException))]
+        [TestMethod, TestCategory("Parser"), ExpectedException(typeof(LaborasLangCompiler.Common.CompilerException))]
         public void TestPrivateLocal()
         {
             string source = @"
@@ -634,7 +634,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     private const int bar = 5;
                 };";
-            CanParse(source);
+            CanParse(source, ErrorCode.InvalidVariableMods.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestVoidEntry()
