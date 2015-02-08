@@ -15,7 +15,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
     [TestClass]
     public class FunctorTests : ILTestBase
     {
-        [TestMethod, TestCategory("IL Tests")]
+        [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_FunctorDefinition()
         {
             FunctorBaseTypeEmitter.Create(assemblyEmitter, assemblyEmitter.TypeToTypeReference(typeof(void)), new List<TypeReference>());
@@ -29,7 +29,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             ExecuteAndAssertSuccess();
         }
 
-        [TestMethod, TestCategory("IL Tests")]
+        [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_FunctorWithReturnTypeAndArguments()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
@@ -68,7 +68,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             ExecuteAndAssertSuccess();
         }
 
-        [TestMethod, TestCategory("IL Tests")]
+        [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_FunctionAssignmentToFunctorWithoutArgs()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(void));
@@ -89,7 +89,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             ExecuteAndAssertSuccess();
         }
 
-        [TestMethod, TestCategory("IL Tests")]
+        [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_FunctionAssignmentToFunctorWithArgs()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
@@ -136,7 +136,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             ExecuteAndAssertSuccess();
         }
 
-        [TestMethod, TestCategory("IL Tests")]
+        [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_FunctorAssignmentToDelegate()
         {
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
@@ -185,7 +185,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             ExecuteAndAssertSuccess();
         }
 
-        [TestMethod, TestCategory("IL Tests")]
+        [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_FunctionAssignmentToDelegate()
         {
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
@@ -229,7 +229,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             ExecuteAndAssertSuccess();
         }
 
-        [TestMethod, TestCategory("IL Tests")]
+        [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_CallFunctor_PassReturnValueAsArgument()
         {
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
@@ -301,7 +301,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             ExecuteAndAssertSuccess();
         }
 
-        [TestMethod, TestCategory("IL Tests")]
+        [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_FunctorPropertyAssignmentToDelegate()
         {
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
@@ -475,7 +475,7 @@ namespace LaborasLangCompilerUnitTests.ILTests.MethodBodyTests
             return AssemblyRegistry.GetFunctorType(assemblyEmitter, returnType, args);
         }
 
-        [TestMethod, TestCategory("IL Tests")]
+        [TestMethod, TestCategory("Codegen Tests")]
         public void Test_FunctorNamesDoNotClash()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));

@@ -64,19 +64,19 @@
     <Compile Include="FrontEnd\Program.cs" />
     <Compile Include="ILTools\AssemblyEmitter.cs" />
     <Compile Include="ILTools\AssemblyRegistry.cs" />
+    <Compile Include="ILTools\ILHelpers.cs" />
     <Compile Include="ILTools\MethodBodyOptimizers\AddTailCalls.cs" />
     <Compile Include="ILTools\MethodBodyOptimizers\EliminateDeadCode.cs" />
-    <Compile Include="ILTools\MethodBodyOptimizers\RemoveNOPs.cs" />
+    <Compile Include="ILTools\MethodBodyOptimizers\MethodBodyOptimizerBootstraper.cs" />
     <Compile Include="ILTools\MethodBodyOptimizers\ModifierBase.cs" />
+    <Compile Include="ILTools\MethodBodyOptimizers\RemoveNOPs.cs" />
     <Compile Include="ILTools\MethodBodyOptimizers\RemoveRedundantBranches.cs" />
     <Compile Include="ILTools\Methods\ConstructorEmitter.cs" />
-    <Compile Include="ILTools\MethodBodyOptimizers\MethodBodyOptimizerBootstraper.cs" />
+    <Compile Include="ILTools\Methods\FunctorMethodEmitter.cs" />
+    <Compile Include="ILTools\Methods\MethodEmitter.cs" />
     <Compile Include="ILTools\Methods\MethodEmitterBase.cs" />
     <Compile Include="ILTools\Types\DelegateEmitter.cs" />
-    <Compile Include="ILTools\Methods\FunctorMethodEmitter.cs" />
     <Compile Include="ILTools\Types\FunctorBaseTypeEmitter.cs" />
-    <Compile Include="ILTools\ILHelpers.cs" />
-    <Compile Include="ILTools\Methods\MethodEmitter.cs" />
     <Compile Include="ILTools\Types\FunctorImplementationTypeEmitter.cs" />
     <Compile Include="ILTools\Types\TypeEmitter.cs" />
     <Compile Include="Parser\Impl\AmbiguousMethodNode.cs" />
@@ -122,17 +122,20 @@
     <None Include="CodeSamples\Bottles.ll" />
     <None Include="CodeSamples\DeepRecursion.ll" />
     <None Include="CodeSamples\HelloWorld.ll" />
+    <None Include="CodeSamples\IsPrime.ll" />
     <None Include="CodeSamples\Recursion.ll" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="CodeSamples\Fail\fail1.ll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Lexer\Lexer.csproj">
       <Project>{0c7187d8-8048-4539-9f3d-f781c5c5bf1d}</Project>
       <Name>Lexer</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="CodegenTools\MethodBodyOptimizers\" />
+    <Folder Include="CodegenTools\Methods\" />
+    <Folder Include="CodegenTools\Types\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

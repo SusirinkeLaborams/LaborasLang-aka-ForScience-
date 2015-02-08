@@ -13,7 +13,7 @@ namespace LaborasLangCompilerUnitTests.ILTests
     {
         private AssemblyEmitter assembly;
 
-        [TestMethod, TestCategory("IL Tests")]
+        [TestMethod, TestCategory("Codegen Tests")]
         public void TestIsAssignableTo()
         {
             var types = new Dictionary<string, TypeReference>();
