@@ -1,14 +1,15 @@
-﻿auto Main = void()
+﻿use System;
+entry auto Main = void()
 {
 	auto quit = false;
-	System.Console.WriteLine("Enter 0 at any time to quit.");
+	Console.WriteLine("Enter 0 at any time to quit.");
 
 	while (!quit)
 	{
 		int value;
-		string line = System.Console.ReadLine();
+		string line = Console.ReadLine();
 
-		if (System.Int32.TryParse(line, value))
+		if (int.TryParse(line, value))
 		{
 			if (value == 0)
 			{
@@ -18,17 +19,17 @@
 			{
 				if (IsPrime(value))
 				{
-					System.Console.WriteLine("{0} is a prime number", value);
+					Console.WriteLine("{0} is a prime number", value);
 				}
 				else
 				{
-					System.Console.WriteLine("{0} is not a prime number", value);
+					Console.WriteLine("{0} is not a prime number", value);
 				}
 			}
 		}
 		else
 		{
-			System.Console.WriteLine("Entered value is not a number!");
+			Console.WriteLine("Entered value is not a number!");
 		}
 	}
 };
@@ -43,7 +44,7 @@ auto IsPrime = bool(int value)
 	auto isDivisor = bool(int value, int divisor) { return value % divisor == 0 && divisor < value; };
 
 	auto isPrime = true;
-	auto divisor = System.Math.Ceiling(System.Math.Sqrt(value)) + 1;
+	auto divisor = Convert.ToInt32(Math.Ceiling(Math.Sqrt(value)) + 1);
 
 	while (--divisor >= 2)
 	{
