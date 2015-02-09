@@ -58,7 +58,9 @@ namespace LaborasLangCompiler.Codegen.Types
         {
             CheckForDuplicates(field.Name);
             typeDefinition.Fields.Add(field);
+            AddTypeToAssemblyIfNeeded(field.FieldType);
         }
+
         public void AddFieldInitializer(FieldDefinition field, IExpressionNode initializer)
         {
             if (field.IsStatic)
@@ -94,6 +96,13 @@ namespace LaborasLangCompiler.Codegen.Types
                 {
                     GetInstanceConstructor().AddPropertyInitializer(property, initializer);
                 }
+            }
+
+            AddTypeToAssemblyIfNeeded(property.PropertyType);
+
+            foreach (var parameter in (property.GetMethod ?? property.SetMethod).Parameters)
+            {
+                AddTypeToAssemblyIfNeeded(parameter.ParameterType);
             }
         }
 
@@ -156,6 +165,17 @@ namespace LaborasLangCompiler.Codegen.Types
         public TypeReference Get(AssemblyEmitter assembly)
         {
             return AssemblyRegistry.FindType(assembly, typeDefinition.FullName);
+        }
+
+        private void AddTypeToAssemblyIfNeeded(TypeReference type)
+        {
+            if (type.IsFunctorType())
+            {
+                var typeDef = type.Resolve();
+
+                if (typeDef.Scope == null)
+                    Assembly.AddTypeIfNotAdded(typeDef);
+            }
         }
 
         private ConstructorEmitter GetInstanceConstructor()

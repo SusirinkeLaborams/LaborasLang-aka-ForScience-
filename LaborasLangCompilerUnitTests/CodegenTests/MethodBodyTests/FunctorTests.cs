@@ -19,6 +19,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         public void TestCanEmit_FunctorDefinition()
         {
             FunctorBaseTypeEmitter.Create(assemblyEmitter, assemblyEmitter.TypeToTypeReference(typeof(void)), new List<TypeReference>());
+            FunctorImplementationTypeEmitter.Create(assemblyEmitter, typeEmitter.Get(assemblyEmitter), AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new string[] { }));
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -483,14 +484,27 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
             var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
 
-            var type1 = GetFunctorType(intType, stringType, floatType, boolType);
-            var type2 = GetFunctorType(intType, stringType, GetFunctorType(floatType, boolType));
-            var type3 = GetFunctorType(intType, GetFunctorType(stringType, floatType), boolType);
-            var type4 = GetFunctorType(GetFunctorType(intType, stringType), floatType, boolType);
-            var type5 = GetFunctorType(GetFunctorType(intType, stringType), GetFunctorType(floatType, boolType));
-            var type6 = GetFunctorType(intType, GetFunctorType(stringType, floatType, boolType));
-            var type7 = GetFunctorType(GetFunctorType(intType, stringType, floatType), boolType);
-            var type8 = GetFunctorType(GetFunctorType(intType, stringType, floatType, boolType));
+            var types = new[]
+            {
+                GetFunctorType(intType, stringType, floatType, boolType),
+                GetFunctorType(floatType, boolType),
+                GetFunctorType(intType, stringType, GetFunctorType(floatType, boolType)),
+                GetFunctorType(stringType, floatType),
+                GetFunctorType(intType, GetFunctorType(stringType, floatType), boolType),
+                GetFunctorType(intType, stringType),
+                GetFunctorType(GetFunctorType(intType, stringType), floatType, boolType),
+                GetFunctorType(floatType, boolType),
+                GetFunctorType(GetFunctorType(intType, stringType), GetFunctorType(floatType, boolType)),
+                GetFunctorType(stringType, floatType, boolType),
+                GetFunctorType(intType, GetFunctorType(stringType, floatType, boolType)),
+                GetFunctorType(intType, stringType, floatType),
+                GetFunctorType(GetFunctorType(intType, stringType, floatType), boolType),
+                GetFunctorType(intType, stringType, floatType, boolType),
+                GetFunctorType(GetFunctorType(intType, stringType, floatType, boolType))
+            };
+
+            foreach (var type in types)
+                assemblyEmitter.AddTypeIfNotAdded(type.Resolve());
 
             ExpectedILFilePath = "Test_FunctorNamesDoNotClash.il";
             AssertSuccessByILComparison();
