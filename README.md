@@ -50,7 +50,8 @@ auto something_complex = int()()
 ```
 
 ```
-entry auto main = void() {
+entry auto main = void()
+{
 }
 ```
 
