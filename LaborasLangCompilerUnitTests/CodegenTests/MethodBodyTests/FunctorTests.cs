@@ -26,7 +26,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_FunctorDefinition.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -65,7 +65,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_FunctorWithReturnTypeAndArguments.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -86,7 +86,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             typeEmitter.AddFieldInitializer(field, initializer);
 
             ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToFunctorWithoutArgs.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -133,7 +133,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             typeEmitter.AddFieldInitializer(field, initializer);
 
             ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToFunctorWithArgs.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -182,7 +182,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_FunctorAssignmentToDelegate.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -226,7 +226,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToDelegate.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -298,7 +298,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_CallFunctor_PassReturnValueAsArgument.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -467,7 +467,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_FunctorPropertyAssignmentToDelegate.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         private TypeReference GetFunctorType(TypeReference returnType, params TypeReference[] args)
@@ -493,7 +493,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             var type8 = GetFunctorType(GetFunctorType(intType, stringType, floatType, boolType));
 
             ExpectedILFilePath = "Test_FunctorNamesDoNotClash.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
     }
 }

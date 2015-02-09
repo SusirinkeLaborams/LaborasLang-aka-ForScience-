@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Codegen.Methods;
+﻿using LaborasLangCompiler.Codegen;
+using LaborasLangCompiler.Codegen.Methods;
 using LaborasLangCompiler.Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Cecil;
@@ -29,8 +30,19 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             typeEmitter.AddField(field);
             typeEmitter.AddFieldInitializer(field, initializer);
 
-            ExpectedILFilePath = "TestCanEmit_InstanceFieldInitializer.il";
-            ExecuteAndAssertSuccess();
+            var loadFieldExpression = new FieldNode()
+            {
+                ObjectInstance = new ObjectCreationNode()
+                {
+                    ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
+                    Args = new List<IExpressionNode>()
+                },
+                Field = field
+            };
+
+            GenerateOutputExpression(loadFieldExpression);
+            ExpectedOutput = "2";
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -50,7 +62,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             typeEmitter.AddFieldInitializer(field, initializer);
 
             ExpectedILFilePath = "TestCanEmit_StaticFieldInitializer.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -107,7 +119,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             typeEmitter.AddProperty(property, initializer);
 
             ExpectedILFilePath = "TestCanEmit_InstancePropertyInitializer.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -161,7 +173,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             typeEmitter.AddProperty(property, initializer);
 
             ExpectedILFilePath = "TestCanEmit_StaticPropertyInitializer.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
     }
 }

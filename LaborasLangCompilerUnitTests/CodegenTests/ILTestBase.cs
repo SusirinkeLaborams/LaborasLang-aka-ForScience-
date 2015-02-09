@@ -17,12 +17,15 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
     public class ILTestBase : TestBase
     {
         protected string ExpectedILFilePath { get; set; }
+        protected string ExpectedOutput { get; set; }
         internal ICodeBlockNode BodyCodeBlock { get; set; }
 
-        internal CompilerArguments compilerArgs;
-        internal MethodEmitter methodEmitter;
-        internal TypeEmitter typeEmitter;
-        internal AssemblyEmitter assemblyEmitter;
+        internal MethodEmitter methodEmitter { get; private set; }
+        internal TypeEmitter typeEmitter { get; private set; }
+        internal AssemblyEmitter assemblyEmitter { get; private set; }
+
+        private readonly CompilerArguments compilerArgs;
+        private readonly MethodReference consoleWriteLine;
 
         public ILTestBase()
         {
@@ -32,9 +35,11 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             typeEmitter = new TypeEmitter(assemblyEmitter, "klass");
             methodEmitter = new MethodEmitter(typeEmitter, "dummy", assemblyEmitter.TypeToTypeReference(typeof(void)),
                 MethodAttributes.Static | MethodAttributes.Private);
+
+            consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new [] { assemblyEmitter.TypeToTypeReference(typeof(object)) });
         }
 
-        protected virtual void ExecuteAndAssertSuccess()
+        protected void AssertSuccessByILComparison()
         {
             if (BodyCodeBlock == null)
             {
@@ -63,6 +68,55 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                 File.Delete(assemblyEmitter.OutputPath);
                 File.Delete(Path.ChangeExtension(assemblyEmitter.OutputPath, ".pdb"));
             }
+        }
+
+        protected void AssertSuccessByExecution()
+        {
+            Assert.IsNotNull(BodyCodeBlock);
+
+            methodEmitter.ParseTree(BodyCodeBlock);
+            methodEmitter.SetAsEntryPoint();
+            assemblyEmitter.Save();
+
+            try
+            {
+                PEVerifyRunner.Run(assemblyEmitter.OutputPath);
+                var stdout = ManagedCodeRunner.CreateProcessAndRun(assemblyEmitter.OutputPath, new string[0] { });
+                Assert.AreEqual(ExpectedOutput.Trim(), stdout.Trim());
+            }
+            finally
+            {
+                try
+                {   // Deleting PDB will fail if we're debugging, 
+                    // since we're executing the code in the same process, so VS will have it loaded
+                    File.Delete(assemblyEmitter.OutputPath);
+                    File.Delete(Path.ChangeExtension(assemblyEmitter.OutputPath, ".pdb"));
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        internal void GenerateOutputExpression(IExpressionNode expression)
+        {
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new MethodCallNode()
+                    {
+                        Function = new FunctionNode()
+                        {
+                            Method = consoleWriteLine
+                        },
+                        Args = new List<IExpressionNode>()
+                        {
+                            expression
+                        }
+                    }
+                }
+            };
         }
     }
 }
