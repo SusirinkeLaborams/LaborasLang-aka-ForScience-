@@ -80,6 +80,41 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         {
             Test(new string[]{"InlineFunctorCall.ll", "MultipleFiles.ll"}, "It Works!");
         }
+                
+        [TestMethod, TestCategory("Integration Tests")]
+        public void Test_PrintPrimesWithInlineLambda()
+        {
+            var testInfo = new IntegrationTestInfo("PrintPrimesWithInlineLambda.ll".Enumerate());
+
+            testInfo.StdIn =
+@"2
+3
+5
+6
+7
+8
+9
+411
+419
+0
+";
+
+            testInfo.StdOut =
+@"Enter 0 at any time to quit.
+2 is a prime number
+3 is a prime number
+5 is a prime number
+6 is not a prime number
+7 is a prime number
+8 is not a prime number
+9 is not a prime number
+411 is not a prime number
+419 is a prime number
+";
+
+            Test(testInfo);
+
+        }
 
         #region Helpers
         
