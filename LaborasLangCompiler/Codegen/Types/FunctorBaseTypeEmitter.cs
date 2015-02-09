@@ -16,7 +16,7 @@ namespace LaborasLangCompiler.Codegen.Types
         }
 
         private FunctorBaseTypeEmitter(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments) :
-            base(assembly, ComputeName(returnType, arguments), "$Functors", FunctorTypeAttributes, assembly.TypeToTypeReference(typeof(object)))
+            base(assembly, ComputeName(returnType, arguments), "$Functors", FunctorTypeAttributes, assembly.TypeToTypeReference(typeof(object)), false)
         {
             var delegateType = DelegateEmitter.Create(assembly, typeDefinition, returnType, arguments);
             typeDefinition.NestedTypes.Add(delegateType);

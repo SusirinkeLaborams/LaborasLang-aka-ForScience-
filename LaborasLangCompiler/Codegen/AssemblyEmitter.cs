@@ -40,6 +40,14 @@ namespace LaborasLangCompiler.Codegen
             assemblyDefinition.MainModule.Types.Add(type);
         }
 
+        public void AddTypeIfNotAdded(TypeDefinition type)
+        {
+            var types = assemblyDefinition.MainModule.Types;
+
+            if (!types.Contains(type))
+                types.Add(type);
+        }
+
         public TypeReference TypeToTypeReference(Type type)
         {
             return MainModule.Import(type);

@@ -576,6 +576,9 @@ namespace LaborasLangCompiler.Codegen
         {
             var module = assemblyScope.MainModule;
 
+            if (reference.DeclaringType.Scope == null)
+                return reference;
+
             if ((reference.DeclaringType.Scope.MetadataScopeType != MetadataScopeType.ModuleDefinition) ||
                     (ModuleDefinition)reference.DeclaringType.Scope != module)
             {

@@ -11,6 +11,7 @@ namespace LaborasLangCompiler.Codegen.Types
         public static TypeDefinition Create(AssemblyEmitter assembly, TypeReference declaringType, MethodReference targetMethod)
         {
             var baseType = AssemblyRegistry.GetFunctorType(assembly, targetMethod);
+            assembly.AddTypeIfNotAdded(baseType.Resolve());
             return new FunctorImplementationTypeEmitter(assembly, declaringType, baseType, targetMethod).typeDefinition;
         }
 

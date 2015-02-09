@@ -123,6 +123,7 @@
     <None Include="CodeSamples\DeepRecursion.ll" />
     <None Include="CodeSamples\HelloWorld.ll" />
     <None Include="CodeSamples\IsPrime.ll" />
+    <None Include="CodeSamples\PrimePrinter.ll" />
     <None Include="CodeSamples\Recursion.ll" />
     <None Include="packages.config" />
   </ItemGroup>
