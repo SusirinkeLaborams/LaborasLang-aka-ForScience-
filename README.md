@@ -28,18 +28,22 @@ auto foo = 5;
 
 ```
 void() bar;
-bar = void() {
+bar = void()
+{
 };
 ```
 ```
-auto bar = void() {
+auto bar = void()
+{
 };
 ```
 
 
 ```
-auto something_complex = int()() {
-	return int() {
+auto something_complex = int()()
+{
+	return int()
+	{
 		return 5;
 	}
 }
@@ -52,16 +56,20 @@ entry auto main = void() {
 
 ###Conditional statements
 ```
-if(true) {
+if (true)
+{
 
-} else {
+}
+else
+{
 
 }
 ```
 ###Structures
 ###Loops
 ```
-while(condition) {
+while (condition)
+{
 
 }
 ```
