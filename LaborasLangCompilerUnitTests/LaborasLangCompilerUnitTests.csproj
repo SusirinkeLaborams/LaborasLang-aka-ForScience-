@@ -140,8 +140,6 @@
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorAssignmentToDelegate.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorDefinition.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorWithReturnTypeAndArguments.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_MultipleNestedAssignments.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_Negation_BinaryNot_Increment_Decrement.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_Return.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_ShiftLeftAndRight.il" />

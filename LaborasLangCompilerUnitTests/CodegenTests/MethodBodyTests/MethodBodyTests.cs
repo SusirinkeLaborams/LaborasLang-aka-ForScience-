@@ -354,6 +354,12 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             callableMethod.ParseTree(new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
+                {
+                    CallConsoleWriteLine(new FunctionArgumentNode()
+                    {
+                        Param = callableMethod.Get().Parameters[0]
+                    })
+                }
             });
 
             BodyCodeBlock = new CodeBlockNode()
@@ -378,8 +384,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = true.ToString();
+            AssertSuccessByExecution();
         }
 
         #endregion
@@ -399,10 +405,12 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             const int count = 10;
+            var fields = new List<FieldDefinition>();
             for (int i = 0; i < count; i++)
             {
                 var field = new FieldDefinition("intField" + i.ToString(), FieldAttributes.Static | FieldAttributes.Private,
                     assemblyEmitter.TypeToTypeReference(typeof(int)));
+                fields.Add(field);
                 typeEmitter.AddField(field);
 
                 assignmentNode.LeftOperand = new FieldNode()
@@ -421,6 +429,11 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 }
             }
 
+            var outputCodeBlock = new CodeBlockNode()
+            {
+                Nodes = fields.Select(field => CallConsoleWriteLine(new FieldNode { Field = field })).ToList()
+            };
+
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
@@ -430,12 +443,13 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = assignmentNode
-                    }
+                    },
+                    outputCodeBlock
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_MultipleNestedAssignments.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = Enumerable.Repeat<int>(110, fields.Count).Select(i => i.ToString()).Aggregate((x, y) => x + Environment.NewLine + y);
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -444,6 +458,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
 
+            typeEmitter.AddDefaultConstructor();
             var testMethod = new MethodEmitter(typeEmitter, "TestNestedInstanceFieldAssignment", voidType);
 
             var assignmentNode = new AssignmentOperatorNode()
@@ -456,10 +471,13 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             const int count = 10;
+            var fields = new List<FieldDefinition>();
+
             for (int i = 0; i < count; i++)
             {
                 var field = new FieldDefinition("intField" + i.ToString(), FieldAttributes.Private, floatType);
                 typeEmitter.AddField(field);
+                fields.Add(field);
 
                 assignmentNode.LeftOperand = new FieldNode()
                 {
@@ -481,6 +499,15 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 }
             }
 
+            var outputCodeBlock = new CodeBlockNode()
+            {
+                Nodes = fields.Select(f => CallConsoleWriteLine(new FieldNode()
+                {
+                    Field = f, 
+                    ObjectInstance = new ThisNode { ExpressionReturnType = f.DeclaringType }
+                })).ToList()
+            };
+
             testMethod.ParseTree(new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
@@ -490,7 +517,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         ExpressionReturnType = voidType,
                         Operand = assignmentNode
-                    }
+                    },
+                    outputCodeBlock
                 }
             });
 
@@ -498,11 +526,24 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
+                    new MethodCallNode()
+                    {
+                        Function = new FunctionNode()
+                        {
+                            ObjectInstance = new ObjectCreationNode()
+                            {
+                                ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
+                                Args = new IExpressionNode[] { }
+                            },
+                            Method = testMethod.Get(),
+                        },
+                        Args = new IExpressionNode[] { }
+                    }
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_MultipleNestedInstanceFieldAssignments.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = Enumerable.Repeat<int>(110, fields.Count).Select(i => i.ToString()).Aggregate((x, y) => x + Environment.NewLine + y);
+            AssertSuccessByExecution();
         }
 
         #region Binary operators
