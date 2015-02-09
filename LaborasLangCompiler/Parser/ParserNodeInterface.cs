@@ -108,7 +108,6 @@ namespace LaborasLangCompiler.Parser
     interface IMethodParamNode : IExpressionNode
     {
         ParameterDefinition Param { get; }
-        bool IsMethodStatic { get; }
     }
 
     public enum BinaryOperatorNodeType

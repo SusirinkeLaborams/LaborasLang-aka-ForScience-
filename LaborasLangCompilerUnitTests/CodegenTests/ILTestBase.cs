@@ -98,23 +98,28 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             }
         }
 
-        internal void GenerateOutputExpression(IExpressionNode expression)
+        internal void GenerateBodyToOutputExpression(IExpressionNode expression)
         {
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new MethodCallNode()
-                    {
-                        Function = new FunctionNode()
-                        {
-                            Method = consoleWriteLine
-                        },
-                        Args = new List<IExpressionNode>()
-                        {
-                            expression
-                        }
-                    }
+                    CallConsoleWriteLine(expression)
+                }
+            };
+        }
+
+        internal IParserNode CallConsoleWriteLine(IExpressionNode expression)
+        {
+            return new MethodCallNode()
+            {
+                Function = new FunctionNode()
+                {
+                    Method = consoleWriteLine
+                },
+                Args = new List<IExpressionNode>()
+                {
+                    expression
                 }
             };
         }

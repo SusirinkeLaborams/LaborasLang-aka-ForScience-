@@ -40,7 +40,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 Field = field
             };
 
-            GenerateOutputExpression(loadFieldExpression);
+            GenerateBodyToOutputExpression(loadFieldExpression);
             ExpectedOutput = "2";
             AssertSuccessByExecution();
         }
@@ -61,8 +61,14 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             typeEmitter.AddField(field);
             typeEmitter.AddFieldInitializer(field, initializer);
 
-            ExpectedILFilePath = "TestCanEmit_StaticFieldInitializer.il";
-            AssertSuccessByILComparison();
+            var loadFieldExpression = new FieldNode()
+            {
+                Field = field
+            };
+
+            GenerateBodyToOutputExpression(loadFieldExpression);
+            ExpectedOutput = 2.0f.ToString();
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -118,8 +124,19 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             typeEmitter.AddField(backingField);
             typeEmitter.AddProperty(property, initializer);
 
-            ExpectedILFilePath = "TestCanEmit_InstancePropertyInitializer.il";
-            AssertSuccessByILComparison();
+            var loadFieldExpression = new FieldNode()
+            {
+                ObjectInstance = new ObjectCreationNode()
+                {
+                    ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
+                    Args = new List<IExpressionNode>()
+                },
+                Field = backingField
+            };
+
+            GenerateBodyToOutputExpression(loadFieldExpression);
+            ExpectedOutput = "aaa";
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -172,8 +189,14 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             typeEmitter.AddField(backingField);
             typeEmitter.AddProperty(property, initializer);
 
-            ExpectedILFilePath = "TestCanEmit_StaticPropertyInitializer.il";
-            AssertSuccessByILComparison();
+            var loadFieldExpression = new FieldNode()
+            {
+                Field = backingField
+            };
+
+            GenerateBodyToOutputExpression(loadFieldExpression);
+            ExpectedOutput = true.ToString();
+            AssertSuccessByExecution();
         }
     }
 }

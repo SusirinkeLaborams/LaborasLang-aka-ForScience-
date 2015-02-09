@@ -296,7 +296,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Emit(IMethodParamNode argument, bool emitReference)
         {
-            var index = argument.Param.Index + (argument.IsMethodStatic ? 0 : 1);
+            var index = argument.Param.Index + (methodDefinition.HasThis ? 1 : 0);
             emitReference &= argument.Param.ParameterType.IsValueType;
 
             if (emitReference)
