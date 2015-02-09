@@ -75,11 +75,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 var ambiguous = ret as AmbiguousNode;
                 if(ambiguous != null)
                 {
-                    if(ambiguous.ExpressionReturnType == null || 
-                        ambiguous.ExpressionReturnType.IsAssignableTo(expectedType))
-                    {
-                        ret = ambiguous.RemoveAmbiguity(parser, expectedType);
-                    }
+                    ret = ambiguous.RemoveAmbiguity(parser, expectedType);
                 }
             }
 

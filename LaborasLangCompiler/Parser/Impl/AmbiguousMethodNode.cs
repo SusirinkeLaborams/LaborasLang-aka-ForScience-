@@ -31,7 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             if (!expectedType.IsFunctorType())
             {
-                ErrorCode.IllegalCast.ReportAndThrow(SequencePoint, String.Format("Cannot cast functor to type {0}", expectedType.FullName));
+                return this;
             }
             var paramz = MetadataHelpers.GetFunctorParamTypes(parser.Assembly, expectedType);
             var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), paramz);
@@ -41,6 +41,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public MethodNode RemoveAmbiguity(Parser parser, IEnumerable<TypeReference> args)
         {
             var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), args.ToList());
+            if (method == null)
+                return null;
             return new MethodNode(parser, method, instance, parent, SequencePoint);
         }
 

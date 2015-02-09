@@ -739,5 +739,11 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string file2 = @"public auto foo = void(){file1.foo();};";
             CompareTrees(Utils.Enumerate(file1, file2), Utils.Enumerate("file1", "file2"));
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestIntLiteralToULong()
+        {
+            string source = @"ulong foo = 5;";
+            CompareTrees(source);
+        }
     }
 }

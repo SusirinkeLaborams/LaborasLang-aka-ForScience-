@@ -124,50 +124,51 @@ namespace LaborasLangCompiler.Parser.Impl
             if (expectedType.FullName == type.FullName)
                 return this;
 
-            if (!type.IsAssignableTo(expectedType))
-                ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint, "Cannot assign {0} to {1}", type, expectedType);
-
-            return new LiteralNode(ConvertLiteral(parser, this, expectedType), expectedType, SequencePoint);
+            var conversions = GetImplicitConversions(parser, this);
+            if(conversions.Any(c => c.TypeEquals(expectedType)))
+            {
+                return ConvertLiteral(parser, this, expectedType);
+            }
+            else
+            {
+                //cannot convert
+                return this;
+            }
         }
 
-        private static dynamic ConvertLiteral(Parser parser, LiteralNode node, TypeReference type)
+        private static LiteralNode ConvertLiteral(Parser parser, LiteralNode node, TypeReference type)
         {
             dynamic value = node.Value;
-            if(node.ExpressionReturnType == parser.String)
+            Type targetType = System.Type.GetType(type.FullName);
+            return new LiteralNode(Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture), type, node.SequencePoint);
+        }
+
+        protected static IEnumerable<TypeReference> GetImplicitConversions(Parser parser, LiteralNode node)
+        {
+            var type = node.ExpressionReturnType;
+            if(type.IsIntegerType())
             {
-                return ParseValue((string)value, type, node.SequencePoint);
+                if(type.IsSignedInteger())
+                {
+                    var value = (long)node.Value;
+                    if (value > 0)
+                    {
+                        return parser.ProjectParser.MaxValues.Where(kv => kv.Key >= (ulong)value).Select(kv => kv.Value);
+                    }
+                    else
+                    {
+                        return parser.ProjectParser.MinValues.Where(kv => kv.Key >= value).Select(kv => kv.Value);
+                    }
+                }
+                else
+                {
+                    var value = (ulong)node.Value;
+                    return parser.ProjectParser.MaxValues.Where(kv => kv.Key >= value).Select(kv => kv.Value);
+                }
             }
-            switch (type.FullName)
+            else
             {
-                case "System.Boolean":
-                    return (Boolean)value;
-                case "System.Char":
-                    return (Char)value;
-                case "System.SByte":
-                    return (SByte)value;
-                case "System.Byte":
-                    return (Byte)value;
-                case "System.Int16":
-                    return (Int16)value;
-                case "System.Uint16":
-                    return (UInt16)value;
-                case "System.Int32":
-                    return (Int32)value;
-                case "System.UInt32":
-                    return (UInt32)value;
-                case "System.Int64":
-                    return (Int64)value;
-                case "System.UInt64":
-                    return (UInt64)value;
-                case "System.Single":
-                    return (Single)value;
-                case "System.Double":
-                    return (Double)value;
-                case "System.Decimal":
-                    return (Decimal)value;
-                default:
-                    ErrorCode.TypeMissmatch.ReportAndThrow(node.SequencePoint, "Type {0} is not a LaborasLang literal type", type.FullName);
-                    return null;//unreachable
+                return Enumerable.Empty<TypeReference>();
             }
         }
 

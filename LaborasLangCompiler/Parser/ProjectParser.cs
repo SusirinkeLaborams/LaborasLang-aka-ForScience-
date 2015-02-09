@@ -16,6 +16,9 @@ namespace LaborasLangCompiler.Parser.Impl
         public bool ShouldEmit { get; private set; }
 
         private Dictionary<string, TypeReference> primitives;
+        public IReadOnlyDictionary<ulong, TypeReference> MaxValues { get; private set; }
+        public IReadOnlyDictionary<long, TypeReference> MinValues { get; private set; }
+
         private List<Parser> parsers;
 
         #region types
@@ -71,6 +74,26 @@ namespace LaborasLangCompiler.Parser.Impl
 
             primitives["void"] = Void = assembly.TypeToTypeReference(typeof(void));
             primitives["auto"] = Auto = AutoType.Instance;
+
+            MaxValues = new Dictionary<ulong, TypeReference>()
+            {
+                {(ulong)sbyte.MaxValue, Int8},
+                {byte.MaxValue, UInt8},
+                {(ulong)short.MaxValue, Int16},
+                {ushort.MaxValue, UInt16},
+                {int.MaxValue, Int32},
+                {uint.MaxValue, UInt32},
+                {long.MaxValue, Int64},
+                {ulong.MaxValue, UInt64}
+            };
+
+            MinValues = new Dictionary<long, TypeReference>()
+            {
+                {sbyte.MinValue, Int8},
+                {short.MinValue, Int16},
+                {int.MinValue, Int32},
+                {long.MinValue, Int64},
+            };
         }
 
         public static ProjectParser ParseAll(AssemblyEmitter assembly, string[] sources, string[] names, bool emit)

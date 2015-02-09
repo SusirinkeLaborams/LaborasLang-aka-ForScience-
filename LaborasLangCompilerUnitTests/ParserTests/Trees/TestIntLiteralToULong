@@ -1,0 +1,19 @@
+Class:
+	TestIntLiteralToULong
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.UInt64
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Literal:
+					Type:
+						System.UInt64
+					Value:
+						5
+
+
+	Methods:
