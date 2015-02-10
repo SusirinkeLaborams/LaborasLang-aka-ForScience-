@@ -114,6 +114,8 @@
     <Compile Include="Parser\Impl\Wrappers\Namespace.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\ParserNodeInterface.cs" />
+    <Compile Include="Parser\Utils\AstUtils.cs" />
+    <Compile Include="Parser\Utils\TypeUtils.cs" />
     <Compile Include="Parser\Utils\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

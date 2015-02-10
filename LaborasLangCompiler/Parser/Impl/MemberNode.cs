@@ -22,7 +22,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Scope = scope;
             DeclaringType = member.DeclaringType;
             Member = member;
-            Utils.Utils.VerifyAccessible(Member, scope.GetClass().TypeReference, point);
+            TypeUtils.VerifyAccessible(Member, scope.GetClass().TypeReference, point);
         }
     }
 }

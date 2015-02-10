@@ -15,42 +15,11 @@ namespace LaborasLangCompiler.Parser.Utils
 {
     static class Utils
     {
-        public static bool IsFunctionDeclaration(this AstNode node)
-        {
-            if (node.Type == Lexer.TokenType.Function)
-                return true;
-
-            if (node.Type == Lexer.TokenType.Value)
-                return node.Children[0].IsFunctionDeclaration();
-
-            return false;
-        }
-
-        public static string GetSingleSymbolOrThrow(this AstNode node)
-        {
-            if (node.Type == Lexer.TokenType.Symbol)
-                return node.Content.ToString();
-
-            if (node.Type == Lexer.TokenType.FullSymbol && node.ChildrenCount == 1)
-                return node.Children[0].Content.ToString();
-
-            throw new InvalidOperationException("Node not a single symbol node");
-        }
 
         public static StringBuilder Indent(this StringBuilder builder, int count)
         {
             builder.Append('\t', count);
             return builder;
-        }
-
-        public static bool IsVoid(this TypeReference type)
-        {
-            return type.FullName == typeof(void).FullName;
-        }
-
-        public static bool IsAuto(this TypeReference type)
-        {
-            return type is AutoType;
         }
 
         public static IEnumerable<T> Enumerate<T>(this T item)
@@ -66,83 +35,6 @@ namespace LaborasLangCompiler.Parser.Utils
         public static IEnumerable<T> Enumerate<T>(params T[] stuff)
         {
             return stuff;
-        }
-
-        public static TypeReference GetNestedType(this TypeReference type, AssemblyEmitter assembly, string name)
-        {
-            return AssemblyRegistry.FindType(assembly, type.FullName + "." + name);
-        }
-
-        public static bool TypeEquals(this TypeReference left, TypeReference right)
-        {
-            return left.FullName == right.FullName;
-        }
-
-        public static bool IsAssignableTo(this IExpressionNode right, IExpressionNode left)
-        {
-            return right.ExpressionReturnType.IsAssignableTo(left.ExpressionReturnType);
-        }
-
-        public static void VerifyAccessible(MemberReference member, TypeReference scope, SequencePoint point)
-        {
-            if (!IsAccessbile(member, scope))
-                ErrorCode.UnreachableMember.ReportAndThrow(point, "Member {0} is inaccessible from {1}", member, scope);
-        }
-
-        public static bool IsAccessbile(MemberReference member, TypeReference scope)
-        {
-            if(member is MethodReference)
-            {
-                return MetadataHelpers.IsAccessible((MethodReference)member, scope);
-            }
-            else if(member is TypeReference)
-            {
-                return MetadataHelpers.IsAccessible((TypeReference)member, scope);
-            }
-            else if(member is FieldReference)
-            {
-                return MetadataHelpers.IsAccessible((FieldReference)member, scope);
-            }
-            else if(member is PropertyReference)
-            {
-                var definition = ((PropertyReference)member).Resolve();
-                var setter = definition.SetMethod;
-                var getter = definition.GetMethod;
-                return (setter != null && IsAccessbile(setter, scope)) || (getter != null && IsAccessbile(getter, scope));
-            }
-            else
-            {
-                throw new ArgumentException(String.Format("Unexpected member {0}", member.GetType().FullName));
-            }
-        }
-
-        public static bool IsStatic(this MemberReference member)
-        {
-            if(member is FieldReference)
-            {
-                return ((FieldReference)member).Resolve().IsStatic;
-            }else if(member is MethodReference)
-            {
-                return ((MethodReference)member).Resolve().IsStatic;
-            }else if(member is TypeReference)
-            {
-                return true;
-            }else if(member is PropertyReference)
-            {
-                var definition = ((PropertyReference)member).Resolve();
-
-                var setter = definition.SetMethod;
-                if (setter != null)
-                    return setter.IsStatic;
-
-                var getter = definition.GetMethod;
-                if (getter != null)
-                    return getter.IsStatic;
-                throw new InvalidOperationException("Propery with no getter and no setter");
-            }else
-            {
-                throw new ArgumentException();
-            }
         }
     }
 }

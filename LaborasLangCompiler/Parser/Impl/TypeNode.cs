@@ -24,7 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             ParsedType = type;
             if(!type.IsAuto())
-                Utils.Utils.VerifyAccessible(ParsedType, Scope.GetClass().TypeReference, point);
+                TypeUtils.VerifyAccessible(ParsedType, Scope.GetClass().TypeReference, point);
         }
 
         public static new TypeReference Parse(Parser parser, Context parent, AstNode lexerNode)
