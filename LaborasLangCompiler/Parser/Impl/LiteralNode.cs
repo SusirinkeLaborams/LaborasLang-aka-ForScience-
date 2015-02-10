@@ -1,4 +1,4 @@
-﻿
+﻿using LaborasLangCompiler.Parser.Utils;
 using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using System;

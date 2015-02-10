@@ -1,6 +1,5 @@
 ﻿using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Codegen;
-
 using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
@@ -12,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LaborasLangCompiler.Parser
+namespace LaborasLangCompiler.Parser.Utils
 {
     static class Utils
     {

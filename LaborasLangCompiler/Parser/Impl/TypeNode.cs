@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.Parser.Utils;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -23,7 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             ParsedType = type;
             if(!type.IsAuto())
-                Utils.VerifyAccessible(ParsedType, Scope.GetClass().TypeReference, point);
+                Utils.Utils.VerifyAccessible(ParsedType, Scope.GetClass().TypeReference, point);
         }
 
         public static new TypeReference Parse(Parser parser, Context parent, AstNode lexerNode)

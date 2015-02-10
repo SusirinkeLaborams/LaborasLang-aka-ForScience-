@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Common;
+using LaborasLangCompiler.Parser.Utils;
 
 namespace LaborasLangCompiler.Parser.Impl
 {

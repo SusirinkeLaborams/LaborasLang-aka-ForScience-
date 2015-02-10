@@ -3,6 +3,7 @@ using LaborasLangCompiler.Common;
 using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Parser;
+using LaborasLangCompiler.Parser.Utils;
 using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompilerUnitTests.CodegenTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

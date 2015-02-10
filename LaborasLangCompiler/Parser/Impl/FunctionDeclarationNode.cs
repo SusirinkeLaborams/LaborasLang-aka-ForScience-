@@ -1,7 +1,7 @@
 ﻿using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Codegen.Methods;
 using LaborasLangCompiler.Codegen.Types;
-
+using LaborasLangCompiler.Parser.Utils;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using LaborasLangCompiler.Parser;
 using Lexer.Containers;
@@ -67,7 +67,7 @@ namespace LaborasLangCompiler.Parser.Impl
             foreach(var p in paramz)
             {
                 var param = ParseParameter(parent, p.Type, p.Name);
-                if (Utils.IsVoid(param.ParameterType))
+                if (param.ParameterType.IsVoid())
                     ErrorCode.IllegalMethodParam.ReportAndThrow(point, "Illegal method parameter type void");
                 emitter.AddArgument(param);
                 symbols.Add(param.Name, param);

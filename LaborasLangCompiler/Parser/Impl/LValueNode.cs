@@ -1,4 +1,4 @@
-﻿
+﻿using LaborasLangCompiler.Parser.Utils;
 using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -134,12 +134,12 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public override bool IsSettable
         {
-            get { return definition.SetMethod != null && Utils.IsAccessbile(definition.SetMethod, Scope.GetClass().TypeReference); }
+            get { return definition.SetMethod != null && Utils.Utils.IsAccessbile(definition.SetMethod, Scope.GetClass().TypeReference); }
         }
 
         public override bool IsGettable
         {
-            get { return definition.GetMethod != null && Utils.IsAccessbile(definition.GetMethod, Scope.GetClass().TypeReference); }
+            get { return definition.GetMethod != null && Utils.Utils.IsAccessbile(definition.GetMethod, Scope.GetClass().TypeReference); }
         }
 
         public IExpressionNode ObjectInstance { get { return instance; } }

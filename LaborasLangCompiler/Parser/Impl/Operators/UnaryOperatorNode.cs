@@ -9,6 +9,7 @@ using LaborasLangCompiler.Codegen;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
+using LaborasLangCompiler.Parser.Utils;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
