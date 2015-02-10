@@ -59,57 +59,9 @@ namespace Lexer
                     #endregion
                     #region StringLiteral
                     case '\'':
-                        {
-                            // String literal, scan to next ' that is not going after a \
-                            var token = rootNode.ProvideToken();
-                            builder.Clear();
-
-                            token.Type = TokenType.StringLiteral;
-
-                            // Only peeked at the source, should save location after first pop or just increment collumn
-                            var location = Source.Location;
-                            location.Column = location.Column + 1;
-                            token.Start = location;
-
-                            do
-                            {
-                                if (Source.Peek() == '\\')
-                                {
-                                    builder.Append(Source.Pop());
-                                }
-                                builder.Append(Source.Pop());
-                            } while (Source.Peek() != '\'');
-
-                            builder.Append(Source.Pop());
-                            token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
-                            tokens.Add(token);
-                            break;
-                        }
                     case '"':
-                        {
-                            // Duble quote string, scan to next " that is not going after a \
-                            var token = rootNode.ProvideToken();
-                            builder.Clear();
-                            token.Type = TokenType.StringLiteral;
-
-                            // Only peeked at the source, should save location after first pop or just increment collumn
-                            var location = Source.Location;
-                            location.Column = location.Column + 1;
-                            token.Start = location;
-
-                            do
-                            {
-                                if (Source.Peek() == '\\')
-                                {
-                                    builder.Append(Source.Pop());
-                                }
-                                builder.Append(Source.Pop());
-                            } while (Source.Peek() != '"');
-
-                            builder.Append(Source.Pop());
-                            token.End = Source.Location;
-                            token.Content = new FastString(rootNode, builder);
+                        {                         
+                            var token = CreateString(rootNode, Source, builder, Source.Peek());
                             tokens.Add(token);
                             break;
                         }
@@ -704,6 +656,35 @@ namespace Lexer
             var tokenArray = new Token[tokens.Count];
             tokens.CopyTo(tokenArray);
             return tokenArray;
+        }
+
+        private static Token CreateString(RootNode rootNode, SourceReader Source, FastStringBuilder builder, char quote)
+        {
+            var token = rootNode.ProvideToken();
+            builder.Clear();
+
+            token.Type = TokenType.StringLiteral;
+
+            //Opening quote
+            Source.Pop();
+
+            token.Start = Source.Location;
+
+            while (Source.Peek() != quote)
+            {
+                if (Source.Peek() == '\\')
+                {
+                    builder.Append(Source.Pop());
+                }
+                builder.Append(Source.Pop());
+            };
+
+            //Closing quote
+            Source.Pop();
+
+            token.End = Source.Location;
+            token.Content = new FastString(rootNode, builder);
+            return token;
         }
 
         private static bool IsDigit(char c)

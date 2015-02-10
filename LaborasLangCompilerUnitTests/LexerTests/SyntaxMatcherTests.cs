@@ -1,4 +1,4 @@
-﻿//#define REMATCH
+﻿// #define REMATCH
 using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
