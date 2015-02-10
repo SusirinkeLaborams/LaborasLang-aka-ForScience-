@@ -13,7 +13,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
     {
         private AssemblyEmitter assembly;
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Metadata Utils Tests")]
         public void TestIsAssignableTo()
         {
             var types = new Dictionary<string, TypeReference>();

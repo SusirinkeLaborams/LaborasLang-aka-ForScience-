@@ -114,6 +114,7 @@
     <None Include="IntegrationTests\SourceFiles\MultipleFiles.ll" />
     <None Include="IntegrationTests\SourceFiles\Recursion.ll" />
     <None Include="IntegrationTests\SourceFiles\StdInWorks.ll" />
+    <Compile Include="ManagedCodeRunner.cs" />
     <Compile Include="ParserTests\ParserTestBase.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="ParserTests\ParserTests.cs" />
@@ -133,38 +134,24 @@
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_AddFloatAndInteger.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_AddIntegers.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_CallFunctor_PassReturnValueAsArgument.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_EmptyMethod.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctionAssignmentToDelegate.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctionAssignmentToFunctorWithArgs.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctionAssignmentToFunctorWithoutArgs.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorAssignmentToDelegate.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorDefinition.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorWithReturnTypeAndArguments.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_HelloWorld.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_InstanceFieldInitializer.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_InstancePropertyInitializer.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_MultipleNestedAssignments.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_Negation_BinaryNot_Increment_Decrement.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_Return.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_ShiftLeftAndRight.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_SignedDivision.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_SignedRemainder.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_StaticFieldInitializer.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_StaticPropertyInitializer.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_StoreArgument_LoadProperty_LoadStringLiteral.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_StoreLocalVariable_LoadField.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_StoreProperty_LoadLocalVariable_LoadArgument_LoadDoubleLiteral.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_Subtraction.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_UnsignedDivision.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_UnsignedRemainder.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_VariableDeclarationAndInitialization_LoadFloatLiteral.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_WhileLoop.il" />
     <None Include="packages.config" />
     <None Include="Properties\packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_StoreField_LoadIntLiteral.il" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="IntegrationTests\ExpectedOutput\Bottles.txt" />

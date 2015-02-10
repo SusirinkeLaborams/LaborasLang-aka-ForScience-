@@ -27,8 +27,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 Nodes = new List<IParserNode>()
             };
 
-            ExpectedILFilePath = "TestCanEmit_EmptyMethod.il";
-            ExecuteAndAssertSuccess();
+            ExpectedOutput = string.Empty;
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -53,26 +53,12 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                                 Value = "Hello, world!"
                             }
                         }
-                    },
-                    new UnaryOperatorNode()
-                    {
-                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
-                        Operand = new MethodCallNode()
-                        {
-                            Function = new FunctionNode()
-                            {
-                                Method = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "ReadKey",
-                                    new List<TypeReference>())
-                            },
-                            Args = new List<IExpressionNode>()
-                        }
                     }
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_HelloWorld.il";
-            ExecuteAndAssertSuccess();
+            ExpectedOutput = "Hello, world!";
+            AssertSuccessByExecution();
         }
 
         #region Load/Store lvalues and load literals tests
@@ -80,24 +66,30 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_VariableDeclarationAndInitialization_LoadFloatLiteral()
         {
+            var variable = new VariableDefinition("floatValue", assemblyEmitter.TypeToTypeReference(typeof(float)));
+
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
                 {
                     new SymbolDeclarationNode()
                     {
-                        Variable = new VariableDefinition("floatValue", assemblyEmitter.TypeToTypeReference(typeof(float))),
+                        Variable = variable,
                         Initializer = new LiteralNode()
                         {
                             ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(float)),
                             Value = 2.5
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new LocalVariableNode()
+                    {
+                        LocalVariable = variable
+                    })
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_VariableDeclarationAndInitialization_LoadFloatLiteral.il";
-            ExecuteAndAssertSuccess();
+            ExpectedOutput = 2.5.ToString();
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -126,12 +118,16 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                                 Value = 1
                             }
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new FieldNode()
+                    {
+                        Field = field
+                    })
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_StoreField_LoadIntLiteral.il";
-            ExecuteAndAssertSuccess();
+            ExpectedOutput = "1";
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -140,23 +136,45 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             var field = new FieldDefinition("intField", FieldAttributes.Static, assemblyEmitter.TypeToTypeReference(typeof(int)));
             typeEmitter.AddField(field);
 
+            var variable = new VariableDefinition("intLocal", assemblyEmitter.TypeToTypeReference(typeof(int)));
+
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
                 {
+                    new UnaryOperatorNode()
+                    {
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode()
+                            {
+                                Field = field
+                            },
+                            RightOperand = new LiteralNode()
+                            {
+                                ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(int)),
+                                Value = 42
+                            }
+                        }
+                    },
                     new SymbolDeclarationNode()
                     {
-                        Variable = new VariableDefinition("intLocal", assemblyEmitter.TypeToTypeReference(typeof(int))),
+                        Variable = variable,
                         Initializer = new FieldNode()
                         {
                             Field = field
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new LocalVariableNode()
+                    {
+                        LocalVariable = variable
+                    })
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_StoreLocalVariable_LoadField.il";
-            ExecuteAndAssertSuccess();
+            ExpectedOutput = "42";
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -229,12 +247,16 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                                 LocalVariable = localVariable
                             }
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new FieldNode()
+                    {
+                        Field = backingField
+                    })
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_StoreProperty_LoadLocalVariable_LoadArgument_LoadDoubleLiteral.il";
-            ExecuteAndAssertSuccess();
+            ExpectedOutput = 5.5.ToString();
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -252,7 +274,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new LiteralNode()
                     {
                         ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(string)),
-                        Value = "Test"
+                        Value = "Test2"
                     }
                 }
             });
@@ -269,6 +291,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
+                    CallConsoleWriteLine(new FunctionArgumentNode()
+                    {
+                        Param = argument
+                    }),
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
@@ -284,7 +310,11 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                                 Property = property
                             }
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new FunctionArgumentNode()
+                    {
+                        Param = argument
+                    })
                 }
             });
 
@@ -303,15 +333,15 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                             new LiteralNode()
                             {
                                 ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(string)),
-                                Value = "Test"
+                                Value = "Test1"
                             }
                         }
                     }
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_StoreArgument_LoadProperty_LoadStringLiteral.il";
-            ExecuteAndAssertSuccess();
+            ExpectedOutput = string.Format("{1}{0}{2}", Environment.NewLine, "Test1", "Test2");
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -324,6 +354,12 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             callableMethod.ParseTree(new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
+                {
+                    CallConsoleWriteLine(new FunctionArgumentNode()
+                    {
+                        Param = callableMethod.Get().Parameters[0]
+                    })
+                }
             });
 
             BodyCodeBlock = new CodeBlockNode()
@@ -348,8 +384,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral.il";
-            ExecuteAndAssertSuccess();
+            ExpectedOutput = true.ToString();
+            AssertSuccessByExecution();
         }
 
         #endregion
@@ -369,10 +405,12 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             const int count = 10;
+            var fields = new List<FieldDefinition>();
             for (int i = 0; i < count; i++)
             {
                 var field = new FieldDefinition("intField" + i.ToString(), FieldAttributes.Static | FieldAttributes.Private,
                     assemblyEmitter.TypeToTypeReference(typeof(int)));
+                fields.Add(field);
                 typeEmitter.AddField(field);
 
                 assignmentNode.LeftOperand = new FieldNode()
@@ -391,6 +429,11 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 }
             }
 
+            var outputCodeBlock = new CodeBlockNode()
+            {
+                Nodes = fields.Select(field => CallConsoleWriteLine(new FieldNode { Field = field })).ToList()
+            };
+
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
@@ -400,12 +443,13 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = assignmentNode
-                    }
+                    },
+                    outputCodeBlock
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_MultipleNestedAssignments.il";
-            ExecuteAndAssertSuccess();
+            ExpectedOutput = Enumerable.Repeat<int>(110, fields.Count).Select(i => i.ToString()).Aggregate((x, y) => x + Environment.NewLine + y);
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -414,6 +458,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
 
+            typeEmitter.AddDefaultConstructor();
             var testMethod = new MethodEmitter(typeEmitter, "TestNestedInstanceFieldAssignment", voidType);
 
             var assignmentNode = new AssignmentOperatorNode()
@@ -426,10 +471,13 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             const int count = 10;
+            var fields = new List<FieldDefinition>();
+
             for (int i = 0; i < count; i++)
             {
                 var field = new FieldDefinition("intField" + i.ToString(), FieldAttributes.Private, floatType);
                 typeEmitter.AddField(field);
+                fields.Add(field);
 
                 assignmentNode.LeftOperand = new FieldNode()
                 {
@@ -451,6 +499,15 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 }
             }
 
+            var outputCodeBlock = new CodeBlockNode()
+            {
+                Nodes = fields.Select(f => CallConsoleWriteLine(new FieldNode()
+                {
+                    Field = f, 
+                    ObjectInstance = new ThisNode { ExpressionReturnType = f.DeclaringType }
+                })).ToList()
+            };
+
             testMethod.ParseTree(new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
@@ -460,7 +517,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         ExpressionReturnType = voidType,
                         Operand = assignmentNode
-                    }
+                    },
+                    outputCodeBlock
                 }
             });
 
@@ -468,11 +526,24 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
+                    new MethodCallNode()
+                    {
+                        Function = new FunctionNode()
+                        {
+                            ObjectInstance = new ObjectCreationNode()
+                            {
+                                ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
+                                Args = new IExpressionNode[] { }
+                            },
+                            Method = testMethod.Get(),
+                        },
+                        Args = new IExpressionNode[] { }
+                    }
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_MultipleNestedInstanceFieldAssignments.il";
-            ExecuteAndAssertSuccess();
+            ExpectedOutput = Enumerable.Repeat<int>(110, fields.Count).Select(i => i.ToString()).Aggregate((x, y) => x + Environment.NewLine + y);
+            AssertSuccessByExecution();
         }
 
         #region Binary operators
@@ -525,7 +596,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_AddIntegers.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -576,7 +647,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_AddFloatAndInteger.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -623,7 +694,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_AddStrings.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -671,7 +742,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_Subtraction.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -719,7 +790,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_Multiplication.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -767,7 +838,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_SignedDivision.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -815,7 +886,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_UnsignedDivision.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -863,7 +934,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_SignedRemainder.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -911,7 +982,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_UnsignedRemainder.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -969,7 +1040,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_ShiftLeftAndRight.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         #endregion
@@ -1203,7 +1274,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(assemblyEmitter.TypeToTypeReference(typeof(int)), 5, 6);
 
             ExpectedILFilePath = "TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Numerals.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -1212,7 +1283,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(assemblyEmitter.TypeToTypeReference(typeof(string)), "hi", "bye");
 
             ExpectedILFilePath = "TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Strings.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         public void TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(TypeReference literalType, dynamic value1, dynamic value2)
@@ -1330,7 +1401,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(assemblyEmitter.TypeToTypeReference(typeof(float)), 3.5, 2.1);
 
             ExpectedILFilePath = "TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Numerals.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -1339,7 +1410,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(assemblyEmitter.TypeToTypeReference(typeof(string)), "hi", "bye");
 
             ExpectedILFilePath = "TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Strings.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         #endregion
@@ -1454,7 +1525,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_LogicalAnd_LogicalOr.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -1592,7 +1663,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_BinaryAnd_BinaryOr_BinaryXor.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
         
         #endregion
@@ -1695,7 +1766,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             });
 
             ExpectedILFilePath = "TestCanEmit_Negation_BinaryNot_Increment_Decrement.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -1736,7 +1807,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_LogicalNot.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         #endregion
@@ -1820,7 +1891,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_WhileLoop.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -1876,7 +1947,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_IfBlockWithoutElse.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -1946,7 +2017,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_Return.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         #endregion
@@ -1980,7 +2051,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_CreateObject.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -2096,7 +2167,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             ExpectedILFilePath = "TestCanEmit_CallFunctionWithOptionalParameter.il";
-            ExecuteAndAssertSuccess();
+            AssertSuccessByILComparison();
         }
 
         #endregion

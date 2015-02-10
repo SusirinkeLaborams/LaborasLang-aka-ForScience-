@@ -75,7 +75,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 switch (type.FullName)
                 {
                     case "System.String":
-                        return value.Substring(1, value.Length - 2);
+                        return value;
                     case "System.Boolean":
                         return Convert.ToBoolean(value, CultureInfo.InvariantCulture);
                     case "System.Char":
