@@ -147,7 +147,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 case ExpressionNodeType.FunctionArgument:
-                    Emit((IMethodParamNode)expression, emitReference);
+                    Emit((IParameterNode)expression, emitReference);
                     return;
 
                 case ExpressionNodeType.LocalVariable:
@@ -246,7 +246,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 case ExpressionNodeType.FunctionArgument:
-                    EmitStore((IMethodParamNode)expression);
+                    EmitStore((IParameterNode)expression);
                     return;
 
                 case ExpressionNodeType.LocalVariable:
@@ -294,10 +294,10 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void Emit(IMethodParamNode argument, bool emitReference)
+        protected void Emit(IParameterNode argument, bool emitReference)
         {
-            var index = argument.Param.Index + (methodDefinition.HasThis ? 1 : 0);
-            emitReference &= argument.Param.ParameterType.IsValueType;
+            var index = argument.Parameter.Index + (methodDefinition.HasThis ? 1 : 0);
+            emitReference &= argument.Parameter.ParameterType.IsValueType;
 
             if (emitReference)
             {
@@ -1240,9 +1240,9 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void EmitStore(IMethodParamNode argument)
+        protected void EmitStore(IParameterNode argument)
         {
-            Starg(argument.Param.Index);
+            Starg(argument.Parameter.Index);
         }
 
         protected void EmitStore(ILocalVariableNode variable)

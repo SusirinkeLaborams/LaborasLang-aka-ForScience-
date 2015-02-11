@@ -105,9 +105,9 @@ namespace LaborasLangCompiler.Parser
         PropertyReference Property { get; }
     }
 
-    interface IMethodParamNode : IExpressionNode
+    interface IParameterNode : IExpressionNode
     {
-        ParameterDefinition Param { get; }
+        ParameterDefinition Parameter { get; }
     }
 
     public enum BinaryOperatorNodeType

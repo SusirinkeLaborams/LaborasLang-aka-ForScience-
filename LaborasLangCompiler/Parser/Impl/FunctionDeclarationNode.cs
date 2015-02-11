@@ -102,7 +102,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public ExpressionNode GetSymbol(string name, Context scope, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
-                return new FunctionArgumentNode(symbols[name], point);
+                return new ParameterNode(symbols[name], point);
 
             return parent.GetSymbol(name, scope, point); 
         }

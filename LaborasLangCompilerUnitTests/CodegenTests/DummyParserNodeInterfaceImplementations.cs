@@ -113,11 +113,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         public TypeReference ExpressionReturnType { get { return LocalVariable.VariableType; } }
         public VariableDefinition LocalVariable { get; set; }
-
-        public LocalVariableNode()
-        {
-        }
-
+        
         public LocalVariableNode(VariableDefinition variable)
         {
             LocalVariable = variable;
@@ -153,17 +149,30 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public TypeReference ExpressionReturnType { get { return Property.PropertyType; } }
         public IExpressionNode ObjectInstance { get; set; }
         public PropertyReference Property { get; set; }
+
+        public PropertyNode()
+        {
+        }
+
+        public PropertyNode(PropertyDefinition property)
+        {
+            Property = property;
+        }
     }
 
-    class FunctionArgumentNode : IMethodParamNode
+    class ParameterNode : IParameterNode
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.FunctionArgument; } }
 
-        public TypeReference ExpressionReturnType { get { return Param.ParameterType; } }
-        public ParameterDefinition Param { get; set; }
-        public bool IsMethodStatic { get; set; }
+        public TypeReference ExpressionReturnType { get { return Parameter.ParameterType; } }
+        public ParameterDefinition Parameter { get; set; }
+        
+        public ParameterNode(ParameterDefinition parameter)
+        {
+            Parameter = parameter;
+        }
     }
 
     class BinaryOperatorNode : IBinaryOperatorNode

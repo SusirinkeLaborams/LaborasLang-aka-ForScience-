@@ -34,14 +34,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_HelloWorld()
         {
-            BodyCodeBlock = new CodeBlockNode
-            {
-                Nodes = new List<IParserNode>()
-                {
-                    CallConsoleWriteLine(new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "Hello, world!"))
-                }
-            };
-
+            GenerateBodyToOutputExpression(new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "Hello, world!"));
             ExpectedOutput = "Hello, world!";
             AssertSuccessByExecution();
         }
@@ -155,11 +148,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new FieldNode(backingField),
-                            RightOperand = new FunctionArgumentNode()
-                            {
-                                Param = argument,
-                                IsMethodStatic = true
-                            }
+                            RightOperand = new ParameterNode(argument)
                         }
                     }
                 }
@@ -178,11 +167,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new SymbolDeclarationNode()
                     {
                         Variable = localVariable,
-                        Initializer = new LiteralNode
-                        {
-                            ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(double)),
-                            Value = 5.5
-                        }
+                        Initializer = new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(double)), 5.5)
                     },
                     new UnaryOperatorNode()
                     {
@@ -190,10 +175,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new PropertyNode()
-                            {
-                                Property = property
-                            },
+                            LeftOperand = new PropertyNode(property),
                             RightOperand = new LocalVariableNode(localVariable)
                         }
                     },
@@ -233,30 +215,18 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    CallConsoleWriteLine(new FunctionArgumentNode()
-                    {
-                        Param = argument
-                    }),
+                    CallConsoleWriteLine(new ParameterNode(argument)),
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FunctionArgumentNode()
-                            {
-                                Param = argument
-                            },
-                            RightOperand = new PropertyNode()
-                            {
-                                Property = property
-                            }
+                            LeftOperand = new ParameterNode(argument),
+                            RightOperand = new PropertyNode(property)
                         }
                     },
-                    CallConsoleWriteLine(new FunctionArgumentNode()
-                    {
-                        Param = argument
-                    })
+                    CallConsoleWriteLine(new ParameterNode(argument))
                 }
             });
 
@@ -293,10 +263,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    CallConsoleWriteLine(new FunctionArgumentNode()
-                    {
-                        Param = callableMethod.Get().Parameters[0]
-                    })
+                    CallConsoleWriteLine(new ParameterNode(callableMethod.Get().Parameters[0]))
                 }
             });
 
@@ -312,11 +279,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode
-                            {
-                                ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(bool)),
-                                Value = true
-                            }
+                            new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(bool)), true)
                         }
                     }
                 }
@@ -362,7 +325,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             var outputCodeBlock = new CodeBlockNode()
             {
-                Nodes = fields.Select(field => CallConsoleWriteLine(new FieldNode { Field = field })).ToList()
+                Nodes = fields.Select(field => CallConsoleWriteLine(new FieldNode(field))).ToList()
             };
 
             BodyCodeBlock = new CodeBlockNode()
@@ -1084,30 +1047,13 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             var booleanType = assemblyEmitter.TypeToTypeReference(typeof(bool));
 
             var variableDef1 = new VariableDefinition("a", booleanType);
-
-            var variable1 = new LocalVariableNode()
-            {
-                LocalVariable = variableDef1
-            };
+            var variable1 = new LocalVariableNode(variableDef1);
 
             var variableDef2 = new VariableDefinition("b", booleanType);
+            var variable2 = new LocalVariableNode(variableDef2);
 
-            var variable2 = new LocalVariableNode()
-            {
-                LocalVariable = variableDef2
-            };
-
-            var literal1 = new LiteralNode()
-            {
-                ExpressionReturnType = booleanType,
-                Value = true
-            };
-
-            var literal2 = new LiteralNode()
-            {
-                ExpressionReturnType = booleanType,
-                Value = false
-            };
+            var literal1 = new LiteralNode(booleanType, true);
+            var literal2 = new LiteralNode(booleanType, false);
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -1133,11 +1079,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "{0} && {1} == {2}."
-                            },
+                            new LiteralNode(stringType, "{0} && {1} == {2}."),
                             variable1,
                             variable2,
                             new BinaryOperatorNode()
@@ -1158,11 +1100,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "{0} || {1} == {2}."
-                            },
+                            new LiteralNode(stringType, "{0} || {1} == {2}."),
                             variable1,
                             variable2,
                             new BinaryOperatorNode()
@@ -1197,30 +1135,13 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             });
 
             var variableDef1 = new VariableDefinition("a", uintType);
-
-            var variable1 = new LocalVariableNode()
-            {
-                LocalVariable = variableDef1
-            };
+            var variable1 = new LocalVariableNode(variableDef1);
 
             var variableDef2 = new VariableDefinition("b", uintType);
+            var variable2 = new LocalVariableNode(variableDef2);
 
-            var variable2 = new LocalVariableNode()
-            {
-                LocalVariable = variableDef2
-            };
-
-            var literal1 = new LiteralNode()
-            {
-                ExpressionReturnType = uintType,
-                Value = 0x156
-            };
-
-            var literal2 = new LiteralNode()
-            {
-                ExpressionReturnType = uintType,
-                Value = 0x841
-            };
+            var literal1 = new LiteralNode(uintType, 0x156);
+            var literal2 = new LiteralNode(uintType, 0x841);
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -1246,11 +1167,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "{0} & {1} == {2}."
-                            },
+                            new LiteralNode(stringType, "{0} & {1} == {2}."),
                             variable1,
                             variable2,
                             new BinaryOperatorNode()
@@ -1271,11 +1188,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "{0} | {1} == {2}."
-                            },
+                            new LiteralNode(stringType, "{0} | {1} == {2}."),
                             variable1,
                             variable2,
                             new BinaryOperatorNode()
@@ -1296,11 +1209,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "{0} ^ {1} == {2}."
-                            },
+                            new LiteralNode(stringType, "{0} ^ {1} == {2}."),
                             variable1,
                             variable2,
                             new BinaryOperatorNode()
@@ -1348,10 +1257,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 variableDefs.Add(new VariableDefinition(((char)i + 'a').ToString(), intType));
             }
 
-            var variables = variableDefs.Select(def => new LocalVariableNode()
-                {
-                    LocalVariable = def
-                }).ToList();
+            var variables = variableDefs.Select(def => new LocalVariableNode(def)).ToList();
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -1360,11 +1266,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new SymbolDeclarationNode()
                     {
                         Variable = variableDefs[0],
-                        Initializer = new LiteralNode()
-                        {
-                            ExpressionReturnType = intType,
-                            Value = 5
-                        }
+                        Initializer = new LiteralNode(intType, 5)
                     }
                 }
             };
@@ -1403,11 +1305,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 },
                 Args = new List<IExpressionNode>()
                 {
-                    new LiteralNode()
-                    {
-                        ExpressionReturnType = stringType,
-                        Value = "Results: \r\n{0}\r\n{1}\r\n{2}\r\n{3}\r\n{4}\r\n{5}\r\n{6}\r\n"
-                    },
+                    new LiteralNode(stringType, "Results: \r\n{0}\r\n{1}\r\n{2}\r\n{3}\r\n{4}\r\n{5}\r\n{6}\r\n"),
                     variables[0],
                     variables[1],
                     variables[2],
@@ -1478,11 +1376,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             });
 
             var localVariableDef = new VariableDefinition("counter", intType);
-
-            var localVariable = new LocalVariableNode()
-            {
-                LocalVariable = localVariableDef
-            };
+            var localVariable = new LocalVariableNode(localVariableDef);
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -1491,11 +1385,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new SymbolDeclarationNode()
                     {
                         Variable = localVariableDef,
-                        Initializer = new LiteralNode()
-                        {
-                            ExpressionReturnType = intType,
-                            Value = 0
-                        }
+                        Initializer = new LiteralNode(intType, 0)
                     },
                     new WhileBlockNode()
                     {
@@ -1504,11 +1394,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                             ExpressionReturnType = boolType,
                             BinaryOperatorType = BinaryOperatorNodeType.LessThan,
                             LeftOperand = localVariable,
-                            RightOperand = new LiteralNode()
-                            {
-                                ExpressionReturnType = intType,
-                                Value = 10
-                            }
+                            RightOperand = new LiteralNode(intType, 10)
                         },
                         ExecutedBlock = new CodeBlockNode()
                         {
@@ -1523,11 +1409,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                                     },
                                     Args = new List<IExpressionNode>()
                                     {
-                                        new LiteralNode()
-                                        {
-                                            ExpressionReturnType = stringType,
-                                            Value = "The loop has looped {0} time(s)."
-                                        },
+                                        new LiteralNode(stringType, "The loop has looped {0} time(s)."),
                                         localVariable
                                     }
                                 }
@@ -1577,11 +1459,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                                     },
                                     Args = new List<IExpressionNode>()
                                     {
-                                        new LiteralNode()
-                                        {
-                                            ExpressionReturnType = stringType,
-                                            Value = "myField is true."
-                                        }
+                                        new LiteralNode(stringType, "myField is true.")
                                     }
                                 }
                             }
@@ -1641,11 +1519,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "Your input is: \"{0}\"."
-                            },
+                            new LiteralNode(stringType, "Your input is: \"{0}\"."),
                             new MethodCallNode()
                             {
                                 ExpressionReturnType = stringType,
@@ -1733,21 +1607,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "{0}: {1}"
-                            },
-                            new FunctionArgumentNode()
-                            {
-                                IsMethodStatic = true,
-                                Param = neededParameter,
-                            },
-                            new FunctionArgumentNode()
-                            {
-                                IsMethodStatic = true,
-                                Param = optionalParameter,
-                            }
+                            new LiteralNode(stringType, "{0}: {1}"),
+                            new ParameterNode(neededParameter),
+                            new ParameterNode(optionalParameter)
                         }
                     }
                 }
@@ -1779,11 +1641,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "Hi"
-                            }
+                            new LiteralNode(stringType, "Hi")
                         }
                     },
                     new MethodCallNode()
@@ -1795,16 +1653,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "Hi"
-                            },
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "NonOptional"
-                            }
+                            new LiteralNode(stringType, "Hi"),
+                            new LiteralNode(stringType, "NonOptional")
                         }
                     }
                 }

@@ -45,12 +45,12 @@ namespace LaborasLangCompiler.Parser.Impl
         }
     }
 
-    class FunctionArgumentNode : ExpressionNode, IMethodParamNode
+    class ParameterNode : ExpressionNode, IParameterNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.FunctionArgument; } }
-        public ParameterDefinition Param { get; private set; }
-        public override TypeReference ExpressionReturnType { get { return Param.ParameterType; } }
-        public string Name { get { return Param.Name; } }
+        public ParameterDefinition Parameter { get; private set; }
+        public override TypeReference ExpressionReturnType { get { return Parameter.ParameterType; } }
+        public string Name { get { return Parameter.Name; } }
         public override bool IsGettable
         {
             get { return true; }
@@ -61,10 +61,10 @@ namespace LaborasLangCompiler.Parser.Impl
         }
 
 
-        public FunctionArgumentNode(ParameterDefinition param, SequencePoint point)
+        public ParameterNode(ParameterDefinition param, SequencePoint point)
             : base(point)
         {
-            this.Param = param;
+            this.Parameter = param;
         }
         public override string ToString(int indent)
         {
