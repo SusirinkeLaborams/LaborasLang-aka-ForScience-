@@ -26,6 +26,16 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         public TypeReference ExpressionReturnType { get; set; }
         public dynamic Value { get; set; }
+
+        public LiteralNode()
+        {
+        }
+
+        public LiteralNode(TypeReference literalType, dynamic value)
+        {
+            ExpressionReturnType = literalType;
+            Value = value;
+        }
     }
 
     class FunctionNode : IMethodNode
@@ -103,6 +113,15 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         public TypeReference ExpressionReturnType { get { return LocalVariable.VariableType; } }
         public VariableDefinition LocalVariable { get; set; }
+
+        public LocalVariableNode()
+        {
+        }
+
+        public LocalVariableNode(VariableDefinition variable)
+        {
+            LocalVariable = variable;
+        }
     }
 
     class FieldNode : IFieldNode
@@ -114,6 +133,15 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public TypeReference ExpressionReturnType { get { return Field.FieldType; } }
         public IExpressionNode ObjectInstance { get; set; }
         public FieldReference Field { get; set; }
+
+        public FieldNode()
+        {
+        }
+
+        public FieldNode(FieldReference field)
+        {
+            Field = field;
+        }
     }
 
     class PropertyNode : IPropertyNode

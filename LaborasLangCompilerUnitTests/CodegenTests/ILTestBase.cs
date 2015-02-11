@@ -26,6 +26,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         private readonly CompilerArguments compilerArgs;
         private readonly MethodReference consoleWriteLine;
+        private readonly MethodReference consoleWriteLineParams;
 
         public ILTestBase()
         {
@@ -36,7 +37,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             methodEmitter = new MethodEmitter(typeEmitter, "dummy", assemblyEmitter.TypeToTypeReference(typeof(void)),
                 MethodAttributes.Static | MethodAttributes.Private);
 
-            consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new [] { assemblyEmitter.TypeToTypeReference(typeof(object)) });
+            consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine",
+                new[] { assemblyEmitter.TypeToTypeReference(typeof(object)) });
+            consoleWriteLineParams = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine",
+                new[] { assemblyEmitter.TypeToTypeReference(typeof(string)), assemblyEmitter.TypeToTypeReference(typeof(object[])) });
         }
 
         protected void AssertSuccessByILComparison()
@@ -121,6 +125,17 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                 {
                     expression
                 }
+            };
+        }
+        internal IParserNode CallConsoleWriteLine(params IExpressionNode[] args)
+        {
+            return new MethodCallNode()
+            {
+                Function = new FunctionNode()
+                {
+                    Method = consoleWriteLineParams
+                },
+                Args = new List<IExpressionNode>(args)
             };
         }
     }

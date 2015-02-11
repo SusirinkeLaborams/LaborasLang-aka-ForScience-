@@ -47,6 +47,7 @@
     <Reference Include="ICSharpCode.NRefactory.Xml">
       <HintPath>..\packages\ICSharpCode.NRefactory.5.3.0\lib\Net40\ICSharpCode.NRefactory.Xml.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Mono.Cecil.0.9.5.4\lib\net40\Mono.Cecil.dll</HintPath>
@@ -84,19 +85,13 @@
     <Compile Include="CodegenTests\DummyParserNodeInterfaceImplementations.cs" />
     <Compile Include="CodegenTests\ILTestBase.cs" />
     <Compile Include="CodegenTests\MethodBodyTests\ConstructorTests.cs" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_AddStrings.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_BinaryAnd_BinaryOr_BinaryXor.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_CallFunctionWithOptionalParameter.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Numerals.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Strings.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_CreateObject.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorPropertyAssignmentToDelegate.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Numerals.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Strings.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_IfBlockWithoutElse.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_LogicalAnd_LogicalOr.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_LogicalNot.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_Multiplication.il" />
     <Compile Include="CodegenTests\MethodBodyTests\FunctorTests.cs" />
     <Compile Include="CodegenTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="CodegenTests\ILHelpersTests.cs" />
@@ -131,8 +126,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_AddFloatAndInteger.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_AddIntegers.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_CallFunctor_PassReturnValueAsArgument.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctionAssignmentToDelegate.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctionAssignmentToFunctorWithArgs.il" />
@@ -142,13 +135,7 @@
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorWithReturnTypeAndArguments.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_Negation_BinaryNot_Increment_Decrement.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_Return.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_ShiftLeftAndRight.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_SignedDivision.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_SignedRemainder.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_StoreLocalVariable_LoadField.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_Subtraction.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_UnsignedDivision.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_UnsignedRemainder.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_WhileLoop.il" />
     <None Include="packages.config" />
     <None Include="Properties\packages.config" />
