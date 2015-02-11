@@ -81,7 +81,6 @@ namespace LaborasLangCompiler.Parser.Impl
     class FieldNode : MemberNode, IFieldNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Field; } }
-        public IExpressionNode ObjectInstance { get { return instance; } }
         public FieldReference Field { get; private set; }
         public override TypeReference ExpressionReturnType { get { return Field.FieldType; } }
         public override bool IsGettable
@@ -99,11 +98,9 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private ExpressionNode instance;
         public FieldNode(ExpressionNode instance, FieldReference field, Context parent, SequencePoint point)
-            : base(field, parent, point)
+            : base(field, GetInstance(field, instance, parent, point), parent, point)
         {
-            this.instance = ThisNode.GetAccessingInstance(field, instance, parent, point);
             this.Field = field;
         }
         public override string ToString(int indent)
@@ -112,10 +109,10 @@ namespace LaborasLangCompiler.Parser.Impl
             builder.Indent(indent).AppendLine("Field:");
             builder.Indent(indent + 1).AppendLine(Field.FullName);
             builder.Indent(indent + 1).AppendLine("Instance:");
-            if (instance == null)
+            if (Instance == null)
                 builder.Indent(indent + 2).Append("null");
             else
-                builder.AppendLine(instance.ToString(indent + 2));
+                builder.AppendLine(Instance.ToString(indent + 2));
             return builder.ToString();
         }
     }
@@ -142,16 +139,13 @@ namespace LaborasLangCompiler.Parser.Impl
             get { return definition.GetMethod != null && TypeUtils.IsAccessbile(definition.GetMethod, Scope.GetClass().TypeReference); }
         }
 
-        public IExpressionNode ObjectInstance { get { return instance; } }
         public PropertyReference Property { get; private set; }
 
-        private ExpressionNode instance;
         private PropertyDefinition definition;
 
         public PropertyNode(ExpressionNode instance, PropertyReference property, Context scope, SequencePoint point)
-            :base(property, scope, point)
+            : base(property, GetInstance(property, instance, scope, point), scope, point)
         {
-            this.instance = instance;
             this.Property = property;
             this.definition = property.Resolve();
         }
@@ -162,10 +156,10 @@ namespace LaborasLangCompiler.Parser.Impl
             builder.Indent(indent).AppendLine("Property:");
             builder.Indent(indent + 1).AppendLine(Property.FullName);
             builder.Indent(indent + 1).AppendLine("Instance:");
-            if (instance == null)
+            if (ObjectInstance == null)
                 builder.Indent(indent + 2).Append("null");
             else
-                builder.AppendLine(instance.ToString(indent + 2));
+                builder.AppendLine(Instance.ToString(indent + 2));
             return builder.ToString();
         }
     }

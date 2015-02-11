@@ -46,28 +46,5 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             throw new NotImplementedException();
         }
-
-        public static ExpressionNode GetAccessingInstance(MemberReference member, ExpressionNode instance, Context context, SequencePoint point)
-        {
-            if (instance != null)
-            {
-                return instance;
-            }
-
-            if (member.IsStatic())
-            {
-                return null;
-            }
-
-            if (!context.IsStaticContext() && context.GetClass().TypeReference.IsAssignableTo(member.DeclaringType))
-            {
-                return new ThisNode(member.DeclaringType, point);
-            }
-            else
-            {
-                ErrorCode.MissingInstance.ReportAndThrow(point, "Cannot access non-static member {0} from a static context", member.FullName);
-                return null;//unreachable
-            }
-        }
     }
 }

@@ -16,19 +16,16 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Function; } }
         public override TypeReference ExpressionReturnType { get { return functorType.Value; } }
-        public IExpressionNode ObjectInstance { get { return instance; } }
         public MethodReference Method { get; private set; }
         public override bool IsGettable { get { return true; } }
         public override bool IsSettable { get { return false; } }
 
         private Lazy<TypeReference> functorType;
-        private ExpressionNode instance;
 
         public MethodNode(Parser parser, MethodReference method, ExpressionNode instance, Context parent, SequencePoint point)
-            : base(method, parent, point)
+            : base(method, GetInstance(method, instance, parent, point), parent, point)
         {
             this.Method = method;
-            this.instance = ThisNode.GetAccessingInstance(method, instance, parent, point);
             this.functorType = new Lazy<TypeReference>(() => AssemblyRegistry.GetFunctorType(parser.Assembly, Method));
         }
 
@@ -43,13 +40,13 @@ namespace LaborasLangCompiler.Parser.Impl
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("Method:");
             builder.Indent(indent + 1).AppendLine("Instance:");
-            if (instance == null)
+            if (Instance == null)
             {
                 builder.Indent(indent + 2).AppendLine("null");
             }
             else
             {
-                builder.AppendLine(instance.ToString(indent + 2));
+                builder.AppendLine(Instance.ToString(indent + 2));
             }
             builder.Indent(indent + 1).AppendLine("Method:");
             builder.Indent(indent + 2).AppendLine(Method.ToString());

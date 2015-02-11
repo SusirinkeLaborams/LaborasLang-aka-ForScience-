@@ -23,7 +23,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private List<ExpressionNode> args;
 
         public ObjectCreationNode(List<ExpressionNode> args, MethodReference constructor, Context scope, SequencePoint point)
-            :base(constructor, scope, point)
+            :base(constructor, null, scope, point)
         {
             this.type = constructor.DeclaringType;
             this.args = args;

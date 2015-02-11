@@ -46,21 +46,21 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             var parser = ProjectParser.ParseAll(assembly, sources.ToArray(), names.ToArray(), false);
             string result = parser.ToString();
 
+            string expected = "";
 #if REWRITE
             System.IO.File.WriteAllText(file, result);
 #else
-
-            string expected = "";
             try
             {
                 expected = System.IO.File.ReadAllText(file);
             }
             catch { }
-            Assert.AreEqual(expected, result);
 #endif
             var foundErrors = Errors.Reported.Select(e => e.ErrorCode).ToHashSet();
             var expectedErrors = errors.ToHashSet();
-            Assert.IsTrue(foundErrors.SetEquals(expectedErrors));
+
+            Assert.IsTrue(foundErrors.SetEquals(expectedErrors), "Errors: " + String.Join(", ", foundErrors));
+            Assert.AreEqual(expected, result);
         }
     }
 }
