@@ -85,13 +85,7 @@
     <Compile Include="CodegenTests\DummyParserNodeInterfaceImplementations.cs" />
     <Compile Include="CodegenTests\ILTestBase.cs" />
     <Compile Include="CodegenTests\MethodBodyTests\ConstructorTests.cs" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_BinaryAnd_BinaryOr_BinaryXor.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_CallFunctionWithOptionalParameter.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_CreateObject.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorPropertyAssignmentToDelegate.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_IfBlockWithoutElse.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_LogicalAnd_LogicalOr.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_LogicalNot.il" />
     <Compile Include="CodegenTests\MethodBodyTests\FunctorTests.cs" />
     <Compile Include="CodegenTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="CodegenTests\ILHelpersTests.cs" />
@@ -133,10 +127,6 @@
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorAssignmentToDelegate.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorDefinition.il" />
     <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorWithReturnTypeAndArguments.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_Negation_BinaryNot_Increment_Decrement.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_Return.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_StoreLocalVariable_LoadField.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_WhileLoop.il" />
     <None Include="packages.config" />
     <None Include="Properties\packages.config" />
   </ItemGroup>
