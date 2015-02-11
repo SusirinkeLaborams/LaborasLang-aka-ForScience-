@@ -63,6 +63,7 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.left = left;
             return instance;    
         }
+
         public override string ToString(int indent)
         {
             StringBuilder builder = new StringBuilder();

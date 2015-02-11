@@ -11,7 +11,7 @@ using LaborasLangCompiler.Common;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ConditionBlockNode : ParserNode, IConditionBlock, ReturningNode
+    class ConditionBlockNode : ParserNode, IConditionBlock, IReturningNode
     {
         public override NodeType Type { get { return NodeType.ConditionBlock; } }
         public IExpressionNode Condition { get { return condition; } }

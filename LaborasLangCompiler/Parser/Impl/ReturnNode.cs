@@ -13,7 +13,7 @@ using LaborasLangCompiler.Common;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ReturnNode : ParserNode, IReturnNode, ReturningNode
+    class ReturnNode : ParserNode, IReturnNode, IReturningNode
     {
         public override NodeType Type { get { return NodeType.ReturnNode; } }
         public IExpressionNode Expression { get { return expression; } }
@@ -24,21 +24,47 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ReturnNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
+            var point = parser.GetSequencePoint(lexerNode);
             var returnType = parent.GetMethod().MethodReturnType;
-            var instance = new ReturnNode(parser.GetSequencePoint(lexerNode));
-            if (returnType.TypeEquals(parser.Void) && lexerNode.ChildrenCount != 2)
-            {
-                ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, "Cannot return a value in a void method");
-            }
+            ExpressionNode expression = null;
 
             if (lexerNode.Children.Count == 3)
             {
-                instance.expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[1], returnType);
-                if (!instance.expression.ExpressionReturnType.IsAssignableTo(returnType) || !instance.expression.IsGettable)
+                expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[1], returnType);
+            }
+            return Create(parser, parent, expression, point);
+        }
+
+        public static ReturnNode Create(Parser parser, Context parent, ExpressionNode expression, SequencePoint point)
+        {
+            var instance = new ReturnNode(point);
+            instance.expression = expression;
+            var returnType = parent.GetMethod().MethodReturnType;
+            if(expression != null)
+            {
+                if(returnType.TypeEquals(parser.Void))
+                {
+                    ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, "Cannot return a value in a void method");
+                }
+
+                if (!expression.ExpressionReturnType.IsAssignableTo(returnType))
                 {
                     ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, "Method returns {0}, cannot return {1}", returnType, instance.Expression.ExpressionReturnType);
                 }
+
+                if (!expression.IsGettable)
+                {
+                    ErrorCode.NotAnRValue.ReportAndThrow(point, "Returned expression must be gettable");
+                }
             }
+            else
+            {
+                if(!returnType.TypeEquals(parser.Void))
+                {
+                    ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, "Method returns {0}, must return a value", returnType);
+                }
+            }
+
             return instance;
         }
 
@@ -47,7 +73,10 @@ namespace LaborasLangCompiler.Parser.Impl
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("Return:");
             builder.Indent(indent + 1).AppendLine("Expression:");
-            builder.AppendLine(expression.ToString(indent + 2));
+            if (expression != null)
+                builder.AppendLine(expression.ToString(indent + 2));
+            else
+                builder.Indent(indent + 2).AppendLine("none");
             return builder.ToString();
         }
     }

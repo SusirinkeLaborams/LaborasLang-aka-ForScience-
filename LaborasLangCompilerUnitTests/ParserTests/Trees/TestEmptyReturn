@@ -1,0 +1,22 @@
+Class:
+	TestEmptyReturn
+	Fields:
+	Methods:
+		Method:
+			Name:
+				Main
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						Return:
+							Expression:
+								none
+
+
+

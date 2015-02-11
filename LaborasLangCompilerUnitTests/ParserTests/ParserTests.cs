@@ -232,6 +232,15 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             CompareTrees(source);
         }
         [TestMethod, TestCategory("Parser")]
+        public void TestEmptyReturn()
+        {
+            string source = @"auto Main = void()
+                {
+                    return;
+                };";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
         public void TestUnaryOrder()
         {
             string source = @"

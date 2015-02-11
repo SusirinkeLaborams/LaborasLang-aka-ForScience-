@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class CodeBlockNode : ParserNode, ICodeBlockNode, Context, ReturningNode
+    class CodeBlockNode : ParserNode, ICodeBlockNode, Context, IReturningNode
     {
         public override NodeType Type { get { return NodeType.CodeBlockNode; } }
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
@@ -69,7 +69,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private void AddNode(ParserNode node)
         {
-            var nod = node as ReturningNode;
+            var nod = node as IReturningNode;
             if (nod != null && nod.Returns)
                 Returns = true;
             nodes.Add(node);

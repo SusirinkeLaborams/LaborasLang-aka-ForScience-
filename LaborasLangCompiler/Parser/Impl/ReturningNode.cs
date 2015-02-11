@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    interface ReturningNode
+    interface IReturningNode
     {
         bool Returns { get; }
     }
