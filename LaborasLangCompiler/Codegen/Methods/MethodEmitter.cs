@@ -772,7 +772,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             switch (literal.ExpressionReturnType.MetadataType)
             {
                 case MetadataType.Boolean:
-                    Ldc_I4(literal.Value ? 1 : 0);
+                    Ldc_I4((bool)literal.Value ? 1 : 0);
                     return;
 
                 case MetadataType.SByte:
