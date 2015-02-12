@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class AmbiguousMethodNode : SymbolNode, AmbiguousNode
+    class AmbiguousMethodNode : SymbolNode, IAmbiguousNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
 
@@ -48,7 +48,13 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ExpressionNode Create(Parser parser, IEnumerable<MethodReference> methods, Context parent, ExpressionNode instance, SequencePoint sequencePoint)
         {
-            if(methods.Count() == 1)
+            if(methods.Count() == 0)
+            {
+                //should never happen
+                ErrorCode.SymbolNotFound.ReportAndThrow(sequencePoint, "Method not found");
+                return null;//unreachable
+            }
+            else if(methods.Count() == 1)
             {
                 return new MethodNode(parser, methods.Single(), instance, parent, sequencePoint);
             }

@@ -80,7 +80,7 @@
     <Compile Include="Codegen\Types\FunctorImplementationTypeEmitter.cs" />
     <Compile Include="Codegen\Types\TypeEmitter.cs" />
     <Compile Include="Parser\Impl\AmbiguousMethodNode.cs" />
-    <Compile Include="Parser\Impl\AmbiguousNode.cs" />
+    <Compile Include="Parser\Impl\IAmbiguousNode.cs" />
     <Compile Include="Parser\Impl\FieldDeclarationNode.cs" />
     <Compile Include="Parser\Impl\MemberNode.cs" />
     <Compile Include="Parser\Impl\ObjectCreationNode.cs" />
@@ -91,7 +91,7 @@
     <Compile Include="Parser\Impl\DotOperatorNode.cs" />
     <Compile Include="Parser\Impl\Context.cs" />
     <Compile Include="Parser\Impl\ImportNode.cs" />
-    <Compile Include="Parser\Impl\ReturningNode.cs" />
+    <Compile Include="Parser\Impl\IReturningNode.cs" />
     <Compile Include="Parser\Impl\MethodCallNode.cs" />
     <Compile Include="Parser\Impl\MethodNode.cs" />
     <Compile Include="Parser\Impl\Operators\AssignmentOperatorNode.cs" />

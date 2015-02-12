@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    interface AmbiguousNode : IExpressionNode
+    interface IAmbiguousNode : IExpressionNode
     {
         ExpressionNode RemoveAmbiguity(Parser parser, TypeReference expectedType);
     }

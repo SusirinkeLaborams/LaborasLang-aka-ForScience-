@@ -71,7 +71,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             if(!(expectedType == null || expectedType.IsAuto()))
             {
-                var ambiguous = ret as AmbiguousNode;
+                var ambiguous = ret as IAmbiguousNode;
                 if(ambiguous != null)
                 {
                     ret = ambiguous.RemoveAmbiguity(parser, expectedType);

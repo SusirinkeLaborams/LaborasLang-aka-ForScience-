@@ -15,7 +15,7 @@ using LaborasLangCompiler.Common;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class LiteralNode : ExpressionNode, ILiteralNode, AmbiguousNode
+    class LiteralNode : ExpressionNode, ILiteralNode, IAmbiguousNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Literal; } }
         public dynamic Value { get; private set; }
