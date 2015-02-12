@@ -15,7 +15,9 @@ namespace LaborasLangCompiler.Parser.Impl
         public AssemblyEmitter Assembly { get; private set; }
         public bool ShouldEmit { get; private set; }
 
-        private Dictionary<string, TypeReference> primitives;
+        private Dictionary<string, TypeReference> aliases;
+        private HashSet<TypeReference> primitives;
+
         public IReadOnlyDictionary<ulong, TypeReference> MaxValues { get; private set; }
         public IReadOnlyDictionary<long, TypeReference> MinValues { get; private set; }
 
@@ -47,33 +49,35 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             Assembly = assembly;
             ShouldEmit = emit;
-            this.primitives = new Dictionary<string, TypeReference>();
+            this.aliases = new Dictionary<string, TypeReference>();
             this.parsers = new List<Parser>();
 
-            primitives["bool"] = Bool = assembly.TypeToTypeReference(typeof(bool));
+            aliases["bool"] = Bool = assembly.TypeToTypeReference(typeof(bool));
 
-            primitives["char"] = Char = assembly.TypeToTypeReference(typeof(char));
-            primitives["int8"] = Int8 = assembly.TypeToTypeReference(typeof(sbyte));
-            primitives["uint8"] = UInt8 = assembly.TypeToTypeReference(typeof(byte));
+            aliases["char"] = Char = assembly.TypeToTypeReference(typeof(char));
+            aliases["int8"] = Int8 = assembly.TypeToTypeReference(typeof(sbyte));
+            aliases["uint8"] = UInt8 = assembly.TypeToTypeReference(typeof(byte));
 
-            primitives["int16"] = Int16 = assembly.TypeToTypeReference(typeof(short));
-            primitives["uint16"] = UInt16 = assembly.TypeToTypeReference(typeof(ushort));
+            aliases["int16"] = Int16 = assembly.TypeToTypeReference(typeof(short));
+            aliases["uint16"] = UInt16 = assembly.TypeToTypeReference(typeof(ushort));
 
-            primitives["int32"] = primitives["int"] = Int32 = assembly.TypeToTypeReference(typeof(int));
-            primitives["uint32"] = primitives["uint"] = UInt32 = assembly.TypeToTypeReference(typeof(uint));
+            aliases["int32"] = aliases["int"] = Int32 = assembly.TypeToTypeReference(typeof(int));
+            aliases["uint32"] = aliases["uint"] = UInt32 = assembly.TypeToTypeReference(typeof(uint));
 
-            primitives["int64"] = primitives["long"] = Int64 = assembly.TypeToTypeReference(typeof(long));
-            primitives["uint64"] = primitives["ulong"] = UInt64 = assembly.TypeToTypeReference(typeof(ulong));
+            aliases["int64"] = aliases["long"] = Int64 = assembly.TypeToTypeReference(typeof(long));
+            aliases["uint64"] = aliases["ulong"] = UInt64 = assembly.TypeToTypeReference(typeof(ulong));
 
-            primitives["float"] = Float = assembly.TypeToTypeReference(typeof(float));
-            primitives["double"] = Double = assembly.TypeToTypeReference(typeof(double));
-            primitives["decimal"] = Decimal = assembly.TypeToTypeReference(typeof(decimal));
+            aliases["float"] = Float = assembly.TypeToTypeReference(typeof(float));
+            aliases["double"] = Double = assembly.TypeToTypeReference(typeof(double));
+            aliases["decimal"] = Decimal = assembly.TypeToTypeReference(typeof(decimal));
 
-            primitives["string"] = String = assembly.TypeToTypeReference(typeof(string));
-            primitives["object"] = Object = assembly.TypeToTypeReference(typeof(object));
+            aliases["string"] = String = assembly.TypeToTypeReference(typeof(string));
+            aliases["object"] = Object = assembly.TypeToTypeReference(typeof(object));
 
-            primitives["void"] = Void = assembly.TypeToTypeReference(typeof(void));
-            primitives["auto"] = Auto = AutoType.Instance;
+            aliases["void"] = Void = assembly.TypeToTypeReference(typeof(void));
+            aliases["auto"] = Auto = AutoType.Instance;
+
+            primitives = new HashSet<TypeReference>(Utils.Utils.Enumerate(Bool, Char, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Float, Double, Decimal, String));
 
             MaxValues = new Dictionary<ulong, TypeReference>()
             {
@@ -120,7 +124,10 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public TypeReference FindType(string fullname)
         {
-            return AssemblyRegistry.FindType(Assembly, fullname);
+            if (aliases.ContainsKey(fullname))
+                return aliases[fullname];
+            else
+                return AssemblyRegistry.FindType(Assembly, fullname);
         }
 
         public Namespace FindNamespace(string fullname)
@@ -131,17 +138,9 @@ namespace LaborasLangCompiler.Parser.Impl
                 return null;
         }
 
-        public bool IsPrimitive(string name)
+        public bool IsPrimitive(TypeReference type)
         {
-            return primitives.ContainsKey(name);
-        }
-
-        public TypeReference GetPrimitive(string name)
-        {
-            if (!IsPrimitive(name))
-                return null;
-            else
-                return primitives[name];
+            return primitives.Contains(type);
         }
 
         public void Dispose()

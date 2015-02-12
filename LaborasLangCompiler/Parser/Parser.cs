@@ -87,14 +87,9 @@ namespace LaborasLangCompiler.Parser
             return sequencePoint;
         }
 
-        public bool IsPrimitive(string name)
+        public bool IsPrimitive(TypeReference type)
         {
-            return ProjectParser.IsPrimitive(name);
-        }
-
-        public TypeReference GetPrimitive(string name)
-        {
-            return ProjectParser.GetPrimitive(name);
+            return ProjectParser.IsPrimitive(type);
         }
 
         public void Dispose()

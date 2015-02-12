@@ -128,10 +128,6 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             //local types not implemented
 
-            //primitives
-            if (parser.IsPrimitive(name))
-                return parser.GetPrimitive(name);
-
             //imports
             var types = globalImports.Select(namespaze => namespaze.GetContainedType(name)).Where(t => t != null);
             if(types.Count() != 0)
