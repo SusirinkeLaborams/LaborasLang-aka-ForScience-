@@ -38,10 +38,10 @@ namespace LaborasLangCompiler.Parser.Impl
             this.Value = value;
         }
 
-        public static LiteralNode Create(dynamic value, TypeReference type, SequencePoint point)
+        public static LiteralNode Create(Parser parser, dynamic value, SequencePoint point)
         {
-            var t = System.Type.GetType(type.FullName);
-            if (!t.IsInstanceOfType(value))
+            var type = parser.Assembly.TypeToTypeReference(((object)value).GetType());
+            if (!parser.IsPrimitive(type))
                 Errors.ReportAndThrow(ErrorCode.TypeMissmatch, point, "Cannot create literal of type {0} with value {1}", type, value);
 
             return new LiteralNode(value, type, point);
