@@ -20,7 +20,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public bool Returns { get { return true; } }
 
         private ExpressionNode expression;
-        protected ReturnNode(SequencePoint point) : base(point) { }
+        private ReturnNode(SequencePoint point) : base(point) { }
 
         public static ReturnNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {

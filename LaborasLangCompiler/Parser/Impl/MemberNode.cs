@@ -45,7 +45,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (!context.IsStaticContext() && context.GetClass().TypeReference.IsAssignableTo(member.DeclaringType))
             {
-                return new ThisNode(member.DeclaringType, null);
+                return ThisNode.Create(context, null);
             }
 
             ErrorCode.MissingInstance.ReportAndThrow(point, "Cannot access non-static member {0} from a static context", member.FullName);

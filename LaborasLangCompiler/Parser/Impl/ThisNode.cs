@@ -22,7 +22,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private TypeReference type;
 
-        public ThisNode(TypeReference type, SequencePoint point)
+        private ThisNode(TypeReference type, SequencePoint point)
             : base(point)
         {
             this.type = type;
@@ -31,14 +31,19 @@ namespace LaborasLangCompiler.Parser.Impl
         public static ThisNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             var point = parser.GetSequencePoint(lexerNode);
-            if (parent.IsStaticContext())
+            return Create(parent, point);
+        }
+
+        public static ThisNode Create(Context scope, SequencePoint point)
+        {
+            if (scope.IsStaticContext())
             {
                 ErrorCode.MissingInstance.ReportAndThrow(point, "Cannot use 'this' inside a static context");
                 return null;//unreachable
             }
             else
             {
-                return new ThisNode(parent.GetClass().TypeReference, point);
+                return new ThisNode(scope.GetClass().TypeReference, point);
             }
         }
 
