@@ -22,26 +22,37 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             get
             {
-                return ((CodeBlockNode)TrueBlock).Returns && FalseBlock != null && ((CodeBlockNode)FalseBlock).Returns;
+                return trueBlock.Returns && FalseBlock != null && falseBlock.Returns;
             }
         }
 
         private ExpressionNode condition;
         private CodeBlockNode trueBlock, falseBlock;
+
         public static ConditionBlockNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             var point = parser.GetSequencePoint(lexerNode);
+            var condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
+            var trueBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[4]);
+            CodeBlockNode falseBlock = null;
+            if (lexerNode.Children.Count > 5)
+                falseBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[6]);
+            return Create(parser, parent, condition, trueBlock, falseBlock, point);
+        }
+
+        public static ConditionBlockNode Create(Parser parser, Context parent, ExpressionNode condition, CodeBlockNode trueBlock, CodeBlockNode falseBlock, SequencePoint point)
+        {
             var instance = new ConditionBlockNode(point);
-            instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
-            if (!instance.condition.ExpressionReturnType.IsAssignableTo(parser.Bool) || !instance.condition.IsGettable)
+            if (!condition.ExpressionReturnType.IsAssignableTo(parser.Bool) || !condition.IsGettable)
             {
                 ErrorCode.InvalidCondition.ReportAndThrow(point, "Condition must be a gettable boolean expression");
             }
-            instance.trueBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[4]);
-            if (lexerNode.Children.Count > 5)
-                instance.falseBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[6]);
+            instance.condition = condition;
+            instance.trueBlock = trueBlock;
+            instance.falseBlock = falseBlock;
             return instance;
         }
+
         public override string ToString(int indent)
         {
             StringBuilder builder = new StringBuilder();

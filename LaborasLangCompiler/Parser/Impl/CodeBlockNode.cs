@@ -75,7 +75,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 nodes.Add(UnaryOperatorNode.Void(node));
         }
 
-        public void AddNode(Parser parser, ParserNode node)
+        public CodeBlockNode AddNode(Parser parser, ParserNode node)
         {
             var returning = node as IReturningNode;
             if (returning != null && returning.Returns)
@@ -85,24 +85,25 @@ namespace LaborasLangCompiler.Parser.Impl
             if(expression != null)
             {
                 AddExpression(expression, parser);
-                return;
+                return this;
             }
 
             var declaration = node as SymbolDeclarationNode;
             if(declaration != null)
             {
                 AddDeclaration(declaration);
-                return;
+                return this;
             }
 
             // no special action
             if(node is CodeBlockNode || node is ConditionBlockNode || node is WhileBlock || node is ReturnNode)
             {
                 nodes.Add(node);
-                return;
+                return this;
             }
 
             ErrorCode.InvalidStructure.ReportAndThrow(node.SequencePoint, "Unexpected node {0} in while parsing code block", node.GetType().FullName);
+            return null;//unreachable
         }
 
         private ParserNode ParseNode(Parser parser, AstNode lexerNode)

@@ -14,7 +14,8 @@ namespace LaborasLangCompiler.Parser.Impl
     class ImportNode : ParserNode
     {
         public override NodeType Type { get { return NodeType.ParserInternal; } }
-        protected ImportNode(SequencePoint point) : base(point) { }
+        private ImportNode(SequencePoint point) : base(point) { }
+
         public static void Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             var namespaze = DotOperatorNode.Parse(parser, parent, lexerNode.Children[1]) as NamespaceNode;
@@ -28,6 +29,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 ErrorCode.SymbolNotFound.ReportAndThrow(point, "Namespace {0} not found", lexerNode.Children[1].FullContent);
             }
         }
+
         public override string ToString(int indent)
         {
             throw new InvalidOperationException();

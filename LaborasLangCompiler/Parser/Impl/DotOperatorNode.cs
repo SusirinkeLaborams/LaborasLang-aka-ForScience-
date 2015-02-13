@@ -35,11 +35,17 @@ namespace LaborasLangCompiler.Parser.Impl
             return instance.builtNode;
         }
 
-        private void Append(ExpressionNode node)
+        public static DotOperatorNode Create(Parser parser, Context parent)
+        {
+            return new DotOperatorNode(parser, parent);
+        }
+
+        public DotOperatorNode Append(ExpressionNode node)
         {
             if(builtNode == null)
             {
                 AppendFirst(node);
+                return this;
             }
             else
             {
@@ -48,16 +54,18 @@ namespace LaborasLangCompiler.Parser.Impl
 
                 var symbol = node as SymbolNode;
                 if (AppendField(symbol))
-                    return;
+                    return this;
                 if (AppendMethod(symbol))
-                    return;
+                    return this;
                 if (AppendType(symbol))
-                    return;
+                    return this;
                 if (AppendNamespace(symbol))
-                    return;
+                    return this;
                 if (AppendProperty(symbol))
-                    return;
+                    return this;
+
                 ErrorCode.SymbolNotFound.ReportAndThrow(node.SequencePoint, "Symbol {0} not found", symbol.Name);
+                return null;//unreachable
             }
         }
 

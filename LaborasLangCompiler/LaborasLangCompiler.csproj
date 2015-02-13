@@ -80,10 +80,14 @@
     <Compile Include="Codegen\Types\FunctorImplementationTypeEmitter.cs" />
     <Compile Include="Codegen\Types\TypeEmitter.cs" />
     <Compile Include="Parser\Impl\AmbiguousMethodNode.cs" />
+    <Compile Include="Parser\Impl\FieldNode.cs" />
+    <Compile Include="Parser\Impl\FunctionArgumentNode.cs" />
     <Compile Include="Parser\Impl\IAmbiguousNode.cs" />
     <Compile Include="Parser\Impl\FieldDeclarationNode.cs" />
+    <Compile Include="Parser\Impl\LocalVariableNode.cs" />
     <Compile Include="Parser\Impl\MemberNode.cs" />
     <Compile Include="Parser\Impl\ObjectCreationNode.cs" />
+    <Compile Include="Parser\Impl\PropertyNode.cs" />
     <Compile Include="Parser\ProjectParser.cs" />
     <Compile Include="Parser\Impl\SymbolModifiers.cs" />
     <Compile Include="Parser\Impl\ConditionBlockNode.cs" />
@@ -101,7 +105,6 @@
     <Compile Include="Parser\Impl\ExpressionNode.cs" />
     <Compile Include="Parser\Impl\FunctionDeclarationNode.cs" />
     <Compile Include="Parser\Impl\LiteralNode.cs" />
-    <Compile Include="Parser\Impl\LValueNode.cs" />
     <Compile Include="Parser\Impl\ParserNode.cs" />
     <Compile Include="Parser\Impl\ReturnNode.cs" />
     <Compile Include="Parser\Impl\SymbolDeclarationNode.cs" />
