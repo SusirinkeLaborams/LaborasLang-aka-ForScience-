@@ -18,7 +18,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class LiteralNode : ExpressionNode, ILiteralNode, IAmbiguousNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Literal; } }
-        public dynamic Value { get; private set; }
+        public object Value { get; private set; }
         public override TypeReference ExpressionReturnType { get { return type; } }
         public override bool IsGettable
         {
@@ -31,16 +31,16 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private TypeReference type;
 
-        private LiteralNode(dynamic value, TypeReference type, SequencePoint point)
+        private LiteralNode(object value, TypeReference type, SequencePoint point)
             : base(point)
         {
             this.type = type;
             this.Value = value;
         }
 
-        public static LiteralNode Create(Parser parser, dynamic value, SequencePoint point)
+        public static LiteralNode Create(Parser parser, object value, SequencePoint point)
         {
-            var type = parser.Assembly.TypeToTypeReference(((object)value).GetType());
+            var type = parser.Assembly.TypeToTypeReference(value.GetType());
             if (!parser.IsPrimitive(type))
                 Errors.ReportAndThrow(ErrorCode.TypeMissmatch, point, "Cannot create literal of type {0} with value {1}", type, value);
 
@@ -52,7 +52,7 @@ namespace LaborasLangCompiler.Parser.Impl
             lexerNode = lexerNode.Children[0];
             var point = parser.GetSequencePoint(lexerNode);
             var type = ParseLiteralType(parser, lexerNode);
-            dynamic value = ParseValue(lexerNode.Content.ToString(), type, point);
+            object value = ParseValue(lexerNode.Content.ToString(), type, point);
             return new LiteralNode(value, type, point);
         }
 
@@ -77,7 +77,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private static dynamic ParseValue(string value, TypeReference type, SequencePoint point)
+        private static object ParseValue(string value, TypeReference type, SequencePoint point)
         {
             try
             {
@@ -147,7 +147,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static LiteralNode ConvertLiteral(Parser parser, LiteralNode node, TypeReference type)
         {
-            dynamic value = node.Value;
+            object value = node.Value;
             Type targetType = System.Type.GetType(type.FullName);
             return new LiteralNode(Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture), type, node.SequencePoint);
         }
@@ -159,7 +159,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if(type.IsSignedInteger())
                 {
-                    var value = (long)node.Value;
+                    var value = Convert.ToInt64(node.Value);
                     if (value > 0)
                     {
                         return parser.ProjectParser.MaxValues.Where(kv => kv.Key >= (ulong)value).Select(kv => kv.Value);
@@ -171,7 +171,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 else
                 {
-                    var value = (ulong)node.Value;
+                    var value = Convert.ToUInt64(node.Value);
                     return parser.ProjectParser.MaxValues.Where(kv => kv.Key >= value).Select(kv => kv.Value);
                 }
             }

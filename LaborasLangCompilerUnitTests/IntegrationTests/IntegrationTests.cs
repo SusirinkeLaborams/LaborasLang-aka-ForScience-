@@ -117,6 +117,12 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
 
         }
 
+        [TestMethod, TestCategory("Integration Tests")]
+        public void Test_ImplicitRuntimeCast()
+        {
+            Test("ImplicitRuntimeCast.ll".Enumerate(), "4");
+        }
+
         #region Helpers
         
         private string ExpectedOutputPath

@@ -49,6 +49,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string expected = "";
 #if REWRITE
             System.IO.File.WriteAllText(file, result);
+            expected = result;
 #else
             try
             {
