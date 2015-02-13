@@ -755,5 +755,13 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"ulong foo = 5;";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestImplicitCallResultCast()
+        {
+            string source = @"
+                auto foo = int(){return 4;};
+                long bar = foo();";
+            CompareTrees(source);
+        }
     }
 }
