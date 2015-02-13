@@ -46,7 +46,9 @@ namespace LaborasLangCompiler.Common
 
         InvalidDot = 0024,
 
-        DuplicateImport = 0025
+        DuplicateImport = 0025,
+
+        StaticTypeIstance = 0026
     }
 
     public static class Errors

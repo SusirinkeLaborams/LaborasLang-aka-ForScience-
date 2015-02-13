@@ -29,10 +29,10 @@ namespace LaborasLangCompiler.Parser.Impl
         }
 
         private TypeReference type;
-        private List<ExpressionNode> args;
+        private IReadOnlyList<ExpressionNode> args;
         private ExpressionNode function;
 
-        public MethodCallNode(ExpressionNode function, TypeReference returnType, List<ExpressionNode> args, SequencePoint point)
+        private MethodCallNode(ExpressionNode function, TypeReference returnType, IReadOnlyList<ExpressionNode> args, SequencePoint point)
             : base(point)
         {
             this.function = function;
@@ -46,7 +46,8 @@ namespace LaborasLangCompiler.Parser.Impl
             for(int i = 1; i < lexerNode.Children.Count; i++)
             {
                 var args = ParseArgList(parser, parent, lexerNode.Children[i]);
-                function = Call(parser, function, args);
+                var point = Parser.GetSequencePoint(function.SequencePoint, args.Count == 0 ? function.SequencePoint : args.Last().SequencePoint);
+                function = Create(parser, function, args, point);
             }
             return function;
         }
@@ -74,13 +75,8 @@ namespace LaborasLangCompiler.Parser.Impl
             return args;
         }
 
-        private static ExpressionNode Call(Parser parser, ExpressionNode function, List<ExpressionNode> args)
+        public static ExpressionNode Create(Parser parser, ExpressionNode function, IEnumerable<ExpressionNode> args, SequencePoint point)
         {
-            var point = Parser.GetSequencePoint(function.SequencePoint, args.Count == 0 ? function.SequencePoint : args.Last().SequencePoint);
-            var method = AsObjectCreation(parser, function, args, point);
-            if (method != null)
-                return method;
-
             foreach(var arg in args)
             {
                 if (!arg.IsGettable)
@@ -88,6 +84,10 @@ namespace LaborasLangCompiler.Parser.Impl
                     ErrorCode.NotAnRValue.ReportAndThrow(arg.SequencePoint, "Arguments must be gettable");
                 }
             }
+
+            var method = AsObjectCreation(parser, function, args, point);
+            if (method != null)
+                return method;
 
             method = AsMethod(parser, function, args, point);
             if (method != null)
@@ -105,32 +105,53 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static ExpressionNode AsFunctor(Parser parser, ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)
         {
-            if (node.ExpressionReturnType == null)
+            if (node.ExpressionReturnType == null || !node.ExpressionReturnType.IsFunctorType())
                 return null;
-            if (node.ExpressionReturnType.IsFunctorType())
+
+            if(node.ExpressionReturnType.MatchesArgumentList(parser.Assembly, args.Select(a => a.ExpressionReturnType).ToList()))
             {
-                if (node.ExpressionReturnType.MatchesArgumentList(parser.Assembly, args.Select(a => a.ExpressionReturnType).ToList()))
-                    return new MethodCallNode(node, MetadataHelpers.GetFunctorReturnType(parser.Assembly, node.ExpressionReturnType), args.ToList(), point);
-                else
-                    return null;
+                return new MethodCallNode(node, MetadataHelpers.GetFunctorReturnType(parser.Assembly, node.ExpressionReturnType), args.ToList(), point);
             }
             else
             {
-                return null;
+                ErrorCode.TypeMissmatch.ReportAndThrow(point, "Cannot call functor, requires parameters ({0}), called with ({1})",
+                        String.Join(", ", MetadataHelpers.GetFunctorParamTypes(parser.Assembly, node.ExpressionReturnType).Select(p => p.FullName)),
+                        String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
+                return null;//unreachable
             }
         }
 
         private static ExpressionNode AsMethod(Parser parser, ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)
         {
-            if (node is MethodNode)
-                return new MethodCallNode(node, MetadataHelpers.GetFunctorReturnType(parser.Assembly, node.ExpressionReturnType), args.ToList(), point);
+            var method = node as MethodNode;
+            if(method != null)
+            {
+                if(MetadataHelpers.MatchesArgumentList(method.Method, args.Select(arg => arg.ExpressionReturnType).ToList()))
+                {
+                    return new MethodCallNode(method, method.Method.ReturnType, args.ToList(), point);
+                }
+                else
+                {
+                    ErrorCode.TypeMissmatch.ReportAndThrow(point, "Cannot call method, {0} requires parameters ({1}), called with ({2})",
+                        method.Method.FullName,
+                        String.Join(", ", method.Method.Parameters.Select(p => p.ParameterType.FullName)),
+                        String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
+                }
+            }
 
             var ambiguous = node as AmbiguousMethodNode;
             if (ambiguous == null)
-                return null;
+                return null;//not a method
 
-            var method = ambiguous.RemoveAmbiguity(parser, args.Select(a => a.ExpressionReturnType));
-            return new MethodCallNode(method, MetadataHelpers.GetFunctorReturnType(parser.Assembly, method.ExpressionReturnType), args.ToList(), point);
+            method = ambiguous.RemoveAmbiguity(parser, args.Select(a => a.ExpressionReturnType));
+            if (method == null)
+            {
+                ErrorCode.TypeMissmatch.ReportAndThrow(point, "Cannot call method, {0} with arguments ({1}), none of the overloads match",
+                    method.Method.FullName,
+                    String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
+            }
+
+            return new MethodCallNode(method, method.Method.ReturnType, args.ToList(), point);
         }
 
         private static ExpressionNode AsObjectCreation(Parser parser, ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)
@@ -139,9 +160,29 @@ namespace LaborasLangCompiler.Parser.Impl
             if (type == null)
                 return null;
 
-            var method = AssemblyRegistry.GetCompatibleConstructor(parser.Assembly, type.ParsedType, args.Select(a => a.ExpressionReturnType).ToList());
-            if (method == null)
-                return null;
+            var methods = AssemblyRegistry.GetConstructors(parser.Assembly, type.ParsedType);
+            if(methods.Count == 0)
+            {
+                ErrorCode.StaticTypeIstance.ReportAndThrow(point, "Type {0} is static, cannot create instance", type.ParsedType.FullName);
+            }
+            var method = AssemblyRegistry.GetCompatibleMethod(methods, args.Select(a => a.ExpressionReturnType).ToList());
+
+            if(method == null)
+            {
+                if(methods.Count == 1)
+                {
+                    ErrorCode.TypeMissmatch.ReportAndThrow(point, "Cannot call constructor for {0} requires parameters ({1}), called with ({2})",
+                        type.ParsedType.FullName,
+                        String.Join(", ", methods.Single().Parameters.Select(p => p.ParameterType.FullName)),
+                        String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
+                }
+                else
+                {
+                    ErrorCode.TypeMissmatch.ReportAndThrow(point, "Cannot call constructor for {0} with arguments ({1}), none of the overloads match",
+                    type.ParsedType.FullName,
+                    String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
+                }
+            }
 
             return new ObjectCreationNode(args.ToList(), method, type.Scope, point);
         }

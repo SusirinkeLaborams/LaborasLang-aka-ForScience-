@@ -69,24 +69,23 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private bool AppendFirst(ExpressionNode node)
+        private void AppendFirst(ExpressionNode node)
         {
             if (node.ExpressionType != ExpressionNodeType.ParserInternal)
             {
                 //non-symbol expressions
                 builtNode = node;
-                return true;
             }
             else if (node is SymbolNode)
             {
                 SymbolNode symbol = node as SymbolNode;
                 builtNode = parent.GetSymbol(symbol.Name, parent, node.SequencePoint);
-                return builtNode != null;
+                if(builtNode == null)
+                    ErrorCode.SymbolNotFound.ReportAndThrow(symbol.SequencePoint, "Symbol {0} not found", symbol.Name);
             }
             else
             {
                 ErrorCode.InvalidDot.ReportAndThrow(node.SequencePoint, "Unexpected node type {0}", node.ExpressionType);
-                return false;//unreachable
             }
         }
 
