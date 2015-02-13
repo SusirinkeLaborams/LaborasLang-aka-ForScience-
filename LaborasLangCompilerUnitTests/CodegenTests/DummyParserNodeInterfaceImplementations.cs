@@ -25,7 +25,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Literal; } }
 
         public TypeReference ExpressionReturnType { get; set; }
-        public dynamic Value { get; set; }
+        public Literal Value { get; set; }
     }
 
     class FunctionNode : IMethodNode

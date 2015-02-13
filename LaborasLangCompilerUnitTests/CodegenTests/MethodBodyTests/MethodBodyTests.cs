@@ -1047,7 +1047,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
         #region Comparison operators
 
-        public void TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(TypeReference literalType, dynamic value1, dynamic value2)
+        public void TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(TypeReference literalType, IConvertible value1, IConvertible value2)
         {
             var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
@@ -1286,7 +1286,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByILComparison();
         }
 
-        public void TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(TypeReference literalType, dynamic value1, dynamic value2)
+        public void TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(TypeReference literalType, IConvertible value1, IConvertible value2)
         {
             var outputMethod = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<string>()
             {

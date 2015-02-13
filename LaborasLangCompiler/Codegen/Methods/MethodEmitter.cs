@@ -5,6 +5,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 
 namespace LaborasLangCompiler.Codegen.Methods
@@ -788,7 +789,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 case MetadataType.Int64:
-                    Ldc_I8((int)literal.Value);
+                    Ldc_I8((long)literal.Value);
                     return;
 
                 case MetadataType.Byte:
@@ -799,12 +800,18 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Ldc_I4((ushort)literal.Value);
                     return;
 
-                case MetadataType.UInt32:
-                    Ldc_I4((int)literal.Value);
+                case MetadataType.Char:
+                    Ldc_I4((char)literal.Value);
                     return;
 
+                // first cast is checked
+                case MetadataType.UInt32:
+                    Ldc_I4((int)(uint)literal.Value);
+                    return;
+
+                // first cast is checked
                 case MetadataType.UInt64:
-                    Ldc_I8((long)literal.Value);
+                    Ldc_I8((long)(ulong)literal.Value);
                     return;
 
                 case MetadataType.Single:

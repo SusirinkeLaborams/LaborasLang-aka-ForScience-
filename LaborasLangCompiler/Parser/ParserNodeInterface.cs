@@ -54,7 +54,7 @@ namespace LaborasLangCompiler.Parser
 
     interface ILiteralNode : IExpressionNode
     {
-        object Value { get; }
+        Literal Value { get; }
     }
 
     interface IMethodNode : IExpressionNode
