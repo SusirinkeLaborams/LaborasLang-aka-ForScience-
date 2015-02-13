@@ -23,7 +23,7 @@ namespace LaborasLangCompiler.Parser.Impl
         protected Dictionary<string, SymbolDeclarationNode> symbols;
         private Context parent;
 
-        protected CodeBlockNode(Context parent, SequencePoint point) : base(point)
+        private CodeBlockNode(Context parent, SequencePoint point) : base(point)
         {
             nodes = new List<ParserNode>();
             symbols = new Dictionary<string, SymbolDeclarationNode>();
@@ -51,7 +51,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return parent.IsStaticContext();
         }
 
-        public void AddVariable(SymbolDeclarationNode variable)
+        private void AddVariable(SymbolDeclarationNode variable)
         {
             if (symbols.ContainsKey(variable.Variable.Name))
             {
@@ -61,53 +61,69 @@ namespace LaborasLangCompiler.Parser.Impl
             symbols.Add(variable.Variable.Name, variable);
         }
 
-        private void AddNode(SymbolDeclarationNode node)
+        private void AddDeclaration(SymbolDeclarationNode node)
         {
             AddVariable(node);
-            nodes.Add(node);
-        }
-
-        private void AddNode(ParserNode node)
-        {
-            var nod = node as IReturningNode;
-            if (nod != null && nod.Returns)
-                Returns = true;
             nodes.Add(node);
         }
 
         private void AddExpression(ExpressionNode node, Parser parser)
         {
             if (node.ExpressionReturnType.TypeEquals(parser.Void))
-                AddNode(node);
+                nodes.Add(node);
             else
-                AddNode(UnaryOperatorNode.Void(node));
+                nodes.Add(UnaryOperatorNode.Void(node));
         }
 
-        private void AddNode(Parser parser, AstNode lexerNode)
+        public void AddNode(Parser parser, ParserNode node)
+        {
+            var returning = node as IReturningNode;
+            if (returning != null && returning.Returns)
+                Returns = true;
+
+            var expression = node as ExpressionNode;
+            if(expression != null)
+            {
+                AddExpression(expression, parser);
+                return;
+            }
+
+            var declaration = node as SymbolDeclarationNode;
+            if(declaration != null)
+            {
+                AddDeclaration(declaration);
+                return;
+            }
+
+            // no special action
+            if(node is CodeBlockNode || node is ConditionBlockNode || node is WhileBlock || node is ReturnNode)
+            {
+                nodes.Add(node);
+                return;
+            }
+
+            ErrorCode.InvalidStructure.ReportAndThrow(node.SequencePoint, "Unexpected node {0} in while parsing code block", node.GetType().FullName);
+        }
+
+        private ParserNode ParseNode(Parser parser, AstNode lexerNode)
         {
             switch (lexerNode.Type)
             {
                 case Lexer.TokenType.DeclarationNode:
-                    AddNode(SymbolDeclarationNode.Parse(parser, this, lexerNode));
-                    break;
+                    return SymbolDeclarationNode.Parse(parser, this, lexerNode);
                 case Lexer.TokenType.Value:
-                    AddExpression(ExpressionNode.Parse(parser, this, lexerNode), parser);
-                    break;
+                    return ExpressionNode.Parse(parser, this, lexerNode);
                 case Lexer.TokenType.WhileLoop:
-                    AddNode(WhileBlock.Parse(parser, this, lexerNode));
-                    break;
+                    return WhileBlock.Parse(parser, this, lexerNode);
                 case Lexer.TokenType.ConditionalSentence:
-                    AddNode(ConditionBlockNode.Parse(parser, this, lexerNode));
-                    break;
+                    return ConditionBlockNode.Parse(parser, this, lexerNode);
                 case Lexer.TokenType.CodeBlockNode:
-                    AddNode(CodeBlockNode.Parse(parser, this, lexerNode));
-                    break;
+                    return CodeBlockNode.Parse(parser, this, lexerNode);
                 case Lexer.TokenType.ReturnNode:
-                    AddNode(ReturnNode.Parse(parser, this, lexerNode));
-                    break;
+                    return ReturnNode.Parse(parser, this, lexerNode);
                 default:
                     ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(lexerNode), "Unexpected node {0} in while parsing code block", lexerNode.Type);
-                    break;//unreachable
+                    return null;//unreachable
             }
         }
 
@@ -128,7 +144,7 @@ namespace LaborasLangCompiler.Parser.Impl
                             case Lexer.TokenType.EndOfLine:
                                 break;
                             default:
-                                instance.AddNode(parser, node);
+                                instance.AddNode(parser, instance.ParseNode(parser, node));
                                 break;
                         }
                     }
@@ -138,9 +154,14 @@ namespace LaborasLangCompiler.Parser.Impl
             else if(lexerNode.Type == Lexer.TokenType.StatementNode)
             {
                 instance = new CodeBlockNode(parent, parser.GetSequencePoint(lexerNode));
-                instance.AddNode(parser, lexerNode.Children[0]);
+                instance.AddNode(parser, instance.ParseNode(parser, lexerNode.Children[0]));
             }
             return instance;
+        }
+
+        public static CodeBlockNode Create(Context parent, SequencePoint point)
+        {
+            return new CodeBlockNode(parent, point);
         }
 
         public override string ToString(int indent)

@@ -70,7 +70,6 @@ namespace LaborasLangCompiler.Parser.Impl
             }
 
             SymbolDeclarationNode node = new SymbolDeclarationNode(new VariableDefinition(name, declaredType), isConst, initializer, point);
-
             return node;
         }
 
