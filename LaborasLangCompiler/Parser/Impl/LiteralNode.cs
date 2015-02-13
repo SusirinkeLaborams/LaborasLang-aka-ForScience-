@@ -157,7 +157,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if(type.IsSignedInteger())
                 {
-                    var value = Convert.ToInt64(node.Value);
+                    var value = (long)node.Value;
                     if (value > 0)
                     {
                         return parser.ProjectParser.MaxValues.Where(kv => kv.Key >= (ulong)value).Select(kv => kv.Value);
@@ -169,7 +169,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 else
                 {
-                    var value = Convert.ToUInt64(node.Value);
+                    var value = (ulong)node.Value;
                     return parser.ProjectParser.MaxValues.Where(kv => kv.Key >= value).Select(kv => kv.Value);
                 }
             }

@@ -85,5 +85,10 @@ namespace LaborasLangCompiler.Parser
         {
             return _this.Value.ToString(CultureInfo.InvariantCulture);
         }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
     }
 }

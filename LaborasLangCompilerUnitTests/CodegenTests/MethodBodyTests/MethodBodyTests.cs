@@ -34,29 +34,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_HelloWorld()
         {
-            BodyCodeBlock = new CodeBlockNode
-            {
-                Nodes = new List<IParserNode>()
-                {
-                    new MethodCallNode()
-                    {
-                        Function = new FunctionNode()
-                        {
-                            Method = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", 
-                                new List<string>() { "System.String" })
-                        },
-                        Args = new List<IExpressionNode>()
-                        {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(string)),
-                                Value = "Hello, world!"
-                            }
-                        }
-                    }
-                }
-            };
-
+            GenerateBodyToOutputExpression(new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "Hello, world!"));
             ExpectedOutput = "Hello, world!";
             AssertSuccessByExecution();
         }
@@ -75,16 +53,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new SymbolDeclarationNode()
                     {
                         Variable = variable,
-                        Initializer = new LiteralNode()
-                        {
-                            ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(float)),
-                            Value = 2.5
-                        }
+                        Initializer = new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(float)), 2.5)
                     },
-                    CallConsoleWriteLine(new LocalVariableNode()
-                    {
-                        LocalVariable = variable
-                    })
+                    CallConsoleWriteLine(new LocalVariableNode(variable))
                 }
             };
 
@@ -108,21 +79,11 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = field
-                            },
-                            RightOperand = new LiteralNode()
-                            {
-                                ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(int)),
-                                Value = 1
-                            }
+                            LeftOperand = new FieldNode(field),
+                            RightOperand = new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(int)), 1)
                         }
                     },
-                    CallConsoleWriteLine(new FieldNode()
-                    {
-                        Field = field
-                    })
+                    CallConsoleWriteLine(new FieldNode(field))
                 }
             };
 
@@ -147,29 +108,16 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = field
-                            },
-                            RightOperand = new LiteralNode()
-                            {
-                                ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(int)),
-                                Value = 42
-                            }
+                            LeftOperand = new FieldNode(field),
+                            RightOperand = new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(int)), 42)
                         }
                     },
                     new SymbolDeclarationNode()
                     {
                         Variable = variable,
-                        Initializer = new FieldNode()
-                        {
-                            Field = field
-                        }
+                        Initializer = new FieldNode(field)
                     },
-                    CallConsoleWriteLine(new LocalVariableNode()
-                    {
-                        LocalVariable = variable
-                    })
+                    CallConsoleWriteLine(new LocalVariableNode(variable))
                 }
             };
 
@@ -199,15 +147,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = backingField
-                            },
-                            RightOperand = new FunctionArgumentNode()
-                            {
-                                Param = argument,
-                                IsMethodStatic = true
-                            }
+                            LeftOperand = new FieldNode(backingField),
+                            RightOperand = new ParameterNode(argument)
                         }
                     }
                 }
@@ -226,11 +167,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new SymbolDeclarationNode()
                     {
                         Variable = localVariable,
-                        Initializer = new LiteralNode
-                        {
-                            ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(double)),
-                            Value = 5.5
-                        }
+                        Initializer = new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(double)), 5.5)
                     },
                     new UnaryOperatorNode()
                     {
@@ -238,20 +175,11 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new PropertyNode()
-                            {
-                                Property = property
-                            },
-                            RightOperand = new LocalVariableNode()
-                            {
-                                LocalVariable = localVariable
-                            }
+                            LeftOperand = new PropertyNode(property),
+                            RightOperand = new LocalVariableNode(localVariable)
                         }
                     },
-                    CallConsoleWriteLine(new FieldNode()
-                    {
-                        Field = backingField
-                    })
+                    CallConsoleWriteLine(new FieldNode(backingField))
                 }
             };
 
@@ -271,11 +199,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new LiteralNode()
-                    {
-                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(string)),
-                        Value = "Test2"
-                    }
+                    new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "Test2")
                 }
             });
 
@@ -291,30 +215,18 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    CallConsoleWriteLine(new FunctionArgumentNode()
-                    {
-                        Param = argument
-                    }),
+                    CallConsoleWriteLine(new ParameterNode(argument)),
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FunctionArgumentNode()
-                            {
-                                Param = argument
-                            },
-                            RightOperand = new PropertyNode()
-                            {
-                                Property = property
-                            }
+                            LeftOperand = new ParameterNode(argument),
+                            RightOperand = new PropertyNode(property)
                         }
                     },
-                    CallConsoleWriteLine(new FunctionArgumentNode()
-                    {
-                        Param = argument
-                    })
+                    CallConsoleWriteLine(new ParameterNode(argument))
                 }
             });
 
@@ -330,11 +242,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(string)),
-                                Value = "Test1"
-                            }
+                            new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "Test1")
                         }
                     }
                 }
@@ -355,10 +263,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    CallConsoleWriteLine(new FunctionArgumentNode()
-                    {
-                        Param = callableMethod.Get().Parameters[0]
-                    })
+                    CallConsoleWriteLine(new ParameterNode(callableMethod.Get().Parameters[0]))
                 }
             });
 
@@ -374,11 +279,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode
-                            {
-                                ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(bool)),
-                                Value = true
-                            }
+                            new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(bool)), true)
                         }
                     }
                 }
@@ -397,11 +298,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         {
             var assignmentNode = new AssignmentOperatorNode()
             {
-                RightOperand = new LiteralNode()
-                {
-                    ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(int)),
-                    Value = 110
-                }
+                RightOperand = new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(int)), 110)
             };
 
             const int count = 10;
@@ -413,10 +310,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 fields.Add(field);
                 typeEmitter.AddField(field);
 
-                assignmentNode.LeftOperand = new FieldNode()
-                {
-                    Field = field
-                };
+                assignmentNode.LeftOperand = new FieldNode(field);
 
                 if (i != count - 1)
                 {
@@ -431,7 +325,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             var outputCodeBlock = new CodeBlockNode()
             {
-                Nodes = fields.Select(field => CallConsoleWriteLine(new FieldNode { Field = field })).ToList()
+                Nodes = fields.Select(field => CallConsoleWriteLine(new FieldNode(field))).ToList()
             };
 
             BodyCodeBlock = new CodeBlockNode()
@@ -463,11 +357,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             var assignmentNode = new AssignmentOperatorNode()
             {
-                RightOperand = new LiteralNode()
-                {
-                    ExpressionReturnType = floatType,
-                    Value = 110
-                }
+                RightOperand = new LiteralNode(floatType, 110)
             };
 
             const int count = 10;
@@ -572,31 +462,21 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new LocalVariableNode()
-                            {
-                                LocalVariable = localVariable
-                            },
+                            LeftOperand = new LocalVariableNode(localVariable),
                             RightOperand = new BinaryOperatorNode()
                             {
                                 ExpressionReturnType = intType,
-                                LeftOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = intType,
-                                    Value = 2
-                                },
-                                RightOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = intType,
-                                    Value = 3
-                                },
+                                LeftOperand = new LiteralNode(intType, 2),
+                                RightOperand = new LiteralNode(intType, 3)
                             }
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new LocalVariableNode(localVariable))
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_AddIntegers.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = "5";
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -623,31 +503,21 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new LocalVariableNode()
-                            {
-                                LocalVariable = localVariable
-                            },
+                            LeftOperand = new LocalVariableNode(localVariable),
                             RightOperand = new BinaryOperatorNode()
                             {
                                 ExpressionReturnType = floatType,
-                                LeftOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = floatType,
-                                    Value = 3.2f
-                                },
-                                RightOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = intType,
-                                    Value = 2
-                                },
+                                LeftOperand = new LiteralNode(floatType, 3.2f),
+                                RightOperand = new LiteralNode(intType, 2)
                             }
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new LocalVariableNode(localVariable))
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_AddFloatAndInteger.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = ((double)(3.2f + 2)).ToString();
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -670,31 +540,21 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         ExpressionReturnType = voidType,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = field
-                            },
+                            LeftOperand = new FieldNode(field),
                             RightOperand = new BinaryOperatorNode()
                             {
                                 ExpressionReturnType = stringType,
-                                LeftOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = stringType,
-                                    Value = "testing string addition: "
-                                },
-                                RightOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = intType,
-                                    Value = 22
-                                },
+                                LeftOperand = new LiteralNode(stringType, "testing string addition: "),
+                                RightOperand = new LiteralNode(intType, 22)
                             }
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new FieldNode(field))
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_AddStrings.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = "testing string addition: 22";
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -717,32 +577,22 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = field
-                            },
+                            LeftOperand = new FieldNode(field),
                             RightOperand = new BinaryOperatorNode()
                             {
                                 ExpressionReturnType = doubleType,
                                 BinaryOperatorType = BinaryOperatorNodeType.Subtraction,
-                                LeftOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = doubleType,
-                                    Value = 3.4
-                                },
-                                RightOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = floatType,
-                                    Value = 5.5f
-                                }
+                                LeftOperand = new LiteralNode(doubleType, 3.4),
+                                RightOperand = new LiteralNode(floatType, 5.5f)
                             }
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new FieldNode(field))
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_Subtraction.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = (3.4 - 5.5f).ToString();
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -765,32 +615,22 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = field
-                            },
+                            LeftOperand = new FieldNode(field),
                             RightOperand = new BinaryOperatorNode()
                             {
                                 ExpressionReturnType = uintType,
                                 BinaryOperatorType = BinaryOperatorNodeType.Multiplication,
-                                LeftOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = uintType,
-                                    Value = 5
-                                },
-                                RightOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = uintType,
-                                    Value = 3
-                                }
+                                LeftOperand = new LiteralNode(uintType, 5),
+                                RightOperand = new LiteralNode(uintType, 3)
                             }
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new FieldNode(field))
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_Multiplication.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = "15";
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -813,32 +653,22 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = field
-                            },
+                            LeftOperand = new FieldNode(field),
                             RightOperand = new BinaryOperatorNode()
                             {
                                 ExpressionReturnType = doubleType,
                                 BinaryOperatorType = BinaryOperatorNodeType.Division,
-                                LeftOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = doubleType,
-                                    Value = 15.4
-                                },
-                                RightOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = doubleType,
-                                    Value = 4.8
-                                }
+                                LeftOperand = new LiteralNode(doubleType, -15.4),
+                                RightOperand = new LiteralNode(doubleType, 4.8)
                             }
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new FieldNode(field))
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_SignedDivision.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = ((long)(-15.4 / 4.8)).ToString();
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -861,32 +691,22 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = field
-                            },
+                            LeftOperand = new FieldNode(field),
                             RightOperand = new BinaryOperatorNode()
                             {
                                 ExpressionReturnType = uintType,
                                 BinaryOperatorType = BinaryOperatorNodeType.Division,
-                                LeftOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = uintType,
-                                    Value = 17
-                                },
-                                RightOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = uintType,
-                                    Value = 3
-                                }
+                                LeftOperand = new LiteralNode(uintType, 17),
+                                RightOperand = new LiteralNode(uintType, 3)
                             }
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new FieldNode(field))
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_UnsignedDivision.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = (17 / 3).ToString();
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -909,32 +729,22 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = field
-                            },
+                            LeftOperand = new FieldNode(field),
                             RightOperand = new BinaryOperatorNode()
                             {
                                 ExpressionReturnType = intType,
                                 BinaryOperatorType = BinaryOperatorNodeType.Modulus,
-                                LeftOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = intType,
-                                    Value = 94
-                                },
-                                RightOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = intType,
-                                    Value = -17
-                                }
+                                LeftOperand = new LiteralNode(intType, 94),
+                                RightOperand = new LiteralNode(intType, -17)
                             }
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new FieldNode(field))
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_SignedRemainder.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = (94 % -17).ToString();
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -957,32 +767,22 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = field
-                            },
+                            LeftOperand = new FieldNode(field),
                             RightOperand = new BinaryOperatorNode()
                             {
                                 ExpressionReturnType = uintType,
                                 BinaryOperatorType = BinaryOperatorNodeType.Modulus,
-                                LeftOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = uintType,
-                                    Value = 41
-                                },
-                                RightOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = uintType,
-                                    Value = 81
-                                }
+                                LeftOperand = new LiteralNode(uintType, 41),
+                                RightOperand = new LiteralNode(uintType, 81)
                             }
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new FieldNode(field))
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_UnsignedRemainder.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = (41 % 81).ToString();
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -1005,10 +805,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = field
-                            },
+                            LeftOperand = new FieldNode(field),
                             RightOperand = new BinaryOperatorNode()
                             {
                                 ExpressionReturnType = uintType,
@@ -1017,30 +814,19 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                                 {
                                     ExpressionReturnType = uintType,
                                     BinaryOperatorType = BinaryOperatorNodeType.ShiftRight,
-                                    LeftOperand = new LiteralNode()
-                                    {
-                                        ExpressionReturnType = uintType,
-                                        Value = 15
-                                    },
-                                    RightOperand = new LiteralNode()
-                                    {
-                                        ExpressionReturnType = ushortType,
-                                        Value = 2
-                                    }
+                                    LeftOperand = new LiteralNode(uintType, 15),
+                                    RightOperand = new LiteralNode(ushortType, 2)
                                 },
-                                RightOperand = new LiteralNode()
-                                {
-                                    ExpressionReturnType = uintType,
-                                    Value = 3
-                                }
+                                RightOperand = new LiteralNode(uintType, 3)
                             }
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new FieldNode(field))
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_ShiftLeftAndRight.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = ((15 >> 2) << 3).ToString();
+            AssertSuccessByExecution();
         }
 
         #endregion
@@ -1052,12 +838,6 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
-            var outputMethod = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<string>()
-            {
-                "System.String",
-                literalType.FullName,
-                literalType.FullName
-            });
 
             var localA = new VariableDefinition("a", literalType);
             var localB = new VariableDefinition("b", literalType);
@@ -1069,20 +849,12 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new SymbolDeclarationNode()
                     {
                         Variable = localA,
-                        Initializer = new LiteralNode()
-                        {
-                            ExpressionReturnType = literalType,
-                            Value = value1
-                        }
+                        Initializer = new LiteralNode(literalType, value1)
                     },
                     new SymbolDeclarationNode()
                     {
                         Variable = localB,
-                        Initializer = new LiteralNode()
-                        {
-                            ExpressionReturnType = literalType,
-                            Value = value2
-                        }
+                        Initializer = new LiteralNode(literalType, value2)
                     },
                     new ConditionBlockNode()
                     {
@@ -1090,177 +862,69 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         {
                             ExpressionReturnType = boolType,
                             BinaryOperatorType = BinaryOperatorNodeType.GreaterThan,
-                            LeftOperand = new LocalVariableNode()
-                            {
-                                LocalVariable = localA
-                            },
-                            RightOperand = new LocalVariableNode()
-                            {
-                                LocalVariable = localB
-                            },
+                            LeftOperand = new LocalVariableNode(localA),
+                            RightOperand = new LocalVariableNode(localB)
                         },
                         TrueBlock = new CodeBlockNode()
                         {
                             Nodes = new List<IParserNode>()
                             {
-                                new MethodCallNode()
-                                {
-                                    ExpressionReturnType = voidType,
-                                    Function = new FunctionNode()
-                                    {
-                                        Method = outputMethod,
-                                    },
-                                    Args = new List<IExpressionNode>()
-                                    {
-                                        new LiteralNode()
-                                        {
-                                            ExpressionReturnType = stringType,
-                                            Value = "{0} is greater than {1}."
-                                        },
-                                        new LocalVariableNode()
-                                        {
-                                            LocalVariable = localA
-                                        },
-                                        new LocalVariableNode()
-                                        {
-                                            LocalVariable = localB
-                                        }
-                                    }
-                                }
+                                CallConsoleWriteLine(new LiteralNode(stringType, "{0} is greater than {1}."), new LocalVariableNode(localA), new LocalVariableNode(localB))
                             }
                         },
                         FalseBlock = new CodeBlockNode()
                         {
                             Nodes = new List<IParserNode>()
                             {
-                                new ConditionBlockNode()
-                                {
-                                    Condition = new BinaryOperatorNode()
-                                    {
-                                        ExpressionReturnType = boolType,
-                                        BinaryOperatorType = BinaryOperatorNodeType.LessThan,
-                                        LeftOperand = new LocalVariableNode()
-                                        {
-                                            LocalVariable = localA
-                                        },
-                                        RightOperand = new LocalVariableNode()
-                                        {
-                                            LocalVariable = localB
-                                        },
-                                    },
-                                    TrueBlock = new CodeBlockNode()
-                                    {
-                                        Nodes = new List<IParserNode>()
-                                        {
-                                            new MethodCallNode()
-                                            {
-                                                ExpressionReturnType = voidType,
-                                                Function = new FunctionNode()
-                                                {
-                                                    Method = outputMethod,
-                                                },
-                                                Args = new List<IExpressionNode>()
-                                                {
-                                                    new LiteralNode()
-                                                    {
-                                                        ExpressionReturnType = stringType,
-                                                        Value = "{0} is less than {1}."
-                                                    },
-                                                    new LocalVariableNode()
-                                                    {
-                                                        LocalVariable = localA
-                                                    },
-                                                    new LocalVariableNode()
-                                                    {
-                                                        LocalVariable = localB
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                    FalseBlock = new CodeBlockNode()
-                                    {
-                                        Nodes = new List<IParserNode>()
-                                        {
-                                            new ConditionBlockNode()
-                                            {
-                                                Condition = new BinaryOperatorNode()
-                                                {
-                                                    ExpressionReturnType = boolType,
-                                                    BinaryOperatorType = BinaryOperatorNodeType.Equals,
-                                                    LeftOperand = new LocalVariableNode()
-                                                    {
-                                                        LocalVariable = localA
-                                                    },
-                                                    RightOperand = new LocalVariableNode()
-                                                    {
-                                                        LocalVariable = localB
-                                                    },
-                                                },
-                                                TrueBlock = new CodeBlockNode()
-                                                {
-                                                    Nodes = new List<IParserNode>()
-                                                    {
-                                                        new MethodCallNode()
-                                                        {
-                                                            ExpressionReturnType = voidType,
-                                                            Function = new FunctionNode()
-                                                            {
-                                                                Method = outputMethod,
-                                                            },
-                                                            Args = new List<IExpressionNode>()
-                                                            {
-                                                                new LiteralNode()
-                                                                {
-                                                                    ExpressionReturnType = stringType,
-                                                                    Value = "{0} and {1} are equal."
-                                                                },
-                                                                new LocalVariableNode()
-                                                                {
-                                                                    LocalVariable = localA
-                                                                },
-                                                                new LocalVariableNode()
-                                                                {
-                                                                    LocalVariable = localB
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                },
-                                                FalseBlock = new CodeBlockNode()
-                                                {
-                                                    Nodes = new List<IParserNode>()
-                                                    {
-                                                        new MethodCallNode()
-                                                        {
-                                                            ExpressionReturnType = voidType,
-                                                            Function = new FunctionNode()
-                                                            {
-                                                                Method = outputMethod,
-                                                            },
-                                                            Args = new List<IExpressionNode>()
-                                                            {
-                                                                new LiteralNode()
-                                                                {
-                                                                    ExpressionReturnType = stringType,
-                                                                    Value = "We're screwed."
-                                                                },
-                                                                new LocalVariableNode()
-                                                                {
-                                                                    LocalVariable = localA
-                                                                },
-                                                                new LocalVariableNode()
-                                                                {
-                                                                    LocalVariable = localB
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                CallConsoleWriteLine(new LiteralNode(stringType, "{0} is not greater than {1}."), new LocalVariableNode(localA), new LocalVariableNode(localB))
+                            }
+                        }
+                    },                    
+                    new ConditionBlockNode()
+                    {
+                        Condition = new BinaryOperatorNode()
+                        {
+                            ExpressionReturnType = boolType,
+                            BinaryOperatorType = BinaryOperatorNodeType.LessThan,
+                            LeftOperand = new LocalVariableNode(localA),
+                            RightOperand = new LocalVariableNode(localB)
+                        },
+                        TrueBlock = new CodeBlockNode()
+                        {
+                            Nodes = new List<IParserNode>()
+                            {
+                                CallConsoleWriteLine(new LiteralNode(stringType, "{0} is less than {1}."), new LocalVariableNode(localA), new LocalVariableNode(localB))
+                            }
+                        },
+                        FalseBlock = new CodeBlockNode()
+                        {
+                            Nodes = new List<IParserNode>()
+                            {
+                                CallConsoleWriteLine(new LiteralNode(stringType, "{0} is not less than {1}."), new LocalVariableNode(localA), new LocalVariableNode(localB))
+                            }
+                        }
+                    },
+                    new ConditionBlockNode()
+                    {
+                        Condition = new BinaryOperatorNode()
+                        {
+                            ExpressionReturnType = boolType,
+                            BinaryOperatorType = BinaryOperatorNodeType.Equals,
+                            LeftOperand = new LocalVariableNode(localA),
+                            RightOperand = new LocalVariableNode(localB)
+                        },
+                        TrueBlock = new CodeBlockNode()
+                        {
+                            Nodes = new List<IParserNode>()
+                            {
+                                CallConsoleWriteLine(new LiteralNode(stringType, "{0} and {1} are equal."), new LocalVariableNode(localA), new LocalVariableNode(localB))
+                            }
+                        },
+                        FalseBlock = new CodeBlockNode()
+                        {
+                            Nodes = new List<IParserNode>()
+                            {
+                                CallConsoleWriteLine(new LiteralNode(stringType, "{0} and {1} are not equal."), new LocalVariableNode(localA), new LocalVariableNode(localB))
                             }
                         }
                     }
@@ -1273,8 +937,12 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         {
             TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(assemblyEmitter.TypeToTypeReference(typeof(int)), 5, 6);
 
-            ExpectedILFilePath = "TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Numerals.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput =
+                "5 is not greater than 6." + Environment.NewLine +
+                "5 is less than 6." + Environment.NewLine +
+                "5 and 6 are not equal.";
+
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -1282,115 +950,53 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         {
             TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(assemblyEmitter.TypeToTypeReference(typeof(string)), "hi", "bye");
 
-            ExpectedILFilePath = "TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Strings.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput =
+                "hi is greater than bye." + Environment.NewLine +
+                "hi is not less than bye." + Environment.NewLine +
+                "hi and bye are not equal.";
+
+            AssertSuccessByExecution();
         }
 
         public void TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(TypeReference literalType, IConvertible value1, IConvertible value2)
         {
-            var outputMethod = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<string>()
-            {
-                "System.String",
-                literalType.FullName,
-                literalType.FullName,
-                "System.Boolean"
-            });
-
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
             var booleanType = assemblyEmitter.TypeToTypeReference(typeof(bool));
 
-            var literal1 = new LiteralNode()
-            {
-                ExpressionReturnType = literalType,
-                Value = value1,
-            };
-
-            var literal2 = new LiteralNode()
-            {
-                ExpressionReturnType = literalType,
-                Value = value2,
-            };
+            var literal1 = new LiteralNode(literalType, value1);
+            var literal2 = new LiteralNode(literalType, value2);
 
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new MethodCallNode()
-                    {
-                        ExpressionReturnType = voidType,
-                        Function = new FunctionNode()
+                    CallConsoleWriteLine(new LiteralNode(stringType, "Is {0} greater than or equal to {1}? {2}"), literal1, literal2, 
+                        new BinaryOperatorNode()
                         {
-                            Method = outputMethod
-                        },
-                        Args = new List<IExpressionNode>()
+                            ExpressionReturnType = booleanType,
+                            BinaryOperatorType = BinaryOperatorNodeType.GreaterEqualThan,
+                            LeftOperand = literal1,
+                            RightOperand = literal2
+                        }),
+                        
+                    CallConsoleWriteLine(new LiteralNode(stringType, "Is {0} less than or equal to {1}? {2}"), literal1, literal2,
+                        new BinaryOperatorNode()
                         {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "Is {0} is greater than or equal to {1}? {2}"
-                            },
-                            literal1,
-                            literal2,
-                            new BinaryOperatorNode()
-                            {
-                                ExpressionReturnType = booleanType,
-                                BinaryOperatorType = BinaryOperatorNodeType.GreaterEqualThan,
-                                LeftOperand = literal1,
-                                RightOperand = literal2
-                            }
-                        }                        
-                    },
-                    new MethodCallNode()
-                    {
-                        ExpressionReturnType = voidType,
-                        Function = new FunctionNode()
+                            ExpressionReturnType = booleanType,
+                            BinaryOperatorType = BinaryOperatorNodeType.LessEqualThan,
+                            LeftOperand = literal1,
+                            RightOperand = literal2
+                        }),
+
+                    CallConsoleWriteLine(new LiteralNode(stringType, "Is {0} not equal to {1}? {2}"), literal1, literal2,
+                        new BinaryOperatorNode()
                         {
-                            Method = outputMethod
-                        },
-                        Args = new List<IExpressionNode>()
-                        {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "Is {0} is less than or equal to {1}? {2}"
-                            },
-                            literal1,
-                            literal2,
-                            new BinaryOperatorNode()
-                            {
-                                ExpressionReturnType = booleanType,
-                                BinaryOperatorType = BinaryOperatorNodeType.LessEqualThan,
-                                LeftOperand = literal1,
-                                RightOperand = literal2
-                            }
-                        }                        
-                    },
-                    new MethodCallNode()
-                    {
-                        ExpressionReturnType = voidType,
-                        Function = new FunctionNode()
-                        {
-                            Method = outputMethod
-                        },
-                        Args = new List<IExpressionNode>()
-                        {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "Is {0} is not equal to {1}? {2}"
-                            },
-                            literal1,
-                            literal2,
-                            new BinaryOperatorNode()
-                            {
-                                ExpressionReturnType = booleanType,
-                                BinaryOperatorType = BinaryOperatorNodeType.NotEquals,
-                                LeftOperand = literal1,
-                                RightOperand = literal2
-                            }
-                        }                        
-                    }
+                            ExpressionReturnType = booleanType,
+                            BinaryOperatorType = BinaryOperatorNodeType.NotEquals,
+                            LeftOperand = literal1,
+                            RightOperand = literal2
+                        })
                 }
             };
         }
@@ -1400,8 +1006,13 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         {
             TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(assemblyEmitter.TypeToTypeReference(typeof(float)), 3.5, 2.1);
 
-            ExpectedILFilePath = "TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Numerals.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = string.Format(
+                "Is {0} greater than or equal to {1}? {2}{5}" +
+                "Is {0} less than or equal to {1}? {3}{5}" +
+                "Is {0} not equal to {1}? {4}",
+                3.5f, 2.1f, 3.5f >= 2.1f, 3.5f <= 2.1f, 3.5f != 2.1f, Environment.NewLine);
+
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -1409,8 +1020,13 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         {
             TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(assemblyEmitter.TypeToTypeReference(typeof(string)), "hi", "bye");
 
-            ExpectedILFilePath = "TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Strings.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = string.Format(
+                "Is {0} greater than or equal to {1}? {2}{5}" +
+                "Is {0} less than or equal to {1}? {3}{5}" +
+                "Is {0} not equal to {1}? {4}",
+                "hi", "bye", String.CompareOrdinal("hi", "bye") >= 0, String.CompareOrdinal("hi", "bye") <= 0, "hi" != "bye", Environment.NewLine);
+
+            AssertSuccessByExecution();
         }
 
         #endregion
@@ -1418,43 +1034,17 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_LogicalAnd_LogicalOr()
         {
-            var outputMethod = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<string>()
-            {
-                "System.String",
-                "System.Boolean",                
-                "System.Boolean",
-                "System.Boolean"
-            });
-
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
             var booleanType = assemblyEmitter.TypeToTypeReference(typeof(bool));
 
             var variableDef1 = new VariableDefinition("a", booleanType);
-
-            var variable1 = new LocalVariableNode()
-            {
-                LocalVariable = variableDef1
-            };
+            var variable1 = new LocalVariableNode(variableDef1);
 
             var variableDef2 = new VariableDefinition("b", booleanType);
+            var variable2 = new LocalVariableNode(variableDef2);
 
-            var variable2 = new LocalVariableNode()
-            {
-                LocalVariable = variableDef2
-            };
-
-            var literal1 = new LiteralNode()
-            {
-                ExpressionReturnType = booleanType,
-                Value = true
-            };
-
-            var literal2 = new LiteralNode()
-            {
-                ExpressionReturnType = booleanType,
-                Value = false
-            };
+            const bool kValue1 = true;
+            const bool kValue2 = false;
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -1463,111 +1053,52 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new SymbolDeclarationNode()
                     {
                         Variable = variableDef1,
-                        Initializer = literal1
+                        Initializer = new LiteralNode(booleanType, kValue1)
                     },
                     new SymbolDeclarationNode()
                     {
                         Variable = variableDef2,
-                        Initializer = literal2
+                        Initializer = new LiteralNode(booleanType, kValue2)
                     },
+                    
+                    CallConsoleWriteLine(new LiteralNode(stringType, "{0} && {1} == {2}."), variable1, variable2,
+                        new BinaryOperatorNode()
+                        {
+                            ExpressionReturnType = booleanType,
+                            BinaryOperatorType = BinaryOperatorNodeType.LogicalAnd,
+                            LeftOperand = variable1,
+                            RightOperand = variable2
+                        }),
 
-                    new MethodCallNode()
-                    {
-                        ExpressionReturnType = voidType,
-                        Function = new FunctionNode()
+                    CallConsoleWriteLine(new LiteralNode(stringType, "{0} || {1} == {2}."), variable1, variable2,
+                        new BinaryOperatorNode()
                         {
-                            Method = outputMethod
-                        },
-                        Args = new List<IExpressionNode>()
-                        {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "{0} && {1} == {2}."
-                            },
-                            variable1,
-                            variable2,
-                            new BinaryOperatorNode()
-                            {
-                                ExpressionReturnType = booleanType,
-                                BinaryOperatorType = BinaryOperatorNodeType.LogicalAnd,
-                                LeftOperand = variable1,
-                                RightOperand = variable2
-                            }
-                        }
-                    },
-                    new MethodCallNode()
-                    {
-                        ExpressionReturnType = voidType,
-                        Function = new FunctionNode()
-                        {
-                            Method = outputMethod
-                        },
-                        Args = new List<IExpressionNode>()
-                        {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "{0} || {1} == {2}."
-                            },
-                            variable1,
-                            variable2,
-                            new BinaryOperatorNode()
-                            {
-                                ExpressionReturnType = booleanType,
-                                BinaryOperatorType = BinaryOperatorNodeType.LogicalOr,
-                                LeftOperand = variable1,
-                                RightOperand = variable2
-                            }
-                        }
-                    }
+                            ExpressionReturnType = booleanType,
+                            BinaryOperatorType = BinaryOperatorNodeType.LogicalOr,
+                            LeftOperand = variable1,
+                            RightOperand = variable2
+                        })
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_LogicalAnd_LogicalOr.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = string.Format("{0} && {1} == {2}.{4}{0} || {1} == {3}.", kValue1, kValue2, kValue1 && kValue2, kValue1 || kValue2, Environment.NewLine);
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_BinaryAnd_BinaryOr_BinaryXor()
         {
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
             var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
 
-            var outputMethod = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<TypeReference>()
-            {
-                stringType,
-                uintType,
-                uintType,
-                uintType
-            });
-
             var variableDef1 = new VariableDefinition("a", uintType);
-
-            var variable1 = new LocalVariableNode()
-            {
-                LocalVariable = variableDef1
-            };
+            var variable1 = new LocalVariableNode(variableDef1);
 
             var variableDef2 = new VariableDefinition("b", uintType);
-
-            var variable2 = new LocalVariableNode()
-            {
-                LocalVariable = variableDef2
-            };
-
-            var literal1 = new LiteralNode()
-            {
-                ExpressionReturnType = uintType,
-                Value = 0x156
-            };
-
-            var literal2 = new LiteralNode()
-            {
-                ExpressionReturnType = uintType,
-                Value = 0x841
-            };
+            var variable2 = new LocalVariableNode(variableDef2);
+            
+            const int kValue1 = 0x156;
+            const int kValue2 = 0x841;
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -1576,94 +1107,47 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new SymbolDeclarationNode()
                     {
                         Variable = variableDef1,
-                        Initializer = literal1
+                        Initializer = new LiteralNode(uintType, kValue1)
                     },
                     new SymbolDeclarationNode()
                     {
                         Variable = variableDef2,
-                        Initializer = literal2
+                        Initializer = new LiteralNode(uintType, kValue2)
                     },
+                    
+                    CallConsoleWriteLine(new LiteralNode(stringType, "{0} & {1} == {2}."), variable1, variable2, 
+                        new BinaryOperatorNode()
+                        {
+                            ExpressionReturnType = uintType,
+                            BinaryOperatorType = BinaryOperatorNodeType.BinaryAnd,
+                            LeftOperand = variable1,
+                            RightOperand = variable2
+                        }),
 
-                    new MethodCallNode()
-                    {
-                        ExpressionReturnType = voidType,
-                        Function = new FunctionNode()
+                    CallConsoleWriteLine(new LiteralNode(stringType, "{0} | {1} == {2}."), variable1, variable2, 
+                        new BinaryOperatorNode()
                         {
-                            Method = outputMethod
-                        },
-                        Args = new List<IExpressionNode>()
+                            ExpressionReturnType = uintType,
+                            BinaryOperatorType = BinaryOperatorNodeType.BinaryOr,
+                            LeftOperand = variable1,
+                            RightOperand = variable2
+                        }),
+
+                    CallConsoleWriteLine(new LiteralNode(stringType, "{0} ^ {1} == {2}."), variable1, variable2, 
+                        new BinaryOperatorNode()
                         {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "{0} & {1} == {2}."
-                            },
-                            variable1,
-                            variable2,
-                            new BinaryOperatorNode()
-                            {
-                                ExpressionReturnType = uintType,
-                                BinaryOperatorType = BinaryOperatorNodeType.BinaryAnd,
-                                LeftOperand = variable1,
-                                RightOperand = variable2
-                            }
-                        }
-                    },
-                    new MethodCallNode()
-                    {
-                        ExpressionReturnType = voidType,
-                        Function = new FunctionNode()
-                        {
-                            Method = outputMethod
-                        },
-                        Args = new List<IExpressionNode>()
-                        {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "{0} | {1} == {2}."
-                            },
-                            variable1,
-                            variable2,
-                            new BinaryOperatorNode()
-                            {
-                                ExpressionReturnType = uintType,
-                                BinaryOperatorType = BinaryOperatorNodeType.BinaryOr,
-                                LeftOperand = variable1,
-                                RightOperand = variable2
-                            }
-                        }
-                    },
-                    new MethodCallNode()
-                    {
-                        ExpressionReturnType = voidType,
-                        Function = new FunctionNode()
-                        {
-                            Method = outputMethod
-                        },
-                        Args = new List<IExpressionNode>()
-                        {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "{0} ^ {1} == {2}."
-                            },
-                            variable1,
-                            variable2,
-                            new BinaryOperatorNode()
-                            {
-                                ExpressionReturnType = uintType,
-                                BinaryOperatorType = BinaryOperatorNodeType.BinaryXor,
-                                LeftOperand = variable1,
-                                RightOperand = variable2
-                            }
-                        }
-                    }
+                            ExpressionReturnType = uintType,
+                            BinaryOperatorType = BinaryOperatorNodeType.BinaryXor,
+                            LeftOperand = variable1,
+                            RightOperand = variable2
+                        })
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_BinaryAnd_BinaryOr_BinaryXor.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = string.Format("{0} & {1} == {2}.{5}{0} | {1} == {3}.{5}{0} ^ {1} == {4}.", 
+                kValue1, kValue2, kValue1 & kValue2, kValue1 | kValue2, kValue1 ^ kValue2, Environment.NewLine);
+
+            AssertSuccessByExecution();
         }
         
         #endregion
@@ -1675,18 +1159,6 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
-            var consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<TypeReference>()
-            {
-                stringType,
-                intType,
-                intType,
-                intType,
-                intType,
-                intType,
-                intType,
-                intType
-            });
 
             var variableDefs = new List<VariableDefinition>();
 
@@ -1695,10 +1167,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 variableDefs.Add(new VariableDefinition(((char)i + 'a').ToString(), intType));
             }
 
-            var variables = variableDefs.Select(def => new LocalVariableNode()
-                {
-                    LocalVariable = def
-                }).ToList();
+            var variables = variableDefs.Select(def => new LocalVariableNode(def)).ToList();
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -1707,11 +1176,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new SymbolDeclarationNode()
                     {
                         Variable = variableDefs[0],
-                        Initializer = new LiteralNode()
-                        {
-                            ExpressionReturnType = intType,
-                            Value = 5
-                        }
+                        Initializer = new LiteralNode(intType, 5)
                     }
                 }
             };
@@ -1741,32 +1206,19 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 });
             }
 
-            nodes.Add(new MethodCallNode()
-            {
-                ExpressionReturnType = voidType,
-                Function = new FunctionNode()
-                {
-                    Method = consoleWriteLine
-                },
-                Args = new List<IExpressionNode>()
-                {
-                    new LiteralNode()
-                    {
-                        ExpressionReturnType = stringType,
-                        Value = "Results: \r\n{0}\r\n{1}\r\n{2}\r\n{3}\r\n{4}\r\n{5}\r\n{6}\r\n"
-                    },
-                    variables[0],
-                    variables[1],
-                    variables[2],
-                    variables[3],
-                    variables[4],
-                    variables[5],
-                    variables[6]
-                }
-            });
+            nodes.Add(CallConsoleWriteLine( 
+                new LiteralNode(stringType, "Results: \r\n{0}\r\n{1}\r\n{2}\r\n{3}\r\n{4}\r\n{5}\r\n{6}\r\n"),
+                variables[0],
+                variables[1],
+                variables[2],
+                variables[3],
+                variables[4],
+                variables[5],
+                variables[6]
+            ));
 
-            ExpectedILFilePath = "TestCanEmit_Negation_BinaryNot_Increment_Decrement.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = "Results: \r\n5\r\n-6\r\n-5\r\n5\r\n4\r\n4\r\n5\r\n";
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -1788,26 +1240,21 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = field
-                            },
+                            LeftOperand = new FieldNode(field),
                             RightOperand = new UnaryOperatorNode()
                             {
                                 ExpressionReturnType = boolType,
                                 UnaryOperatorType = UnaryOperatorNodeType.LogicalNot,
-                                Operand = new FieldNode()
-                                {
-                                    Field = field
-                                }
+                                Operand = new FieldNode(field)
                             }
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new FieldNode(field))
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_LogicalNot.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = true.ToString();
+            AssertSuccessByExecution();
         }
 
         #endregion
@@ -1821,21 +1268,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         {
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
             var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
-
-            var consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<TypeReference>()
-            {
-                stringType,
-                intType
-            });
-
+            
             var localVariableDef = new VariableDefinition("counter", intType);
-
-            var localVariable = new LocalVariableNode()
-            {
-                LocalVariable = localVariableDef
-            };
+            var localVariable = new LocalVariableNode(localVariableDef);
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -1844,11 +1280,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new SymbolDeclarationNode()
                     {
                         Variable = localVariableDef,
-                        Initializer = new LiteralNode()
-                        {
-                            ExpressionReturnType = intType,
-                            Value = 0
-                        }
+                        Initializer = new LiteralNode(intType, 0)
                     },
                     new WhileBlockNode()
                     {
@@ -1857,56 +1289,36 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                             ExpressionReturnType = boolType,
                             BinaryOperatorType = BinaryOperatorNodeType.LessThan,
                             LeftOperand = localVariable,
-                            RightOperand = new LiteralNode()
-                            {
-                                ExpressionReturnType = intType,
-                                Value = 10
-                            }
+                            RightOperand = new LiteralNode(intType, 10)
                         },
                         ExecutedBlock = new CodeBlockNode()
                         {
                             Nodes = new List<IParserNode>()
                             {
-                                new MethodCallNode()
-                                {
-                                    ExpressionReturnType = voidType,
-                                    Function = new FunctionNode()
+                                CallConsoleWriteLine(new LiteralNode(stringType, "The loop has looped {0} time(s)."),
+                                    new UnaryOperatorNode()
                                     {
-                                        Method = consoleWriteLine
-                                    },
-                                    Args = new List<IExpressionNode>()
-                                    {
-                                        new LiteralNode()
-                                        {
-                                            ExpressionReturnType = stringType,
-                                            Value = "The loop has looped {0} time(s)."
-                                        },
-                                        localVariable
-                                    }
-                                }
+                                        ExpressionReturnType = intType,
+                                        UnaryOperatorType = UnaryOperatorNodeType.PostIncrement,
+                                        Operand = localVariable
+                                    })
                             }
                         }
                     }
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_WhileLoop.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = Enumerable.Range(0, 10).Select(i => string.Format("The loop has looped {0} time(s).", i) + Environment.NewLine).Aggregate((x, y) => x + y);
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_IfBlockWithoutElse()
         {
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
             var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
-
-            var consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<TypeReference>()
-            {
-                stringType
-            });
-
+            
             var field = new FieldDefinition("myField", FieldAttributes.Static | FieldAttributes.Private, boolType);
             typeEmitter.AddField(field);
 
@@ -1914,54 +1326,38 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
+                    new UnaryOperatorNode()
+                    {
+                        ExpressionReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
+                            LeftOperand = new FieldNode(field),
+                            RightOperand = new LiteralNode(boolType, true)
+                        }
+                    },
                     new ConditionBlockNode()
                     {
-                        Condition = new FieldNode()
-                        {
-                            Field = field,
-                        },
+                        Condition = new FieldNode(field),
                         TrueBlock = new CodeBlockNode()
                         {
                             Nodes = new List<IParserNode>()
                             {
-                                new MethodCallNode()
-                                {
-                                    ExpressionReturnType = voidType,
-                                    Function = new FunctionNode()
-                                    {
-                                        Method = consoleWriteLine
-                                    },
-                                    Args = new List<IExpressionNode>()
-                                    {
-                                        new LiteralNode()
-                                        {
-                                            ExpressionReturnType = stringType,
-                                            Value = "myField is true."
-                                        }
-                                    }
-                                }
+                                CallConsoleWriteLine(new LiteralNode(stringType, "myField is true."))
                             }
                         }
                     }
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_IfBlockWithoutElse.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = "myField is true.";
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
         public void TestCanEmit_Return()
         {
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
-
-            var consoleReadLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "ReadLine", new List<TypeReference>());
-            var consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<TypeReference>()
-            {
-                stringType,
-                stringType
-            });
 
             var readInputMethod = new MethodEmitter(typeEmitter, "ReadInput", stringType, MethodAttributes.Static | MethodAttributes.Private);
 
@@ -1971,53 +1367,30 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 {
                     new ReturnNode()
                     {
-                        Expression = new MethodCallNode()
-                        {
-                            ExpressionReturnType = stringType,
-                            Function = new FunctionNode()
-                            {
-                                Method = consoleReadLine
-                            },
-                            Args = new List<IExpressionNode>()
-                        },
+                        Expression = new LiteralNode(stringType, "<some random input>")
                     }
                 }
             });
-
+            
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new MethodCallNode()
-                    {
-                        ExpressionReturnType = voidType,
-                        Function = new FunctionNode()
+                    CallConsoleWriteLine(new LiteralNode(stringType, "Your input is: \"{0}\"."),
+                        new MethodCallNode()
                         {
-                            Method = consoleWriteLine
-                        },
-                        Args = new List<IExpressionNode>()
-                        {
-                            new LiteralNode()
+                            ExpressionReturnType = stringType,
+                            Function = new FunctionNode()
                             {
-                                ExpressionReturnType = stringType,
-                                Value = "Your input is: \"{0}\"."
+                                Method = readInputMethod.Get()
                             },
-                            new MethodCallNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Function = new FunctionNode()
-                                {
-                                    Method = readInputMethod.Get()
-                                },
-                                Args = new List<IExpressionNode>()
-                            }
-                        }
-                    }
+                            Args = new List<IExpressionNode>()
+                        })
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_Return.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = "Your input is: \"<some random input>\".";
+            AssertSuccessByExecution();
         }
 
         #endregion
@@ -2034,24 +1407,27 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             typeEmitter.AddDefaultConstructor();
             var myType = typeEmitter.Get(assemblyEmitter);
 
+            var variable = new VariableDefinition("myInstance", myType);
+
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
                 {
                     new SymbolDeclarationNode()
                     {
-                        Variable = new VariableDefinition("myInstance", myType),
+                        Variable = variable,
                         Initializer = new ObjectCreationNode()
                         {
                             ExpressionReturnType = myType,
                             Args = new List<IExpressionNode>()
                         }
-                    }
+                    },
+                    CallConsoleWriteLine(new LocalVariableNode(variable))
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_CreateObject.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = myType.FullName;
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Codegen Tests")]
@@ -2059,14 +1435,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         {
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-
-            var consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new List<TypeReference>()
-            {
-                stringType,
-                stringType,
-                stringType
-            });
-
+            
             var testMethod = new MethodEmitter(typeEmitter, "MethodWithDefaultParameter", voidType, MethodAttributes.Private | MethodAttributes.Static);
             
             var neededParameter = new ParameterDefinition("neededParameter", ParameterAttributes.None, stringType);
@@ -2080,32 +1449,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new MethodCallNode()
-                    {
-                        ExpressionReturnType = voidType,
-                        Function = new FunctionNode()
-                        {
-                            Method = consoleWriteLine
-                        },
-                        Args = new List<IExpressionNode>()
-                        {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "{0}: {1}"
-                            },
-                            new FunctionArgumentNode()
-                            {
-                                IsMethodStatic = true,
-                                Param = neededParameter,
-                            },
-                            new FunctionArgumentNode()
-                            {
-                                IsMethodStatic = true,
-                                Param = optionalParameter,
-                            }
-                        }
-                    }
+                    CallConsoleWriteLine(new LiteralNode(stringType, "{0}: {1}"), new ParameterNode(neededParameter), new ParameterNode(optionalParameter))
                 }
             });
 
@@ -2135,11 +1479,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "Hi"
-                            }
+                            new LiteralNode(stringType, "Hi")
                         }
                     },
                     new MethodCallNode()
@@ -2151,23 +1491,15 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "Hi"
-                            },
-                            new LiteralNode()
-                            {
-                                ExpressionReturnType = stringType,
-                                Value = "NonOptional"
-                            }
+                            new LiteralNode(stringType, "Hi"),
+                            new LiteralNode(stringType, "NonOptional")
                         }
                     }
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_CallFunctionWithOptionalParameter.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = "Hi: Default value" + Environment.NewLine + "Hi: NonOptional";
+            AssertSuccessByExecution();
         }
 
         #endregion

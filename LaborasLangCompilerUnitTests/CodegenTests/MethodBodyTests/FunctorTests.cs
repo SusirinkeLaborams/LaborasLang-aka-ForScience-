@@ -49,11 +49,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 {
                     new ReturnNode()
                     {
-                        Expression = new LiteralNode()
-                        {
-                            ExpressionReturnType = intType,
-                            Value = -1
-                        }
+                        Expression = new LiteralNode(intType, -1)
                     }
                 }
             });
@@ -115,11 +111,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 {
                     new ReturnNode()
                     {
-                        Expression = new LiteralNode()
-                        {
-                            ExpressionReturnType = intType,
-                            Value = 5
-                        }
+                        Expression = new LiteralNode(intType, 5)
                     }
                 }
             });
@@ -169,14 +161,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = delegateField
-                            },
-                            RightOperand = new FieldNode()
-                            {
-                                Field = functorField
-                            }
+                            LeftOperand = new FieldNode(delegateField),
+                            RightOperand = new FieldNode(functorField)
                         }
                     }
                 }
@@ -212,10 +198,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = delegateField
-                            },
+                            LeftOperand = new FieldNode(delegateField),
                             RightOperand = new FunctionNode()
                             {
                                 ExpressionReturnType = delegateType,
@@ -253,11 +236,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new LiteralNode()
-                    {
-                        ExpressionReturnType = stringType,
-                        Value = "Str"
-                    }
+                    new LiteralNode(stringType, "Str")
                 }
             });
 
@@ -271,10 +250,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new MethodCallNode()
                         {
-                            Function = new FieldNode()
-                            {
-                                Field = field
-                            },
+                            Function = new FieldNode(field),
                             Args = new List<IExpressionNode>()
                             {
                                 new MethodCallNode()
@@ -287,11 +263,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                                     },
                                     ExpressionReturnType = stringType
                                 },
-                                new LiteralNode()
-                                {
-                                    ExpressionReturnType = floatType,
-                                    Value = 3.5f
-                                }
+                                new LiteralNode(floatType, 3.5f)
                             }
                         }
                     }
@@ -335,15 +307,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = functorField,
-                            },
-                            RightOperand = new FunctionArgumentNode()
-                            {
-                                IsMethodStatic = true,
-                                Param = functorSetterArgument
-                            }
+                            LeftOperand = new FieldNode(functorField),
+                            RightOperand = new ParameterNode(functorSetterArgument)
                         }
                     }
                 }
@@ -360,10 +325,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 {
                     new ReturnNode()
                     {
-                        Expression = new FieldNode()
-                        {
-                            Field = functorField
-                        }
+                        Expression = new FieldNode(functorField)
                     }
                 }
             });
@@ -402,15 +364,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new FieldNode()
-                            {
-                                Field = delegateField,
-                            },
-                            RightOperand = new FunctionArgumentNode()
-                            {
-                                IsMethodStatic = true,
-                                Param = delegateSetterArgument
-                            }
+                            LeftOperand = new FieldNode(delegateField),
+                            RightOperand = new ParameterNode(delegateSetterArgument)
                         }
                     }
                 }
@@ -427,10 +382,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 {
                     new ReturnNode()
                     {
-                        Expression = new FieldNode()
-                        {
-                            Field = delegateField
-                        }
+                        Expression = new FieldNode(delegateField)
                     }
                 }
             });
@@ -454,14 +406,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new PropertyNode()
-                            {
-                                Property = delegateProperty
-                            },
-                            RightOperand = new PropertyNode()
-                            {
-                                Property = functorProperty
-                            }
+                            LeftOperand = new PropertyNode(delegateProperty),
+                            RightOperand = new PropertyNode(functorProperty)
                         }
                     }
                 }

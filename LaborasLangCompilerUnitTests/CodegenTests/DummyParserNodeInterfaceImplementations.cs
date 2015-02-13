@@ -26,6 +26,16 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         public TypeReference ExpressionReturnType { get; set; }
         public Literal Value { get; set; }
+
+        public LiteralNode()
+        {
+        }
+
+        public LiteralNode(TypeReference literalType, IConvertible value)
+        {
+            ExpressionReturnType = literalType;
+            Value = new Literal(value);
+        }
     }
 
     class FunctionNode : IMethodNode
@@ -103,6 +113,11 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         public TypeReference ExpressionReturnType { get { return LocalVariable.VariableType; } }
         public VariableDefinition LocalVariable { get; set; }
+        
+        public LocalVariableNode(VariableDefinition variable)
+        {
+            LocalVariable = variable;
+        }
     }
 
     class FieldNode : IFieldNode
@@ -114,6 +129,15 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public TypeReference ExpressionReturnType { get { return Field.FieldType; } }
         public IExpressionNode ObjectInstance { get; set; }
         public FieldReference Field { get; set; }
+
+        public FieldNode()
+        {
+        }
+
+        public FieldNode(FieldReference field)
+        {
+            Field = field;
+        }
     }
 
     class PropertyNode : IPropertyNode
@@ -125,17 +149,30 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public TypeReference ExpressionReturnType { get { return Property.PropertyType; } }
         public IExpressionNode ObjectInstance { get; set; }
         public PropertyReference Property { get; set; }
+
+        public PropertyNode()
+        {
+        }
+
+        public PropertyNode(PropertyDefinition property)
+        {
+            Property = property;
+        }
     }
 
-    class FunctionArgumentNode : IMethodParamNode
+    class ParameterNode : IParameterNode
     {
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.FunctionArgument; } }
 
-        public TypeReference ExpressionReturnType { get { return Param.ParameterType; } }
-        public ParameterDefinition Param { get; set; }
-        public bool IsMethodStatic { get; set; }
+        public TypeReference ExpressionReturnType { get { return Parameter.ParameterType; } }
+        public ParameterDefinition Parameter { get; set; }
+        
+        public ParameterNode(ParameterDefinition parameter)
+        {
+            Parameter = parameter;
+        }
     }
 
     class BinaryOperatorNode : IBinaryOperatorNode
