@@ -15,29 +15,29 @@ namespace LaborasLangCompiler.Parser.Impl
     class DotOperatorNode
     {
         private ExpressionNode builtNode;
+        private ContextNode context;
         private Parser parser;
-        private ContextNode parent;
 
-        private DotOperatorNode(Parser parser, ContextNode parent)
+        private DotOperatorNode(ContextNode context)
         {
-            this.parser = parser;
-            this.parent = parent;
+            this.context = context;
+            this.parser = context.Parser;
         }
 
-        public static ExpressionNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
+        public static ExpressionNode Parse(Parser parser, ContextNode context, AstNode lexerNode)
         {
-            var instance = new DotOperatorNode(parser, parent);
+            var instance = new DotOperatorNode(context);
             foreach(var node in lexerNode.Children)
             {
                 if(node.Type != Lexer.TokenType.Period)
-                    instance.Append(ExpressionNode.Parse(parser, parent, node));
+                    instance.Append(ExpressionNode.Parse(parser, context, node));
             }
             return instance.builtNode;
         }
 
-        public static DotOperatorNode Create(Parser parser, ContextNode parent)
+        public static DotOperatorNode Create(ContextNode parent)
         {
-            return new DotOperatorNode(parser, parent);
+            return new DotOperatorNode(parent);
         }
 
         public DotOperatorNode Append(ExpressionNode node)
@@ -79,7 +79,7 @@ namespace LaborasLangCompiler.Parser.Impl
             else if (node is SymbolNode)
             {
                 SymbolNode symbol = node as SymbolNode;
-                builtNode = parent.GetSymbol(symbol.Name, parent, node.SequencePoint);
+                builtNode = context.GetSymbol(symbol.Name, context, node.SequencePoint);
                 if(builtNode == null)
                     ErrorCode.SymbolNotFound.ReportAndThrow(symbol.SequencePoint, "Symbol {0} not found", symbol.Name);
             }
@@ -102,7 +102,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 methods = methods.Where(m => m.IsStatic());
                 if (methods.Count() != 0)
                 {
-                    builtNode = AmbiguousMethodNode.Create(parser, methods, parent, null, builtNode.SequencePoint);
+                    builtNode = AmbiguousMethodNode.Create(methods, context, null, builtNode.SequencePoint);
                     return true;
                 }
                 else
@@ -119,7 +119,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 methods = methods.Where(m => !m.IsStatic());
                 if (methods.Count() != 0)
                 {
-                    builtNode = AmbiguousMethodNode.Create(parser, methods, parent, builtNode, builtNode.SequencePoint);
+                    builtNode = AmbiguousMethodNode.Create(methods, context, builtNode, builtNode.SequencePoint);
                     return true;
                 }
                 else
@@ -144,7 +144,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (type != null)
             {
-                builtNode = TypeNode.Create(type, parent, node.SequencePoint);
+                builtNode = TypeNode.Create(type, context, node.SequencePoint);
                 return true;
             }
             else
@@ -192,7 +192,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (field != null)
             {
-                builtNode = new FieldNode(field.IsStatic() ? null : builtNode, field, parent, builtNode.SequencePoint);
+                builtNode = new FieldNode(field.IsStatic() ? null : builtNode, field, context, builtNode.SequencePoint);
                 return true;
             }
             else
@@ -220,7 +220,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (property != null)
             {
-                builtNode = new PropertyNode(property.IsStatic() ? null : builtNode, property, parent, builtNode.SequencePoint);
+                builtNode = new PropertyNode(property.IsStatic() ? null : builtNode, property, context, builtNode.SequencePoint);
                 return true;
             }
             else

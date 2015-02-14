@@ -21,32 +21,32 @@ namespace LaborasLangCompiler.Parser.Impl
         public abstract bool IsSettable { get; }
         protected ExpressionNode(SequencePoint sequencePoint) : base(sequencePoint) { }
 
-        public static ExpressionNode Parse(Parser parser, ContextNode parent, AstNode lexerNode, TypeReference expectedType = null)
+        public static ExpressionNode Parse(Parser parser, ContextNode context, AstNode lexerNode, TypeReference expectedType = null)
         {
             ExpressionNode ret = null;
             switch (lexerNode.Type)
             {
                 case Lexer.TokenType.PeriodNode:
                 case Lexer.TokenType.FullSymbol:
-                    ret = DotOperatorNode.Parse(parser, parent, lexerNode);
+                    ret = DotOperatorNode.Parse(parser, context, lexerNode);
                     break;
                 case Lexer.TokenType.Symbol:
-                    ret = SymbolNode.Parse(parser, parent, lexerNode);
+                    ret = SymbolNode.Parse(parser, context, lexerNode);
                     break;
                 case Lexer.TokenType.LiteralNode:
-                    ret = LiteralNode.Parse(parser, parent, lexerNode);
+                    ret = LiteralNode.Parse(context, lexerNode);
                     break;
                 case Lexer.TokenType.Value:
-                    ret = ExpressionNode.Parse(parser, parent, lexerNode.Children[0], expectedType);
+                    ret = ExpressionNode.Parse(parser, context, lexerNode.Children[0], expectedType);
                     break;
                 case Lexer.TokenType.Function:
-                    ret = MethodNode.Parse(parser, parent, lexerNode);
+                    ret = MethodNode.Parse(parser, context, lexerNode);
                     break;
                 case Lexer.TokenType.AssignmentOperatorNode:
-                    ret = AssignmentOperatorNode.Parse(parser, parent, lexerNode);
+                    ret = AssignmentOperatorNode.Parse(parser, context, lexerNode);
                     break;
                 case Lexer.TokenType.FunctionCallNode:
-                    ret = MethodCallNode.Parse(parser, parent, lexerNode);
+                    ret = MethodCallNode.Parse(context, lexerNode);
                     break;
                 case Lexer.TokenType.LogicalOrNode:
                 case Lexer.TokenType.LogicalAndNode:
@@ -58,14 +58,14 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.ShiftOperatorNode:
                 case Lexer.TokenType.AdditiveOperatorNode:
                 case Lexer.TokenType.MultiplicativeOperatorNode:
-                    ret = BinaryOperatorNode.Parse(parser, parent, lexerNode);
+                    ret = BinaryOperatorNode.Parse(parser, context, lexerNode);
                     break;
                 case Lexer.TokenType.PostfixNode:
                 case Lexer.TokenType.PrefixNode:
-                    ret = UnaryOperatorNode.Parse(parser, parent, lexerNode);
+                    ret = UnaryOperatorNode.Parse(parser, context, lexerNode);
                     break;
                 case Lexer.TokenType.ParenthesesNode:
-                    ret = ExpressionNode.Parse(parser, parent, lexerNode.Children[1], expectedType);
+                    ret = ExpressionNode.Parse(parser, context, lexerNode.Children[1], expectedType);
                     break;
                 default:
                     throw new NotImplementedException();
@@ -75,7 +75,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 var ambiguous = ret as IAmbiguousNode;
                 if(ambiguous != null)
                 {
-                    ret = ambiguous.RemoveAmbiguity(parser, expectedType);
+                    ret = ambiguous.RemoveAmbiguity(context, expectedType);
                 }
             }
 

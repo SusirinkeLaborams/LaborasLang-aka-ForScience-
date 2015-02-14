@@ -38,20 +38,20 @@ namespace LaborasLangCompiler.Parser.Impl
             this.Value = value;
         }
 
-        public static LiteralNode Create(Parser parser, IConvertible value, SequencePoint point)
+        public static LiteralNode Create(ContextNode context, IConvertible value, SequencePoint point)
         {
-            var type = parser.Assembly.TypeToTypeReference(value.GetType());
-            if (!parser.IsPrimitive(type))
+            var type = context.Parser.Assembly.TypeToTypeReference(value.GetType());
+            if (!context.Parser.IsPrimitive(type))
                 Errors.ReportAndThrow(ErrorCode.TypeMissmatch, point, "Cannot create literal of type {0} with value {1}", type, value);
 
             return new LiteralNode(new Literal(value), type, point);
         }
 
-        public static LiteralNode Parse(Parser parser, ContextNode parentBlock, AstNode lexerNode)
+        public static LiteralNode Parse(ContextNode context, AstNode lexerNode)
         {
             lexerNode = lexerNode.Children[0];
-            var point = parser.GetSequencePoint(lexerNode);
-            var type = ParseLiteralType(parser, lexerNode);
+            var point = context.Parser.GetSequencePoint(lexerNode);
+            var type = ParseLiteralType(context.Parser, lexerNode);
             Literal value = new Literal(ParseValue(lexerNode.Content.ToString(), type, point));
             return new LiteralNode(value, type, point);
         }
@@ -128,15 +128,15 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public ExpressionNode RemoveAmbiguity(Parser parser, TypeReference expectedType)
+        public ExpressionNode RemoveAmbiguity(ContextNode context, TypeReference expectedType)
         {
             if (expectedType.FullName == type.FullName)
                 return this;
 
-            var conversions = GetImplicitConversions(parser, this);
+            var conversions = GetImplicitConversions(context.Parser, this);
             if(conversions.Any(c => c.TypeEquals(expectedType)))
             {
-                return ConvertLiteral(parser, this, expectedType);
+                return ConvertLiteral(context.Parser, this, expectedType);
             }
             else
             {

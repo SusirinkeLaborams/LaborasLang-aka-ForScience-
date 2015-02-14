@@ -90,7 +90,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 methods = methods.Where(m => m.IsStatic());
 
             if (methods.Count() > 0)
-                return AmbiguousMethodNode.Create(Parser, methods, scope, null, point);
+                return AmbiguousMethodNode.Create(methods, scope, null, point);
 
             var type = GetContainedType(name);
             if (type != null)

@@ -17,36 +17,34 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private IEnumerable<MethodReference> methods;
         private ExpressionNode instance;
-        private ContextNode parent;
 
-        private AmbiguousMethodNode(IEnumerable<MethodReference> methods, ExpressionNode instance, ContextNode parent, SequencePoint sequencePoint)
-            : base(null, parent, sequencePoint)
+        private AmbiguousMethodNode(IEnumerable<MethodReference> methods, ExpressionNode instance, ContextNode context, SequencePoint sequencePoint)
+            : base(null, context, sequencePoint)
         {
             this.methods = methods;
             this.instance = instance;
-            this.parent = parent;
         }
 
-        public ExpressionNode RemoveAmbiguity(Parser parser, TypeReference expectedType)
+        public ExpressionNode RemoveAmbiguity(ContextNode context, TypeReference expectedType)
         {
             if (!expectedType.IsFunctorType())
             {
                 return this;
             }
-            var paramz = MetadataHelpers.GetFunctorParamTypes(parser.Assembly, expectedType);
+            var paramz = MetadataHelpers.GetFunctorParamTypes(context.Parser.Assembly, expectedType);
             var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), paramz);
-            return new MethodNode(parser, method, instance, parent, SequencePoint);
+            return new MethodNode(context.Parser, method, instance, context, SequencePoint);
         }
 
-        public MethodNode RemoveAmbiguity(Parser parser, IEnumerable<TypeReference> args)
+        public MethodNode RemoveAmbiguity(ContextNode context, IEnumerable<TypeReference> args)
         {
             var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), args.ToList());
             if (method == null)
                 return null;
-            return new MethodNode(parser, method, instance, parent, SequencePoint);
+            return new MethodNode(context.Parser, method, instance, context, SequencePoint);
         }
 
-        public static ExpressionNode Create(Parser parser, IEnumerable<MethodReference> methods, ContextNode parent, ExpressionNode instance, SequencePoint sequencePoint)
+        public static ExpressionNode Create(IEnumerable<MethodReference> methods, ContextNode context, ExpressionNode instance, SequencePoint sequencePoint)
         {
             if(methods.Count() == 0)
             {
@@ -56,11 +54,11 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else if(methods.Count() == 1)
             {
-                return new MethodNode(parser, methods.Single(), instance, parent, sequencePoint);
+                return new MethodNode(context.Parser, methods.Single(), instance, context, sequencePoint);
             }
             else
             {
-                return new AmbiguousMethodNode(methods, instance, parent, sequencePoint);
+                return new AmbiguousMethodNode(methods, instance, context, sequencePoint);
             }
         }
 
