@@ -98,11 +98,11 @@ namespace LaborasLangCompiler.Parser.Impl
 
             var type = GetContainedType(name);
             if (type != null)
-                return new TypeNode(type, scope, point);
+                return TypeNode.Create(type, scope, point);
 
             type = FindType(name, point);
             if(type != null)
-                return new TypeNode(type, scope, point);
+                return TypeNode.Create(type, scope, point);
 
             var namespaze = FindNamespace(name, point);
             if (namespaze != null)

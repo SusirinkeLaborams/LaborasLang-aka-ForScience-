@@ -19,7 +19,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeReference ParsedType { get; private set; }
         public override bool IsGettable { get { return true; } }
 
-        public TypeNode(TypeReference type, Context scope, SequencePoint point)
+        private TypeNode(TypeReference type, Context scope, SequencePoint point)
             : base(type != null ? type.FullName : null, scope, point)
         {
             ParsedType = type;
@@ -45,6 +45,11 @@ namespace LaborasLangCompiler.Parser.Impl
             }
 
             return builder.Type;
+        }
+
+        public static TypeNode Create(TypeReference type, Context scope, SequencePoint point)
+        {
+            return new TypeNode(type, scope, point);
         }
 
         private static List<TypeReference> ParseArgumentList(Parser parser, Context parent, AstNode lexerNode)

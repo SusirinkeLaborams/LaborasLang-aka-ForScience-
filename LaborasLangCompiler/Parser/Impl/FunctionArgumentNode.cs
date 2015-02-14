@@ -25,11 +25,12 @@ namespace LaborasLangCompiler.Parser.Impl
         }
 
 
-        public ParameterNode(ParameterDefinition param, SequencePoint point)
+        internal ParameterNode(ParameterDefinition param, SequencePoint point)
             : base(point)
         {
             this.Parameter = param;
         }
+
         public override string ToString(int indent)
         {
             StringBuilder builder = new StringBuilder();

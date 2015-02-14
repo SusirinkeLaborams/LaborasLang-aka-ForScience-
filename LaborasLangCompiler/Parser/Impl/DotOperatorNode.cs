@@ -144,7 +144,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (type != null)
             {
-                builtNode = new TypeNode(type, parent, node.SequencePoint);
+                builtNode = TypeNode.Create(type, parent, node.SequencePoint);
                 return true;
             }
             else

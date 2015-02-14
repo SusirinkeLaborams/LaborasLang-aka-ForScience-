@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
         }
 
         private bool isConst;
-        public LocalVariableNode(SequencePoint point, VariableDefinition variable, bool isConst)
+        internal LocalVariableNode(SequencePoint point, VariableDefinition variable, bool isConst)
             : base(point)
         {
             this.LocalVariable = variable;

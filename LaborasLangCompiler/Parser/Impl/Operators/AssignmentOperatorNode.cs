@@ -36,32 +36,42 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static AssignmentOperatorNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
-            var instance = new AssignmentOperatorNode(parser.GetSequencePoint(lexerNode));
             var left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
+            var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2], left.ExpressionReturnType);
+            var point = parser.GetSequencePoint(lexerNode);
+
+            return Create(parser, LexerToAssignemnt[lexerNode.Children[1].Type], left, right, point);    
+        }
+
+        public static AssignmentOperatorNode Create(Parser parser, AssignmentOperatorType op, ExpressionNode left, ExpressionNode right, SequencePoint point)
+        {
             if (!left.IsSettable)
                 ErrorCode.NotAnLValue.ReportAndThrow(left.SequencePoint, "Left of assignment operator must be settable");
-            var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2], left.ExpressionReturnType);
-            if(!right.IsGettable)
-                ErrorCode.NotAnRValue.ReportAndThrow(right.SequencePoint, "Right of assignment operator must be gettable");
-            instance.type = left.ExpressionReturnType;
 
-            //use properties from lexer instead of string comparisons here
-            var op = lexerNode.Children[1];
-            if (op.Type != Lexer.TokenType.Assignment)
+            if (!right.IsGettable)
+                ErrorCode.NotAnRValue.ReportAndThrow(right.SequencePoint, "Right of assignment operator must be gettable");
+
+            var type = left.ExpressionReturnType;
+
+            if(op != AssignmentOperatorType.Assignment)
             {
-                if(!left.IsGettable)
+                if (!left.IsGettable)
                     ErrorCode.NotAnRValue.ReportAndThrow(right.SequencePoint, "Left of this type of assignment operator must be gettable");
-                right = BinaryOperatorNode.Parse(parser, Operators[op.Type], left, right);
+
+                right = BinaryOperatorNode.Create(parser, AssignmentToBinary[op], left, right);
             }
 
             if (!right.ExpressionReturnType.IsAssignableTo(left.ExpressionReturnType))
             {
-                ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, 
-                    "Cannot assign {0} to {1}", instance.right.ExpressionReturnType, instance.left.ExpressionReturnType);
+                ErrorCode.TypeMissmatch.ReportAndThrow(point,
+                    "Cannot assign {0} to {1}", right.ExpressionReturnType, left.ExpressionReturnType);
             }
-            instance.right = right;
+
+            var instance = new AssignmentOperatorNode(point);
             instance.left = left;
-            return instance;    
+            instance.right = right;
+            instance.type = left.ExpressionReturnType;
+            return instance;
         }
 
         public override string ToString(int indent)
@@ -75,18 +85,48 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.ToString();
         }
 
-        public static Dictionary<Lexer.TokenType, BinaryOperatorNodeType> Operators = new Dictionary<Lexer.TokenType, BinaryOperatorNodeType>()
+        public enum AssignmentOperatorType
         {
-            {Lexer.TokenType.PlusEqual, BinaryOperatorNodeType.Addition},
-            {Lexer.TokenType.MinusEqual, BinaryOperatorNodeType.Subtraction},
-            {Lexer.TokenType.MultiplyEqual, BinaryOperatorNodeType.Multiplication},
-            {Lexer.TokenType.DivideEqual, BinaryOperatorNodeType.Division},
-            {Lexer.TokenType.RemainderEqual, BinaryOperatorNodeType.Modulus},
-            {Lexer.TokenType.BitwiseOrEqual, BinaryOperatorNodeType.BinaryOr},
-            {Lexer.TokenType.BitwiseAndEqual, BinaryOperatorNodeType.BinaryAnd},
-            {Lexer.TokenType.BitwiseXorEqual, BinaryOperatorNodeType.BinaryXor},
-            {Lexer.TokenType.RightShiftEqual, BinaryOperatorNodeType.ShiftRight},
-            {Lexer.TokenType.LeftShiftEqual, BinaryOperatorNodeType.ShiftLeft}
+            Assignment,
+            AdditionAssignment,
+            MinusAssignment,
+            MultiplyAssignment,
+            DivisionAssignment,
+            ModulusAssignment,
+            BinaryOrAssignment,
+            BinaryAndAssignment,
+            BinaryXorAssignment,
+            ShiftRightAssignment,
+            ShiftLeftAssignment
+        }
+
+        public static Dictionary<Lexer.TokenType, AssignmentOperatorType> LexerToAssignemnt = new Dictionary<Lexer.TokenType, AssignmentOperatorType>()
+        {
+            {Lexer.TokenType.Assignment, AssignmentOperatorType.Assignment},
+            {Lexer.TokenType.PlusEqual, AssignmentOperatorType.AdditionAssignment},
+            {Lexer.TokenType.MinusEqual, AssignmentOperatorType.MinusAssignment},
+            {Lexer.TokenType.MultiplyEqual, AssignmentOperatorType.MultiplyAssignment},
+            {Lexer.TokenType.DivideEqual, AssignmentOperatorType.DivisionAssignment},
+            {Lexer.TokenType.RemainderEqual, AssignmentOperatorType.ModulusAssignment},
+            {Lexer.TokenType.BitwiseOrEqual, AssignmentOperatorType.BinaryOrAssignment},
+            {Lexer.TokenType.BitwiseAndEqual, AssignmentOperatorType.BinaryAndAssignment},
+            {Lexer.TokenType.BitwiseXorEqual, AssignmentOperatorType.BinaryXorAssignment},
+            {Lexer.TokenType.RightShiftEqual, AssignmentOperatorType.ShiftRightAssignment},
+            {Lexer.TokenType.LeftShiftEqual, AssignmentOperatorType.ShiftLeftAssignment}
+        };
+
+        private static Dictionary<AssignmentOperatorType, BinaryOperatorNodeType> AssignmentToBinary = new Dictionary<AssignmentOperatorType, BinaryOperatorNodeType>()
+        {
+            {AssignmentOperatorType.AdditionAssignment, BinaryOperatorNodeType.Addition},
+            {AssignmentOperatorType.MinusAssignment, BinaryOperatorNodeType.Subtraction},
+            {AssignmentOperatorType.MultiplyAssignment, BinaryOperatorNodeType.Multiplication},
+            {AssignmentOperatorType.DivisionAssignment, BinaryOperatorNodeType.Division},
+            {AssignmentOperatorType.ModulusAssignment, BinaryOperatorNodeType.Modulus},
+            {AssignmentOperatorType.BinaryOrAssignment, BinaryOperatorNodeType.BinaryOr},
+            {AssignmentOperatorType.BinaryAndAssignment, BinaryOperatorNodeType.BinaryAnd},
+            {AssignmentOperatorType.BinaryXorAssignment, BinaryOperatorNodeType.BinaryXor},
+            {AssignmentOperatorType.ShiftRightAssignment, BinaryOperatorNodeType.ShiftRight},
+            {AssignmentOperatorType.ShiftLeftAssignment, BinaryOperatorNodeType.ShiftLeft}
         };
     }
 }

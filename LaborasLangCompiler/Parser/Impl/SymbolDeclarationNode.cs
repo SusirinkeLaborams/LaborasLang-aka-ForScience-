@@ -10,6 +10,7 @@ using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using LaborasLangCompiler.Common;
+using Mono.Cecil;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -29,6 +30,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.initializer = init;
             this.IsConst = isConst;
         }
+
         public static SymbolDeclarationNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             var info = DeclarationInfo.Parse(parser, lexerNode);
@@ -37,40 +39,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var point = parser.GetSequencePoint(lexerNode);
             ExpressionNode initializer = info.Initializer.IsNull ? null : ExpressionNode.Parse(parser, parent, info.Initializer, declaredType);
 
-            if (declaredType.IsVoid())
-                ErrorCode.VoidLValue.ReportAndThrow(point, "Cannot declare a variable of type void");
-
-            bool isConst = ParseModifiers(info.Modifiers, point);
-
-            if (isConst && initializer == null)
-                ErrorCode.MissingInit.ReportAndThrow(point, "Const variables require initialization");
-
-            if (declaredType.IsAuto() && (initializer == null || initializer.ExpressionReturnType == null))
-                ErrorCode.MissingInit.ReportAndThrow(point, "Type inference requires initialization");
-
-            if(declaredType.IsAuto())
-            {
-                if(initializer == null)
-                    ErrorCode.MissingInit.ReportAndThrow(point, "Type inference requires initialization");
-                else if (initializer.ExpressionReturnType == null)
-                    ErrorCode.MissingInit.ReportAndThrow(point, "Initiliazer type is not defined, inferrence unavailable");
-            }
-
-            if (initializer != null)
-            {
-                if (declaredType.IsAuto())
-                {
-                    declaredType = initializer.ExpressionReturnType;
-                }
-                else if (!initializer.ExpressionReturnType.IsAssignableTo(declaredType))
-                {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(initializer.SequencePoint,
-                        "Variable of type {0} initialized with {1}", declaredType, initializer.ExpressionReturnType);
-                }
-            }
-
-            SymbolDeclarationNode node = new SymbolDeclarationNode(new VariableDefinition(name, declaredType), isConst, initializer, point);
-            return node;
+            return Create(parser, parent, info.Modifiers, declaredType, name, initializer, point);
         }
 
         private static bool ParseModifiers(Modifiers mods, SequencePoint point)
@@ -80,6 +49,43 @@ namespace LaborasLangCompiler.Parser.Impl
                 ErrorCode.InvalidVariableMods.ReportAndThrow(point, "Only const and mutable modifiers are allowed for local varialbes");
 
             return mods.HasFlag(Modifiers.Const);
+        }
+
+        public static SymbolDeclarationNode Create(Parser parser, Context parent, Modifiers mods, TypeReference type, string name, ExpressionNode initializer, SequencePoint point)
+        {
+            if (type.IsVoid())
+                ErrorCode.VoidLValue.ReportAndThrow(point, "Cannot declare a variable of type void");
+
+            bool isConst = ParseModifiers(mods, point);
+
+            if (isConst && initializer == null)
+                ErrorCode.MissingInit.ReportAndThrow(point, "Const variables require initialization");
+
+            if (type.IsAuto() && (initializer == null || initializer.ExpressionReturnType == null))
+                ErrorCode.MissingInit.ReportAndThrow(point, "Type inference requires initialization");
+
+            if (type.IsAuto())
+            {
+                if (initializer == null)
+                    ErrorCode.MissingInit.ReportAndThrow(point, "Type inference requires initialization");
+                else if (initializer.ExpressionReturnType == null)
+                    ErrorCode.MissingInit.ReportAndThrow(point, "Initiliazer type is not defined, inferrence unavailable");
+            }
+
+            if (initializer != null)
+            {
+                if (type.IsAuto())
+                {
+                    type = initializer.ExpressionReturnType;
+                }
+                else if (!initializer.ExpressionReturnType.IsAssignableTo(type))
+                {
+                    ErrorCode.TypeMissmatch.ReportAndThrow(initializer.SequencePoint,
+                        "Variable of type {0} initialized with {1}", type, initializer.ExpressionReturnType);
+                }
+            }
+
+            return new SymbolDeclarationNode(new VariableDefinition(name, type), isConst, initializer, point);
         }
 
         public override string ToString(int indent)

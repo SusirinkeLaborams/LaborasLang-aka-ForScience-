@@ -45,24 +45,29 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 ExpressionNode left, right;
                 left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
-                if (!left.IsGettable)
-                    ErrorCode.NotAnRValue.ReportAndThrow(left.SequencePoint, "Binary operand is not gettable");
+                
                 for (int i = 1; i < lexerNode.Children.Count; i += 2)
                 {
                     right = ExpressionNode.Parse(parser, parent, lexerNode.Children[i + 1]);
-                    if (!right.IsGettable)
-                        ErrorCode.NotAnRValue.ReportAndThrow(right.SequencePoint, "Binary operand is not gettable");
-                    left = Parse(parser, Operators[lexerNode.Children[i].Type], left, right);
+                    left = Create(parser, Operators[lexerNode.Children[i].Type], left, right);
                 }
                 return left;
             }
         }
-        public static BinaryOperatorNode Parse(Parser parser, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right)
+
+        public static BinaryOperatorNode Create(Parser parser, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right)
         {
             var instance = new BinaryOperatorNode(left.SequencePoint);
             instance.BinaryOperatorType = op;
             instance.left = left;
             instance.right = right;
+
+            if (!left.IsGettable)
+                ErrorCode.NotAnRValue.ReportAndThrow(left.SequencePoint, "Binary operand is not gettable");
+
+            if (!right.IsGettable)
+                ErrorCode.NotAnRValue.ReportAndThrow(right.SequencePoint, "Binary operand is not gettable");
+
             switch (instance.BinaryOperatorType)
             {
                 case BinaryOperatorNodeType.Addition:
@@ -99,6 +104,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return instance;
         }
+
         private void VerifyArithmetic(Parser parser)
         {
             if (left.ExpressionReturnType.IsNumericType() && right.ExpressionReturnType.IsNumericType())
@@ -125,6 +131,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 ArithmeticMissmatch();
             }
         }
+
         private void VerifyComparison(Parser parser)
         {
             type = parser.Bool;
@@ -143,6 +150,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (!comparable)
                 ComparisonMissmatch();
         }
+
         private void VerifyShift(Parser parser)
         {
             type = left.ExpressionReturnType;
@@ -151,6 +159,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (!left.ExpressionReturnType.IsIntegerType())
                 ShiftMissmatch();
         }
+
         private void VerifyBinary()
         {
             type = left.ExpressionReturnType;
@@ -161,6 +170,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (left.ExpressionReturnType.GetIntegerWidth() != right.ExpressionReturnType.GetIntegerWidth())
                 BinaryMissmatch();
         }
+
         private void VerifyLogical(Parser parser)
         {
             type = parser.Bool;
@@ -168,6 +178,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (!(left.ExpressionReturnType.IsBooleanType() && right.ExpressionReturnType.IsBooleanType()))
                 LogicalMissmatch();
         }
+
         public override string ToString(int indent)
         {
             StringBuilder builder = new StringBuilder();

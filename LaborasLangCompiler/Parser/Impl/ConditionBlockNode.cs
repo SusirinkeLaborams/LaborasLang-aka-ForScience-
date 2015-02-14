@@ -17,7 +17,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public IExpressionNode Condition { get { return condition; } }
         public ICodeBlockNode TrueBlock { get { return trueBlock; } }
         public ICodeBlockNode FalseBlock { get { return falseBlock; } }
-        protected ConditionBlockNode(SequencePoint sequencePoint) : base(sequencePoint) { }
         public bool Returns
         {
             get
@@ -28,6 +27,8 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private ExpressionNode condition;
         private CodeBlockNode trueBlock, falseBlock;
+
+        private ConditionBlockNode(SequencePoint sequencePoint) : base(sequencePoint) { }
 
         public static ConditionBlockNode Parse(Parser parser, Context parent, AstNode lexerNode)
         {

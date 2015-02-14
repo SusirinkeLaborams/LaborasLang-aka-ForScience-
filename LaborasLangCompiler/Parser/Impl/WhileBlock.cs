@@ -19,16 +19,25 @@ namespace LaborasLangCompiler.Parser.Impl
         private ExpressionNode condition;
         private CodeBlockNode block;
         protected WhileBlock(SequencePoint point) : base(point) { }
+
         public static WhileBlock Parse(Parser parser, Context parent, AstNode lexerNode)
         {
             var point = parser.GetSequencePoint(lexerNode);
+            var condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
+            var block = CodeBlockNode.Parse(parser, parent, lexerNode.Children[4]);
+            return Create(parser, parent, condition, block, point);
+        }
+
+        public static WhileBlock Create(Parser parser, Context parent, ExpressionNode condition, CodeBlockNode body, SequencePoint point)
+        {
             var instance = new WhileBlock(point);
-            instance.condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
-            if (!instance.condition.ExpressionReturnType.TypeEquals(parser.Bool) || !instance.condition.IsGettable)
+            if (!condition.ExpressionReturnType.TypeEquals(parser.Bool) || !condition.IsGettable)
                 ErrorCode.InvalidCondition.ReportAndThrow(point, "Condition must be a gettable boolean expression");
-            instance.block = CodeBlockNode.Parse(parser, parent, lexerNode.Children[4]);
+            instance.condition = condition;
+            instance.block = body;
             return instance;
         }
+
         public override string ToString(int indent)
         {
             StringBuilder builder = new StringBuilder();

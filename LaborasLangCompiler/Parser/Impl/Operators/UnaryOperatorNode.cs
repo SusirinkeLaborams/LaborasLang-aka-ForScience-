@@ -61,6 +61,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
         }
+
         private static ExpressionNode ParseSuffix(Parser parser, Context parent, AstNode lexerNode)
         {
             var expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
@@ -77,8 +78,9 @@ namespace LaborasLangCompiler.Parser.Impl
                     ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(lexerNode.Children[i]), "Suffix op expected, '{0}' received", op);
                 }
             }
-            return ParseUnary(parser, expression, ops);
+            return Create(parser, expression, ops);
         }
+
         private static ExpressionNode ParsePrefix(Parser parser, Context parent, AstNode lexerNode)
         {
             var count = lexerNode.Children.Count;
@@ -96,17 +98,19 @@ namespace LaborasLangCompiler.Parser.Impl
                     ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(lexerNode.Children[i]), "Prefix op expected, '{0}' received", op);
                 }
             }
-            return ParseUnary(parser, expression, ops);
+            return Create(parser, expression, ops);
         }
-        private static ExpressionNode ParseUnary(Parser parser, ExpressionNode expression, List<UnaryOperatorNodeType> ops)
+
+        private static ExpressionNode Create(Parser parser, ExpressionNode expression, List<UnaryOperatorNodeType> ops)
         {
             foreach(var op in ops)
             {
-                expression = ParseUnary(parser, expression, op);
+                expression = Create(parser, expression, op);
             }
             return expression;
         }
-        private static UnaryOperatorNode ParseUnary(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
+
+        public static UnaryOperatorNode Create(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
         {
             if(!expression.IsGettable)
             {
@@ -143,34 +147,40 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             return instance;
         }
+
         private void ParseInc()
         {
             if (!ExpressionReturnType.IsNumericType())
                 ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint, "Increment/Decrement ops only allowed on numeric types, {0} received",
                     ExpressionReturnType);
         }
+
         private void ParseNegation()
         {
             if (!ExpressionReturnType.IsNumericType())
                 ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint, "Negation operations only allowed on numeric types, {0} received",
                     ExpressionReturnType);
         }
+
         private void ParseLogical()
         {
             if (!ExpressionReturnType.IsBooleanType())
                 ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint, "Logical ops only allowed on boolean types, {0} received",
                     ExpressionReturnType);
         }
+
         private void ParseBinary()
         {
             if (!ExpressionReturnType.IsIntegerType())
                 ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint, "Binary ops only allowed on integer types, {0} received",
                     ExpressionReturnType);
         }
+
         public static UnaryOperatorNode Void(ExpressionNode expression)
         {
             return new UnaryOperatorNode(UnaryOperatorNodeType.VoidOperator, expression);
         }
+
         public override string ToString(int indent)
         {
             StringBuilder builder = new StringBuilder();
@@ -181,12 +191,14 @@ namespace LaborasLangCompiler.Parser.Impl
             builder.AppendLine(operand.ToString(indent + 2));
             return builder.ToString();
         }
+
         public static Dictionary<Lexer.TokenType, UnaryOperatorNodeType> SuffixOperators = new Dictionary<Lexer.TokenType, UnaryOperatorNodeType>()
         {
             
             {Lexer.TokenType.PlusPlus, UnaryOperatorNodeType.PostIncrement},
             {Lexer.TokenType.MinusMinus, UnaryOperatorNodeType.PostDecrement}
         };
+
         public static Dictionary<Lexer.TokenType, UnaryOperatorNodeType> PrefixOperators = new Dictionary<Lexer.TokenType, UnaryOperatorNodeType>()
         {
             {Lexer.TokenType.PlusPlus, UnaryOperatorNodeType.PreIncrement},
