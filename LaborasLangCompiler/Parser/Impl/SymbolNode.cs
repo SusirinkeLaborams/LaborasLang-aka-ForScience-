@@ -26,10 +26,12 @@ namespace LaborasLangCompiler.Parser.Impl
             Name = value;
             Scope = scope;
         }
-        public static SymbolNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
+
+        public static SymbolNode Parse(ContextNode context, AstNode lexerNode)
         {
-            return new SymbolNode(lexerNode.Content.ToString(), parent, parser.GetSequencePoint(lexerNode));
+            return new SymbolNode(lexerNode.Content.ToString(), context, context.Parser.GetSequencePoint(lexerNode));
         }
+
         public override string ToString(int indent)
         {
             throw new InvalidOperationException();

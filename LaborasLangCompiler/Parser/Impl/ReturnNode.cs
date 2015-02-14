@@ -22,27 +22,27 @@ namespace LaborasLangCompiler.Parser.Impl
         private ExpressionNode expression;
         private ReturnNode(SequencePoint point) : base(point) { }
 
-        public static ReturnNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
+        public static ReturnNode Parse(ContextNode context, AstNode lexerNode)
         {
-            var point = parser.GetSequencePoint(lexerNode);
-            var returnType = parent.GetMethod().MethodReturnType;
+            var point = context.Parser.GetSequencePoint(lexerNode);
+            var returnType = context.GetMethod().MethodReturnType;
             ExpressionNode expression = null;
 
             if (lexerNode.Children.Count == 3)
             {
-                expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[1], returnType);
+                expression = ExpressionNode.Parse(context, lexerNode.Children[1], returnType);
             }
-            return Create(parser, parent, expression, point);
+            return Create(context, expression, point);
         }
 
-        public static ReturnNode Create(Parser parser, ContextNode parent, ExpressionNode expression, SequencePoint point)
+        public static ReturnNode Create(ContextNode context, ExpressionNode expression, SequencePoint point)
         {
             var instance = new ReturnNode(point);
             instance.expression = expression;
-            var returnType = parent.GetMethod().MethodReturnType;
+            var returnType = context.GetMethod().MethodReturnType;
             if(expression != null)
             {
-                if(returnType.TypeEquals(parser.Void))
+                if(returnType.TypeEquals(context.Parser.Void))
                 {
                     ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, "Cannot return a value in a void method");
                 }
@@ -59,7 +59,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                if(!returnType.TypeEquals(parser.Void))
+                if(!returnType.TypeEquals(context.Parser.Void))
                 {
                     ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, "Method returns {0}, must return a value", returnType);
                 }

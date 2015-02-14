@@ -39,7 +39,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public void Emit()
         {
-            parsedBody = CodeBlockNode.Parse(Parser, this, body);
+            parsedBody = CodeBlockNode.Parse(this, body);
             if (MethodReturnType.FullName != Parser.Void.FullName && !parsedBody.Returns)
                 ErrorCode.MissingReturn.ReportAndThrow(SequencePoint, "Not all control paths return a value");
             if (Parser.ProjectParser.ShouldEmit)
@@ -49,7 +49,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private void ParseHeader(Modifiers mods, AstNode lexerNode, string methodName)
         {
             var point = Parser.GetSequencePoint(lexerNode);
-            var builder = new TypeNode.TypeBuilder(Parser, Parent);
+            var builder = new TypeNode.TypeBuilder(Parent);
             int count = lexerNode.ChildrenCount;
             var paramz = ParseParams(Parser, lexerNode.Children[count - 1]);
             for (int i = 0; i < count - 1; i++)
@@ -86,7 +86,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private ParameterDefinition ParseParameter(ContextNode parent, AstNode typeNode, AstNode nameNode)
         {
-            var type = TypeNode.Parse(Parser, parent, typeNode);
+            var type = TypeNode.Parse(parent, typeNode);
             var name = nameNode.GetSingleSymbolOrThrow();
             return new ParameterDefinition(name, ParameterAttributes.None, type);
         }
@@ -111,10 +111,10 @@ namespace LaborasLangCompiler.Parser.Impl
             return Parent.GetClass();
         }
 
-        public static FunctionDeclarationNode ParseAsFunctor(Parser parser, ContextNode parent, AstNode function)
+        public static FunctionDeclarationNode ParseAsFunctor(ContextNode context, AstNode function)
         {
-            var instance = new FunctionDeclarationNode(parent, Modifiers.NoInstance | Modifiers.Private, parent.GetClass().NewFunctionName(), function);
-            parent.GetClass().AddLambda(instance);
+            var instance = new FunctionDeclarationNode(context, Modifiers.NoInstance | Modifiers.Private, context.GetClass().NewFunctionName(), function);
+            context.GetClass().AddLambda(instance);
             instance.Emit();
             return instance;
         }
@@ -125,15 +125,15 @@ namespace LaborasLangCompiler.Parser.Impl
             return instance;
         }
 
-        public static TypeReference ParseFunctorType(Parser parser, ContextNode parent, AstNode lexerNode)
+        public static TypeReference ParseFunctorType(ContextNode context, AstNode lexerNode)
         {
-            var builder = new TypeNode.TypeBuilder(parser, parent);
+            var builder = new TypeNode.TypeBuilder(context);
             int count = lexerNode.ChildrenCount;
             for (int i = 0; i < count - 1; i++)
             {
                 builder.Append(lexerNode.Children[i]);
             }
-            builder.Append(ParseParams(parser, lexerNode.Children[count - 1]).Select(p => TypeNode.Parse(parser, parent, p.Type)));
+            builder.Append(ParseParams(context.Parser, lexerNode.Children[count - 1]).Select(p => TypeNode.Parse(context, p.Type)));
 
             return builder.Type;
         }

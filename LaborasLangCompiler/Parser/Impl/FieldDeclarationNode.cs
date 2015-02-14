@@ -56,12 +56,12 @@ namespace LaborasLangCompiler.Parser.Impl
             this.point = point;
             this.initializer = declaration.Initializer;
             this.Name = declaration.SymbolName.GetSingleSymbolOrThrow();
-            this.TypeReference = TypeNode.Parse(Parser, this, declaration.Type);
+            this.TypeReference = TypeNode.Parse(this, declaration.Type);
             this.modifiers = declaration.Modifiers;
             this.field = new Lazy<FieldDefinition>(() => new FieldDefinition(Name, GetAttributes(), TypeReference));
 
             if (TypeReference.IsAuto() && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
-                TypeReference = FunctionDeclarationNode.ParseFunctorType(Parser, parent, declaration.Initializer);
+                TypeReference = FunctionDeclarationNode.ParseFunctorType(parent, declaration.Initializer);
 
             if (!TypeReference.IsAuto())
             {
@@ -72,7 +72,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         }
 
-        public void Initialize(Parser parser)
+        public void Initialize()
         {
             if(initializer.IsNull)
             {
@@ -81,7 +81,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return;
             }
 
-            Initializer = ExpressionNode.Parse(parser, this, initializer, TypeReference);
+            Initializer = ExpressionNode.Parse(this, initializer, TypeReference);
 
             if (TypeReference.IsAuto())
             {
@@ -97,7 +97,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            if(parser.ProjectParser.ShouldEmit)
+            if(Parser.ProjectParser.ShouldEmit)
                 GetClass().TypeEmitter.AddFieldInitializer(FieldDefinition, Initializer);
         }
 

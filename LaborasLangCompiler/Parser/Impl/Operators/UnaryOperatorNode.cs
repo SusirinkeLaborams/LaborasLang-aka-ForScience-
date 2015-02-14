@@ -41,30 +41,30 @@ namespace LaborasLangCompiler.Parser.Impl
             this.UnaryOperatorType = type;
         }
 
-        public static ExpressionNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
+        public static ExpressionNode Parse(ContextNode context, AstNode lexerNode)
         {
             if(lexerNode.Children.Count == 1)
             {
-                return ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
+                return ExpressionNode.Parse(context, lexerNode.Children[0]);
             }
             else
             {
                 switch(lexerNode.Type)
                 {
                     case Lexer.TokenType.PostfixNode:
-                        return ParseSuffix(parser, parent, lexerNode);
+                        return ParseSuffix(context, lexerNode);
                     case Lexer.TokenType.PrefixNode:
-                        return ParsePrefix(parser, parent, lexerNode);
+                        return ParsePrefix(context, lexerNode);
                     default:
-                        ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(lexerNode), "Unary op expected, {0} found", lexerNode.Type);
+                        ErrorCode.InvalidStructure.ReportAndThrow(context.Parser.GetSequencePoint(lexerNode), "Unary op expected, {0} found", lexerNode.Type);
                         return null;//unreachable
                 }
             }
         }
 
-        private static ExpressionNode ParseSuffix(Parser parser, ContextNode parent, AstNode lexerNode)
+        private static ExpressionNode ParseSuffix(ContextNode context, AstNode lexerNode)
         {
-            var expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
+            var expression = ExpressionNode.Parse(context, lexerNode.Children[0]);
             var ops = new List<UnaryOperatorNodeType>();
             for (int i = 1; i < lexerNode.Children.Count; i++ )
             {
@@ -75,16 +75,16 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 catch(KeyNotFoundException)
                 {
-                    ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(lexerNode.Children[i]), "Suffix op expected, '{0}' received", op);
+                    ErrorCode.InvalidStructure.ReportAndThrow(context.Parser.GetSequencePoint(lexerNode.Children[i]), "Suffix op expected, '{0}' received", op);
                 }
             }
-            return Create(parser, expression, ops);
+            return Create(context, expression, ops);
         }
 
-        private static ExpressionNode ParsePrefix(Parser parser, ContextNode parent, AstNode lexerNode)
+        private static ExpressionNode ParsePrefix(ContextNode context, AstNode lexerNode)
         {
             var count = lexerNode.Children.Count;
-            var expression = ExpressionNode.Parse(parser, parent, lexerNode.Children[count - 1]);
+            var expression = ExpressionNode.Parse(context, lexerNode.Children[count - 1]);
             var ops = new List<UnaryOperatorNodeType>();
             for (int i = count - 2; i >= 0; i--)
             {
@@ -95,22 +95,22 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 catch (KeyNotFoundException)
                 {
-                    ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(lexerNode.Children[i]), "Prefix op expected, '{0}' received", op);
+                    ErrorCode.InvalidStructure.ReportAndThrow(context.Parser.GetSequencePoint(lexerNode.Children[i]), "Prefix op expected, '{0}' received", op);
                 }
             }
-            return Create(parser, expression, ops);
+            return Create(context, expression, ops);
         }
 
-        private static ExpressionNode Create(Parser parser, ExpressionNode expression, List<UnaryOperatorNodeType> ops)
+        private static ExpressionNode Create(ContextNode context, ExpressionNode expression, List<UnaryOperatorNodeType> ops)
         {
             foreach(var op in ops)
             {
-                expression = Create(parser, expression, op);
+                expression = Create(context, expression, op);
             }
             return expression;
         }
 
-        public static UnaryOperatorNode Create(Parser parser, ExpressionNode expression, UnaryOperatorNodeType op)
+        public static UnaryOperatorNode Create(ContextNode context, ExpressionNode expression, UnaryOperatorNodeType op)
         {
             if(!expression.IsGettable)
             {

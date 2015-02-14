@@ -24,13 +24,13 @@ namespace LaborasLangCompiler.Parser.Impl
             this.parser = context.Parser;
         }
 
-        public static ExpressionNode Parse(Parser parser, ContextNode context, AstNode lexerNode)
+        public static ExpressionNode Parse(ContextNode context, AstNode lexerNode)
         {
             var instance = new DotOperatorNode(context);
             foreach(var node in lexerNode.Children)
             {
                 if(node.Type != Lexer.TokenType.Period)
-                    instance.Append(ExpressionNode.Parse(parser, context, node));
+                    instance.Append(ExpressionNode.Parse(context, node));
             }
             return instance.builtNode;
         }

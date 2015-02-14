@@ -35,27 +35,27 @@ namespace LaborasLangCompiler.Parser.Impl
 
         protected BinaryOperatorNode(SequencePoint point) : base(point) { }
 
-        public static ExpressionNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
+        public static ExpressionNode Parse(ContextNode context, AstNode lexerNode)
         {
             if (lexerNode.Children.Count == 1)
             {
-                return ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
+                return ExpressionNode.Parse(context, lexerNode.Children[0]);
             }
             else
             {
                 ExpressionNode left, right;
-                left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
+                left = ExpressionNode.Parse(context, lexerNode.Children[0]);
                 
                 for (int i = 1; i < lexerNode.Children.Count; i += 2)
                 {
-                    right = ExpressionNode.Parse(parser, parent, lexerNode.Children[i + 1]);
-                    left = Create(parser, Operators[lexerNode.Children[i].Type], left, right);
+                    right = ExpressionNode.Parse(context, lexerNode.Children[i + 1]);
+                    left = Create(context, Operators[lexerNode.Children[i].Type], left, right);
                 }
                 return left;
             }
         }
 
-        public static BinaryOperatorNode Create(Parser parser, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right)
+        public static BinaryOperatorNode Create(ContextNode context, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right)
         {
             var instance = new BinaryOperatorNode(left.SequencePoint);
             instance.BinaryOperatorType = op;
@@ -75,7 +75,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 case BinaryOperatorNodeType.Multiplication:
                 case BinaryOperatorNodeType.Division:
                 case BinaryOperatorNodeType.Modulus:
-                    instance.VerifyArithmetic(parser);
+                    instance.VerifyArithmetic(context.Parser);
                     break;
                 case BinaryOperatorNodeType.GreaterThan:
                 case BinaryOperatorNodeType.LessThan:
@@ -83,15 +83,15 @@ namespace LaborasLangCompiler.Parser.Impl
                 case BinaryOperatorNodeType.LessEqualThan:
                 case BinaryOperatorNodeType.Equals:
                 case BinaryOperatorNodeType.NotEquals:
-                    instance.VerifyComparison(parser);
+                    instance.VerifyComparison(context.Parser);
                     break;
                 case BinaryOperatorNodeType.ShiftLeft:
                 case BinaryOperatorNodeType.ShiftRight:
-                    instance.VerifyShift(parser);
+                    instance.VerifyShift(context.Parser);
                     break;
                 case BinaryOperatorNodeType.LogicalAnd:
                 case BinaryOperatorNodeType.LogicalOr:
-                    instance.VerifyLogical(parser);
+                    instance.VerifyLogical(context.Parser);
                     break;
                 case BinaryOperatorNodeType.BinaryAnd:
                 case BinaryOperatorNodeType.BinaryOr:

@@ -28,9 +28,9 @@ namespace LaborasLangCompiler.Parser.Impl
             this.type = type;
         }
 
-        public static ThisNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
+        public static ThisNode Parse(ContextNode parent, AstNode lexerNode)
         {
-            var point = parser.GetSequencePoint(lexerNode);
+            var point = parent.Parser.GetSequencePoint(lexerNode);
             return Create(parent, point);
         }
 

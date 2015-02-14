@@ -30,21 +30,21 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private ConditionBlockNode(SequencePoint sequencePoint) : base(sequencePoint) { }
 
-        public static ConditionBlockNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
+        public static ConditionBlockNode Parse(ContextNode context, AstNode lexerNode)
         {
-            var point = parser.GetSequencePoint(lexerNode);
-            var condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
-            var trueBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[4]);
+            var point = context.Parser.GetSequencePoint(lexerNode);
+            var condition = ExpressionNode.Parse(context, lexerNode.Children[2]);
+            var trueBlock = CodeBlockNode.Parse(context, lexerNode.Children[4]);
             CodeBlockNode falseBlock = null;
             if (lexerNode.Children.Count > 5)
-                falseBlock = CodeBlockNode.Parse(parser, parent, lexerNode.Children[6]);
-            return Create(parser, parent, condition, trueBlock, falseBlock, point);
+                falseBlock = CodeBlockNode.Parse(context, lexerNode.Children[6]);
+            return Create(context, condition, trueBlock, falseBlock, point);
         }
 
-        public static ConditionBlockNode Create(Parser parser, ContextNode parent, ExpressionNode condition, CodeBlockNode trueBlock, CodeBlockNode falseBlock, SequencePoint point)
+        public static ConditionBlockNode Create(ContextNode context, ExpressionNode condition, CodeBlockNode trueBlock, CodeBlockNode falseBlock, SequencePoint point)
         {
             var instance = new ConditionBlockNode(point);
-            if (!condition.ExpressionReturnType.IsAssignableTo(parser.Bool) || !condition.IsGettable)
+            if (!condition.ExpressionReturnType.IsAssignableTo(context.Parser.Bool) || !condition.IsGettable)
             {
                 ErrorCode.InvalidCondition.ReportAndThrow(point, "Condition must be a gettable boolean expression");
             }

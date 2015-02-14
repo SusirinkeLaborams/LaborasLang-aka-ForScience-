@@ -136,7 +136,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var conversions = GetImplicitConversions(context.Parser, this);
             if(conversions.Any(c => c.TypeEquals(expectedType)))
             {
-                return ConvertLiteral(context.Parser, this, expectedType);
+                return ConvertLiteral(this, expectedType);
             }
             else
             {
@@ -145,12 +145,12 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private static LiteralNode ConvertLiteral(Parser parser, LiteralNode node, TypeReference type)
+        private static LiteralNode ConvertLiteral(LiteralNode node, TypeReference type)
         {
             return new LiteralNode(node.Value, type, node.SequencePoint);
         }
 
-        protected static IEnumerable<TypeReference> GetImplicitConversions(Parser parser, LiteralNode node)
+        private static IEnumerable<TypeReference> GetImplicitConversions(Parser parser, LiteralNode node)
         {
             var type = node.ExpressionReturnType;
             if(type.IsIntegerType())

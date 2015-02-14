@@ -34,16 +34,16 @@ namespace LaborasLangCompiler.Parser.Impl
 
         protected AssignmentOperatorNode(SequencePoint point) : base(point) { }
 
-        public static AssignmentOperatorNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
+        public static AssignmentOperatorNode Parse(ContextNode context, AstNode lexerNode)
         {
-            var left = ExpressionNode.Parse(parser, parent, lexerNode.Children[0]);
-            var right = ExpressionNode.Parse(parser, parent, lexerNode.Children[2], left.ExpressionReturnType);
-            var point = parser.GetSequencePoint(lexerNode);
+            var left = ExpressionNode.Parse(context, lexerNode.Children[0]);
+            var right = ExpressionNode.Parse(context, lexerNode.Children[2], left.ExpressionReturnType);
+            var point = context.Parser.GetSequencePoint(lexerNode);
 
-            return Create(parser, LexerToAssignemnt[lexerNode.Children[1].Type], left, right, point);    
+            return Create(context, LexerToAssignemnt[lexerNode.Children[1].Type], left, right, point);    
         }
 
-        public static AssignmentOperatorNode Create(Parser parser, AssignmentOperatorType op, ExpressionNode left, ExpressionNode right, SequencePoint point)
+        public static AssignmentOperatorNode Create(ContextNode context, AssignmentOperatorType op, ExpressionNode left, ExpressionNode right, SequencePoint point)
         {
             if (!left.IsSettable)
                 ErrorCode.NotAnLValue.ReportAndThrow(left.SequencePoint, "Left of assignment operator must be settable");
@@ -58,7 +58,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 if (!left.IsGettable)
                     ErrorCode.NotAnRValue.ReportAndThrow(right.SequencePoint, "Left of this type of assignment operator must be gettable");
 
-                right = BinaryOperatorNode.Create(parser, AssignmentToBinary[op], left, right);
+                right = BinaryOperatorNode.Create(context, AssignmentToBinary[op], left, right);
             }
 
             if (!right.ExpressionReturnType.IsAssignableTo(left.ExpressionReturnType))

@@ -42,7 +42,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ExpressionNode Parse(ContextNode context, AstNode lexerNode)
         {
-            var function = ExpressionNode.Parse(context.Parser, context, lexerNode.Children[0]);
+            var function = ExpressionNode.Parse(context, lexerNode.Children[0]);
             for(int i = 1; i < lexerNode.Children.Count; i++)
             {
                 var args = ParseArgList(context, lexerNode.Children[i]);
@@ -64,7 +64,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     case Lexer.TokenType.Comma:
                         break;
                     case Lexer.TokenType.Value:
-                        args.Add(ExpressionNode.Parse(parent.Parser, parent, node));
+                        args.Add(ExpressionNode.Parse(parent, node));
                         break;
                     default:
                         ErrorCode.InvalidStructure.ReportAndThrow(parent.Parser.GetSequencePoint(node), "Unexpected node type {0} in call", node.Type);

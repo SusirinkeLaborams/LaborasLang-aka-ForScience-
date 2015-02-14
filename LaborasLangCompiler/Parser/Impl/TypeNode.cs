@@ -27,18 +27,18 @@ namespace LaborasLangCompiler.Parser.Impl
                 TypeUtils.VerifyAccessible(ParsedType, Scope.GetClass().TypeReference, point);
         }
 
-        public static new TypeReference Parse(Parser parser, ContextNode parent, AstNode lexerNode)
+        public new static TypeReference Parse(ContextNode parent, AstNode lexerNode)
         {
             if (lexerNode.Type == Lexer.TokenType.FullSymbol)
             {
-                TypeNode node = DotOperatorNode.Parse(parser, parent, lexerNode) as TypeNode;
+                TypeNode node = DotOperatorNode.Parse(parent, lexerNode) as TypeNode;
                 if (node != null)
                     return node.ParsedType;
                 else
-                    ErrorCode.TypeExpected.ReportAndThrow(parser.GetSequencePoint(lexerNode), "Type expected");
+                    ErrorCode.TypeExpected.ReportAndThrow(parent.Parser.GetSequencePoint(lexerNode), "Type expected");
             }
 
-            TypeBuilder builder = new TypeBuilder(parser, parent);
+            TypeBuilder builder = new TypeBuilder(parent);
             foreach(AstNode node in lexerNode.Children)
             {
                 builder.Append(node);
@@ -52,7 +52,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return new TypeNode(type, scope, point);
         }
 
-        private static List<TypeReference> ParseArgumentList(Parser parser, ContextNode parent, AstNode lexerNode)
+        private static List<TypeReference> ParseArgumentList(ContextNode context, AstNode lexerNode)
         {
             var args = new List<TypeReference>();
             foreach(AstNode node in lexerNode.Children)
@@ -64,10 +64,10 @@ namespace LaborasLangCompiler.Parser.Impl
                     case Lexer.TokenType.Comma:
                         break;
                     case Lexer.TokenType.Type:
-                        args.Add(Parse(parser, parent, node));
+                        args.Add(Parse(context, node));
                         break;
                     default:
-                        ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(node), "Unexpected node {0} while parsing functor types", node.Type);
+                        ErrorCode.InvalidStructure.ReportAndThrow(context.Parser.GetSequencePoint(node), "Unexpected node {0} while parsing functor types", node.Type);
                         break;//unreachable
                 }
             }
@@ -86,9 +86,9 @@ namespace LaborasLangCompiler.Parser.Impl
             private Parser parser;
             private ContextNode parent;
 
-            public TypeBuilder(Parser parser, ContextNode parent)
+            public TypeBuilder(ContextNode parent)
             {
-                this.parser = parser;
+                this.parser = parent.Parser;
                 this.parent = parent;
             }
 
@@ -96,11 +96,11 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if(Type == null)
                 {
-                    Type = TypeNode.Parse(parser, parent, node);
+                    Type = TypeNode.Parse(parent, node);
                 }
                 else
                 {
-                    var args = ParseArgumentList(parser, parent, node);
+                    var args = ParseArgumentList(parent, node);
                     if (args.Any(a => a.IsVoid()))
                         ErrorCode.IllegalMethodParam.ReportAndThrow(parser.GetSequencePoint(node), "Cannot declare method parameter of type void");
 

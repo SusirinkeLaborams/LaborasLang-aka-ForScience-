@@ -192,7 +192,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     switch (node.Type)
                     {
                         case Lexer.TokenType.UseNode:
-                            ImportNode.Parse(Parser, this, node);
+                            ImportNode.Parse(this, node);
                             break;
                         case Lexer.TokenType.DeclarationNode:
                             ParseDeclaration(node);
@@ -230,7 +230,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 try
                 {
-                    field.Initialize(Parser);
+                    field.Initialize();
                 }
                 catch (CompilerException) { }//recover, continue
             }

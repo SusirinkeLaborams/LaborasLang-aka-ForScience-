@@ -33,7 +33,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             var paramz = MetadataHelpers.GetFunctorParamTypes(context.Parser.Assembly, expectedType);
             var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), paramz);
-            return new MethodNode(context.Parser, method, instance, context, SequencePoint);
+            return new MethodNode(method, instance, context, SequencePoint);
         }
 
         public MethodNode RemoveAmbiguity(ContextNode context, IEnumerable<TypeReference> args)
@@ -41,7 +41,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), args.ToList());
             if (method == null)
                 return null;
-            return new MethodNode(context.Parser, method, instance, context, SequencePoint);
+            return new MethodNode(method, instance, context, SequencePoint);
         }
 
         public static ExpressionNode Create(IEnumerable<MethodReference> methods, ContextNode context, ExpressionNode instance, SequencePoint sequencePoint)
@@ -54,7 +54,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else if(methods.Count() == 1)
             {
-                return new MethodNode(context.Parser, methods.Single(), instance, context, sequencePoint);
+                return new MethodNode(methods.Single(), instance, context, sequencePoint);
             }
             else
             {

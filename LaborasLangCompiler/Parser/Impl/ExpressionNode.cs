@@ -21,29 +21,29 @@ namespace LaborasLangCompiler.Parser.Impl
         public abstract bool IsSettable { get; }
         protected ExpressionNode(SequencePoint sequencePoint) : base(sequencePoint) { }
 
-        public static ExpressionNode Parse(Parser parser, ContextNode context, AstNode lexerNode, TypeReference expectedType = null)
+        public static ExpressionNode Parse(ContextNode context, AstNode lexerNode, TypeReference expectedType = null)
         {
             ExpressionNode ret = null;
             switch (lexerNode.Type)
             {
                 case Lexer.TokenType.PeriodNode:
                 case Lexer.TokenType.FullSymbol:
-                    ret = DotOperatorNode.Parse(parser, context, lexerNode);
+                    ret = DotOperatorNode.Parse(context, lexerNode);
                     break;
                 case Lexer.TokenType.Symbol:
-                    ret = SymbolNode.Parse(parser, context, lexerNode);
+                    ret = SymbolNode.Parse(context, lexerNode);
                     break;
                 case Lexer.TokenType.LiteralNode:
                     ret = LiteralNode.Parse(context, lexerNode);
                     break;
                 case Lexer.TokenType.Value:
-                    ret = ExpressionNode.Parse(parser, context, lexerNode.Children[0], expectedType);
+                    ret = ExpressionNode.Parse(context, lexerNode.Children[0], expectedType);
                     break;
                 case Lexer.TokenType.Function:
-                    ret = MethodNode.Parse(parser, context, lexerNode);
+                    ret = MethodNode.Parse(context, lexerNode);
                     break;
                 case Lexer.TokenType.AssignmentOperatorNode:
-                    ret = AssignmentOperatorNode.Parse(parser, context, lexerNode);
+                    ret = AssignmentOperatorNode.Parse(context, lexerNode);
                     break;
                 case Lexer.TokenType.FunctionCallNode:
                     ret = MethodCallNode.Parse(context, lexerNode);
@@ -58,14 +58,14 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.ShiftOperatorNode:
                 case Lexer.TokenType.AdditiveOperatorNode:
                 case Lexer.TokenType.MultiplicativeOperatorNode:
-                    ret = BinaryOperatorNode.Parse(parser, context, lexerNode);
+                    ret = BinaryOperatorNode.Parse(context, lexerNode);
                     break;
                 case Lexer.TokenType.PostfixNode:
                 case Lexer.TokenType.PrefixNode:
-                    ret = UnaryOperatorNode.Parse(parser, context, lexerNode);
+                    ret = UnaryOperatorNode.Parse(context, lexerNode);
                     break;
                 case Lexer.TokenType.ParenthesesNode:
-                    ret = ExpressionNode.Parse(parser, context, lexerNode.Children[1], expectedType);
+                    ret = ExpressionNode.Parse(context, lexerNode.Children[1], expectedType);
                     break;
                 default:
                     throw new NotImplementedException();

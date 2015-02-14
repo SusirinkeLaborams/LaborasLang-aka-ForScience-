@@ -31,15 +31,15 @@ namespace LaborasLangCompiler.Parser.Impl
             this.IsConst = isConst;
         }
 
-        public static SymbolDeclarationNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
+        public static SymbolDeclarationNode Parse(ContextNode context, AstNode lexerNode)
         {
-            var info = DeclarationInfo.Parse(parser, lexerNode);
+            var info = DeclarationInfo.Parse(context.Parser, lexerNode);
             var name = info.SymbolName.GetSingleSymbolOrThrow();
-            var declaredType = TypeNode.Parse(parser, parent, info.Type);
-            var point = parser.GetSequencePoint(lexerNode);
-            ExpressionNode initializer = info.Initializer.IsNull ? null : ExpressionNode.Parse(parser, parent, info.Initializer, declaredType);
+            var declaredType = TypeNode.Parse(context, info.Type);
+            var point = context.Parser.GetSequencePoint(lexerNode);
+            ExpressionNode initializer = info.Initializer.IsNull ? null : ExpressionNode.Parse(context, info.Initializer, declaredType);
 
-            return Create(parser, parent, info.Modifiers, declaredType, name, initializer, point);
+            return Create(context, info.Modifiers, declaredType, name, initializer, point);
         }
 
         private static bool ParseModifiers(Modifiers mods, SequencePoint point)
@@ -51,7 +51,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return mods.HasFlag(Modifiers.Const);
         }
 
-        public static SymbolDeclarationNode Create(Parser parser, ContextNode parent, Modifiers mods, TypeReference type, string name, ExpressionNode initializer, SequencePoint point)
+        public static SymbolDeclarationNode Create(ContextNode parent, Modifiers mods, TypeReference type, string name, ExpressionNode initializer, SequencePoint point)
         {
             if (type.IsVoid())
                 ErrorCode.VoidLValue.ReportAndThrow(point, "Cannot declare a variable of type void");
