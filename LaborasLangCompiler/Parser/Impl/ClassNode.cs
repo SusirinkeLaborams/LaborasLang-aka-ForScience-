@@ -15,15 +15,13 @@ using Lexer.Containers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ClassNode : ParserNode, Context
+    class ClassNode : ContextNode
     {
         #region fields
         private List<FieldDeclarationNode> fields;
         private List<FunctionDeclarationNode> declaredMethods;
         private List<FunctionDeclarationNode> lambdas;
         private List<Namespace> globalImports;
-        private ClassNode parent;
-        private Parser parser;
         private int lambdaCounter = 0;
         private AstNode lexerNode;
         #endregion fields
@@ -33,17 +31,15 @@ namespace LaborasLangCompiler.Parser.Impl
         public override NodeType Type { get { return NodeType.ParserInternal; } }
         public TypeEmitter TypeEmitter { get; private set; }
         public string FullName { get; private set; }
-        public TypeReference TypeReference { get { return TypeEmitter.Get(parser.Assembly); } }
+        public TypeReference TypeReference { get { return TypeEmitter.Get(Parser.Assembly); } }
 
         #endregion properties
 
-        public ClassNode(Parser parser, ClassNode parent, AstNode lexerNode) : base(parser.GetSequencePoint(lexerNode))
+        public ClassNode(Parser parser, ClassNode parent, AstNode lexerNode) : base(parser, parent, parser.GetSequencePoint(lexerNode))
         {
             if (parser.Root == null)
                 parser.Root = this;
             this.lexerNode = lexerNode;
-            this.parent = parent;
-            this.parser = parser;
             this.declaredMethods = new List<FunctionDeclarationNode>();
             this.lambdas = new List<FunctionDeclarationNode>();
             fields = new List<FieldDeclarationNode>();
@@ -56,12 +52,12 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public FieldReference GetField(string name)
         {
-            return AssemblyRegistry.GetField(parser.Assembly, TypeEmitter, name);
+            return AssemblyRegistry.GetField(Parser.Assembly, TypeEmitter, name);
         }
 
         public IEnumerable<MethodReference> GetMethods(string name)
         {
-            return AssemblyRegistry.GetMethods(parser.Assembly, TypeEmitter, name);
+            return AssemblyRegistry.GetMethods(Parser.Assembly, TypeEmitter, name);
         }
 
         public TypeReference GetContainedType(string name)
@@ -73,17 +69,17 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #region context
 
-        public ClassNode GetClass() 
+        public override ClassNode GetClass() 
         { 
             return this;
         }
 
-        public FunctionDeclarationNode GetMethod() 
+        public override FunctionDeclarationNode GetMethod() 
         {
             return null;
         }
 
-        public ExpressionNode GetSymbol(string name, Context scope, SequencePoint point)
+        public override ExpressionNode GetSymbol(string name, ContextNode scope, SequencePoint point)
         {
             var field = GetField(name);
             if (field != null)
@@ -94,7 +90,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 methods = methods.Where(m => m.IsStatic());
 
             if (methods.Count() > 0)
-                return AmbiguousMethodNode.Create(parser, methods, scope, null, point);
+                return AmbiguousMethodNode.Create(Parser, methods, scope, null, point);
 
             var type = GetContainedType(name);
             if (type != null)
@@ -108,13 +104,13 @@ namespace LaborasLangCompiler.Parser.Impl
             if (namespaze != null)
                 return new NamespaceNode(namespaze, point);
 
-            if (parent != null)
-                return parent.GetSymbol(name, scope, point);
+            if (Parent != null)
+                return Parent.GetSymbol(name, scope, point);
 
             return null;
         }
 
-        public bool IsStaticContext()
+        public override bool IsStaticContext()
         {
             //used while parsing types
             return false;
@@ -143,9 +139,9 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            if (parent == null)
+            if (Parent == null)
             {
-                return parser.ProjectParser.FindType(name);
+                return Parser.ProjectParser.FindType(name);
             }
 
             return null;
@@ -153,8 +149,6 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public Namespace FindNamespace(string name, SequencePoint point)
         {
-            Namespace namespaze = null;
-
             var namespazes = globalImports.Select(import => import.GetContainedNamespace(name)).Where(n => n != null);
             if (namespazes.Count() != 0)
             {
@@ -169,12 +163,12 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            if (namespaze == null && parent == null)
+            if (Parent == null)
             {
-                namespaze = parser.ProjectParser.FindNamespace(name);
+                return Parser.ProjectParser.FindNamespace(name);
             }
 
-            return namespaze;
+            return null;
         }
 
         public void AddImport(NamespaceNode namespaze, SequencePoint point)
@@ -198,13 +192,13 @@ namespace LaborasLangCompiler.Parser.Impl
                     switch (node.Type)
                     {
                         case Lexer.TokenType.UseNode:
-                            ImportNode.Parse(parser, this, node);
+                            ImportNode.Parse(Parser, this, node);
                             break;
                         case Lexer.TokenType.DeclarationNode:
                             ParseDeclaration(node);
                             break;
                         default:
-                            ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(node), "Import or declaration expected, {0} received", node.Type);
+                            ErrorCode.InvalidStructure.ReportAndThrow(Parser.GetSequencePoint(node), "Import or declaration expected, {0} received", node.Type);
                             break;//unreachable
                     }
                 }
@@ -214,18 +208,18 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private void ParseDeclaration(AstNode lexerNode)
         {
-            var declaration = DeclarationInfo.Parse(parser, lexerNode);
+            var declaration = DeclarationInfo.Parse(Parser, lexerNode);
 
             if(!declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration() && !declaration.Modifiers.HasFlag(Modifiers.Mutable))
             {
                 //method
-                var method = FunctionDeclarationNode.ParseAsMethod(parser, this, declaration);
+                var method = FunctionDeclarationNode.ParseAsMethod(this, declaration);
                 declaredMethods.Add(method);
             }
             else
             {
                 //field
-                var field = new FieldDeclarationNode(parser, this, declaration, parser.GetSequencePoint(lexerNode));
+                var field = new FieldDeclarationNode(this, declaration, Parser.GetSequencePoint(lexerNode));
                 fields.Add(field);
             }
         }
@@ -236,7 +230,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 try
                 {
-                    field.Initialize(parser);
+                    field.Initialize(Parser);
                 }
                 catch (CompilerException) { }//recover, continue
             }

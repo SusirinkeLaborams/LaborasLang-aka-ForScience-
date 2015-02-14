@@ -35,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private PropertyDefinition definition;
 
-        internal PropertyNode(ExpressionNode instance, PropertyReference property, Context scope, SequencePoint point)
+        internal PropertyNode(ExpressionNode instance, PropertyReference property, ContextNode scope, SequencePoint point)
             : base(property, GetInstance(property, instance, scope, point), scope, point)
         {
             this.Property = property;

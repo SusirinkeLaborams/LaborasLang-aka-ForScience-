@@ -30,7 +30,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private ConditionBlockNode(SequencePoint sequencePoint) : base(sequencePoint) { }
 
-        public static ConditionBlockNode Parse(Parser parser, Context parent, AstNode lexerNode)
+        public static ConditionBlockNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
         {
             var point = parser.GetSequencePoint(lexerNode);
             var condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
@@ -41,7 +41,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return Create(parser, parent, condition, trueBlock, falseBlock, point);
         }
 
-        public static ConditionBlockNode Create(Parser parser, Context parent, ExpressionNode condition, CodeBlockNode trueBlock, CodeBlockNode falseBlock, SequencePoint point)
+        public static ConditionBlockNode Create(Parser parser, ContextNode parent, ExpressionNode condition, CodeBlockNode trueBlock, CodeBlockNode falseBlock, SequencePoint point)
         {
             var instance = new ConditionBlockNode(point);
             if (!condition.ExpressionReturnType.IsAssignableTo(parser.Bool) || !condition.IsGettable)

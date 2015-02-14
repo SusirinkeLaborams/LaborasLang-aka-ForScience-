@@ -14,14 +14,14 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     abstract class MemberNode : ExpressionNode
     {
-        public Context Scope { get; private set; }
+        public ContextNode Scope { get; private set; }
         public TypeReference DeclaringType { get; private set; }
         public MemberReference Member { get; private set; }
         public IExpressionNode ObjectInstance { get { return Instance; } }
 
         protected ExpressionNode Instance { get; private set; }
 
-        protected MemberNode(MemberReference member, ExpressionNode instance, Context scope, SequencePoint point)
+        protected MemberNode(MemberReference member, ExpressionNode instance, ContextNode scope, SequencePoint point)
             :base(point)
         {
             Scope = scope;
@@ -31,7 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Instance = instance;
         }
 
-        protected static ExpressionNode GetInstance(MemberReference member, ExpressionNode specifiedInstance, Context context, SequencePoint point)
+        protected static ExpressionNode GetInstance(MemberReference member, ExpressionNode specifiedInstance, ContextNode context, SequencePoint point)
         {
             if (specifiedInstance != null)
             {

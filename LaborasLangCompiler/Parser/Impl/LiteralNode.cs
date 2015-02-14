@@ -47,7 +47,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return new LiteralNode(new Literal(value), type, point);
         }
 
-        public static LiteralNode Parse(Parser parser, Context parentBlock, AstNode lexerNode)
+        public static LiteralNode Parse(Parser parser, ContextNode parentBlock, AstNode lexerNode)
         {
             lexerNode = lexerNode.Children[0];
             var point = parser.GetSequencePoint(lexerNode);

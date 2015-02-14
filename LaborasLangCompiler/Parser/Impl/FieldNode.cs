@@ -29,7 +29,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        internal FieldNode(ExpressionNode instance, FieldReference field, Context parent, SequencePoint point)
+        internal FieldNode(ExpressionNode instance, FieldReference field, ContextNode parent, SequencePoint point)
             : base(field, GetInstance(field, instance, parent, point), parent, point)
         {
             this.Field = field;

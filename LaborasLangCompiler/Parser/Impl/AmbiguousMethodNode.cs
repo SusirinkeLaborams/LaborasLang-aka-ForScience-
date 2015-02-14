@@ -17,9 +17,9 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private IEnumerable<MethodReference> methods;
         private ExpressionNode instance;
-        private Context parent;
+        private ContextNode parent;
 
-        private AmbiguousMethodNode(IEnumerable<MethodReference> methods, ExpressionNode instance, Context parent, SequencePoint sequencePoint)
+        private AmbiguousMethodNode(IEnumerable<MethodReference> methods, ExpressionNode instance, ContextNode parent, SequencePoint sequencePoint)
             : base(null, parent, sequencePoint)
         {
             this.methods = methods;
@@ -46,7 +46,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return new MethodNode(parser, method, instance, parent, SequencePoint);
         }
 
-        public static ExpressionNode Create(Parser parser, IEnumerable<MethodReference> methods, Context parent, ExpressionNode instance, SequencePoint sequencePoint)
+        public static ExpressionNode Create(Parser parser, IEnumerable<MethodReference> methods, ContextNode parent, ExpressionNode instance, SequencePoint sequencePoint)
         {
             if(methods.Count() == 0)
             {

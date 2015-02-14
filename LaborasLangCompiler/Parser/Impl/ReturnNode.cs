@@ -22,7 +22,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private ExpressionNode expression;
         private ReturnNode(SequencePoint point) : base(point) { }
 
-        public static ReturnNode Parse(Parser parser, Context parent, AstNode lexerNode)
+        public static ReturnNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
         {
             var point = parser.GetSequencePoint(lexerNode);
             var returnType = parent.GetMethod().MethodReturnType;
@@ -35,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return Create(parser, parent, expression, point);
         }
 
-        public static ReturnNode Create(Parser parser, Context parent, ExpressionNode expression, SequencePoint point)
+        public static ReturnNode Create(Parser parser, ContextNode parent, ExpressionNode expression, SequencePoint point)
         {
             var instance = new ReturnNode(point);
             instance.expression = expression;

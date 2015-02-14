@@ -28,13 +28,13 @@ namespace LaborasLangCompiler.Parser.Impl
             this.type = type;
         }
 
-        public static ThisNode Parse(Parser parser, Context parent, AstNode lexerNode)
+        public static ThisNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
         {
             var point = parser.GetSequencePoint(lexerNode);
             return Create(parent, point);
         }
 
-        public static ThisNode Create(Context scope, SequencePoint point)
+        public static ThisNode Create(ContextNode scope, SequencePoint point)
         {
             if (scope.IsStaticContext())
             {

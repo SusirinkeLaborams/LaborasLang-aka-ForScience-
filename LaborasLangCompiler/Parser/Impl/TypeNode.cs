@@ -19,7 +19,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeReference ParsedType { get; private set; }
         public override bool IsGettable { get { return true; } }
 
-        private TypeNode(TypeReference type, Context scope, SequencePoint point)
+        private TypeNode(TypeReference type, ContextNode scope, SequencePoint point)
             : base(type != null ? type.FullName : null, scope, point)
         {
             ParsedType = type;
@@ -27,7 +27,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 TypeUtils.VerifyAccessible(ParsedType, Scope.GetClass().TypeReference, point);
         }
 
-        public static new TypeReference Parse(Parser parser, Context parent, AstNode lexerNode)
+        public static new TypeReference Parse(Parser parser, ContextNode parent, AstNode lexerNode)
         {
             if (lexerNode.Type == Lexer.TokenType.FullSymbol)
             {
@@ -47,12 +47,12 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.Type;
         }
 
-        public static TypeNode Create(TypeReference type, Context scope, SequencePoint point)
+        public static TypeNode Create(TypeReference type, ContextNode scope, SequencePoint point)
         {
             return new TypeNode(type, scope, point);
         }
 
-        private static List<TypeReference> ParseArgumentList(Parser parser, Context parent, AstNode lexerNode)
+        private static List<TypeReference> ParseArgumentList(Parser parser, ContextNode parent, AstNode lexerNode)
         {
             var args = new List<TypeReference>();
             foreach(AstNode node in lexerNode.Children)
@@ -84,9 +84,9 @@ namespace LaborasLangCompiler.Parser.Impl
             public TypeReference Type { get; private set; }
 
             private Parser parser;
-            private Context parent;
+            private ContextNode parent;
 
-            public TypeBuilder(Parser parser, Context parent)
+            public TypeBuilder(Parser parser, ContextNode parent)
             {
                 this.parser = parser;
                 this.parent = parent;

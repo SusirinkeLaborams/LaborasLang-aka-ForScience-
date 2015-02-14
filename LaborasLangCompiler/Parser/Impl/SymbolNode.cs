@@ -16,17 +16,17 @@ namespace LaborasLangCompiler.Parser.Impl
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
         public override TypeReference ExpressionReturnType { get { return null; } }
         public string Name { get; private set; }
-        public Context Scope { get; private set; }
+        public ContextNode Scope { get; private set; }
         public override bool IsGettable { get { return false; } }
         public override bool IsSettable { get { return false; } }
 
-        protected SymbolNode(string value, Context scope, SequencePoint point)
+        protected SymbolNode(string value, ContextNode scope, SequencePoint point)
             : base(point)
         {
             Name = value;
             Scope = scope;
         }
-        public static SymbolNode Parse(Parser parser, Context parent, AstNode lexerNode)
+        public static SymbolNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
         {
             return new SymbolNode(lexerNode.Content.ToString(), parent, parser.GetSequencePoint(lexerNode));
         }

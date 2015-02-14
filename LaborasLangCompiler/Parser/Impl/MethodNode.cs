@@ -22,14 +22,14 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private Lazy<TypeReference> functorType;
 
-        internal MethodNode(Parser parser, MethodReference method, ExpressionNode instance, Context parent, SequencePoint point)
+        internal MethodNode(Parser parser, MethodReference method, ExpressionNode instance, ContextNode parent, SequencePoint point)
             : base(method, GetInstance(method, instance, parent, point), parent, point)
         {
             this.Method = method;
             this.functorType = new Lazy<TypeReference>(() => AssemblyRegistry.GetFunctorType(parser.Assembly, Method));
         }
 
-        public static MethodNode Parse(Parser parser, Context parent, AstNode lexerNode)
+        public static MethodNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
         {
             var method = FunctionDeclarationNode.ParseAsFunctor(parser, parent, lexerNode);
             return new MethodNode(parser, method.MethodReference, null, parent, method.SequencePoint);

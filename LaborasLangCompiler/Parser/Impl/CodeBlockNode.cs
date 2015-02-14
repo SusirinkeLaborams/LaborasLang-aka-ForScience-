@@ -13,29 +13,38 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class CodeBlockNode : ParserNode, ICodeBlockNode, Context, IReturningNode
+    class CodeBlockNode : ContextNode, ICodeBlockNode, IReturningNode
     {
         public override NodeType Type { get { return NodeType.CodeBlockNode; } }
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
         public bool Returns { get; private set; }
 
-        protected List<ParserNode> nodes;
-        protected Dictionary<string, SymbolDeclarationNode> symbols;
-        private Context parent;
+        private List<ParserNode> nodes;
+        private Dictionary<string, SymbolDeclarationNode> symbols;
 
-        private CodeBlockNode(Context parent, SequencePoint point) : base(point)
+        private CodeBlockNode(ContextNode parent, SequencePoint point) : base(parent.Parser, parent, point)
         {
             nodes = new List<ParserNode>();
             symbols = new Dictionary<string, SymbolDeclarationNode>();
-            this.parent = parent;
             Returns = false;
         }
 
-        public ClassNode GetClass() { return parent.GetClass(); }
+        public override ClassNode GetClass()
+        {
+            return Parent.GetClass();
+        }
 
-        public FunctionDeclarationNode GetMethod() { return parent.GetMethod(); }
+        public override FunctionDeclarationNode GetMethod()
+        {
+            return Parent.GetMethod();
+        }
 
-        public ExpressionNode GetSymbol(string name, Context scope, SequencePoint point)
+        public override bool IsStaticContext()
+        {
+            return Parent.IsStaticContext();
+        }
+
+        public override ExpressionNode GetSymbol(string name, ContextNode scope, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
             {
@@ -43,12 +52,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return new LocalVariableNode(point, node.Variable, node.IsConst);
             }
 
-            return parent.GetSymbol(name, scope, point);
-        }
-
-        public bool IsStaticContext()
-        {
-            return parent.IsStaticContext();
+            return Parent.GetSymbol(name, scope, point);
         }
 
         private void AddVariable(SymbolDeclarationNode variable)
@@ -128,7 +132,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public static CodeBlockNode Parse(Parser parser, Context parent, AstNode lexerNode)
+        public static CodeBlockNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
         {
             CodeBlockNode instance = null;
             if(lexerNode.Type == Lexer.TokenType.CodeBlockNode)
@@ -160,7 +164,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return instance;
         }
 
-        public static CodeBlockNode Create(Context parent, SequencePoint point)
+        public static CodeBlockNode Create(ContextNode parent, SequencePoint point)
         {
             return new CodeBlockNode(parent, point);
         }

@@ -20,7 +20,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private CodeBlockNode block;
         protected WhileBlock(SequencePoint point) : base(point) { }
 
-        public static WhileBlock Parse(Parser parser, Context parent, AstNode lexerNode)
+        public static WhileBlock Parse(Parser parser, ContextNode parent, AstNode lexerNode)
         {
             var point = parser.GetSequencePoint(lexerNode);
             var condition = ExpressionNode.Parse(parser, parent, lexerNode.Children[2]);
@@ -28,7 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return Create(parser, parent, condition, block, point);
         }
 
-        public static WhileBlock Create(Parser parser, Context parent, ExpressionNode condition, CodeBlockNode body, SequencePoint point)
+        public static WhileBlock Create(Parser parser, ContextNode parent, ExpressionNode condition, CodeBlockNode body, SequencePoint point)
         {
             var instance = new WhileBlock(point);
             if (!condition.ExpressionReturnType.TypeEquals(parser.Bool) || !condition.IsGettable)

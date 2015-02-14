@@ -16,15 +16,15 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         private ExpressionNode builtNode;
         private Parser parser;
-        private Context parent;
+        private ContextNode parent;
 
-        private DotOperatorNode(Parser parser, Context parent)
+        private DotOperatorNode(Parser parser, ContextNode parent)
         {
             this.parser = parser;
             this.parent = parent;
         }
 
-        public static ExpressionNode Parse(Parser parser, Context parent, AstNode lexerNode)
+        public static ExpressionNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
         {
             var instance = new DotOperatorNode(parser, parent);
             foreach(var node in lexerNode.Children)
@@ -35,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return instance.builtNode;
         }
 
-        public static DotOperatorNode Create(Parser parser, Context parent)
+        public static DotOperatorNode Create(Parser parser, ContextNode parent)
         {
             return new DotOperatorNode(parser, parent);
         }

@@ -31,7 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.IsConst = isConst;
         }
 
-        public static SymbolDeclarationNode Parse(Parser parser, Context parent, AstNode lexerNode)
+        public static SymbolDeclarationNode Parse(Parser parser, ContextNode parent, AstNode lexerNode)
         {
             var info = DeclarationInfo.Parse(parser, lexerNode);
             var name = info.SymbolName.GetSingleSymbolOrThrow();
@@ -51,7 +51,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return mods.HasFlag(Modifiers.Const);
         }
 
-        public static SymbolDeclarationNode Create(Parser parser, Context parent, Modifiers mods, TypeReference type, string name, ExpressionNode initializer, SequencePoint point)
+        public static SymbolDeclarationNode Create(Parser parser, ContextNode parent, Modifiers mods, TypeReference type, string name, ExpressionNode initializer, SequencePoint point)
         {
             if (type.IsVoid())
                 ErrorCode.VoidLValue.ReportAndThrow(point, "Cannot declare a variable of type void");

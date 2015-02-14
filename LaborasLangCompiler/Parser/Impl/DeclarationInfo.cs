@@ -18,11 +18,13 @@ namespace LaborasLangCompiler.Parser.Impl
         public AstNode Initializer { get; private set; }
         public AstNode SymbolName { get; private set; }
         public Modifiers Modifiers { get; private set; }
+        public SequencePoint Point { get; private set; }
 
         public static DeclarationInfo Parse(Parser parser, AstNode lexerNode)
         {
             DeclarationInfo instance = new DeclarationInfo();
 
+            instance.Point = parser.GetSequencePoint(lexerNode);
             foreach(var node in lexerNode.Children)
             {
                 switch (node.Type)

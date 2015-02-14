@@ -12,7 +12,7 @@ using LaborasLangCompiler.Parser.Utils;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class FieldDeclarationNode : ParserNode, Context
+    class FieldDeclarationNode : ContextNode
     {
         public override NodeType Type { get { return NodeType.ParserInternal; } }
         public FieldReference FieldReference { get { return FieldDefinition; } }
@@ -21,49 +21,47 @@ namespace LaborasLangCompiler.Parser.Impl
         public string Name { get; set; }
         public ExpressionNode Initializer { get; set; }
         public bool IsStatic { get; set; }
-        public TypeReference DeclaringType { get { return parent.TypeReference; } }
+        public TypeReference DeclaringType { get { return GetClass().TypeReference; } }
         public MemberReference MemberReference { get { return FieldReference; } }
 
         private Modifiers modifiers;
         private SequencePoint point;
         private AstNode initializer;
         private Lazy<FieldDefinition> field;
-        private ClassNode parent;
 
-        public FunctionDeclarationNode GetMethod()
+        public override ClassNode GetClass()
+        {
+            return Parent.GetClass();
+        }
+
+        public override FunctionDeclarationNode GetMethod()
         {
             return null;
         }
 
-        public ClassNode GetClass()
+        public override ExpressionNode GetSymbol(string name, ContextNode scope, SequencePoint point)
         {
-            return parent.GetClass();
+            return Parent.GetSymbol(name, scope, point);
         }
 
-        public ExpressionNode GetSymbol(string name, Context scope, SequencePoint point)
-        {
-            return parent.GetSymbol(name, scope, point);
-        }
-
-        public bool IsStaticContext()
+        public override bool IsStaticContext()
         {
             return IsStatic;
         }
 
-        public FieldDeclarationNode(Parser parser, ClassNode parent, DeclarationInfo declaration, SequencePoint point)
-            :base(point)
+        public FieldDeclarationNode(ClassNode parent, DeclarationInfo declaration, SequencePoint point)
+            :base(parent.Parser, parent, point)
         {
             this.IsStatic = true;
             this.point = point;
             this.initializer = declaration.Initializer;
             this.Name = declaration.SymbolName.GetSingleSymbolOrThrow();
-            this.parent = parent;
-            this.TypeReference = TypeNode.Parse(parser, this, declaration.Type);
+            this.TypeReference = TypeNode.Parse(Parser, this, declaration.Type);
             this.modifiers = declaration.Modifiers;
             this.field = new Lazy<FieldDefinition>(() => new FieldDefinition(Name, GetAttributes(), TypeReference));
 
             if (TypeReference.IsAuto() && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
-                TypeReference = FunctionDeclarationNode.ParseFunctorType(parser, parent, declaration.Initializer);
+                TypeReference = FunctionDeclarationNode.ParseFunctorType(Parser, parent, declaration.Initializer);
 
             if (!TypeReference.IsAuto())
             {
@@ -88,7 +86,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (TypeReference.IsAuto())
             {
                 TypeReference = Initializer.ExpressionReturnType;
-                parent.TypeEmitter.AddField(FieldDefinition);
+                GetClass().TypeEmitter.AddField(FieldDefinition);
             }
             else
             {
@@ -100,7 +98,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
 
             if(parser.ProjectParser.ShouldEmit)
-                parent.TypeEmitter.AddFieldInitializer(FieldDefinition, Initializer);
+                GetClass().TypeEmitter.AddFieldInitializer(FieldDefinition, Initializer);
         }
 
         public FieldAttributes GetAttributes()

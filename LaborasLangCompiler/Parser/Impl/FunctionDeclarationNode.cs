@@ -16,7 +16,7 @@ using LaborasLangCompiler.Common;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class FunctionDeclarationNode : ParserNode, Context
+    class FunctionDeclarationNode : ContextNode
     {
         public MethodReference MethodReference { get { return emitter.Get(); } }
         public override NodeType Type { get { return NodeType.ParserInternal; } }
@@ -26,47 +26,43 @@ namespace LaborasLangCompiler.Parser.Impl
         private AstNode body;
         private CodeBlockNode parsedBody;
         private MethodEmitter emitter;
-        private ClassNode parent;
         private Dictionary<string, ParameterDefinition> symbols;
-        private Parser parser;
         private Modifiers modifiers;
 
-        private FunctionDeclarationNode(Parser parser, Context parent, Modifiers modifiers, string name, AstNode method)
-            : base(parser.GetSequencePoint(method))
+        private FunctionDeclarationNode(ContextNode parent, Modifiers modifiers, string name, AstNode method)
+            : base(parent.Parser, parent, parent.Parser.GetSequencePoint(method))
         {
-            this.parent = parent.GetClass();
             this.symbols = new Dictionary<string, ParameterDefinition>();
-            this.parser = parser;
             this.body = method.Children[1];
             ParseHeader(modifiers, method.Children[0], name);
         }
 
         public void Emit()
         {
-            parsedBody = CodeBlockNode.Parse(parser, this, body);
-            if (MethodReturnType.FullName != parser.Void.FullName && !parsedBody.Returns)
+            parsedBody = CodeBlockNode.Parse(Parser, this, body);
+            if (MethodReturnType.FullName != Parser.Void.FullName && !parsedBody.Returns)
                 ErrorCode.MissingReturn.ReportAndThrow(SequencePoint, "Not all control paths return a value");
-            if(parser.ProjectParser.ShouldEmit)
+            if (Parser.ProjectParser.ShouldEmit)
                 emitter.ParseTree(parsedBody);
         }
 
         private void ParseHeader(Modifiers mods, AstNode lexerNode, string methodName)
         {
-            var point = parser.GetSequencePoint(lexerNode);
-            var builder = new TypeNode.TypeBuilder(parser, parent);
+            var point = Parser.GetSequencePoint(lexerNode);
+            var builder = new TypeNode.TypeBuilder(Parser, Parent);
             int count = lexerNode.ChildrenCount;
-            var paramz = ParseParams(parser, lexerNode.Children[count - 1]);
+            var paramz = ParseParams(Parser, lexerNode.Children[count - 1]);
             for (int i = 0; i < count - 1; i++)
             {
                 builder.Append(lexerNode.Children[i]);
             }
 
             MethodReturnType = builder.Type;
-            emitter = new MethodEmitter(parent.TypeEmitter, methodName, MethodReturnType, AttributesFromModifiers(parser.GetSequencePoint(lexerNode), mods));
+            emitter = new MethodEmitter(GetClass().TypeEmitter, methodName, MethodReturnType, AttributesFromModifiers(Parser.GetSequencePoint(lexerNode), mods));
 
             foreach(var p in paramz)
             {
-                var param = ParseParameter(parent, p.Type, p.Name);
+                var param = ParseParameter(Parent, p.Type, p.Name);
                 if (param.ParameterType.IsVoid())
                     ErrorCode.IllegalMethodParam.ReportAndThrow(point, "Illegal method parameter type void");
                 emitter.AddArgument(param);
@@ -76,11 +72,11 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (mods.HasFlag(Modifiers.Entry))
             {
-                if (MethodReturnType != parser.Int32 && MethodReturnType != parser.UInt32 && MethodReturnType != parser.Void)
+                if (MethodReturnType != Parser.Int32 && MethodReturnType != Parser.UInt32 && MethodReturnType != Parser.Void)
                     InvalidEntryReturn(SequencePoint, MethodReturnType);
                 emitter.SetAsEntryPoint();
 
-                if((ParamTypes.Count() > 1) || (ParamTypes.Count() == 1 && !ParamTypes.First().TypeEquals(parser.Assembly.TypeToTypeReference(typeof(string[])))))
+                if ((ParamTypes.Count() > 1) || (ParamTypes.Count() == 1 && !ParamTypes.First().TypeEquals(Parser.Assembly.TypeToTypeReference(typeof(string[])))))
                 {
                     InvalidEntryParams(point, ParamTypes);
                 }
@@ -88,45 +84,48 @@ namespace LaborasLangCompiler.Parser.Impl
 
         }
 
-        private ParameterDefinition ParseParameter(Context parent, AstNode typeNode, AstNode nameNode)
+        private ParameterDefinition ParseParameter(ContextNode parent, AstNode typeNode, AstNode nameNode)
         {
-            var type = TypeNode.Parse(parser, parent, typeNode);
+            var type = TypeNode.Parse(Parser, parent, typeNode);
             var name = nameNode.GetSingleSymbolOrThrow();
             return new ParameterDefinition(name, ParameterAttributes.None, type);
         }
 
-        public FunctionDeclarationNode GetMethod() { return this; }
+        public override FunctionDeclarationNode GetMethod() { return this; }
 
-        public ClassNode GetClass() { return parent.GetClass(); }
-
-        public ExpressionNode GetSymbol(string name, Context scope, SequencePoint point)
+        public override ExpressionNode GetSymbol(string name, ContextNode scope, SequencePoint point)
         {
             if (symbols.ContainsKey(name))
                 return new ParameterNode(symbols[name], point);
 
-            return parent.GetSymbol(name, scope, point); 
+            return Parent.GetSymbol(name, scope, point); 
         }
 
-        public bool IsStaticContext()
+        public override bool IsStaticContext()
         {
             return MethodReference.IsStatic();
         }
 
-        public static FunctionDeclarationNode ParseAsFunctor(Parser parser, Context parent, AstNode function)
+        public override ClassNode GetClass()
         {
-            var instance = new FunctionDeclarationNode(parser, parent, Modifiers.NoInstance | Modifiers.Private, parent.GetClass().NewFunctionName(), function);
+            return Parent.GetClass();
+        }
+
+        public static FunctionDeclarationNode ParseAsFunctor(Parser parser, ContextNode parent, AstNode function)
+        {
+            var instance = new FunctionDeclarationNode(parent, Modifiers.NoInstance | Modifiers.Private, parent.GetClass().NewFunctionName(), function);
             parent.GetClass().AddLambda(instance);
             instance.Emit();
             return instance;
         }
 
-        public static FunctionDeclarationNode ParseAsMethod(Parser parser, ClassNode parent, DeclarationInfo declaration)
+        public static FunctionDeclarationNode ParseAsMethod(ClassNode parent, DeclarationInfo declaration)
         {
-            var instance = new FunctionDeclarationNode(parser, parent, declaration.Modifiers, declaration.SymbolName.GetSingleSymbolOrThrow(), declaration.Initializer.Children[0]);
+            var instance = new FunctionDeclarationNode(parent, declaration.Modifiers, declaration.SymbolName.GetSingleSymbolOrThrow(), declaration.Initializer.Children[0]);
             return instance;
         }
 
-        public static TypeReference ParseFunctorType(Parser parser, Context parent, AstNode lexerNode)
+        public static TypeReference ParseFunctorType(Parser parser, ContextNode parent, AstNode lexerNode)
         {
             var builder = new TypeNode.TypeBuilder(parser, parent);
             int count = lexerNode.ChildrenCount;
