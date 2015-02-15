@@ -10,10 +10,13 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 {
     public class TestBase
     {
-        public TestBase()
+        public TestBase(bool recreateAssemblyRegistry = true)
         {
-            var compilerArgs = CompilerArguments.Parse(new[] { "dummy.il" });
-            AssemblyRegistry.CreateAndOverrideIfNeeded(compilerArgs.References);
+            if (recreateAssemblyRegistry)
+            {
+                var compilerArgs = CompilerArguments.Parse(new[] { "dummy.il" });
+                AssemblyRegistry.CreateAndOverrideIfNeeded(compilerArgs.References);
+            }
         }
     }
 }

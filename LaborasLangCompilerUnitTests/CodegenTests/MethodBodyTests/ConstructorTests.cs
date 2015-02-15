@@ -14,6 +14,11 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
     [TestClass]
     public class ConstructorTests : ILTestBase
     {
+        internal ConstructorTests(AssemblyEmitter assemblyEmitter, string className, bool bulkTesting) :
+            base(assemblyEmitter, className, bulkTesting)
+        {
+        }
+
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_InstanceFieldInitializer()
         {

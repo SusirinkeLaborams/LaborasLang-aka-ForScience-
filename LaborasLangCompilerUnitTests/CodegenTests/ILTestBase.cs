@@ -1,7 +1,7 @@
-﻿using LaborasLangCompiler.FrontEnd;
-using LaborasLangCompiler.Codegen;
+﻿using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Codegen.Methods;
 using LaborasLangCompiler.Codegen.Types;
+using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Cecil;
@@ -10,37 +10,51 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using MethodAttributes = Mono.Cecil.MethodAttributes;
 
 namespace LaborasLangCompilerUnitTests.CodegenTests
 {
     public class ILTestBase : TestBase
     {
         protected string ExpectedILFilePath { get; set; }
-        protected string ExpectedOutput { get; set; }
+        internal protected string ExpectedOutput { get; set; }
         internal ICodeBlockNode BodyCodeBlock { get; set; }
 
         internal MethodEmitter methodEmitter { get; private set; }
         internal TypeEmitter typeEmitter { get; private set; }
         internal AssemblyEmitter assemblyEmitter { get; private set; }
 
-        private readonly CompilerArguments compilerArgs;
+        internal const string kEntryPointMethodName = "dummy";
         private readonly MethodReference consoleWriteLine;
         private readonly MethodReference consoleWriteLineParams;
+        private readonly bool bulkTesting = false;
 
-        public ILTestBase()
+        public ILTestBase() :
+            this(CreateTempAssembly(), "Class", false)
+        {
+        }
+
+        internal static AssemblyEmitter CreateTempAssembly()
         {
             var tempLocation = Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
-            compilerArgs = CompilerArguments.Parse(new[] { "dummy.il", "/out:" + tempLocation });
-            assemblyEmitter = new AssemblyEmitter(compilerArgs);
-            typeEmitter = new TypeEmitter(assemblyEmitter, "klass");
-            methodEmitter = new MethodEmitter(typeEmitter, "dummy", assemblyEmitter.TypeToTypeReference(typeof(void)),
-                MethodAttributes.Static | MethodAttributes.Private);
+            var compilerArgs = CompilerArguments.Parse(new[] { "dummy.il", "/out:" + tempLocation });
+            return new AssemblyEmitter(compilerArgs);
+        }
+
+        internal ILTestBase(AssemblyEmitter assembly, string className, bool bulkTesting) :
+            base(!bulkTesting)
+        {
+            assemblyEmitter = assembly;
+            typeEmitter = new TypeEmitter(assemblyEmitter, className);
+            methodEmitter = new MethodEmitter(typeEmitter, kEntryPointMethodName, assemblyEmitter.TypeToTypeReference(typeof(void)),
+                MethodAttributes.Static | MethodAttributes.Assembly);
 
             consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine",
                 new[] { assemblyEmitter.TypeToTypeReference(typeof(object)) });
             consoleWriteLineParams = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine",
                 new[] { assemblyEmitter.TypeToTypeReference(typeof(string)), assemblyEmitter.TypeToTypeReference(typeof(object[])) });
+
+            this.bulkTesting = bulkTesting;
         }
 
         protected void AssertSuccessByILComparison()
@@ -75,6 +89,14 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         }
 
         protected void AssertSuccessByExecution()
+        {
+            if (!bulkTesting)
+            {
+                AssertSuccessByExecutionForSingleTest();
+            }
+        }
+
+        private void AssertSuccessByExecutionForSingleTest()
         {
             Assert.IsNotNull(BodyCodeBlock);
 
