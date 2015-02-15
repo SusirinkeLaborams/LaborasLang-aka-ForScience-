@@ -37,7 +37,7 @@ namespace LaborasLangCompiler.Codegen.Types
 
             if (baseType == null)
             {
-                baseType = Assembly.TypeToTypeReference(typeof(object));
+                baseType = Assembly.TypeSystem.Object;
             }
 
             typeDefinition = new TypeDefinition(@namespace, className, typeAttributes, baseType);

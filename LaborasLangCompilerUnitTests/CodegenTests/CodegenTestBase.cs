@@ -46,13 +46,14 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         {
             assemblyEmitter = assembly ?? CreateTempAssembly();
             typeEmitter = new TypeEmitter(assemblyEmitter, className);
-            methodEmitter = new MethodEmitter(typeEmitter, kEntryPointMethodName, assemblyEmitter.TypeToTypeReference(typeof(void)),
+            methodEmitter = new MethodEmitter(typeEmitter, kEntryPointMethodName, assemblyEmitter.TypeSystem.Void,
                 MethodAttributes.Static | MethodAttributes.Assembly);
 
             consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine",
-                new[] { assemblyEmitter.TypeToTypeReference(typeof(object)) });
+                new[] { assemblyEmitter.TypeSystem.Object });
+            
             consoleWriteLineParams = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine",
-                new[] { assemblyEmitter.TypeToTypeReference(typeof(string)), assemblyEmitter.TypeToTypeReference(typeof(object[])) });
+                new[] { assemblyEmitter.TypeSystem.String, new ArrayType(assemblyEmitter.TypeSystem.Object) });
 
             this.bulkTesting = bulkTesting;
         }
@@ -163,7 +164,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         internal MethodReference EmitMethodToOutputArgs(IExpressionNode returnValue, params TypeReference[] args)
         {
-            var returnType = returnValue != null ? returnValue.ExpressionReturnType : assemblyEmitter.TypeToTypeReference(typeof(void));
+            var returnType = returnValue != null ? returnValue.ExpressionReturnType : assemblyEmitter.TypeSystem.Void;
             var targetMethod = new MethodEmitter(typeEmitter, "TargetMethod", returnType, MethodAttributes.Static | MethodAttributes.Private);
 
             var nodes = new List<IParserNode>();
@@ -182,7 +183,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                         formatString.Append("\r\n");
                 }
             
-                consoleWriteLineArgs.Add(new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), formatString.ToString()));
+                consoleWriteLineArgs.Add(new LiteralNode(assemblyEmitter.TypeSystem.String, formatString.ToString()));
                 consoleWriteLineArgs.AddRange(parameters.Select(p => new ParameterNode(p)));
 
                 nodes.Add(CallConsoleWriteLine(consoleWriteLineArgs.ToArray()));

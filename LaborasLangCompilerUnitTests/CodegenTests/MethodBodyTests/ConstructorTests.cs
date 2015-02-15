@@ -26,7 +26,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_InstanceFieldInitializer()
         {
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var intType = assemblyEmitter.TypeSystem.Int32;
 
             var initializer = new LiteralNode(intType, 2);
             var field = new FieldDefinition("testField", FieldAttributes.FamANDAssem | FieldAttributes.Family, intType);
@@ -53,7 +53,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_StaticFieldInitializer()
         {
-            var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
+            var floatType = assemblyEmitter.TypeSystem.Single;
 
             var initializer = new LiteralNode(floatType, 2.0f);
             var field = new FieldDefinition("testField", FieldAttributes.FamANDAssem | FieldAttributes.Family | FieldAttributes.Static, floatType);
@@ -69,8 +69,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_InstancePropertyInitializer()
         {
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var stringType = assemblyEmitter.TypeSystem.String;
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var initializer = new LiteralNode(stringType, "aaa");
             var backingField = new FieldDefinition("testProperty_backingField", FieldAttributes.Private, stringType);
@@ -130,8 +130,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_StaticPropertyInitializer()
         {
-            var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var boolType = assemblyEmitter.TypeSystem.Boolean;
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var initializer = new LiteralNode(boolType, true);
             var backingField = new FieldDefinition("testProperty_backingField", FieldAttributes.Private | FieldAttributes.Static, boolType);

@@ -38,15 +38,6 @@ namespace LaborasLangCompiler.Parser.Impl
             this.Value = value;
         }
 
-        public static LiteralNode Create(ContextNode context, IConvertible value, SequencePoint point)
-        {
-            var type = context.Parser.Assembly.TypeToTypeReference(value.GetType());
-            if (!context.Parser.IsPrimitive(type))
-                Errors.ReportAndThrow(ErrorCode.TypeMissmatch, point, "Cannot create literal of type {0} with value {1}", type, value);
-
-            return new LiteralNode(new Literal(value), type, point);
-        }
-
         public static LiteralNode Parse(ContextNode context, AstNode lexerNode)
         {
             lexerNode = lexerNode.Children[0];

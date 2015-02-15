@@ -77,8 +77,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         private void EmitEntryPoint(AssemblyEmitter assembly, IEnumerable<MethodInfo> testMethods)
         {
-            var voidType = assembly.TypeToTypeReference(typeof(void));
-            var stringType = assembly.TypeToTypeReference(typeof(string));
+            var voidType = assembly.TypeSystem.Void;
+            var stringType = assembly.TypeSystem.String;
 
             var entryPointType = new TypeEmitter(assembly, "TestEntryPointClass");
             var entryPointMethod = new MethodEmitter(entryPointType, "EntryPoint", voidType, MethodAttributes.Private | MethodAttributes.Static);

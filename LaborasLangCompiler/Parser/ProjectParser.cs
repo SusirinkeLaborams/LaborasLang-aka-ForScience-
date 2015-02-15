@@ -52,29 +52,29 @@ namespace LaborasLangCompiler.Parser.Impl
             this.aliases = new Dictionary<string, TypeReference>();
             this.parsers = new List<Parser>();
 
-            aliases["bool"] = Bool = assembly.TypeToTypeReference(typeof(bool));
+            aliases["bool"] = Bool = assembly.TypeSystem.Boolean;
 
-            aliases["char"] = Char = assembly.TypeToTypeReference(typeof(char));
-            aliases["int8"] = Int8 = assembly.TypeToTypeReference(typeof(sbyte));
-            aliases["uint8"] = UInt8 = assembly.TypeToTypeReference(typeof(byte));
+            aliases["int8"] = Int8 = assembly.TypeSystem.SByte;
+            aliases["uint8"] = UInt8 = assembly.TypeSystem.Byte;
 
-            aliases["int16"] = Int16 = assembly.TypeToTypeReference(typeof(short));
-            aliases["uint16"] = UInt16 = assembly.TypeToTypeReference(typeof(ushort));
+            aliases["int16"] = Int16 = assembly.TypeSystem.Int16;
+            aliases["uint16"] = UInt16 = assembly.TypeSystem.UInt16;
+            aliases["char"] = Char = assembly.TypeSystem.Char;
 
-            aliases["int32"] = aliases["int"] = Int32 = assembly.TypeToTypeReference(typeof(int));
-            aliases["uint32"] = aliases["uint"] = UInt32 = assembly.TypeToTypeReference(typeof(uint));
+            aliases["int32"] = aliases["int"] = Int32 = assembly.TypeSystem.Int32;
+            aliases["uint32"] = aliases["uint"] = UInt32 = assembly.TypeSystem.UInt32;
 
-            aliases["int64"] = aliases["long"] = Int64 = assembly.TypeToTypeReference(typeof(long));
-            aliases["uint64"] = aliases["ulong"] = UInt64 = assembly.TypeToTypeReference(typeof(ulong));
+            aliases["int64"] = aliases["long"] = Int64 = assembly.TypeSystem.Int64;
+            aliases["uint64"] = aliases["ulong"] = UInt64 = assembly.TypeSystem.UInt64;
 
-            aliases["float"] = Float = assembly.TypeToTypeReference(typeof(float));
-            aliases["double"] = Double = assembly.TypeToTypeReference(typeof(double));
-            aliases["decimal"] = Decimal = assembly.TypeToTypeReference(typeof(decimal));
+            aliases["float"] = Float = assembly.TypeSystem.Single;
+            aliases["double"] = Double = assembly.TypeSystem.Double;
+            aliases["decimal"] = Decimal = AssemblyRegistry.FindType(Assembly, "System.Decimal");
 
-            aliases["string"] = String = assembly.TypeToTypeReference(typeof(string));
-            aliases["object"] = Object = assembly.TypeToTypeReference(typeof(object));
+            aliases["string"] = String = assembly.TypeSystem.String;
+            aliases["object"] = Object = assembly.TypeSystem.Object;
 
-            aliases["void"] = Void = assembly.TypeToTypeReference(typeof(void));
+            aliases["void"] = Void = assembly.TypeSystem.Void;
             aliases["auto"] = Auto = AutoType.Instance;
 
             primitives = new HashSet<TypeReference>(Utils.Utils.Enumerate(Bool, Char, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Float, Double, Decimal, String));

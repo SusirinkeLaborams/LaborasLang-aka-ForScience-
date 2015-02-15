@@ -9,7 +9,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         static public void EmitConstructor(TypeEmitter declaringType, MethodReference targetMethod)
         {
-            var definition = new FunctorMethodEmitter(declaringType, ".ctor", declaringType.Assembly.TypeToTypeReference(typeof(void)),
+            var definition = new FunctorMethodEmitter(declaringType, ".ctor", declaringType.Assembly.TypeSystem.Void,
                 MethodAttributes.Assembly | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName);
             
             definition.EmitConstructorBody(targetMethod);

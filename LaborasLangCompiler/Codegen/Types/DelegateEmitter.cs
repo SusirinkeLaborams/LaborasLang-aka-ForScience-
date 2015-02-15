@@ -50,11 +50,11 @@ namespace LaborasLangCompiler.Codegen
 
         private void InitializeTypes()
         {
-            voidType = Assembly.TypeToTypeReference(typeof(void));
-            objectType = Assembly.TypeToTypeReference(typeof(object));
-            nativeIntType = Assembly.TypeToTypeReference(typeof(IntPtr));
-            asyncResultType = Assembly.TypeToTypeReference(typeof(IAsyncResult));
-            asyncCallbackType = Assembly.TypeToTypeReference(typeof(AsyncCallback));
+            voidType = Assembly.TypeSystem.Void;
+            objectType = Assembly.TypeSystem.Object;
+            nativeIntType = Assembly.TypeSystem.IntPtr;
+            asyncResultType = AssemblyRegistry.FindType(Assembly, "System.IAsyncResult");
+            asyncCallbackType = AssemblyRegistry.FindType(Assembly, "System.AsyncCallback");
         }
 
         private void AddConstructor()
