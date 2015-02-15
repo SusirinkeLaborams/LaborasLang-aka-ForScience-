@@ -4,6 +4,7 @@ using LaborasLangCompiler.Codegen.Types;
 using LaborasLangCompiler.Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,80 +16,155 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
     [TestClass]
     public class FunctorTests : ILTestBase
     {
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_FunctorDefinition()
         {
-            FunctorBaseTypeEmitter.Create(assemblyEmitter, assemblyEmitter.TypeToTypeReference(typeof(void)), new List<TypeReference>());
-            FunctorImplementationTypeEmitter.Create(assemblyEmitter, typeEmitter.Get(assemblyEmitter), AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new string[] { }));
+            var consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new[] { assemblyEmitter.TypeToTypeReference(typeof(string)) });
+            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, consoleWriteLine);
+            var localVariable = new VariableDefinition(functorType);
 
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        Variable = localVariable,
+                        Initializer = new FunctionNode()
+                        {
+                            ExpressionReturnType = functorType,
+                            Method = consoleWriteLine
+                        }                        
+                    },
+                    new MethodCallNode()
+                    {
+                        ExpressionReturnType = consoleWriteLine.ReturnType,
+                        Function = new LocalVariableNode(localVariable),
+                        Args = new[]
+                        {
+                            new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "Hello, world!")
+                        }
+                    }
+                }
             };
 
-            ExpectedILFilePath = "TestCanEmit_FunctorDefinition.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = "Hello, world!";
+            AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_FunctorWithReturnTypeAndArguments()
         {
+            const int kReturnValue = 95413;
+            const bool kArg1 = true;
+            const float kArg2 = 489.14f;
+            const string kArg3 = "A string value";
+
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
             var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
             var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
 
-            var targetMethod = new MethodEmitter(typeEmitter, "MethodWithArgs", intType, MethodAttributes.Static | MethodAttributes.Private);
-            targetMethod.AddArgument(boolType, "boolArg");
-            targetMethod.AddArgument(floatType, "floatArg");
-            targetMethod.AddArgument(stringType, "stringArg");
+            var targetMethod = EmitMethodToOutputArgs(new LiteralNode(intType, kReturnValue), boolType, floatType, stringType);
+            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, targetMethod);
+            var localVariable = new VariableDefinition(functorType);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        Variable = localVariable,
+                        Initializer = new FunctionNode()
+                        {
+                            ExpressionReturnType = functorType,
+                            Method = targetMethod
+                        }
+                    },
+                    CallConsoleWriteLine(
+                        new MethodCallNode()
+                        {
+                            ExpressionReturnType = intType,
+                            Function = new LocalVariableNode(localVariable),
+                            Args = new[]
+                            {
+                                new LiteralNode(boolType, kArg1),
+                                new LiteralNode(floatType, kArg2),
+                                new LiteralNode(stringType, kArg3)
+                            }
+                        })
+                }
+            };
+
+            ExpectedOutput = string.Format("{0}\r\n{1}\r\n{2}\r\n{3}", kArg1, kArg2, kArg3, kReturnValue);
+            AssertSuccessByExecution();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_FunctionAssignmentToFunctorWithoutArgs()
+        {
+            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+
+            var targetMethod = new MethodEmitter(typeEmitter, "TargetMethod", voidType);
 
             targetMethod.ParseTree(new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new ReturnNode()
-                    {
-                        Expression = new LiteralNode(intType, -1)
-                    }
-                }
+                    CallConsoleWriteLine(new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "TargetMethod was called"))
+                }       
             });
 
-            FunctorImplementationTypeEmitter.Create(assemblyEmitter, typeEmitter.Get(assemblyEmitter), targetMethod.Get());
-
-            BodyCodeBlock = new CodeBlockNode()
-            {
-                Nodes = new List<IParserNode>()
-            };
-
-            ExpectedILFilePath = "TestCanEmit_FunctorWithReturnTypeAndArguments.il";
-            AssertSuccessByILComparison();
-        }
-
-        [TestMethod, TestCategory("Codegen Tests")]
-        public void TestCanEmit_FunctionAssignmentToFunctorWithoutArgs()
-        {
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(void));
-
-            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, intType, new List<TypeReference>());
-            var field = new FieldDefinition("myFunction", FieldAttributes.Public | FieldAttributes.Static, functorType);
+            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, targetMethod.Get());
+            var field = new FieldDefinition("myFunction", FieldAttributes.Public, functorType);
 
             var initializer = new FunctionNode()
             {
-                Method = methodEmitter.Get(),
+                Method = targetMethod.Get(),
+                ObjectInstance = new ThisNode()
+                {
+                    ExpressionReturnType = typeEmitter.Get(assemblyEmitter)
+                },
                 ExpressionReturnType = functorType
             };
 
             typeEmitter.AddField(field);
             typeEmitter.AddFieldInitializer(field, initializer);
 
-            ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToFunctorWithoutArgs.il";
-            AssertSuccessByILComparison();
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new MethodCallNode()
+                    {
+                        ExpressionReturnType = voidType,
+                        Function = new FieldNode()
+                        {
+                            Field = field,
+                            ObjectInstance = new ObjectCreationNode()
+                            {
+                                ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
+                                Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
+                                Args = new IExpressionNode[0]
+                            }
+                        },
+                        Args = new IExpressionNode[0]
+                    }
+                }
+            };
+
+            ExpectedOutput = "TargetMethod was called";
+            AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_FunctionAssignmentToFunctorWithArgs()
         {
+            const int kReturnValue = 5;
+            const double kArg1 = 12.3;
+            const float kArg2 = -1.222f;
+
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
             var doubleType = assemblyEmitter.TypeToTypeReference(typeof(double));
             var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
@@ -99,50 +175,56 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     doubleType,
                     floatType
                 });
+
             var field = new FieldDefinition("myFunction", FieldAttributes.Public | FieldAttributes.Static, functorType);
-
-            var targetMethod = new MethodEmitter(typeEmitter, "FunctionWithArgs", intType, MethodAttributes.Private | MethodAttributes.Static);
-            targetMethod.AddArgument(doubleType, "d");
-            targetMethod.AddArgument(floatType, "f");
-
-            targetMethod.ParseTree(new CodeBlockNode()
-            {
-                Nodes = new List<IParserNode>()
-                {
-                    new ReturnNode()
-                    {
-                        Expression = new LiteralNode(intType, 5)
-                    }
-                }
-            });
-
             var initializer = new FunctionNode()
             {
-                Method = targetMethod.Get(),
+                Method = EmitMethodToOutputArgs(new LiteralNode(intType, kReturnValue), doubleType, floatType),
                 ExpressionReturnType = functorType
             };
+
+            GenerateBodyToOutputExpression(new MethodCallNode()
+                {
+                    ExpressionReturnType = intType,
+                    Function = new FieldNode(field),
+                    Args = new List<IExpressionNode>()
+                    {
+                        new LiteralNode(doubleType, kArg1),
+                        new LiteralNode(floatType, kArg2)
+                    }
+                });
 
             typeEmitter.AddField(field);
             typeEmitter.AddFieldInitializer(field, initializer);
 
-            ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToFunctorWithArgs.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = string.Format("{0}\r\n{1}\r\n{2}", kArg1, kArg2, kReturnValue);
+            AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_FunctorAssignmentToDelegate()
         {
+            const int kArg1 = 123;
+            const string kArg2 = "fghbsajdnkmf";
+
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
-            var arguments = new List<TypeReference>()
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var arguments = new TypeReference[]
                 {
-                    assemblyEmitter.TypeToTypeReference(typeof(int)),
-                    assemblyEmitter.TypeToTypeReference(typeof(string))
+                    intType,
+                    stringType
                 };
 
-            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, voidType, arguments);
-
+            var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, voidType, arguments);            
             var functorField = new FieldDefinition("myFunction", FieldAttributes.Public | FieldAttributes.Static, functorType);
             typeEmitter.AddField(functorField);
+
+            typeEmitter.AddFieldInitializer(functorField, new FunctionNode()
+                {
+                    Method = EmitMethodToOutputArgs(null, arguments),
+                    ExpressionReturnType = functorType
+                });
 
             var declaringType = (TypeDefinition)typeEmitter.Get(assemblyEmitter);
             var delegateType = DelegateEmitter.Create(assemblyEmitter, declaringType, voidType, arguments);
@@ -164,25 +246,40 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                             LeftOperand = new FieldNode(delegateField),
                             RightOperand = new FieldNode(functorField)
                         }
+                    },
+                    new MethodCallNode()
+                    {
+                        ExpressionReturnType = voidType,
+                        Function = new FieldNode(delegateField),
+                        Args = new IExpressionNode[]
+                        {
+                            new LiteralNode(intType, kArg1),
+                            new LiteralNode(stringType, kArg2)
+                        }
                     }
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_FunctorAssignmentToDelegate.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = string.Format("{0}\r\n{1}", kArg1, kArg2);
+            AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_FunctionAssignmentToDelegate()
         {
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
 
-            var myMethod = methodEmitter.Get();
-            var methodReturnType = myMethod.ReturnType;
-            var methodArguments = myMethod.Parameters.Select(parameter => parameter.ParameterType).ToList();
+            var targetMethod = new MethodEmitter(typeEmitter, "TargetMethod", voidType, MethodAttributes.Private | MethodAttributes.Static);
+            targetMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    CallConsoleWriteLine(new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "Inside target method"))
+                }
+            });
 
             var declaringType = (TypeDefinition)typeEmitter.Get(assemblyEmitter);
-            var delegateType = DelegateEmitter.Create(assemblyEmitter, "MyDelegate", declaringType, methodReturnType, methodArguments);
+            var delegateType = DelegateEmitter.Create(assemblyEmitter, "MyDelegate", declaringType, voidType, new TypeReference[0]);
             declaringType.NestedTypes.Add(delegateType);
 
             var delegateField = new FieldDefinition("myDelegate", FieldAttributes.Public | FieldAttributes.Static, delegateType);
@@ -202,20 +299,30 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                             RightOperand = new FunctionNode()
                             {
                                 ExpressionReturnType = delegateType,
-                                Method = myMethod
+                                Method = targetMethod.Get()
                             }
                         }
+                    },
+                    new MethodCallNode()
+                    {
+                        ExpressionReturnType = voidType,
+                        Function = new FieldNode(delegateField),
+                        Args = new IExpressionNode[0]
                     }
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_FunctionAssignmentToDelegate.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = "Inside target method";
+            AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_CallFunctor_PassReturnValueAsArgument()
         {
+            const int kReturnValue = 75231;
+            const string kArg1 = "Str";
+            const float kArg2 = 3.5f;
+
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
@@ -228,60 +335,59 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 });
 
             var field = new FieldDefinition("myFunction", FieldAttributes.Public | FieldAttributes.Static, functorType);
+
             typeEmitter.AddField(field);
-
-            var getFirstArgumentMethod = new MethodEmitter(typeEmitter, "GetString", stringType, MethodAttributes.Private | MethodAttributes.Static);
-
-            getFirstArgumentMethod.ParseTree(new CodeBlockNode()
+            typeEmitter.AddFieldInitializer(field, new FunctionNode()
             {
-                Nodes = new List<IParserNode>()
-                {
-                    new LiteralNode(stringType, "Str")
-                }
-            });
+                ExpressionReturnType = functorType,
+                Method = EmitMethodToOutputArgs(new LiteralNode(intType, kReturnValue), stringType, floatType)
+            }); 
 
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new UnaryOperatorNode()
-                    {
-                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
-                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        Operand = new MethodCallNode()
+                    CallConsoleWriteLine(
+                        new MethodCallNode()
                         {
+                            ExpressionReturnType = intType,
                             Function = new FieldNode(field),
                             Args = new List<IExpressionNode>()
                             {
                                 new MethodCallNode()
                                 {
-                                    Args = new List<IExpressionNode>(),
+                                    Args = new IExpressionNode[0],
                                     Function = new FunctionNode()
                                     {
                                         ExpressionReturnType = stringType,
-                                        Method = getFirstArgumentMethod.Get()
+                                        Method = EmitMethodToOutputArgs(new LiteralNode(stringType, kArg1))
                                     },
                                     ExpressionReturnType = stringType
                                 },
-                                new LiteralNode(floatType, 3.5f)
+                                new LiteralNode(floatType, kArg2)
                             }
-                        }
-                    }
+                        })
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_CallFunctor_PassReturnValueAsArgument.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = string.Format("{0}\r\n{1}\r\n{2}", kArg1, kArg2, kReturnValue);
+            AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_FunctorPropertyAssignmentToDelegate()
         {
+            const int kArg1 = 485613;
+            const string kArg2 = "FASD4FSAD14asdf";
+
+            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
+            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
-            var arguments = new List<TypeReference>()
+            var arguments = new TypeReference[]
                 {
-                    assemblyEmitter.TypeToTypeReference(typeof(int)),
-                    assemblyEmitter.TypeToTypeReference(typeof(string))
+                    intType,
+                    stringType
                 };
 
             #region Functor Property Setup
@@ -294,8 +400,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             #region Setter
 
             var functorSetter = new MethodEmitter(typeEmitter, "set_MyFunction", voidType, MethodAttributes.Public | MethodAttributes.Static);
-            var functorSetterArgument = new ParameterDefinition("value", ParameterAttributes.None, functorType);
-            functorSetter.AddArgument(functorSetterArgument);
+            var functorSetterArgument = functorSetter.AddArgument(functorType, "value");
 
             functorSetter.ParseTree(new CodeBlockNode()
             {
@@ -351,8 +456,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             #region Setter
 
             var delegateSetter = new MethodEmitter(typeEmitter, "set_MyDelegate", voidType, MethodAttributes.Public | MethodAttributes.Static);
-            var delegateSetterArgument = new ParameterDefinition("value", ParameterAttributes.None, delegateType);
-            delegateSetter.AddArgument(delegateSetterArgument);
+            var delegateSetterArgument = delegateSetter.AddArgument(delegateType, "value");
 
             delegateSetter.ParseTree(new CodeBlockNode()
             {
@@ -406,15 +510,41 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
+                            LeftOperand = new PropertyNode(functorProperty),
+                            RightOperand = new FunctionNode()
+                            {
+                                ExpressionReturnType = functorType,
+                                Method = EmitMethodToOutputArgs(null, arguments)
+                            }
+                        }
+                    },
+
+                    new UnaryOperatorNode()
+                    {
+                        ExpressionReturnType = voidType,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new AssignmentOperatorNode()
+                        {
                             LeftOperand = new PropertyNode(delegateProperty),
                             RightOperand = new PropertyNode(functorProperty)
+                        }
+                    },
+
+                    new MethodCallNode()
+                    {
+                        ExpressionReturnType = voidType,
+                        Function = new PropertyNode(delegateProperty),
+                        Args = new IExpressionNode[]
+                        {
+                            new LiteralNode(intType, kArg1),
+                            new LiteralNode(stringType, kArg2)
                         }
                     }
                 }
             };
 
-            ExpectedILFilePath = "TestCanEmit_FunctorPropertyAssignmentToDelegate.il";
-            AssertSuccessByILComparison();
+            ExpectedOutput = string.Format("{0}\r\n{1}", kArg1, kArg2);
+            AssertSuccessByExecution();
         }
 
         private TypeReference GetFunctorType(TypeReference returnType, params TypeReference[] args)
@@ -422,7 +552,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             return AssemblyRegistry.GetFunctorType(assemblyEmitter, returnType, args);
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("IL Comparison Based Codegen Tests")]
         public void Test_FunctorNamesDoNotClash()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));

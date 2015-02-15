@@ -85,7 +85,6 @@
     <Compile Include="CodegenTests\DummyParserNodeInterfaceImplementations.cs" />
     <Compile Include="CodegenTests\ILTestBase.cs" />
     <Compile Include="CodegenTests\MethodBodyTests\ConstructorTests.cs" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorPropertyAssignmentToDelegate.il" />
     <Compile Include="CodegenTests\MethodBodyTests\FunctorTests.cs" />
     <Compile Include="CodegenTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="CodegenTests\ILHelpersTests.cs" />
@@ -120,13 +119,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_CallFunctor_PassReturnValueAsArgument.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctionAssignmentToDelegate.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctionAssignmentToFunctorWithArgs.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctionAssignmentToFunctorWithoutArgs.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorAssignmentToDelegate.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorDefinition.il" />
-    <None Include="CodegenTests\MethodBodyTests\Expected\TestCanEmit_FunctorWithReturnTypeAndArguments.il" />
     <None Include="packages.config" />
     <None Include="Properties\packages.config" />
   </ItemGroup>

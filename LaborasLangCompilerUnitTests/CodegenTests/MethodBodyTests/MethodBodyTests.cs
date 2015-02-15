@@ -19,7 +19,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
     [TestClass]
     public class MethodBodyTests : ILTestBase
     {
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_EmptyMethod()
         {
             BodyCodeBlock = new CodeBlockNode
@@ -31,7 +31,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_HelloWorld()
         {
             GenerateBodyToOutputExpression(new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "Hello, world!"));
@@ -41,7 +41,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
         #region Load/Store lvalues and load literals tests
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_VariableDeclarationAndInitialization_LoadFloatLiteral()
         {
             var variable = new VariableDefinition("floatValue", assemblyEmitter.TypeToTypeReference(typeof(float)));
@@ -63,7 +63,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_StoreField_LoadIntLiteral()
         {
             var field = new FieldDefinition("intField", FieldAttributes.Static, assemblyEmitter.TypeToTypeReference(typeof(int)));
@@ -91,7 +91,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_StoreLocalVariable_LoadField()
         {
             var field = new FieldDefinition("intField", FieldAttributes.Static, assemblyEmitter.TypeToTypeReference(typeof(int)));
@@ -125,7 +125,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_StoreProperty_LoadLocalVariable_LoadArgument_LoadDoubleLiteral()
         {
             var property = new PropertyDefinition("doubleProperty", PropertyAttributes.HasDefault, assemblyEmitter.TypeToTypeReference(typeof(double)));
@@ -187,7 +187,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_StoreArgument_LoadProperty_LoadStringLiteral()
         {
             var property = new PropertyDefinition("stringProperty", PropertyAttributes.HasDefault, assemblyEmitter.TypeToTypeReference(typeof(string)));
@@ -252,7 +252,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral()
         {
             var callableMethod = new MethodEmitter(typeEmitter, "Test", assemblyEmitter.TypeToTypeReference(typeof(void)),
@@ -293,7 +293,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
         #region Operator tests
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_MultipleNestedAssignments()
         {
             var assignmentNode = new AssignmentOperatorNode()
@@ -346,7 +346,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_MultipleNestedInstanceFieldAssignments()
         {
             var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
@@ -423,6 +423,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                             ObjectInstance = new ObjectCreationNode()
                             {
                                 ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
+                                Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
                                 Args = new IExpressionNode[] { }
                             },
                             Method = testMethod.Get(),
@@ -440,7 +441,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
         #region Arithmetic operators
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_AddIntegers()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
@@ -479,7 +480,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_AddFloatAndInteger()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
@@ -520,7 +521,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_AddStrings()
         {
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
@@ -557,7 +558,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_Subtraction()
         {
             var doubleType = assemblyEmitter.TypeToTypeReference(typeof(double));
@@ -595,7 +596,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_Multiplication()
         {
             var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
@@ -633,7 +634,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_SignedDivision()
         {
             var doubleType = assemblyEmitter.TypeToTypeReference(typeof(double));
@@ -671,7 +672,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_UnsignedDivision()
         {
             var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
@@ -709,7 +710,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_SignedRemainder()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
@@ -747,7 +748,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_UnsignedRemainder()
         {
             var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
@@ -785,7 +786,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_ShiftLeftAndRight()
         {
             var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
@@ -932,7 +933,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Numerals()
         {
             TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(assemblyEmitter.TypeToTypeReference(typeof(int)), 5, 6);
@@ -945,7 +946,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Strings()
         {
             TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(assemblyEmitter.TypeToTypeReference(typeof(string)), "hi", "bye");
@@ -1001,7 +1002,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Numerals()
         {
             TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(assemblyEmitter.TypeToTypeReference(typeof(float)), 3.5, 2.1);
@@ -1015,7 +1016,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Strings()
         {
             TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(assemblyEmitter.TypeToTypeReference(typeof(string)), "hi", "bye");
@@ -1031,7 +1032,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
         #endregion
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_LogicalAnd_LogicalOr()
         {
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
@@ -1085,7 +1086,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_BinaryAnd_BinaryOr_BinaryXor()
         {
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
@@ -1154,7 +1155,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
         #region Unary operators
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_Negation_BinaryNot_Increment_Decrement()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
@@ -1221,7 +1222,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_LogicalNot()
         {
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
@@ -1263,7 +1264,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
         #region Control Flow Tests
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_WhileLoop()
         {
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
@@ -1312,7 +1313,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_IfBlockWithoutElse()
         {
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
@@ -1354,7 +1355,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_Return()
         {
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
@@ -1401,7 +1402,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
         #region Method Call tests
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_CreateObject()
         {
             typeEmitter.AddDefaultConstructor();
@@ -1419,6 +1420,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         Initializer = new ObjectCreationNode()
                         {
                             ExpressionReturnType = myType,
+                            Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
                             Args = new List<IExpressionNode>()
                         }
                     },
@@ -1430,7 +1432,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_CallFunctionWithOptionalParameter()
         {
             var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));

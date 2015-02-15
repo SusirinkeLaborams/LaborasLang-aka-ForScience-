@@ -14,7 +14,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
     [TestClass]
     public class ConstructorTests : ILTestBase
     {
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_InstanceFieldInitializer()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
@@ -30,6 +30,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 ObjectInstance = new ObjectCreationNode()
                 {
                     ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
+                    Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
                     Args = new List<IExpressionNode>()
                 },
                 Field = field
@@ -40,7 +41,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_StaticFieldInitializer()
         {
             var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
@@ -56,7 +57,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_InstancePropertyInitializer()
         {
             var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
@@ -106,6 +107,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 ObjectInstance = new ObjectCreationNode()
                 {
                     ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
+                    Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
                     Args = new List<IExpressionNode>()
                 },
                 Field = backingField
@@ -116,7 +118,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
-        [TestMethod, TestCategory("Codegen Tests")]
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_StaticPropertyInitializer()
         {
             var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));

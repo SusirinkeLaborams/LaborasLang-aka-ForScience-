@@ -138,5 +138,48 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                 Args = new List<IExpressionNode>(args)
             };
         }
+
+        internal MethodReference EmitMethodToOutputArgs(IExpressionNode returnValue, params TypeReference[] args)
+        {
+            var returnType = returnValue != null ? returnValue.ExpressionReturnType : assemblyEmitter.TypeToTypeReference(typeof(void));
+            var targetMethod = new MethodEmitter(typeEmitter, "TargetMethod", returnType, MethodAttributes.Static | MethodAttributes.Private);
+
+            var nodes = new List<IParserNode>();
+
+            if (args.Length > 0)
+            {
+                var consoleWriteLineArgs = new List<IExpressionNode>();
+                var parameters = args.Select(a => targetMethod.AddArgument(new ParameterDefinition(a))).ToArray();
+                var formatString = new StringBuilder();
+
+                for (int i = 0; i < parameters.Length; i++)
+                {
+                    formatString.Append(string.Format("{{{0}}}", i));
+
+                    if (i != parameters.Length - 1)
+                        formatString.Append("\r\n");
+                }
+            
+                consoleWriteLineArgs.Add(new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), formatString.ToString()));
+                consoleWriteLineArgs.AddRange(parameters.Select(p => new ParameterNode(p)));
+
+                nodes.Add(CallConsoleWriteLine(consoleWriteLineArgs.ToArray()));
+            }
+
+            if (returnValue != null)
+            {
+                nodes.Add(new ReturnNode()
+                {
+                    Expression = returnValue
+                });
+            }
+
+            targetMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = nodes
+            });
+
+            return targetMethod.Get();
+        }
     }
 }

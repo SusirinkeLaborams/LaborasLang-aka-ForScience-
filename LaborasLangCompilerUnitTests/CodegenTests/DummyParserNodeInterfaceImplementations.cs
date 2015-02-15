@@ -86,7 +86,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ObjectCreation; } }
 
         public TypeReference ExpressionReturnType { get; set; }
-        public MethodReference Constructor { get { return null; } }
+        public MethodReference Constructor { get; set; }
 
         public IReadOnlyList<IExpressionNode> Args
         {
