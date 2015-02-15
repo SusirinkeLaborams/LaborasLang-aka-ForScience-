@@ -19,6 +19,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
     [TestClass]
     public class MethodBodyTests : ILTestBase
     {
+        public MethodBodyTests()
+        {
+        }
+
         internal MethodBodyTests(AssemblyEmitter assemblyEmitter, string className, bool bulkTesting) :
             base(assemblyEmitter, className, bulkTesting)
         {

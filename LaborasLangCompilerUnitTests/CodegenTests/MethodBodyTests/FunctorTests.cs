@@ -16,6 +16,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
     [TestClass]
     public class FunctorTests : ILTestBase
     {
+        public FunctorTests()
+        {
+        }
+
         internal FunctorTests(AssemblyEmitter assemblyEmitter, string className, bool bulkTesting) :
             base(assemblyEmitter, className, bulkTesting)
         {

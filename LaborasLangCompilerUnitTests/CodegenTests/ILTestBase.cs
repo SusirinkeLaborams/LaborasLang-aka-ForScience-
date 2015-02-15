@@ -30,7 +30,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         private readonly bool bulkTesting = false;
 
         public ILTestBase() :
-            this(CreateTempAssembly(), "Class", false)
+            this(null, "Class", false)
         {
         }
 
@@ -44,7 +44,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         internal ILTestBase(AssemblyEmitter assembly, string className, bool bulkTesting) :
             base(!bulkTesting)
         {
-            assemblyEmitter = assembly;
+            assemblyEmitter = assembly ?? CreateTempAssembly();
             typeEmitter = new TypeEmitter(assemblyEmitter, className);
             methodEmitter = new MethodEmitter(typeEmitter, kEntryPointMethodName, assemblyEmitter.TypeToTypeReference(typeof(void)),
                 MethodAttributes.Static | MethodAttributes.Assembly);
