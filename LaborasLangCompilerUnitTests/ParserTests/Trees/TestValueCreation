@@ -1,0 +1,16 @@
+Class:
+	TestValueCreation
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Int32
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ValueCreation:
+					Type: System.Int32
+
+
+	Methods:

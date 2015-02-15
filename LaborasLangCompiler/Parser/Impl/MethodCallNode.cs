@@ -160,10 +160,18 @@ namespace LaborasLangCompiler.Parser.Impl
             if (type == null)
                 return null;
 
+            var resolved = type.ParsedType.Resolve();
+
+            if (resolved.IsAbstract)
+                ErrorCode.CannotCreate.ReportAndThrow(point, "Type {0} is abstract, cannot create instance", type.ParsedType.FullName);
+
             var methods = AssemblyRegistry.GetConstructors(context.Parser.Assembly, type.ParsedType);
             if(methods.Count == 0)
             {
-                ErrorCode.StaticTypeIstance.ReportAndThrow(point, "Type {0} is static, cannot create instance", type.ParsedType.FullName);
+                if (resolved.IsValueType && args.Count() == 0)
+                    return new ValueCreationNode(resolved, point);
+
+                ErrorCode.CannotCreate.ReportAndThrow(point, "No constructor for {0} found, cannot create instance", type.ParsedType.FullName);
             }
             var method = AssemblyRegistry.GetCompatibleMethod(methods, args.Select(a => a.ExpressionReturnType).ToList());
 

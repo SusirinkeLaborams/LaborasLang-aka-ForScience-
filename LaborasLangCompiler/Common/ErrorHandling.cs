@@ -48,7 +48,7 @@ namespace LaborasLangCompiler.Common
 
         DuplicateImport = 0025,
 
-        StaticTypeIstance = 0026
+        CannotCreate = 0026
     }
 
     public static class Errors

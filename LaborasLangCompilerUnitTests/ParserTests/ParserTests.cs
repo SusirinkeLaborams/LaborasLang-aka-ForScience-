@@ -763,5 +763,12 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 long bar = foo();";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestValueCreation()
+        {
+            string source = @"
+                auto foo = int();";
+            CompareTrees(source);
+        }
     }
 }
