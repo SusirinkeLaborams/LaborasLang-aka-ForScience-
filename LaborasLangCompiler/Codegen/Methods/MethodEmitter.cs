@@ -833,15 +833,12 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Emit(IObjectCreationNode objectCreation)
         {
-            var ctor = AssemblyRegistry.GetCompatibleMethod(Assembly, objectCreation.ExpressionReturnType, ".ctor",
-                objectCreation.Args.Select(argument => argument.ExpressionReturnType).ToList());
-
             foreach (var argument in objectCreation.Args)
             {
                 Emit(argument, false);
             }
 
-            Newobj(ctor);
+            Newobj(objectCreation.Constructor);
         }
 
         protected void EmitThis()

@@ -30,6 +30,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 ObjectInstance = new ObjectCreationNode()
                 {
                     ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
+                    Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
                     Args = new List<IExpressionNode>()
                 },
                 Field = field
@@ -106,6 +107,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 ObjectInstance = new ObjectCreationNode()
                 {
                     ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
+                    Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
                     Args = new List<IExpressionNode>()
                 },
                 Field = backingField
