@@ -17,7 +17,7 @@ using LaborasLangCompiler.Codegen.Methods;
 namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 {
     [TestClass]
-    public class MethodBodyTests : ILTestBase
+    public class MethodBodyTests : CodegenTestBase
     {
         public MethodBodyTests()
         {

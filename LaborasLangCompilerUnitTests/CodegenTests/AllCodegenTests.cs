@@ -21,7 +21,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         [TestMethod, TestCategory("All Tests")]
         public void AllExecutionBasedCodegenTests()
         {
-            var baseType = typeof(ILTestBase);
+            var baseType = typeof(CodegenTestBase);
             var allMethods = baseType.Assembly.GetTypes().Where(t => baseType.IsAssignableFrom(t)).SelectMany(t => t.GetMethods());
             var testMethods = new List<MethodInfo>();
 
@@ -39,16 +39,16 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                 }
             }
 
-            var tests = new List<ILTestBase>();
+            var tests = new List<CodegenTestBase>();
             var compilerArgs = CompilerArguments.Parse(new[] { "dummy.il" });
             AssemblyRegistry.CreateAndOverrideIfNeeded(compilerArgs.References);
-            var assembly = ILTestBase.CreateTempAssembly();
+            var assembly = CodegenTestBase.CreateTempAssembly();
 
             foreach (var method in testMethods)
             {
                 var ctor = method.DeclaringType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, 
                     new Type[] { typeof(AssemblyEmitter), typeof(string), typeof(bool) }, null);
-                var instance = (ILTestBase)ctor.Invoke(new object[] { assembly, method.Name, true });
+                var instance = (CodegenTestBase)ctor.Invoke(new object[] { assembly, method.Name, true });
                 method.Invoke(instance, new object[] { });
                 instance.methodEmitter.ParseTree(instance.BodyCodeBlock);
                 tests.Add(instance);
@@ -107,7 +107,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                     ExpressionReturnType = voidType,
                     Function = new FunctionNode()
                     {
-                        Method = AssemblyRegistry.GetMethod(assembly, method.Name, ILTestBase.kEntryPointMethodName)
+                        Method = AssemblyRegistry.GetMethod(assembly, method.Name, CodegenTestBase.kEntryPointMethodName)
                     },
                     Args = new IExpressionNode[0]
                 });
@@ -119,7 +119,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             });
         }
 
-        private void ExecuteTests(string executablePath, IReadOnlyList<MethodInfo> testMethods, IReadOnlyList<ILTestBase> tests)
+        private void ExecuteTests(string executablePath, IReadOnlyList<MethodInfo> testMethods, IReadOnlyList<CodegenTestBase> tests)
         {
             PEVerifyRunner.Run(executablePath);
             bool ranSuccessfully = false;

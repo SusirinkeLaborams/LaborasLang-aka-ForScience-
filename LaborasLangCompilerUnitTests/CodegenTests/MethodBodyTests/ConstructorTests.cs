@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 {
     [TestClass]
-    public class ConstructorTests : ILTestBase
+    public class ConstructorTests : CodegenTestBase
     {
         public ConstructorTests()
         {

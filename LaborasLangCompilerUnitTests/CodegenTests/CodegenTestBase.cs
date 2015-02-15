@@ -14,7 +14,7 @@ using MethodAttributes = Mono.Cecil.MethodAttributes;
 
 namespace LaborasLangCompilerUnitTests.CodegenTests
 {
-    public class ILTestBase : TestBase
+    public class CodegenTestBase : TestBase
     {
         protected string ExpectedILFilePath { get; set; }
         internal protected string ExpectedOutput { get; set; }
@@ -29,7 +29,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         private readonly MethodReference consoleWriteLineParams;
         private readonly bool bulkTesting = false;
 
-        public ILTestBase() :
+        public CodegenTestBase() :
             this(null, "Class", false)
         {
         }
@@ -41,7 +41,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             return new AssemblyEmitter(compilerArgs);
         }
 
-        internal ILTestBase(AssemblyEmitter assembly, string className, bool bulkTesting) :
+        internal CodegenTestBase(AssemblyEmitter assembly, string className, bool bulkTesting) :
             base(!bulkTesting)
         {
             assemblyEmitter = assembly ?? CreateTempAssembly();

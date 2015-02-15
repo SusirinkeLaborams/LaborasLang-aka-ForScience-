@@ -83,7 +83,7 @@
   <ItemGroup>
     <Compile Include="CodegenTests\Disassembler.cs" />
     <Compile Include="CodegenTests\DummyParserNodeInterfaceImplementations.cs" />
-    <Compile Include="CodegenTests\ILTestBase.cs" />
+    <Compile Include="CodegenTests\CodegenTestBase.cs" />
     <Compile Include="CodegenTests\AllCodegenTests.cs" />
     <Compile Include="CodegenTests\MethodBodyTests\ConstructorTests.cs" />
     <Compile Include="CodegenTests\MethodBodyTests\FunctorTests.cs" />

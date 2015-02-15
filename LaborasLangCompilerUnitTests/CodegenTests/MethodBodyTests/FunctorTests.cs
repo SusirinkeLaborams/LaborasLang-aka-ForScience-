@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 {
     [TestClass]
-    public class FunctorTests : ILTestBase
+    public class FunctorTests : CodegenTestBase
     {
         public FunctorTests()
         {
