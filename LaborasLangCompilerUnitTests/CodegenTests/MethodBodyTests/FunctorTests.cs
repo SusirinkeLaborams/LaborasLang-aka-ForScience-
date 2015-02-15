@@ -557,7 +557,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             return AssemblyRegistry.GetFunctorType(assemblyEmitter, returnType, args);
         }
 
-        [TestMethod, TestCategory("IL Comparison Based Codegen Tests")]
+        [TestMethod, TestCategory("IL Comparison Based Codegen Tests"), TestCategory("All Tests")]
         public void Test_FunctorNamesDoNotClash()
         {
             var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
