@@ -770,5 +770,12 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto foo = int();";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestBinaryOpOverload()
+        {
+            string source = @"
+                auto foo = ""foo"" == ""bar"";";
+            CompareTrees(source);
+        }
     }
 }

@@ -1,0 +1,36 @@
+Class:
+	TestBinaryOpOverload
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Boolean
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				MethodCall:
+					ReturnType: System.Boolean
+					Args:
+						Literal:
+							Type:
+								System.String
+							Value:
+								foo
+
+						Literal:
+							Type:
+								System.String
+							Value:
+								bar
+
+					Function:
+						Method:
+							Instance:
+								null
+							Method:
+								System.Boolean System.String::op_Equality(System.String,System.String)
+
+
+
+	Methods:

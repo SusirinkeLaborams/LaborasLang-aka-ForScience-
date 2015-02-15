@@ -55,7 +55,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public static BinaryOperatorNode Create(ContextNode context, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right)
+        public static ExpressionNode Create(ContextNode context, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right)
         {
             var instance = new BinaryOperatorNode(left.SequencePoint);
             instance.BinaryOperatorType = op;
@@ -68,78 +68,117 @@ namespace LaborasLangCompiler.Parser.Impl
             if (!right.IsGettable)
                 ErrorCode.NotAnRValue.ReportAndThrow(right.SequencePoint, "Binary operand is not gettable");
 
-            switch (instance.BinaryOperatorType)
+            if (!instance.VerifyBuiltIn(context.Parser))
+            {
+                return instance.AsOverload(context);
+            }
+            
+            return instance;
+        }
+
+        private bool VerifyBuiltIn(Parser parser)
+        {
+            switch (BinaryOperatorType)
             {
                 case BinaryOperatorNodeType.Addition:
                 case BinaryOperatorNodeType.Subtraction:
                 case BinaryOperatorNodeType.Multiplication:
                 case BinaryOperatorNodeType.Division:
                 case BinaryOperatorNodeType.Modulus:
-                    instance.VerifyArithmetic(context.Parser);
-                    break;
+                    return VerifyArithmetic(parser);
                 case BinaryOperatorNodeType.GreaterThan:
                 case BinaryOperatorNodeType.LessThan:
                 case BinaryOperatorNodeType.GreaterEqualThan:
                 case BinaryOperatorNodeType.LessEqualThan:
                 case BinaryOperatorNodeType.Equals:
                 case BinaryOperatorNodeType.NotEquals:
-                    instance.VerifyComparison(context.Parser);
-                    break;
+                    return VerifyComparison(parser);
                 case BinaryOperatorNodeType.ShiftLeft:
                 case BinaryOperatorNodeType.ShiftRight:
-                    instance.VerifyShift(context.Parser);
-                    break;
+                    return VerifyShift(parser);
                 case BinaryOperatorNodeType.LogicalAnd:
                 case BinaryOperatorNodeType.LogicalOr:
-                    instance.VerifyLogical(context.Parser);
-                    break;
+                    return VerifyLogical(parser);
                 case BinaryOperatorNodeType.BinaryAnd:
                 case BinaryOperatorNodeType.BinaryOr:
                 case BinaryOperatorNodeType.BinaryXor:
-                    instance.VerifyBinary();
-                    break;
+                    return VerifyBinary();
                 default:
-                    ErrorCode.InvalidStructure.ReportAndThrow(instance.SequencePoint, "Binary op expected, '{0} found", op);
-                    break;//unreachable
+                    ErrorCode.InvalidStructure.ReportAndThrow(SequencePoint, "Binary op expected, '{0} found", BinaryOperatorType);
+                    return false;//unreachable
             }
-            return instance;
         }
 
-        private void VerifyArithmetic(Parser parser)
+        private ExpressionNode AsOverload(ContextNode context)
+        {
+            var name = Overloads[BinaryOperatorType];
+            var methods = AssemblyRegistry.GetMethods(context.Parser.Assembly, left.ExpressionReturnType, name)
+                .Union(AssemblyRegistry.GetMethods(context.Parser.Assembly, right.ExpressionReturnType, name));
+
+            var args = Utils.Utils.Enumerate(left, right);
+            var argsTypes = args.Select(a => a.ExpressionReturnType).ToList();
+
+            methods = methods.Where(m => MetadataHelpers.MatchesArgumentList(m, argsTypes));
+
+            var method = AssemblyRegistry.GetCompatibleMethod(methods, argsTypes);
+
+            if(method != null)
+            {
+                return MethodCallNode.Create(context, new MethodNode(method, null, context, SequencePoint), args, SequencePoint);
+            }
+            else
+            {
+                if (methods.Count() == 0)
+                {
+                    ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
+                        "No operator ({0}) matches operands {1} and {2}",
+                        BinaryOperatorType, left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName);
+                    return null;//unreachable
+                }
+                else
+                {
+                    ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
+                        "Overloaded operator ({0}) for operands {1} and {2} is ambiguous",
+                        BinaryOperatorType, left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName);
+                    return null;//unreachable
+                }
+            }
+        }
+
+        private bool VerifyArithmetic(Parser parser)
         {
             if (left.ExpressionReturnType.IsNumericType() && right.ExpressionReturnType.IsNumericType())
             {
                 if (left.IsAssignableTo(right))
                 {
                     type = right.ExpressionReturnType;
+                    return true;
                 }
                 else if (right.IsAssignableTo(left))
                 {
                     type = left.ExpressionReturnType;
-                }
-                else
-                {
-                    ArithmeticMissmatch();
+                    return true;
                 }
             }
             else if ((left.ExpressionReturnType.IsStringType() || right.ExpressionReturnType.IsStringType()) && BinaryOperatorType == BinaryOperatorNodeType.Addition)
             {
                 type = parser.String;
+                return true;
             }
-            else
-            {
-                ArithmeticMissmatch();
-            }
+
+            return false;
         }
 
-        private void VerifyComparison(Parser parser)
+        private bool VerifyComparison(Parser parser)
         {
             type = parser.Bool;
 
+            //probably wrong
             bool comparable = left.ExpressionReturnType.IsNumericType() && right.ExpressionReturnType.IsNumericType();
 
-            if (!comparable)
-                comparable = left.ExpressionReturnType.IsStringType() && right.ExpressionReturnType.IsStringType();
+            //wtf, this is wrong, replace with overloads
+            /*if (!comparable)
+                comparable = left.ExpressionReturnType.IsStringType() && right.ExpressionReturnType.IsStringType();*/
 
             if (!comparable)
                 comparable = left.ExpressionReturnType.IsBooleanType() && right.ExpressionReturnType.IsBooleanType();
@@ -147,36 +186,41 @@ namespace LaborasLangCompiler.Parser.Impl
             if (comparable)
                 comparable = left.IsAssignableTo(right) || right.IsAssignableTo(left);
 
-            if (!comparable)
-                ComparisonMissmatch();
+            return comparable;
         }
 
-        private void VerifyShift(Parser parser)
+        private bool VerifyShift(Parser parser)
         {
+            //probably wrong
             type = left.ExpressionReturnType;
+
             if (right.ExpressionReturnType.FullName != parser.Int32.FullName)
-                ShiftMissmatch();
+                return false;
+
             if (!left.ExpressionReturnType.IsIntegerType())
-                ShiftMissmatch();
+                return false;
+
+            return true;
         }
 
-        private void VerifyBinary()
+        private bool VerifyBinary()
         {
             type = left.ExpressionReturnType;
 
             if (!(left.ExpressionReturnType.IsIntegerType() && right.ExpressionReturnType.IsIntegerType()))
-                BinaryMissmatch();
+                return false;
 
             if (left.ExpressionReturnType.GetIntegerWidth() != right.ExpressionReturnType.GetIntegerWidth())
-                BinaryMissmatch();
+                return false;
+
+            return true;
         }
 
-        private void VerifyLogical(Parser parser)
+        private bool VerifyLogical(Parser parser)
         {
             type = parser.Bool;
 
-            if (!(left.ExpressionReturnType.IsBooleanType() && right.ExpressionReturnType.IsBooleanType()))
-                LogicalMissmatch();
+            return left.ExpressionReturnType.IsBooleanType() && right.ExpressionReturnType.IsBooleanType();
         }
 
         public override string ToString(int indent)
@@ -192,39 +236,11 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.ToString();
         }
 
-        private void ArithmeticMissmatch()
+        private void OperatorMissmatch()
         {
             ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
-                "Cannot perform arithmetic operation '{0}' on types {1} and {2}", 
+                "Unable to perform {0} on operands {1} and {2}, no built int operation or operaror overload found",
                 BinaryOperatorType, LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
-        }
-
-        private void ComparisonMissmatch()
-        {
-            ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
-                "Cannot perform comparison on types {0} and {1}",
-                LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
-        }
-
-        private void LogicalMissmatch()
-        {
-            ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
-                "Cannot perform logical operations on types {0} and {1}, boolean required",
-                LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
-        }
-
-        private void BinaryMissmatch()
-        {
-            ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
-                "Cannot perform binary operations on types {0} and {1}, integers of equal length required",
-                LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
-        }
-
-        private void ShiftMissmatch()
-        {
-            ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
-                "Cannot perform shift operations on types {0} and {1}, left must be an integer, right must be an integer up to 32 bytes long",
-                LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
         }
 
         public static Dictionary<Lexer.TokenType, BinaryOperatorNodeType> Operators = new Dictionary<Lexer.TokenType, BinaryOperatorNodeType>()
@@ -245,7 +261,30 @@ namespace LaborasLangCompiler.Parser.Impl
             {Lexer.TokenType.NotEqual, BinaryOperatorNodeType.NotEquals}, 
             {Lexer.TokenType.LogicalOr, BinaryOperatorNodeType.LogicalOr}, 
             {Lexer.TokenType.LogicalAnd, BinaryOperatorNodeType.LogicalAnd}, 
-            {Lexer.TokenType.RightShift, BinaryOperatorNodeType.ShiftRight}
+            {Lexer.TokenType.RightShift, BinaryOperatorNodeType.ShiftRight},
+            {Lexer.TokenType.LeftShift, BinaryOperatorNodeType.ShiftLeft}
+        };
+
+        private static Dictionary<BinaryOperatorNodeType, string> Overloads = new Dictionary<BinaryOperatorNodeType, string>()
+        {
+            {BinaryOperatorNodeType.Addition, "op_Addition"}, 
+            {BinaryOperatorNodeType.Subtraction, "op_Subtraction"}, 
+            {BinaryOperatorNodeType.Multiplication, "op_Multiply"}, 
+            {BinaryOperatorNodeType.Division, "op_Division"}, 
+            {BinaryOperatorNodeType.Modulus, "op_Modulus"}, 
+            {BinaryOperatorNodeType.BinaryOr, "op_BitwiseOr"}, 
+            {BinaryOperatorNodeType.BinaryAnd, "op_BitwiseAnd"}, 
+            {BinaryOperatorNodeType.BinaryXor, "op_ExclusiveOr"}, 
+            {BinaryOperatorNodeType.GreaterThan, "op_GreaterThan"}, 
+            {BinaryOperatorNodeType.GreaterEqualThan, "op_GreaterThanOrEqual"}, 
+            {BinaryOperatorNodeType.LessThan, "op_LessThan"}, 
+            {BinaryOperatorNodeType.LessEqualThan, "op_LessThanOrEqual"}, 
+            {BinaryOperatorNodeType.Equals, "op_Equality"}, 
+            {BinaryOperatorNodeType.NotEquals, "op_Inequality"}, 
+            {BinaryOperatorNodeType.LogicalOr, "op_LogicalOr"}, 
+            {BinaryOperatorNodeType.LogicalAnd, "op_LogicalAnd"}, 
+            {BinaryOperatorNodeType.ShiftRight, "op_RightShift"},
+            {BinaryOperatorNodeType.ShiftLeft, "op_LeftShift"}
         };
     }
 }
