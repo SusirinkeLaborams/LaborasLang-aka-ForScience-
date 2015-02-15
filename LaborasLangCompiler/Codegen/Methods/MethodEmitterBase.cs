@@ -82,8 +82,8 @@ namespace LaborasLangCompiler.Codegen.Methods
             var left = binaryOperator.LeftOperand;
             var right = binaryOperator.RightOperand;
 
-            bool leftIsString = left.ExpressionReturnType.FullName == "System.String";
-            bool rightIsString = right.ExpressionReturnType.FullName == "System.String";
+            bool leftIsString = left.ExpressionReturnType.MetadataType == MetadataType.String;
+            bool rightIsString = right.ExpressionReturnType.MetadataType == MetadataType.String;
 
             return leftIsString || rightIsString;
         }

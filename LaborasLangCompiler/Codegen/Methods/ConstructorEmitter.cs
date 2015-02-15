@@ -27,7 +27,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (!isStatic)
             {
-                var objectCtor = AssemblyRegistry.GetCompatibleMethod(declaringType.Assembly, "System.Object", ".ctor", new List<TypeReference>());
+                var objectCtor = AssemblyRegistry.GetCompatibleMethod(declaringType.Assembly, declaringType.Assembly.TypeSystem.Object, ".ctor", new TypeReference[0]);
 
                 Ldarg(0);
                 Call(objectCtor);
