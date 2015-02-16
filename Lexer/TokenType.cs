@@ -66,7 +66,6 @@
         Virtual,
         While,
 
-
         NoInstance,
         Private,
         Public,
@@ -75,6 +74,8 @@
         //Non terminals
         NonTerminalToken,
 
+        ArrayLiteral,
+        
         CodeBlockNode,
         DeclarationNode,
         ReturnNode,
@@ -146,7 +147,7 @@
         EqualityOperator,
         AssignmentOperator,
 
-        TokenTypeCount
+        TokenTypeCount        
     }
 
     public static class TokenInfo

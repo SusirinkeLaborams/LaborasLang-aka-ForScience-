@@ -1,0 +1,13 @@
+Content: Type: RootNode, Start: 2, 13, End: 2, 15, Content: ""
+Type: RootNode
+Children:
+	Content: Type: CodeBlockNode, Start: 2, 13, End: 2, 15, Content: ""
+	Type: CodeBlockNode
+	Children:
+		Content: Type: LeftCurlyBrace, Start: 2, 13, End: 2, 14, Content: "{"
+		Type: LeftCurlyBrace
+		Children:
+
+		Content: Type: RightCurlyBrace, Start: 2, 14, End: 2, 15, Content: "}"
+		Type: RightCurlyBrace
+		Children:

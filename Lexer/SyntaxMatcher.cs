@@ -230,13 +230,14 @@ namespace Lexer
                        AssignmentOperatorNode),
                        
                     AlwaysCollapsableParseRule(Operand,
+                        ArrayLiteral,
                         InlineFunctionCallNode,
                         Function,
                         FunctionCallNode,
                         FullSymbol,
                         LiteralNode),
 
-                    ParseRule(LiteralNode,
+                    ParseRule(LiteralNode,                       
                         Float,
                         Integer,
                         Double,
@@ -244,6 +245,10 @@ namespace Lexer
                         StringLiteral,
                         True,
                         False),
+                    
+                    ParseRule(ArrayLiteral, 
+                        LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
+                        LeftCurlyBrace + RightCurlyBrace),
                         
                     ParseRule(InlineFunctionCallNode,
                         Function + OneOrMore(FunctionArgumentsList)),
@@ -704,6 +709,7 @@ namespace Lexer
         private static Condition Entry { get { return TokenType.Entry; } }
         private static Condition Mutable { get { return TokenType.Mutable; } }
         private static Condition UnknownNode { get { return TokenType.UnknownNode; } }
+        private static Condition ArrayLiteral { get { return TokenType.ArrayLiteral; } }
         #endregion
 
     }

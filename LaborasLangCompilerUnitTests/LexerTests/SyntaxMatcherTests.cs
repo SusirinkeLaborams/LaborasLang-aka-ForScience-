@@ -1,5 +1,4 @@
-﻿// #define REMATCH
-using System;
+﻿using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Lexer;
@@ -14,13 +13,47 @@ using Lexer.Containers;
 namespace LaborasLangCompilerUnitTests.LexerTests
 {
     [TestClass]
-    public class SyntaxMatcherTests
+    public class SyntaxMatcherTests : SyntaxMatcherTestBase
     {
         private const int timeout = 0;
-        private const string Path = @"..\..\LexerTests\Tokens\";
 
-        #region Tests
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
+        public void testEmptyCodeBlock()
+        {
+            var source = @"
+            {}
+            ";
+            ExecuteTest(source);
+        }
 
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
+        public void testArrayLiteral()
+        {
+            var source = @"
+            a = { 1 };
+            ";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
+        public void testArrayLiteralWithTwoValues()
+        {
+            var source = @"
+            a = { 1, 1 };
+            ";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
+        public void testEmptyArray()
+        {
+            var source = @"
+            a = { };
+            ";
+            ExecuteTest(source);
+        }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void TestMethod1()
@@ -481,40 +514,6 @@ auto foo = void()()
             var source = @"int i = 4;
 sudo bring me beer;";
             ExecuteTest(source);
-        }
-
-        #endregion tests
-
-        private void ExecuteTest(string source, [CallerMemberName] string fileName = "")
-        {
-            var tokenizedSource = Path + fileName + "_tokens.txt";
-            var serializedTree = Path + fileName + "_tree.txt";
-
-            using (var rootNode = new RootNode())
-            {
-                var tokens = Tokenizer.Tokenize(source, rootNode);
-
-                string tree = null;
-
-#if REMATCH
-                tree = new SyntaxMatcher(tokens, rootNode).Match().ToString();
-                System.IO.File.WriteAllText(serializedTree, tree);
-#else
-                try
-                {
-                    tree = System.IO.File.ReadAllText(serializedTree);
-                }
-                catch
-                {
-                }
-#endif
-
-                var syntaxMatcher = new SyntaxMatcher(tokens, rootNode);
-                var actualTree = syntaxMatcher.Match();
-
-                var actualTreeString = actualTree.ToString();
-                Assert.AreEqual(tree, actualTreeString);
-            }
-        }
+        }       
     }
 }

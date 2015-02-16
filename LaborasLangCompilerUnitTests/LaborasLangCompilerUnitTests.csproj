@@ -104,6 +104,7 @@
     <Compile Include="IntegrationTests\IntegrationTestBase.cs" />
     <Compile Include="IntegrationTests\IntegrationTests.cs" />
     <None Include="IntegrationTests\SourceFiles\PrintPrimesWithInlineLambda.ll" />
+    <Compile Include="LexerTests\SyntaxMatcherTestBase.cs" />
     <Compile Include="LexerTests\TokenizerTests.cs" />
     <Compile Include="LexerTests\SyntaxMatcherTests.cs" />
     <Compile Include="LexerTests\RuleValidationTests.cs" />

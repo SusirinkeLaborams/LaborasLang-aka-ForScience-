@@ -1,0 +1,34 @@
+Content: Type: RootNode, Start: 2, 13, End: 2, 21, Content: ""
+Type: RootNode
+Children:
+	Content: Type: Value, Start: 2, 13, End: 2, 20, Content: ""
+	Type: Value
+	Children:
+		Content: Type: AssignmentOperatorNode, Start: 2, 13, End: 2, 20, Content: ""
+		Type: AssignmentOperatorNode
+		Children:
+			Content: Type: FullSymbol, Start: 2, 13, End: 2, 14, Content: ""
+			Type: FullSymbol
+			Children:
+				Content: Type: Symbol, Start: 2, 13, End: 2, 14, Content: "a"
+				Type: Symbol
+				Children:
+
+			Content: Type: Assignment, Start: 2, 15, End: 2, 16, Content: "="
+			Type: Assignment
+			Children:
+
+			Content: Type: ArrayLiteral, Start: 2, 17, End: 2, 20, Content: ""
+			Type: ArrayLiteral
+			Children:
+				Content: Type: LeftCurlyBrace, Start: 2, 17, End: 2, 18, Content: "{"
+				Type: LeftCurlyBrace
+				Children:
+
+				Content: Type: RightCurlyBrace, Start: 2, 19, End: 2, 20, Content: "}"
+				Type: RightCurlyBrace
+				Children:
+
+	Content: Type: EndOfLine, Start: 2, 20, End: 2, 21, Content: ";"
+	Type: EndOfLine
+	Children:
