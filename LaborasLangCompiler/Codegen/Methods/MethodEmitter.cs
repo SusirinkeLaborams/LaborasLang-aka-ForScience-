@@ -258,6 +258,10 @@ namespace LaborasLangCompiler.Codegen.Methods
                     EmitStore((IPropertyNode)expression);
                     return;
 
+                case ExpressionNodeType.UnaryOperator:
+                    EmitStore((IUnaryOperatorNode)expression);
+                    return;
+
                 default:
                     throw new NotSupportedException(string.Format("Cannot store {0} ExpressionNode.", expression.ExpressionType));
             }
@@ -1218,15 +1222,15 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void EmitVoidOperator(IUnaryOperatorNode binaryOperator)
+        protected void EmitVoidOperator(IUnaryOperatorNode unaryOperator)
         {
-            if (binaryOperator.Operand.ExpressionType == ExpressionNodeType.AssignmentOperator)
+            if (unaryOperator.Operand.ExpressionType == ExpressionNodeType.AssignmentOperator)
             {
-                Emit(((IAssignmentOperatorNode)binaryOperator.Operand), false);
+                Emit(((IAssignmentOperatorNode)unaryOperator.Operand), false);
             }
             else
             {
-                Emit(binaryOperator.Operand, false);
+                Emit(unaryOperator.Operand, false);
                 Pop();
             }
         }
@@ -1267,6 +1271,19 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
 
             Call(setter);
+        }
+
+        private void EmitStore(IUnaryOperatorNode unaryOperatorNode)
+        {
+            switch (unaryOperatorNode.UnaryOperatorType)
+            {
+                case UnaryOperatorNodeType.PreDecrement:
+                case UnaryOperatorNodeType.PreIncrement:
+                    EmitStore(unaryOperatorNode.Operand);
+                    return;
+            }
+
+            throw new ArgumentException(string.Format("Cannot store unary operator {0}.", unaryOperatorNode.UnaryOperatorType));
         }
 
         #endregion

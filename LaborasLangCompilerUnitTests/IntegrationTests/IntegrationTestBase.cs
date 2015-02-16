@@ -28,9 +28,15 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             public string StdIn { get; set; }
             public string StdOut { get; set; }
 
-            public IntegrationTestInfo(IEnumerable<string> sourceFiles)
+            public IntegrationTestInfo(string sourceFile)
             {
-                SourceFiles = sourceFiles;
+                SourceFiles = new[] { sourceFile };
+            }
+
+            public IntegrationTestInfo(string sourceFile, string expectedOutput)
+            {
+                SourceFiles = new[] { sourceFile };
+                StdOut = expectedOutput;
             }
 
             public IntegrationTestInfo(IEnumerable<string> sourceFiles, string expectedOutput)
@@ -40,9 +46,14 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             }
         }
 
-        protected void Test(IEnumerable<string> sourceFile, string expectedOutput)
+        protected void Test(string sourceFile, string expectedOutput)
         {
             Test(new IntegrationTestInfo(sourceFile, expectedOutput));
+        }
+
+        protected void Test(IEnumerable<string> sourceFiles, string expectedOutput)
+        {
+            Test(new IntegrationTestInfo(sourceFiles, expectedOutput));
         }
 
         protected void Test(IntegrationTestInfo testInfo)
@@ -74,7 +85,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         private void Run(string path, IntegrationTestInfo testInfo)
         {
             var stdout = ManagedCodeRunner.CreateProcessAndRun(path, testInfo.Arguments, testInfo.StdIn, kRunTimeOut);
-            Assert.AreEqual(testInfo.StdOut, stdout);
+            Assert.AreEqual(testInfo.StdOut.Trim(), stdout.Trim());
         }
     }
 }
