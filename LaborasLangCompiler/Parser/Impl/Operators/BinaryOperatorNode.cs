@@ -49,69 +49,78 @@ namespace LaborasLangCompiler.Parser.Impl
                 for (int i = 1; i < lexerNode.Children.Count; i += 2)
                 {
                     right = ExpressionNode.Parse(context, lexerNode.Children[i + 1]);
-                    left = Create(context, Operators[lexerNode.Children[i].Type], left, right);
+                    left = Create(context, Operators[lexerNode.Children[i].Type], left, right, 
+                        Parser.GetSequencePoint(left.SequencePoint, right.SequencePoint));
                 }
                 return left;
             }
         }
 
-        public static ExpressionNode Create(ContextNode context, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right)
+        public static ExpressionNode Create(ContextNode context, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right, SequencePoint point)
         {
-            var instance = new BinaryOperatorNode(left.SequencePoint);
-            instance.BinaryOperatorType = op;
-            instance.left = left;
-            instance.right = right;
-
             if (!left.IsGettable)
                 ErrorCode.NotAnRValue.ReportAndThrow(left.SequencePoint, "Binary operand is not gettable");
 
             if (!right.IsGettable)
                 ErrorCode.NotAnRValue.ReportAndThrow(right.SequencePoint, "Binary operand is not gettable");
 
-            if (!instance.VerifyBuiltIn(context.Parser))
-            {
-                return instance.AsOverload(context);
-            }
-            
-            return instance;
+            ExpressionNode ret = AsOverload(context, op, left, right, point);
+            if (ret == null)
+                ret = AsBuiltIn(context, op, left, right, point);
+
+            if (ret == null)
+                OperatorMissmatch(point, op, left.ExpressionReturnType, right.ExpressionReturnType);
+
+            return ret;
         }
 
-        private bool VerifyBuiltIn(Parser parser)
+        private static ExpressionNode AsBuiltIn(ContextNode context, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right, SequencePoint point)
         {
-            switch (BinaryOperatorType)
+            var instance = new BinaryOperatorNode(point);
+            instance.left = left;
+            instance.right = right;
+            instance.BinaryOperatorType = op;
+            bool verified = false;
+            switch (op)
             {
                 case BinaryOperatorNodeType.Addition:
                 case BinaryOperatorNodeType.Subtraction:
                 case BinaryOperatorNodeType.Multiplication:
                 case BinaryOperatorNodeType.Division:
                 case BinaryOperatorNodeType.Modulus:
-                    return VerifyArithmetic(parser);
+                    verified = instance.VerifyArithmetic(context.Parser);
+                    break;
                 case BinaryOperatorNodeType.GreaterThan:
                 case BinaryOperatorNodeType.LessThan:
                 case BinaryOperatorNodeType.GreaterEqualThan:
                 case BinaryOperatorNodeType.LessEqualThan:
                 case BinaryOperatorNodeType.Equals:
                 case BinaryOperatorNodeType.NotEquals:
-                    return VerifyComparison(parser);
+                    verified = instance.VerifyComparison(context.Parser);
+                    break;
                 case BinaryOperatorNodeType.ShiftLeft:
                 case BinaryOperatorNodeType.ShiftRight:
-                    return VerifyShift(parser);
+                    verified = instance.VerifyShift(context.Parser);
+                    break;
                 case BinaryOperatorNodeType.LogicalAnd:
                 case BinaryOperatorNodeType.LogicalOr:
-                    return VerifyLogical(parser);
+                    verified = instance.VerifyLogical(context.Parser);
+                    break;
                 case BinaryOperatorNodeType.BinaryAnd:
                 case BinaryOperatorNodeType.BinaryOr:
                 case BinaryOperatorNodeType.BinaryXor:
-                    return VerifyBinary();
+                    verified = instance.VerifyBinary();
+                    break;
                 default:
-                    ErrorCode.InvalidStructure.ReportAndThrow(SequencePoint, "Binary op expected, '{0} found", BinaryOperatorType);
-                    return false;//unreachable
+                    ErrorCode.InvalidStructure.ReportAndThrow(point, "Binary op expected, '{0} found", op);
+                    return null;//unreachable
             }
+            return verified ? instance : null;
         }
 
-        private ExpressionNode AsOverload(ContextNode context)
+        private static ExpressionNode AsOverload(ContextNode context, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right, SequencePoint point)
         {
-            var name = Overloads[BinaryOperatorType];
+            var name = Overloads[op];
             var methods = AssemblyRegistry.GetMethods(context.Parser.Assembly, left.ExpressionReturnType, name)
                 .Union(AssemblyRegistry.GetMethods(context.Parser.Assembly, right.ExpressionReturnType, name));
 
@@ -124,22 +133,19 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if(method != null)
             {
-                return MethodCallNode.Create(context, new MethodNode(method, null, context, SequencePoint), args, SequencePoint);
+                return MethodCallNode.Create(context, new MethodNode(method, null, context, point), args, point);
             }
             else
             {
                 if (methods.Count() == 0)
                 {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
-                        "No operator ({0}) matches operands {1} and {2}",
-                        BinaryOperatorType, left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName);
-                    return null;//unreachable
+                    return null;
                 }
                 else
                 {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
+                    ErrorCode.TypeMissmatch.ReportAndThrow(point,
                         "Overloaded operator ({0}) for operands {1} and {2} is ambiguous",
-                        BinaryOperatorType, left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName);
+                        op, left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName);
                     return null;//unreachable
                 }
             }
@@ -149,21 +155,28 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             if (left.ExpressionReturnType.IsNumericType() && right.ExpressionReturnType.IsNumericType())
             {
+                bool comparable = false;
                 if (left.IsAssignableTo(right))
                 {
                     type = right.ExpressionReturnType;
-                    return true;
+                    comparable = true;
                 }
                 else if (right.IsAssignableTo(left))
                 {
                     type = left.ExpressionReturnType;
-                    return true;
+                    comparable = true;
                 }
+
+                if (comparable && BinaryOperatorType == BinaryOperatorNodeType.Modulus)
+                    comparable = left.ExpressionReturnType.IsIntegerType() && right.ExpressionReturnType.IsIntegerType();
+
+                return comparable;
             }
-            else if ((left.ExpressionReturnType.IsStringType() || right.ExpressionReturnType.IsStringType()) && BinaryOperatorType == BinaryOperatorNodeType.Addition)
+
+            if (BinaryOperatorType == BinaryOperatorNodeType.Addition)
             {
                 type = parser.String;
-                return true;
+                return left.ExpressionReturnType.IsStringType() || right.ExpressionReturnType.IsStringType();
             }
 
             return false;
@@ -173,20 +186,12 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             type = parser.Bool;
 
-            //probably wrong
-            bool comparable = left.ExpressionReturnType.IsNumericType() && right.ExpressionReturnType.IsNumericType();
+            bool assignable = left.IsAssignableTo(right) || right.IsAssignableTo(left);
 
-            //wtf, this is wrong, replace with overloads
-            /*if (!comparable)
-                comparable = left.ExpressionReturnType.IsStringType() && right.ExpressionReturnType.IsStringType();*/
+            if (BinaryOperatorType == BinaryOperatorNodeType.Equals || BinaryOperatorType == BinaryOperatorNodeType.NotEquals)
+                return assignable;
 
-            if (!comparable)
-                comparable = left.ExpressionReturnType.IsBooleanType() && right.ExpressionReturnType.IsBooleanType();
-
-            if (comparable)
-                comparable = left.IsAssignableTo(right) || right.IsAssignableTo(left);
-
-            return comparable;
+            return assignable && parser.IsPrimitive(left.ExpressionReturnType) && parser.IsPrimitive(right.ExpressionReturnType);
         }
 
         private bool VerifyShift(Parser parser)
@@ -236,11 +241,11 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.ToString();
         }
 
-        private void OperatorMissmatch()
+        private static void OperatorMissmatch(SequencePoint point, BinaryOperatorNodeType op, TypeReference left, TypeReference right)
         {
-            ErrorCode.TypeMissmatch.ReportAndThrow(SequencePoint,
+            ErrorCode.TypeMissmatch.ReportAndThrow(point,
                 "Unable to perform {0} on operands {1} and {2}, no built int operation or operaror overload found",
-                BinaryOperatorType, LeftOperand.ExpressionReturnType.FullName, RightOperand.ExpressionReturnType.FullName);
+                op, left.FullName, right.FullName);
         }
 
         public static Dictionary<Lexer.TokenType, BinaryOperatorNodeType> Operators = new Dictionary<Lexer.TokenType, BinaryOperatorNodeType>()

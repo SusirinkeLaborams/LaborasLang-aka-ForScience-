@@ -77,7 +77,7 @@ namespace LaborasLangCompiler.Parser.Impl
             aliases["void"] = Void = assembly.TypeToTypeReference(typeof(void));
             aliases["auto"] = Auto = AutoType.Instance;
 
-            primitives = new HashSet<TypeReference>(Utils.Utils.Enumerate(Bool, Char, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Float, Double, Decimal, String));
+            primitives = new HashSet<TypeReference>(Utils.Utils.Enumerate(Bool, Char, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Float, Double, Decimal, String), new TypeComparer());
 
             MaxValues = new Dictionary<ulong, TypeReference>()
             {
@@ -98,6 +98,18 @@ namespace LaborasLangCompiler.Parser.Impl
                 {int.MinValue, Int32},
                 {long.MinValue, Int64},
             };
+        }
+
+        private class TypeComparer : IEqualityComparer<TypeReference>
+        {
+            public bool Equals(TypeReference x, TypeReference y)
+            {
+                return x.FullName.Equals(y.FullName);
+            }
+            public int GetHashCode(TypeReference obj)
+            {
+                return obj.FullName.GetHashCode();
+            }
         }
 
         public static ProjectParser ParseAll(AssemblyEmitter assembly, string[] sources, string[] names, bool emit)

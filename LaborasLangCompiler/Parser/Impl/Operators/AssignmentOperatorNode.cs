@@ -58,7 +58,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 if (!left.IsGettable)
                     ErrorCode.NotAnRValue.ReportAndThrow(right.SequencePoint, "Left of this type of assignment operator must be gettable");
 
-                right = BinaryOperatorNode.Create(context, AssignmentToBinary[op], left, right);
+                right = BinaryOperatorNode.Create(context, AssignmentToBinary[op], left, right, point);
             }
 
             if (!right.ExpressionReturnType.IsAssignableTo(left.ExpressionReturnType))

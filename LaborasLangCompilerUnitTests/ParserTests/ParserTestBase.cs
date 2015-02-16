@@ -60,7 +60,8 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             var foundErrors = Errors.Reported.Select(e => e.ErrorCode).ToHashSet();
             var expectedErrors = errors.ToHashSet();
 
-            Assert.IsTrue(foundErrors.SetEquals(expectedErrors), "Errors: " + String.Join(", ", foundErrors));
+
+            Assert.IsTrue(foundErrors.SetEquals(expectedErrors), "Errors: " + String.Join("\r\n", Errors.Reported));
             Assert.AreEqual(expected, result);
         }
     }
