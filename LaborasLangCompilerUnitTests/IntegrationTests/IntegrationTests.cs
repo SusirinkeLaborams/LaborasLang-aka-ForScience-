@@ -126,6 +126,38 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             Test("AssignToPreIncrementedValue.ll", "5");
         }
 
+        // [TestMethod, TestCategory("Integration Tests")]
+        public void Test_MinMaxValues()
+        {
+            var expected1 = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, ",
+                sbyte.MinValue, sbyte.MaxValue,
+                byte.MinValue, byte.MaxValue,
+                char.MinValue, char.MaxValue,
+                short.MinValue, short.MaxValue,
+                ushort.MinValue, ushort.MaxValue,
+                int.MinValue, int.MaxValue,
+                uint.MinValue, uint.MaxValue,
+                long.MinValue, long.MaxValue,
+                ulong.MinValue, ulong.MaxValue);
+
+            var expected2 = Enumerable.Repeat<string>(string.Format("{0}, ", true), 18);
+
+            var expected3 = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}",
+                sbyte.MinValue > 0, sbyte.MaxValue > 0,
+                byte.MinValue > 0, byte.MaxValue > 0,
+                char.MinValue > 0, char.MaxValue > 0,
+                short.MinValue > 0, short.MaxValue > 0,
+                ushort.MinValue > 0, ushort.MaxValue > 0,
+                int.MinValue > 0, int.MaxValue > 0,
+                uint.MinValue > 0, uint.MaxValue > 0,
+                long.MinValue > 0, long.MaxValue > 0,
+                ulong.MinValue > 0, ulong.MaxValue > 0);
+
+            var expected = expected1 + expected1 + expected2 + expected3;
+
+            Test("MinMaxValues.ll", expected);
+        }
+
         #region Helpers
         
         private string ExpectedOutputPath
