@@ -16,7 +16,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         [TestMethod, TestCategory("Integration Tests")]
         public void Test_HelloWorld()
         {
-            Test("HelloWorld.ll".Enumerate(), "Hello, world!" + Environment.NewLine);
+            Test("HelloWorld.ll", "Hello, world!");
         }
 
         [TestMethod, TestCategory("Integration Tests")]
@@ -31,15 +31,14 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             var expectedOutput =
 @"0 is even
 3 is odd
-8 is even
-";
-            Test("Recursion.ll".Enumerate(), expectedOutput);
+8 is even";
+            Test("Recursion.ll", expectedOutput);
         }
 
         [TestMethod, TestCategory("Integration Tests")]
         public void Test_StdInWorks()
         {
-            var testInfo = new IntegrationTestInfo("StdInWorks.ll".Enumerate());
+            var testInfo = new IntegrationTestInfo("StdInWorks.ll");
 
             testInfo.StdIn =
 @"2
@@ -64,8 +63,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
 8 is not a prime number
 9 is not a prime number
 411 is not a prime number
-419 is a prime number
-";
+419 is a prime number";
 
             Test(testInfo);
         }
@@ -73,7 +71,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         [TestMethod, TestCategory("Integration Tests")]
         public void Test_InlineFunctorCall()
         {
-            Test("InlineFunctorCall.ll".Enumerate(), "It Works!");
+            Test("InlineFunctorCall.ll", "It Works!");
         }
 
         [TestMethod, TestCategory("Integration Tests")]
@@ -85,7 +83,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         [TestMethod, TestCategory("Integration Tests")]
         public void Test_PrintPrimesWithInlineLambda()
         {
-            var testInfo = new IntegrationTestInfo("PrintPrimesWithInlineLambda.ll".Enumerate());
+            var testInfo = new IntegrationTestInfo("PrintPrimesWithInlineLambda.ll");
 
             testInfo.StdIn =
 @"2
@@ -110,8 +108,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
 8 is not a prime number
 9 is not a prime number
 411 is not a prime number
-419 is a prime number
-";
+419 is a prime number";
 
             Test(testInfo);
 
@@ -120,7 +117,45 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         [TestMethod, TestCategory("Integration Tests")]
         public void Test_ImplicitRuntimeCast()
         {
-            Test("ImplicitRuntimeCast.ll".Enumerate(), "4");
+            Test("ImplicitRuntimeCast.ll", "4");
+        }
+
+        [TestMethod, TestCategory("Integration Tests")]
+        public void Test_AssignToPreIncrementedValue()
+        {
+            Test("AssignToPreIncrementedValue.ll", "5");
+        }
+
+        // [TestMethod, TestCategory("Integration Tests")]
+        public void Test_MinMaxValues()
+        {
+            var expected1 = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, ",
+                sbyte.MinValue, sbyte.MaxValue,
+                byte.MinValue, byte.MaxValue,
+                char.MinValue, char.MaxValue,
+                short.MinValue, short.MaxValue,
+                ushort.MinValue, ushort.MaxValue,
+                int.MinValue, int.MaxValue,
+                uint.MinValue, uint.MaxValue,
+                long.MinValue, long.MaxValue,
+                ulong.MinValue, ulong.MaxValue);
+
+            var expected2 = Enumerable.Repeat<string>(string.Format("{0}, ", true), 18);
+
+            var expected3 = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}",
+                sbyte.MinValue > 0, sbyte.MaxValue > 0,
+                byte.MinValue > 0, byte.MaxValue > 0,
+                char.MinValue > 0, char.MaxValue > 0,
+                short.MinValue > 0, short.MaxValue > 0,
+                ushort.MinValue > 0, ushort.MaxValue > 0,
+                int.MinValue > 0, int.MaxValue > 0,
+                uint.MinValue > 0, uint.MaxValue > 0,
+                long.MinValue > 0, long.MaxValue > 0,
+                ulong.MinValue > 0, ulong.MaxValue > 0);
+
+            var expected = expected1 + expected1 + expected2 + expected3;
+
+            Test("MinMaxValues.ll", expected);
         }
 
         #region Helpers
@@ -136,7 +171,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         private void TestAgainstOutputInFile(string testName)
         {
             var expectedOutput = File.ReadAllText(Path.Combine(ExpectedOutputPath, testName) + ".txt");
-            Test((testName + ".ll").Enumerate(), expectedOutput);
+            Test(testName + ".ll", expectedOutput);
         }
 
         #endregion

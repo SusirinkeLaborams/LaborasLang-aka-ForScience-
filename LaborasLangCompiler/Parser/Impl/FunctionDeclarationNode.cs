@@ -76,12 +76,29 @@ namespace LaborasLangCompiler.Parser.Impl
                     InvalidEntryReturn(SequencePoint, MethodReturnType);
                 emitter.SetAsEntryPoint();
 
-                if ((ParamTypes.Count() > 1) || (ParamTypes.Count() == 1 && !ParamTypes.First().TypeEquals(Parser.Assembly.TypeToTypeReference(typeof(string[])))))
+                if (!ValidParametersForMain(ParamTypes))
                 {
                     InvalidEntryParams(point, ParamTypes);
                 }
             }
+        }
 
+        private static bool ValidParametersForMain(IEnumerable<TypeReference> parameterTypes)
+        {
+            var parameterCount = parameterTypes.Count();
+
+            if (parameterCount > 1)
+                return false;
+
+            if (parameterCount == 0)
+                return true;
+
+            var arrayType = parameterTypes.First() as ArrayType;
+
+            if (arrayType != null && arrayType.ElementType.MetadataType == MetadataType.String)
+                return true;
+
+            return false;
         }
 
         private ParameterDefinition ParseParameter(ContextNode parent, AstNode typeNode, AstNode nameNode)

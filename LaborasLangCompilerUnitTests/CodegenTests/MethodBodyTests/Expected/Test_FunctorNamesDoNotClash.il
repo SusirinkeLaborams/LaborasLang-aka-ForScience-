@@ -1,4 +1,4 @@
-﻿System.Void klass::dummy()
+﻿System.Void Class::dummy()
 // Method begins at RVA 0x2050
 // Code size 1 (0x1)
 .maxstack 8

@@ -40,8 +40,9 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static LiteralNode Create(ContextNode context, IConvertible value, SequencePoint point)
         {
-            var type = context.Parser.Assembly.TypeToTypeReference(value.GetType());
-            if (!context.Parser.IsPrimitive(type))
+            TypeReference type;
+
+            if (!MetadataHelpers.TryGetBuiltInTypeReference(context.Parser.Assembly, value.GetType(), out type))
                 Errors.ReportAndThrow(ErrorCode.TypeMissmatch, point, "Cannot create literal of type {0} with value {1}", type, value);
 
             return new LiteralNode(new Literal(value), type, point);
@@ -81,37 +82,51 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             try
             {
-                switch (type.FullName)
+                switch (type.MetadataType)
                 {
-                    case "System.String":
+                    case MetadataType.String:
                         return value;
-                    case "System.Boolean":
+
+                    case MetadataType.Boolean:
                         return Convert.ToBoolean(value, CultureInfo.InvariantCulture);
-                    case "System.Char":
-                        return Convert.ToChar(value, CultureInfo.InvariantCulture);
-                    case "System.SByte":
+                        
+                    case MetadataType.SByte:
                         return Convert.ToSByte(value, CultureInfo.InvariantCulture);
-                    case "System.Byte":
+
+                    case MetadataType.Byte:
                         return Convert.ToByte(value, CultureInfo.InvariantCulture);
-                    case "System.Int16":
+
+                    case MetadataType.Char:
+                        return Convert.ToChar(value, CultureInfo.InvariantCulture);
+
+                    case MetadataType.Int16:
                         return Convert.ToInt16(value, CultureInfo.InvariantCulture);
-                    case "System.Uint16":
+
+                    case MetadataType.UInt16:
                         return Convert.ToUInt16(value, CultureInfo.InvariantCulture);
-                    case "System.Int32":
+
+                    case MetadataType.Int32:
                         return Convert.ToInt32(value, CultureInfo.InvariantCulture);
-                    case "System.UInt32":
+
+                    case MetadataType.UInt32:
                         return Convert.ToUInt32(value, CultureInfo.InvariantCulture);
-                    case "System.Int64":
+
+                    case MetadataType.Int64:
                         return Convert.ToInt64(value, CultureInfo.InvariantCulture);
-                    case "System.UInt64":
+
+                    case MetadataType.UInt64:
                         return Convert.ToUInt64(value, CultureInfo.InvariantCulture);
-                    case "System.Single":
+                        
+                    case MetadataType.Single:
                         return Convert.ToSingle(value, CultureInfo.InvariantCulture);
-                    case "System.Double":
+                        
+                    case MetadataType.Double:
                         return Convert.ToDouble(value, CultureInfo.InvariantCulture);
-                    case "System.Decimal":
-                        return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+                        
                     default:
+                        if (type.FullName == "System.Decimal")
+                            return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
+
                         ErrorCode.InvalidStructure.ReportAndThrow(point, "Unexpected literal type {0}", type.FullName);
                         return null;//unreachable
                 }

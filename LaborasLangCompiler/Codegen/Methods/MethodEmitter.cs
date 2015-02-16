@@ -258,6 +258,10 @@ namespace LaborasLangCompiler.Codegen.Methods
                     EmitStore((IPropertyNode)expression);
                     return;
 
+                case ExpressionNodeType.UnaryOperator:
+                    EmitStore((IUnaryOperatorNode)expression);
+                    return;
+
                 default:
                     throw new NotSupportedException(string.Format("Cannot store {0} ExpressionNode.", expression.ExpressionType));
             }
@@ -945,10 +949,10 @@ namespace LaborasLangCompiler.Codegen.Methods
                 Box(right.ExpressionReturnType);
             }
 
-            var concatMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, "System.String", "Concat", new List<string>()
+            var concatMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, Assembly.TypeSystem.String, "Concat", new TypeReference[]
                 {
-                    "System.Object",
-                    "System.Object"
+                    Assembly.TypeSystem.Object,
+                    Assembly.TypeSystem.Object
                 });
 
             Call(concatMethod);
@@ -1008,11 +1012,11 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void EmitGreaterEqualThanString(IExpressionNode left, IExpressionNode right)
         {
-            var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, "System.String", "CompareOrdinal",
-                new List<string>()
+            var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, Assembly.TypeSystem.String, "CompareOrdinal",
+                new TypeReference[]
                 {
-                    "System.String",
-                    "System.String"
+                    Assembly.TypeSystem.String,
+                    Assembly.TypeSystem.String
                 });
 
             Emit(left, false);
@@ -1054,12 +1058,13 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void EmitGreaterThanString(IExpressionNode left, IExpressionNode right)
         {
-            var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, "System.String", "CompareOrdinal",
-                new List<string>()
+            var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, Assembly.TypeSystem.String, "CompareOrdinal",
+                new TypeReference[]
                 {
-                    "System.String",
-                    "System.String"
+                    Assembly.TypeSystem.String,
+                    Assembly.TypeSystem.String
                 });
+
 
             Emit(left, false);
             Emit(right, false);
@@ -1094,12 +1099,13 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void EmitLessEqualThanString(IExpressionNode left, IExpressionNode right)
         {
-            var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, "System.String", "CompareOrdinal",
-                new List<string>()
+            var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, Assembly.TypeSystem.String, "CompareOrdinal",
+                new TypeReference[]
                 {
-                    "System.String",
-                    "System.String"
+                    Assembly.TypeSystem.String,
+                    Assembly.TypeSystem.String
                 });
+
 
             Emit(left, false);
             Emit(right, false);
@@ -1140,12 +1146,13 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void EmitLessThanString(IExpressionNode left, IExpressionNode right)
         {
-            var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, "System.String", "CompareOrdinal",
-                new List<string>()
+            var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, Assembly.TypeSystem.String, "CompareOrdinal",
+                new TypeReference[]
                 {
-                    "System.String",
-                    "System.String"
+                    Assembly.TypeSystem.String,
+                    Assembly.TypeSystem.String
                 });
+
 
             Emit(left, false);
             Emit(right, false);
@@ -1215,15 +1222,15 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void EmitVoidOperator(IUnaryOperatorNode binaryOperator)
+        protected void EmitVoidOperator(IUnaryOperatorNode unaryOperator)
         {
-            if (binaryOperator.Operand.ExpressionType == ExpressionNodeType.AssignmentOperator)
+            if (unaryOperator.Operand.ExpressionType == ExpressionNodeType.AssignmentOperator)
             {
-                Emit(((IAssignmentOperatorNode)binaryOperator.Operand), false);
+                Emit(((IAssignmentOperatorNode)unaryOperator.Operand), false);
             }
             else
             {
-                Emit(binaryOperator.Operand, false);
+                Emit(unaryOperator.Operand, false);
                 Pop();
             }
         }
@@ -1264,6 +1271,19 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
 
             Call(setter);
+        }
+
+        private void EmitStore(IUnaryOperatorNode unaryOperatorNode)
+        {
+            switch (unaryOperatorNode.UnaryOperatorType)
+            {
+                case UnaryOperatorNodeType.PreDecrement:
+                case UnaryOperatorNodeType.PreIncrement:
+                    EmitStore(unaryOperatorNode.Operand);
+                    return;
+            }
+
+            throw new ArgumentException(string.Format("Cannot store unary operator {0}.", unaryOperatorNode.UnaryOperatorType));
         }
 
         #endregion
@@ -1334,49 +1354,49 @@ namespace LaborasLangCompiler.Codegen.Methods
                 throw new ArgumentException("Can't cast non primitive value types!");
             }
 
-            switch (targetType.FullName)
+            switch (targetType.MetadataType)
             {
-                case "System.SByte":
+                case MetadataType.SByte:
                     Conv_I1();
                     break;
 
-                case "System.Int16":
+                case MetadataType.Int16:
                     Conv_I2();
                     break;
 
-                case "System.Int32":
+                case MetadataType.Int32:
                     Conv_I4();
                     break;
 
-                case "System.Int64":
+                case MetadataType.Int64:
                     Conv_I8();
                     break;
 
-                case "System.IntPtr":
+                case MetadataType.IntPtr:
                     Conv_I();
                     break;
 
-                case "System.Byte":
+                case MetadataType.Byte:
                     Conv_U1();
                     break;
 
-                case "System.UInt16":
+                case MetadataType.UInt16:
                     Conv_U2();
                     break;
 
-                case "System.UInt32":
+                case MetadataType.UInt32:
                     Conv_U4();
                     break;
 
-                case "System.UInt64":
+                case MetadataType.UInt64:
                     Conv_U8();
                     break;
 
-                case "System.UIntPtr":
+                case MetadataType.UIntPtr:
                     Conv_U();
                     break;
 
-                case "System.Single":
+                case MetadataType.Single:
                     if (sourceType.IsUnsignedInteger())
                     {
                         Conv_R_Un();
@@ -1387,7 +1407,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     }
                     break;
 
-                case "System.Double":
+                case MetadataType.Double:
                     Conv_R8();
                     break;
 

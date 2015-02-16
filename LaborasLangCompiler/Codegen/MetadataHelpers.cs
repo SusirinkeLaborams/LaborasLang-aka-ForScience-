@@ -456,6 +456,68 @@ namespace LaborasLangCompiler.Codegen
             }
         }
 
+        public static bool TryGetBuiltInTypeReference(AssemblyEmitter assemblyEmitter, Type type, out TypeReference typeReference)
+        {
+            switch (type.FullName)
+            {
+                case "System.String":
+                    typeReference = assemblyEmitter.TypeSystem.String;
+                    return true;
+
+                case "System.Boolean":
+                    typeReference = assemblyEmitter.TypeSystem.Boolean;
+                    return true;
+                    
+                case "System.SByte":
+                    typeReference = assemblyEmitter.TypeSystem.SByte;
+                    return true;
+
+                case "System.Byte":
+                    typeReference = assemblyEmitter.TypeSystem.Byte;
+                    return true;
+
+                case "System.Char":
+                    typeReference = assemblyEmitter.TypeSystem.Char;
+                    return true;
+
+                case "System.Int16":
+                    typeReference = assemblyEmitter.TypeSystem.Int16;
+                    return true;
+
+                case "System.Uint16":
+                    typeReference = assemblyEmitter.TypeSystem.UInt16;
+                    return true;
+
+                case "System.Int32":
+                    typeReference = assemblyEmitter.TypeSystem.Int32;
+                    return true;
+
+                case "System.UInt32":
+                    typeReference = assemblyEmitter.TypeSystem.UInt32;
+                    return true;
+
+                case "System.Int64":
+                    typeReference = assemblyEmitter.TypeSystem.Int64;
+                    return true;
+
+                case "System.UInt64":
+                    typeReference = assemblyEmitter.TypeSystem.UInt64;
+                    return true;
+
+                case "System.Single":
+                    typeReference = assemblyEmitter.TypeSystem.Single;
+                    return true;
+
+                case "System.Double":
+                    typeReference = assemblyEmitter.TypeSystem.Double;
+                    return true;
+
+                default:
+                    typeReference = null;
+                    return false;
+            }
+        }
+
         static MetadataHelpers()
         {
             assignmentMap = new Dictionary<MetadataType, MetadataType[]>();

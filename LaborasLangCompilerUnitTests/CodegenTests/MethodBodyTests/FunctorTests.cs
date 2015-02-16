@@ -14,12 +14,21 @@ using System.Threading.Tasks;
 namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 {
     [TestClass]
-    public class FunctorTests : ILTestBase
+    public class FunctorTests : CodegenTestBase
     {
+        public FunctorTests()
+        {
+        }
+
+        internal FunctorTests(AssemblyEmitter assemblyEmitter, string className, bool bulkTesting) :
+            base(assemblyEmitter, className, bulkTesting)
+        {
+        }
+
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_FunctorDefinition()
         {
-            var consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new[] { assemblyEmitter.TypeToTypeReference(typeof(string)) });
+            var consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine", new[] { assemblyEmitter.TypeSystem.String });
             var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, consoleWriteLine);
             var localVariable = new VariableDefinition(functorType);
 
@@ -42,7 +51,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         Function = new LocalVariableNode(localVariable),
                         Args = new[]
                         {
-                            new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "Hello, world!")
+                            new LiteralNode(assemblyEmitter.TypeSystem.String, "Hello, world!")
                         }
                     }
                 }
@@ -60,10 +69,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             const float kArg2 = 489.14f;
             const string kArg3 = "A string value";
 
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
-            var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
-            var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var intType = assemblyEmitter.TypeSystem.Int32;
+            var boolType = assemblyEmitter.TypeSystem.Boolean;
+            var floatType = assemblyEmitter.TypeSystem.Single;
+            var stringType = assemblyEmitter.TypeSystem.String;
 
             var targetMethod = EmitMethodToOutputArgs(new LiteralNode(intType, kReturnValue), boolType, floatType, stringType);
             var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, targetMethod);
@@ -104,7 +113,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_FunctionAssignmentToFunctorWithoutArgs()
         {
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var targetMethod = new MethodEmitter(typeEmitter, "TargetMethod", voidType);
 
@@ -112,7 +121,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    CallConsoleWriteLine(new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "TargetMethod was called"))
+                    CallConsoleWriteLine(new LiteralNode(assemblyEmitter.TypeSystem.String, "TargetMethod was called"))
                 }       
             });
 
@@ -165,9 +174,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             const double kArg1 = 12.3;
             const float kArg2 = -1.222f;
 
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
-            var doubleType = assemblyEmitter.TypeToTypeReference(typeof(double));
-            var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
+            var intType = assemblyEmitter.TypeSystem.Int32;
+            var doubleType = assemblyEmitter.TypeSystem.Double;
+            var floatType = assemblyEmitter.TypeSystem.Single;
 
             var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, intType,
                 new List<TypeReference>()
@@ -207,9 +216,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             const int kArg1 = 123;
             const string kArg2 = "fghbsajdnkmf";
 
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var voidType = assemblyEmitter.TypeSystem.Void;
+            var intType = assemblyEmitter.TypeSystem.Int32;
+            var stringType = assemblyEmitter.TypeSystem.String;
             var arguments = new TypeReference[]
                 {
                     intType,
@@ -267,14 +276,14 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_FunctionAssignmentToDelegate()
         {
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var targetMethod = new MethodEmitter(typeEmitter, "TargetMethod", voidType, MethodAttributes.Private | MethodAttributes.Static);
             targetMethod.ParseTree(new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
                 {
-                    CallConsoleWriteLine(new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "Inside target method"))
+                    CallConsoleWriteLine(new LiteralNode(assemblyEmitter.TypeSystem.String, "Inside target method"))
                 }
             });
 
@@ -323,10 +332,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             const string kArg1 = "Str";
             const float kArg2 = 3.5f;
 
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-            var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
+            var voidType = assemblyEmitter.TypeSystem.Void;
+            var intType = assemblyEmitter.TypeSystem.Int32;
+            var stringType = assemblyEmitter.TypeSystem.String;
+            var floatType = assemblyEmitter.TypeSystem.Single;
 
             var functorType = AssemblyRegistry.GetFunctorType(assemblyEmitter, intType, new List<TypeReference>()
                 {
@@ -380,10 +389,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             const int kArg1 = 485613;
             const string kArg2 = "FASD4FSAD14asdf";
 
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var intType = assemblyEmitter.TypeSystem.Int32;
+            var stringType = assemblyEmitter.TypeSystem.String;
 
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var voidType = assemblyEmitter.TypeSystem.Void;
             var arguments = new TypeReference[]
                 {
                     intType,
@@ -552,13 +561,13 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             return AssemblyRegistry.GetFunctorType(assemblyEmitter, returnType, args);
         }
 
-        [TestMethod, TestCategory("IL Comparison Based Codegen Tests")]
+        [TestMethod, TestCategory("Misc IL Tests"), TestCategory("All Tests")]
         public void Test_FunctorNamesDoNotClash()
         {
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-            var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
-            var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
+            var intType = assemblyEmitter.TypeSystem.Int32;
+            var stringType = assemblyEmitter.TypeSystem.String;
+            var floatType = assemblyEmitter.TypeSystem.Single;
+            var boolType = assemblyEmitter.TypeSystem.Boolean;
 
             var types = new[]
             {

@@ -17,8 +17,17 @@ using LaborasLangCompiler.Codegen.Methods;
 namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 {
     [TestClass]
-    public class MethodBodyTests : ILTestBase
+    public class MethodBodyTests : CodegenTestBase
     {
+        public MethodBodyTests()
+        {
+        }
+
+        internal MethodBodyTests(AssemblyEmitter assemblyEmitter, string className, bool bulkTesting) :
+            base(assemblyEmitter, className, bulkTesting)
+        {
+        }
+
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_EmptyMethod()
         {
@@ -34,7 +43,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_HelloWorld()
         {
-            GenerateBodyToOutputExpression(new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "Hello, world!"));
+            GenerateBodyToOutputExpression(new LiteralNode(assemblyEmitter.TypeSystem.String, "Hello, world!"));
             ExpectedOutput = "Hello, world!";
             AssertSuccessByExecution();
         }
@@ -44,7 +53,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_VariableDeclarationAndInitialization_LoadFloatLiteral()
         {
-            var variable = new VariableDefinition("floatValue", assemblyEmitter.TypeToTypeReference(typeof(float)));
+            var variable = new VariableDefinition("floatValue", assemblyEmitter.TypeSystem.Single);
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -53,7 +62,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new SymbolDeclarationNode()
                     {
                         Variable = variable,
-                        Initializer = new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(float)), 2.5)
+                        Initializer = new LiteralNode(assemblyEmitter.TypeSystem.Single, 2.5)
                     },
                     CallConsoleWriteLine(new LocalVariableNode(variable))
                 }
@@ -66,7 +75,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_StoreField_LoadIntLiteral()
         {
-            var field = new FieldDefinition("intField", FieldAttributes.Static, assemblyEmitter.TypeToTypeReference(typeof(int)));
+            var field = new FieldDefinition("intField", FieldAttributes.Static, assemblyEmitter.TypeSystem.Int32);
             typeEmitter.AddField(field);
 
             BodyCodeBlock = new CodeBlockNode()
@@ -76,11 +85,11 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
+                        ExpressionReturnType = assemblyEmitter.TypeSystem.Void,
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new FieldNode(field),
-                            RightOperand = new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(int)), 1)
+                            RightOperand = new LiteralNode(assemblyEmitter.TypeSystem.Int32, 1)
                         }
                     },
                     CallConsoleWriteLine(new FieldNode(field))
@@ -94,10 +103,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_StoreLocalVariable_LoadField()
         {
-            var field = new FieldDefinition("intField", FieldAttributes.Static, assemblyEmitter.TypeToTypeReference(typeof(int)));
+            var field = new FieldDefinition("intField", FieldAttributes.Static, assemblyEmitter.TypeSystem.Int32);
             typeEmitter.AddField(field);
 
-            var variable = new VariableDefinition("intLocal", assemblyEmitter.TypeToTypeReference(typeof(int)));
+            var variable = new VariableDefinition("intLocal", assemblyEmitter.TypeSystem.Int32);
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -109,7 +118,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new FieldNode(field),
-                            RightOperand = new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(int)), 42)
+                            RightOperand = new LiteralNode(assemblyEmitter.TypeSystem.Int32, 42)
                         }
                     },
                     new SymbolDeclarationNode()
@@ -128,15 +137,15 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_StoreProperty_LoadLocalVariable_LoadArgument_LoadDoubleLiteral()
         {
-            var property = new PropertyDefinition("doubleProperty", PropertyAttributes.HasDefault, assemblyEmitter.TypeToTypeReference(typeof(double)));
-            var backingField = new FieldDefinition("doubleProperty_backingField", FieldAttributes.Static, assemblyEmitter.TypeToTypeReference(typeof(double)));
+            var property = new PropertyDefinition("doubleProperty", PropertyAttributes.HasDefault, assemblyEmitter.TypeSystem.Double);
+            var backingField = new FieldDefinition("doubleProperty_backingField", FieldAttributes.Static, assemblyEmitter.TypeSystem.Double);
 
             typeEmitter.AddField(backingField);
 
-            var setter = new MethodEmitter(typeEmitter, "set_doubleProperty", assemblyEmitter.TypeToTypeReference(typeof(void)),
+            var setter = new MethodEmitter(typeEmitter, "set_doubleProperty", assemblyEmitter.TypeSystem.Void,
                 MethodAttributes.Static | MethodAttributes.Private);
 
-            var argument = setter.AddArgument(assemblyEmitter.TypeToTypeReference(typeof(double)), "value");
+            var argument = setter.AddArgument(assemblyEmitter.TypeSystem.Double, "value");
             setter.ParseTree(new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
@@ -144,7 +153,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
+                        ExpressionReturnType = assemblyEmitter.TypeSystem.Void,
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new FieldNode(backingField),
@@ -158,7 +167,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             typeEmitter.AddProperty(property);
 
-            var localVariable = new VariableDefinition("doubleLocal", assemblyEmitter.TypeToTypeReference(typeof(double)));
+            var localVariable = new VariableDefinition("doubleLocal", assemblyEmitter.TypeSystem.Double);
 
             BodyCodeBlock = new CodeBlockNode()
             {
@@ -167,12 +176,12 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new SymbolDeclarationNode()
                     {
                         Variable = localVariable,
-                        Initializer = new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(double)), 5.5)
+                        Initializer = new LiteralNode(assemblyEmitter.TypeSystem.Double, 5.5)
                     },
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
+                        ExpressionReturnType = assemblyEmitter.TypeSystem.Void,
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new PropertyNode(property),
@@ -190,26 +199,26 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_StoreArgument_LoadProperty_LoadStringLiteral()
         {
-            var property = new PropertyDefinition("stringProperty", PropertyAttributes.HasDefault, assemblyEmitter.TypeToTypeReference(typeof(string)));
+            var property = new PropertyDefinition("stringProperty", PropertyAttributes.HasDefault, assemblyEmitter.TypeSystem.String);
 
-            var getter = new MethodEmitter(typeEmitter, "get_stringProperty", assemblyEmitter.TypeToTypeReference(typeof(string)),
+            var getter = new MethodEmitter(typeEmitter, "get_stringProperty", assemblyEmitter.TypeSystem.String,
                 MethodAttributes.Static | MethodAttributes.Private);
 
             getter.ParseTree(new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "Test2")
+                    new LiteralNode(assemblyEmitter.TypeSystem.String, "Test2")
                 }
             });
 
             property.GetMethod = getter.Get().Resolve();
             typeEmitter.AddProperty(property);
 
-            var methodWithArgument = new MethodEmitter(typeEmitter, "TestMethod", assemblyEmitter.TypeToTypeReference(typeof(void)),
+            var methodWithArgument = new MethodEmitter(typeEmitter, "TestMethod", assemblyEmitter.TypeSystem.Void,
                 MethodAttributes.Static | MethodAttributes.Private);
 
-            var argument = methodWithArgument.AddArgument(assemblyEmitter.TypeToTypeReference(typeof(string)), "arg");
+            var argument = methodWithArgument.AddArgument(assemblyEmitter.TypeSystem.String, "arg");
 
             methodWithArgument.ParseTree(new CodeBlockNode()
             {
@@ -219,7 +228,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
+                        ExpressionReturnType = assemblyEmitter.TypeSystem.Void,
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new ParameterNode(argument),
@@ -242,7 +251,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), "Test1")
+                            new LiteralNode(assemblyEmitter.TypeSystem.String, "Test1")
                         }
                     }
                 }
@@ -255,10 +264,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_CallFunction_PassArgument_LoadBoolLiteral()
         {
-            var callableMethod = new MethodEmitter(typeEmitter, "Test", assemblyEmitter.TypeToTypeReference(typeof(void)),
+            var callableMethod = new MethodEmitter(typeEmitter, "Test", assemblyEmitter.TypeSystem.Void,
                 MethodAttributes.Private | MethodAttributes.Static);
 
-            callableMethod.AddArgument(assemblyEmitter.TypeToTypeReference(typeof(bool)), "isTrue");
+            callableMethod.AddArgument(assemblyEmitter.TypeSystem.Boolean, "isTrue");
             callableMethod.ParseTree(new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
@@ -279,7 +288,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         },
                         Args = new List<IExpressionNode>()
                         {
-                            new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(bool)), true)
+                            new LiteralNode(assemblyEmitter.TypeSystem.Boolean, true)
                         }
                     }
                 }
@@ -298,7 +307,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         {
             var assignmentNode = new AssignmentOperatorNode()
             {
-                RightOperand = new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(int)), 110)
+                RightOperand = new LiteralNode(assemblyEmitter.TypeSystem.Int32, 110)
             };
 
             const int count = 10;
@@ -306,7 +315,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             for (int i = 0; i < count; i++)
             {
                 var field = new FieldDefinition("intField" + i.ToString(), FieldAttributes.Static | FieldAttributes.Private,
-                    assemblyEmitter.TypeToTypeReference(typeof(int)));
+                    assemblyEmitter.TypeSystem.Int32);
                 fields.Add(field);
                 typeEmitter.AddField(field);
 
@@ -335,7 +344,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     new UnaryOperatorNode()
                     {
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ExpressionReturnType = assemblyEmitter.TypeToTypeReference(typeof(void)),
+                        ExpressionReturnType = assemblyEmitter.TypeSystem.Void,
                         Operand = assignmentNode
                     },
                     outputCodeBlock
@@ -349,8 +358,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_MultipleNestedInstanceFieldAssignments()
         {
-            var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var floatType = assemblyEmitter.TypeSystem.Single;
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             typeEmitter.AddDefaultConstructor();
             var testMethod = new MethodEmitter(typeEmitter, "TestNestedInstanceFieldAssignment", voidType);
@@ -444,8 +453,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_AddIntegers()
         {
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var intType = assemblyEmitter.TypeSystem.Int32;
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var localVariable = new VariableDefinition("myVar", intType);
 
@@ -483,10 +492,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_AddFloatAndInteger()
         {
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
-            var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
-            var doubleType = assemblyEmitter.TypeToTypeReference(typeof(double));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var intType = assemblyEmitter.TypeSystem.Int32;
+            var floatType = assemblyEmitter.TypeSystem.Single;
+            var doubleType = assemblyEmitter.TypeSystem.Double;
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var localVariable = new VariableDefinition("myVar", doubleType);
 
@@ -524,9 +533,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_AddStrings()
         {
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var stringType = assemblyEmitter.TypeSystem.String;
+            var intType = assemblyEmitter.TypeSystem.Int32;
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, stringType);
             typeEmitter.AddField(field);
@@ -561,9 +570,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_Subtraction()
         {
-            var doubleType = assemblyEmitter.TypeToTypeReference(typeof(double));
-            var floatType = assemblyEmitter.TypeToTypeReference(typeof(float));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var doubleType = assemblyEmitter.TypeSystem.Double;
+            var floatType = assemblyEmitter.TypeSystem.Single;
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, doubleType);
             typeEmitter.AddField(field);
@@ -599,9 +608,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_Multiplication()
         {
-            var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
-            var ushortType = assemblyEmitter.TypeToTypeReference(typeof(ushort));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var uintType = assemblyEmitter.TypeSystem.UInt32;
+            var ushortType = assemblyEmitter.TypeSystem.UInt16;
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, ushortType);
             typeEmitter.AddField(field);
@@ -637,9 +646,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_SignedDivision()
         {
-            var doubleType = assemblyEmitter.TypeToTypeReference(typeof(double));
-            var longType = assemblyEmitter.TypeToTypeReference(typeof(long));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var doubleType = assemblyEmitter.TypeSystem.Double;
+            var longType = assemblyEmitter.TypeSystem.Int64;
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, longType);
             typeEmitter.AddField(field);
@@ -675,9 +684,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_UnsignedDivision()
         {
-            var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
-            var ushortType = assemblyEmitter.TypeToTypeReference(typeof(ushort));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var uintType = assemblyEmitter.TypeSystem.UInt32;
+            var ushortType = assemblyEmitter.TypeSystem.UInt16;
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, ushortType);
             typeEmitter.AddField(field);
@@ -713,9 +722,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_SignedRemainder()
         {
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
-            var longType = assemblyEmitter.TypeToTypeReference(typeof(long));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var intType = assemblyEmitter.TypeSystem.Int32;
+            var longType = assemblyEmitter.TypeSystem.Int64;
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, longType);
             typeEmitter.AddField(field);
@@ -751,9 +760,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_UnsignedRemainder()
         {
-            var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
-            var ushortType = assemblyEmitter.TypeToTypeReference(typeof(ushort));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var uintType = assemblyEmitter.TypeSystem.UInt32;
+            var ushortType = assemblyEmitter.TypeSystem.UInt16;
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, ushortType);
             typeEmitter.AddField(field);
@@ -789,9 +798,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_ShiftLeftAndRight()
         {
-            var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
-            var ushortType = assemblyEmitter.TypeToTypeReference(typeof(ushort));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var uintType = assemblyEmitter.TypeSystem.UInt32;
+            var ushortType = assemblyEmitter.TypeSystem.UInt16;
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, ushortType);
             typeEmitter.AddField(field);
@@ -836,9 +845,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
         public void TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(TypeReference literalType, IConvertible value1, IConvertible value2)
         {
-            var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
+            var boolType = assemblyEmitter.TypeSystem.Boolean;
+            var stringType = assemblyEmitter.TypeSystem.String;
+            var voidType = assemblyEmitter.TypeSystem.Void;
 
             var localA = new VariableDefinition("a", literalType);
             var localB = new VariableDefinition("b", literalType);
@@ -936,7 +945,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Numerals()
         {
-            TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(assemblyEmitter.TypeToTypeReference(typeof(int)), 5, 6);
+            TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(assemblyEmitter.TypeSystem.Int32, 5, 6);
 
             ExpectedOutput =
                 "5 is not greater than 6." + Environment.NewLine +
@@ -949,7 +958,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Strings()
         {
-            TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(assemblyEmitter.TypeToTypeReference(typeof(string)), "hi", "bye");
+            TestCanEmit_ConditionBlock_GreaterThan_LessThan_Equals_Base(assemblyEmitter.TypeSystem.String, "hi", "bye");
 
             ExpectedOutput =
                 "hi is greater than bye." + Environment.NewLine +
@@ -961,9 +970,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
         public void TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(TypeReference literalType, IConvertible value1, IConvertible value2)
         {
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-            var booleanType = assemblyEmitter.TypeToTypeReference(typeof(bool));
+            var voidType = assemblyEmitter.TypeSystem.Void;
+            var stringType = assemblyEmitter.TypeSystem.String;
+            var booleanType = assemblyEmitter.TypeSystem.Boolean;
 
             var literal1 = new LiteralNode(literalType, value1);
             var literal2 = new LiteralNode(literalType, value2);
@@ -1005,7 +1014,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Numerals()
         {
-            TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(assemblyEmitter.TypeToTypeReference(typeof(float)), 3.5, 2.1);
+            TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(assemblyEmitter.TypeSystem.Single, 3.5, 2.1);
 
             ExpectedOutput = string.Format(
                 "Is {0} greater than or equal to {1}? {2}{5}" +
@@ -1019,7 +1028,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Strings()
         {
-            TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(assemblyEmitter.TypeToTypeReference(typeof(string)), "hi", "bye");
+            TestCanEmit_GreaterEqualThan_LessEqualThan_NotEquals_Base(assemblyEmitter.TypeSystem.String, "hi", "bye");
 
             ExpectedOutput = string.Format(
                 "Is {0} greater than or equal to {1}? {2}{5}" +
@@ -1035,8 +1044,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_LogicalAnd_LogicalOr()
         {
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-            var booleanType = assemblyEmitter.TypeToTypeReference(typeof(bool));
+            var stringType = assemblyEmitter.TypeSystem.String;
+            var booleanType = assemblyEmitter.TypeSystem.Boolean;
 
             var variableDef1 = new VariableDefinition("a", booleanType);
             var variable1 = new LocalVariableNode(variableDef1);
@@ -1089,8 +1098,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_BinaryAnd_BinaryOr_BinaryXor()
         {
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-            var uintType = assemblyEmitter.TypeToTypeReference(typeof(uint));
+            var stringType = assemblyEmitter.TypeSystem.String;
+            var uintType = assemblyEmitter.TypeSystem.UInt32;
 
             var variableDef1 = new VariableDefinition("a", uintType);
             var variable1 = new LocalVariableNode(variableDef1);
@@ -1158,8 +1167,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_Negation_BinaryNot_Increment_Decrement()
         {
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var intType = assemblyEmitter.TypeSystem.Int32;
+            var stringType = assemblyEmitter.TypeSystem.String;
 
             var variableDefs = new List<VariableDefinition>();
 
@@ -1225,8 +1234,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_LogicalNot()
         {
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
-            var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
+            var voidType = assemblyEmitter.TypeSystem.Void;
+            var boolType = assemblyEmitter.TypeSystem.Boolean;
 
             var field = new FieldDefinition("myField", FieldAttributes.Private | FieldAttributes.Static, boolType);
             typeEmitter.AddField(field);
@@ -1267,9 +1276,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_WhileLoop()
         {
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-            var intType = assemblyEmitter.TypeToTypeReference(typeof(int));
-            var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
+            var stringType = assemblyEmitter.TypeSystem.String;
+            var intType = assemblyEmitter.TypeSystem.Int32;
+            var boolType = assemblyEmitter.TypeSystem.Boolean;
             
             var localVariableDef = new VariableDefinition("counter", intType);
             var localVariable = new LocalVariableNode(localVariableDef);
@@ -1316,9 +1325,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_IfBlockWithoutElse()
         {
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
-            var boolType = assemblyEmitter.TypeToTypeReference(typeof(bool));
+            var stringType = assemblyEmitter.TypeSystem.String;
+            var voidType = assemblyEmitter.TypeSystem.Void;
+            var boolType = assemblyEmitter.TypeSystem.Boolean;
             
             var field = new FieldDefinition("myField", FieldAttributes.Static | FieldAttributes.Private, boolType);
             typeEmitter.AddField(field);
@@ -1358,7 +1367,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_Return()
         {
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var stringType = assemblyEmitter.TypeSystem.String;
 
             var readInputMethod = new MethodEmitter(typeEmitter, "ReadInput", stringType, MethodAttributes.Static | MethodAttributes.Private);
 
@@ -1435,8 +1444,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_CallFunctionWithOptionalParameter()
         {
-            var voidType = assemblyEmitter.TypeToTypeReference(typeof(void));
-            var stringType = assemblyEmitter.TypeToTypeReference(typeof(string));
+            var voidType = assemblyEmitter.TypeSystem.Void;
+            var stringType = assemblyEmitter.TypeSystem.String;
             
             var testMethod = new MethodEmitter(typeEmitter, "MethodWithDefaultParameter", voidType, MethodAttributes.Private | MethodAttributes.Static);
             

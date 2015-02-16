@@ -21,13 +21,13 @@ namespace LaborasLangCompiler.Codegen.Methods
         }
 
         public ConstructorEmitter(TypeEmitter declaringType, bool isStatic, MethodAttributes attributes) :
-            base(declaringType, isStatic ? ".cctor" : ".ctor", declaringType.Assembly.TypeToTypeReference(typeof(void)), attributes)
+            base(declaringType, isStatic ? ".cctor" : ".ctor", declaringType.Assembly.TypeSystem.Void, attributes)
         {
             this.isStatic = isStatic;
 
             if (!isStatic)
             {
-                var objectCtor = AssemblyRegistry.GetCompatibleMethod(declaringType.Assembly, "System.Object", ".ctor", new List<TypeReference>());
+                var objectCtor = AssemblyRegistry.GetCompatibleMethod(declaringType.Assembly, declaringType.Assembly.TypeSystem.Object, ".ctor", new TypeReference[0]);
 
                 Ldarg(0);
                 Call(objectCtor);

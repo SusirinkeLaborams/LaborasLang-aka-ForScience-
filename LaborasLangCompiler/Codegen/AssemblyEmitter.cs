@@ -13,6 +13,7 @@ namespace LaborasLangCompiler.Codegen
 
         public string OutputPath { get { return outputPath; } }
         public ModuleDefinition MainModule { get { return assemblyDefinition.MainModule; } }
+        public TypeSystem TypeSystem { get { return assemblyDefinition.MainModule.TypeSystem; } }
         public bool DebugBuild { get; private set; }
 
         public AssemblyEmitter(CompilerArguments compilerArgs, Version version = null)
@@ -46,11 +47,6 @@ namespace LaborasLangCompiler.Codegen
 
             if (!types.Contains(type))
                 types.Add(type);
-        }
-
-        public TypeReference TypeToTypeReference(Type type)
-        {
-            return MainModule.Import(type);
         }
 
         public void Save()

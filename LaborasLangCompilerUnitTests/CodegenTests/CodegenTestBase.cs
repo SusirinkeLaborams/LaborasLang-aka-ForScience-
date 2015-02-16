@@ -1,7 +1,7 @@
-﻿using LaborasLangCompiler.FrontEnd;
-using LaborasLangCompiler.Codegen;
+﻿using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Codegen.Methods;
 using LaborasLangCompiler.Codegen.Types;
+using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Cecil;
@@ -10,37 +10,52 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using MethodAttributes = Mono.Cecil.MethodAttributes;
 
 namespace LaborasLangCompilerUnitTests.CodegenTests
 {
-    public class ILTestBase : TestBase
+    public class CodegenTestBase : TestBase
     {
         protected string ExpectedILFilePath { get; set; }
-        protected string ExpectedOutput { get; set; }
+        internal protected string ExpectedOutput { get; set; }
         internal ICodeBlockNode BodyCodeBlock { get; set; }
 
         internal MethodEmitter methodEmitter { get; private set; }
         internal TypeEmitter typeEmitter { get; private set; }
         internal AssemblyEmitter assemblyEmitter { get; private set; }
 
-        private readonly CompilerArguments compilerArgs;
+        internal const string kEntryPointMethodName = "dummy";
         private readonly MethodReference consoleWriteLine;
         private readonly MethodReference consoleWriteLineParams;
+        private readonly bool bulkTesting = false;
 
-        public ILTestBase()
+        public CodegenTestBase() :
+            this(null, "Class", false)
+        {
+        }
+
+        internal static AssemblyEmitter CreateTempAssembly()
         {
             var tempLocation = Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
-            compilerArgs = CompilerArguments.Parse(new[] { "dummy.il", "/out:" + tempLocation });
-            assemblyEmitter = new AssemblyEmitter(compilerArgs);
-            typeEmitter = new TypeEmitter(assemblyEmitter, "klass");
-            methodEmitter = new MethodEmitter(typeEmitter, "dummy", assemblyEmitter.TypeToTypeReference(typeof(void)),
-                MethodAttributes.Static | MethodAttributes.Private);
+            var compilerArgs = CompilerArguments.Parse(new[] { "dummy.il", "/out:" + tempLocation });
+            return new AssemblyEmitter(compilerArgs);
+        }
+
+        internal CodegenTestBase(AssemblyEmitter assembly, string className, bool bulkTesting) :
+            base(!bulkTesting)
+        {
+            assemblyEmitter = assembly ?? CreateTempAssembly();
+            typeEmitter = new TypeEmitter(assemblyEmitter, className);
+            methodEmitter = new MethodEmitter(typeEmitter, kEntryPointMethodName, assemblyEmitter.TypeSystem.Void,
+                MethodAttributes.Static | MethodAttributes.Assembly);
 
             consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine",
-                new[] { assemblyEmitter.TypeToTypeReference(typeof(object)) });
+                new[] { assemblyEmitter.TypeSystem.Object });
+            
             consoleWriteLineParams = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine",
-                new[] { assemblyEmitter.TypeToTypeReference(typeof(string)), assemblyEmitter.TypeToTypeReference(typeof(object[])) });
+                new[] { assemblyEmitter.TypeSystem.String, new ArrayType(assemblyEmitter.TypeSystem.Object) });
+
+            this.bulkTesting = bulkTesting;
         }
 
         protected void AssertSuccessByILComparison()
@@ -75,6 +90,14 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         }
 
         protected void AssertSuccessByExecution()
+        {
+            if (!bulkTesting)
+            {
+                AssertSuccessByExecutionForSingleTest();
+            }
+        }
+
+        private void AssertSuccessByExecutionForSingleTest()
         {
             Assert.IsNotNull(BodyCodeBlock);
 
@@ -141,7 +164,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         internal MethodReference EmitMethodToOutputArgs(IExpressionNode returnValue, params TypeReference[] args)
         {
-            var returnType = returnValue != null ? returnValue.ExpressionReturnType : assemblyEmitter.TypeToTypeReference(typeof(void));
+            var returnType = returnValue != null ? returnValue.ExpressionReturnType : assemblyEmitter.TypeSystem.Void;
             var targetMethod = new MethodEmitter(typeEmitter, "TargetMethod", returnType, MethodAttributes.Static | MethodAttributes.Private);
 
             var nodes = new List<IParserNode>();
@@ -160,7 +183,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                         formatString.Append("\r\n");
                 }
             
-                consoleWriteLineArgs.Add(new LiteralNode(assemblyEmitter.TypeToTypeReference(typeof(string)), formatString.ToString()));
+                consoleWriteLineArgs.Add(new LiteralNode(assemblyEmitter.TypeSystem.String, formatString.ToString()));
                 consoleWriteLineArgs.AddRange(parameters.Select(p => new ParameterNode(p)));
 
                 nodes.Add(CallConsoleWriteLine(consoleWriteLineArgs.ToArray()));

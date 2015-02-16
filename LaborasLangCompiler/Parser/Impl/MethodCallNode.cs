@@ -24,7 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             get
             {
-                return ExpressionReturnType.FullName != "System.Void";
+                return ExpressionReturnType.MetadataType != MetadataType.Void;
             }
         }
 
