@@ -18,6 +18,27 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         private const int timeout = 0;
 
         [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
+        public void testCreateArray()
+        {
+            var source = @"int[] a = {1, 2, 3}";
+            AssertCanBeLexed(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
+        public void testCreateEmptyArray()
+        {
+            var source = @"int[] a = int[5]";
+            AssertCanBeLexed(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
+        public void testFunctionArrays()
+        {
+            var source = @"int()[] a = int()[5]";
+            AssertCanBeLexed(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
         public void testEmptyCodeBlock()
         {
             var source = @"

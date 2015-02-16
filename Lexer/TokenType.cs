@@ -71,11 +71,14 @@
         Public,
         Mutable,
 
+        LeftBracket,
+        RightBracket,
+
         //Non terminals
         NonTerminalToken,
 
         ArrayLiteral,
-        
+
         CodeBlockNode,
         DeclarationNode,
         ReturnNode,
@@ -147,7 +150,8 @@
         EqualityOperator,
         AssignmentOperator,
 
-        TokenTypeCount        
+        TokenTypeCount,
+        
     }
 
     public static class TokenInfo
