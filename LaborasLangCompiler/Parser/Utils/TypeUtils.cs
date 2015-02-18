@@ -104,5 +104,37 @@ namespace LaborasLangCompiler.Parser.Utils
                 throw new ArgumentException();
             }
         }
+
+        public static List<TypeReference> GetInheritance(this TypeReference type)
+        {
+            var ret = new List<TypeReference>();
+            while(type != null)
+            {
+                ret.Add(type);
+                type = type.Resolve().BaseType;
+            }
+            ret.Reverse();
+            return ret;
+        }
+
+        public static TypeReference GetCommonBaseClass(AssemblyEmitter assembly, IEnumerable<TypeReference> types)
+        {
+            if (types.Count() == 0)
+                throw new ArgumentException("types must not be empty");
+
+            var bases = types.Select(t => t.GetInheritance()).ToList();
+            var result = assembly.TypeSystem.Object;
+
+            for (int i = 0; i < bases.Min(x => x.Count); i++)
+            {
+                var first = bases[0][i];
+                if(bases.All(x => x[i].FullName == first.FullName))
+                {
+                    result = first;
+                }
+            }
+
+            return result;
+        }
     }
 }

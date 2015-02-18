@@ -6,19 +6,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Parser.Utils;
+using Mono.Cecil;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
     class InitializerList : ParserNode, IInitializerList
     {
         public override NodeType Type { get { return NodeType.InitializerList; } }
-
         public IReadOnlyList<IExpressionNode> Initializers { get { return expressions; } }
 
+        public TypeReference ElementType { get; private set; }
+        public IReadOnlyList<int> Dimmensions { get; private set; }
+
         private IReadOnlyList<ExpressionNode> expressions;
-        private InitializerList(IReadOnlyList<ExpressionNode> expressions, SequencePoint point) : base(point)
+        private InitializerList(SequencePoint point) : base(point)
         {
-            this.expressions = expressions;
         }
 
         public static InitializerList Create(ContextNode context, IEnumerable<ExpressionNode> expressions, SequencePoint point)
@@ -31,7 +33,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            return new InitializerList(expressions.ToArray(), point);
+            var instance = new InitializerList(point);
+            return instance;
         }
 
         public override string ToString(int indent)
