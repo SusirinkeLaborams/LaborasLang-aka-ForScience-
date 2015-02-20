@@ -5,6 +5,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
 
@@ -182,6 +183,10 @@ namespace LaborasLangCompiler.Codegen.Methods
                 case ExpressionNodeType.ObjectCreation:
                     Emit((IObjectCreationNode)expression);
                     return;
+
+                case ExpressionNodeType.ArrayCreation:
+                    Emit((IArrayCreationNode)expression);
+                    break;
 
                 case ExpressionNodeType.This:
                     EmitThis();
@@ -843,6 +848,35 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
 
             Newobj(objectCreation.Constructor);
+        }
+
+        protected void Emit(IArrayCreationNode arrayCreation)
+        {
+            Contract.Requires(arrayCreation.ExpressionReturnType.IsArray, "Return type of IArrayCreationNode must be an array type.");
+            
+            var arrayType = (ArrayType)arrayCreation.ExpressionReturnType;
+            Contract.Requires(arrayCreation.Dimensions.Count == arrayType.Rank, "Array creation node dimension count must match array type rank.");
+
+            if (arrayType.IsVector)
+            {
+                Emit(arrayCreation.Dimensions[0], false);
+                Newarr(arrayType);
+            }
+            else
+            {
+                var rank = arrayType.Rank;
+                var constructor = AssemblyRegistry.GetArrayConstructor(arrayType);
+
+                for (int i = 0; i < rank; i++)
+                {
+                    Emit(arrayCreation.Dimensions[i], false);
+                }
+
+                Newobj(constructor);
+            }
+
+            if (arrayCreation.Initializer != null)
+                throw new NotImplementedException();
         }
 
         protected void EmitThis()
