@@ -114,8 +114,10 @@
         ParenthesesNode,
         LiteralNode,
         UnknownNode,
+        IndexAccessNode,
+        IndexNode,        
         LexerInternalTokens,    // Lexer internal-only tokens start from here
-
+        
         StatementNode,
         DeclarationSubnode,
         ValueStatementNode,

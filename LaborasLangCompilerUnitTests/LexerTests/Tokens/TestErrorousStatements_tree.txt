@@ -54,7 +54,3 @@ Children:
 		Content: Type: Symbol, Start: 2, 15, End: 2, 19, Content: "beer"
 		Type: Symbol
 		Children:
-
-		Content: Type: EndOfLine, Start: 2, 19, End: 2, 20, Content: ";"
-		Type: EndOfLine
-		Children:

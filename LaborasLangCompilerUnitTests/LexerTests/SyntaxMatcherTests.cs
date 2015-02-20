@@ -17,28 +17,49 @@ namespace LaborasLangCompilerUnitTests.LexerTests
     {
         private const int timeout = 0;
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void testCreateArray()
         {
-            var source = @"int[] a = {1, 2, 3}";
-            AssertCanBeLexed(source);
+            var source = @"int[] a = bar;";
+            ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void testMultidimensionalIndexAccess()
+        {
+            var source = @"a = foo[1, bar()];";
+            ExecuteTest(source);
+        }
+        
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void testIndexAccess()
+        {
+            var source = @"auto a = foo[1];";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void testCreateEmptyArray()
         {
-            var source = @"int[] a = int[5]";
-            AssertCanBeLexed(source);
+            var source = @"int[] a = int[5];";
+            ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
+        public void testDeclareEmptyArray()
+        {
+            var source = @"int[] a;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void testFunctionArrays()
         {
-            var source = @"int()[] a = int()[5]";
-            AssertCanBeLexed(source);
+            var source = @"int()[] a;";
+            ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void testEmptyCodeBlock()
         {
             var source = @"
@@ -47,7 +68,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void testArrayLiteral()
         {
             var source = @"
@@ -57,7 +78,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         }
 
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void testArrayLiteralWithTwoValues()
         {
             var source = @"
@@ -67,7 +88,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         }
 
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), TestCategory("arrays"), Timeout(timeout)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("SyntaxMatcher"), Timeout(timeout)]
         public void testEmptyArray()
         {
             var source = @"

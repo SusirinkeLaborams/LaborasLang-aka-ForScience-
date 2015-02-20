@@ -121,6 +121,10 @@ namespace Lexer
                         
                     CollapsableParseRule(CodeBlockNode,
                         LeftCurlyBrace + ZeroOrMore(StatementNode) + RightCurlyBrace),
+                    
+                    ParseRule(IndexNode,
+                    LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket,
+                    LeftBracket + RightBracket),
 
                     #region Operators
 
@@ -141,7 +145,7 @@ namespace Lexer
                             Or
                             Assignment operator
                      */
-
+                    
                     CollapsableParseRule(ParenthesesNode,
                         LeftParenthesis + Value + RightParenthesis,
                         Operand),
@@ -152,8 +156,11 @@ namespace Lexer
                     AlwaysCollapsableParseRule(PeriodSubnode,
                         Period + ParenthesesNode),
 
+                    CollapsableParseRule(IndexAccessNode,
+                        PeriodNode + ZeroOrMore(IndexNode)),
+
                     CollapsableParseRule(PostfixNode,
-                        PeriodNode + ZeroOrMore(PostfixOperator)),
+                        IndexAccessNode + ZeroOrMore(PostfixOperator)),
 
                     CollapsableParseRule(PrefixNode,
                         ZeroOrMore(PrefixOperator) + PostfixNode),
@@ -235,6 +242,7 @@ namespace Lexer
                         Function,
                         FunctionCallNode,
                         FullSymbol,
+                        Type,
                         LiteralNode),
 
                     ParseRule(LiteralNode,                       
@@ -272,12 +280,14 @@ namespace Lexer
                     ParseRule(TypeParameters,
                         LeftParenthesis + Type + ZeroOrMore(TypeSubnode) + RightParenthesis,
                         LeftParenthesis + Type + Symbol + ZeroOrMore(TypeAndSymbolSubnode) + RightParenthesis,
-                        LeftParenthesis + RightParenthesis
+                        LeftParenthesis + RightParenthesis,
+                        IndexNode,
+                        LeftBracket + RightBracket
                     ),
 
-                    ParseRule(Type,
-                        FullSymbol + ZeroOrMore(TypeParameters)),
-
+                    ParseRule(Type,                        
+                       FullSymbol + ZeroOrMore(TypeParameters)),
+                       
                     AlwaysCollapsableParseRule(TypeSubnode,
                         Comma + Type),
 
@@ -364,7 +374,7 @@ namespace Lexer
             var node = m_RootNode.NodePool.ProvideNode();
             
             tokensConsumed = 1;
-            for (int i = offset; i < m_Source.Length; i++, tokensConsumed++)
+            for (int i = offset; i < m_Source.Length - 1; i++, tokensConsumed++)
             {                
                 node.AddTerminal(m_RootNode, m_Source[i]);
                 if (m_Source[i].Type.IsRecoveryPoint())
@@ -376,7 +386,9 @@ namespace Lexer
             var token = m_RootNode.ProvideToken();
             
             token.Start = m_Source[offset].Start;
-            token.End = m_Source[offset + tokensConsumed - 1].End;
+            var lastToken = offset + tokensConsumed - 1;
+            
+            token.End = m_Source[lastToken].End;
             token.Content = FastString.Empty;
             token.Type = TokenType.UnknownNode;
 
@@ -710,6 +722,10 @@ namespace Lexer
         private static Condition Mutable { get { return TokenType.Mutable; } }
         private static Condition UnknownNode { get { return TokenType.UnknownNode; } }
         private static Condition ArrayLiteral { get { return TokenType.ArrayLiteral; } }
+        private static Condition IndexNode { get { return TokenType.IndexNode; } }
+        private static Condition IndexAccessNode { get { return TokenType.IndexAccessNode; } }
+        private static Condition RightBracket { get { return TokenType.RightBracket; } }
+        private static Condition LeftBracket { get { return TokenType.LeftBracket; } }
         #endregion
 
     }
