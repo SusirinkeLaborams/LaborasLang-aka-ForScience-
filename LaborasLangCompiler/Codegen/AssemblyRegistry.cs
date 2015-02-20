@@ -9,11 +9,23 @@ namespace LaborasLangCompiler.Codegen
 {
     internal class AssemblyRegistry
     {
+        private struct ArrayTypeKey
+        {
+            private readonly TypeReference elementType;
+            private readonly int rank;
+            
+            public ArrayTypeKey(TypeReference elementType, int rank)
+            {
+                this.elementType = elementType;
+                this.rank = rank;
+            }
+        }
         private static AssemblyRegistry instance;
 
         private HashSet<string> assemblyPaths;             // Keep assembly paths to prevent from registering single assembly twice
         private List<AssemblyDefinition> assemblies;
         private Dictionary<string, TypeDefinition> functorTypes;
+        private Dictionary<ArrayTypeKey, ArrayType> arrayTypes;
         private Dictionary<KeyValuePair<TypeReference, MethodReference>, TypeDefinition> functorImplementationTypes;
         private AssemblyDefinition mscorlib;
 
@@ -191,6 +203,20 @@ namespace LaborasLangCompiler.Codegen
             }
 
             return instance.functorImplementationTypes[key];
+        }
+
+        public static ArrayType GetArrayType(TypeReference elementType, int rank)
+        {
+            var key = new ArrayTypeKey(elementType, rank);
+            ArrayType arrayType;
+
+            if (instance.arrayTypes.TryGetValue(key, out arrayType))
+                return arrayType;
+
+            arrayType = new ArrayType(elementType, rank);
+            instance.arrayTypes.Add(key, arrayType);
+
+            return arrayType;
         }
         
         public static MethodReference GetMethod(AssemblyEmitter assembly, string typeName, string methodName)
@@ -401,6 +427,7 @@ namespace LaborasLangCompiler.Codegen
         {
             return GetField(assembly, FindTypeInternal(typeName), fieldName);
         }
+
         public static FieldReference GetField(AssemblyEmitter assembly, TypeEmitter type, string fieldName)
         {
             return GetField(assembly, type.Get(assembly), fieldName);

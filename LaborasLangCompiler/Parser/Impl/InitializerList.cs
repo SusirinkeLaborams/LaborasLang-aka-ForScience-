@@ -54,7 +54,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             instance.Initializers = Utils.Utils.ConcatAll(subLists.Select(s => s.Initializers));
             instance.ElementType = TypeUtils.GetCommonBaseClass(context.Assembly, subLists.Select(s => s.ElementType));
-            instance.Dimmensions = first.Dimmensions.Concat(subLists.Count().Enumerate()).ToArray();
+            instance.Dimmensions = first.Dimmensions.Concat(subLists.Count().Enumerate());
             return instance;
         }
 
