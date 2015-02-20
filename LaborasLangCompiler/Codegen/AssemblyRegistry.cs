@@ -35,13 +35,13 @@ namespace LaborasLangCompiler.Codegen
 
         private static AssemblyRegistry instance;
 
-        private HashSet<string> assemblyPaths;             // Keep assembly paths to prevent from registering single assembly twice
-        private List<AssemblyDefinition> assemblies;
-        private Dictionary<string, TypeDefinition> functorTypes;
-        private Dictionary<FunctorImplementationTypesKey, TypeDefinition> functorImplementationTypes;
-        private Dictionary<ArrayTypeKey, ArrayType> arrayTypes;
-        private Dictionary<ArrayType, MethodReference> arrayConstructors;
-        private AssemblyDefinition mscorlib;
+        private readonly HashSet<string> assemblyPaths;             // Keep assembly paths to prevent from registering single assembly twice
+        private readonly List<AssemblyDefinition> assemblies;
+        private readonly Dictionary<string, TypeDefinition> functorTypes;
+        private readonly Dictionary<FunctorImplementationTypesKey, TypeDefinition> functorImplementationTypes;
+        private readonly Dictionary<ArrayTypeKey, ArrayType> arrayTypes;
+        private readonly Dictionary<ArrayType, MethodReference> arrayConstructors;
+        private readonly AssemblyDefinition mscorlib;
 
         private AssemblyRegistry()
         {
@@ -51,6 +51,7 @@ namespace LaborasLangCompiler.Codegen
             assemblies = new List<AssemblyDefinition>();
             functorTypes = new Dictionary<string, TypeDefinition>();
             functorImplementationTypes = new Dictionary<FunctorImplementationTypesKey, TypeDefinition>();
+            arrayTypes = new Dictionary<ArrayTypeKey, ArrayType>();
             arrayConstructors = new Dictionary<ArrayType, MethodReference>();
         }
 
