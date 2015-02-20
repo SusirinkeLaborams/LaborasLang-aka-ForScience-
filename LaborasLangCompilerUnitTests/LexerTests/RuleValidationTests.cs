@@ -10,7 +10,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
     [TestClass]
     public class RuleValidation
     {
-        [TestMethod, TestCategory("Lexer"), TestCategory("Rule validation")]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Rule validation")]
         public void TestRulePoolContainsAllRules()
         {
             var missingRules = new List<TokenType>();
@@ -28,7 +28,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             Assert.AreEqual(0, missingRules.Count);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Rule validation")]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Rule validation")]
         public void TestNoUnreachableRules()
         {
             var rules = new ParseRule[(int)TokenType.TokenTypeCount];
@@ -82,7 +82,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             Assert.AreEqual(0, unreachableTokens.Count, "Unreachable rules: " + stringified);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Rule validation")]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Rule validation")]
         public void TestNoInfiniteRecursionInRules()
         {
             var rules = new ParseRule[(int)TokenType.TokenTypeCount];

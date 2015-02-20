@@ -19,7 +19,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
     {
         private const string Path = @"..\..\LexerTests\Tokens\";
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizer()
         {
             var source =
@@ -33,7 +33,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
 
         #region Single branch tests
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerArrayIndexing()
         {
             var source = @"bar[foo]";
@@ -41,84 +41,84 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         }
 
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerStringLiteral1()
         {
             var source = @"'str\'ing'";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerStringLiteral2()
         {
             var source = @"""str\""ing""";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerPlus()
         {
             var source = @"+ += ++";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerMinus()
         {
             var source = @"- -= --";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerNot()
         {
             var source = @"! !=";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerBitwiseComplement()
         {
             var source = @"~";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerAnd()
         {
             var source = @"& && &= &&=";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerXor()
         {
             var source = @"^ ^=";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerOr()
         {
             var source = @"| |= || ||=";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerLessThan()
         {
             var source = @"< << <= <<=";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerMoreThan()
         {
             var source = @"> >> >= >>=";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerDivision()
         {
             var source = @"/ /= /* content */ //content
@@ -126,49 +126,49 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerMultiplication()
         {
             var source = @"* *=";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerRemainder()
         {
             var source = @"% %=";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerEqual()
         {
             var source = @"= ==";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerCurlyBracket()
         {
             var source = @"{ }";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerBracket()
         {
             var source = @"( )";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerSemicolon()
         {
             var source = @";";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerNumber()
         {
             var source =
@@ -176,14 +176,14 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerDot()
         {
             var source = @".";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Tokenizer"), Timeout(1000)]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
         public void TestTokenizerSymbol()
         {
             var source = @"symbol";
