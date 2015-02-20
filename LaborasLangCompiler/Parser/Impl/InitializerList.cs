@@ -10,15 +10,14 @@ using Mono.Cecil;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class InitializerList : ParserNode, IInitializerList
+    class InitializerList : ParserNode
     {
-        public override NodeType Type { get { return NodeType.InitializerList; } }
-        public IReadOnlyList<IExpressionNode> Initializers { get { return expressions.ToArray(); } }
+        public override NodeType Type { get { return NodeType.ParserInternal; } }
+        public IEnumerable<ExpressionNode> Initializers { get; private set; }
 
         public TypeReference ElementType { get; private set; }
-        public IReadOnlyList<int> Dimmensions { get; private set; }
+        public IEnumerable<int> Dimmensions { get; private set; }
 
-        private IEnumerable<ExpressionNode> expressions;
         private InitializerList(SequencePoint point) : base(point)
         {
         }
@@ -38,7 +37,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var instance = new InitializerList(point);
             instance.ElementType = TypeUtils.GetCommonBaseClass(context.Assembly, expressions.Select(e => e.ExpressionReturnType));
             instance.Dimmensions = new int[]{expressions.Count()};
-            instance.expressions = expressions;
+            instance.Initializers = expressions;
             return instance;
         }
 
@@ -53,7 +52,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             var instance = new InitializerList(point);
 
-            instance.expressions = Utils.Utils.ConcatAll(subLists.Select(s => s.expressions));
+            instance.Initializers = Utils.Utils.ConcatAll(subLists.Select(s => s.Initializers));
             instance.ElementType = TypeUtils.GetCommonBaseClass(context.Assembly, subLists.Select(s => s.ElementType));
             instance.Dimmensions = first.Dimmensions.Concat(subLists.Count().Enumerate()).ToArray();
             return instance;
@@ -63,7 +62,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("InitializerList:");
-            foreach(var exp in expressions)
+            foreach (var exp in Initializers)
             {
                 builder.AppendLine(exp.ToString(indent + 2));
             }
