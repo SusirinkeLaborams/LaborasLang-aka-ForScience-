@@ -36,5 +36,15 @@ namespace LaborasLangCompiler.Parser.Utils
         {
             return stuff;
         }
+
+        public static IEnumerable<T> ConcatAll<T>(IEnumerable<IEnumerable<T>> enumerables)
+        {
+            var result = enumerables.First();
+            foreach(var e in enumerables.Skip(1))
+            {
+                result = result.Concat(e);
+            }
+            return result;
+        }
     }
 }
