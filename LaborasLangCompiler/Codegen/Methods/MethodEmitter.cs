@@ -22,10 +22,7 @@ namespace LaborasLangCompiler.Codegen.Methods
         
         public void ParseTree(ICodeBlockNode tree)
         {
-            if (Parsed)
-            {
-                throw new InvalidOperationException("Can't parse same method twice!");
-            }
+            Contract.Requires(!Parsed, "Can't set same method twice.");
 
             Emit(tree);
 
@@ -45,11 +42,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         public void SetAsEntryPoint()
         {
-            if ((methodDefinition.Attributes & MethodAttributes.Static) == 0)
-            {
-                throw new Exception("Entry point must be static!");
-            }
-
+            Contract.Requires(!Get().HasThis, "Entry point must be static.");
             methodDefinition.DeclaringType.Module.EntryPoint = methodDefinition;
         }
 
@@ -337,11 +330,6 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             var getter = AssemblyRegistry.GetPropertyGetter(Assembly, property.Property);
 
-            if (getter == null)
-            {
-                throw new ArgumentException(string.Format("Property {0} has no getter.", property.Property.FullName));
-            }
-
             if (getter.HasThis)
             {
                 Emit(property.ObjectInstance, true);
@@ -512,6 +500,9 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Emit(IBinaryOperatorNode binaryOperator)
         {
+            Contract.Requires(binaryOperator.LeftOperand != null);
+            Contract.Requires(binaryOperator.RightOperand != null);
+
             switch (binaryOperator.BinaryOperatorType)
             {
                 case BinaryOperatorNodeType.Addition:
@@ -853,9 +844,9 @@ namespace LaborasLangCompiler.Codegen.Methods
         protected void Emit(IArrayCreationNode arrayCreation)
         {
             Contract.Requires(arrayCreation.ExpressionReturnType.IsArray, "Return type of IArrayCreationNode must be an array type.");
+            Contract.Requires(arrayCreation.Dimensions.Count == ((ArrayType)arrayCreation.ExpressionReturnType).Rank, "Array creation node dimension count must match array type rank.");
             
             var arrayType = (ArrayType)arrayCreation.ExpressionReturnType;
-            Contract.Requires(arrayCreation.Dimensions.Count == arrayType.Rank, "Array creation node dimension count must match array type rank.");
 
             if (arrayType.IsVector)
             {
@@ -881,11 +872,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void EmitThis()
         {
-            if (methodDefinition.IsStatic)
-            {
-                throw new NotSupportedException("Can't emit this in a static method!");
-            }
-
+            Contract.Requires(!methodDefinition.IsStatic);
             Ldarg(0);
         }
 
@@ -1298,12 +1285,6 @@ namespace LaborasLangCompiler.Codegen.Methods
         protected void EmitStore(IPropertyNode property)
         {
             var setter = AssemblyRegistry.GetPropertySetter(Assembly, property.Property);
-
-            if (setter == null)
-            {
-                throw new ArgumentException(string.Format("Property {0} has no setter.", property.Property.FullName));
-            }
-
             Call(setter);
         }
 
@@ -1466,7 +1447,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        private List<TempVariable> temporaryVariables = new List<TempVariable>();
+        private readonly List<TempVariable> temporaryVariables = new List<TempVariable>();
 
         protected VariableDefinition AcquireTempVariable(TypeReference type)
         {

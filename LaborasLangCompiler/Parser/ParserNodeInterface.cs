@@ -4,6 +4,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,6 +49,7 @@ namespace LaborasLangCompiler.Parser
         ParserInternal
     }
 
+    [ContractClass(typeof(IExpressionNodeContract))]
     interface IExpressionNode : IParserNode
     {
         ExpressionNodeType ExpressionType { get; }
@@ -90,6 +92,7 @@ namespace LaborasLangCompiler.Parser
         ICodeBlockNode FalseBlock { get; }
     }
 
+    [ContractClass(typeof(ILocalVariableNodeContract))]
     interface ILocalVariableNode : IExpressionNode
     {
         VariableDefinition LocalVariable { get; }
@@ -107,6 +110,7 @@ namespace LaborasLangCompiler.Parser
         PropertyReference Property { get; }
     }
 
+    [ContractClass(typeof(IParameterNodeContract))]
     interface IParameterNode : IExpressionNode
     {
         ParameterDefinition Parameter { get; }
@@ -134,6 +138,7 @@ namespace LaborasLangCompiler.Parser
         ShiftLeft
     }
 
+    [ContractClass(typeof(IBinaryOperatorNodeContract))]
     interface IBinaryOperatorNode : IExpressionNode
     {
         BinaryOperatorNodeType BinaryOperatorType { get; }
@@ -191,4 +196,149 @@ namespace LaborasLangCompiler.Parser
     {
         IExpressionNode Expression { get; }
     }
+
+#region Interface contracts
+
+    [ContractClassFor(typeof(IExpressionNode))]
+    abstract class IExpressionNodeContract : IExpressionNode
+    {
+        public ExpressionNodeType ExpressionType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public TypeReference ExpressionReturnType
+        {
+            get 
+            {
+                Contract.Ensures(Contract.Result<TypeReference>() != null);
+                throw new NotImplementedException();
+            }
+        }
+
+        public NodeType Type
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public SequencePoint SequencePoint
+        {
+            get { throw new NotImplementedException(); }
+        }
+    }
+
+    [ContractClassFor(typeof(IBinaryOperatorNode))]
+    abstract class IBinaryOperatorNodeContract : IBinaryOperatorNode
+    {
+        public BinaryOperatorNodeType BinaryOperatorType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public IExpressionNode LeftOperand
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<IExpressionNode>() != null);
+                throw new NotImplementedException(); 
+            }
+        }
+
+        public IExpressionNode RightOperand
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<IExpressionNode>() != null);
+                throw new NotImplementedException(); 
+            }
+        }
+
+        public ExpressionNodeType ExpressionType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public TypeReference ExpressionReturnType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public NodeType Type
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public SequencePoint SequencePoint
+        {
+            get { throw new NotImplementedException(); }
+        }
+    }
+
+    [ContractClassFor(typeof(IParameterNode))]
+    abstract class IParameterNodeContract : IParameterNode
+    {
+        public ParameterDefinition Parameter
+        {
+            get 
+            {
+                Contract.Ensures(Contract.Result<ParameterDefinition>() != null);
+                throw new NotImplementedException();
+            }
+        }
+
+        public ExpressionNodeType ExpressionType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public TypeReference ExpressionReturnType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public NodeType Type
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public SequencePoint SequencePoint
+        {
+            get { throw new NotImplementedException(); }
+        }
+    }
+
+    [ContractClassFor(typeof(ILocalVariableNode))]
+    abstract class ILocalVariableNodeContract : ILocalVariableNode
+    {
+        public VariableDefinition LocalVariable
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<VariableDefinition>() != null);
+                throw new NotImplementedException();
+            }
+        }
+
+        public ExpressionNodeType ExpressionType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public TypeReference ExpressionReturnType
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public NodeType Type
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public SequencePoint SequencePoint
+        {
+            get { throw new NotImplementedException(); }
+        }
+    }
+
+#endregion
 }

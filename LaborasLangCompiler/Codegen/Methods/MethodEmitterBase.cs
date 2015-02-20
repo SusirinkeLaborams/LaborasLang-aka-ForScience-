@@ -3,14 +3,15 @@ using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Codegen.Methods
 {
     internal abstract class MethodEmitterBase
     {
-        protected MethodDefinition methodDefinition;
-        protected MethodBody body;
-        protected ILProcessor ilProcessor;
+        protected readonly MethodDefinition methodDefinition;
+        protected readonly MethodBody body;
+        protected readonly ILProcessor ilProcessor;
 
         protected TypeEmitter DeclaringType { get; private set; }
         protected AssemblyEmitter Assembly { get { return DeclaringType.Assembly; } }
@@ -28,6 +29,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             ilProcessor = body.GetILProcessor();
         }
 
+        [Pure]
         public MethodReference Get()
         {
             return methodDefinition;
@@ -157,6 +159,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Call(MethodReference method)
         {
+            Contract.Requires(method != null);
+
             ilProcessor.Emit(OpCodes.Call, method);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
