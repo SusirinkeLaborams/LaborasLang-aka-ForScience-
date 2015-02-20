@@ -9,6 +9,18 @@ namespace LaborasLangCompiler.Codegen
 {
     internal class AssemblyRegistry
     {
+        private struct FunctorImplementationTypesKey
+        {
+            public readonly TypeReference declaringType;
+            public readonly MethodReference targetMethod;
+
+            public FunctorImplementationTypesKey(TypeReference declaringType, MethodReference targetMethod)
+            {
+                this.declaringType = declaringType;
+                this.targetMethod = targetMethod;
+            }
+        }
+
         private struct ArrayTypeKey
         {
             private readonly TypeReference elementType;
@@ -20,14 +32,16 @@ namespace LaborasLangCompiler.Codegen
                 this.rank = rank;
             }
         }
+
         private static AssemblyRegistry instance;
 
-        private HashSet<string> assemblyPaths;             // Keep assembly paths to prevent from registering single assembly twice
-        private List<AssemblyDefinition> assemblies;
-        private Dictionary<string, TypeDefinition> functorTypes;
-        private Dictionary<ArrayTypeKey, ArrayType> arrayTypes;
-        private Dictionary<KeyValuePair<TypeReference, MethodReference>, TypeDefinition> functorImplementationTypes;
-        private AssemblyDefinition mscorlib;
+        private readonly HashSet<string> assemblyPaths;             // Keep assembly paths to prevent from registering single assembly twice
+        private readonly List<AssemblyDefinition> assemblies;
+        private readonly Dictionary<string, TypeDefinition> functorTypes;
+        private readonly Dictionary<FunctorImplementationTypesKey, TypeDefinition> functorImplementationTypes;
+        private readonly Dictionary<ArrayTypeKey, ArrayType> arrayTypes;
+        private readonly Dictionary<ArrayType, MethodReference> arrayConstructors;
+        private readonly AssemblyDefinition mscorlib;
 
         private AssemblyRegistry()
         {
@@ -36,7 +50,9 @@ namespace LaborasLangCompiler.Codegen
             assemblyPaths = new HashSet<string>();
             assemblies = new List<AssemblyDefinition>();
             functorTypes = new Dictionary<string, TypeDefinition>();
-            functorImplementationTypes = new Dictionary<KeyValuePair<TypeReference, MethodReference>, TypeDefinition>();
+            functorImplementationTypes = new Dictionary<FunctorImplementationTypesKey, TypeDefinition>();
+            arrayTypes = new Dictionary<ArrayTypeKey, ArrayType>();
+            arrayConstructors = new Dictionary<ArrayType, MethodReference>();
         }
 
         private AssemblyRegistry(IEnumerable<string> references)
@@ -179,13 +195,14 @@ namespace LaborasLangCompiler.Codegen
         public static TypeReference GetFunctorType(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
         {
             var name = TypeEmitter.ComputeNameFromReturnAndArgumentTypes(returnType, arguments);
+            TypeDefinition value;
 
-            if (!instance.functorTypes.ContainsKey(name))
-            {
-                instance.functorTypes.Add(name, FunctorBaseTypeEmitter.Create(assembly, returnType, arguments));
-            }
+            if (instance.functorTypes.TryGetValue(name, out value))
+                return value;
 
-            return instance.functorTypes[name];
+            value = FunctorBaseTypeEmitter.Create(assembly, returnType, arguments);
+            instance.functorTypes.Add(name, value);
+            return value;
         }
 
         public static TypeReference GetImplementationFunctorType(AssemblyEmitter assembly, TypeEmitter declaringType, MethodReference targetMethod)
@@ -195,14 +212,16 @@ namespace LaborasLangCompiler.Codegen
 
         public static TypeReference GetImplementationFunctorType(AssemblyEmitter assembly, TypeReference declaringType, MethodReference targetMethod)
         {
-            var key = new KeyValuePair<TypeReference, MethodReference>(declaringType, targetMethod);
+            var key = new FunctorImplementationTypesKey(declaringType, targetMethod);
+            TypeDefinition value;
 
-            if (!instance.functorImplementationTypes.ContainsKey(key))
-            {
-                instance.functorImplementationTypes.Add(key, FunctorImplementationTypeEmitter.Create(assembly, declaringType, targetMethod));
-            }
+            if (instance.functorImplementationTypes.TryGetValue(key, out value))
+                return value;
 
-            return instance.functorImplementationTypes[key];
+            value = FunctorImplementationTypeEmitter.Create(assembly, declaringType, targetMethod);
+            instance.functorImplementationTypes.Add(key, value);
+
+            return value;
         }
 
         public static ArrayType GetArrayType(TypeReference elementType, int rank)
@@ -375,7 +394,19 @@ namespace LaborasLangCompiler.Codegen
         public static MethodReference GetCompatibleConstructor(AssemblyEmitter assembly, TypeReference type, IReadOnlyList<TypeReference> arguments)
         {
             return GetCompatibleMethod(assembly, type, ".ctor", arguments);
-        }        
+        }
+
+        public static MethodReference GetArrayConstructor(ArrayType arrayType)
+        {
+            MethodReference constructor;
+
+            if (instance.arrayConstructors.TryGetValue(arrayType, out constructor))
+                return constructor;
+
+            constructor = new MethodReference(".ctor", arrayType.Module.TypeSystem.Void, arrayType);
+            instance.arrayConstructors.Add(arrayType, constructor);
+            return constructor;
+        }
 
         public static PropertyReference GetProperty(AssemblyEmitter assembly, string typeName, string propertyName)
         {
