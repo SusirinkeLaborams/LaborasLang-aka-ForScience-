@@ -167,7 +167,7 @@ namespace LaborasLangCompiler.Parser
 
     interface IArrayCreationNode : IExpressionNode
     {
-        IReadOnlyList<IExpressionNode> Dimmensions { get; }
+        IReadOnlyList<IExpressionNode> Dimensions { get; }
         IInitializerList Initializer { get; }
     }
 
