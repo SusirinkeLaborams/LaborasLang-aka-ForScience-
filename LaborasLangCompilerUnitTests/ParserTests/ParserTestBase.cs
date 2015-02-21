@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompilerUnitTests.ParserTests
 {
-    public class ParserTestBase : TestBase
+    public class ParserTestBase
     {
         protected const string path = @"..\..\ParserTests\Trees\";
 
@@ -40,6 +40,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             Errors.Clear();
 
             var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").Union("/out:out.exe".Enumerate()).ToArray());
+            AssemblyRegistry.CreateAndOverrideIfNeeded(compilerArgs.References);
             var assembly = new AssemblyEmitter(compilerArgs);
             var file = path + name;
 

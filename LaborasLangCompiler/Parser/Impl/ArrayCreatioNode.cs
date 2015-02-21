@@ -16,7 +16,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ExpressionReturnType { get { return type; } }
 
         public IReadOnlyList<IExpressionNode> Dimensions { get; private set; }
-        public IReadOnlyList<IExpressionNode> Initializers { get { return initializer.Initializers.ToArray(); } }
+        public IReadOnlyList<IExpressionNode> Initializer { get { return initializer.Initializers.ToArray(); } }
 
         private InitializerList initializer;
         private TypeReference type;
