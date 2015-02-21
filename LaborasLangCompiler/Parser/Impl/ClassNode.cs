@@ -12,18 +12,19 @@ using LaborasLangCompiler.Codegen.Types;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
     class ClassNode : ContextNode
     {
         #region fields
-        private List<FieldDeclarationNode> fields;
-        private List<FunctionDeclarationNode> declaredMethods;
-        private List<FunctionDeclarationNode> lambdas;
-        private List<Namespace> globalImports;
+        private readonly List<FieldDeclarationNode> fields;
+        private readonly List<FunctionDeclarationNode> declaredMethods;
+        private readonly List<FunctionDeclarationNode> lambdas;
+        private readonly List<Namespace> globalImports;
         private int lambdaCounter = 0;
-        private AstNode lexerNode;
+        private readonly AstNode lexerNode;
         #endregion fields
 
         #region properties
@@ -35,10 +36,9 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #endregion properties
 
+
         public ClassNode(Parser parser, ClassNode parent, AstNode lexerNode) : base(parser, parent, parser.GetSequencePoint(lexerNode))
         {
-            if (parser.Root == null)
-                parser.Root = this;
             this.lexerNode = lexerNode;
             this.declaredMethods = new List<FunctionDeclarationNode>();
             this.lambdas = new List<FunctionDeclarationNode>();

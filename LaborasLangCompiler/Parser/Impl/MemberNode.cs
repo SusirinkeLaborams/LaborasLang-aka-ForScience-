@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using LaborasLangCompiler.Parser.Utils;
 using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {

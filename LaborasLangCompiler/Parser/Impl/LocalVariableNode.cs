@@ -24,7 +24,8 @@ namespace LaborasLangCompiler.Parser.Impl
             get { return !isConst; }
         }
 
-        private bool isConst;
+        private readonly bool isConst;
+
         internal LocalVariableNode(SequencePoint point, VariableDefinition variable, bool isConst)
             : base(point)
         {

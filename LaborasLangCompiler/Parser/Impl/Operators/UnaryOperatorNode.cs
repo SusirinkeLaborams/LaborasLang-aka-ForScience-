@@ -32,7 +32,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private ExpressionNode operand;
+        private readonly ExpressionNode operand;
 
         private UnaryOperatorNode(UnaryOperatorNodeType type, ExpressionNode operand)
             : base(operand.SequencePoint)

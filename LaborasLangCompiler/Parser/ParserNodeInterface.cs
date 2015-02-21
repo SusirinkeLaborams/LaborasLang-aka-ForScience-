@@ -818,5 +818,5 @@ namespace LaborasLangCompiler.Parser
         }
     }
 
-#endregion
+#endregion Interface contracts
 }

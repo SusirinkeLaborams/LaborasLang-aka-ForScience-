@@ -19,13 +19,11 @@ namespace LaborasLangCompiler.Parser.Impl
         public IReadOnlyList<IParserNode> Nodes { get { return nodes; } }
         public bool Returns { get; private set; }
 
-        private List<ParserNode> nodes;
-        private Dictionary<string, SymbolDeclarationNode> symbols;
+        private readonly List<ParserNode> nodes = new List<ParserNode>();
+        private readonly Dictionary<string, SymbolDeclarationNode> symbols = new Dictionary<string, SymbolDeclarationNode>();
 
         private CodeBlockNode(ContextNode parent, SequencePoint point) : base(parent.Parser, parent, point)
         {
-            nodes = new List<ParserNode>();
-            symbols = new Dictionary<string, SymbolDeclarationNode>();
             Returns = false;
         }
 

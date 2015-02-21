@@ -25,9 +25,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public MemberReference MemberReference { get { return FieldReference; } }
 
         private Modifiers modifiers;
-        private SequencePoint point;
-        private AstNode initializer;
-        private Lazy<FieldDefinition> field;
+        private readonly AstNode initializer;
+        private readonly Lazy<FieldDefinition> field;
 
         public override ClassNode GetClass()
         {
@@ -53,7 +52,6 @@ namespace LaborasLangCompiler.Parser.Impl
             :base(parent.Parser, parent, point)
         {
             this.IsStatic = true;
-            this.point = point;
             this.initializer = declaration.Initializer;
             this.Name = declaration.SymbolName.GetSingleSymbolOrThrow();
             this.TypeReference = TypeNode.Parse(this, declaration.Type);
@@ -77,7 +75,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if(initializer.IsNull)
             {
                 if (TypeReference.IsAuto())
-                    ErrorCode.MissingInit.ReportAndThrow(point, "Type inference requires initialization");
+                    ErrorCode.MissingInit.ReportAndThrow(SequencePoint, "Type inference requires initialization");
                 return;
             }
 
@@ -127,14 +125,14 @@ namespace LaborasLangCompiler.Parser.Impl
             else if (modifiers.HasFlag(Modifiers.Public))
             {
                 if (modifiers.HasFlag(Modifiers.Private))
-                    TooManyAccessMods(point, modifiers);
+                    TooManyAccessMods(SequencePoint, modifiers);
                 else
                     ret |= FieldAttributes.Public;
             }
             else if (modifiers.HasFlag(Modifiers.Protected))
             {
                 if (modifiers.HasFlag(Modifiers.Private | Modifiers.Public))
-                    TooManyAccessMods(point, modifiers);
+                    TooManyAccessMods(SequencePoint, modifiers);
                 else
                     ret |= FieldAttributes.Family;
             }

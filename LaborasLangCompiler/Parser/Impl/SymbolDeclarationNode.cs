@@ -21,7 +21,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public IExpressionNode Initializer { get { return initializer; } }
         public bool IsConst { get; private set; }
 
-        private ExpressionNode initializer;
+        private readonly ExpressionNode initializer;
 
         private SymbolDeclarationNode(VariableDefinition variable, bool isConst, ExpressionNode init, SequencePoint point)
             : base(point)

@@ -10,8 +10,8 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
     class Namespace
     {
-        public string Name {get; private set;}
-        private AssemblyEmitter assembly;
+        public readonly string Name;
+        private readonly AssemblyEmitter assembly;
 
         public Namespace GetContainedNamespace(string name)
         {

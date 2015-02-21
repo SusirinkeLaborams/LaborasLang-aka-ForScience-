@@ -28,9 +28,9 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private TypeReference type;
-        private IReadOnlyList<ExpressionNode> args;
-        private ExpressionNode function;
+        private readonly TypeReference type;
+        private readonly IReadOnlyList<ExpressionNode> args;
+        private readonly ExpressionNode function;
 
         private MethodCallNode(ExpressionNode function, TypeReference returnType, IReadOnlyList<ExpressionNode> args, SequencePoint point)
             : base(point)

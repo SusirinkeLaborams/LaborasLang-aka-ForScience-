@@ -40,7 +40,7 @@ namespace LaborasLangCompiler.Parser
         public TypeReference Auto { get { return ProjectParser.Auto; } }
         public TypeReference Object { get { return ProjectParser.Object; } }
 
-        private RootNode lexerRoot;
+        private readonly RootNode lexerRoot;
 
         public Parser(ProjectParser parser, RootNode root, string filePath)
         {
@@ -79,6 +79,11 @@ namespace LaborasLangCompiler.Parser
 
         public static SequencePoint GetSequencePoint(SequencePoint start, SequencePoint end)
         {
+            if (start == null)
+                return end;
+            if (end == null)
+                return start;
+
             var sequencePoint = new SequencePoint(start.Document);
             sequencePoint.StartLine = start.StartLine;
             sequencePoint.StartColumn = start.StartColumn;

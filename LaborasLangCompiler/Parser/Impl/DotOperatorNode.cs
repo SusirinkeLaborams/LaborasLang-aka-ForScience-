@@ -15,8 +15,8 @@ namespace LaborasLangCompiler.Parser.Impl
     class DotOperatorNode
     {
         private ExpressionNode builtNode;
-        private ContextNode context;
-        private Parser parser;
+        private readonly ContextNode context;
+        private readonly Parser parser;
 
         private DotOperatorNode(ContextNode context)
         {

@@ -8,21 +8,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
     class AmbiguousMethodNode : SymbolNode, IAmbiguousNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
+        public string FullName { get; private set; }
 
-        private IEnumerable<MethodReference> methods;
-        private ExpressionNode instance;
+        private readonly IEnumerable<MethodReference> methods;
+        private readonly ExpressionNode instance;
 
         private AmbiguousMethodNode(IEnumerable<MethodReference> methods, ExpressionNode instance, ContextNode context, SequencePoint sequencePoint)
             : base(null, context, sequencePoint)
         {
+            Contract.Requires(methods.Any());
             this.methods = methods;
             this.instance = instance;
+            FullName = methods.First().FullName;
         }
 
         public ExpressionNode RemoveAmbiguity(ContextNode context, TypeReference expectedType)

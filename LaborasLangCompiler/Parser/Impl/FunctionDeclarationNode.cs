@@ -23,16 +23,15 @@ namespace LaborasLangCompiler.Parser.Impl
         public IEnumerable<TypeReference> ParamTypes { get; private set; }
         public TypeReference MethodReturnType { get; private set; }
 
-        private AstNode body;
+        private readonly AstNode body;
         private CodeBlockNode parsedBody;
         private MethodEmitter emitter;
-        private Dictionary<string, ParameterDefinition> symbols;
+        private readonly Dictionary<string, ParameterDefinition> symbols = new Dictionary<string, ParameterDefinition>();
         private Modifiers modifiers;
 
         private FunctionDeclarationNode(ContextNode parent, Modifiers modifiers, string name, AstNode method)
             : base(parent.Parser, parent, parent.Parser.GetSequencePoint(method))
         {
-            this.symbols = new Dictionary<string, ParameterDefinition>();
             this.body = method.Children[1];
             ParseHeader(modifiers, method.Children[0], name);
         }
