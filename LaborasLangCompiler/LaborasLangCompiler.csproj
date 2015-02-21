@@ -80,6 +80,7 @@
     <Compile Include="Codegen\Types\FunctorImplementationTypeEmitter.cs" />
     <Compile Include="Codegen\Types\TypeEmitter.cs" />
     <Compile Include="Parser\Impl\AmbiguousMethodNode.cs" />
+    <Compile Include="Parser\Impl\ArrayCreatioNode.cs" />
     <Compile Include="Parser\Impl\FieldNode.cs" />
     <Compile Include="Parser\Impl\FunctionArgumentNode.cs" />
     <Compile Include="Parser\Impl\IAmbiguousNode.cs" />
