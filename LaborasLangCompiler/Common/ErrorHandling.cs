@@ -67,6 +67,8 @@ namespace LaborasLangCompiler.Common
         public static void ReportAndThrow(this ErrorCode error, SequencePoint point, string format, params object[] args)
         {
             Contract.Requires(format != null);
+            Contract.Requires(args != null);
+
             ReportAndThrow(error, point, String.Format(format, args));
         }
 

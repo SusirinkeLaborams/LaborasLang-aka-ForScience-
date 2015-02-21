@@ -147,11 +147,13 @@ namespace LaborasLangCompiler.Codegen
             if (left.IsByReference)
             {
                 left = left.GetElementType();
+                Contract.Assume(left != null);
             }
 
             if (right.IsByReference)
             {
                 right = right.GetElementType();
+                Contract.Assume(right != null);
             }
             
             if (left.FullName == right.FullName)

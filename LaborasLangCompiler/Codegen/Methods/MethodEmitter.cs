@@ -139,6 +139,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Emit(IExpressionNode expression, bool emitReference)
         {
+            Contract.Requires(expression.ExpressionType != ExpressionNodeType.ParserInternal);
+
             switch (expression.ExpressionType)
             {
                 case ExpressionNodeType.Field:
@@ -1249,7 +1251,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     break;
 
                 default:
-                    ContractsHelper.AssertUnreachable(string.Format("Unknown shift operator: {0}.", binaryOperator.BinaryOperatorType));
+                    ContractsHelper.AssumeUnreachable(string.Format("Unknown shift operator: {0}.", binaryOperator.BinaryOperatorType));
                     break;
             }
         }
