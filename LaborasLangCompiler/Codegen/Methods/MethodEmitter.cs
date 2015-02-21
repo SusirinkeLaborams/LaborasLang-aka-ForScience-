@@ -1252,7 +1252,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     break;
 
                 default:
-                    ContractsHelper.AssertUnreachable(string.Format("Unknown shift operator: {0}.", binaryOperator.BinaryOperatorType));
+                    ContractsHelper.AssumeUnreachable(string.Format("Unknown shift operator: {0}.", binaryOperator.BinaryOperatorType));
                     break;
             }
         }
