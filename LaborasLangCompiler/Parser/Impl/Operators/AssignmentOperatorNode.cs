@@ -100,7 +100,21 @@ namespace LaborasLangCompiler.Parser.Impl
             ShiftLeftAssignment
         }
 
-        public static Dictionary<Lexer.TokenType, AssignmentOperatorType> LexerToAssignemnt = new Dictionary<Lexer.TokenType, AssignmentOperatorType>()
+        public static IReadOnlyDictionary<AssignmentOperatorType, string> OperatorMethods = new Dictionary<AssignmentOperatorType, string>()
+        {
+            {AssignmentOperatorType.AdditionAssignment, "op_AdditionAssignment"},
+            {AssignmentOperatorType.MinusAssignment, "op_SubtractionAssignment"},
+            {AssignmentOperatorType.MultiplyAssignment, "op_MultiplicationAssignment"},
+            {AssignmentOperatorType.DivisionAssignment, "op_DivisionAssignment"},
+            {AssignmentOperatorType.ModulusAssignment, "op_ModulusAssignment"},
+            {AssignmentOperatorType.BinaryOrAssignment, "op_BitwiseOrAssignment"},
+            {AssignmentOperatorType.BinaryAndAssignment, "op_BitwiseAndAssignment"},
+            {AssignmentOperatorType.BinaryXorAssignment, "op_ExclusiveOrAssignment"},
+            {AssignmentOperatorType.ShiftRightAssignment, "op_RightShiftAssignment"},
+            {AssignmentOperatorType.ShiftLeftAssignment, "op_LeftShiftAssignment"}
+        };
+
+        public static IReadOnlyDictionary<Lexer.TokenType, AssignmentOperatorType> LexerToAssignemnt = new Dictionary<Lexer.TokenType, AssignmentOperatorType>()
         {
             {Lexer.TokenType.Assignment, AssignmentOperatorType.Assignment},
             {Lexer.TokenType.PlusEqual, AssignmentOperatorType.AdditionAssignment},
@@ -115,7 +129,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {Lexer.TokenType.LeftShiftEqual, AssignmentOperatorType.ShiftLeftAssignment}
         };
 
-        private static Dictionary<AssignmentOperatorType, BinaryOperatorNodeType> AssignmentToBinary = new Dictionary<AssignmentOperatorType, BinaryOperatorNodeType>()
+        private static IReadOnlyDictionary<AssignmentOperatorType, BinaryOperatorNodeType> AssignmentToBinary = new Dictionary<AssignmentOperatorType, BinaryOperatorNodeType>()
         {
             {AssignmentOperatorType.AdditionAssignment, BinaryOperatorNodeType.Addition},
             {AssignmentOperatorType.MinusAssignment, BinaryOperatorNodeType.Subtraction},

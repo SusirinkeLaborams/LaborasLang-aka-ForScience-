@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser.Impl.Wrappers;
+﻿using LaborasLangCompiler.Codegen;
+using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
@@ -13,6 +14,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public ContextNode Parent { get; private set; }
         public Parser Parser { get; private set; }
+        public AssemblyEmitter Assembly { get { return Parser.Assembly; } }
 
         public abstract FunctionDeclarationNode GetMethod();
         public abstract ClassNode GetClass();

@@ -192,14 +192,14 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.ToString();
         }
 
-        public static Dictionary<Lexer.TokenType, UnaryOperatorNodeType> SuffixOperators = new Dictionary<Lexer.TokenType, UnaryOperatorNodeType>()
+        public static IReadOnlyDictionary<Lexer.TokenType, UnaryOperatorNodeType> SuffixOperators = new Dictionary<Lexer.TokenType, UnaryOperatorNodeType>()
         {
             
             {Lexer.TokenType.PlusPlus, UnaryOperatorNodeType.PostIncrement},
             {Lexer.TokenType.MinusMinus, UnaryOperatorNodeType.PostDecrement}
         };
 
-        public static Dictionary<Lexer.TokenType, UnaryOperatorNodeType> PrefixOperators = new Dictionary<Lexer.TokenType, UnaryOperatorNodeType>()
+        public static IReadOnlyDictionary<Lexer.TokenType, UnaryOperatorNodeType> PrefixOperators = new Dictionary<Lexer.TokenType, UnaryOperatorNodeType>()
         {
             {Lexer.TokenType.PlusPlus, UnaryOperatorNodeType.PreIncrement},
             {Lexer.TokenType.MinusMinus, UnaryOperatorNodeType.PreDecrement},

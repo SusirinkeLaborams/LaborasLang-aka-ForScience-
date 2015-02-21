@@ -19,7 +19,6 @@ namespace LaborasLangCompiler.Parser
         ConditionBlock,
         WhileBlock,
         ReturnNode,
-        InitializerList,
         ParserInternal
     }
     interface IParserNode
@@ -185,12 +184,7 @@ namespace LaborasLangCompiler.Parser
     interface IArrayCreationNode : IExpressionNode
     {
         IReadOnlyList<IExpressionNode> Dimensions { get; }
-        IInitializerList Initializer { get; }
-    }
-
-    interface IInitializerList : IParserNode
-    {
-        IReadOnlyList<IExpressionNode> Initializers { get; }
+        IReadOnlyList<IExpressionNode> Initializer { get; }
     }
 
     [ContractClass(typeof(ISymbolDeclarationNodeContract))]
@@ -747,7 +741,7 @@ namespace LaborasLangCompiler.Parser
             }
         }
 
-        public IInitializerList Initializer
+        public IReadOnlyList<IExpressionNode> Initializer
         {
             get { throw new NotImplementedException(); }
         }

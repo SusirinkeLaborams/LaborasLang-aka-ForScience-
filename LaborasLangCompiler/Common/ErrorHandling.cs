@@ -49,7 +49,8 @@ namespace LaborasLangCompiler.Common
 
         DuplicateImport = 0025,
 
-        CannotCreate = 0026
+        CannotCreate = 0026,
+        MisshapedMatrix = 0027
     }
 
     public static class Errors

@@ -218,10 +218,12 @@
     <Compile Include="Codegen\Types\FunctorImplementationTypeEmitter.cs" />
     <Compile Include="Codegen\Types\TypeEmitter.cs" />
     <Compile Include="Parser\Impl\AmbiguousMethodNode.cs" />
+    <Compile Include="Parser\Impl\ArrayCreationNode.cs" />
     <Compile Include="Parser\Impl\FieldNode.cs" />
     <Compile Include="Parser\Impl\FunctionArgumentNode.cs" />
     <Compile Include="Parser\Impl\IAmbiguousNode.cs" />
     <Compile Include="Parser\Impl\FieldDeclarationNode.cs" />
+    <Compile Include="Parser\Impl\InitializerList.cs" />
     <Compile Include="Parser\Impl\LocalVariableNode.cs" />
     <Compile Include="Parser\Impl\MemberNode.cs" />
     <Compile Include="Parser\Impl\ObjectCreationNode.cs" />

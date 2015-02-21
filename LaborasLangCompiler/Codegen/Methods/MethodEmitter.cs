@@ -91,9 +91,6 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Emit((IWhileBlockNode)node);
                     break;
 
-                case NodeType.InitializerList:
-                    throw new NotImplementedException();
-
                 default:
                     ContractsHelper.AssertUnreachable(string.Format("Unknown IParserNode type: {0}", node.Type));
                     break;
