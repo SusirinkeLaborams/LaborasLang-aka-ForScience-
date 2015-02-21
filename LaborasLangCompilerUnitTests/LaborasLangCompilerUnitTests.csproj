@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Checked|AnyCPU'">
+    <OutputPath>bin\Checked\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.Decompiler">
       <HintPath>libs\ICSharpCode.Decompiler.dll</HintPath>

@@ -8,7 +8,7 @@ namespace LaborasLangCompiler.Codegen
 {
     internal class AssemblyEmitter
     {
-        private AssemblyDefinition assemblyDefinition;
+        private readonly AssemblyDefinition assemblyDefinition;
         private readonly string outputPath;
 
         public string OutputPath { get { return outputPath; } }

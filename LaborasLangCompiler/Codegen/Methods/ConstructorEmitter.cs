@@ -13,7 +13,7 @@ namespace LaborasLangCompiler.Codegen.Methods
         private const MethodAttributes StaticAttributes = MethodAttributes.Private | MethodAttributes.Static | MethodAttributes.HideBySig | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName;
         private readonly bool isStatic;
 
-        private List<Instruction> epilogue = new List<Instruction>();
+        private readonly List<Instruction> epilogue = new List<Instruction>();
         
         public ConstructorEmitter(TypeEmitter declaringType, bool isStatic) :
             this(declaringType, isStatic, isStatic ? StaticAttributes : InstanceAttributes)

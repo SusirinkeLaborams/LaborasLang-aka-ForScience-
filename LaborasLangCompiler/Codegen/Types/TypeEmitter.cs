@@ -14,7 +14,7 @@ namespace LaborasLangCompiler.Codegen.Types
 
         private ConstructorEmitter instanceConstructor;
         private ConstructorEmitter staticConstructor;
-        protected TypeDefinition typeDefinition;
+        protected readonly TypeDefinition typeDefinition;
 
         public AssemblyEmitter Assembly { get; private set; }
         public TypeReference BaseType { get { return typeDefinition.BaseType; } }

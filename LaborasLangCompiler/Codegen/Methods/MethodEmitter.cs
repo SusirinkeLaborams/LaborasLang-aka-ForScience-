@@ -5,6 +5,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
 
@@ -21,10 +22,7 @@ namespace LaborasLangCompiler.Codegen.Methods
         
         public void ParseTree(ICodeBlockNode tree)
         {
-            if (Parsed)
-            {
-                throw new InvalidOperationException("Can't parse same method twice!");
-            }
+            Contract.Requires(!Parsed, "Can't set same method twice.");
 
             Emit(tree);
 
@@ -44,11 +42,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         public void SetAsEntryPoint()
         {
-            if ((methodDefinition.Attributes & MethodAttributes.Static) == 0)
-            {
-                throw new Exception("Entry point must be static!");
-            }
-
+            Contract.Requires(!Get().HasThis, "Entry point must be static.");
             methodDefinition.DeclaringType.Module.EntryPoint = methodDefinition;
         }
 
@@ -182,6 +176,10 @@ namespace LaborasLangCompiler.Codegen.Methods
                 case ExpressionNodeType.ObjectCreation:
                     Emit((IObjectCreationNode)expression);
                     return;
+
+                case ExpressionNodeType.ArrayCreation:
+                    Emit((IArrayCreationNode)expression);
+                    break;
 
                 case ExpressionNodeType.This:
                     EmitThis();
@@ -331,11 +329,6 @@ namespace LaborasLangCompiler.Codegen.Methods
         protected void Emit(IPropertyNode property)
         {
             var getter = AssemblyRegistry.GetPropertyGetter(Assembly, property.Property);
-
-            if (getter == null)
-            {
-                throw new ArgumentException(string.Format("Property {0} has no getter.", property.Property.FullName));
-            }
 
             if (getter.HasThis)
             {
@@ -507,6 +500,9 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Emit(IBinaryOperatorNode binaryOperator)
         {
+            Contract.Requires(binaryOperator.LeftOperand != null);
+            Contract.Requires(binaryOperator.RightOperand != null);
+
             switch (binaryOperator.BinaryOperatorType)
             {
                 case BinaryOperatorNodeType.Addition:
@@ -845,13 +841,38 @@ namespace LaborasLangCompiler.Codegen.Methods
             Newobj(objectCreation.Constructor);
         }
 
-        protected void EmitThis()
+        protected void Emit(IArrayCreationNode arrayCreation)
         {
-            if (methodDefinition.IsStatic)
+            Contract.Requires(arrayCreation.ExpressionReturnType.IsArray, "Return type of IArrayCreationNode must be an array type.");
+            Contract.Requires(arrayCreation.Dimensions.Count == ((ArrayType)arrayCreation.ExpressionReturnType).Rank, "Array creation node dimension count must match array type rank.");
+            
+            var arrayType = (ArrayType)arrayCreation.ExpressionReturnType;
+
+            if (arrayType.IsVector)
             {
-                throw new NotSupportedException("Can't emit this in a static method!");
+                Emit(arrayCreation.Dimensions[0], false);
+                Newarr(arrayType);
+            }
+            else
+            {
+                var rank = arrayType.Rank;
+                var constructor = AssemblyRegistry.GetArrayConstructor(arrayType);
+
+                for (int i = 0; i < rank; i++)
+                {
+                    Emit(arrayCreation.Dimensions[i], false);
+                }
+
+                Newobj(constructor);
             }
 
+            if (arrayCreation.Initializer != null)
+                throw new NotImplementedException();
+        }
+
+        protected void EmitThis()
+        {
+            Contract.Requires(!methodDefinition.IsStatic);
             Ldarg(0);
         }
 
@@ -1264,12 +1285,6 @@ namespace LaborasLangCompiler.Codegen.Methods
         protected void EmitStore(IPropertyNode property)
         {
             var setter = AssemblyRegistry.GetPropertySetter(Assembly, property.Property);
-
-            if (setter == null)
-            {
-                throw new ArgumentException(string.Format("Property {0} has no setter.", property.Property.FullName));
-            }
-
             Call(setter);
         }
 
@@ -1432,7 +1447,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        private List<TempVariable> temporaryVariables = new List<TempVariable>();
+        private readonly List<TempVariable> temporaryVariables = new List<TempVariable>();
 
         protected VariableDefinition AcquireTempVariable(TypeReference type)
         {
