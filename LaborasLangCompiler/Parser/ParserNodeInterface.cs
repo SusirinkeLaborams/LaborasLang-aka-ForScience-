@@ -741,7 +741,7 @@ namespace LaborasLangCompiler.Parser
             }
         }
 
-        public IInitializerList Initializer
+        public IReadOnlyList<IExpressionNode> Initializer
         {
             get { throw new NotImplementedException(); }
         }
