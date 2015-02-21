@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,6 +66,7 @@ namespace LaborasLangCompiler.Common
 
         public static void ReportAndThrow(this ErrorCode error, SequencePoint point, string format, params object[] args)
         {
+            Contract.Requires(format != null);
             ReportAndThrow(error, point, String.Format(format, args));
         }
 

@@ -4,7 +4,7 @@ namespace Lexer.Containers
 {
     public unsafe struct AstNode
     {
-        private InternalNode* m_NodePtr;
+        private readonly InternalNode* m_NodePtr;
 
         #region Public parameters
 
