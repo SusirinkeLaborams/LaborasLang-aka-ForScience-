@@ -72,6 +72,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             return Instruction.Create(OpCodes.Nop);
         }
 
+        [Pure]
         protected static bool CanEmitAsReference(IExpressionNode node)
         {
             return node.ExpressionType == ExpressionNodeType.LocalVariable ||
@@ -111,12 +112,16 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Box(TypeReference type)
         {
+            Contract.Requires(type != null);
+
             ilProcessor.Emit(OpCodes.Box, type);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Brfalse(Instruction target)
         {
+            Contract.Requires(target != null);
+
             if (target.Offset < 256)
             {
                 ilProcessor.Emit(OpCodes.Brfalse_S, target);
@@ -131,6 +136,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Br(Instruction target)
         {
+            Contract.Requires(target != null);
+
             if (target.Offset < 256)
             {
                 ilProcessor.Emit(OpCodes.Br_S, target);
@@ -145,6 +152,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Brtrue(Instruction target)
         {
+            Contract.Requires(target != null);
+
             if (target.Offset < 256)
             {
                 ilProcessor.Emit(OpCodes.Brtrue_S, target);
@@ -167,12 +176,16 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Callvirt(MethodReference method)
         {
+            Contract.Requires(method != null);
+
             ilProcessor.Emit(OpCodes.Callvirt, method);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Castclass(TypeReference targetType)
         {
+            Contract.Requires(targetType != null);
+
             ilProcessor.Emit(OpCodes.Castclass, targetType);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
@@ -419,18 +432,24 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Ldfld(FieldReference field)
         {
+            Contract.Requires(field != null);
+
             ilProcessor.Emit(OpCodes.Ldfld, field);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldflda(FieldReference field)
         {
+            Contract.Requires(field != null);
+
             ilProcessor.Emit(OpCodes.Ldflda, field);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldftn(MethodReference function)
         {
+            Contract.Requires(function != null);
+
             ilProcessor.Emit(OpCodes.Ldftn, function);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
@@ -492,24 +511,32 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Ldobj(TypeReference targetType)
         {
+            Contract.Requires(targetType != null);
+
             ilProcessor.Emit(OpCodes.Ldobj, targetType);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldsfld(FieldReference field)
         {
+            Contract.Requires(field != null);
+
             ilProcessor.Emit(OpCodes.Ldsfld, field);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldsflda(FieldReference field)
         {
+            Contract.Requires(field != null);
+
             ilProcessor.Emit(OpCodes.Ldsflda, field);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldstr(string str)
         {
+            Contract.Requires(str != null);
+
             ilProcessor.Emit(OpCodes.Ldstr, str);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
@@ -522,6 +549,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Newobj(MethodReference method)
         {
+            Contract.Requires(method != null);
+
             ilProcessor.Emit(OpCodes.Newobj, method);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
@@ -532,9 +561,11 @@ namespace LaborasLangCompiler.Codegen.Methods
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
-        protected void Newarr(TypeReference arrayType)
+        protected void Newarr(TypeReference elementType)
         {
-            ilProcessor.Emit(OpCodes.Newarr, arrayType);
+            Contract.Requires(elementType != null);
+
+            ilProcessor.Emit(OpCodes.Newarr, elementType);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
@@ -608,12 +639,17 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Stfld(FieldReference field)
         {
+            Contract.Requires(field != null);
+
             ilProcessor.Emit(OpCodes.Stfld, field);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Stelem_Any(TypeReference valueType)
         {
+            Contract.Requires(valueType != null);
+            Contract.Requires(valueType.IsValueType);
+
             ilProcessor.Emit(OpCodes.Stelem_Any, valueType);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
@@ -661,6 +697,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Stsfld(FieldReference field)
         {
+            Contract.Requires(field != null);
+
             ilProcessor.Emit(OpCodes.Stsfld, field);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
@@ -679,6 +717,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Unbox(TypeReference targetType)
         {
+            Contract.Requires(targetType != null);
+
             ilProcessor.Emit(OpCodes.Unbox, targetType);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
