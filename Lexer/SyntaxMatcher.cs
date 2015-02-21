@@ -324,7 +324,7 @@ namespace Lexer
 
             while(tokensConsumed < m_Source.Length) 
             {
-                Contract.Assume(tokensConsumed > 0);
+                Contract.Assume(tokensConsumed >= 0);
 
                 var tokensSkipped = 0;
                 matchedNode.AddChild(m_RootNode, SkipToRecovery(tokensConsumed, ref tokensSkipped));

@@ -661,8 +661,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void EmitArgumentsForCall(IReadOnlyList<IExpressionNode> arguments, MethodReference method)
         {
+            var methodParameters = method.Parameters;
             var resolvedMethod = method.Resolve();
-            var methodParameters = resolvedMethod.Parameters;
 
             if (resolvedMethod.IsParamsMethod())
             {
@@ -670,7 +670,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
             else if (methodParameters.Count > arguments.Count)    // Method with optional parameters call
             {
-                EmitArgumentsForCallWithOptionalParameters(arguments, methodParameters);
+                EmitArgumentsForCallWithOptionalParameters(arguments, methodParameters, resolvedMethod);
             }
             else
             {
@@ -715,7 +715,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             ReleaseTempVariable(arrayVariable);
         }
 
-        private void EmitArgumentsForCallWithOptionalParameters(IReadOnlyList<IExpressionNode> arguments, IList<ParameterDefinition> methodParameters)
+        private void EmitArgumentsForCallWithOptionalParameters(IReadOnlyList<IExpressionNode> arguments, IList<ParameterDefinition> methodParameters, MethodDefinition resolvedMethod)
         {
             for (int i = 0; i < arguments.Count; i++)
             {
@@ -724,7 +724,9 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             for (int i = arguments.Count; i < methodParameters.Count; i++)
             {
-                var defaultValue = methodParameters[i].Constant;
+                // Use resolved method here for getting constant value, as it will not be present in method reference parameters.
+                // Furthermore, we must not reference resolved method parameter TYPES as they will be resolved as well
+                var defaultValue = resolvedMethod.Parameters[i].Constant;
 
                 if (defaultValue == null)
                 {
@@ -892,7 +894,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             Emit(unaryOperator.Operand, false);
 
-            Contract.Assert(unaryOperator.UnaryOperatorType != UnaryOperatorNodeType.VoidOperator);
+            Contract.Assume(unaryOperator.UnaryOperatorType != UnaryOperatorNodeType.VoidOperator);
 
             switch (unaryOperator.UnaryOperatorType)
             {
