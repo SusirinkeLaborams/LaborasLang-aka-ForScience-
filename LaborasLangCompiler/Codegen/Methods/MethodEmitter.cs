@@ -139,6 +139,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Emit(IExpressionNode expression, bool emitReference)
         {
+            Contract.Requires(expression.ExpressionType != ExpressionNodeType.ParserInternal);
+
             switch (expression.ExpressionType)
             {
                 case ExpressionNodeType.Field:
