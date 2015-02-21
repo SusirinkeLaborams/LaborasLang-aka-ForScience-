@@ -14,7 +14,7 @@ namespace Lexer
     [DebuggerDisplay("Condition, {Type} {Token}")]
     struct Condition
     {
-        public TokenType Token;
+        public readonly TokenType Token;
         public ConditionType Type;
 
         public Condition(Condition token, ConditionType type)
@@ -81,7 +81,7 @@ namespace Lexer
 
     struct ParseRule
     {
-        public TokenType Result;
+        public readonly TokenType Result;
         public Condition[][] RequiredTokens { get; private set; }
         public ParseRuleCollapsableLevel CollapsableLevel { get; private set; }
 

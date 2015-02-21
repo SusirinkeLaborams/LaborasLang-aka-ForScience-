@@ -49,9 +49,9 @@ namespace Lexer.Containers
 
         private unsafe struct MemoryContainer
         {
-            private byte* m_Memory;
+            private readonly byte* m_Memory;
+            private readonly byte* m_End;
             private byte* m_Current;
-            private byte* m_End;
 
             public MemoryContainer(int capacity)
             {

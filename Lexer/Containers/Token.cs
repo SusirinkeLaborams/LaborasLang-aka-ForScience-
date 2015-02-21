@@ -4,7 +4,7 @@ namespace Lexer.Containers
 {
     public unsafe struct Token
     {
-        private InternalToken* m_TokenPtr;
+        private readonly InternalToken* m_TokenPtr;
 
         internal Token(InternalToken* tokenPtr) : this()
         {
