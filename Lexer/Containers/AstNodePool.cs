@@ -110,10 +110,10 @@ namespace Lexer.Containers
         {
             private static readonly int kNodeSize = sizeof(Token.InternalToken);
             private static readonly int kNodePointerSize = sizeof(Token.InternalToken*);
-            
-            private byte* m_Nodes;
+
+            private readonly byte* m_Nodes;
+            private readonly byte* m_End;
             private byte* m_NextNode;
-            private byte* m_End;
 
             public AstNodeContainer(int capacity)
             {
@@ -121,7 +121,7 @@ namespace Lexer.Containers
                 {
                     var byteCount = capacity * kNodeSize;
                     m_NextNode = m_Nodes = (byte*)NativeFunctions.AllocateProcessMemory(byteCount);
-                    m_End = m_Nodes + capacity * kNodeSize;
+                    m_End = m_Nodes + byteCount;
                 }
                 while (m_Nodes == null && (capacity /= 2) > 64);
 

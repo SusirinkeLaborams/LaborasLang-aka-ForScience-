@@ -83,8 +83,8 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             public TypeReference Type { get; private set; }
 
-            private Parser parser;
-            private ContextNode parent;
+            private readonly Parser parser;
+            private readonly ContextNode parent;
 
             public TypeBuilder(ContextNode parent)
             {

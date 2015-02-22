@@ -14,6 +14,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Field; } }
         public FieldReference Field { get; private set; }
         public override TypeReference ExpressionReturnType { get { return Field.FieldType; } }
+        public IExpressionNode ObjectInstance { get { return Instance; } }
         public override bool IsGettable
         {
             get

@@ -10,6 +10,7 @@ using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using LaborasLangCompiler.Common;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -22,7 +23,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private ExpressionNode expression;
         private ReturnNode(SequencePoint point) : base(point) { }
 
-        public static ReturnNode Parse(ContextNode context, AstNode lexerNode)
+        public static ReturnNode Parse(CodeBlockNode context, AstNode lexerNode)
         {
             var point = context.Parser.GetSequencePoint(lexerNode);
             var returnType = context.GetMethod().MethodReturnType;
@@ -35,7 +36,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return Create(context, expression, point);
         }
 
-        public static ReturnNode Create(ContextNode context, ExpressionNode expression, SequencePoint point)
+        public static ReturnNode Create(CodeBlockNode context, ExpressionNode expression, SequencePoint point)
         {
             var instance = new ReturnNode(point);
             instance.expression = expression;
@@ -49,7 +50,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
                 if (!expression.ExpressionReturnType.IsAssignableTo(returnType))
                 {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, "Method returns {0}, cannot return {1}", returnType, instance.Expression.ExpressionReturnType);
+                    ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, "Method returns {0}, cannot return {1}", returnType, expression.ExpressionReturnType);
                 }
 
                 if (!expression.IsGettable)

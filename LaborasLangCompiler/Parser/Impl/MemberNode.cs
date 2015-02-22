@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using LaborasLangCompiler.Parser.Utils;
 using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -17,7 +18,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public ContextNode Scope { get; private set; }
         public TypeReference DeclaringType { get; private set; }
         public MemberReference Member { get; private set; }
-        public IExpressionNode ObjectInstance { get { return Instance; } }
 
         protected ExpressionNode Instance { get; private set; }
 

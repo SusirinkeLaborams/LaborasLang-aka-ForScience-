@@ -5,6 +5,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class SymbolNode : ExpressionNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
-        public override TypeReference ExpressionReturnType { get { return null; } }
+        public override TypeReference ExpressionReturnType { get { throw new InvalidOperationException(); } }
         public string Name { get; private set; }
         public ContextNode Scope { get; private set; }
         public override bool IsGettable { get { return false; } }
@@ -41,7 +42,7 @@ namespace LaborasLangCompiler.Parser.Impl
     class NamespaceNode : ExpressionNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
-        public override TypeReference ExpressionReturnType { get { return null; } }
+        public override TypeReference ExpressionReturnType { get { throw new InvalidOperationException(); } }
         public Namespace Namespace { get; private set; }
         public override bool IsGettable { get { return false; } }
         public override bool IsSettable { get { return false; } }

@@ -2,6 +2,7 @@
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +11,8 @@ namespace LaborasLangCompiler.Parser.Impl.Wrappers
 {
     class Namespace
     {
-        public string Name {get; private set;}
-        private AssemblyEmitter assembly;
+        public readonly string Name;
+        private readonly AssemblyEmitter assembly;
 
         public Namespace GetContainedNamespace(string name)
         {

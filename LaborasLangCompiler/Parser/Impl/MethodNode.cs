@@ -19,8 +19,9 @@ namespace LaborasLangCompiler.Parser.Impl
         public MethodReference Method { get; private set; }
         public override bool IsGettable { get { return true; } }
         public override bool IsSettable { get { return false; } }
+        public IExpressionNode ObjectInstance { get { return Instance; } }
 
-        private Lazy<TypeReference> functorType;
+        private readonly Lazy<TypeReference> functorType;
 
         internal MethodNode(MethodReference method, ExpressionNode instance, ContextNode context, SequencePoint point)
             : base(method, GetInstance(method, instance, context, point), context, point)

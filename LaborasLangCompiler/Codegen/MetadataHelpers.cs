@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace LaborasLangCompiler.Codegen
@@ -132,19 +133,27 @@ namespace LaborasLangCompiler.Codegen
 
         public static bool IsFunctorType(this TypeReference type)
         {
+            Contract.Assume(type.FullName != null);
             return type.FullName.StartsWith("$Functors.");
         }
 
         public static bool IsAssignableTo(this TypeReference right, TypeReference left)
         {
+            Contract.Requires(left != null);
+            Contract.Requires(right != null);
+            Contract.Assume(left.FullName != null);
+            Contract.Assume(right.FullName != null);
+
             if (left.IsByReference)
             {
                 left = left.GetElementType();
+                Contract.Assume(left != null);
             }
 
             if (right.IsByReference)
             {
                 right = right.GetElementType();
+                Contract.Assume(right != null);
             }
             
             if (left.FullName == right.FullName)

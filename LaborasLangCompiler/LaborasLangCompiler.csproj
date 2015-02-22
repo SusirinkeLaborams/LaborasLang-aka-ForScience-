@@ -21,12 +21,12 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CONTRACTS_FULL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>true</Prefer32Bit>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
     <CodeContractsRuntimeThrowOnFailure>False</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
@@ -129,7 +129,7 @@
     <DefineConstants>TRACE;CONTRACTS_FULL</DefineConstants>
     <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
-    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeThrowOnFailure>False</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
     <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
     <CodeContractsRunCodeAnalysis>True</CodeContractsRunCodeAnalysis>
@@ -170,6 +170,8 @@
     <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
     <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
     <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Cecil">
@@ -194,6 +196,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\CompilerException.cs" />
+    <Compile Include="Common\ContractsHelper.cs" />
     <Compile Include="Common\ErrorHandling.cs" />
     <Compile Include="FrontEnd\CompilerArguments.cs" />
     <Compile Include="FrontEnd\Program.cs" />
@@ -215,10 +218,12 @@
     <Compile Include="Codegen\Types\FunctorImplementationTypeEmitter.cs" />
     <Compile Include="Codegen\Types\TypeEmitter.cs" />
     <Compile Include="Parser\Impl\AmbiguousMethodNode.cs" />
+    <Compile Include="Parser\Impl\ArrayCreationNode.cs" />
     <Compile Include="Parser\Impl\FieldNode.cs" />
     <Compile Include="Parser\Impl\FunctionArgumentNode.cs" />
     <Compile Include="Parser\Impl\IAmbiguousNode.cs" />
     <Compile Include="Parser\Impl\FieldDeclarationNode.cs" />
+    <Compile Include="Parser\Impl\InitializerList.cs" />
     <Compile Include="Parser\Impl\LocalVariableNode.cs" />
     <Compile Include="Parser\Impl\MemberNode.cs" />
     <Compile Include="Parser\Impl\ObjectCreationNode.cs" />

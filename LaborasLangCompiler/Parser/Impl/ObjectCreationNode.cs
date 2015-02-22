@@ -19,8 +19,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public override bool IsGettable { get { return true; } }
         public override bool IsSettable { get { return false; } }
 
-        private TypeReference type;
-        private List<ExpressionNode> args;
+        private readonly TypeReference type;
+        private readonly List<ExpressionNode> args;
 
         public ObjectCreationNode(List<ExpressionNode> args, MethodReference constructor, ContextNode scope, SequencePoint point)
             :base(constructor, null, scope, point)

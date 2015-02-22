@@ -2,15 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Linq;
 
 namespace Lexer
 {
     internal sealed class SyntaxMatcher
     {
-        private static ParseRule[] m_ParseRules;
-        private Token[] m_Source;
-        private RootNode m_RootNode;
+        private static readonly ParseRule[] m_ParseRules;
+        private readonly Token[] m_Source;
+        private readonly RootNode m_RootNode;
 
         private int m_LastMatched = 0;
         private int LastMatched
@@ -323,6 +324,8 @@ namespace Lexer
 
             while(tokensConsumed < m_Source.Length) 
             {
+                Contract.Assume(tokensConsumed >= 0);
+
                 var tokensSkipped = 0;
                 matchedNode.AddChild(m_RootNode, SkipToRecovery(tokensConsumed, ref tokensSkipped));
 
@@ -356,6 +359,9 @@ namespace Lexer
 
         private AstNode SkipToRecovery(int offset, ref int tokensConsumed)
         {
+            Contract.Requires(tokensConsumed >= 0);
+            Contract.Ensures(tokensConsumed >= 1);
+
             var node = m_RootNode.NodePool.ProvideNode();
             
             tokensConsumed = 1;
@@ -381,9 +387,9 @@ namespace Lexer
 
         private AstNode Match(int sourceOffset, Condition[] rule, ref int tokensConsumed)
         {
-#if DEBUG
-            Debug.Assert(rule.Length > 0, "Rule count must be more than 0!");
-#endif
+            Contract.Requires(rule.Length > 0, "Rule count must be more than 0!");
+            Contract.Requires(sourceOffset >= 0);
+            Contract.Requires(tokensConsumed >= 0);
 
             var node = m_RootNode.NodePool.ProvideNode();
 
@@ -404,6 +410,8 @@ namespace Lexer
                 }
             }
 
+            Contract.Assume(tokensConsumed > 0);
+
             var token = m_RootNode.ProvideToken();
             token.Start = m_Source[sourceOffset].Start;
             token.End = m_Source[sourceOffset + tokensConsumed - 1].End;
@@ -415,6 +423,8 @@ namespace Lexer
 
         private bool MatchTerminal(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)
         {
+            Contract.Requires(tokensConsumed >= 0);
+
             if (m_Source[sourceOffset + tokensConsumed].Type == token.Token)
             {
                 node.AddTerminal(m_RootNode, m_Source[sourceOffset + tokensConsumed]);
@@ -444,6 +454,9 @@ namespace Lexer
 
         private bool MatchRule(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)
         {
+            Contract.Requires(tokensConsumed >= 0);
+            Contract.Ensures(tokensConsumed >= Contract.OldValue(tokensConsumed));
+
             if (token.Type < ConditionType.OneOrMore)   // Either One or OptionalFromThis
             {
                 return sourceOffset + tokensConsumed < m_Source.Length
@@ -532,9 +545,8 @@ namespace Lexer
 
         private static ConditionList Optional(ConditionList conditions)
         {
-#if DEBUG
-            Debug.Assert(conditions.Count > 0);
-#endif
+            Contract.Requires(conditions.Count > 0);
+
             var firstCondition = conditions[0];
             firstCondition.Type = ConditionType.OptionalFromThis;
             conditions[0] = firstCondition;
@@ -543,19 +555,13 @@ namespace Lexer
 
         private static ParseRule ParseRule(Condition result, params List<Condition>[] requiredTokens)
         {
-#if DEBUG
-            Debug.Assert(requiredTokens.Length > 0);
-#endif
-
+            Contract.Requires(requiredTokens.Length > 0);
             return new ParseRule(result, ParseRuleCollapsableLevel.Never, requiredTokens);
         }
 
         private static ParseRule CollapsableParseRule(Condition result, params List<Condition>[] requiredTokens)
         {
-#if DEBUG
-            Debug.Assert(requiredTokens.Length > 0);
-#endif
-
+            Contract.Requires(requiredTokens.Length > 0);
             return new ParseRule(result, ParseRuleCollapsableLevel.OneChild, requiredTokens);
         }
 
@@ -566,10 +572,7 @@ namespace Lexer
 
         private static ParseRule AlwaysCollapsableParseRule(Condition result, params List<Condition>[] requiredTokens)
         {
-#if DEBUG
-            Debug.Assert(requiredTokens.Length > 0);
-#endif
-
+            Contract.Requires(requiredTokens.Length > 0);
             return new ParseRule(result, ParseRuleCollapsableLevel.Always, requiredTokens);
         }
 

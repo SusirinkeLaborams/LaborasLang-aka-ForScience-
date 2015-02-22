@@ -12,18 +12,19 @@ using LaborasLangCompiler.Codegen.Types;
 using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
     class ClassNode : ContextNode
     {
         #region fields
-        private List<FieldDeclarationNode> fields;
-        private List<FunctionDeclarationNode> declaredMethods;
-        private List<FunctionDeclarationNode> lambdas;
-        private List<Namespace> globalImports;
+        private readonly List<FieldDeclarationNode> fields;
+        private readonly List<FunctionDeclarationNode> declaredMethods;
+        private readonly List<FunctionDeclarationNode> lambdas;
+        private readonly List<Namespace> globalImports;
         private int lambdaCounter = 0;
-        private AstNode lexerNode;
+        private readonly AstNode lexerNode;
         #endregion fields
 
         #region properties
@@ -35,10 +36,9 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #endregion properties
 
+
         public ClassNode(Parser parser, ClassNode parent, AstNode lexerNode) : base(parser, parent, parser.GetSequencePoint(lexerNode))
         {
-            if (parser.Root == null)
-                parser.Root = this;
             this.lexerNode = lexerNode;
             this.declaredMethods = new List<FunctionDeclarationNode>();
             this.lambdas = new List<FunctionDeclarationNode>();
@@ -96,16 +96,24 @@ namespace LaborasLangCompiler.Parser.Impl
             if (type != null)
                 return TypeNode.Create(type, scope, point);
 
-            type = FindType(name, point);
-            if(type != null)
-                return TypeNode.Create(type, scope, point);
-
-            var namespaze = FindNamespace(name, point);
+            var namespaze = GetImportedNamespace(name, point);
             if (namespaze != null)
                 return new NamespaceNode(namespaze, point);
 
+            type = GetImportedType(name, point);
+            if(type != null)
+                return TypeNode.Create(type, scope, point);
+
             if (Parent != null)
                 return Parent.GetSymbol(name, scope, point);
+
+            namespaze = Parser.ProjectParser.FindNamespace(name);
+            if (namespaze != null)
+                return new NamespaceNode(namespaze, point);
+
+            type = Parser.ProjectParser.FindType(name);
+            if (type != null)
+                return TypeNode.Create(type, scope, point);
 
             return null;
         }
@@ -120,13 +128,10 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #region type/namespace lookup
 
-        public TypeReference FindType(string name, SequencePoint point)
+        private TypeReference GetImportedType(string name, SequencePoint point)
         {
-            //local types not implemented
-
-            //imports
             var types = globalImports.Select(namespaze => namespaze.GetContainedType(name)).Where(t => t != null);
-            if(types.Count() != 0)
+            if (types.Count() != 0)
             {
                 if (types.Count() == 1)
                 {
@@ -139,15 +144,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            if (Parent == null)
-            {
-                return Parser.ProjectParser.FindType(name);
-            }
-
             return null;
         }
 
-        public Namespace FindNamespace(string name, SequencePoint point)
+        private Namespace GetImportedNamespace(string name, SequencePoint point)
         {
             var namespazes = globalImports.Select(import => import.GetContainedNamespace(name)).Where(n => n != null);
             if (namespazes.Count() != 0)
@@ -161,11 +161,6 @@ namespace LaborasLangCompiler.Parser.Impl
                     ErrorCode.AmbiguousSymbol.ReportAndThrow(point,
                         "Ambiguous namespace {0}, could be {1}", name, String.Join(", ", namespazes.Select(t => t.Name)));
                 }
-            }
-
-            if (Parent == null)
-            {
-                return Parser.ProjectParser.FindNamespace(name);
             }
 
             return null;

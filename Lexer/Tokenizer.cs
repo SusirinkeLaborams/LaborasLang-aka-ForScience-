@@ -12,7 +12,7 @@ namespace Lexer
         static Tokenizer()
         {
             var symbols = new char[] { ' ', '\t', '\'', '"', '+', '-', '!', '~', '&', '^', '|', '<', '>', '/', '*', '=', '\\', '%', '{', '}', '(', ')', '\n', '\r', ',', '.', '\0', ';' };
-            SymbolMap = new bool[char.MaxValue];
+            SymbolMap = new bool[char.MaxValue + 1];
 
             for (int i = 0; i < symbols.Length; i++)
             {

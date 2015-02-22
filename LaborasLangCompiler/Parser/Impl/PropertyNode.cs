@@ -3,6 +3,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,11 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public override TypeReference ExpressionReturnType
         {
-            get { return IsGettable ? Property.PropertyType : null; }
+            get 
+            {
+                Contract.Assume(Property.PropertyType != null);
+                return Property.PropertyType; 
+            }
         }
 
         public override bool IsSettable
@@ -31,9 +36,10 @@ namespace LaborasLangCompiler.Parser.Impl
             get { return definition.GetMethod != null && TypeUtils.IsAccessbile(definition.GetMethod, Scope.GetClass().TypeReference); }
         }
 
+        public IExpressionNode ObjectInstance { get { return Instance; } }
         public PropertyReference Property { get; private set; }
 
-        private PropertyDefinition definition;
+        private readonly PropertyDefinition definition;
 
         internal PropertyNode(ExpressionNode instance, PropertyReference property, ContextNode scope, SequencePoint point)
             : base(property, GetInstance(property, instance, scope, point), scope, point)

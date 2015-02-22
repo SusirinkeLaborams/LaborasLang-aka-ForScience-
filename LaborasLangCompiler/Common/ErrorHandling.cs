@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,7 +49,8 @@ namespace LaborasLangCompiler.Common
 
         DuplicateImport = 0025,
 
-        CannotCreate = 0026
+        CannotCreate = 0026,
+        MisshapedMatrix = 0027
     }
 
     public static class Errors
@@ -59,29 +61,34 @@ namespace LaborasLangCompiler.Common
 
         public static void ReportAndThrow(this ErrorCode error, string message)
         {
+            Contract.Requires(message != null);
             ReportAndThrow(error, null, message);
         }
 
         public static void ReportAndThrow(this ErrorCode error, SequencePoint point, string format, params object[] args)
         {
+            Contract.Requires(format != null);
+            Contract.Requires(args != null);
+
             ReportAndThrow(error, point, String.Format(format, args));
         }
 
         public static void ReportAndThrow(this ErrorCode error, SequencePoint point, string message)
         {
+            Contract.Requires(message != null);
             Report(error, point, message);
             throw new CompilerException();
         }
 
         public static void Report(this ErrorCode error, string message)
         {
+            Contract.Requires(message != null);
             Report(error, null, message);
         }
 
         public static void Report(this ErrorCode error, SequencePoint point, string message)
         {
-            if (message == null)
-                throw new ArgumentNullException("Message must not be null");
+            Contract.Requires(message != null);
             var newError = new Error(point, error, message);
             errors.Add(newError);
 

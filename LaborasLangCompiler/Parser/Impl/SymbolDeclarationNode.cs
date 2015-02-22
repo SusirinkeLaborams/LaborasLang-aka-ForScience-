@@ -21,7 +21,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public IExpressionNode Initializer { get { return initializer; } }
         public bool IsConst { get; private set; }
 
-        private ExpressionNode initializer;
+        private readonly ExpressionNode initializer;
 
         private SymbolDeclarationNode(VariableDefinition variable, bool isConst, ExpressionNode init, SequencePoint point)
             : base(point)
@@ -56,20 +56,18 @@ namespace LaborasLangCompiler.Parser.Impl
             if (type.IsVoid())
                 ErrorCode.VoidLValue.ReportAndThrow(point, "Cannot declare a variable of type void");
 
+            if (initializer != null && !initializer.IsGettable)
+                ErrorCode.NotAnRValue.ReportAndThrow(point, "Initializer must be a gettable expression");
+
             bool isConst = ParseModifiers(mods, point);
 
             if (isConst && initializer == null)
                 ErrorCode.MissingInit.ReportAndThrow(point, "Const variables require initialization");
 
-            if (type.IsAuto() && (initializer == null || initializer.ExpressionReturnType == null))
-                ErrorCode.MissingInit.ReportAndThrow(point, "Type inference requires initialization");
-
             if (type.IsAuto())
             {
                 if (initializer == null)
                     ErrorCode.MissingInit.ReportAndThrow(point, "Type inference requires initialization");
-                else if (initializer.ExpressionReturnType == null)
-                    ErrorCode.MissingInit.ReportAndThrow(point, "Initiliazer type is not defined, inferrence unavailable");
             }
 
             if (initializer != null)
@@ -78,10 +76,16 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     type = initializer.ExpressionReturnType;
                 }
-                else if (!initializer.ExpressionReturnType.IsAssignableTo(type))
+                else
                 {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(initializer.SequencePoint,
-                        "Variable of type {0} initialized with {1}", type, initializer.ExpressionReturnType);
+                    var ambiguous = initializer as IAmbiguousNode;
+                    if(ambiguous != null)
+                        initializer = ambiguous.RemoveAmbiguity(parent, type);
+                    if (!initializer.ExpressionReturnType.IsAssignableTo(type))
+                    {
+                        ErrorCode.TypeMissmatch.ReportAndThrow(initializer.SequencePoint,
+                            "Variable of type {0} initialized with {1}", type, initializer.ExpressionReturnType);
+                    }
                 }
             }
 

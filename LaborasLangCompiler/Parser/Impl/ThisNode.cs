@@ -20,7 +20,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override bool IsSettable { get { return false; } }
         public override TypeReference ExpressionReturnType { get { return type; } }
 
-        private TypeReference type;
+        private readonly TypeReference type;
 
         private ThisNode(TypeReference type, SequencePoint point)
             : base(point)

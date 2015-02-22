@@ -15,13 +15,13 @@ namespace LaborasLangCompiler.Parser.Impl
         public AssemblyEmitter Assembly { get; private set; }
         public bool ShouldEmit { get; private set; }
 
-        private Dictionary<string, TypeReference> aliases;
-        private HashSet<TypeReference> primitives;
+        private readonly Dictionary<string, TypeReference> aliases;
+        private readonly HashSet<TypeReference> primitives;
 
         public IReadOnlyDictionary<ulong, TypeReference> MaxValues { get; private set; }
         public IReadOnlyDictionary<long, TypeReference> MinValues { get; private set; }
 
-        private List<Parser> parsers;
+        private readonly List<Parser> parsers;
 
         #region types
 
@@ -144,7 +144,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public Namespace FindNamespace(string fullname)
         {
-            if (AssemblyRegistry.IsNamespaceKnown(fullname))
+            if (fullname.Length > 0 && AssemblyRegistry.IsNamespaceKnown(fullname))
                 return new Namespace(fullname, Assembly);
             else
                 return null;

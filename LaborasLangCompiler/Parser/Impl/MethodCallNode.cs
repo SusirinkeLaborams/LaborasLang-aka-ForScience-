@@ -28,9 +28,9 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private TypeReference type;
-        private IReadOnlyList<ExpressionNode> args;
-        private ExpressionNode function;
+        private readonly TypeReference type;
+        private readonly IReadOnlyList<ExpressionNode> args;
+        private readonly ExpressionNode function;
 
         private MethodCallNode(ExpressionNode function, TypeReference returnType, IReadOnlyList<ExpressionNode> args, SequencePoint point)
             : base(point)
@@ -105,7 +105,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static ExpressionNode AsFunctor(ContextNode context, ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)
         {
-            if (node.ExpressionReturnType == null || !node.ExpressionReturnType.IsFunctorType())
+            if (!node.IsGettable || !node.ExpressionReturnType.IsFunctorType())
                 return null;
 
             if (node.ExpressionReturnType.MatchesArgumentList(context.Parser.Assembly, args.Select(a => a.ExpressionReturnType).ToList()))
@@ -147,7 +147,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (method == null)
             {
                 ErrorCode.TypeMissmatch.ReportAndThrow(point, "Cannot call method, {0} with arguments ({1}), none of the overloads match",
-                    method.Method.FullName,
+                    ambiguous.FullName,
                     String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
             }
 

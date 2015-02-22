@@ -2,8 +2,8 @@
 {
     internal sealed class SourceReader
     {
-        private string m_Source;
-        private int m_OriginalSourceLength;
+        private readonly string m_Source;
+        private readonly int m_OriginalSourceLength;
         private int m_Index;
         private int m_Column;
         private int m_Row;

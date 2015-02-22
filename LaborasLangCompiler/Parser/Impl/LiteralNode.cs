@@ -29,7 +29,7 @@ namespace LaborasLangCompiler.Parser.Impl
             get { return false; }
         }
 
-        private TypeReference type;
+        private readonly TypeReference type;
 
         private LiteralNode(Literal value, TypeReference type, SequencePoint point)
             : base(point)

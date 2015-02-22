@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.Codegen.MethodBodyOptimizers;
 using LaborasLangCompiler.Codegen.Types;
+using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -55,6 +56,9 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Emit(IParserNode node, bool emitReference)
         {
+            Contract.Requires(node != null);
+            Contract.Requires(node.Type != NodeType.ParserInternal);
+
             var oldSequencePoint = CurrentSequencePoint;
             
             if (node.SequencePoint != null)
@@ -89,7 +93,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     break;
 
                 default:
-                    throw new NotSupportedException(string.Format("Unknown IParserNode type: {0}", node.Type));
+                    ContractsHelper.AssertUnreachable(string.Format("Unknown IParserNode type: {0}", node.Type));
+                    break;
             }
 
             CurrentSequencePoint = oldSequencePoint;
@@ -135,6 +140,9 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Emit(IExpressionNode expression, bool emitReference)
         {
+            Contract.Requires(expression != null);
+            Contract.Requires(expression.ExpressionType != ExpressionNodeType.ParserInternal);
+
             switch (expression.ExpressionType)
             {
                 case ExpressionNodeType.Field:
@@ -177,6 +185,9 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Emit((IObjectCreationNode)expression);
                     return;
 
+                case ExpressionNodeType.ValueCreation:
+                    throw new NotImplementedException();
+
                 case ExpressionNodeType.ArrayCreation:
                     Emit((IArrayCreationNode)expression);
                     break;
@@ -190,7 +201,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 default:
-                    throw new NotSupportedException(string.Format("Unknown expression node type: {0}.", expression.ExpressionType));
+                    ContractsHelper.AssertUnreachable(string.Format("Unknown expression node type: {0}.", expression.ExpressionType));
+                    return;
             }
         }
 
@@ -261,7 +273,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 default:
-                    throw new NotSupportedException(string.Format("Cannot store {0} ExpressionNode.", expression.ExpressionType));
+                    ContractsHelper.AssumeUnreachable(string.Format("Cannot store {0} ExpressionNode.", expression.ExpressionType));
+                    return;
             }
         }
 
@@ -273,6 +286,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (!field.Field.Resolve().IsStatic)
             {
+                Contract.Assume(field.ObjectInstance != null);
                 Emit(field.ObjectInstance, true);
 
                 if (emitReference)
@@ -299,6 +313,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Emit(IParameterNode argument, bool emitReference)
         {
+            Contract.Assume(argument.Parameter.Index >= 0);
+
             var index = argument.Parameter.Index + (methodDefinition.HasThis ? 1 : 0);
             emitReference &= argument.Parameter.ParameterType.IsValueType;
 
@@ -332,6 +348,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (getter.HasThis)
             {
+                Contract.Assume(property.ObjectInstance != null);
                 Emit(property.ObjectInstance, true);
             }
 
@@ -388,6 +405,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
                 if (!fieldNode.Field.Resolve().IsStatic)
                 {
+                    Contract.Assume(fieldNode.ObjectInstance != null);
+
                     memberHasThis = true;
                     objectInstance = fieldNode.ObjectInstance;
                 }
@@ -397,13 +416,12 @@ namespace LaborasLangCompiler.Codegen.Methods
                 var propertyNode = (IPropertyNode)assignmentOperator.LeftOperand;
                 var property = propertyNode.Property.Resolve();
 
-                if (property.SetMethod == null)
-                {
-                    throw new ArgumentException(string.Format("Property {0} has no setter!", property.FullName));
-                }
+                Contract.Assume(property.SetMethod != null);
 
                 if (property.SetMethod.HasThis)
                 {
+                    Contract.Assume(propertyNode.ObjectInstance != null);
+
                     memberHasThis = true;
                     objectInstance = propertyNode.ObjectInstance;
                 }
@@ -451,30 +469,23 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void EmitExpressionWithTargetType(IExpressionNode expression, TypeReference targetType, bool emitAsReference = false)
         {
+            Contract.Requires(!emitAsReference || CanEmitAsReference(expression), "Can't pass RValue by reference.");
+
             bool expressionIsFunction = expression.ExpressionType == ExpressionNodeType.Function;
             bool expressionIsFunctor = expression.ExpressionReturnType.IsFunctorType();
-            bool canEmitExpressionAsReference = CanEmitAsReference(expression);
 
             var targetBaseType = targetType.Resolve().BaseType;
             bool targetIsDelegate = targetBaseType != null && targetBaseType.FullName == "System.MulticastDelegate";
 
-            if (emitAsReference && !canEmitExpressionAsReference)
-            {
-                throw new Exception(string.Format("{0}({1},{2},{3},{4}): error: can't pass RValue by reference", expression.SequencePoint.Document.Url,
-                    expression.SequencePoint.StartLine, expression.SequencePoint.StartColumn, expression.SequencePoint.EndLine, expression.SequencePoint.EndColumn));
-            }
-
             // We'll want to emit expression in all cases
-            Emit(expression, emitAsReference && canEmitExpressionAsReference);
+            Emit(expression, emitAsReference);
 
             if (targetIsDelegate)
             {
                 // Sanity check
-                if (expressionIsFunction && expressionIsFunctor)
-                {
-                    throw new ArgumentException("When function is assigned to delegate, its return type should be a delegate, not a functor!");
-                }
-                else if (expressionIsFunctor)
+                Contract.Assert(!expressionIsFunction || !expressionIsFunctor);
+
+                if (expressionIsFunctor)
                 {
                     // Here we have a functor object on top of the stack
                     
@@ -500,9 +511,6 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Emit(IBinaryOperatorNode binaryOperator)
         {
-            Contract.Requires(binaryOperator.LeftOperand != null);
-            Contract.Requires(binaryOperator.RightOperand != null);
-
             switch (binaryOperator.BinaryOperatorType)
             {
                 case BinaryOperatorNodeType.Addition:
@@ -582,7 +590,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 default:
-                    throw new NotSupportedException(string.Format("Unknown binary operator node: {0}", binaryOperator.BinaryOperatorType));
+                    ContractsHelper.AssumeUnreachable(string.Format("Unknown binary operator node: {0}", binaryOperator.BinaryOperatorType));
+                    return;
             }
         }
 
@@ -597,6 +606,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
                 if (function.Method.HasThis)
                 {
+                    Contract.Assume(function.ObjectInstance != null);
                     Emit(function.ObjectInstance, false);
                 }
 
@@ -608,6 +618,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
                 if (function.Method.HasThis)
                 {
+                    Contract.Assume(function.ObjectInstance != null);
                     Emit(function.ObjectInstance, false);
                 }
                 else
@@ -625,11 +636,13 @@ namespace LaborasLangCompiler.Codegen.Methods
             var function = functionCall.Function;
 
             if (function.ExpressionType == ExpressionNodeType.Function)
-            {   // Direct call
+            {
+                // Direct call
                 var functionNode = (IMethodNode)function;
 
                 if (functionNode.Method.HasThis)
                 {
+                    Contract.Assume(functionNode.ObjectInstance != null);
                     Emit(functionNode.ObjectInstance, true);
                 }
 
@@ -645,7 +658,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                 }
             }
             else
-            {   // Functor Call
+            {
+                // Functor Call
                 var invokeMethod = AssemblyRegistry.GetMethod(Assembly, function.ExpressionReturnType, "Invoke");
 
                 Emit(function, true);
@@ -660,105 +674,108 @@ namespace LaborasLangCompiler.Codegen.Methods
             var methodParameters = method.Parameters;
             var resolvedMethod = method.Resolve();
 
-            if (method.IsParamsMethod())
+            if (resolvedMethod.IsParamsMethod())
             {
-                #region Params Call
-
-                for (int i = 0; i < methodParameters.Count - 1; i++)
-                {
-                    EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
-                }
-
-                var arrayVariable = AcquireTempVariable(methodParameters.Last().ParameterType);
-                var arrayType = methodParameters.Last().ParameterType.GetElementType();
-
-                Ldc_I4(arguments.Count - methodParameters.Count + 1);
-                Newarr(arrayType);
-                Stloc(arrayVariable.Index);
-
-                for (int i = methodParameters.Count - 1; i < arguments.Count; i++)
-                {
-                    Ldloc(arrayVariable.Index);
-                    Ldc_I4(i - methodParameters.Count + 1);
-                    EmitArgumentForCall(arguments[i], arrayType);
-
-                    if (arrayType.IsValueType)
-                    {
-                        Stelem_Any(arrayType);
-                    }
-                    else
-                    {
-                        Stelem_Ref();
-                    }
-                }
-
-                Ldloc(arrayVariable.Index);
-                ReleaseTempVariable(arrayVariable);
-
-                #endregion
+                EmitArgumentsForParamsCall(arguments, methodParameters);
             }
             else if (methodParameters.Count > arguments.Count)    // Method with optional parameters call
             {
-                #region Optional Parameters Call
-
-                for (int i = 0; i < arguments.Count; i++)
-                {
-                    EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
-                }
-
-                for (int i = arguments.Count; i < methodParameters.Count; i++)
-                {
-                    var defaultValue = resolvedMethod.Parameters[i].Constant;
-
-                    switch (defaultValue.GetType().FullName)
-                    {
-                        case "System.SByte":
-                        case "System.Byte":
-                        case "System.Int16":
-                        case "System.UInt16":
-                        case "System.Int32":
-                        case "System.UInt32":
-                            Ldc_I4((int)defaultValue);
-                            break;
-
-                        case "System.Int64":
-                        case "System.UInt64":
-                            Ldc_I8((long)defaultValue);
-                            break;
-
-                        case "System.Single":
-                            Ldc_R4((float)defaultValue);
-                            break;
-
-                        case "System.Double":
-                            Ldc_R8((double)defaultValue);
-                            break;
-
-                        case "System.String":
-                            Ldstr((string)defaultValue);
-                            break;
-
-                        default:
-                            if (defaultValue == null)
-                            {
-                                Ldnull();
-                            }
-                            else
-                            {
-                                throw new NotSupportedException(string.Format("Unknown default value literal: {0} with value of {1}.",
-                                    defaultValue.GetType().FullName, defaultValue));
-                            }
-                            break;
-                    }
-                }
-
-                #endregion
+                EmitArgumentsForCallWithOptionalParameters(arguments, methodParameters, resolvedMethod);
             }
             else
             {
                 for (int i = 0; i < arguments.Count; i++)
                 {
                     EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
+                }
+            }
+        }
+
+        private void EmitArgumentsForParamsCall(IReadOnlyList<IExpressionNode> arguments, IList<ParameterDefinition> methodParameters)
+        {
+            for (int i = 0; i < methodParameters.Count - 1; i++)
+            {
+                EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
+            }
+
+            var arrayVariable = AcquireTempVariable(methodParameters.Last().ParameterType);
+            var elementType = methodParameters.Last().ParameterType.GetElementType();
+
+            Ldc_I4(arguments.Count - methodParameters.Count + 1);
+            Newarr(elementType);
+            Stloc(arrayVariable.Index);
+
+            for (int i = methodParameters.Count - 1; i < arguments.Count; i++)
+            {
+                Ldloc(arrayVariable.Index);
+                Ldc_I4(i - methodParameters.Count + 1);
+                EmitArgumentForCall(arguments[i], elementType);
+
+                if (elementType.IsValueType)
+                {
+                    Stelem_Any(elementType);
+                }
+                else
+                {
+                    Stelem_Ref();
+                }
+            }
+
+            Ldloc(arrayVariable.Index);
+            ReleaseTempVariable(arrayVariable);
+        }
+
+        private void EmitArgumentsForCallWithOptionalParameters(IReadOnlyList<IExpressionNode> arguments, IList<ParameterDefinition> methodParameters, MethodDefinition resolvedMethod)
+        {
+            for (int i = 0; i < arguments.Count; i++)
+            {
+                EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
+            }
+
+            for (int i = arguments.Count; i < methodParameters.Count; i++)
+            {
+                // Use resolved method here for getting constant value, as it will not be present in method reference parameters.
+                // Furthermore, we must not reference resolved method parameter TYPES as they will be resolved as well
+                var defaultValue = resolvedMethod.Parameters[i].Constant;
+
+                if (defaultValue == null)
+                {
+                    Ldnull();
+                    continue;
+                }
+
+                var constantType = defaultValue.GetType();
+
+                if (constantType == typeof(SByte) ||
+                    constantType == typeof(Byte) ||
+                    constantType == typeof(Int16) ||
+                    constantType == typeof(UInt16) ||
+                    constantType == typeof(Int32) ||
+                    constantType == typeof(UInt32))
+                {
+                    Ldc_I4((int)defaultValue);
+                }
+                else if (constantType == typeof(Int64) ||
+                         constantType == typeof(UInt64))
+                {
+                    Ldc_I8((long)defaultValue);
+                }
+                else if (constantType == typeof(float))
+                {
+                    Ldc_R4((float)defaultValue);
+                }
+                else if (constantType == typeof(double))
+                {
+                    Ldc_R8((double)defaultValue);
+                }
+                else if (constantType == typeof(string))
+                {
+                    Ldstr((string)defaultValue);
+                }
+                else
+                {
+                    ContractsHelper.AssumeUnreachable(string.Format("Unknown default value literal: {0} with value of {1}.",
+                            defaultValue.GetType().FullName, defaultValue));
                 }
             }
         }
@@ -827,7 +844,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 default:
-                    throw new NotSupportedException("Unknown literal type: " + literal.ExpressionReturnType.FullName);
+                    ContractsHelper.AssertUnreachable("Unknown literal type: " + literal.ExpressionReturnType.FullName);
+                    return;
             }
         }
 
@@ -886,6 +904,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             Emit(unaryOperator.Operand, false);
 
+            Contract.Assume(unaryOperator.UnaryOperatorType != UnaryOperatorNodeType.VoidOperator);
+
             switch (unaryOperator.UnaryOperatorType)
             {
                 case UnaryOperatorNodeType.BinaryNot:
@@ -930,7 +950,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 default:
-                    throw new NotSupportedException(string.Format("Unknown unary operator type: {0}", unaryOperator.UnaryOperatorType));
+                    ContractsHelper.AssertUnreachable(string.Format("Unknown unary operator type: {0}", unaryOperator.UnaryOperatorType));
+                    return;
             }
         }
 
@@ -1225,6 +1246,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void EmitShift(IBinaryOperatorNode binaryOperator)
         {
+            Contract.Requires(binaryOperator.BinaryOperatorType == BinaryOperatorNodeType.ShiftLeft || binaryOperator.BinaryOperatorType == BinaryOperatorNodeType.ShiftRight);
+
             Emit(binaryOperator.LeftOperand, false);
             Emit(binaryOperator.RightOperand, false);
 
@@ -1239,7 +1262,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     break;
 
                 default:
-                    throw new NotSupportedException(string.Format("Unknown shift operator: {0}.", binaryOperator.BinaryOperatorType));
+                    ContractsHelper.AssumeUnreachable(string.Format("Unknown shift operator: {0}.", binaryOperator.BinaryOperatorType));
+                    break;
             }
         }
 
@@ -1298,7 +1322,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
             }
 
-            throw new ArgumentException(string.Format("Cannot store unary operator {0}.", unaryOperatorNode.UnaryOperatorType));
+            ContractsHelper.AssertUnreachable(string.Format("Cannot store unary operator {0}.", unaryOperatorNode.UnaryOperatorType));
         }
 
         #endregion
@@ -1326,7 +1350,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
             else
             {
-                throw new ArgumentException(string.Format("{0} and {1} cannot be cast to each other!", left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName));
+                ContractsHelper.AssumeUnreachable(string.Format("{0} and {1} cannot be cast to each other!", left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName));
             }
         }
 
@@ -1354,7 +1378,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 return;
             }
 
-            if (!sourceType.IsValueType && !targetType.IsValueType)
+            if (!sourceType.IsValueType)
             {
                 if (!sourceType.DerivesFrom(targetType))
                 {
@@ -1364,10 +1388,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 return;
             }
 
-            if (!sourceType.IsPrimitive || !targetType.IsPrimitive)
-            {
-                throw new ArgumentException("Can't cast non primitive value types!");
-            }
+            Contract.Assert(sourceType.IsPrimitive && targetType.IsPrimitive);
 
             switch (targetType.MetadataType)
             {
@@ -1427,7 +1448,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     break;
 
                 default:
-                    throw new NotSupportedException(string.Format("Unknown primitive type: {0}", targetType.FullName));
+                    ContractsHelper.AssumeUnreachable(string.Format("Unknown primitive type: {0}", targetType.FullName));
+                    break;
             }
         }
 

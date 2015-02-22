@@ -3,6 +3,7 @@ using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -164,6 +165,7 @@ namespace LaborasLangCompiler.Codegen.Types
 
         public TypeReference Get(AssemblyEmitter assembly)
         {
+            Contract.Ensures(Contract.Result<TypeReference>() != null);
             return AssemblyRegistry.FindType(assembly, typeDefinition.FullName);
         }
 
