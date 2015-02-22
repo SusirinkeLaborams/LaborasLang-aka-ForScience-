@@ -23,9 +23,8 @@ namespace LaborasLangCompiler.Parser.Impl
         private ExpressionNode expression;
         private ReturnNode(SequencePoint point) : base(point) { }
 
-        public static ReturnNode Parse(ContextNode context, AstNode lexerNode)
+        public static ReturnNode Parse(CodeBlockNode context, AstNode lexerNode)
         {
-            Contract.Requires(context.GetMethod() != null);
             var point = context.Parser.GetSequencePoint(lexerNode);
             var returnType = context.GetMethod().MethodReturnType;
             ExpressionNode expression = null;
@@ -37,9 +36,8 @@ namespace LaborasLangCompiler.Parser.Impl
             return Create(context, expression, point);
         }
 
-        public static ReturnNode Create(ContextNode context, ExpressionNode expression, SequencePoint point)
+        public static ReturnNode Create(CodeBlockNode context, ExpressionNode expression, SequencePoint point)
         {
-            Contract.Requires(context.GetMethod() != null);
             var instance = new ReturnNode(point);
             instance.expression = expression;
             var returnType = context.GetMethod().MethodReturnType;

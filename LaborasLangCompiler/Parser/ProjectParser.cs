@@ -144,7 +144,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public Namespace FindNamespace(string fullname)
         {
-            if (AssemblyRegistry.IsNamespaceKnown(fullname))
+            if (fullname.Length > 0 && AssemblyRegistry.IsNamespaceKnown(fullname))
                 return new Namespace(fullname, Assembly);
             else
                 return null;

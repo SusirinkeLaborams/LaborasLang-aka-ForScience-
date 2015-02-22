@@ -61,6 +61,7 @@ namespace LaborasLangCompiler.Common
 
         public static void ReportAndThrow(this ErrorCode error, string message)
         {
+            Contract.Requires(message != null);
             ReportAndThrow(error, null, message);
         }
 
@@ -74,19 +75,20 @@ namespace LaborasLangCompiler.Common
 
         public static void ReportAndThrow(this ErrorCode error, SequencePoint point, string message)
         {
+            Contract.Requires(message != null);
             Report(error, point, message);
             throw new CompilerException();
         }
 
         public static void Report(this ErrorCode error, string message)
         {
+            Contract.Requires(message != null);
             Report(error, null, message);
         }
 
         public static void Report(this ErrorCode error, SequencePoint point, string message)
         {
-            if (message == null)
-                throw new ArgumentNullException("Message must not be null");
+            Contract.Requires(message != null);
             var newError = new Error(point, error, message);
             errors.Add(newError);
 

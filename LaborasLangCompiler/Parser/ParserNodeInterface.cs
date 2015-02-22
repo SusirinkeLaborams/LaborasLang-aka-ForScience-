@@ -507,7 +507,11 @@ namespace LaborasLangCompiler.Parser
 
         public IExpressionNode ObjectInstance
         {
-            get { throw new NotImplementedException(); }
+            get 
+            {
+                Contract.Ensures(Contract.Result<IExpressionNode>() == null || Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
+                throw new NotImplementedException(); 
+            }
         }
 
         public ExpressionNodeType ExpressionType

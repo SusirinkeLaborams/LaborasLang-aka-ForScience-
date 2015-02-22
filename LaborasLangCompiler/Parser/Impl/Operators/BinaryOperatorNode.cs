@@ -11,6 +11,7 @@ using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using LaborasLangCompiler.Common;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -71,6 +72,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (ret == null)
                 OperatorMissmatch(point, op, left.ExpressionReturnType, right.ExpressionReturnType);
 
+            Contract.Assume(ret != null);
             return ret;
         }
 

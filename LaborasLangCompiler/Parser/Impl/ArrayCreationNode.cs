@@ -33,7 +33,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var instance = new ArrayCreationNode(point);
             foreach(var dim in dims)
             {
-                if(!dim.IsGettable || dim.ExpressionReturnType == null || !dim.ExpressionReturnType.IsIntegerType())
+                if(!dim.IsGettable || !dim.ExpressionReturnType.IsIntegerType())
                 {
                     ErrorCode.NotAnRValue.ReportAndThrow(dim.SequencePoint, "Array dimensions must be gettable integer expressions");
                 }

@@ -41,6 +41,12 @@ namespace LaborasLangCompiler.Parser.Impl
             throw new NotImplementedException();
         }
 
+        public override FunctionDeclarationNode GetMethod()
+        {
+            Contract.Ensures(GetMethod().MethodReturnType != null);
+            throw new NotImplementedException();
+        }
+
         [ContractInvariantMethod]
         private void ObjectInvariant()
         {

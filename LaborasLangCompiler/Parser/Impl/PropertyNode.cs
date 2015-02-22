@@ -19,7 +19,11 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public override TypeReference ExpressionReturnType
         {
-            get { return Property.PropertyType; }
+            get 
+            {
+                Contract.Assume(Property.PropertyType != null);
+                return Property.PropertyType; 
+            }
         }
 
         public override bool IsSettable
@@ -32,6 +36,7 @@ namespace LaborasLangCompiler.Parser.Impl
             get { return definition.GetMethod != null && TypeUtils.IsAccessbile(definition.GetMethod, Scope.GetClass().TypeReference); }
         }
 
+        public IExpressionNode ObjectInstance { get { return Instance; } }
         public PropertyReference Property { get; private set; }
 
         private readonly PropertyDefinition definition;
@@ -39,7 +44,6 @@ namespace LaborasLangCompiler.Parser.Impl
         internal PropertyNode(ExpressionNode instance, PropertyReference property, ContextNode scope, SequencePoint point)
             : base(property, GetInstance(property, instance, scope, point), scope, point)
         {
-            Contract.Requires(property.PropertyType != null);
             this.Property = property;
             this.definition = property.Resolve();
         }
