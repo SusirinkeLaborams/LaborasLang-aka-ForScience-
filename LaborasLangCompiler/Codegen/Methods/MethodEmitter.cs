@@ -56,6 +56,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Emit(IParserNode node, bool emitReference)
         {
+            Contract.Requires(node != null);
             Contract.Requires(node.Type != NodeType.ParserInternal);
 
             var oldSequencePoint = CurrentSequencePoint;
@@ -139,6 +140,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void Emit(IExpressionNode expression, bool emitReference)
         {
+            Contract.Requires(expression != null);
             Contract.Requires(expression.ExpressionType != ExpressionNodeType.ParserInternal);
 
             switch (expression.ExpressionType)
@@ -284,6 +286,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (!field.Field.Resolve().IsStatic)
             {
+                Contract.Assume(field.ObjectInstance != null);
                 Emit(field.ObjectInstance, true);
 
                 if (emitReference)
@@ -345,6 +348,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (getter.HasThis)
             {
+                Contract.Assume(property.ObjectInstance != null);
                 Emit(property.ObjectInstance, true);
             }
 
@@ -401,6 +405,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
                 if (!fieldNode.Field.Resolve().IsStatic)
                 {
+                    Contract.Assume(fieldNode.ObjectInstance != null);
+
                     memberHasThis = true;
                     objectInstance = fieldNode.ObjectInstance;
                 }
@@ -414,6 +420,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
                 if (property.SetMethod.HasThis)
                 {
+                    Contract.Assume(propertyNode.ObjectInstance != null);
+
                     memberHasThis = true;
                     objectInstance = propertyNode.ObjectInstance;
                 }
@@ -598,6 +606,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
                 if (function.Method.HasThis)
                 {
+                    Contract.Assume(function.ObjectInstance != null);
                     Emit(function.ObjectInstance, false);
                 }
 
@@ -609,6 +618,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
                 if (function.Method.HasThis)
                 {
+                    Contract.Assume(function.ObjectInstance != null);
                     Emit(function.ObjectInstance, false);
                 }
                 else
@@ -632,6 +642,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
                 if (functionNode.Method.HasThis)
                 {
+                    Contract.Assume(functionNode.ObjectInstance != null);
                     Emit(functionNode.ObjectInstance, true);
                 }
 
@@ -733,38 +744,38 @@ namespace LaborasLangCompiler.Codegen.Methods
                     continue;
                 }
 
-                switch (defaultValue.GetType().FullName)
+                var constantType = defaultValue.GetType();
+
+                if (constantType == typeof(SByte) ||
+                    constantType == typeof(Byte) ||
+                    constantType == typeof(Int16) ||
+                    constantType == typeof(UInt16) ||
+                    constantType == typeof(Int32) ||
+                    constantType == typeof(UInt32))
                 {
-                    case "System.SByte":
-                    case "System.Byte":
-                    case "System.Int16":
-                    case "System.UInt16":
-                    case "System.Int32":
-                    case "System.UInt32":
-                        Ldc_I4((int)defaultValue);
-                        break;
-
-                    case "System.Int64":
-                    case "System.UInt64":
-                        Ldc_I8((long)defaultValue);
-                        break;
-
-                    case "System.Single":
-                        Ldc_R4((float)defaultValue);
-                        break;
-
-                    case "System.Double":
-                        Ldc_R8((double)defaultValue);
-                        break;
-
-                    case "System.String":
-                        Ldstr((string)defaultValue);
-                        break;
-
-                    default:
-                        ContractsHelper.AssumeUnreachable(string.Format("Unknown default value literal: {0} with value of {1}.",
-                                defaultValue.GetType().FullName, defaultValue));
-                        break;
+                    Ldc_I4((int)defaultValue);
+                }
+                else if (constantType == typeof(Int64) ||
+                         constantType == typeof(UInt64))
+                {
+                    Ldc_I8((long)defaultValue);
+                }
+                else if (constantType == typeof(float))
+                {
+                    Ldc_R4((float)defaultValue);
+                }
+                else if (constantType == typeof(double))
+                {
+                    Ldc_R8((double)defaultValue);
+                }
+                else if (constantType == typeof(string))
+                {
+                    Ldstr((string)defaultValue);
+                }
+                else
+                {
+                    ContractsHelper.AssumeUnreachable(string.Format("Unknown default value literal: {0} with value of {1}.",
+                            defaultValue.GetType().FullName, defaultValue));
                 }
             }
         }
