@@ -210,10 +210,9 @@ namespace LaborasLangCompiler.Parser
     [ContractClassFor(typeof(IExpressionNode))]
     abstract class IExpressionNodeContract : IExpressionNode
     {
-        public ExpressionNodeType ExpressionType
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public abstract NodeType Type { get; }
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract SequencePoint SequencePoint { get; }
 
         public TypeReference ExpressionReturnType
         {
@@ -223,21 +222,16 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException();
             }
         }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 
     [ContractClassFor(typeof(ILiteralNode))]
     abstract class ILiteralNodeContract : ILiteralNode
     {
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+        
         public Literal Value
         {
             get 
@@ -246,31 +240,17 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException();
             }
         }
-
-        public ExpressionNodeType ExpressionType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public TypeReference ExpressionReturnType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 
     [ContractClassFor(typeof(IMethodNode))]
     abstract class IMethodNodeContract : IMethodNode
     {
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract IExpressionNode ObjectInstance { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
         public MethodReference Method
         {
             get 
@@ -279,36 +259,16 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException(); 
             }
         }
-
-        public IExpressionNode ObjectInstance
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public ExpressionNodeType ExpressionType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public TypeReference ExpressionReturnType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 
     [ContractClassFor(typeof(IFunctionCallNode))]
     abstract class IFunctionCallNodeContract : IFunctionCallNode
     {
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+        public abstract ExpressionNodeType ExpressionType { get; }
+
         public IReadOnlyList<IExpressionNode> Args
         {
             get
@@ -320,37 +280,22 @@ namespace LaborasLangCompiler.Parser
 
         public IExpressionNode Function
         {
-            get 
+            get
             {
                 Contract.Ensures(Contract.Result<IExpressionNode>() != null);
                 throw new NotImplementedException();
             }
-        }
-
-        public ExpressionNodeType ExpressionType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public TypeReference ExpressionReturnType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
         }
     }
 
     [ContractClassFor(typeof(IObjectCreationNode))]
     abstract class IObjectCreationNodeContract : IObjectCreationNode
     {
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+        public abstract TypeReference ExpressionReturnType { get; }
+
         public MethodReference Constructor
         {
             get 
@@ -369,30 +314,14 @@ namespace LaborasLangCompiler.Parser
             }
         }
 
-        public ExpressionNodeType ExpressionType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public TypeReference ExpressionReturnType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 
     [ContractClassFor(typeof(IWhileBlockNode))]
     abstract class IWhileBlockNodeContract : IWhileBlockNode
     {
+        public abstract SequencePoint SequencePoint { get; }
+        public abstract NodeType Type { get; }
+
         public IExpressionNode Condition
         {
             get
@@ -410,21 +339,15 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException(); 
             }
         }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 
     [ContractClassFor(typeof(IConditionBlock))]
     abstract class IConditionBlockContract : IConditionBlock
     {
+        public abstract ICodeBlockNode FalseBlock { get; }
+        public abstract SequencePoint SequencePoint { get; }
+        public abstract NodeType Type { get; }
+
         public IExpressionNode Condition
         {
             get
@@ -442,26 +365,16 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException(); 
             }
         }
-
-        public ICodeBlockNode FalseBlock
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 
     [ContractClassFor(typeof(ILocalVariableNode))]
     abstract class ILocalVariableNodeContract : ILocalVariableNode
     {
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+        public abstract ExpressionNodeType ExpressionType { get; }
+
         public VariableDefinition LocalVariable
         {
             get
@@ -470,31 +383,17 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException();
             }
         }
-
-        public ExpressionNodeType ExpressionType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public TypeReference ExpressionReturnType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 
     [ContractClassFor(typeof(IFieldNode))]
     abstract class IFieldNodeContract : IFieldNode
     {
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract IExpressionNode ObjectInstance { get; }
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
         public FieldReference Field
         {
             get
@@ -504,40 +403,17 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException();
             }
         }
-
-        public IExpressionNode ObjectInstance
-        {
-            get 
-            {
-                Contract.Ensures(Contract.Result<IExpressionNode>() == null || Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
-                throw new NotImplementedException(); 
-            }
-        }
-
-        public ExpressionNodeType ExpressionType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public TypeReference ExpressionReturnType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 
     [ContractClassFor(typeof(IPropertyNode))]
     abstract class IPropertyNodeContract : IPropertyNode
     {
+        public abstract IExpressionNode ObjectInstance { get; }
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
         public PropertyReference Property
         {
             get
@@ -546,36 +422,16 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException();
             }
         }
-
-        public IExpressionNode ObjectInstance
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public ExpressionNodeType ExpressionType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public TypeReference ExpressionReturnType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 
     [ContractClassFor(typeof(IParameterNode))]
     abstract class IParameterNodeContract : IParameterNode
     {
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
         public ParameterDefinition Parameter
         {
             get
@@ -584,35 +440,16 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException();
             }
         }
-
-        public ExpressionNodeType ExpressionType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public TypeReference ExpressionReturnType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 
     [ContractClassFor(typeof(IBinaryOperatorNode))]
     abstract class IBinaryOperatorNodeContract : IBinaryOperatorNode
     {
-        public BinaryOperatorNodeType BinaryOperatorType
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+        public abstract BinaryOperatorNodeType BinaryOperatorType { get; }
 
         public IExpressionNode LeftOperand
         {
@@ -631,31 +468,17 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException(); 
             }
         }
-
-        public ExpressionNodeType ExpressionType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public TypeReference ExpressionReturnType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 
     [ContractClassFor(typeof(IUnaryOperatorNode))]
     abstract class IUnaryOperatorNodeContract : IUnaryOperatorNode
     {
+        public abstract UnaryOperatorNodeType UnaryOperatorType { get; }
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
         public IExpressionNode Operand
         {
             get 
@@ -664,36 +487,16 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException(); 
             }
         }
-
-        public UnaryOperatorNodeType UnaryOperatorType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public ExpressionNodeType ExpressionType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public TypeReference ExpressionReturnType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 
     [ContractClassFor(typeof(IAssignmentOperatorNode))]
     abstract class IAssignmentOperatorNodeContract : IAssignmentOperatorNode
     {
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
         public IExpressionNode LeftOperand
         {
             get
@@ -711,69 +514,35 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException();
             }
         }
-
-        public ExpressionNodeType ExpressionType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public TypeReference ExpressionReturnType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
         
     [ContractClassFor(typeof(IArrayCreationNode))]
     abstract class IArrayCreationNodeContract : IArrayCreationNode
     {
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+        public abstract IReadOnlyList<IExpressionNode> Initializer { get; }
+
         public IReadOnlyList<IExpressionNode> Dimensions
         {
             get 
             {
                 Contract.Ensures(Contract.Result<IReadOnlyList<IExpressionNode>>() != null);
+                Contract.Ensures(Contract.Result<IReadOnlyList<IExpressionNode>>().Count > 0);
                 throw new NotImplementedException(); 
             }
-        }
-
-        public IReadOnlyList<IExpressionNode> Initializer
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public ExpressionNodeType ExpressionType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public TypeReference ExpressionReturnType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
         }
     }
 
     [ContractClassFor(typeof(ISymbolDeclarationNode))]
     abstract class ISymbolDeclarationNodeContract : ISymbolDeclarationNode
     {
+        public abstract IExpressionNode Initializer { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
         public VariableDefinition Variable
         {
             get
@@ -782,26 +551,14 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException(); 
             }
         }
-
-        public IExpressionNode Initializer
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
     }
 
     [ContractClassFor(typeof(ICodeBlockNode))]
     abstract class ICodeBlockNodeContract : ICodeBlockNode
     {
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
         public IReadOnlyList<IParserNode> Nodes
         {
             get
@@ -809,16 +566,6 @@ namespace LaborasLangCompiler.Parser
                 Contract.Ensures(Contract.Result<IReadOnlyList<IParserNode>>() != null);
                 throw new NotImplementedException(); 
             }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
         }
     }
 
