@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Codegen;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -30,6 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ArrayCreationNode Create(ContextNode context, TypeReference type, IEnumerable<ExpressionNode> dims, InitializerList initializer, SequencePoint point)
         {
+            Contract.Requires(dims.Any());
             var instance = new ArrayCreationNode(point);
             foreach(var dim in dims)
             {

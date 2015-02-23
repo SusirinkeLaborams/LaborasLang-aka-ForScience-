@@ -52,7 +52,7 @@ namespace LaborasLangCompiler.Parser
             ProjectParser = parser;
 
             lexerRoot = root;
-            Root = new ClassNode(this, null, root.Node);
+            Root = ClassNode.ParseFile(this, root.Node);
         }
 
         public SequencePoint GetSequencePoint(AstNode lexerNode)

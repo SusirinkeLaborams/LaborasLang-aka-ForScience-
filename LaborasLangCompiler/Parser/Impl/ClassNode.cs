@@ -36,8 +36,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #endregion properties
 
-
-        public ClassNode(Parser parser, ClassNode parent, AstNode lexerNode) : base(parser, parent, parser.GetSequencePoint(lexerNode))
+        private ClassNode(Parser parser, ClassNode parent, AstNode lexerNode) : base(parser, parent, parser.GetSequencePoint(lexerNode))
         {
             this.lexerNode = lexerNode;
             this.declaredMethods = new List<FunctionDeclarationNode>();
@@ -46,6 +45,12 @@ namespace LaborasLangCompiler.Parser.Impl
             globalImports = new List<Namespace>();
             FullName = parser.Filename;
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
+        }
+
+        public static ClassNode ParseFile(Parser parser, AstNode lexerNode)
+        {
+            Contract.Requires(!lexerNode.IsNull);
+            return new ClassNode(parser, null, lexerNode);
         }
 
         #region type wrapper

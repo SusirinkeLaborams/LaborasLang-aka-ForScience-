@@ -2,6 +2,7 @@
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 
@@ -122,6 +123,7 @@ namespace LaborasLangCompiler.Codegen
 
         private static MethodReference GetBestMatch(IReadOnlyList<TypeReference> arguments, List<MethodReference> methods)
         {
+            Contract.Requires(methods.Any());
             if (methods.Count > 1)
             {
                 methods.Sort((x, y) => CompareMatches(arguments, y, x));
@@ -226,6 +228,7 @@ namespace LaborasLangCompiler.Codegen
 
         public static ArrayType GetArrayType(TypeReference elementType, int rank)
         {
+            Contract.Requires(rank > 0);
             var key = new ArrayTypeKey(elementType, rank);
             ArrayType arrayType;
 
