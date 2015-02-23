@@ -123,8 +123,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private static ExpressionNode AsOverload(ContextNode context, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right, SequencePoint point)
         {
             var name = Overloads[op];
-            var methods = AssemblyRegistry.GetMethods(context.Parser.Assembly, left.ExpressionReturnType, name)
-                .Union(AssemblyRegistry.GetMethods(context.Parser.Assembly, right.ExpressionReturnType, name));
+            var methods = TypeUtils.GetOperatorMethods(context.Assembly, left, right, name);
 
             var args = Utils.Utils.Enumerate(left, right);
             var argsTypes = args.Select(a => a.ExpressionReturnType).ToList();
