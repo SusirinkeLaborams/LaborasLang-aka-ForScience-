@@ -869,7 +869,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             if (arrayType.IsVector)
             {
                 Emit(arrayCreation.Dimensions[0], false);
-                Newarr(arrayType);
+                Newarr(arrayType.ElementType);
             }
             else
             {

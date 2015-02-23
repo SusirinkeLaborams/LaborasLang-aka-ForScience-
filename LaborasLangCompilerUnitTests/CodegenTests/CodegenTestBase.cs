@@ -5,6 +5,7 @@ using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,9 +26,17 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         internal AssemblyEmitter assemblyEmitter { get; private set; }
 
         internal const string kEntryPointMethodName = "dummy";
+        private readonly bool bulkTesting = false;
+
+        private readonly MethodReference consoleWrite;
         private readonly MethodReference consoleWriteLine;
         private readonly MethodReference consoleWriteLineParams;
-        private readonly bool bulkTesting = false;
+
+        private readonly MethodReference ienumerableGetEnumerator;
+
+        private readonly TypeReference ienumerator;
+        private readonly MethodReference ienumeratorMoveNext;
+        private readonly MethodReference ienumeratorGetCurrent;
 
         public CodegenTestBase() :
             this(null, "Class", false)
@@ -49,11 +58,25 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             methodEmitter = new MethodEmitter(typeEmitter, kEntryPointMethodName, assemblyEmitter.TypeSystem.Void,
                 MethodAttributes.Static | MethodAttributes.Assembly);
 
+            consoleWrite = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "Write",
+                new[] { assemblyEmitter.TypeSystem.Object });
+
             consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine",
                 new[] { assemblyEmitter.TypeSystem.Object });
             
             consoleWriteLineParams = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine",
                 new[] { assemblyEmitter.TypeSystem.String, new ArrayType(assemblyEmitter.TypeSystem.Object) });
+
+            ienumerableGetEnumerator = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Collections.IEnumerable",
+                "GetEnumerator", new TypeReference[0]);
+
+            ienumerator = AssemblyRegistry.FindType(assemblyEmitter, "System.Collections.IEnumerator");
+
+            ienumeratorMoveNext = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, ienumerator,
+                "MoveNext", new TypeReference[0]);
+
+            var ienumerableCurrent = AssemblyRegistry.GetProperty(assemblyEmitter, ienumerator, "Current");
+            ienumeratorGetCurrent = AssemblyRegistry.GetPropertyGetter(assemblyEmitter, ienumerableCurrent);
 
             this.bulkTesting = bulkTesting;
         }
@@ -150,6 +173,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                 }
             };
         }
+
         internal IParserNode CallConsoleWriteLine(params IExpressionNode[] args)
         {
             return new MethodCallNode()
@@ -159,6 +183,95 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                     Method = consoleWriteLineParams
                 },
                 Args = new List<IExpressionNode>(args)
+            };
+        }
+
+        internal ICodeBlockNode OutputEnumerable(IExpressionNode enumerable)
+        {
+            var enumerator = new LocalVariableNode(new VariableDefinition(ienumerator));
+            var counter = new LocalVariableNode(new VariableDefinition(assemblyEmitter.TypeSystem.Int32));
+
+            return new CodeBlockNode()
+            {
+                Nodes = new IParserNode[] 
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        Variable = counter.LocalVariable,
+                        Initializer = new LiteralNode(assemblyEmitter.TypeSystem.Int32, 0)
+                    },
+                    new SymbolDeclarationNode()
+                    {
+                        Variable = enumerator.LocalVariable,
+                        Initializer = new MethodCallNode()
+                        {
+                            ExpressionReturnType = ienumerator,
+                            Function = new FunctionNode()
+                            {
+                                ObjectInstance = enumerable,
+                                Method = ienumerableGetEnumerator
+                            },
+                            Args = new IExpressionNode[0]
+                        }
+                    },
+                    new WhileBlockNode()
+                    {
+                        Condition = new MethodCallNode()
+                        {
+                            Function = new FunctionNode()
+                            {
+                                ObjectInstance = enumerator,
+                                Method = ienumeratorMoveNext
+                            },
+                            Args = new IExpressionNode[0]
+                        },
+                        ExecutedBlock = new CodeBlockNode()
+                        {
+                            Nodes = new IParserNode[]
+                            {
+                                new MethodCallNode()
+                                {
+                                    Function = new FunctionNode()
+                                    {
+                                        Method = consoleWrite
+                                    },
+                                    Args = new IExpressionNode[]
+                                    {
+                                        new BinaryOperatorNode()
+                                        {
+                                            ExpressionReturnType = assemblyEmitter.TypeSystem.String,
+                                            BinaryOperatorType = BinaryOperatorNodeType.Addition,
+                                            LeftOperand = new MethodCallNode()
+                                            {
+                                                ExpressionReturnType = assemblyEmitter.TypeSystem.Object,
+                                                Function = new FunctionNode()
+                                                {
+                                                    ObjectInstance = enumerator,
+                                                    Method = ienumeratorGetCurrent
+                                                },
+                                                Args = new IExpressionNode[0]
+                                            },
+                                            RightOperand = new LiteralNode(assemblyEmitter.TypeSystem.String, " ")
+                                        }
+                                    }
+                                },
+                                new UnaryOperatorNode()
+                                {
+                                    UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                                    ExpressionReturnType = assemblyEmitter.TypeSystem.Void,
+                                    Operand = new UnaryOperatorNode()
+                                    {
+                                        UnaryOperatorType = UnaryOperatorNodeType.PreIncrement,
+                                        ExpressionReturnType = assemblyEmitter.TypeSystem.Int32,
+                                        Operand = counter
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    CallConsoleWriteLine(new LiteralNode(assemblyEmitter.TypeSystem.String, "")),
+                    CallConsoleWriteLine(new LiteralNode(assemblyEmitter.TypeSystem.String, "Total count: {0}."), counter)
+                }
             };
         }
 

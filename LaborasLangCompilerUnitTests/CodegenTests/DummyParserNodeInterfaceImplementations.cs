@@ -105,6 +105,17 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         }
     }
 
+    class ArrayCreationNode : IArrayCreationNode
+    {
+        public NodeType Type { get { return NodeType.Expression; } }
+        public SequencePoint SequencePoint { get { return null; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ArrayCreation; } }
+
+        public TypeReference ExpressionReturnType { get; set; }
+        public IReadOnlyList<IExpressionNode> Dimensions { get; set; }
+        public IReadOnlyList<IExpressionNode> Initializer { get; set; }
+    }
+
     class LocalVariableNode : ILocalVariableNode
     {
         public SequencePoint SequencePoint { get { return null; } }
@@ -113,7 +124,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         public TypeReference ExpressionReturnType { get { return LocalVariable.VariableType; } }
         public VariableDefinition LocalVariable { get; set; }
-        
+
         public LocalVariableNode(VariableDefinition variable)
         {
             LocalVariable = variable;
@@ -168,7 +179,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         public TypeReference ExpressionReturnType { get { return Parameter.ParameterType; } }
         public ParameterDefinition Parameter { get; set; }
-        
+
         public ParameterNode(ParameterDefinition parameter)
         {
             Parameter = parameter;

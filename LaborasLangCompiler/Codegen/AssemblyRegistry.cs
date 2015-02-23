@@ -233,8 +233,17 @@ namespace LaborasLangCompiler.Codegen
                 return arrayType;
 
             arrayType = new ArrayType(elementType, rank);
-            instance.arrayTypes.Add(key, arrayType);
 
+            if (rank > 1)
+            {
+                for (int i = 0; i < rank; i++)
+                {
+                    arrayType.Dimensions[i] = new ArrayDimension(0, null);
+                }
+            }
+
+            instance.arrayTypes.Add(key, arrayType);
+            
             return arrayType;
         }
         
@@ -404,6 +413,13 @@ namespace LaborasLangCompiler.Codegen
                 return constructor;
 
             constructor = new MethodReference(".ctor", arrayType.Module.TypeSystem.Void, arrayType);
+            constructor.HasThis = true;
+
+            for (int i = 0; i < arrayType.Rank; i++)
+            {
+                constructor.Parameters.Add(new ParameterDefinition(arrayType.ElementType));
+            }
+
             instance.arrayConstructors.Add(arrayType, constructor);
             return constructor;
         }

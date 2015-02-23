@@ -1442,6 +1442,49 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         }
 
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_CreateEmptyVector()
+        {
+            BodyCodeBlock = OutputEnumerable(new ArrayCreationNode()
+            {
+                ExpressionReturnType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.Int32, 1),
+                Dimensions = new IExpressionNode[] { new LiteralNode(assemblyEmitter.TypeSystem.Int32, 0) }
+            });
+
+            ExpectedOutput = "Total count: 0.";
+            AssertSuccessByExecution();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_CreateVector()
+        {
+            BodyCodeBlock = OutputEnumerable(new ArrayCreationNode()
+            {
+                ExpressionReturnType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.Int32, 1),
+                Dimensions = new IExpressionNode[] { new LiteralNode(assemblyEmitter.TypeSystem.Int32, 5) }
+            });
+
+            ExpectedOutput = Enumerable.Repeat("0 ", 5).Aggregate((x, y) => x + y) + Environment.NewLine + "Total count: 5.";
+            AssertSuccessByExecution();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_CreateMultiDimentionalArray()
+        {
+            BodyCodeBlock = OutputEnumerable(new ArrayCreationNode()
+            {
+                ExpressionReturnType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.Int32, 2),
+                Dimensions = new IExpressionNode[] 
+                {
+                    new LiteralNode(assemblyEmitter.TypeSystem.Int32, 2),
+                    new LiteralNode(assemblyEmitter.TypeSystem.Int32, 3)
+                }
+            });
+
+            ExpectedOutput = Enumerable.Repeat("0 ", 6).Aggregate((x, y) => x + y) + Environment.NewLine + "Total count: 6.";
+            AssertSuccessByExecution();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_CallFunctionWithOptionalParameter()
         {
             var voidType = assemblyEmitter.TypeSystem.Void;
