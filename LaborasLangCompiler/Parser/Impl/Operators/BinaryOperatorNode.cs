@@ -123,6 +123,11 @@ namespace LaborasLangCompiler.Parser.Impl
         private static ExpressionNode AsOverload(ContextNode context, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right, SequencePoint point)
         {
             var name = Overloads[op];
+            return AsOverload(context, name, left, right, point);
+        }
+
+        public static ExpressionNode AsOverload(ContextNode context, string name, ExpressionNode left, ExpressionNode right, SequencePoint point)
+        {
             var methods = TypeUtils.GetOperatorMethods(context.Assembly, left, right, name);
 
             var args = Utils.Utils.Enumerate(left, right);
@@ -132,7 +137,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             var method = AssemblyRegistry.GetCompatibleMethod(methods, argsTypes);
 
-            if(method != null)
+            if (method != null)
             {
                 return MethodCallNode.Create(context, new MethodNode(method, null, context, point), args, point);
             }
@@ -145,8 +150,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 else
                 {
                     ErrorCode.TypeMissmatch.ReportAndThrow(point,
-                        "Overloaded operator ({0}) for operands {1} and {2} is ambiguous",
-                        op, left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName);
+                        "Overloaded operator {0} for operands {1} and {2} is ambiguous",
+                        name, left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName);
                     return null;//unreachable
                 }
             }

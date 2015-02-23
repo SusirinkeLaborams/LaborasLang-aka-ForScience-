@@ -89,33 +89,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return null;
 
             string name = OperatorMethods[op];
-            var methods = TypeUtils.GetOperatorMethods(context.Assembly, left, right, name);
-
-            var args = Utils.Utils.Enumerate(left, right);
-            var argsTypes = args.Select(a => a.ExpressionReturnType).ToList();
-
-            methods = methods.Where(m => MetadataHelpers.MatchesArgumentList(m, argsTypes));
-
-            var method = AssemblyRegistry.GetCompatibleMethod(methods, argsTypes);
-
-            if (method != null)
-            {
-                return MethodCallNode.Create(context, new MethodNode(method, null, context, point), args, point);
-            }
-            else
-            {
-                if (methods.Count() == 0)
-                {
-                    return null;
-                }
-                else
-                {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(point,
-                        "Overloaded operator ({0}) for operands {1} and {2} is ambiguous",
-                        op, left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName);
-                    return null;//unreachable
-                }
-            }
+            return BinaryOperatorNode.AsOverload(context, name, left, right, point);
         }
 
         private static void AssignmentMissmatch(ExpressionNode left, ExpressionNode right, SequencePoint point)
