@@ -195,6 +195,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Codegen\Methods\TemporaryVariables.cs" />
     <Compile Include="Common\CompilerException.cs" />
     <Compile Include="Common\ContractsHelper.cs" />
     <Compile Include="Common\ErrorHandling.cs" />

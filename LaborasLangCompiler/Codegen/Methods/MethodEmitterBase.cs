@@ -3,6 +3,7 @@ using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Codegen.Methods
@@ -12,6 +13,7 @@ namespace LaborasLangCompiler.Codegen.Methods
         protected readonly MethodDefinition methodDefinition;
         protected readonly MethodBody body;
         protected readonly ILProcessor ilProcessor;
+        protected TemporaryVariables temporaryVariables;    // Not readonly because struct
 
         protected TypeEmitter DeclaringType { get; private set; }
         protected AssemblyEmitter Assembly { get { return DeclaringType.Assembly; } }
@@ -27,6 +29,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             body = methodDefinition.Body;
             ilProcessor = body.GetILProcessor();
+            temporaryVariables = new TemporaryVariables(body);
         }
 
         [Pure]
