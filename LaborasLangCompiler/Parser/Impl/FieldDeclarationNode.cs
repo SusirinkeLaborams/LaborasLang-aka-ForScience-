@@ -95,8 +95,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            if(Parser.ProjectParser.ShouldEmit)
-                GetClass().TypeEmitter.AddFieldInitializer(FieldDefinition, Initializer);
+#warning add ITypeEmitter
+            GetClass().TypeEmitter.AddFieldInitializer(FieldDefinition, Initializer);
         }
 
         public FieldAttributes GetAttributes()

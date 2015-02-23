@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
+using LaborasLangCompiler.Parser.Emitters;
 using LaborasLangCompiler.Parser.Impl;
 using System;
 using System.Diagnostics;
@@ -15,7 +16,7 @@ namespace LaborasLangCompiler.FrontEnd
             AssemblyRegistry.Create(compilerArgs.References);
             var assembly = new AssemblyEmitter(compilerArgs);
 
-            ProjectParser.ParseAll(assembly, compilerArgs.SourceFiles, true);
+            ProjectParser.ParseAll(new EmitterSource(assembly), compilerArgs.SourceFiles);
 
             if (Errors.Reported.Count == 0)
             {

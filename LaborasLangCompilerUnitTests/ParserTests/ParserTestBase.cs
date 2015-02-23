@@ -13,6 +13,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using LaborasLangCompiler.Parser.Emitters;
 
 namespace LaborasLangCompilerUnitTests.ParserTests
 {
@@ -44,7 +45,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             var assembly = new AssemblyEmitter(compilerArgs);
             var file = path + name;
 
-            var parser = ProjectParser.ParseAll(assembly, sources.ToArray(), names.ToArray(), false);
+            var parser = ProjectParser.ParseAll(new MockEmitterSource(assembly), sources.ToArray(), names.ToArray());
             string result = parser.ToString();
 
             string expected = "";

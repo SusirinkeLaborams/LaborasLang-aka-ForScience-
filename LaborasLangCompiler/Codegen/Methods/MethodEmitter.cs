@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace LaborasLangCompiler.Codegen.Methods
 {
-    internal class MethodEmitter : MethodEmitterBase
+    internal class MethodEmitter : MethodEmitterBase, IMethodEmitter
     {
         public bool Parsed { get; protected set; }
 
@@ -23,8 +23,6 @@ namespace LaborasLangCompiler.Codegen.Methods
         
         public void ParseTree(ICodeBlockNode tree)
         {
-            Contract.Requires(!Parsed, "Can't set same method twice.");
-
             Emit(tree);
 
             if (body.Instructions.Count == 0 || body.Instructions.Last().OpCode != OpCodes.Ret)
@@ -41,9 +39,14 @@ namespace LaborasLangCompiler.Codegen.Methods
             Parsed = true;
         }
 
+        [Pure]
+        MethodReference IMethodEmitter.Get()
+        {
+            return base.Get();
+        }
+
         public void SetAsEntryPoint()
         {
-            Contract.Requires(!Get().HasThis, "Entry point must be static.");
             methodDefinition.DeclaringType.Module.EntryPoint = methodDefinition;
         }
 

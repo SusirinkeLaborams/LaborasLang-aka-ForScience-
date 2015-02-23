@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private readonly AstNode body;
         private CodeBlockNode parsedBody;
-        private MethodEmitter emitter;
+        private IMethodEmitter emitter;
         private readonly Dictionary<string, ParameterDefinition> symbols = new Dictionary<string, ParameterDefinition>();
         private Modifiers modifiers;
 
@@ -41,8 +41,7 @@ namespace LaborasLangCompiler.Parser.Impl
             parsedBody = CodeBlockNode.Parse(this, body);
             if (MethodReturnType.FullName != Parser.Void.FullName && !parsedBody.Returns)
                 ErrorCode.MissingReturn.ReportAndThrow(SequencePoint, "Not all control paths return a value");
-            if (Parser.ProjectParser.ShouldEmit)
-                emitter.ParseTree(parsedBody);
+            emitter.ParseTree(parsedBody);
         }
 
         private void ParseHeader(Modifiers mods, AstNode lexerNode, string methodName)
@@ -57,7 +56,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
 
             MethodReturnType = builder.Type;
-            emitter = new MethodEmitter(GetClass().TypeEmitter, methodName, MethodReturnType, AttributesFromModifiers(Parser.GetSequencePoint(lexerNode), mods));
+            emitter = Parser.Emitters.CreateMethod(GetClass().TypeEmitter, methodName, MethodReturnType, AttributesFromModifiers(Parser.GetSequencePoint(lexerNode), mods));
 
             foreach(var p in paramz)
             {
