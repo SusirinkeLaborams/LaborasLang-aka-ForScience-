@@ -195,7 +195,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Codegen\Methods\IMethodEmitter.cs" />
     <Compile Include="Common\CompilerException.cs" />
     <Compile Include="Common\ContractsHelper.cs" />
     <Compile Include="Common\ErrorHandling.cs" />
@@ -218,10 +217,6 @@
     <Compile Include="Codegen\Types\FunctorBaseTypeEmitter.cs" />
     <Compile Include="Codegen\Types\FunctorImplementationTypeEmitter.cs" />
     <Compile Include="Codegen\Types\TypeEmitter.cs" />
-    <Compile Include="Parser\Emitters\EmitterSource.cs" />
-    <Compile Include="Parser\Emitters\IEmitterSource.cs" />
-    <Compile Include="Parser\Emitters\MockEmitterSource.cs" />
-    <Compile Include="Parser\Emitters\MockMethodEmitter.cs" />
     <Compile Include="Parser\Impl\AmbiguousMethodNode.cs" />
     <Compile Include="Parser\Impl\ArrayCreationNode.cs" />
     <Compile Include="Parser\Impl\FieldNode.cs" />

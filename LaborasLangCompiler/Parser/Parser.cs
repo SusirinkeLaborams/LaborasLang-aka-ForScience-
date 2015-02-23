@@ -1,5 +1,5 @@
 ﻿using LaborasLangCompiler.Codegen;
-using LaborasLangCompiler.Parser.Emitters;
+
 using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
@@ -18,7 +18,6 @@ namespace LaborasLangCompiler.Parser
     {
         public ProjectParser ProjectParser { get; private set; }
         public AssemblyEmitter Assembly { get { return ProjectParser.Assembly; } }
-        public IEmitterSource Emitters { get { return ProjectParser.Emitters; } }
         public ClassNode Root { get; set; }
         public string Filename { get; private set; }
         public Document Document { get; private set; }

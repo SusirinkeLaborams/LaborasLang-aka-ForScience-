@@ -1,5 +1,4 @@
 ﻿using LaborasLangCompiler.Codegen;
-using LaborasLangCompiler.Parser.Emitters;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Mono.Cecil;
 using System;
@@ -13,8 +12,8 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class ProjectParser : IDisposable
     {
-        public AssemblyEmitter Assembly { get { return Emitters.Assembly; } }
-        public IEmitterSource Emitters { get; private set; }
+        public AssemblyEmitter Assembly { get; private set; }
+        public bool ShouldEmit { get; private set; }
 
         private readonly Dictionary<string, TypeReference> aliases;
         private readonly HashSet<TypeReference> primitives;
@@ -46,35 +45,36 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #endregion types
 
-        private ProjectParser(IEmitterSource emitters)
+        private ProjectParser(AssemblyEmitter assembly, bool emit)
         {
-            Emitters = emitters;
+            Assembly = assembly;
+            ShouldEmit = emit;
             this.aliases = new Dictionary<string, TypeReference>();
             this.parsers = new List<Parser>();
 
-            aliases["bool"] = Bool = Assembly.TypeSystem.Boolean;
+            aliases["bool"] = Bool = assembly.TypeSystem.Boolean;
 
-            aliases["int8"] = Int8 = Assembly.TypeSystem.SByte;
-            aliases["uint8"] = UInt8 = Assembly.TypeSystem.Byte;
+            aliases["int8"] = Int8 = assembly.TypeSystem.SByte;
+            aliases["uint8"] = UInt8 = assembly.TypeSystem.Byte;
 
-            aliases["int16"] = Int16 = Assembly.TypeSystem.Int16;
-            aliases["uint16"] = UInt16 = Assembly.TypeSystem.UInt16;
-            aliases["char"] = Char = Assembly.TypeSystem.Char;
+            aliases["int16"] = Int16 = assembly.TypeSystem.Int16;
+            aliases["uint16"] = UInt16 = assembly.TypeSystem.UInt16;
+            aliases["char"] = Char = assembly.TypeSystem.Char;
 
-            aliases["int32"] = aliases["int"] = Int32 = Assembly.TypeSystem.Int32;
-            aliases["uint32"] = aliases["uint"] = UInt32 = Assembly.TypeSystem.UInt32;
+            aliases["int32"] = aliases["int"] = Int32 = assembly.TypeSystem.Int32;
+            aliases["uint32"] = aliases["uint"] = UInt32 = assembly.TypeSystem.UInt32;
 
-            aliases["int64"] = aliases["long"] = Int64 = Assembly.TypeSystem.Int64;
-            aliases["uint64"] = aliases["ulong"] = UInt64 = Assembly.TypeSystem.UInt64;
+            aliases["int64"] = aliases["long"] = Int64 = assembly.TypeSystem.Int64;
+            aliases["uint64"] = aliases["ulong"] = UInt64 = assembly.TypeSystem.UInt64;
 
-            aliases["float"] = Float = Assembly.TypeSystem.Single;
-            aliases["double"] = Double = Assembly.TypeSystem.Double;
+            aliases["float"] = Float = assembly.TypeSystem.Single;
+            aliases["double"] = Double = assembly.TypeSystem.Double;
             aliases["decimal"] = Decimal = AssemblyRegistry.FindType(Assembly, "System.Decimal");
 
-            aliases["string"] = String = Assembly.TypeSystem.String;
-            aliases["object"] = Object = Assembly.TypeSystem.Object;
+            aliases["string"] = String = assembly.TypeSystem.String;
+            aliases["object"] = Object = assembly.TypeSystem.Object;
 
-            aliases["void"] = Void = Assembly.TypeSystem.Void;
+            aliases["void"] = Void = assembly.TypeSystem.Void;
             aliases["auto"] = Auto = AutoType.Instance;
 
             primitives = new HashSet<TypeReference>(Utils.Utils.Enumerate(Bool, Char, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Float, Double, Decimal, String), new TypeComparer());
@@ -112,10 +112,10 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public static ProjectParser ParseAll(IEmitterSource emitters, string[] sources, string[] names)
+        public static ProjectParser ParseAll(AssemblyEmitter assembly, string[] sources, string[] names, bool emit)
         {
             
-            ProjectParser projectParser = new ProjectParser(emitters);
+            ProjectParser projectParser = new ProjectParser(assembly, emit);
             for(int i = 0; i < sources.Length; i++)
             {
                 var source = sources[i];
@@ -129,9 +129,9 @@ namespace LaborasLangCompiler.Parser.Impl
             return projectParser;
         }
 
-        public static ProjectParser ParseAll(IEmitterSource emitters, string[] files)
+        public static ProjectParser ParseAll(AssemblyEmitter assembly, string[] files, bool emit)
         {
-            return ParseAll(emitters, files.Select(f => File.ReadAllText(f)).ToArray(), files);
+            return ParseAll(assembly, files.Select(f => File.ReadAllText(f)).ToArray(), files, emit);
         }
 
         public TypeReference FindType(string fullname)
