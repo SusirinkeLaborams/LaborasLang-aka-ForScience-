@@ -19,6 +19,9 @@ namespace LaborasLangCompiler.Parser
         ConditionBlock,
         WhileBlock,
         ReturnNode,
+        ExceptionHandler,
+        Throw,
+        Catch,
         ParserInternal
     }
     interface IParserNode
@@ -45,6 +48,7 @@ namespace LaborasLangCompiler.Parser
         FunctionArgument,
         ValueCreation,
         ArrayCreation,
+        ArrayAccess,
         ParserInternal
     }
 
@@ -173,6 +177,20 @@ namespace LaborasLangCompiler.Parser
         IExpressionNode Operand { get; }
     }
 
+    enum IncrementDecrementOperatorType
+    {
+        PreDecrement,
+        PreIncrement,
+        PostDecrement,
+        PostIncrement
+    }
+
+    interface IIncrementDecrementOperatorNode : IUnaryOperatorNode
+    {
+        IncrementDecrementOperatorType IncrementDecrementType { get; }
+        MethodReference OverloadedOperatorMethod { get; } // May be null for default behavior
+    }
+
     [ContractClass(typeof(IAssignmentOperatorNodeContract))]
     interface IAssignmentOperatorNode : IExpressionNode
     {
@@ -185,6 +203,12 @@ namespace LaborasLangCompiler.Parser
     {
         IReadOnlyList<IExpressionNode> Dimensions { get; }
         IReadOnlyList<IExpressionNode> Initializer { get; }
+    }
+
+    interface IArrayNode : IExpressionNode
+    {
+        IExpressionNode Array { get; set; }  // Not null, ExpressionReturnType is ArrayType
+        IReadOnlyList<IExpressionNode> Indices { get; set; } // Indicies.Count == 1 for single dim arrays, >1 for multi dim arrays
     }
 
     [ContractClass(typeof(ISymbolDeclarationNodeContract))]
@@ -203,6 +227,40 @@ namespace LaborasLangCompiler.Parser
     interface IReturnNode : IParserNode
     {
         IExpressionNode Expression { get; }
+    }
+
+    interface IExceptionHandlerNode : IParserNode
+    {
+        ICodeBlockNode TryBlock { get; set; } // Not Null
+        IReadOnlyList<ICatchNode> CatchBlocks { get; set; } // Not null
+        ICodeBlockNode FinallyBlock { get; set; }
+        // CatchNodes.Count > 0 || FinallyBlock != null
+    }
+
+    interface IThrowNode : IParserNode
+    {
+        IExpressionNode Exception { get; set; } // Exception != null
+    }
+
+    interface ICatchNode : IParserNode
+    {
+        ILocalVariableNode ExceptionVariable { get; set; } // May be null
+        ICodeBlockNode CatchBody { get; set; } // Not null
+    }
+
+    interface IForLoopNode : IParserNode
+    {
+        ICodeBlockNode InitializationBlock { get; } // Not null
+        IExpressionNode ConditionBlock { get; } // Not null
+        ICodeBlockNode IncrementBlock { get; } // Not null
+        ICodeBlockNode Body { get; } // Not null
+    }
+
+    interface IForEachLoopNode : IParserNode
+    {
+        IExpressionNode Collection { get; }
+        ILocalVariableNode LoopVariable { get; }
+        ICodeBlockNode Body { get; }
     }
 
 #region Interface contracts
