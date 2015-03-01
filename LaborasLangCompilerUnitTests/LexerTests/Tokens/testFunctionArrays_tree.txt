@@ -14,19 +14,22 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: TypeParameters, Start: 1, 4, End: 1, 6, Content: ""
-			Type: TypeParameters
+			Content: Type: ParameterList, Start: 1, 4, End: 1, 6, Content: ""
+			Type: ParameterList
 			Children:
-				Content: Type: LeftParenthesis, Start: 1, 4, End: 1, 5, Content: "("
-				Type: LeftParenthesis
+				Content: Type: FunctorParameters, Start: 1, 4, End: 1, 6, Content: ""
+				Type: FunctorParameters
 				Children:
+					Content: Type: LeftParenthesis, Start: 1, 4, End: 1, 5, Content: "("
+					Type: LeftParenthesis
+					Children:
 
-				Content: Type: RightParenthesis, Start: 1, 5, End: 1, 6, Content: ")"
-				Type: RightParenthesis
-				Children:
+					Content: Type: RightParenthesis, Start: 1, 5, End: 1, 6, Content: ")"
+					Type: RightParenthesis
+					Children:
 
-			Content: Type: TypeParameters, Start: 1, 6, End: 1, 8, Content: ""
-			Type: TypeParameters
+			Content: Type: ParameterList, Start: 1, 6, End: 1, 8, Content: ""
+			Type: ParameterList
 			Children:
 				Content: Type: IndexNode, Start: 1, 6, End: 1, 8, Content: ""
 				Type: IndexNode

@@ -30,6 +30,14 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             var source = @"a = foo[1, bar()];";
             ExecuteTest(source);
         }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testValidButStupidFunctionReturnsArray()
+        {
+            var source = @"a = foo[,](){return bar;};";
+            AssertCanBeLexed(source);
+        }
         
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void testIndexAccess()
@@ -45,10 +53,25 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             ExecuteTest(source);
         }
 
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testCreateEmptyMultidimensionalArray()
+        {
+            var source = @"int[,] a = int[5,5];";
+            ExecuteTest(source);
+        }
+
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void testDeclareEmptyArray()
         {
             var source = @"int[] a;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testDeclareFunctionThatReturnsArray()
+        {
+            var source = @"int[]() a;";
             ExecuteTest(source);
         }
 

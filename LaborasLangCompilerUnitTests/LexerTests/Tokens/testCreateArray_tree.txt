@@ -14,8 +14,8 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: TypeParameters, Start: 1, 4, End: 1, 6, Content: ""
-			Type: TypeParameters
+			Content: Type: ParameterList, Start: 1, 4, End: 1, 6, Content: ""
+			Type: ParameterList
 			Children:
 				Content: Type: IndexNode, Start: 1, 4, End: 1, 6, Content: ""
 				Type: IndexNode
