@@ -185,10 +185,11 @@ namespace LaborasLangCompiler.Parser
         PostIncrement
     }
 
+    //nothing to contract
     interface IIncrementDecrementOperatorNode : IUnaryOperatorNode
     {
         IncrementDecrementOperatorType IncrementDecrementType { get; }
-        MethodReference OverloadedOperatorMethod { get; } // May be null for default behavior
+        MethodReference OverloadedOperatorMethod { get; }
     }
 
     [ContractClass(typeof(IAssignmentOperatorNodeContract))]
@@ -205,10 +206,11 @@ namespace LaborasLangCompiler.Parser
         IReadOnlyList<IExpressionNode> Initializer { get; }
     }
 
-    interface IArrayNode : IExpressionNode
+    [ContractClass(typeof(IArrayAccessNodeContract))]
+    interface IArrayAccessNode : IExpressionNode
     {
-        IExpressionNode Array { get; set; }  // Not null, ExpressionReturnType is ArrayType
-        IReadOnlyList<IExpressionNode> Indices { get; set; } // Indicies.Count == 1 for single dim arrays, >1 for multi dim arrays
+        IExpressionNode Array { get; }  // Not null, ExpressionReturnType is ArrayType
+        IReadOnlyList<IExpressionNode> Indices { get; } // Indicies.Count == 1 for single dim arrays, >1 for multi dim arrays
     }
 
     [ContractClass(typeof(ISymbolDeclarationNodeContract))]
@@ -224,28 +226,31 @@ namespace LaborasLangCompiler.Parser
         IReadOnlyList<IParserNode> Nodes { get; }
     }
 
+    [ContractClass(typeof(IReturnNodeContract))]
     interface IReturnNode : IParserNode
     {
         IExpressionNode Expression { get; }
     }
 
+    [ContractClass(typeof(IExceptionHandlerNodeContract))]
     interface IExceptionHandlerNode : IParserNode
     {
-        ICodeBlockNode TryBlock { get; set; } // Not Null
-        IReadOnlyList<ICatchNode> CatchBlocks { get; set; } // Not null
-        ICodeBlockNode FinallyBlock { get; set; }
-        // CatchNodes.Count > 0 || FinallyBlock != null
+        ICodeBlockNode TryBlock { get; }
+        IReadOnlyList<ICatchNode> CatchBlocks { get; }
+        ICodeBlockNode FinallyBlock { get; }
     }
 
+    [ContractClass(typeof(IThrowNodeContract))]
     interface IThrowNode : IParserNode
     {
-        IExpressionNode Exception { get; set; } // Exception != null
+        IExpressionNode Exception { get; }
     }
 
+    [ContractClass(typeof(ICatchNodeContract))]
     interface ICatchNode : IParserNode
     {
-        ILocalVariableNode ExceptionVariable { get; set; } // May be null
-        ICodeBlockNode CatchBody { get; set; } // Not null
+        ILocalVariableNode ExceptionVariable { get; }
+        ICodeBlockNode CatchBody { get; }
     }
 
     interface IForLoopNode : IParserNode
@@ -590,6 +595,7 @@ namespace LaborasLangCompiler.Parser
             get
             {
                 Contract.Ensures(Contract.Result<IExpressionNode>() != null);
+                Contract.Ensures(Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
                 throw new NotImplementedException();
             }
         }
@@ -599,6 +605,7 @@ namespace LaborasLangCompiler.Parser
             get
             {
                 Contract.Ensures(Contract.Result<IExpressionNode>() != null);
+                Contract.Ensures(Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
                 throw new NotImplementedException();
             }
         }
@@ -620,6 +627,35 @@ namespace LaborasLangCompiler.Parser
                 Contract.Ensures(Contract.Result<IReadOnlyList<IExpressionNode>>() != null);
                 Contract.Ensures(Contract.Result<IReadOnlyList<IExpressionNode>>().Count > 0);
                 throw new NotImplementedException(); 
+            }
+        }
+    }
+
+    [ContractClassFor(typeof(IArrayAccessNode))]
+    abstract class IArrayAccessNodeContract : IArrayAccessNode
+    {
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
+        public IExpressionNode Array
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<IExpressionNode>() != null);
+                Contract.Ensures(Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
+                throw new NotImplementedException();
+            }
+        }
+
+        public IReadOnlyList<IExpressionNode> Indices
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<IReadOnlyList<IExpressionNode>>() != null);
+                Contract.Ensures(Contract.Result<IReadOnlyList<IExpressionNode>>().Count > 0);
+                throw new NotImplementedException();
             }
         }
     }
@@ -653,6 +689,85 @@ namespace LaborasLangCompiler.Parser
             {
                 Contract.Ensures(Contract.Result<IReadOnlyList<IParserNode>>() != null);
                 throw new NotImplementedException(); 
+            }
+        }
+    }
+
+    [ContractClassFor(typeof(IReturnNode))]
+    abstract class IReturnNodeContract : IReturnNode
+    {
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
+        public IExpressionNode Expression
+        {
+            get 
+            {
+
+                Contract.Ensures(Contract.Result<IExpressionNode>() == null || Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
+                throw new NotImplementedException(); 
+            }
+        }
+    }
+
+    [ContractClassFor(typeof(IExceptionHandlerNode))]
+    abstract class IExceptionHandlerNodeContract : IExceptionHandlerNode
+    {
+        public abstract ICodeBlockNode FinallyBlock { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
+        public ICodeBlockNode TryBlock
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<ICodeBlockNode>() != null);
+                throw new NotImplementedException();
+            }
+        }
+
+        public IReadOnlyList<ICatchNode> CatchBlocks
+        {
+            get
+            {
+                var result = Contract.Result<IReadOnlyList<ICatchNode>>();
+                Contract.Ensures(result != null);
+                Contract.Ensures(FinallyBlock != null || result.Count > 0);
+                throw new NotImplementedException();
+            }
+        }
+    }
+
+    [ContractClassFor(typeof(IThrowNode))]
+    abstract class IThrowNodeContract : IThrowNode
+    {
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
+        public IExpressionNode Exception
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<IExpressionNode>() != null);
+                Contract.Ensures(Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
+                throw new NotImplementedException();
+            }
+        }
+    }
+
+    [ContractClassFor(typeof(ICatchNode))]
+    abstract class ICatchNodeContract : ICatchNode
+    {
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+        public abstract ILocalVariableNode ExceptionVariable { get; }
+
+        public ICodeBlockNode CatchBody
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<ICodeBlockNode>() != null);
+                throw new NotImplementedException();
             }
         }
     }
