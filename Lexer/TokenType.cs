@@ -116,13 +116,14 @@
         UnknownNode,
         IndexAccessNode,
         IndexNode,        
+        FunctorParameters,
         LexerInternalTokens,    // Lexer internal-only tokens start from here
         
         StatementNode,
         DeclarationSubnode,
         ValueStatementNode,
 
-        TypeParameters,
+        ParameterList,
         TypeSubnode,
         TypeAndSymbolSubnode,
         CommaAndValue,
@@ -174,6 +175,27 @@
                     return true;
                 default:
                     return false;
+            }
+        }
+
+        public static bool IsMeaningful(this TokenType token)
+        {
+            return true;
+            switch(token)
+            {
+                case TokenType.Comma:
+                case TokenType.LeftBracket:
+                case TokenType.RightBracket:                
+                case TokenType.LeftCurlyBrace:
+                case TokenType.RightCurlyBrace:
+                case TokenType.LeftParenthesis:
+                case TokenType.RightParenthesis:
+                case TokenType.EndOfLine:
+                case TokenType.Period:
+                case TokenType.Return:
+                    return false;
+                default:
+                    return true;
             }
         }
     }

@@ -124,7 +124,7 @@ namespace Lexer
                     
                     ParseRule(IndexNode,
                     LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket,
-                    LeftBracket + RightBracket),
+                    LeftBracket + ZeroOrMore(Comma) + RightBracket),
 
                     #region Operators
 
@@ -277,16 +277,18 @@ namespace Lexer
                     AlwaysCollapsableParseRule(SubSymbol,
                         Period + Symbol),
 
-                    ParseRule(TypeParameters,
-                        LeftParenthesis + Type + ZeroOrMore(TypeSubnode) + RightParenthesis,
-                        LeftParenthesis + Type + Symbol + ZeroOrMore(TypeAndSymbolSubnode) + RightParenthesis,
-                        LeftParenthesis + RightParenthesis,
-                        IndexNode,
-                        LeftBracket + RightBracket
+                    ParseRule(ParameterList,
+                        OneOrMore(FunctorParameters),                        
+                        OneOrMore(IndexNode)
                     ),
 
+                    ParseRule(FunctorParameters,
+                        LeftParenthesis + Type + ZeroOrMore(TypeSubnode) + RightParenthesis,
+                        LeftParenthesis + Type + Symbol + ZeroOrMore(TypeAndSymbolSubnode) + RightParenthesis,
+                        LeftParenthesis + RightParenthesis),
+
                     ParseRule(Type,                        
-                       FullSymbol + ZeroOrMore(TypeParameters)),
+                       FullSymbol + ZeroOrMore(ParameterList)),
                        
                     AlwaysCollapsableParseRule(TypeSubnode,
                         Comma + Type),
@@ -434,7 +436,11 @@ namespace Lexer
         {
             if (m_Source[sourceOffset + tokensConsumed].Type == token.Token)
             {
-                node.AddTerminal(m_RootNode, m_Source[sourceOffset + tokensConsumed]);
+                if (token.Token.IsMeaningful())
+                {
+                    node.AddTerminal(m_RootNode, m_Source[sourceOffset + tokensConsumed]);
+                }
+                
                 tokensConsumed++;
                 LastMatched = sourceOffset + tokensConsumed;
 
@@ -667,7 +673,7 @@ namespace Lexer
         private static Condition SubSymbol { get { return TokenType.SubSymbol; } }
         private static Condition Value { get { return TokenType.Value; } }
         private static Condition Type { get { return TokenType.Type; } }
-        public static Condition TypeParameters { get { return TokenType.TypeParameters; } }
+        private static Condition ParameterList { get { return TokenType.ParameterList; } }
         private static Condition VariableModifier { get { return TokenType.VariableModifier; } }
         private static Condition WhileLoop { get { return TokenType.WhileLoop; } }
         private static Condition TypeSubnode { get { return TokenType.TypeSubnode; } }
@@ -726,6 +732,7 @@ namespace Lexer
         private static Condition IndexAccessNode { get { return TokenType.IndexAccessNode; } }
         private static Condition RightBracket { get { return TokenType.RightBracket; } }
         private static Condition LeftBracket { get { return TokenType.LeftBracket; } }
+        private static Condition FunctorParameters { get { return TokenType.FunctorParameters; } }
         #endregion
 
     }
