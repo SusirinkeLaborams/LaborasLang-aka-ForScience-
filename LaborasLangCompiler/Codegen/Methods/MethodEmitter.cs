@@ -7,7 +7,6 @@ using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Globalization;
 using System.Linq;
 
 namespace LaborasLangCompiler.Codegen.Methods
@@ -444,7 +443,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 {
                     // Right operand could be a different type, 
                     // so it will get casted to left operand type
-                    tempVariable = AcquireTempVariable(assignmentOperator.LeftOperand.ExpressionReturnType);
+                    tempVariable = temporaryVariables.Acquire(assignmentOperator.LeftOperand.ExpressionReturnType);
 
                     Dup();
                     Stloc(tempVariable.Index);
@@ -458,7 +457,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 if (isProperty)
                 {
                     Ldloc(tempVariable.Index);
-                    ReleaseTempVariable(tempVariable);
+                    temporaryVariables.Release(tempVariable);
                 }
                 else
                 {
@@ -698,7 +697,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
             }
 
-            var arrayVariable = AcquireTempVariable(methodParameters.Last().ParameterType);
+            var arrayVariable = temporaryVariables.Acquire(methodParameters.Last().ParameterType);
             var elementType = methodParameters.Last().ParameterType.GetElementType();
 
             Ldc_I4(arguments.Count - methodParameters.Count + 1);
@@ -722,7 +721,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
 
             Ldloc(arrayVariable.Index);
-            ReleaseTempVariable(arrayVariable);
+            temporaryVariables.Release(arrayVariable);
         }
 
         private void EmitArgumentsForCallWithOptionalParameters(IReadOnlyList<IExpressionNode> arguments, IList<ParameterDefinition> methodParameters, MethodDefinition resolvedMethod)
@@ -1450,54 +1449,6 @@ namespace LaborasLangCompiler.Codegen.Methods
                 default:
                     ContractsHelper.AssumeUnreachable(string.Format("Unknown primitive type: {0}", targetType.FullName));
                     break;
-            }
-        }
-
-        #endregion
-
-        #region Helpers
-        
-        private class TempVariable
-        {
-            public VariableDefinition Variable { get; private set; }
-            public bool IsTaken { get; set; }
-
-            public TempVariable(VariableDefinition variable, bool isTaken)
-            {
-                Variable = variable;
-                IsTaken = isTaken;
-            }
-        }
-
-        private readonly List<TempVariable> temporaryVariables = new List<TempVariable>();
-
-        protected VariableDefinition AcquireTempVariable(TypeReference type)
-        {
-            for (int i = 0; i < temporaryVariables.Count; i++)
-            {
-                if (!temporaryVariables[i].IsTaken)
-                {
-                    temporaryVariables[i].IsTaken = true;
-                    return temporaryVariables[i].Variable;
-                }
-            }
-
-            var variableName = "$Temp" + (temporaryVariables.Count + 1).ToString();
-            var variable = new VariableDefinition(variableName, type);
-            temporaryVariables.Add(new TempVariable(variable, true));
-            body.Variables.Add(variable);
-            return variable;
-        }
-
-        protected void ReleaseTempVariable(VariableDefinition variable)
-        {
-            for (int i = 0; i < temporaryVariables.Count; i++)
-            {
-                if (temporaryVariables[i].Variable == variable)
-                {
-                    temporaryVariables[i].IsTaken = false;
-                    return;
-                }
             }
         }
 
