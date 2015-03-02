@@ -1,0 +1,1 @@
+Type: Symbol, Start: 1, 1, End: 1, 4, Content: "bar" Type: LeftBracket, Start: 1, 4, End: 1, 5, Content: "[" Type: Symbol, Start: 1, 5, End: 1, 8, Content: "foo" Type: RightBracket, Start: 1, 8, End: 1, 9, Content: "]" 

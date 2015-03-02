@@ -98,6 +98,7 @@
     <None Include="IntegrationTests\SourceFiles\MinMaxValues.ll" />
     <None Include="IntegrationTests\SourceFiles\PrintPrimesWithInlineLambda.ll" />
     <None Include="IntegrationTests\SourceFiles\AssignToPreIncrementedValue.ll" />
+    <Compile Include="LexerTests\SyntaxMatcherTestBase.cs" />
     <Compile Include="LexerTests\TokenizerTests.cs" />
     <Compile Include="LexerTests\SyntaxMatcherTests.cs" />
     <Compile Include="LexerTests\RuleValidationTests.cs" />

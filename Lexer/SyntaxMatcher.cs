@@ -122,6 +122,10 @@ namespace Lexer
                         
                     CollapsableParseRule(CodeBlockNode,
                         LeftCurlyBrace + ZeroOrMore(StatementNode) + RightCurlyBrace),
+                    
+                    ParseRule(IndexNode,
+                    LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket,
+                    LeftBracket + ZeroOrMore(Comma) + RightBracket),
 
                     #region Operators
 
@@ -142,7 +146,7 @@ namespace Lexer
                             Or
                             Assignment operator
                      */
-
+                    
                     CollapsableParseRule(ParenthesesNode,
                         LeftParenthesis + Value + RightParenthesis,
                         Operand),
@@ -153,8 +157,11 @@ namespace Lexer
                     AlwaysCollapsableParseRule(PeriodSubnode,
                         Period + ParenthesesNode),
 
+                    CollapsableParseRule(IndexAccessNode,
+                        PeriodNode + ZeroOrMore(IndexNode)),
+
                     CollapsableParseRule(PostfixNode,
-                        PeriodNode + ZeroOrMore(PostfixOperator)),
+                        IndexAccessNode + ZeroOrMore(PostfixOperator)),
 
                     CollapsableParseRule(PrefixNode,
                         ZeroOrMore(PrefixOperator) + PostfixNode),
@@ -231,13 +238,15 @@ namespace Lexer
                        AssignmentOperatorNode),
                        
                     AlwaysCollapsableParseRule(Operand,
+                        ArrayLiteral,
                         InlineFunctionCallNode,
                         Function,
                         FunctionCallNode,
                         FullSymbol,
+                        Type,
                         LiteralNode),
 
-                    ParseRule(LiteralNode,
+                    ParseRule(LiteralNode,                       
                         Float,
                         Integer,
                         Double,
@@ -245,6 +254,10 @@ namespace Lexer
                         StringLiteral,
                         True,
                         False),
+                    
+                    ParseRule(ArrayLiteral, 
+                        LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
+                        LeftCurlyBrace + RightCurlyBrace),
                         
                     ParseRule(InlineFunctionCallNode,
                         Function + OneOrMore(FunctionArgumentsList)),
@@ -265,15 +278,19 @@ namespace Lexer
                     AlwaysCollapsableParseRule(SubSymbol,
                         Period + Symbol),
 
-                    ParseRule(TypeParameters,
-                        LeftParenthesis + Type + ZeroOrMore(TypeSubnode) + RightParenthesis,
-                        LeftParenthesis + Type + Symbol + ZeroOrMore(TypeAndSymbolSubnode) + RightParenthesis,
-                        LeftParenthesis + RightParenthesis
+                    ParseRule(ParameterList,
+                        OneOrMore(FunctorParameters),                        
+                        OneOrMore(IndexNode)
                     ),
 
-                    ParseRule(Type,
-                        FullSymbol + ZeroOrMore(TypeParameters)),
+                    ParseRule(FunctorParameters,
+                        LeftParenthesis + Type + ZeroOrMore(TypeSubnode) + RightParenthesis,
+                        LeftParenthesis + Type + Symbol + ZeroOrMore(TypeAndSymbolSubnode) + RightParenthesis,
+                        LeftParenthesis + RightParenthesis),
 
+                    ParseRule(Type,                        
+                       FullSymbol + ZeroOrMore(ParameterList)),
+                       
                     AlwaysCollapsableParseRule(TypeSubnode,
                         Comma + Type),
 
@@ -365,7 +382,7 @@ namespace Lexer
             var node = m_RootNode.NodePool.ProvideNode();
             
             tokensConsumed = 1;
-            for (int i = offset; i < m_Source.Length; i++, tokensConsumed++)
+            for (int i = offset; i < m_Source.Length - 1; i++, tokensConsumed++)
             {                
                 node.AddTerminal(m_RootNode, m_Source[i]);
                 if (m_Source[i].Type.IsRecoveryPoint())
@@ -377,7 +394,9 @@ namespace Lexer
             var token = m_RootNode.ProvideToken();
             
             token.Start = m_Source[offset].Start;
-            token.End = m_Source[offset + tokensConsumed - 1].End;
+            var lastToken = offset + tokensConsumed - 1;
+            
+            token.End = m_Source[lastToken].End;
             token.Content = FastString.Empty;
             token.Type = TokenType.UnknownNode;
 
@@ -427,7 +446,11 @@ namespace Lexer
 
             if (m_Source[sourceOffset + tokensConsumed].Type == token.Token)
             {
-                node.AddTerminal(m_RootNode, m_Source[sourceOffset + tokensConsumed]);
+                if (token.Token.IsMeaningful())
+                {
+                    node.AddTerminal(m_RootNode, m_Source[sourceOffset + tokensConsumed]);
+                }
+                
                 tokensConsumed++;
                 LastMatched = sourceOffset + tokensConsumed;
 
@@ -653,7 +676,7 @@ namespace Lexer
         private static Condition SubSymbol { get { return TokenType.SubSymbol; } }
         private static Condition Value { get { return TokenType.Value; } }
         private static Condition Type { get { return TokenType.Type; } }
-        public static Condition TypeParameters { get { return TokenType.TypeParameters; } }
+        private static Condition ParameterList { get { return TokenType.ParameterList; } }
         private static Condition VariableModifier { get { return TokenType.VariableModifier; } }
         private static Condition WhileLoop { get { return TokenType.WhileLoop; } }
         private static Condition TypeSubnode { get { return TokenType.TypeSubnode; } }
@@ -707,6 +730,12 @@ namespace Lexer
         private static Condition Entry { get { return TokenType.Entry; } }
         private static Condition Mutable { get { return TokenType.Mutable; } }
         private static Condition UnknownNode { get { return TokenType.UnknownNode; } }
+        private static Condition ArrayLiteral { get { return TokenType.ArrayLiteral; } }
+        private static Condition IndexNode { get { return TokenType.IndexNode; } }
+        private static Condition IndexAccessNode { get { return TokenType.IndexAccessNode; } }
+        private static Condition RightBracket { get { return TokenType.RightBracket; } }
+        private static Condition LeftBracket { get { return TokenType.LeftBracket; } }
+        private static Condition FunctorParameters { get { return TokenType.FunctorParameters; } }
         #endregion
 
     }
