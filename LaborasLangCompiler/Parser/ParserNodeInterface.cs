@@ -209,8 +209,8 @@ namespace LaborasLangCompiler.Parser
     [ContractClass(typeof(IArrayAccessNodeContract))]
     interface IArrayAccessNode : IExpressionNode
     {
-        IExpressionNode Array { get; }  // Not null, ExpressionReturnType is ArrayType
-        IReadOnlyList<IExpressionNode> Indices { get; } // Indicies.Count == 1 for single dim arrays, >1 for multi dim arrays
+        IExpressionNode Array { get; }
+        IReadOnlyList<IExpressionNode> Indices { get; }
     }
 
     [ContractClass(typeof(ISymbolDeclarationNodeContract))]
@@ -253,14 +253,16 @@ namespace LaborasLangCompiler.Parser
         ICodeBlockNode CatchBody { get; }
     }
 
+    [ContractClass(typeof(IForLoopNodeContract))]
     interface IForLoopNode : IParserNode
     {
-        ICodeBlockNode InitializationBlock { get; } // Not null
-        IExpressionNode ConditionBlock { get; } // Not null
-        ICodeBlockNode IncrementBlock { get; } // Not null
-        ICodeBlockNode Body { get; } // Not null
+        ICodeBlockNode InitializationBlock { get; }
+        IExpressionNode ConditionBlock { get; }
+        ICodeBlockNode IncrementBlock { get; }
+        ICodeBlockNode Body { get; }
     }
 
+    [ContractClass(typeof(IForEachLoopNodeContract))]
     interface IForEachLoopNode : IParserNode
     {
         IExpressionNode Collection { get; }
@@ -769,6 +771,95 @@ namespace LaborasLangCompiler.Parser
                 Contract.Ensures(Contract.Result<ICodeBlockNode>() != null);
                 throw new NotImplementedException();
             }
+        }
+    }
+
+    [ContractClassFor(typeof(IForLoopNode))]
+    abstract class IForLoopNodeContract : IForLoopNode
+    {
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
+        public ICodeBlockNode InitializationBlock
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<ICodeBlockNode>() != null);
+                throw new NotImplementedException(); 
+            }
+        }
+
+        public IExpressionNode ConditionBlock
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<IExpressionNode>() != null);
+                Contract.Ensures(Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
+                throw new NotImplementedException(); 
+            }
+        }
+
+        public ICodeBlockNode IncrementBlock
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<ICodeBlockNode>() != null);
+                throw new NotImplementedException();
+            }
+        }
+
+        public ICodeBlockNode Body
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<ICodeBlockNode>() != null);
+                throw new NotImplementedException();
+            }
+        }
+    }
+
+    [ContractClassFor(typeof(IForEachLoopNode))]
+    abstract class IForEachLoopNodeContract : IForEachLoopNode
+    {
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
+        public IExpressionNode Collection
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<IExpressionNode>() != null);
+                Contract.Ensures(Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
+                throw new NotImplementedException();
+            }
+        }
+
+        public ILocalVariableNode LoopVariable
+        {
+            get 
+            {
+                Contract.Ensures(Contract.Result<ILocalVariableNode>() != null);
+                throw new NotImplementedException(); 
+            }
+        }
+
+        public ICodeBlockNode Body
+        {
+            get 
+            {
+                Contract.Ensures(Contract.Result<ICodeBlockNode>() != null);
+                throw new NotImplementedException(); 
+            }
+        }
+    }
+
+    static class ContractUtils
+    {
+        [Pure]
+        static void EnsureValidExpression(IExpressionNode expression)
+        {
+            Contract.Ensures(expression != null);
+            Contract.Ensures(expression.ExpressionType != ExpressionNodeType.ParserInternal);
         }
     }
 
