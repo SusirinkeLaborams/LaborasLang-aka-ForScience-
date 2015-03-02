@@ -1,0 +1,51 @@
+Content: Type: RootNode, Start: 1, 1, End: 1, 16, Content: ""
+Type: RootNode
+Children:
+	Content: Type: DeclarationNode, Start: 1, 1, End: 1, 16, Content: ""
+	Type: DeclarationNode
+	Children:
+		Content: Type: Type, Start: 1, 1, End: 1, 5, Content: ""
+		Type: Type
+		Children:
+			Content: Type: FullSymbol, Start: 1, 1, End: 1, 5, Content: ""
+			Type: FullSymbol
+			Children:
+				Content: Type: Symbol, Start: 1, 1, End: 1, 5, Content: "auto"
+				Type: Symbol
+				Children:
+
+		Content: Type: Symbol, Start: 1, 6, End: 1, 7, Content: "a"
+		Type: Symbol
+		Children:
+
+		Content: Type: Assignment, Start: 1, 8, End: 1, 9, Content: "="
+		Type: Assignment
+		Children:
+
+		Content: Type: Value, Start: 1, 10, End: 1, 15, Content: ""
+		Type: Value
+		Children:
+			Content: Type: IndexAccessNode, Start: 1, 10, End: 1, 15, Content: ""
+			Type: IndexAccessNode
+			Children:
+				Content: Type: FullSymbol, Start: 1, 10, End: 1, 13, Content: ""
+				Type: FullSymbol
+				Children:
+					Content: Type: Symbol, Start: 1, 10, End: 1, 13, Content: "int"
+					Type: Symbol
+					Children:
+
+				Content: Type: IndexNode, Start: 1, 13, End: 1, 15, Content: ""
+				Type: IndexNode
+				Children:
+					Content: Type: LeftBracket, Start: 1, 13, End: 1, 14, Content: "["
+					Type: LeftBracket
+					Children:
+
+					Content: Type: RightBracket, Start: 1, 14, End: 1, 15, Content: "]"
+					Type: RightBracket
+					Children:
+
+		Content: Type: EndOfLine, Start: 1, 15, End: 1, 16, Content: ";"
+		Type: EndOfLine
+		Children:
