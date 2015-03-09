@@ -883,9 +883,42 @@ namespace LaborasLangCompiler.Codegen.Methods
                 Newobj(constructor);
             }
 
-            if (arrayCreation.Initializer != null)
-                throw new NotImplementedException();
+			if (arrayCreation.Initializer != null)
+			{
+				Dup();
+
+				if (CanEmitArrayInitializerFastPath(arrayCreation.Initializer))
+				{
+					EmitInitializerFastPath(arrayType, arrayCreation.Initializer);
+				}
+				else
+				{
+					throw new NotImplementedException();
+				}
+			}
         }
+
+		[Pure]
+		protected bool CanEmitArrayInitializerFastPath(IReadOnlyList<IExpressionNode> initializer)
+		{
+			for (int i = 0; i < initializer.Count; i++)
+			{
+				if (initializer[i].ExpressionType != ExpressionNodeType.Literal || !initializer[i].ExpressionReturnType.IsValueType)
+					return false;
+			}
+
+			return true;
+		}
+
+		protected void EmitInitializerFastPath(ArrayType arrayType, IReadOnlyList<IExpressionNode> initializer)
+		{
+			Contract.Requires(CanEmitArrayInitializerFastPath(initializer));
+
+			var field = AssemblyRegistry.GetArrayInitializerField(Assembly, arrayType.ElementType, initializer);
+			var initializeArrayMethod = AssemblyRegistry.GetMethod(Assembly, "System.Runtime.CompilerServices.RuntimeHelpers", "InitializeArray");
+			Ldtoken(field);
+			Call(initializeArrayMethod);
+		}
 
         protected void EmitThis()
         {

@@ -221,7 +221,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (!(left.ExpressionReturnType.IsIntegerType() && right.ExpressionReturnType.IsIntegerType()))
                 return false;
 
-            if (left.ExpressionReturnType.GetIntegerWidth() != right.ExpressionReturnType.GetIntegerWidth())
+			if (left.ExpressionReturnType.GetPrimitiveWidth() != right.ExpressionReturnType.GetPrimitiveWidth())
                 return false;
 
             return true;

@@ -1,10 +1,12 @@
 ﻿using LaborasLangCompiler.Codegen.Types;
+using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace LaborasLangCompiler.Codegen
 {
@@ -34,6 +36,20 @@ namespace LaborasLangCompiler.Codegen
             }
         }
 
+		private struct ArrayInitializerKey
+		{
+			private readonly ulong hash1, hash2;
+
+			public unsafe ArrayInitializerKey(byte[] hash)
+            {
+				fixed (byte* hashPtr = hash)
+				{
+					hash1 = *(ulong*)hashPtr;
+					hash2 = *(ulong*)(hashPtr + sizeof(ulong));
+				}
+            }
+		}
+
         private static AssemblyRegistry instance;
 
         private readonly HashSet<string> assemblyPaths;             // Keep assembly paths to prevent from registering single assembly twice
@@ -42,6 +58,7 @@ namespace LaborasLangCompiler.Codegen
         private readonly Dictionary<FunctorImplementationTypesKey, TypeDefinition> functorImplementationTypes;
         private readonly Dictionary<ArrayTypeKey, ArrayType> arrayTypes;
         private readonly Dictionary<ArrayType, MethodReference> arrayConstructors;
+		private readonly Dictionary<ArrayInitializerKey, FieldDefinition> arrayInitializers;
         private readonly AssemblyDefinition mscorlib;
 
         private AssemblyRegistry()
@@ -54,6 +71,7 @@ namespace LaborasLangCompiler.Codegen
             functorImplementationTypes = new Dictionary<FunctorImplementationTypesKey, TypeDefinition>();
             arrayTypes = new Dictionary<ArrayTypeKey, ArrayType>();
             arrayConstructors = new Dictionary<ArrayType, MethodReference>();
+			arrayInitializers = new Dictionary<ArrayInitializerKey, FieldDefinition>();
         }
 
         private AssemblyRegistry(IEnumerable<string> references)
@@ -225,6 +243,25 @@ namespace LaborasLangCompiler.Codegen
 
             return value;
         }
+
+		public static FieldDefinition GetArrayInitializerField(AssemblyEmitter assembly, TypeReference elementType, IReadOnlyList<IExpressionNode> arrayInitializer)
+		{
+			var md5 = MD5.Create();
+			var initializerBytes = GetArrayInitializerBytes(elementType, arrayInitializer);
+
+			var hash = md5.ComputeHash(initializerBytes);
+			var key = new ArrayInitializerKey(hash);
+
+			FieldDefinition field;
+
+			if (!instance.arrayInitializers.TryGetValue(key, out field))
+			{
+				field = ArrayInitializerEmitter.Emit(assembly, initializerBytes);
+				instance.arrayInitializers.Add(key, field);
+			}
+
+			return field;
+		}
 
         public static ArrayType GetArrayType(TypeReference elementType, int rank)
         {
@@ -681,6 +718,88 @@ namespace LaborasLangCompiler.Codegen
                 return reference.Resolve();
             }
         }
+
+		private static unsafe void CopyValueToByteArray(byte[] byteArray, int elementSize, int index, byte* valuePtr, int valueSize)
+		{
+			var targetIndex = index * elementSize;
+
+			for (int i = 0; i < valueSize && i < elementSize; i++)
+			{
+				byteArray[targetIndex + i] = valuePtr[i];
+			}
+
+			for (int i = valueSize; i < elementSize; i++)
+			{
+				byteArray[targetIndex + i] = 0;
+			}
+		}
+
+		private static unsafe byte[] GetArrayInitializerBytes(TypeReference elementType, IReadOnlyList<IExpressionNode> arrayInitializer)
+		{
+			var elementSize = MetadataHelpers.GetPrimitiveWidth(elementType);
+			var initializerBytes = new byte[elementSize * arrayInitializer.Count];
+
+			for (int i = 0; i < arrayInitializer.Count; i++)
+			{
+				var literalNode = ((ILiteralNode)arrayInitializer[i]);
+
+				switch (literalNode.ExpressionReturnType.MetadataType)
+				{
+					case MetadataType.Boolean:
+					case MetadataType.Byte:
+					case MetadataType.SByte:
+						{
+							var value = (byte)literalNode.Value;
+							CopyValueToByteArray(initializerBytes, elementSize, i, (byte*)&value, sizeof(byte));
+						}
+						break;
+
+					case MetadataType.Char:
+					case MetadataType.Int16:
+					case MetadataType.UInt16:
+						{
+							var value = (ushort)literalNode.Value;
+							CopyValueToByteArray(initializerBytes, elementSize, i, (byte*)&value, sizeof(ushort));
+						}
+						break;
+
+					case MetadataType.Int32:
+					case MetadataType.UInt32:
+						{
+							var value = (uint)literalNode.Value;
+							CopyValueToByteArray(initializerBytes, elementSize, i, (byte*)&value, sizeof(uint));
+						}
+						break;
+
+					case MetadataType.Single:
+						{
+							var value = (float)literalNode.Value;
+							CopyValueToByteArray(initializerBytes, elementSize, i, (byte*)&value, sizeof(float));
+						}
+						break;
+
+					case MetadataType.Int64:
+					case MetadataType.UInt64:
+						{
+							var value = (ulong)literalNode.Value;
+							CopyValueToByteArray(initializerBytes, elementSize, i, (byte*)&value, sizeof(ulong));
+						}
+						break;
+
+					case MetadataType.Double:
+						{
+							var value = (double)literalNode.Value;
+							CopyValueToByteArray(initializerBytes, elementSize, i, (byte*)&value, sizeof(double));
+						}
+						break;
+
+					default:
+						throw new ArgumentException();
+				}
+			}
+
+			return initializerBytes;
+		}
 
         #endregion
     }
