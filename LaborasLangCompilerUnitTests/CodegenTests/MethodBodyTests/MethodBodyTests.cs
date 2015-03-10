@@ -1512,7 +1512,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         {
             var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.String, 1);
             var initializer = (new[] { "abc", "def", "ghi", "jkl", "mno" }).Select(x => new LiteralNode(assemblyEmitter.TypeSystem.String, x)).ToArray();
-            TestCanEmit_CreateInitializedArrayHelper(arrayType, new[] { 6 }, initializer);
+            TestCanEmit_CreateInitializedArrayHelper(arrayType, new[] { 5 }, initializer);
         }
 
         [TestMethod, TestCategory("Execution Based Codegen Tests")]

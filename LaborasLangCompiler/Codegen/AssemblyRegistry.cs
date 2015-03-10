@@ -457,7 +457,7 @@ namespace LaborasLangCompiler.Codegen
 
             for (int i = 0; i < arrayType.Rank; i++)
             {
-                constructor.Parameters.Add(new ParameterDefinition(arrayType.ElementType));
+                constructor.Parameters.Add(new ParameterDefinition(arrayType.Module.TypeSystem.Int32));
             }
 
             instance.arrayConstructors.Add(arrayType, constructor);

@@ -709,15 +709,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 Ldloc(arrayVariable.Index);
                 Ldc_I4(i - methodParameters.Count + 1);
                 EmitArgumentForCall(arguments[i], elementType);
-
-                if (elementType.IsValueType)
-                {
-                    Stelem_Any(elementType);
-                }
-                else
-                {
-                    Stelem_Ref();
-                }
+                Stelem(elementType);
             }
 
             Ldloc(arrayVariable.Index);
@@ -885,15 +877,17 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (arrayCreation.Initializer != null)
             {
-                Dup();
-
                 if (CanEmitArrayInitializerFastPath(arrayCreation.Initializer))
                 {
                     EmitInitializerFastPath(arrayType, arrayCreation.Initializer);
                 }
+                else if (arrayType.IsVector)
+                {
+                    EmitVectorInitializerSlowPath(arrayType, arrayCreation.Initializer);
+                }
                 else
                 {
-                    throw new NotImplementedException();
+                    EmitArrayInitializerSlowPath(arrayType, arrayCreation.Initializer);
                 }
             }
         }
@@ -910,15 +904,41 @@ namespace LaborasLangCompiler.Codegen.Methods
             return true;
         }
 
+        // Assumes array is on the stack but it must leave it on the stack after the function is done
         protected void EmitInitializerFastPath(ArrayType arrayType, IReadOnlyList<IExpressionNode> initializer)
         {
             Contract.Requires(CanEmitArrayInitializerFastPath(initializer));
 
-            // Assumes array is on the stack
             var field = AssemblyRegistry.GetArrayInitializerField(Assembly, arrayType.ElementType, initializer);
             var initializeArrayMethod = AssemblyRegistry.GetMethod(Assembly, "System.Runtime.CompilerServices.RuntimeHelpers", "InitializeArray");
+
+            Dup();
             Ldtoken(field);
             Call(initializeArrayMethod);
+        }
+
+        // Assumes array is on the stack but it must leave it on the stack after the function is done
+        private void EmitVectorInitializerSlowPath(ArrayType arrayType, IReadOnlyList<IExpressionNode> initializer)
+        {
+            var oldSequencePoint = CurrentSequencePoint;
+
+            for (int i = 0; i < initializer.Count; i++)
+            {
+                CurrentSequencePoint = initializer[i].SequencePoint;
+
+                Dup();
+                Ldc_I4(i);
+                EmitExpressionWithTargetType(initializer[i], arrayType.ElementType, false);
+                Stelem(arrayType.ElementType);
+            }
+
+            CurrentSequencePoint = oldSequencePoint;
+        }
+
+        // Assumes array is on the stack but it must leave it on the stack after the function is done
+        private void EmitArrayInitializerSlowPath(ArrayType arrayType, IReadOnlyList<IExpressionNode> initializer)
+        {
+            throw new NotImplementedException();
         }
 
         protected void EmitThis()
