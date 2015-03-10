@@ -67,6 +67,9 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             switch (node.Type)
             {
+                case NodeType.Catch:
+                    throw new NotImplementedException();
+
                 case NodeType.CodeBlockNode:
                     Emit((ICodeBlockNode)node);
                     break;
@@ -74,6 +77,9 @@ namespace LaborasLangCompiler.Codegen.Methods
                 case NodeType.ConditionBlock:
                     Emit((IConditionBlock)node);
                     break;
+
+                case NodeType.ExceptionHandler:
+                    throw new NotImplementedException();
 
                 case NodeType.Expression:
                     Emit((IExpressionNode)node, emitReference);
@@ -86,6 +92,9 @@ namespace LaborasLangCompiler.Codegen.Methods
                 case NodeType.SymbolDeclaration:
                     Emit((ISymbolDeclarationNode)node);
                     break;
+
+                case NodeType.Throw:
+                    throw new NotImplementedException();
 
                 case NodeType.WhileBlock:
                     Emit((IWhileBlockNode)node);
@@ -144,21 +153,12 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             switch (expression.ExpressionType)
             {
-                case ExpressionNodeType.Field:
-                    Emit((IFieldNode)expression, emitReference);
-                    return;
+                case ExpressionNodeType.ArrayAccess:
+                    throw new NotImplementedException();
 
-                case ExpressionNodeType.FunctionArgument:
-                    Emit((IParameterNode)expression, emitReference);
-                    return;
-
-                case ExpressionNodeType.LocalVariable:
-                    Emit((ILocalVariableNode)expression, emitReference);
-                    return;
-
-                case ExpressionNodeType.Property:
-                    Emit((IPropertyNode)expression);
-                    return;
+                case ExpressionNodeType.ArrayCreation:
+                    Emit((IArrayCreationNode)expression);
+                    break;
 
                 case ExpressionNodeType.AssignmentOperator:
                     Emit((IAssignmentOperatorNode)expression);
@@ -172,24 +172,36 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Emit((IFunctionCallNode)expression);
                     return;
 
+                case ExpressionNodeType.Field:
+                    Emit((IFieldNode)expression, emitReference);
+                    return;
+
                 case ExpressionNodeType.Function:
                     Emit((IMethodNode)expression);
+                    return;
+
+                case ExpressionNodeType.FunctionArgument:
+                    Emit((IParameterNode)expression, emitReference);
                     return;
 
                 case ExpressionNodeType.Literal:
                     Emit((ILiteralNode)expression);
                     return;
 
+                case ExpressionNodeType.LocalVariable:
+                    Emit((ILocalVariableNode)expression, emitReference);
+                    return;
+
                 case ExpressionNodeType.ObjectCreation:
                     Emit((IObjectCreationNode)expression);
                     return;
 
+                case ExpressionNodeType.Property:
+                    Emit((IPropertyNode)expression);
+                    return;
+
                 case ExpressionNodeType.ValueCreation:
                     throw new NotImplementedException();
-
-                case ExpressionNodeType.ArrayCreation:
-                    Emit((IArrayCreationNode)expression);
-                    break;
 
                 case ExpressionNodeType.This:
                     EmitThis();
@@ -948,7 +960,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             var arrayType = (ArrayType)arrayCreation.ExpressionReturnType;
             var storeElementMethod = AssemblyRegistry.GetArrayStoreElement(arrayType);
             var initializer = arrayCreation.Initializer;
-            
+
             var dimensionCount = arrayCreation.Dimensions.Count;
             var dimensions = new int[dimensionCount];
             var indexSizes = new int[dimensionCount];
