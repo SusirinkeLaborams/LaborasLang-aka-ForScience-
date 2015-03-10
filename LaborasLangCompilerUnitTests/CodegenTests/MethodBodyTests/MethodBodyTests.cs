@@ -396,7 +396,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = fields.Select(f => CallConsoleWriteLine(new FieldNode()
                 {
-                    Field = f, 
+                    Field = f,
                     ObjectInstance = new ThisNode { ExpressionReturnType = f.DeclaringType }
                 })).ToList()
             };
@@ -1100,7 +1100,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             var variableDef2 = new VariableDefinition("b", uintType);
             var variable2 = new LocalVariableNode(variableDef2);
-            
+
             const int kValue1 = 0x156;
             const int kValue2 = 0x841;
 
@@ -1148,12 +1148,12 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 }
             };
 
-            ExpectedOutput = string.Format("{0} & {1} == {2}.{5}{0} | {1} == {3}.{5}{0} ^ {1} == {4}.", 
+            ExpectedOutput = string.Format("{0} & {1} == {2}.{5}{0} | {1} == {3}.{5}{0} ^ {1} == {4}.",
                 kValue1, kValue2, kValue1 & kValue2, kValue1 | kValue2, kValue1 ^ kValue2, Environment.NewLine);
 
             AssertSuccessByExecution();
         }
-        
+
         #endregion
 
         #region Unary operators
@@ -1166,7 +1166,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             var variableDefs = new List<VariableDefinition>();
 
-            for(int i = 0; i < 7; i++)
+            for (int i = 0; i < 7; i++)
             {
                 variableDefs.Add(new VariableDefinition(((char)i + 'a').ToString(), intType));
             }
@@ -1210,7 +1210,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 });
             }
 
-            nodes.Add(CallConsoleWriteLine( 
+            nodes.Add(CallConsoleWriteLine(
                 new LiteralNode(stringType, "Results: \r\n{0}\r\n{1}\r\n{2}\r\n{3}\r\n{4}\r\n{5}\r\n{6}\r\n"),
                 variables[0],
                 variables[1],
@@ -1273,7 +1273,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             var stringType = assemblyEmitter.TypeSystem.String;
             var intType = assemblyEmitter.TypeSystem.Int32;
             var boolType = assemblyEmitter.TypeSystem.Boolean;
-            
+
             var localVariableDef = new VariableDefinition("counter", intType);
             var localVariable = new LocalVariableNode(localVariableDef);
 
@@ -1322,7 +1322,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             var stringType = assemblyEmitter.TypeSystem.String;
             var voidType = assemblyEmitter.TypeSystem.Void;
             var boolType = assemblyEmitter.TypeSystem.Boolean;
-            
+
             var field = new FieldDefinition("myField", FieldAttributes.Static | FieldAttributes.Private, boolType);
             typeEmitter.AddField(field);
 
@@ -1375,7 +1375,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     }
                 }
             });
-            
+
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
@@ -1476,61 +1476,61 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             ExpectedOutput = Enumerable.Repeat("0 ", 6).Aggregate((x, y) => x + y) + Environment.NewLine + "Total count: 6.";
             AssertSuccessByExecution();
-		}
+        }
 
-		private void TestCanEmit_CreateInitializedArrayHelper(ArrayType arrayType, int[] dimensions, LiteralNode[] initializer)
-		{
-			BodyCodeBlock = OutputEnumerable(new ArrayCreationNode()
-			{
-				ExpressionReturnType = arrayType,
-				Dimensions = dimensions.Select(x => new LiteralNode(assemblyEmitter.TypeSystem.Int32, x)).ToArray<IExpressionNode>(),
-				Initializer = initializer
-			});
+        private void TestCanEmit_CreateInitializedArrayHelper(ArrayType arrayType, int[] dimensions, LiteralNode[] initializer)
+        {
+            BodyCodeBlock = OutputEnumerable(new ArrayCreationNode()
+            {
+                ExpressionReturnType = arrayType,
+                Dimensions = dimensions.Select(x => new LiteralNode(assemblyEmitter.TypeSystem.Int32, x)).ToArray<IExpressionNode>(),
+                Initializer = initializer
+            });
 
-			ExpectedOutput = string.Format("{0}{1}Total count: {2}.", initializer.Select(x => x.Value.Value + " ").Aggregate((x, y) => x + y), Environment.NewLine, dimensions.Aggregate((x, y) => x * y));
-			AssertSuccessByExecution();
-		}
+            ExpectedOutput = string.Format("{0}{1}Total count: {2}.", initializer.Select(x => x.Value.Value + " ").Aggregate((x, y) => x + y), Environment.NewLine, dimensions.Aggregate((x, y) => x * y));
+            AssertSuccessByExecution();
+        }
 
-		[TestMethod, TestCategory("Execution Based Codegen Tests")]
-		public void TestCanEmit_CreateAndInitializeVector()
-		{
-			var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.Int32, 1);
-			var initializer = (new[] { 1, 2, 3, 4, 5 }).Select(x => new LiteralNode(assemblyEmitter.TypeSystem.Int32, x)).ToArray();
-			TestCanEmit_CreateInitializedArrayHelper(arrayType, new[] { initializer.Length }, initializer);
-		}
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_CreateAndInitializeVector()
+        {
+            var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.Int32, 1);
+            var initializer = (new[] { 1, 2, 3, 4, 5 }).Select(x => new LiteralNode(assemblyEmitter.TypeSystem.Int32, x)).ToArray();
+            TestCanEmit_CreateInitializedArrayHelper(arrayType, new[] { initializer.Length }, initializer);
+        }
 
-		[TestMethod, TestCategory("Execution Based Codegen Tests")]
-		public void TestCanEmit_CreateAndInitializeMultiDimentionalArray()
-		{
-			var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.Int32, 2);
-			var initializer = (new[] { 1, 2, 3, 4, 5, 6 }).Select(x => new LiteralNode(assemblyEmitter.TypeSystem.Int32, x)).ToArray();
-			TestCanEmit_CreateInitializedArrayHelper(arrayType, new[] { 2, 3 }, initializer);
-		}
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_CreateAndInitializeMultiDimentionalArray()
+        {
+            var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.Int32, 2);
+            var initializer = (new[] { 1, 2, 3, 4, 5, 6 }).Select(x => new LiteralNode(assemblyEmitter.TypeSystem.Int32, x)).ToArray();
+            TestCanEmit_CreateInitializedArrayHelper(arrayType, new[] { 2, 3 }, initializer);
+        }
 
-		[TestMethod, TestCategory("Execution Based Codegen Tests")]
-		public void TestCanEmit_CreateAndInitializeStringVector()
-		{
-			var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.String, 1);
-			var initializer = (new[] { "abc", "def", "ghi", "jkl", "mno" }).Select(x => new LiteralNode(assemblyEmitter.TypeSystem.String, x)).ToArray();
-			TestCanEmit_CreateInitializedArrayHelper(arrayType, new[] { 6 }, initializer);
-		}
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_CreateAndInitializeStringVector()
+        {
+            var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.String, 1);
+            var initializer = (new[] { "abc", "def", "ghi", "jkl", "mno" }).Select(x => new LiteralNode(assemblyEmitter.TypeSystem.String, x)).ToArray();
+            TestCanEmit_CreateInitializedArrayHelper(arrayType, new[] { 6 }, initializer);
+        }
 
-		[TestMethod, TestCategory("Execution Based Codegen Tests")]
-		public void TestCanEmit_CreateAndInitializeMultidimensionalStringArray()
-		{
-			var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.String, 2);
-			var initializer = (new[] { "abc", "def", "ghi", "jkl", "mno", "pqr" }).Select(x => new LiteralNode(assemblyEmitter.TypeSystem.String, x)).ToArray();
-			TestCanEmit_CreateInitializedArrayHelper(arrayType, new[] { 2, 3 }, initializer);
-		}
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_CreateAndInitializeMultidimensionalStringArray()
+        {
+            var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.String, 2);
+            var initializer = (new[] { "abc", "def", "ghi", "jkl", "mno", "pqr" }).Select(x => new LiteralNode(assemblyEmitter.TypeSystem.String, x)).ToArray();
+            TestCanEmit_CreateInitializedArrayHelper(arrayType, new[] { 2, 3 }, initializer);
+        }
 
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_CallFunctionWithOptionalParameter()
         {
             var voidType = assemblyEmitter.TypeSystem.Void;
             var stringType = assemblyEmitter.TypeSystem.String;
-            
+
             var testMethod = new MethodEmitter(typeEmitter, "MethodWithDefaultParameter", voidType, MethodAttributes.Private | MethodAttributes.Static);
-            
+
             var neededParameter = new ParameterDefinition("neededParameter", ParameterAttributes.None, stringType);
             testMethod.AddArgument(neededParameter);
 

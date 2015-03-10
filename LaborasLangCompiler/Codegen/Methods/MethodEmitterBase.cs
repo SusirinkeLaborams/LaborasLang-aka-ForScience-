@@ -544,29 +544,29 @@ namespace LaborasLangCompiler.Codegen.Methods
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
-		protected void Ldtoken(FieldReference fieldReference)
-		{
-			Contract.Requires(fieldReference != null);
+        protected void Ldtoken(FieldReference fieldReference)
+        {
+            Contract.Requires(fieldReference != null);
 
-			ilProcessor.Emit(OpCodes.Ldtoken, fieldReference);
-			body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
-		}
+            ilProcessor.Emit(OpCodes.Ldtoken, fieldReference);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
 
-		protected void Ldtoken(MethodReference methodReference)
-		{
-			Contract.Requires(methodReference != null);
+        protected void Ldtoken(MethodReference methodReference)
+        {
+            Contract.Requires(methodReference != null);
 
-			ilProcessor.Emit(OpCodes.Ldtoken, methodReference);
-			body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
-		}
+            ilProcessor.Emit(OpCodes.Ldtoken, methodReference);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
 
-		protected void Ldtoken(TypeReference typeReference)
-		{
-			Contract.Requires(typeReference != null);
+        protected void Ldtoken(TypeReference typeReference)
+        {
+            Contract.Requires(typeReference != null);
 
-			ilProcessor.Emit(OpCodes.Ldtoken, typeReference);
-			body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
-		}
+            ilProcessor.Emit(OpCodes.Ldtoken, typeReference);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
 
         protected void Mul()
         {

@@ -19,7 +19,7 @@ namespace LaborasLangCompiler.Codegen
 
                 case MetadataType.SByte:
                 case MetadataType.Byte:
-				case MetadataType.Boolean:
+                case MetadataType.Boolean:
                     return 1;
 
                 case MetadataType.Char:
@@ -29,15 +29,15 @@ namespace LaborasLangCompiler.Codegen
 
                 case MetadataType.Int32:
                 case MetadataType.UInt32:
-				case MetadataType.Single:
+                case MetadataType.Single:
                     return 4;
 
                 case MetadataType.Int64:
                 case MetadataType.UInt64:
-				case MetadataType.Double:
+                case MetadataType.Double:
                     return 8;
             }
-            
+
             throw new NotSupportedException(string.Format("{0} is not an integer!", type.FullName));
         }
 
@@ -144,7 +144,7 @@ namespace LaborasLangCompiler.Codegen
                 right = right.GetElementType();
                 Contract.Assume(right != null);
             }
-            
+
             if (left.FullName == right.FullName)
             {
                 return true;
@@ -171,7 +171,7 @@ namespace LaborasLangCompiler.Codegen
             {
                 return rightType.Interfaces.Any(interfaze => interfaze.FullName == leftType.FullName);
             }
-                        
+
             while (rightType.BaseType != null)
             {
                 rightType = rightType.BaseType.Resolve();
@@ -194,7 +194,7 @@ namespace LaborasLangCompiler.Codegen
 
             var child = childRef.Resolve();
             var parent = parentRef.Resolve();
-            
+
             if (parent.IsInterface)
             {
                 if (child.Interfaces.Any(interfaze => interfaze.FullName == parent.FullName))
@@ -333,10 +333,10 @@ namespace LaborasLangCompiler.Codegen
             return invokeMethod.ReturnType;
         }
 
-        public static TypeReference GetFunctorReturnTypeAndArguments(AssemblyEmitter assemblyScope, TypeReference functorType, 
+        public static TypeReference GetFunctorReturnTypeAndArguments(AssemblyEmitter assemblyScope, TypeReference functorType,
             out List<TypeReference> arguments)
         {
-            var invokeMethod = GetFunctorInvokeMethod(assemblyScope, functorType);      
+            var invokeMethod = GetFunctorInvokeMethod(assemblyScope, functorType);
             arguments = invokeMethod.Parameters.Select(parameter => parameter.ParameterType).ToList();
             return invokeMethod.ReturnType;
         }
@@ -417,7 +417,7 @@ namespace LaborasLangCompiler.Codegen
 
                 case MethodAttributes.Public:
                     return true;
-                    
+
                 default:
                     throw new NotSupportedException(string.Format("Unknown method visibility: {0}", method.Attributes & MethodAttributes.MemberAccessMask));
             }
@@ -465,7 +465,7 @@ namespace LaborasLangCompiler.Codegen
                 case "System.Boolean":
                     typeReference = assemblyEmitter.TypeSystem.Boolean;
                     return true;
-                    
+
                 case "System.SByte":
                     typeReference = assemblyEmitter.TypeSystem.SByte;
                     return true;
