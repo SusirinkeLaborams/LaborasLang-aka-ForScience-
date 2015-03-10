@@ -887,7 +887,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 }
                 else
                 {
-                    EmitArrayInitializerSlowPath(arrayType, arrayCreation.Initializer);
+                    EmitArrayInitializerSlowPath(arrayCreation);
                 }
             }
         }
@@ -920,6 +920,8 @@ namespace LaborasLangCompiler.Codegen.Methods
         // Assumes array is on the stack but it must leave it on the stack after the function is done
         private void EmitVectorInitializerSlowPath(ArrayType arrayType, IReadOnlyList<IExpressionNode> initializer)
         {
+            Contract.Requires(arrayType.IsVector);
+
             var oldSequencePoint = CurrentSequencePoint;
 
             for (int i = 0; i < initializer.Count; i++)
@@ -936,9 +938,45 @@ namespace LaborasLangCompiler.Codegen.Methods
         }
 
         // Assumes array is on the stack but it must leave it on the stack after the function is done
-        private void EmitArrayInitializerSlowPath(ArrayType arrayType, IReadOnlyList<IExpressionNode> initializer)
+        private void EmitArrayInitializerSlowPath(IArrayCreationNode arrayCreation)
         {
-            throw new NotImplementedException();
+            Contract.Requires(arrayCreation.ExpressionReturnType is ArrayType);
+            Contract.Requires(!((ArrayType)arrayCreation.ExpressionReturnType).IsVector);
+
+            var oldSequencePoint = CurrentSequencePoint;
+
+            var arrayType = (ArrayType)arrayCreation.ExpressionReturnType;
+            var storeElementMethod = AssemblyRegistry.GetArrayStoreElement(arrayType);
+            var initializer = arrayCreation.Initializer;
+            
+            var dimensionCount = arrayCreation.Dimensions.Count;
+            var dimensions = new int[dimensionCount];
+            var indexSizes = new int[dimensionCount];
+
+            for (int i = dimensionCount - 1; i > -1; i--)
+            {
+                Contract.Assume(arrayCreation.Dimensions[i] is ILiteralNode);
+
+                dimensions[i] = (int)((ILiteralNode)arrayCreation.Dimensions[i]).Value;
+                indexSizes[i] = i != dimensionCount - 1 ? indexSizes[i + 1] * dimensions[i + 1] : 1;
+            }
+
+            for (int i = 0; i < initializer.Count; i++)
+            {
+                CurrentSequencePoint = initializer[i].SequencePoint;
+
+                Dup();
+
+                for (int j = 0; j < dimensionCount; j++)
+                {
+                    Ldc_I4((i / indexSizes[j]) % dimensions[j]);
+                }
+
+                EmitExpressionWithTargetType(initializer[i], arrayType.ElementType, false);
+                Call(storeElementMethod);
+            }
+
+            CurrentSequencePoint = oldSequencePoint;
         }
 
         protected void EmitThis()

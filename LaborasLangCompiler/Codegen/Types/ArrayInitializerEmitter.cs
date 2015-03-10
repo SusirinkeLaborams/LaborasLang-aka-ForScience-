@@ -11,7 +11,7 @@ namespace LaborasLangCompiler.Codegen.Types
 
         public static FieldDefinition Emit(AssemblyEmitter assembly, byte[] arrayInitializerBytes)
         {
-            var className = "__ArrayInitializer_" + arrayInitializerCounter;
+            var className = "__ArrayInitializer_" + arrayInitializerCounter++;
             var emitter = new ArrayInitializerEmitter(assembly, className);
             return emitter.EmitInitializerField(arrayInitializerBytes);
         }

@@ -1518,9 +1518,19 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_CreateAndInitializeMultidimensionalStringArray()
         {
-            var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.String, 2);
-            var initializer = (new[] { "abc", "def", "ghi", "jkl", "mno", "pqr" }).Select(x => new LiteralNode(assemblyEmitter.TypeSystem.String, x)).ToArray();
-            TestCanEmit_CreateInitializedArrayHelper(arrayType, new[] { 2, 3 }, initializer);
+            var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.String, 3);
+            var arrayItems = new[]
+            {
+                "a", "b", "c", "d",
+                "e", "f", "g", "h",
+                "i", "j", "k", "l",
+                
+                "m", "n", "o", "p",
+                "q", "r", "s", "t",
+                "u", "v", "w", "x"
+            };
+            var initializer = arrayItems.Select(x => new LiteralNode(assemblyEmitter.TypeSystem.String, x)).ToArray();
+            TestCanEmit_CreateInitializedArrayHelper(arrayType, new[] { 2, 3, 4 }, initializer);
         }
 
         [TestMethod, TestCategory("Execution Based Codegen Tests")]

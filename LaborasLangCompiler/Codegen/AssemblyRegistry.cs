@@ -58,6 +58,8 @@ namespace LaborasLangCompiler.Codegen
         private readonly Dictionary<FunctorImplementationTypesKey, TypeDefinition> functorImplementationTypes;
         private readonly Dictionary<ArrayTypeKey, ArrayType> arrayTypes;
         private readonly Dictionary<ArrayType, MethodReference> arrayConstructors;
+        private readonly Dictionary<ArrayType, MethodReference> arrayLoadElementMethods;
+        private readonly Dictionary<ArrayType, MethodReference> arrayStoreElementMethods;
         private readonly Dictionary<ArrayInitializerKey, FieldDefinition> arrayInitializers;
         private readonly AssemblyDefinition mscorlib;
 
@@ -71,6 +73,8 @@ namespace LaborasLangCompiler.Codegen
             functorImplementationTypes = new Dictionary<FunctorImplementationTypesKey, TypeDefinition>();
             arrayTypes = new Dictionary<ArrayTypeKey, ArrayType>();
             arrayConstructors = new Dictionary<ArrayType, MethodReference>();
+            arrayLoadElementMethods = new Dictionary<ArrayType, MethodReference>();
+            arrayStoreElementMethods = new Dictionary<ArrayType, MethodReference>();
             arrayInitializers = new Dictionary<ArrayInitializerKey, FieldDefinition>();
         }
 
@@ -447,6 +451,8 @@ namespace LaborasLangCompiler.Codegen
 
         public static MethodReference GetArrayConstructor(ArrayType arrayType)
         {
+            Contract.Requires(!arrayType.IsVector);
+
             MethodReference constructor;
 
             if (instance.arrayConstructors.TryGetValue(arrayType, out constructor))
@@ -462,6 +468,49 @@ namespace LaborasLangCompiler.Codegen
 
             instance.arrayConstructors.Add(arrayType, constructor);
             return constructor;
+        }
+
+        public static MethodReference GetArrayLoadElement(ArrayType arrayType)
+        {
+            Contract.Requires(!arrayType.IsVector);
+
+            MethodReference loadElement;
+
+            if (instance.arrayLoadElementMethods.TryGetValue(arrayType, out loadElement))
+                return loadElement;
+
+            loadElement = new MethodReference("Get", arrayType.ElementType, arrayType);
+            loadElement.HasThis = true;
+
+            for (int i = 0; i < arrayType.Rank; i++)
+            {
+                loadElement.Parameters.Add(new ParameterDefinition(arrayType.Module.TypeSystem.Int32));
+            }
+
+            instance.arrayLoadElementMethods.Add(arrayType, loadElement);
+            return loadElement;
+        }
+
+        public static MethodReference GetArrayStoreElement(ArrayType arrayType)
+        {
+            Contract.Requires(!arrayType.IsVector);
+
+            MethodReference storeElement;
+
+            if (instance.arrayStoreElementMethods.TryGetValue(arrayType, out storeElement))
+                return storeElement;
+
+            storeElement = new MethodReference("Set", arrayType.Module.TypeSystem.Void, arrayType);
+            storeElement.HasThis = true;
+
+            for (int i = 0; i < arrayType.Rank; i++)
+            {
+                storeElement.Parameters.Add(new ParameterDefinition(arrayType.Module.TypeSystem.Int32));
+            }
+
+            storeElement.Parameters.Add(new ParameterDefinition(arrayType.ElementType));
+            instance.arrayStoreElementMethods.Add(arrayType, storeElement);
+            return storeElement;
         }
 
         public static PropertyReference GetProperty(AssemblyEmitter assembly, string typeName, string propertyName)
