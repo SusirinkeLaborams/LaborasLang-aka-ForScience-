@@ -99,8 +99,7 @@ namespace Lexer
                         LeftCurlyBrace + ZeroOrMore(StatementNode) + RightCurlyBrace),
                     
                     ParseRule(IndexNode,
-                    LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket,
-                    LeftBracket + ZeroOrMore(Comma) + RightBracket),
+                    LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket),
 
                     #region Operators
 
@@ -231,7 +230,7 @@ namespace Lexer
                         False),
                     
                     ParseRule(ArrayLiteral, 
-                        Type + LeftBracket + RightBracket + LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
+                        Type + LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
                         LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
                         LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
                         LeftCurlyBrace + RightCurlyBrace),
@@ -256,8 +255,12 @@ namespace Lexer
                         Period + Symbol),
 
                     ParseRule(ParameterList,
-                        OneOrMore(FunctorParameters),                        
-                        OneOrMore(IndexNode)
+                        OneOrMore(FunctorParameters),   
+                        OneOrMore(ArrayTypeParameters)                     
+                    ),
+
+                    ParseRule(ArrayTypeParameters,
+                        LeftBracket + ZeroOrMore(Comma) + RightBracket
                     ),
 
                     ParseRule(FunctorParameters,

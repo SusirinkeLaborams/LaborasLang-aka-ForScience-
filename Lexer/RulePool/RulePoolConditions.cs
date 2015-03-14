@@ -50,6 +50,6 @@ namespace Lexer
         {
             Contract.Requires(requiredTokens.Length > 0);
             return new ParseRule(result, ParseRuleCollapsableLevel.Always, requiredTokens);
-        }
+        }        
     }
 }

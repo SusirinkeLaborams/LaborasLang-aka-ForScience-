@@ -17,8 +17,8 @@ Children:
 			Content: Type: ParameterList, Start: 1, 4, End: 1, 6, Content: ""
 			Type: ParameterList
 			Children:
-				Content: Type: IndexNode, Start: 1, 4, End: 1, 6, Content: ""
-				Type: IndexNode
+				Content: Type: ArrayTypeParameters, Start: 1, 4, End: 1, 6, Content: ""
+				Type: ArrayTypeParameters
 				Children:
 					Content: Type: LeftBracket, Start: 1, 4, End: 1, 5, Content: "["
 					Type: LeftBracket

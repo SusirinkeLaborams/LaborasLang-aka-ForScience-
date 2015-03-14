@@ -36,7 +36,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         public void testValidButStupidFunctionReturnsArray()
         {
             var source = @"a = foo[,](){return bar;};";
-            AssertCanBeLexed(source);
+            ExecuteTest(source);
         }
         
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
@@ -86,21 +86,21 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         public void testLambdaArrayInitialization()
         {
             var source = @"auto a = void()[]{void(){return; }, void(){return;}};";
-            AssertCanBeLexed(source);
+            ExecuteTest(source);
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void testFunctionArrayInitialization()
         {
             var source = @"auto a = void()[]{1, 2};";
-            AssertCanBeLexed(source);
+            ExecuteTest(source);
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void testArrayInitialization()
         {
             var source = @"auto a = int[]{1, 2, 3};";
-            AssertCanBeLexed(source);
+            ExecuteTest(source);
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
