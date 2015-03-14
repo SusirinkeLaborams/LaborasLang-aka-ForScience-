@@ -19,7 +19,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             var requiredRules = allTokens.Where(t => !t.IsTerminal() && !notRequiredRules.Contains(t));
             foreach (var token in requiredRules)
             {
-                var contains = SyntaxMatcher.ParseRulePool.Any(item => item.Result == token);
+                var contains = RulePool.LaborasLangRuleset.Any(item => item.Result == token);
                 if(!contains)
                 {
                     missingRules.Add(token);
@@ -33,7 +33,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         {
             var rules = new ParseRule[(int)TokenType.TokenTypeCount];
 
-            foreach (var rule in SyntaxMatcher.ParseRulePool)
+            foreach (var rule in RulePool.LaborasLangRuleset)
             {
                 rules[(int)rule.Result] = rule;
             }
@@ -88,12 +88,12 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             var rules = new ParseRule[(int)TokenType.TokenTypeCount];
             var visited = new bool[rules.Length];
 
-            foreach (var rule in SyntaxMatcher.ParseRulePool)
+            foreach (var rule in RulePool.LaborasLangRuleset)
             {
                 rules[(int)rule.Result] = rule;
             }
 
-            foreach (var rule in SyntaxMatcher.ParseRulePool)
+            foreach (var rule in RulePool.LaborasLangRuleset)
             {
                 TraverseRules(rules, visited, new Stack<ParseRule>(), (int)rule.Result);
             }
