@@ -83,24 +83,24 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
-        public void testRetardedFunctionDeclaration()
+        public void testLambdaArrayInitialization()
         {
-            var source = @"auto a = void()[]{return 5;};";
-            ExecuteTest(source);
+            var source = @"auto a = void()[]{void(){return; }, void(){return;}};";
+            AssertCanBeLexed(source);
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
-        public void testRetardedFunctionDeclaration2()
+        public void testFunctionArrayInitialization()
         {
             var source = @"auto a = void()[]{1, 2};";
-            ExecuteTest(source);
+            AssertCanBeLexed(source);
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void testArrayInitialization()
         {
-            var source = @"auto a = int[]{1, 2};";
-            ExecuteTest(source);
+            var source = @"auto a = int[]{1, 2, 3};";
+            AssertCanBeLexed(source);
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]

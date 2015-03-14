@@ -47,14 +47,19 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             }
         }
 
-        private void AssertNoUnknowns(AstNode tree)
+        private bool ContaintsUnknowns(AstNode tree)
         {
-            Assert.AreNotEqual(TokenType.UnknownNode, tree.Token.Type);
+            if (TokenType.UnknownNode == tree.Token.Type)
+            {
+                return true;
+            }
 
             foreach (var child in tree.Children)
             {
-                AssertNoUnknowns(child);
+                return ContaintsUnknowns(child);
             }
+
+            return false;
         }
 
         protected void AssertCanBeLexed(string source)
@@ -64,7 +69,10 @@ namespace LaborasLangCompilerUnitTests.LexerTests
                 var tokens = Tokenizer.Tokenize(source, rootNode);
                 var syntaxMatcher = new SyntaxMatcher(tokens, rootNode);
                 var tree = syntaxMatcher.Match();
-                AssertNoUnknowns(tree);
+                if(ContaintsUnknowns(tree))
+                {
+                    Assert.Fail("Unknown symbols found in tree:\r\n" + tree.ToString());
+                }
             }
         }
     }
