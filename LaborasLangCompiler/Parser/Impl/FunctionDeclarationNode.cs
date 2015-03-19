@@ -220,6 +220,9 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static List<FunctionParamInfo> ParseParams(Parser parser, AstNode lexerNode)
         {
+            lexerNode = lexerNode.Children[0];
+            if (lexerNode.Type != Lexer.TokenType.FunctorParameters)
+                ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(lexerNode), "Method parameter list expected, {0} found", lexerNode.Type);
             var ret = new List<FunctionParamInfo>();
             int i = 1;
             while (i < lexerNode.ChildrenCount)
