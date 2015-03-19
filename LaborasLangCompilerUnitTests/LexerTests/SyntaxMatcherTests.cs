@@ -69,14 +69,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
-        public void testDeclareFunctionThatReturnsArray()
-        {
-            var source = @"int[]() a;";
-            ExecuteTest(source);
-        }
-
-        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
-        public void testFunctionArrays()
+        public void testFunctionArrayType()
         {
             var source = @"int()[] a;";
             ExecuteTest(source);
@@ -144,6 +137,24 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         {
             var source = @"
             a = { };
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testImplicitArrayLiteralAsArg()
+        {
+            var source = @"
+            foo({5}, {6, 7});
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testExplicitArrayLiteralAsArg()
+        {
+            var source = @"
+            foo(int[]{5}, int[]{8, 9});
             ";
             ExecuteTest(source);
         }

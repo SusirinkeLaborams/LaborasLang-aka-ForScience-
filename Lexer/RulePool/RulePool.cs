@@ -232,7 +232,6 @@ namespace Lexer
                     ParseRule(ArrayLiteral, 
                         Type + LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
                         LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
-                        LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
                         LeftCurlyBrace + RightCurlyBrace),
                         
                     ParseRule(InlineFunctionCallNode,
