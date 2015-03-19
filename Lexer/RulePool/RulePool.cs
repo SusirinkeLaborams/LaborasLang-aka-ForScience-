@@ -254,8 +254,8 @@ namespace Lexer
                         Period + Symbol),
 
                     ParseRule(ParameterList,
-                        OneOrMore(FunctorParameters),   
-                        OneOrMore(ArrayTypeParameters)                     
+                        FunctorParameters,   
+                        ArrayTypeParameters                     
                     ),
 
                     ParseRule(ArrayTypeParameters,

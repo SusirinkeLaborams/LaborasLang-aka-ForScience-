@@ -38,7 +38,7 @@ Children:
 						Type: Symbol
 						Children:
 
-					Content: Type: ParameterList, Start: 2, 16, End: 2, 20, Content: ""
+					Content: Type: ParameterList, Start: 2, 16, End: 2, 18, Content: ""
 					Type: ParameterList
 					Children:
 						Content: Type: FunctorParameters, Start: 2, 16, End: 2, 18, Content: ""
@@ -52,6 +52,9 @@ Children:
 							Type: RightParenthesis
 							Children:
 
+					Content: Type: ParameterList, Start: 2, 18, End: 2, 20, Content: ""
+					Type: ParameterList
+					Children:
 						Content: Type: FunctorParameters, Start: 2, 18, End: 2, 20, Content: ""
 						Type: FunctorParameters
 						Children:
