@@ -172,6 +172,24 @@ a = 5;
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testFunctorReturningArrayOfFunctorsType()
+        {
+            var source = @"
+            void()[]() foo;
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testDeclaredFunctorReturningArrayOfFunctorsType()
+        {
+            var source = @"
+            void()[](int) foo = void()[](int a){};
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void TestFunctionDeclarationAndCall()
         {
 
