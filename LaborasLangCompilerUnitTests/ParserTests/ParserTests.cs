@@ -19,7 +19,6 @@ namespace LaborasLangCompilerUnitTests.ParserTests
     [TestClass]
     public class ParserTests : ParserTestBase
     {
-
         [TestMethod, TestCategory("Parser")]
         public void FieldDeclarationTest()
         {
@@ -775,6 +774,46 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string source = @"
                 auto foo = ""foo"" == ""bar"";";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayType()
+        {
+            string source = @"
+                int[] foo;
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestMultidimArrayType()
+        {
+            string source = @"
+                int[,,] foo;
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestFunctorArrayType()
+        {
+            string source = @"
+                int()[] foo;
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestFunctorReturningArrayType()
+        {
+            string source = @"
+                mutable int[]() foo;
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestHorribleMixedType()
+        {
+            string source = @"
+                int[]()[,](int, float[])[] foo;
+            ";
             CompareTrees(source);
         }
     }

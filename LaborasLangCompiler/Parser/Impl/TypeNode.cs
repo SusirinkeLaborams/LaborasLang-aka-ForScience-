@@ -139,6 +139,8 @@ namespace LaborasLangCompiler.Parser.Impl
                             break;//unreachable
                     }
                 }
+
+                Type = AssemblyRegistry.GetArrayType(Type, dims);
             }
 
             public void Append(IEnumerable<TypeReference> paramz)
