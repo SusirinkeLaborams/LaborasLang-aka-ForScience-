@@ -99,7 +99,8 @@ namespace Lexer
                         LeftCurlyBrace + ZeroOrMore(StatementNode) + RightCurlyBrace),
                     
                     ParseRule(IndexNode,
-                    LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket),
+                    LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket,
+                    LeftBracket + ZeroOrMore(Comma) + RightBracket),
 
                     #region Operators
 

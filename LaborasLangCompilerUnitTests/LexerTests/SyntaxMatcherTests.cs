@@ -120,6 +120,25 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             ExecuteTest(source);
         }
 
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testArrayWithoutInitializerList()
+        {
+            var source = @"
+            a = int[];
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testArrayElementAccess()
+        {
+            var source = @"
+            a = value[5];
+            ";
+            ExecuteTest(source);
+        }
+
+
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void testArrayLiteralWithTwoValues()
