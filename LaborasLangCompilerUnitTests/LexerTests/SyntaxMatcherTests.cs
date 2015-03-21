@@ -317,6 +317,14 @@ foo()()();";
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void PleaseDontCrashTooHard()
+        {
+            var source = @"foo = int(int a) { bar(); };";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void AssignFunctionTest_TwoArguments()
         {
             var source = @"foo = int(int a, float c) { bar(); };";
@@ -633,7 +641,7 @@ auto foo = void()()
         public void TestErrorousStatement()
         {
             var source = @"sudo bring me beer;";
-            ExecuteTest(source);
+            ExecuteFailingTest(source);
         }
         
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
@@ -645,7 +653,7 @@ auto foo = void()()
             };
             int a = 0;
             ";
-            ExecuteTest(source);
+            ExecuteFailingTest(source);
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]

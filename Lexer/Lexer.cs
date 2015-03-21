@@ -1,4 +1,5 @@
 ﻿using Lexer.Containers;
+using System;
 
 namespace Lexer
 {
@@ -12,6 +13,16 @@ namespace Lexer
             matcher.Match();
 
             return rootNode;
+        }
+
+        public static void WithTree(string source, Action<AstNode> consumer)
+        {
+            using (var rootNode = new RootNode())
+            {
+                var tokens = Tokenizer.Tokenize(source, rootNode);
+                var matcher = new SyntaxMatcher(tokens, rootNode);
+                consumer.Invoke(matcher.Match());
+            }
         }
     }
 }
