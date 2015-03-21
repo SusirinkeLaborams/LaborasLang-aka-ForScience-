@@ -78,6 +78,7 @@
         NonTerminalToken,
 
         ArrayLiteral,
+        InitializerList,
 
         CodeBlockNode,
         DeclarationNode,

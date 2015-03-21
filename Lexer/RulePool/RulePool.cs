@@ -231,7 +231,10 @@ namespace Lexer
                         False),
                     
                     ParseRule(ArrayLiteral, 
-                        Type + LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
+                        Type + InitializerList,
+                        InitializerList),
+
+                    ParseRule(InitializerList,     
                         LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
                         LeftCurlyBrace + RightCurlyBrace),
                         

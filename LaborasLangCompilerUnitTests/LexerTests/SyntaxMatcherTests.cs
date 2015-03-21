@@ -316,13 +316,6 @@ foo()()();";
             ExecuteTest(source);
         }
 
-        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
-        public void PleaseDontCrashTooHard()
-        {
-            var source = @"foo = int(int a) { bar(); };";
-            ExecuteTest(source);
-        }
-
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void AssignFunctionTest_TwoArguments()

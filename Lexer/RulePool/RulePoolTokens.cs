@@ -140,5 +140,6 @@ namespace Lexer
         private static Condition RightBracket { get { return TokenType.RightBracket; } }
         private static Condition LeftBracket { get { return TokenType.LeftBracket; } }
         private static Condition FunctorParameters { get { return TokenType.FunctorParameters; } }
+        private static Condition InitializerList { get { return TokenType.InitializerList; } }
     }
 }
