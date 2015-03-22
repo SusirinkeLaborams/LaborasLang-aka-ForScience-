@@ -121,6 +121,16 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testSingleElementArrayCreation()
+        {
+            var source = @"
+            a = int[1]{ 1 };
+            ";
+            AssertContainsNoUnknowns(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void testArrayWithoutInitializerList()
         {
             var source = @"

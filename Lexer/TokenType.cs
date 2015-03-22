@@ -118,7 +118,6 @@
         IndexAccessNode,
         IndexNode,        
         FunctorParameters,
-        ArrayTypeParameters,
         LexerInternalTokens,    // Lexer internal-only tokens start from here
         
         StatementNode,

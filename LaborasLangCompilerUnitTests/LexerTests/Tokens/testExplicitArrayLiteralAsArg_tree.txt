@@ -40,8 +40,8 @@ Children:
 							Content: Type: ParameterList, Start: 2, 20, End: 2, 22, Content: ""
 							Type: ParameterList
 							Children:
-								Content: Type: ArrayTypeParameters, Start: 2, 20, End: 2, 22, Content: ""
-								Type: ArrayTypeParameters
+								Content: Type: IndexNode, Start: 2, 20, End: 2, 22, Content: ""
+								Type: IndexNode
 								Children:
 									Content: Type: LeftBracket, Start: 2, 20, End: 2, 21, Content: "["
 									Type: LeftBracket
@@ -95,8 +95,8 @@ Children:
 							Content: Type: ParameterList, Start: 2, 30, End: 2, 32, Content: ""
 							Type: ParameterList
 							Children:
-								Content: Type: ArrayTypeParameters, Start: 2, 30, End: 2, 32, Content: ""
-								Type: ArrayTypeParameters
+								Content: Type: IndexNode, Start: 2, 30, End: 2, 32, Content: ""
+								Type: IndexNode
 								Children:
 									Content: Type: LeftBracket, Start: 2, 30, End: 2, 31, Content: "["
 									Type: LeftBracket

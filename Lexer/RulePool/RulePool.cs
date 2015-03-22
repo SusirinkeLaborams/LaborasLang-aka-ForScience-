@@ -259,13 +259,9 @@ namespace Lexer
 
                     ParseRule(ParameterList,
                         FunctorParameters,   
-                        ArrayTypeParameters                     
+                        IndexNode                     
                     ),
-
-                    ParseRule(ArrayTypeParameters,
-                        LeftBracket + ZeroOrMore(Comma) + RightBracket
-                    ),
-
+                    
                     ParseRule(FunctorParameters,
                         LeftParenthesis + Type + ZeroOrMore(TypeSubnode) + RightParenthesis,
                         LeftParenthesis + Type + Symbol + ZeroOrMore(TypeAndSymbolSubnode) + RightParenthesis,
