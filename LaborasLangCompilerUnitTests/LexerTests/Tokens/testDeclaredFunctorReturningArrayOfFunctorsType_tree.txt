@@ -31,8 +31,8 @@ Children:
 			Content: Type: ParameterList, Start: 2, 19, End: 2, 21, Content: ""
 			Type: ParameterList
 			Children:
-				Content: Type: ArrayTypeParameters, Start: 2, 19, End: 2, 21, Content: ""
-				Type: ArrayTypeParameters
+				Content: Type: IndexNode, Start: 2, 19, End: 2, 21, Content: ""
+				Type: IndexNode
 				Children:
 					Content: Type: LeftBracket, Start: 2, 19, End: 2, 20, Content: "["
 					Type: LeftBracket
@@ -77,8 +77,8 @@ Children:
 		Content: Type: Value, Start: 2, 33, End: 2, 50, Content: ""
 		Type: Value
 		Children:
-			Content: Type: Function, Start: 2, 33, End: 2, 50, Content: ""
-			Type: Function
+			Content: Type: ArrayLiteral, Start: 2, 33, End: 2, 50, Content: ""
+			Type: ArrayLiteral
 			Children:
 				Content: Type: Type, Start: 2, 33, End: 2, 48, Content: ""
 				Type: Type
@@ -107,8 +107,8 @@ Children:
 					Content: Type: ParameterList, Start: 2, 39, End: 2, 41, Content: ""
 					Type: ParameterList
 					Children:
-						Content: Type: ArrayTypeParameters, Start: 2, 39, End: 2, 41, Content: ""
-						Type: ArrayTypeParameters
+						Content: Type: IndexNode, Start: 2, 39, End: 2, 41, Content: ""
+						Type: IndexNode
 						Children:
 							Content: Type: LeftBracket, Start: 2, 39, End: 2, 40, Content: "["
 							Type: LeftBracket
@@ -146,8 +146,8 @@ Children:
 							Type: RightParenthesis
 							Children:
 
-				Content: Type: CodeBlockNode, Start: 2, 48, End: 2, 50, Content: ""
-				Type: CodeBlockNode
+				Content: Type: InitializerList, Start: 2, 48, End: 2, 50, Content: ""
+				Type: InitializerList
 				Children:
 					Content: Type: LeftCurlyBrace, Start: 2, 48, End: 2, 49, Content: "{"
 					Type: LeftCurlyBrace

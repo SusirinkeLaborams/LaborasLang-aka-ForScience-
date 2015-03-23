@@ -120,6 +120,78 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             ExecuteTest(source);
         }
 
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testSingleElementArrayCreation()
+        {
+            var source = @"
+            a = int[1]{ 1 };
+            ";
+            AssertContainsNoUnknowns(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testArrayWithoutInitializerList()
+        {
+            var source = @"
+            a = int[];
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testArrayElementAccess()
+        {
+            var source = @"
+            a = value[5];
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testJaggedArrayAccess()
+        {
+            var source = @"
+            a = value[5][6];
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testJaggedArrayInitialization()
+        {
+            var source = @"
+            a = int[][]{int[0], int[0]};
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testCallOnArrayAccess()
+        {
+            var source = @"
+            a = foo[0]();
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testArrayAccessOnCall()
+        {
+            var source = @"
+            a = foo()[0];
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testMixedArrayAccessAndCalls()
+        {
+            var source = @"
+            a = foo[0]()[1, 5]()()[2][3]();
+            ";
+            ExecuteTest(source);
+        }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void testArrayLiteralWithTwoValues()
@@ -129,7 +201,6 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             ";
             ExecuteTest(source);
         }
-
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void testEmptyArray()
@@ -141,10 +212,46 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testImplicitMatrixInitialization()
+        {
+            var source = @"
+            a = { {1, 2}, {3, 4} };
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testExplicitMatrixInitialization()
+        {
+            var source = @"
+            a = int[,]{ {1, 2}, {3, 4} };
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testExplicitSizeMatrixInitialization()
+        {
+            var source = @"
+            a = int[2, 2]{ {1, 2}, {3, 4} };
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void testImplicitArrayLiteralAsArg()
         {
             var source = @"
             foo({5}, {6, 7});
+            ";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testArrayLiteralAsArg()
+        {
+            var source = @"
+            foo(int[1], float[2]);
             ";
             ExecuteTest(source);
         }
@@ -296,6 +403,7 @@ foo()()();";
             var source = @"foo = int(int a) { bar(); };";
             ExecuteTest(source);
         }
+
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void AssignFunctionTest_TwoArguments()
@@ -614,7 +722,7 @@ auto foo = void()()
         public void TestErrorousStatement()
         {
             var source = @"sudo bring me beer;";
-            ExecuteTest(source);
+            ExecuteFailingTest(source);
         }
         
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
@@ -626,7 +734,7 @@ auto foo = void()()
             };
             int a = 0;
             ";
-            ExecuteTest(source);
+            ExecuteFailingTest(source);
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]

@@ -8,7 +8,6 @@ namespace Lexer
 {
     partial class RulePool
     {
-        private static Condition ArrayTypeParameters { get { return TokenType.ArrayTypeParameters; } }
         private static Condition EndOfLine { get { return TokenType.EndOfLine; } }
         private static Condition Comma { get { return TokenType.Comma; } }
         private static Condition Period { get { return TokenType.Period; } }
@@ -140,5 +139,6 @@ namespace Lexer
         private static Condition RightBracket { get { return TokenType.RightBracket; } }
         private static Condition LeftBracket { get { return TokenType.LeftBracket; } }
         private static Condition FunctorParameters { get { return TokenType.FunctorParameters; } }
+        private static Condition InitializerList { get { return TokenType.InitializerList; } }
     }
 }

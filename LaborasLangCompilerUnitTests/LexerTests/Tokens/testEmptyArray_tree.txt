@@ -21,13 +21,16 @@ Children:
 			Content: Type: ArrayLiteral, Start: 2, 17, End: 2, 20, Content: ""
 			Type: ArrayLiteral
 			Children:
-				Content: Type: LeftCurlyBrace, Start: 2, 17, End: 2, 18, Content: "{"
-				Type: LeftCurlyBrace
+				Content: Type: InitializerList, Start: 2, 17, End: 2, 20, Content: ""
+				Type: InitializerList
 				Children:
+					Content: Type: LeftCurlyBrace, Start: 2, 17, End: 2, 18, Content: "{"
+					Type: LeftCurlyBrace
+					Children:
 
-				Content: Type: RightCurlyBrace, Start: 2, 19, End: 2, 20, Content: "}"
-				Type: RightCurlyBrace
-				Children:
+					Content: Type: RightCurlyBrace, Start: 2, 19, End: 2, 20, Content: "}"
+					Type: RightCurlyBrace
+					Children:
 
 	Content: Type: EndOfLine, Start: 2, 20, End: 2, 21, Content: ";"
 	Type: EndOfLine

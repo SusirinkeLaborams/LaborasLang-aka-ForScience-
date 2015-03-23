@@ -99,7 +99,8 @@ namespace Lexer
                         LeftCurlyBrace + ZeroOrMore(StatementNode) + RightCurlyBrace),
                     
                     ParseRule(IndexNode,
-                    LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket),
+                    LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket,
+                    LeftBracket + ZeroOrMore(Comma) + RightBracket),
 
                     #region Operators
 
@@ -230,7 +231,10 @@ namespace Lexer
                         False),
                     
                     ParseRule(ArrayLiteral, 
-                        Type + LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
+                        Type + InitializerList,
+                        InitializerList),
+
+                    ParseRule(InitializerList,     
                         LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
                         LeftCurlyBrace + RightCurlyBrace),
                         
@@ -255,13 +259,9 @@ namespace Lexer
 
                     ParseRule(ParameterList,
                         FunctorParameters,   
-                        ArrayTypeParameters                     
+                        IndexNode                     
                     ),
-
-                    ParseRule(ArrayTypeParameters,
-                        LeftBracket + ZeroOrMore(Comma) + RightBracket
-                    ),
-
+                    
                     ParseRule(FunctorParameters,
                         LeftParenthesis + Type + ZeroOrMore(TypeSubnode) + RightParenthesis,
                         LeftParenthesis + Type + Symbol + ZeroOrMore(TypeAndSymbolSubnode) + RightParenthesis,

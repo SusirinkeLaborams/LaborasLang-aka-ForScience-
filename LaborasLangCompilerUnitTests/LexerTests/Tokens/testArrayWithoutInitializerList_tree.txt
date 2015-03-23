@@ -18,28 +18,25 @@ Children:
 			Type: Assignment
 			Children:
 
-			Content: Type: ArrayLiteral, Start: 2, 17, End: 2, 22, Content: ""
-			Type: ArrayLiteral
+			Content: Type: IndexAccessNode, Start: 2, 17, End: 2, 22, Content: ""
+			Type: IndexAccessNode
 			Children:
-				Content: Type: InitializerList, Start: 2, 17, End: 2, 22, Content: ""
-				Type: InitializerList
+				Content: Type: FullSymbol, Start: 2, 17, End: 2, 20, Content: ""
+				Type: FullSymbol
 				Children:
-					Content: Type: LeftCurlyBrace, Start: 2, 17, End: 2, 18, Content: "{"
-					Type: LeftCurlyBrace
+					Content: Type: Symbol, Start: 2, 17, End: 2, 20, Content: "int"
+					Type: Symbol
 					Children:
 
-					Content: Type: Value, Start: 2, 19, End: 2, 20, Content: ""
-					Type: Value
+				Content: Type: IndexNode, Start: 2, 20, End: 2, 22, Content: ""
+				Type: IndexNode
+				Children:
+					Content: Type: LeftBracket, Start: 2, 20, End: 2, 21, Content: "["
+					Type: LeftBracket
 					Children:
-						Content: Type: LiteralNode, Start: 2, 19, End: 2, 20, Content: ""
-						Type: LiteralNode
-						Children:
-							Content: Type: Integer, Start: 2, 19, End: 2, 20, Content: "1"
-							Type: Integer
-							Children:
 
-					Content: Type: RightCurlyBrace, Start: 2, 21, End: 2, 22, Content: "}"
-					Type: RightCurlyBrace
+					Content: Type: RightBracket, Start: 2, 21, End: 2, 22, Content: "]"
+					Type: RightBracket
 					Children:
 
 	Content: Type: EndOfLine, Start: 2, 22, End: 2, 23, Content: ";"

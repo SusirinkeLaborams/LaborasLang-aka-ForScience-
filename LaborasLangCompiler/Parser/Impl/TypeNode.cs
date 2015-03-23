@@ -83,7 +83,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     {
                         AppendFunctorTypeParams(list);
                     }
-                    else if (list.Type == Lexer.TokenType.ArrayTypeParameters)
+                    else if (list.Type == Lexer.TokenType.IndexNode)
                     {
                         AppendArrayParams(list);
                     }
