@@ -9,6 +9,7 @@ using LaborasLangCompiler.Parser.Utils;
 using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
 using Lexer.Containers;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -16,7 +17,7 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ArrayAccess; } }
         public override bool IsGettable { get { return true; } }
-        public override bool IsSettable { get { return false; } }
+        public override bool IsSettable { get { return true; } }
 
         public override TypeReference ExpressionReturnType { get { return type; } }
         public IExpressionNode Array { get { return array; } }
@@ -26,11 +27,12 @@ namespace LaborasLangCompiler.Parser.Impl
         private ExpressionNode array;
         private TypeReference type;
 
-        private ArrayAccessNode(ExpressionNode array, IReadOnlyList<ExpressionNode> indices, TypeReference type, SequencePoint point) : base(point)
+        private ArrayAccessNode(ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point) : base(point)
         {
+            Contract.Requires(array.ExpressionReturnType is ArrayType);
             this.array = array;
             this.Indices = indices;
-            this.type = type;
+            this.type = ((ArrayType)array.ExpressionReturnType).ElementType;
         }
 
         public static ExpressionNode Parse(ContextNode context, AstNode lexerNode)
@@ -45,13 +47,25 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if(!index.IsGettable || !index.ExpressionReturnType.IsIntegerType())
                 {
-                    ErrorCode.InvalidIndex.ReportAndThrow(index.SequencePoint, "Invalid index, must be a gettable integer");
+                    ErrorCode.InvalidIndexType.ReportAndThrow(index.SequencePoint, "Invalid index, must be a gettable integer");
                 }
             }
 
             var arrayType = array.ExpressionReturnType as ArrayType;
             throw new NotImplementedException();
             //fuck it
+        }
+
+        private static ArrayAccessNode AsArray(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
+        {
+            var type = array.ExpressionReturnType as ArrayType;
+            if (type == null)
+                return null;
+
+            if (indices.Count != type.Rank)
+                ErrorCode.InvalidIndexCount.ReportAndThrow(point, "Invalid array indexing, rank is {0}, index count is {1}", type.Rank, indices.Count);
+
+            return new ArrayAccessNode(array, indices, point);
         }
 
         public override string ToString(int indent)

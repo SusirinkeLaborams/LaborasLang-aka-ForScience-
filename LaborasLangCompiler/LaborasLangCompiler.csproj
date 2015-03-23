@@ -225,6 +225,7 @@
     <Compile Include="Parser\Impl\FunctionArgumentNode.cs" />
     <Compile Include="Parser\Impl\IAmbiguousNode.cs" />
     <Compile Include="Parser\Impl\FieldDeclarationNode.cs" />
+    <Compile Include="Parser\Impl\IndexOperatorAccessNode.cs" />
     <Compile Include="Parser\Impl\InitializerList.cs" />
     <Compile Include="Parser\Impl\LocalVariableNode.cs" />
     <Compile Include="Parser\Impl\MemberNode.cs" />
