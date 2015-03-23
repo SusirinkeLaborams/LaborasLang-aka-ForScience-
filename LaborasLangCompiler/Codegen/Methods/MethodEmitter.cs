@@ -154,7 +154,8 @@ namespace LaborasLangCompiler.Codegen.Methods
             switch (expression.ExpressionType)
             {
                 case ExpressionNodeType.ArrayAccess:
-                    throw new NotImplementedException();
+                    Emit((IArrayAccessNode)expression, emitReference);
+                    break;
 
                 case ExpressionNodeType.ArrayCreation:
                     Emit((IArrayCreationNode)expression);
@@ -263,6 +264,9 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             switch (expression.ExpressionType)
             {
+                case ExpressionNodeType.ArrayAccess:
+                    throw new NotImplementedException();
+
                 case ExpressionNodeType.Field:
                     EmitStore((IFieldNode)expression);
                     return;
@@ -364,6 +368,49 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
 
             Call(getter);
+        }
+
+        protected void Emit(IArrayAccessNode arrayAccess, bool emitReference)
+        {
+            var array = arrayAccess.Array;
+            var arrayType = array.ExpressionReturnType as ArrayType;
+            var indices = arrayAccess.Indices;
+
+            Emit(arrayAccess.Array, true);
+
+            if (arrayType != null)
+            {
+                emitReference &= array.ExpressionReturnType.IsValueType;
+
+                if (arrayType.IsVector)
+                {
+                    Contract.Assume(indices.Count == 1);
+                    Emit(indices[0], false);
+                    Ldelem(arrayType.ElementType);
+                }
+                else
+                {
+                    var loadElementMethod = AssemblyRegistry.GetArrayLoadElement(arrayType);
+
+                    for (int i = 0; i < indices.Count; i++)
+                    {
+                        Emit(indices[i], false);
+                    }
+
+                    Call(loadElementMethod);
+                }
+            }
+            else
+            {
+                var getter = AssemblyRegistry.GetCompatibleMethod(Assembly, array.ExpressionReturnType, "get_Item", indices.Select(index => index.ExpressionReturnType).ToArray());
+
+                for (int i = 0; i < indices.Count; i++)
+                {
+                    Emit(indices[i], false);
+                }
+
+                Call(getter);
+            }
         }
 
         #endregion
