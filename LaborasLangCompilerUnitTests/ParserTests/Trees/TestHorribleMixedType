@@ -1,0 +1,12 @@
+Class:
+	TestHorribleMixedType
+	Fields:
+		FieldDeclaration:
+			Type:
+				$Functors.$$Functors_$System_Int32[]?[0___,0___]*System_Int32*System_Single[]?[]
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+
+	Methods:

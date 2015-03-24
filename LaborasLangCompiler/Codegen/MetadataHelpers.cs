@@ -134,7 +134,7 @@ namespace LaborasLangCompiler.Codegen
         public static bool IsFunctorType(this TypeReference type)
         {
             Contract.Assume(type.FullName != null);
-            return type.FullName.StartsWith("$Functors.");
+            return type.FullName.StartsWith("$Functors.") && type.IsDefinition;
         }
 
         public static bool IsAssignableTo(this TypeReference right, TypeReference left)
