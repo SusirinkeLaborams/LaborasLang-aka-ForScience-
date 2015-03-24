@@ -52,7 +52,8 @@ namespace LaborasLangCompiler.Common
         CannotCreate = 0026,
         MisshapedMatrix = 0027,
         InvalidIndexCount = 0028,
-        InvalidIndexType = 0029
+        InvalidIndexType = 0029,
+        CannotIndex = 0030
     }
 
     public static class Errors

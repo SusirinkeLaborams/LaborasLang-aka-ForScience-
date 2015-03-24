@@ -41,19 +41,34 @@ namespace LaborasLangCompiler.Parser.Impl
             throw new NotImplementedException();
         }
 
-        public static ArrayAccessNode Create(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
+        public static ExpressionNode Create(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
         {
             foreach(var index in indices)
             {
-                if(!index.IsGettable || !index.ExpressionReturnType.IsIntegerType())
+                if(!index.IsGettable || 
+                    !(index.ExpressionReturnType.IsAssignableTo(context.Parser.Int32) || index.ExpressionReturnType.IsAssignableTo(context.Parser.UInt32)))
                 {
                     ErrorCode.InvalidIndexType.ReportAndThrow(index.SequencePoint, "Invalid index, must be a gettable integer");
                 }
             }
 
-            var arrayType = array.ExpressionReturnType as ArrayType;
-            throw new NotImplementedException();
-            //fuck it
+            if (!array.IsGettable)
+                ErrorCode.NotAnRValue.ReportAndThrow(point, "Left operand for [] operator must be gettable");
+
+            ExpressionNode result = AsArrayCreation(context, array, indices, point);
+            if (result != null)
+                return result;
+
+            result = AsIndexOp(context, array, indices, point);
+            if (result != null)
+                return result;
+
+            result = AsArray(context, array, indices, point);
+            if (result != null)
+                return result;
+
+            ErrorCode.CannotIndex.ReportAndThrow(point, "Cannot use operator[], not type, array or object with overloaded [] operator");
+            return null;//unreachable
         }
 
         private static ArrayAccessNode AsArray(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
@@ -89,6 +104,15 @@ namespace LaborasLangCompiler.Parser.Impl
             }
 
             return new IndexOperatorAccessNode(context, array, getType, getter, setter, indices, point);
+        }
+
+        private static ArrayCreationNode AsArrayCreation(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
+        {
+            var type = array as TypeNode;
+            if (type == null)
+                return null;
+
+            return ArrayCreationNode.Create(context, type.ParsedType, indices, null, point);
         }
 
         public override string ToString(int indent)
