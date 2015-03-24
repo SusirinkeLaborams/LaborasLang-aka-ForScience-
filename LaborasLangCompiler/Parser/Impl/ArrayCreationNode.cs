@@ -41,11 +41,21 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            if (initializer != null && !initializer.ElementType.IsAssignableTo(type))
+            if (initializer != null)
             {
-                ErrorCode.TypeMissmatch.ReportAndThrow(point,
-                    "Cannot initializer array of element type {0} when initializer element type is {1}",
-                    type.FullName, initializer.ElementType.FullName);
+                if(!initializer.ElementType.IsAssignableTo(type))
+                {
+                    ErrorCode.TypeMissmatch.ReportAndThrow(point,
+                        "Cannot initializer array of element type {0} when initializer element type is {1}",
+                        type.FullName, initializer.ElementType.FullName);
+                }
+
+                if(initializer.Dimmensions.Count() != dims.Count())
+                {
+                    ErrorCode.MisshapedMatrix.ReportAndThrow(point,
+                        "Cannot initialize array of {0} dimmensions with a matrix of {1} dimmensions",
+                        dims.Count(), initializer.Dimmensions.Count());
+                }
             }
             instance.type = AssemblyRegistry.GetArrayType(type, dims.Count());
             instance.Dimensions = dims.ToArray();

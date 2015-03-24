@@ -68,6 +68,29 @@ namespace LaborasLangCompiler.Parser.Impl
             return new ArrayAccessNode(array, indices, point);
         }
 
+        private static IndexOperatorAccessNode AsIndexOp(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
+        {
+            var args = indices.Select(a => a.ExpressionReturnType).ToArray();
+            var setter = AssemblyRegistry.GetCompatibleMethod(context.Assembly, array.ExpressionReturnType, "set_Item", args);
+            var getter = AssemblyRegistry.GetCompatibleMethod(context.Assembly, array.ExpressionReturnType, "get_Item", args);
+
+            if(getter == null && setter == null)
+                return null;
+
+            var getType = getter != null ? getter.ReturnType : null;
+            var setType = setter != null ? setter.ReturnType : null;
+
+            if(getType != null && setType != null)
+            {
+                if(!getType.TypeEquals(setType))
+                {
+                    return null;
+                }
+            }
+
+            return new IndexOperatorAccessNode(context, array, getType, getter, setter, indices, point);
+        }
+
         public override string ToString(int indent)
         {
             throw new NotImplementedException();
