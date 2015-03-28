@@ -68,14 +68,92 @@ namespace LaborasLangCompiler.Parser.Impl
 
             private readonly ExpressionNode operand;
 
-            internal UnaryOperatorNode(UnaryOperatorNodeType type, ExpressionNode operand)
+            internal UnaryOperatorNode(InternalUnaryOperatorType type, ExpressionNode operand)
                 : base(operand.SequencePoint)
             {
                 this.operand = operand;
-                this.UnaryOperatorType = type;
+                switch (type)
+                {
+                    case InternalUnaryOperatorType.BinaryNot:
+                        this.UnaryOperatorType = UnaryOperatorNodeType.BinaryNot;
+                        break;
+                    case InternalUnaryOperatorType.LogicalNot:
+                        this.UnaryOperatorType = UnaryOperatorNodeType.LogicalNot;
+                        break;
+                    case InternalUnaryOperatorType.Negation:
+                        this.UnaryOperatorType = UnaryOperatorNodeType.Negation;
+                        break;
+                    default:
+                        throw new ArgumentException();
+                }
+            }
+
+            public override string ToString(int indent)
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.Indent(indent).AppendLine("UnaryOperator:");
+                builder.Indent(indent + 1).AppendLine("Operator:");
+                builder.Indent(indent + 2).AppendLine(UnaryOperatorType.ToString());
+                builder.Indent(indent + 1).AppendLine("Operand:");
+                builder.AppendLine(operand.ToString(indent + 2));
+                return builder.ToString();
             }
         }
-        
+
+        public class IncrementDecrementOperatorNode : ExpressionNode, IIncrementDecrementOperatorNode
+        {
+            public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.IncrementDecrementOperator; } }
+            public override TypeReference ExpressionReturnType { get { return operand.ExpressionReturnType; } }
+            public IExpressionNode Operand { get { return operand; } }
+            public override bool IsGettable { get { return true; } }
+            public override bool IsSettable
+            { 
+                get 
+                {
+                    return IncrementDecrementType == IncrementDecrementOperatorType.PreDecrement || IncrementDecrementType == IncrementDecrementOperatorType.PreIncrement; 
+                }
+            }
+
+            public IncrementDecrementOperatorType IncrementDecrementType { get; private set; }
+            public MethodReference OverloadedOperatorMethod { get; private set; }
+
+            private ExpressionNode operand;
+
+            internal IncrementDecrementOperatorNode(InternalUnaryOperatorType type, ExpressionNode operand, MethodReference overload)
+                : base(operand.SequencePoint)
+            {
+                OverloadedOperatorMethod = overload;
+                this.operand = operand;
+                switch (type)
+                {
+                    case InternalUnaryOperatorType.PreIncrement:
+                        IncrementDecrementType = IncrementDecrementOperatorType.PreIncrement;
+                        break;
+                    case InternalUnaryOperatorType.PreDecrement:
+                        IncrementDecrementType = IncrementDecrementOperatorType.PreDecrement;
+                        break;
+                    case InternalUnaryOperatorType.PostIncrement:
+                        IncrementDecrementType = IncrementDecrementOperatorType.PostIncrement;
+                        break;
+                    case InternalUnaryOperatorType.PostDecrement:
+                        IncrementDecrementType = IncrementDecrementOperatorType.PostDecrement;
+                        break;
+                    default:
+                        throw new ArgumentException();
+                }
+            }
+
+            public override string ToString(int indent)
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.Indent(indent).AppendLine("IncrementDecrementOperator:");
+                builder.Indent(indent + 1).AppendLine("Operator:");
+                builder.Indent(indent + 2).AppendLine(IncrementDecrementType.ToString());
+                builder.Indent(indent + 1).AppendLine("Operand:");
+                builder.AppendLine(operand.ToString(indent + 2));
+                return builder.ToString();
+            }
+        }
 
         public static ExpressionNode Parse(ContextNode context, AstNode lexerNode)
         {
@@ -101,7 +179,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private static ExpressionNode ParseSuffix(ContextNode context, AstNode lexerNode)
         {
             var expression = ExpressionNode.Parse(context, lexerNode.Children[0]);
-            var ops = new List<UnaryOperatorNodeType>();
+            var ops = new List<InternalUnaryOperatorType>();
             for (int i = 1; i < lexerNode.Children.Count; i++ )
             {
                 var op = lexerNode.Children[i].Type;
@@ -121,7 +199,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             var count = lexerNode.Children.Count;
             var expression = ExpressionNode.Parse(context, lexerNode.Children[count - 1]);
-            var ops = new List<UnaryOperatorNodeType>();
+            var ops = new List<InternalUnaryOperatorType>();
             for (int i = count - 2; i >= 0; i--)
             {
                 var op = lexerNode.Children[i].Type;
@@ -137,7 +215,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return Create(context, expression, ops);
         }
 
-        private static ExpressionNode Create(ContextNode context, ExpressionNode expression, List<UnaryOperatorNodeType> ops)
+        private static ExpressionNode Create(ContextNode context, ExpressionNode expression, List<InternalUnaryOperatorType> ops)
         {
             foreach(var op in ops)
             {
@@ -146,25 +224,25 @@ namespace LaborasLangCompiler.Parser.Impl
             return expression;
         }
 
-        private static UnaryOperatorNode AsBuiltIn(ContextNode context, ExpressionNode expression, UnaryOperatorNodeType op)
+        private static ExpressionNode AsBuiltIn(ContextNode context, ExpressionNode expression, InternalUnaryOperatorType op)
         {
             var instance = new UnaryOperatorNode(op, expression);
             bool verified = false;
             switch (op)
             {
-                case UnaryOperatorNodeType.BinaryNot:
+                case InternalUnaryOperatorType.BinaryNot:
                     verified = instance.VerifyBinary();
                     break;
-                case UnaryOperatorNodeType.LogicalNot:
+                case InternalUnaryOperatorType.LogicalNot:
                     verified = instance.VerifyLogical();
                     break;
-                case UnaryOperatorNodeType.Negation:
+                case InternalUnaryOperatorType.Negation:
                     verified = instance.VerifyNegation();
                     break;
-                case UnaryOperatorNodeType.PostDecrement:
-                case UnaryOperatorNodeType.PostIncrement:
-                case UnaryOperatorNodeType.PreDecrement:
-                case UnaryOperatorNodeType.PreIncrement:
+                case InternalUnaryOperatorType.PostDecrement:
+                case InternalUnaryOperatorType.PostIncrement:
+                case InternalUnaryOperatorType.PreDecrement:
+                case InternalUnaryOperatorType.PreIncrement:
                     verified = instance.VerifyInc();
                     break;
                 default:
@@ -174,7 +252,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return verified ? instance : null;
         }
 
-        private static ExpressionNode AsOverload(ContextNode context, ExpressionNode expression, UnaryOperatorNodeType op)
+        private static ExpressionNode AsOverload(ContextNode context, ExpressionNode expression, InternalUnaryOperatorType op)
         {
             string name = Overloads[op];
             var point = expression.SequencePoint;
@@ -206,16 +284,13 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public static ExpressionNode Create(ContextNode context, ExpressionNode expression, UnaryOperatorNodeType op)
+        public static ExpressionNode Create(ContextNode context, ExpressionNode expression, InternalUnaryOperatorType op)
         {
             if(!expression.IsGettable)
             {
                 ErrorCode.NotAnRValue.ReportAndThrow(expression.SequencePoint, "Unary operands must be gettable");
             }
-            if(op != UnaryOperatorNodeType.BinaryNot && 
-                op != UnaryOperatorNodeType.LogicalNot && 
-                op != UnaryOperatorNodeType.Negation && 
-                !expression.IsSettable)
+            if(!expression.IsSettable && (op == InternalUnaryOperatorType.PreDecrement || op == InternalUnaryOperatorType.PreIncrement))
             {
                 ErrorCode.NotAnLValue.ReportAndThrow(expression.SequencePoint, "Unary operation {0} requires a settable operand", op);
             }
@@ -233,22 +308,22 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private ExpressionNode AsInc(ExpressionNode expression, InternalUnaryOperatorType op)
         {
-
+            return expression.ExpressionReturnType.IsNumericType() ? new IncrementDecrementOperatorNode(op, expression, null) : null;
         }
 
-        private bool VerifyNegation()
+        private ExpressionNode VerifyNegation(ExpressionNode expression, InternalUnaryOperatorType op)
         {
-            return ExpressionReturnType.IsNumericType();
+            return expression.ExpressionReturnType.IsNumericType() ? new UnaryOperatorNode(op, expression) : null;
         }
 
-        private bool VerifyLogical()
+        private ExpressionNode VerifyLogical(ExpressionNode expression, InternalUnaryOperatorType op)
         {
-            return ExpressionReturnType.IsBooleanType();
+            return expression.ExpressionReturnType.IsBooleanType() ? new UnaryOperatorNode(op, expression) : null;
         }
 
-        private bool VerifyBinary()
+        private ExpressionNode VerifyBinary(ExpressionNode expression, InternalUnaryOperatorType op)
         {
-            return ExpressionReturnType.IsIntegerType();
+            return expression.ExpressionReturnType.IsIntegerType() ? new UnaryOperatorNode(op, expression) : null;
         }
 
         private static void OperatorMissmatch(SequencePoint point, UnaryOperatorNodeType op, TypeReference operand)
@@ -258,63 +333,30 @@ namespace LaborasLangCompiler.Parser.Impl
                 op, operand.FullName);
         }
 
-        public override string ToString(int indent)
+        private static IReadOnlyDictionary<Lexer.TokenType, InternalUnaryOperatorType> SuffixOperators = new Dictionary<Lexer.TokenType, InternalUnaryOperatorType>()
         {
-            StringBuilder builder = new StringBuilder();
-            builder.Indent(indent).AppendLine("UnaryOperator:");
-            builder.Indent(indent + 1).AppendLine("Operator:");
-            builder.Indent(indent + 2).AppendLine(UnaryOperatorType.ToString());
-            builder.Indent(indent + 1).AppendLine("Operand:");
-            builder.AppendLine(operand.ToString(indent + 2));
-            return builder.ToString();
-        }
-
-        public class IncrementDecrementOperatorNode : UnaryOperatorNode, IIncrementDecrementOperatorNode
-        {
-
-            public IncrementDecrementOperatorType IncrementDecrementType {get; private set;}
-
-            public MethodReference OverloadedOperatorMethod {get; private set;}
-
-            internal IncrementDecrementOperatorNode(IncrementDecrementOperatorType type, ExpressionNode operand, MethodReference overload)
-                :base(UnaryOperatorNodeType.IncrementDecrement, operand)
-            {
-                IncrementDecrementType = type;
-                OverloadedOperatorMethod = overload;
-            }
-        }
-
-        [Pure]
-        private static bool IsIncrementDecrement(UnaryOperatorNodeType op)
-        {
-            return op == UnaryOperatorNodeType.PostDecrement || op == UnaryOperatorNodeType.PostIncrement || op == UnaryOperatorNodeType.PreDecrement || op == UnaryOperatorNodeType.PreIncrement;
-        }
-
-        private static IReadOnlyDictionary<Lexer.TokenType, UnaryOperatorNodeType> SuffixOperators = new Dictionary<Lexer.TokenType, UnaryOperatorNodeType>()
-        {
-            
-            {Lexer.TokenType.PlusPlus, UnaryOperatorNodeType.PostIncrement},
-            {Lexer.TokenType.MinusMinus, UnaryOperatorNodeType.PostDecrement}
+            {Lexer.TokenType.PlusPlus, InternalUnaryOperatorType.PostIncrement},
+            {Lexer.TokenType.MinusMinus, InternalUnaryOperatorType.PostDecrement}
         };
 
-        private static IReadOnlyDictionary<Lexer.TokenType, UnaryOperatorNodeType> PrefixOperators = new Dictionary<Lexer.TokenType, UnaryOperatorNodeType>()
+        private static IReadOnlyDictionary<Lexer.TokenType, InternalUnaryOperatorType> PrefixOperators = new Dictionary<Lexer.TokenType, InternalUnaryOperatorType>()
         {
-            {Lexer.TokenType.PlusPlus, UnaryOperatorNodeType.PreIncrement},
-            {Lexer.TokenType.MinusMinus, UnaryOperatorNodeType.PreDecrement},
-            {Lexer.TokenType.Minus, UnaryOperatorNodeType.Negation},
-            {Lexer.TokenType.Not, UnaryOperatorNodeType.LogicalNot},
-            {Lexer.TokenType.BitwiseComplement, UnaryOperatorNodeType.BinaryNot}
+            {Lexer.TokenType.PlusPlus, InternalUnaryOperatorType.PreIncrement},
+            {Lexer.TokenType.MinusMinus, InternalUnaryOperatorType.PreDecrement},
+            {Lexer.TokenType.Minus, InternalUnaryOperatorType.Negation},
+            {Lexer.TokenType.Not, InternalUnaryOperatorType.LogicalNot},
+            {Lexer.TokenType.BitwiseComplement, InternalUnaryOperatorType.BinaryNot}
         };
 
-        private static IReadOnlyDictionary<UnaryOperatorNodeType, string> Overloads = new Dictionary<UnaryOperatorNodeType, string>()
+        private static IReadOnlyDictionary<InternalUnaryOperatorType, string> Overloads = new Dictionary<InternalUnaryOperatorType, string>()
         {
-            {UnaryOperatorNodeType.PostIncrement, "op_Increment"},
-            {UnaryOperatorNodeType.PostDecrement, "op_Decrement"},
-            {UnaryOperatorNodeType.PreIncrement, "op_Increment"},
-            {UnaryOperatorNodeType.PreDecrement, "op_Decrement"},
-            {UnaryOperatorNodeType.Negation, "op_UnaryNegation"},
-            {UnaryOperatorNodeType.LogicalNot, "op_LogicalNot"},
-            {UnaryOperatorNodeType.BinaryNot, "op_OnesComplement"}
+            {InternalUnaryOperatorType.PostIncrement, "op_Increment"},
+            {InternalUnaryOperatorType.PostDecrement, "op_Decrement"},
+            {InternalUnaryOperatorType.PreIncrement, "op_Increment"},
+            {InternalUnaryOperatorType.PreDecrement, "op_Decrement"},
+            {InternalUnaryOperatorType.Negation, "op_UnaryNegation"},
+            {InternalUnaryOperatorType.LogicalNot, "op_LogicalNot"},
+            {InternalUnaryOperatorType.BinaryNot, "op_OnesComplement"}
         };
     }
 }

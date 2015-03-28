@@ -40,6 +40,7 @@ namespace LaborasLangCompiler.Parser
         ObjectCreation,
         BinaryOperator,
         UnaryOperator,
+        IncrementDecrementOperator,
         AssignmentOperator,
         This,
         LocalVariable,
