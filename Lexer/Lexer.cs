@@ -8,6 +8,7 @@ namespace Lexer
 {
     public sealed class Lexer
     {
+        [Obsolete]
         public static RootNode Lex(string source)
         {
             var rootNode = new RootNode();
