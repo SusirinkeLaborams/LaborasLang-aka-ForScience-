@@ -253,7 +253,7 @@
     <Compile Include="Parser\Impl\ParserNode.cs" />
     <Compile Include="Parser\Impl\ReturnNode.cs" />
     <Compile Include="Parser\Impl\SymbolDeclarationNode.cs" />
-    <Compile Include="Parser\Impl\Operators\UnaryOperatorNode.cs" />
+    <Compile Include="Parser\Impl\Operators\UnaryOperators.cs" />
     <Compile Include="Parser\Impl\SymbolNode.cs" />
     <Compile Include="Parser\Impl\ThisNode.cs" />
     <Compile Include="Parser\Impl\TypeNode.cs" />

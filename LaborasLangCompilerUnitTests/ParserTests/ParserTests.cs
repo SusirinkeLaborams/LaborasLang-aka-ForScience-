@@ -816,5 +816,17 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestIncrement()
+        {
+            string source = @"
+                entry auto main = void()
+                {
+                    auto a = 5;
+                    a++;
+                };
+            ";
+            CompareTrees(source);
+        }
     }
 }

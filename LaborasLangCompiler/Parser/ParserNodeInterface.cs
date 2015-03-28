@@ -163,10 +163,6 @@ namespace LaborasLangCompiler.Parser
         BinaryNot,
         LogicalNot,
         Negation,
-        PreIncrement,
-        PreDecrement,
-        PostIncrement,
-        PostDecrement,
         VoidOperator    // Discards Operand result
     }
 
@@ -186,10 +182,11 @@ namespace LaborasLangCompiler.Parser
     }
 
     //nothing to contract
-    interface IIncrementDecrementOperatorNode : IUnaryOperatorNode
+    interface IIncrementDecrementOperatorNode : IExpressionNode
     {
         IncrementDecrementOperatorType IncrementDecrementType { get; }
         MethodReference OverloadedOperatorMethod { get; }
+        IExpressionNode Operand { get; }
     }
 
     [ContractClass(typeof(IAssignmentOperatorNodeContract))]
