@@ -16,37 +16,7 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class UnaryOperators
     {
-        public class VoidOperatorNode : ExpressionNode, IUnaryOperatorNode
-        {
-            public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.UnaryOperator; } }
-            public override TypeReference ExpressionReturnType { get { return operand.ExpressionReturnType; } }
-            public UnaryOperatorNodeType UnaryOperatorType { get; private set; }
-            public IExpressionNode Operand { get { return operand; } }
-            public override bool IsGettable { get { return false; } }
-            public override bool IsSettable { get { return false; } }
-
-            private readonly ExpressionNode operand;
-
-            public VoidOperatorNode(ExpressionNode operand)
-                : base(operand.SequencePoint)
-            {
-                this.operand = operand;
-                this.UnaryOperatorType = UnaryOperatorNodeType.VoidOperator;
-            }
-
-            public override string ToString(int indent)
-            {
-                StringBuilder builder = new StringBuilder();
-                builder.Indent(indent).AppendLine("UnaryOperator:");
-                builder.Indent(indent + 1).AppendLine("Operator:");
-                builder.Indent(indent + 2).AppendLine(UnaryOperatorType.ToString());
-                builder.Indent(indent + 1).AppendLine("Operand:");
-                builder.AppendLine(operand.ToString(indent + 2));
-                return builder.ToString();
-            }
-        }
-
-        private enum InternalUnaryOperatorType
+        public enum InternalUnaryOperatorType
         {
             BinaryNot,
             LogicalNot,
@@ -54,7 +24,8 @@ namespace LaborasLangCompiler.Parser.Impl
             PreIncrement,
             PreDecrement,
             PostIncrement,
-            PostDecrement
+            PostDecrement,
+            VoidOperator
         }
 
         public class UnaryOperatorNode : ExpressionNode, IUnaryOperatorNode
@@ -63,7 +34,7 @@ namespace LaborasLangCompiler.Parser.Impl
             public override TypeReference ExpressionReturnType { get { return operand.ExpressionReturnType; } }
             public UnaryOperatorNodeType UnaryOperatorType { get; private set; }
             public IExpressionNode Operand { get { return operand; } }
-            public override bool IsGettable { get { return true; } }
+            public override bool IsGettable { get { return UnaryOperatorType != UnaryOperatorNodeType.VoidOperator; } }
             public override bool IsSettable { get { return false; } }
 
             private readonly ExpressionNode operand;
@@ -82,6 +53,9 @@ namespace LaborasLangCompiler.Parser.Impl
                         break;
                     case InternalUnaryOperatorType.Negation:
                         this.UnaryOperatorType = UnaryOperatorNodeType.Negation;
+                        break;
+                    case InternalUnaryOperatorType.VoidOperator:
+                        this.UnaryOperatorType = UnaryOperatorNodeType.VoidOperator;
                         break;
                     default:
                         throw new ArgumentException();
@@ -226,30 +200,29 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static ExpressionNode AsBuiltIn(ContextNode context, ExpressionNode expression, InternalUnaryOperatorType op)
         {
-            var instance = new UnaryOperatorNode(op, expression);
-            bool verified = false;
+            ExpressionNode instance = null;
             switch (op)
             {
                 case InternalUnaryOperatorType.BinaryNot:
-                    verified = instance.VerifyBinary();
+                    instance = AsBinary(expression, op);
                     break;
                 case InternalUnaryOperatorType.LogicalNot:
-                    verified = instance.VerifyLogical();
+                    instance = AsLogical(expression, op);
                     break;
                 case InternalUnaryOperatorType.Negation:
-                    verified = instance.VerifyNegation();
+                    instance = AsNegation(expression, op);
                     break;
                 case InternalUnaryOperatorType.PostDecrement:
                 case InternalUnaryOperatorType.PostIncrement:
                 case InternalUnaryOperatorType.PreDecrement:
                 case InternalUnaryOperatorType.PreIncrement:
-                    verified = instance.VerifyInc();
+                    instance = AsInc(expression, op);
                     break;
                 default:
                     ErrorCode.InvalidStructure.ReportAndThrow(expression.SequencePoint, "Unary op expected, '{0}' received", op);
                     break;//unreachable
             }
-            return verified ? instance : null;
+            return instance;
         }
 
         private static ExpressionNode AsOverload(ContextNode context, ExpressionNode expression, InternalUnaryOperatorType op)
@@ -257,8 +230,7 @@ namespace LaborasLangCompiler.Parser.Impl
             string name = Overloads[op];
             var point = expression.SequencePoint;
             var methods = TypeUtils.GetOperatorMethods(context.Assembly, expression, name);
-            var args = expression.Enumerate();
-            var argsTypes = args.Select(a => a.ExpressionReturnType).ToArray();
+            var argsTypes = expression.ExpressionReturnType.Enumerate();
 
             methods = methods.Where(m => MetadataHelpers.MatchesArgumentList(m, argsTypes));
 
@@ -266,7 +238,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (method != null)
             {
-                return MethodCallNode.Create(context, new MethodNode(method, null, context, point), args, point);
+                return CreateOverload(context, expression, op, method);
             }
             else
             {
@@ -281,6 +253,20 @@ namespace LaborasLangCompiler.Parser.Impl
                         name, expression.ExpressionReturnType.FullName);
                     return null;//unreachable
                 }
+            }
+        }
+
+        private static ExpressionNode CreateOverload(ContextNode context, ExpressionNode expression, InternalUnaryOperatorType op, MethodReference method)
+        {
+            var point = expression.SequencePoint;
+            if(IsIncrementDecrement(op))
+            {
+                TypeUtils.VerifyAccessible(method, context.GetClass().TypeReference, point);
+                return new IncrementDecrementOperatorNode(op, expression, method);
+            }
+            else
+            {
+                return MethodCallNode.Create(context, new MethodNode(method, null, context, point), expression.Enumerate(), point);
             }
         }
 
@@ -306,31 +292,55 @@ namespace LaborasLangCompiler.Parser.Impl
             return result;
         }
 
-        private ExpressionNode AsInc(ExpressionNode expression, InternalUnaryOperatorType op)
+        public static ExpressionNode Void(ExpressionNode expression)
+        {
+            return new UnaryOperatorNode(InternalUnaryOperatorType.VoidOperator, expression);
+        }
+
+        private static ExpressionNode AsInc(ExpressionNode expression, InternalUnaryOperatorType op)
         {
             return expression.ExpressionReturnType.IsNumericType() ? new IncrementDecrementOperatorNode(op, expression, null) : null;
         }
 
-        private ExpressionNode VerifyNegation(ExpressionNode expression, InternalUnaryOperatorType op)
+        private static ExpressionNode AsNegation(ExpressionNode expression, InternalUnaryOperatorType op)
         {
             return expression.ExpressionReturnType.IsNumericType() ? new UnaryOperatorNode(op, expression) : null;
         }
 
-        private ExpressionNode VerifyLogical(ExpressionNode expression, InternalUnaryOperatorType op)
+        private static ExpressionNode AsLogical(ExpressionNode expression, InternalUnaryOperatorType op)
         {
             return expression.ExpressionReturnType.IsBooleanType() ? new UnaryOperatorNode(op, expression) : null;
         }
 
-        private ExpressionNode VerifyBinary(ExpressionNode expression, InternalUnaryOperatorType op)
+        private static ExpressionNode AsBinary(ExpressionNode expression, InternalUnaryOperatorType op)
         {
             return expression.ExpressionReturnType.IsIntegerType() ? new UnaryOperatorNode(op, expression) : null;
         }
 
-        private static void OperatorMissmatch(SequencePoint point, UnaryOperatorNodeType op, TypeReference operand)
+        private static void OperatorMissmatch(SequencePoint point, InternalUnaryOperatorType op, TypeReference operand)
         {
             ErrorCode.TypeMissmatch.ReportAndThrow(point,
                 "Unable to perform {0} on operand {1}, no built int operation or operaror overload found",
                 op, operand.FullName);
+        }
+
+        private static bool IsIncrementDecrement(InternalUnaryOperatorType op)
+        {
+            switch (op)
+            {
+                case InternalUnaryOperatorType.BinaryNot:
+                case InternalUnaryOperatorType.LogicalNot:
+                case InternalUnaryOperatorType.Negation:
+                case InternalUnaryOperatorType.VoidOperator:
+                    return false;
+                case InternalUnaryOperatorType.PreIncrement:
+                case InternalUnaryOperatorType.PreDecrement:
+                case InternalUnaryOperatorType.PostIncrement:
+                case InternalUnaryOperatorType.PostDecrement:
+                    return true;
+                default:
+                    throw new ArgumentException();
+            }
         }
 
         private static IReadOnlyDictionary<Lexer.TokenType, InternalUnaryOperatorType> SuffixOperators = new Dictionary<Lexer.TokenType, InternalUnaryOperatorType>()

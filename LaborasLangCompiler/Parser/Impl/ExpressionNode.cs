@@ -62,7 +62,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     break;
                 case Lexer.TokenType.PostfixNode:
                 case Lexer.TokenType.PrefixNode:
-                    ret = UnaryOperatorNode.Parse(context, lexerNode);
+                    ret = UnaryOperators.Parse(context, lexerNode);
                     break;
                 case Lexer.TokenType.ParenthesesNode:
                     ret = ExpressionNode.Parse(context, lexerNode.Children[1], expectedType);
