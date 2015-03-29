@@ -276,7 +276,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 ErrorCode.NotAnRValue.ReportAndThrow(expression.SequencePoint, "Unary operands must be gettable");
             }
-            if(!expression.IsSettable && (op == InternalUnaryOperatorType.PreDecrement || op == InternalUnaryOperatorType.PreIncrement))
+            if(!expression.IsSettable && IsIncrementDecrement(op))
             {
                 ErrorCode.NotAnLValue.ReportAndThrow(expression.SequencePoint, "Unary operation {0} requires a settable operand", op);
             }

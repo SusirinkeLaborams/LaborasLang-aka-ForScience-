@@ -11,10 +11,25 @@ Class:
 
 		FieldDeclaration:
 			Type:
-				auto
+				System.Int32
 			Name:
 				a
 			Modifiers:
-				0
+				Private, Mutable, NoInstance
+			Initializer:
+				IncrementDecrementOperator:
+					Operator:
+						PostIncrement
+					Operand:
+						MethodCall:
+							ReturnType: System.Int32
+							Args:
+							Function:
+								Field:
+									$Functors.$System_Int32? TestUnaryInvalid1::foo
+									Instance:
+										null
+
+
 
 	Methods:
