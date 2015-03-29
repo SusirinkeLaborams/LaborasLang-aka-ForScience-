@@ -24,11 +24,11 @@ Class:
 			Modifiers:
 				Private, Mutable, NoInstance
 			Initializer:
-				UnaryOperator:
+				IncrementDecrementOperator:
 					Operator:
 						PreIncrement
 					Operand:
-						UnaryOperator:
+						IncrementDecrementOperator:
 							Operator:
 								PreDecrement
 							Operand:

@@ -1,12 +1,12 @@
 Class:
-	TestAssignToUnary
+	TestIncrement
 	Fields:
 	Methods:
 		Method:
 			Name:
-				foo
+				main
 			Modifiers:
-				Private, NoInstance
+				Private, NoInstance, Entry
 			Return:
 				System.Void
 			Params:
@@ -30,25 +30,15 @@ Class:
 							Operator:
 								VoidOperator
 							Operand:
-								Assignment:
-									Left:
-										IncrementDecrementOperator:
-											Operator:
-												PreIncrement
-											Operand:
-												Local:
-													Name:
-														a
-													Type:
-														System.Int32
-
-
-									Right:
-										Literal:
+								IncrementDecrementOperator:
+									Operator:
+										PostIncrement
+									Operand:
+										Local:
+											Name:
+												a
 											Type:
 												System.Int32
-											Value:
-												8
 
 
 
