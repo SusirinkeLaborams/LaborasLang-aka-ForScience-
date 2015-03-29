@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Parser.Utils;
 using Mono.Cecil;
+using Lexer.Containers;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -20,6 +22,42 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private InitializerList(SequencePoint point) : base(point)
         {
+        }
+
+        public static InitializerList Parse(ContextNode context, AstNode lexerNode)
+        {
+            Contract.Assume(lexerNode.Type == Lexer.TokenType.InitializerList);
+            var point = context.Parser.GetSequencePoint(lexerNode);
+            var instance = new InitializerList(point);
+            var members = new List<ExpressionNode>();
+            foreach(var node in lexerNode.Children)
+            {
+                switch(node.Type)
+                {
+                    case Lexer.TokenType.LeftCurlyBrace:
+                    case Lexer.TokenType.RightCurlyBrace:
+                    case Lexer.TokenType.Comma:
+                        break;
+                    case Lexer.TokenType.Value:
+                        members.Add(ExpressionNode.Parse(context, node));
+                        break;
+                }
+            }
+
+            var arrays = members.Select(m => m as ArrayCreationNode);
+            //implicit = initializer list
+            if(arrays.Any(a => a != null && a.IsImplicit))
+            {
+                if(arrays.Any(a => a == null || !a.IsImplicit))
+                {
+                    ErrorCode.MisshapedMatrix.ReportAndThrow(point, "An initializer list can only contain another initializer list if all members are lists of the same dimmensions and types");
+                }
+
+                var lists = arrays.Select(a => a.InitializerList);
+                return Create(context, lists, point);
+            }
+
+            return Create(context, members, point);
         }
 
         public static InitializerList Create(ContextNode context, IEnumerable<ExpressionNode> expressions, SequencePoint point)

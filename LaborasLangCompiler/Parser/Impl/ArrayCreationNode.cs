@@ -19,9 +19,11 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ExpressionReturnType { get { return type; } }
 
         public IReadOnlyList<IExpressionNode> Dimensions { get; private set; }
-        public IReadOnlyList<IExpressionNode> Initializer { get { return initializer.Initializers.ToArray(); } }
+        public IReadOnlyList<IExpressionNode> Initializer { get { return InitializerList.Initializers.ToArray(); } }
+        public InitializerList InitializerList { get; private set; }
 
-        private InitializerList initializer;
+        public bool IsImplicit { get; private set; }
+
         private TypeReference type;
 
         private ArrayCreationNode(SequencePoint point)
@@ -29,10 +31,26 @@ namespace LaborasLangCompiler.Parser.Impl
         { 
         }
 
-        public static ArrayCreationNode Create(ContextNode context, TypeReference type, IEnumerable<ExpressionNode> dims, InitializerList initializer, SequencePoint point)
+        public static ArrayCreationNode Create(ContextNode context, TypeReference type, IEnumerable<ExpressionNode> dims, InitializerList initializer,  SequencePoint point)
         {
-            Contract.Requires(dims.Any());
+            Contract.Requires(dims == null || dims.Any());
+            Contract.Requires(type != null || initializer != null);
             var instance = new ArrayCreationNode(point);
+            if(type == null)
+            {
+                type = initializer.ElementType;
+                instance.IsImplicit = true;
+            }
+
+            if(dims == null)
+            {
+                if(initializer == null)
+                {
+                    ErrorCode.MissingArraySize.ReportAndThrow(point, "Cannot create array without size or an initializer");
+                }
+                dims = CreateArrayDims(context, point, initializer.Dimmensions.ToArray());
+            }
+
             foreach(var dim in dims)
             {
                 if(!dim.IsGettable || !dim.ExpressionReturnType.IsIntegerType())
@@ -59,18 +77,13 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             instance.type = AssemblyRegistry.GetArrayType(type, dims.Count());
             instance.Dimensions = dims.ToArray();
-            instance.initializer = initializer;
+            instance.InitializerList = initializer;
             return instance;
         }
 
         public static ArrayCreationNode Create(ContextNode context, InitializerList initializer, SequencePoint point)
         {
-            return Create(context, initializer.ElementType, initializer, point);
-        }
-
-        public static ArrayCreationNode Create(ContextNode context, TypeReference type, InitializerList initiliazer, SequencePoint point)
-        {
-            return Create(context, type, CreateArrayDims(context, point, initiliazer.Dimmensions.ToArray()), initiliazer, point);
+            return Create(context, null, null, initializer, point);
         }
 
         private static IEnumerable<LiteralNode> CreateArrayDims(ContextNode context, SequencePoint point, params int[] dims)

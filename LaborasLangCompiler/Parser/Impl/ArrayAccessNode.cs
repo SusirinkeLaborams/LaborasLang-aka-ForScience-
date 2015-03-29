@@ -92,6 +92,16 @@ namespace LaborasLangCompiler.Parser.Impl
             if(getter == null && setter == null)
                 return null;
 
+            if(getter != null && getter.IsStatic())
+            {
+                return null;
+            }
+
+            if(setter != null && setter.IsStatic())
+            {
+                return null;
+            }
+
             var getType = getter != null ? getter.ReturnType : null;
             var setType = setter != null ? setter.ReturnType : null;
 
