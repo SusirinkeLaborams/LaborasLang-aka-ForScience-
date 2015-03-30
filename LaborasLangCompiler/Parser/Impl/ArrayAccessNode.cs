@@ -125,6 +125,18 @@ namespace LaborasLangCompiler.Parser.Impl
             return ArrayCreationNode.Create(context, type.ParsedType, indices, null, point);
         }
 
+        public static IEnumerable<ExpressionNode> ParseIndex(ContextNode context, AstNode lexerNode)
+        {
+            Contract.Assume(lexerNode.Type == Lexer.TokenType.IndexAccessNode);
+            foreach(var node in lexerNode.Children)
+            {
+                switch (node.Type)
+                {
+
+                }
+            }
+        }
+
         public override string ToString(int indent)
         {
             throw new NotImplementedException();

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Codegen;
 using System.Diagnostics.Contracts;
+using Lexer.Containers;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -29,6 +30,21 @@ namespace LaborasLangCompiler.Parser.Impl
         private ArrayCreationNode(SequencePoint point)
             : base(point)
         { 
+        }
+
+        public static ArrayCreationNode Parse(ContextNode context, AstNode lexerNode)
+        {
+            Contract.Assume(lexerNode.Type == Lexer.TokenType.ArrayLiteral);
+            var point = context.Parser.GetSequencePoint(lexerNode);
+            if(lexerNode.Children.Count == 1)
+            {
+                var initializer = InitializerList.Parse(context, lexerNode.Children[0]);
+                return Create(context, initializer, point);
+            }
+            else
+            {
+                
+            }
         }
 
         public static ArrayCreationNode Create(ContextNode context, TypeReference type, IEnumerable<ExpressionNode> dims, InitializerList initializer,  SequencePoint point)
