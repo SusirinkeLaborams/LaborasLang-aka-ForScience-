@@ -63,7 +63,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public static InitializerList Create(ContextNode context, IEnumerable<ExpressionNode> expressions, SequencePoint point)
         {
             if (!expressions.Any())
-                ErrorCode.InvalidStructure.ReportAndThrow(point, "Initializer list must not be empty");
+                return CreateEmpty(context, point);
+
             foreach(var exp in expressions)
             {
                 if(!exp.IsGettable)
@@ -77,6 +78,15 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.Dimmensions = new int[]{expressions.Count()};
             instance.Initializers = expressions;
             return instance;
+        }
+
+        private static InitializerList CreateEmpty(ContextNode context, SequencePoint point)
+        {
+            var instace = new InitializerList(point);
+            instace.Dimmensions = new int[] { 0 };
+            instace.Initializers = Enumerable.Empty<ExpressionNode>();
+            instace.ElementType = context.Parser.Object;
+            return instace;
         }
 
         public static InitializerList Create(ContextNode context, IEnumerable<InitializerList> subLists, SequencePoint point)

@@ -35,7 +35,10 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             Contract.Requires(dims == null || dims.Any());
             Contract.Requires(type != null || initializer != null);
+            //dims are diclared inside the type, cant have dims without type
+            Contract.Requires(!(dims != null && type == null));
             var instance = new ArrayCreationNode(point);
+
             if(type == null)
             {
                 type = initializer.ElementType;
@@ -61,7 +64,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (initializer != null)
             {
-                if(!initializer.ElementType.IsAssignableTo(type))
+                if(!initializer.ElementType.IsAssignableTo(type) && initializer.Initializers.Any())
                 {
                     ErrorCode.TypeMissmatch.ReportAndThrow(point,
                         "Cannot initializer array of element type {0} when initializer element type is {1}",
