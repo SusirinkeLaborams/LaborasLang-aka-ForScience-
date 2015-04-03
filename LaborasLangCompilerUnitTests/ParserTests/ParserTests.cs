@@ -842,5 +842,61 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestSingleElementArrayCreationInitialized()
+        {
+            string source = @"
+                auto foo = int[1]{5};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestMultiElementArrayCreationInitialized()
+        {
+            string source = @"
+                auto foo = int[3]{5, 6, 7};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayCreationInitializedImplicitSize()
+        {
+            string source = @"
+                auto foo = int[]{5, 6};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayCreationMatrixInitializedImplicitSize()
+        {
+            string source = @"
+                auto foo = int[,]{{1}, {2}};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayCreationMatrixInitialized()
+        {
+            string source = @"
+                auto foo = int[1, 1]{{1}, {2}};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestEmptyInitializedArray()
+        {
+            string source = @"
+                auto foo = int[]{};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestJaggedArray()
+        {
+            string source = @"
+                auto foo = int[][]{int[]{}, int[]{}};
+            ";
+            CompareTrees(source);
+        }
     }
 }
