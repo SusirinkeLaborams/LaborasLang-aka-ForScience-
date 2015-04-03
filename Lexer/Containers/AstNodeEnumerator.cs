@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Lexer.Containers
 {
-    public struct AstNodeEnumerator
+    public struct AstNodeEnumerator : IEnumerator<AstNode>
     {
         private AstNodeList m_NodeList;
         private int m_Position;
@@ -47,6 +47,15 @@ namespace Lexer.Containers
         public void Reset()
         {
             m_Position = -1;
+        }
+
+        public void Dispose()
+        {
+        }
+
+        object IEnumerator.Current
+        {
+            get { return Current; }
         }
     }
 }

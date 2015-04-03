@@ -13,12 +13,26 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompilerUnitTests.ParserTests
 {
     [TestClass]
     public class ParserTests : ParserTestBase
     {
+        [AssemblyInitialize]
+        public static void Initialize(TestContext ctx)
+        {
+            // avoid contract violation kill the process  
+            Contract.ContractFailed += new EventHandler<ContractFailedEventArgs>(Contract_ContractFailed);
+        }
+
+        static void Contract_ContractFailed(object sender, System.Diagnostics.Contracts.ContractFailedEventArgs e)
+        {
+            e.SetHandled();
+            Assert.Fail("{0}: {1} {2}", e.FailureKind, e.Message, e.Condition);
+        } 
+
         [TestMethod, TestCategory("Parser")]
         public void FieldDeclarationTest()
         {

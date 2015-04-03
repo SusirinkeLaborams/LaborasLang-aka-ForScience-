@@ -67,6 +67,9 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.ParenthesesNode:
                     ret = ExpressionNode.Parse(context, lexerNode.Children[1], expectedType);
                     break;
+                case Lexer.TokenType.ArrayLiteral:
+                    ret = ArrayCreationNode.Parse(context, lexerNode);
+                    break;
                 default:
                     throw new NotImplementedException();
             }

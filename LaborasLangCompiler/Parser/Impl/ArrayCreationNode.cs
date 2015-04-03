@@ -34,7 +34,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ArrayCreationNode Parse(ContextNode context, AstNode lexerNode)
         {
-            Contract.Assume(lexerNode.Type == Lexer.TokenType.ArrayLiteral);
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.ArrayLiteral);
             var point = context.Parser.GetSequencePoint(lexerNode);
             if(lexerNode.Children.Count == 1)
             {
@@ -43,29 +43,63 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                
+                var builder = new TypeNode.TypeBuilder(context);
+                var lexerType = lexerNode.Children[0];
+                for (int i = 0; i < lexerType.Children.Count - 1; i++)
+                {
+                    builder.Append(lexerType.Children[i]);
+                }
+                var last = lexerType.Children.Last();
+                var elementType = builder.Type;
+                IEnumerable<ExpressionNode> dims;
+                if(ArrayAccessNode.IsEmptyIndexer(last))
+                {
+                    dims = Enumerable.Repeat((ExpressionNode)null, ArrayAccessNode.CountEmptyIndexerDims(last));
+                }
+                else
+                {
+                    dims = ArrayAccessNode.ParseIndex(context, last);
+                }
+                var initializer = InitializerList.Parse(context, lexerNode.Children[1]);
+                return Create(context, elementType, dims, initializer, point);
             }
         }
 
-        public static ArrayCreationNode Create(ContextNode context, TypeReference type, IEnumerable<ExpressionNode> dims, InitializerList initializer,  SequencePoint point)
+        public static ArrayCreationNode Create(ContextNode context, TypeReference elementType, IEnumerable<ExpressionNode> dims, InitializerList initializer,  SequencePoint point)
         {
+            //rank 0 makes no sense
             Contract.Requires(dims == null || dims.Any());
-            Contract.Requires(type != null || initializer != null);
-            //dims are diclared inside the type, cant have dims without type
-            Contract.Requires(!(dims != null && type == null));
+            Contract.Requires(elementType != null || initializer != null);
+            //dims are declared inside the type, both must be null or not null
+            Contract.Requires((dims == null) == (elementType == null));
+            //cant have [5,] or some shit
+            Contract.Requires(dims.All(d => d == null) || !dims.Any(d => d == null));
+
             var instance = new ArrayCreationNode(point);
 
-            if(type == null)
+            if(elementType == null)
             {
-                type = initializer.ElementType;
+                if (initializer == null)
+                {
+                    ErrorCode.MissingArraySize.ReportAndThrow(point, "Cannot create array without size or an initializer");
+                }
+                elementType = initializer.ElementType;
                 instance.IsImplicit = true;
+                dims = CreateArrayDims(context, point, initializer.Dimmensions.ToArray());
             }
 
-            if(dims == null)
+            if(initializer != null && dims.Count() != initializer.Dimmensions.Count())
+            {
+                ErrorCode.MisshapedMatrix.ReportAndThrow(point,
+                        "Cannot initialize array of {0} dimmensions with a matrix of {1} dimmensions",
+                        dims.Count(), initializer.Dimmensions.Count());
+            }
+
+            if(dims.Any(d => d == null))
             {
                 if(initializer == null)
                 {
-                    ErrorCode.MissingArraySize.ReportAndThrow(point, "Cannot create array without size or an initializer");
+                    ErrorCode.MissingArraySize.ReportAndThrow(point, "Cannot create array with implicit dimensions without initialization");
                 }
                 dims = CreateArrayDims(context, point, initializer.Dimmensions.ToArray());
             }
@@ -80,21 +114,14 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (initializer != null)
             {
-                if(!initializer.ElementType.IsAssignableTo(type) && initializer.Initializers.Any())
+                if(!initializer.ElementType.IsAssignableTo(elementType) && initializer.Initializers.Any())
                 {
                     ErrorCode.TypeMissmatch.ReportAndThrow(point,
                         "Cannot initializer array of element type {0} when initializer element type is {1}",
-                        type.FullName, initializer.ElementType.FullName);
-                }
-
-                if(initializer.Dimmensions.Count() != dims.Count())
-                {
-                    ErrorCode.MisshapedMatrix.ReportAndThrow(point,
-                        "Cannot initialize array of {0} dimmensions with a matrix of {1} dimmensions",
-                        dims.Count(), initializer.Dimmensions.Count());
+                        elementType.FullName, initializer.ElementType.FullName);
                 }
             }
-            instance.type = AssemblyRegistry.GetArrayType(type, dims.Count());
+            instance.type = AssemblyRegistry.GetArrayType(elementType, dims.Count());
             instance.Dimensions = dims.ToArray();
             instance.InitializerList = initializer;
             return instance;

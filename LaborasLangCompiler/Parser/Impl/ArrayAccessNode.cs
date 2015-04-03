@@ -125,16 +125,27 @@ namespace LaborasLangCompiler.Parser.Impl
             return ArrayCreationNode.Create(context, type.ParsedType, indices, null, point);
         }
 
+        [Pure]
+        public static bool IsEmptyIndexer(AstNode lexerNode)
+        {
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexAccessNode);
+            return lexerNode.Children.Count(n => n.Type == Lexer.TokenType.Value) == 0;
+        }
+
+        public static int CountEmptyIndexerDims(AstNode lexerNode)
+        {
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexAccessNode);
+            Contract.Requires(IsEmptyIndexer(lexerNode));
+
+            return lexerNode.Children.Count(n => n.Type == Lexer.TokenType.Comma) + 1;
+        }
+
         public static IEnumerable<ExpressionNode> ParseIndex(ContextNode context, AstNode lexerNode)
         {
-            Contract.Assume(lexerNode.Type == Lexer.TokenType.IndexAccessNode);
-            foreach(var node in lexerNode.Children)
-            {
-                switch (node.Type)
-                {
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexAccessNode);
+            Contract.Requires(!IsEmptyIndexer(lexerNode));
 
-                }
-            }
+            return lexerNode.Children.Where(n => n.Type == Lexer.TokenType.Value).Select(n => ExpressionNode.Parse(context, n));
         }
 
         public override string ToString(int indent)
