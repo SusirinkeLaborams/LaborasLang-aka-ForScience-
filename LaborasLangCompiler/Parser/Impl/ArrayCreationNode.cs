@@ -52,7 +52,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     builder.Append(lexerType.Children[i]);
                 }
                 //.Last() returns parameter list
-                var last = lexerType.Children.Last().Children[0];
+                var last = lexerType.Children[lexerType.ChildrenCount - 1].Children[0];
                 var elementType = builder.Type;
                 IReadOnlyList<ExpressionNode> dims;
                 if(ArrayAccessNode.IsEmptyIndexer(last))

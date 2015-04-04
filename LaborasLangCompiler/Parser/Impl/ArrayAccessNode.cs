@@ -129,7 +129,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public static bool IsEmptyIndexer(AstNode lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexNode);
-            return lexerNode.Children.Count(n => n.Type == Lexer.TokenType.Value) == 0;
+            return lexerNode.Children.AsEnumerable().Count(n => n.Type == Lexer.TokenType.Value) == 0;
         }
 
         public static int CountEmptyIndexerDims(AstNode lexerNode)
@@ -137,7 +137,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexNode);
             Contract.Requires(IsEmptyIndexer(lexerNode));
 
-            return lexerNode.Children.Count(n => n.Type == Lexer.TokenType.Comma) + 1;
+            return lexerNode.Children.AsEnumerable().Count(n => n.Type == Lexer.TokenType.Comma) + 1;
         }
 
         public static IReadOnlyList<ExpressionNode> ParseIndex(ContextNode context, AstNode lexerNode)
@@ -145,7 +145,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexNode);
             Contract.Requires(!IsEmptyIndexer(lexerNode));
 
-            return lexerNode.Children.Where(n => n.Type == Lexer.TokenType.Value).Select(n => ExpressionNode.Parse(context, n)).ToArray();
+            return lexerNode.Children.AsEnumerable().Where(n => n.Type == Lexer.TokenType.Value).Select(n => ExpressionNode.Parse(context, n)).ToArray();
         }
 
         public override string ToString(int indent)
