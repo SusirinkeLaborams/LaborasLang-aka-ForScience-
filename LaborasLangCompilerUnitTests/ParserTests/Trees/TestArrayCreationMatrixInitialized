@@ -1,0 +1,49 @@
+Class:
+	TestArrayCreationMatrixInitialized
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Int32[0...,0...]
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ArrayCreation:
+					ElementType: System.Int32
+					Rank: 2
+					Dimensions:
+						Literal:
+							Type:
+								System.Int32
+							Value:
+								1
+
+						Literal:
+							Type:
+								System.Int32
+							Value:
+								1
+
+					Initializer:
+						InitializerList:
+							Element type: System.Int32
+							Dimensions:
+								2, 1
+							Values:
+								Literal:
+									Type:
+										System.Int32
+									Value:
+										1
+
+								Literal:
+									Type:
+										System.Int32
+									Value:
+										2
+
+
+
+
+	Methods:
