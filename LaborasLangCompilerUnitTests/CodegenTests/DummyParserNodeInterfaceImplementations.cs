@@ -218,6 +218,18 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public IExpressionNode Operand { get; set; }
     }
 
+    class IncrementDecrementOperatorNode : IIncrementDecrementOperatorNode
+    {
+        public SequencePoint SequencePoint { get { return null; } }
+        public NodeType Type { get { return NodeType.Expression; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.IncrementDecrementOperator; } }
+
+        public TypeReference ExpressionReturnType { get; set; }
+        public IncrementDecrementOperatorType IncrementDecrementType { get; set; }
+        public IExpressionNode Operand { get; set; }
+        public MethodReference OverloadedOperatorMethod { get; set; }
+    }
+
     class AssignmentOperatorNode : IAssignmentOperatorNode
     {
         public SequencePoint SequencePoint { get { return null; } }

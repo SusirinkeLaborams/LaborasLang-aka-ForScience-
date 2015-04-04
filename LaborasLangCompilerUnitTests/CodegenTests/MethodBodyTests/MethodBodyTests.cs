@@ -1159,14 +1159,19 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         #region Unary operators
 
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
-        public void TestCanEmit_Negation_BinaryNot_Increment_Decrement()
+        public void TestCanEmit_Negation_BinaryNot()
         {
             var intType = assemblyEmitter.TypeSystem.Int32;
             var stringType = assemblyEmitter.TypeSystem.String;
 
             var variableDefs = new List<VariableDefinition>();
+            var operators = new UnaryOperatorNodeType[]
+            {
+                UnaryOperatorNodeType.BinaryNot,
+                UnaryOperatorNodeType.Negation,
+            };
 
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < operators.Length + 1; i++)
             {
                 variableDefs.Add(new VariableDefinition(((char)i + 'a').ToString(), intType));
             }
@@ -1186,17 +1191,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             var nodes = (List<IParserNode>)BodyCodeBlock.Nodes;
-            var operators = new UnaryOperatorNodeType[]
-            {
-                UnaryOperatorNodeType.BinaryNot,
-                UnaryOperatorNodeType.Negation,
-                UnaryOperatorNodeType.PostDecrement,
-                UnaryOperatorNodeType.PostIncrement,
-                UnaryOperatorNodeType.PreDecrement,
-                UnaryOperatorNodeType.PreIncrement
-            };
-
-            for (int i = 1; i < 7; i++)
+            for (int i = 1; i < operators.Length + 1; i++)
             {
                 nodes.Add(new SymbolDeclarationNode()
                 {
@@ -1211,18 +1206,79 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             }
 
             nodes.Add(CallConsoleWriteLine(
-                new LiteralNode(stringType, "Results: \r\n{0}\r\n{1}\r\n{2}\r\n{3}\r\n{4}\r\n{5}\r\n{6}\r\n"),
+                new LiteralNode(stringType, "Results: \r\n{0}\r\n{1}\r\n{2}"),
+                variables[0],
+                variables[1],
+                variables[2]
+            ));
+
+            ExpectedOutput = "Results: \r\n5\r\n-6\r\n-5\r\n";
+            AssertSuccessByExecution();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_IncrementDecrement()
+        {
+            var intType = assemblyEmitter.TypeSystem.Int32;
+            var stringType = assemblyEmitter.TypeSystem.String;
+
+            var variableDefs = new List<VariableDefinition>();
+
+            var operators = new IncrementDecrementOperatorType[]
+            {
+                IncrementDecrementOperatorType.PostDecrement,
+                IncrementDecrementOperatorType.PostIncrement,
+                IncrementDecrementOperatorType.PreDecrement,
+                IncrementDecrementOperatorType.PreIncrement
+            };
+
+            for (int i = 0; i < operators.Length + 1; i++)
+            {
+                variableDefs.Add(new VariableDefinition(((char)i + 'a').ToString(), intType));
+            }
+
+            var variables = variableDefs.Select(def => new LocalVariableNode(def)).ToList();
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        Variable = variableDefs[0],
+                        Initializer = new LiteralNode(intType, 5)
+                    }
+                }
+            };
+
+            var nodes = (List<IParserNode>)BodyCodeBlock.Nodes;
+
+            for (int i = 1; i < operators.Length + 1; i++)
+            {
+                nodes.Add(new SymbolDeclarationNode()
+                {
+                    Variable = variableDefs[i],
+                    Initializer = new IncrementDecrementOperatorNode()
+                    {
+                        IncrementDecrementType = operators[i - 1],
+                        ExpressionReturnType = intType,
+                        Operand = variables[0]
+                    }
+                });
+            }
+
+            nodes.Add(CallConsoleWriteLine(
+                new LiteralNode(stringType, "Results: \r\n{0}\r\n{1}\r\n{2}\r\n{3}\r\n{4}"),
                 variables[0],
                 variables[1],
                 variables[2],
                 variables[3],
-                variables[4],
-                variables[5],
-                variables[6]
+                variables[4]
             ));
 
-            ExpectedOutput = "Results: \r\n5\r\n-6\r\n-5\r\n5\r\n4\r\n4\r\n5\r\n";
+            ExpectedOutput = "Results: \r\n5\r\n5\r\n4\r\n4\r\n5\r\n";
             AssertSuccessByExecution();
+
         }
 
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
@@ -1300,10 +1356,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                             Nodes = new List<IParserNode>()
                             {
                                 CallConsoleWriteLine(new LiteralNode(stringType, "The loop has looped {0} time(s)."),
-                                    new UnaryOperatorNode()
+                                    new IncrementDecrementOperatorNode()
                                     {
                                         ExpressionReturnType = intType,
-                                        UnaryOperatorType = UnaryOperatorNodeType.PostIncrement,
+                                        IncrementDecrementType = IncrementDecrementOperatorType.PostIncrement,
                                         Operand = localVariable
                                     })
                             }

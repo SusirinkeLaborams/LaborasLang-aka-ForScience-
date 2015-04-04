@@ -244,9 +244,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                                 {
                                     UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                                     ExpressionReturnType = assemblyEmitter.TypeSystem.Void,
-                                    Operand = new UnaryOperatorNode()
+                                    Operand = new IncrementDecrementOperatorNode()
                                     {
-                                        UnaryOperatorType = UnaryOperatorNodeType.PreIncrement,
+                                        IncrementDecrementType = IncrementDecrementOperatorType.PreIncrement,
                                         ExpressionReturnType = assemblyEmitter.TypeSystem.Int32,
                                         Operand = counter
                                     }

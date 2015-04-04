@@ -165,12 +165,6 @@ namespace LaborasLangCompiler.Parser
         LogicalNot,
         Negation,
         VoidOperator,    // Discards Operand result
-
-        // not used, kept so codegen builds
-        PreDecrement,
-        PreIncrement,
-        PostDecrement,
-        PostIncrement
     }
 
     [ContractClass(typeof(IUnaryOperatorNodeContract))]

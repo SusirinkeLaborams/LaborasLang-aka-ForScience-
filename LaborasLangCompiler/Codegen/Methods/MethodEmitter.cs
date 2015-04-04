@@ -194,6 +194,10 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Emit((IParameterNode)expression, emissionType);
                     return;
 
+                case ExpressionNodeType.IncrementDecrementOperator:
+                    Emit((IIncrementDecrementOperatorNode)expression);
+                    return;
+
                 case ExpressionNodeType.Literal:
                     Emit((ILiteralNode)expression);
                     return;
@@ -293,8 +297,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     EmitStore((IPropertyNode)expression);
                     return;
 
-                case ExpressionNodeType.UnaryOperator:
-                    EmitStore((IUnaryOperatorNode)expression);
+                case ExpressionNodeType.IncrementDecrementOperator:
+                    EmitStore((IIncrementDecrementOperatorNode)expression);
                     return;
 
                 default:
@@ -1085,36 +1089,51 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Neg();
                     return;
 
-                case UnaryOperatorNodeType.PostDecrement:
+                default:
+                    ContractsHelper.AssertUnreachable(string.Format("Unknown unary operator type: {0}", unaryOperator.UnaryOperatorType));
+                    return;
+            }
+        }
+
+        private void Emit(IIncrementDecrementOperatorNode incrementDecrementOperator)
+        {
+            Emit(incrementDecrementOperator.Operand, EmissionType.Value);
+
+            if (incrementDecrementOperator.OverloadedOperatorMethod != null)
+                throw new NotImplementedException();
+
+            switch (incrementDecrementOperator.IncrementDecrementType)
+            {
+                case IncrementDecrementOperatorType.PreDecrement:
+                    Ldc_I4(-1);
+                    Add();
+                    Dup();
+                    EmitStore(incrementDecrementOperator.Operand);
+                    return;
+
+                case IncrementDecrementOperatorType.PreIncrement:
+                    Ldc_I4(1);
+                    Add();
+                    Dup();
+                    EmitStore(incrementDecrementOperator.Operand);
+                    return;
+
+                case IncrementDecrementOperatorType.PostDecrement:
                     Dup();
                     Ldc_I4(-1);
                     Add();
-                    EmitStore(unaryOperator.Operand);
+                    EmitStore(incrementDecrementOperator.Operand);
                     return;
 
-                case UnaryOperatorNodeType.PostIncrement:
+                case IncrementDecrementOperatorType.PostIncrement:
                     Dup();
                     Ldc_I4(1);
                     Add();
-                    EmitStore(unaryOperator.Operand);
-                    return;
-
-                case UnaryOperatorNodeType.PreDecrement:
-                    Ldc_I4(-1);
-                    Add();
-                    Dup();
-                    EmitStore(unaryOperator.Operand);
-                    return;
-
-                case UnaryOperatorNodeType.PreIncrement:
-                    Ldc_I4(1);
-                    Add();
-                    Dup();
-                    EmitStore(unaryOperator.Operand);
+                    EmitStore(incrementDecrementOperator.Operand);
                     return;
 
                 default:
-                    ContractsHelper.AssertUnreachable(string.Format("Unknown unary operator type: {0}", unaryOperator.UnaryOperatorType));
+                    ContractsHelper.AssertUnreachable(string.Format("Unknown unary operator type: {0}", incrementDecrementOperator.IncrementDecrementType));
                     return;
             }
         }
@@ -1526,17 +1545,17 @@ namespace LaborasLangCompiler.Codegen.Methods
             temporaryVariables.Release(valueVariable);
         }
 
-        private void EmitStore(IUnaryOperatorNode unaryOperatorNode)
+        private void EmitStore(IIncrementDecrementOperatorNode incrementDecrementOperator)
         {
-            switch (unaryOperatorNode.UnaryOperatorType)
+            switch (incrementDecrementOperator.IncrementDecrementType)
             {
-                case UnaryOperatorNodeType.PreDecrement:
-                case UnaryOperatorNodeType.PreIncrement:
-                    EmitStore(unaryOperatorNode.Operand);
+                case IncrementDecrementOperatorType.PreDecrement:
+                case IncrementDecrementOperatorType.PreIncrement:
+                    EmitStore(incrementDecrementOperator.Operand);
                     return;
             }
 
-            ContractsHelper.AssertUnreachable(string.Format("Cannot store unary operator {0}.", unaryOperatorNode.UnaryOperatorType));
+            ContractsHelper.AssertUnreachable(string.Format("Cannot store increment/decrement operator {0}.", incrementDecrementOperator.IncrementDecrementType));
         }
 
         #endregion
