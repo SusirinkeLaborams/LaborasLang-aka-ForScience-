@@ -898,5 +898,31 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayCreationLiteralSize()
+        {
+            string source = @"
+                auto foo = int[10];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayCreationMethodSize()
+        {
+            string source = @"
+                auto size = int(){return 4;}
+                auto foo = int[size()];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayCreationMethodSizeInitialized()
+        {
+            string source = @"
+                auto size = int(){return 4;};
+                auto foo = int[size()]{1, 2, 3, 4};
+            ";
+            CompareTrees(source, ErrorCode.NotLiteralArrayDims.Enumerate());
+        }
     }
 }
