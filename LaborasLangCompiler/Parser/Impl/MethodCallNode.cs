@@ -46,7 +46,7 @@ namespace LaborasLangCompiler.Parser.Impl
             for(int i = 1; i < lexerNode.Children.Count; i++)
             {
                 var args = ParseArgList(context, lexerNode.Children[i]);
-                var point = Parser.GetSequencePoint(function.SequencePoint, args.Count == 0 ? function.SequencePoint : args.Last().SequencePoint);
+                var point = context.Parser.GetSequencePoint(lexerNode.Children[i]);
                 function = Create(context, function, args, point);
             }
             return function;

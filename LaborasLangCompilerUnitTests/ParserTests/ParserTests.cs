@@ -910,7 +910,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         public void TestArrayCreationMethodSize()
         {
             string source = @"
-                auto size = int(){return 4;}
+                auto size = int(){return 4;};
                 auto foo = int[size()];
             ";
             CompareTrees(source);

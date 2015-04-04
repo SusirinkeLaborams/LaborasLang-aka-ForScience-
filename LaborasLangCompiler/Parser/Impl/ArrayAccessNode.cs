@@ -37,15 +37,28 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ExpressionNode Parse(ContextNode context, AstNode lexerNode)
         {
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexAccessNode);
             var array = ExpressionNode.Parse(context, lexerNode.Children[0]);
-            throw new NotImplementedException();
+            for(int i = 1; i < lexerNode.Children.Count; i++)
+            {
+                var node = lexerNode.Children[i];
+                Contract.Assume(node.Type == Lexer.TokenType.IndexNode);
+                var point = context.Parser.GetSequencePoint(node);
+                if(IsEmptyIndexer(node))
+                {
+                    ErrorCode.MissingArraySize.ReportAndThrow(point, "Can only use implicit array size with initialization");
+                }
+                var init = ParseIndex(context, node);
+                array = Create(context, array, init, point);
+            }
+            return array;
         }
 
         public static ExpressionNode Create(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
         {
-            foreach(var index in indices)
+            foreach (var index in indices)
             {
-                if(!index.IsGettable || 
+                if (!index.IsGettable ||
                     !(index.ExpressionReturnType.IsAssignableTo(context.Parser.Int32) || index.ExpressionReturnType.IsAssignableTo(context.Parser.UInt32)))
                 {
                     ErrorCode.InvalidIndexType.ReportAndThrow(index.SequencePoint, "Invalid index, must be a gettable integer");

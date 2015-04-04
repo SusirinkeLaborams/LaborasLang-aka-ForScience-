@@ -108,7 +108,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                if(dims.Any(dim => !(dim is LiteralNode)))
+                if(initializer != null && dims.Any(dim => !(dim is LiteralNode)))
                 {
                     ErrorCode.NotLiteralArrayDims.ReportAndThrow(point,
                         "When initializing arrays, dimensions must be literal, or implicit");
