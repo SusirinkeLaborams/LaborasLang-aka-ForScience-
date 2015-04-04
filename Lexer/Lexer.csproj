@@ -146,6 +146,9 @@
     <Compile Include="Containers\PermanentAllocator.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="ParseRule.cs" />
+    <Compile Include="PostProcessors\ArrayFunctionResolver.cs" />
+    <Compile Include="PostProcessors\PostProcessor.cs" />
+    <Compile Include="PostProcessors\ValuePostProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="Containers\RootNode.cs" />

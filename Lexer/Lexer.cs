@@ -1,4 +1,5 @@
 ﻿using Lexer.Containers;
+using Lexer.PostProcessors;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,10 +13,8 @@ namespace Lexer
         public static RootNode Lex(string source)
         {
             var rootNode = new RootNode();
-            var tokens = Tokenizer.Tokenize(source, rootNode);
-            var matcher = new SyntaxMatcher(tokens, rootNode);
-            matcher.Match();
-
+            AstNodeExtractor.Invoke(rootNode, source);
+          
             return rootNode;
         }
 
@@ -54,7 +53,15 @@ namespace Lexer
                 {
                     var sourceTokens = Tokenizer.Tokenize(source, root);
                     var syntaxMatcher = new SyntaxMatcher(sourceTokens, root);
-                    return syntaxMatcher.Match();
+
+                    var nodes = syntaxMatcher.Match();
+
+                    foreach (var postProcessor in PostProcessor.BuildAll(root))
+                    {
+                        postProcessor.Transform(nodes);
+                    }
+
+                    return nodes;
                 };
             }
         }

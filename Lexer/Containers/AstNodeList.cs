@@ -18,8 +18,6 @@ namespace Lexer.Containers
             get
             {
 #if DEBUG
-                m_Capacity = -1;
-
                 if (index < 0 || index >= m_Count)
                 {
                     throw new IndexOutOfRangeException(String.Format("AstNodeList index out of range, index {0}, count {1}", index, m_Count));
@@ -39,13 +37,6 @@ namespace Lexer.Containers
 
         private void EnsureThereIsSpace(RootNode rootNode)
         {
-#if DEBUG
-            if (m_Capacity == -1)
-            {
-                throw new NotSupportedException("Can't add to list after accessing it via indexer!");
-            }
-#endif
-
             if (m_Capacity == 0)
             {
                 m_Capacity = kInitialCapacity;
