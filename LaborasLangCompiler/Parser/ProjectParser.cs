@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer.Containers;
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ProjectParser : IDisposable
+    class ProjectParser
     {
         public AssemblyEmitter Assembly { get; private set; }
         public bool ShouldEmit { get; private set; }
@@ -112,18 +113,37 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ProjectParser ParseAll(AssemblyEmitter assembly, string[] sources, string[] names, bool emit)
         {
-            
             ProjectParser projectParser = new ProjectParser(assembly, emit);
-            for(int i = 0; i < sources.Length; i++)
+            IReadOnlyList<RootNode> roots = null;
+            try
             {
-                var source = sources[i];
-                var name = names[i];
-                projectParser.parsers.Add(new Parser(projectParser, Lexer.Lexer.Lex(source), name));
-            }
+                roots = sources.Select(s => Lexer.Lexer.Lex(s)).ToArray();
 
-            projectParser.parsers.ForEach(p => p.Root.ParseDeclarations());
-            projectParser.parsers.ForEach(p => p.Root.ParseInitializers());
-            projectParser.parsers.ForEach(p => p.Root.Emit());
+                for (int i = 0; i < sources.Length; i++)
+                {
+                    var source = sources[i];
+                    var name = names[i];
+                    projectParser.parsers.Add(new Parser(projectParser, name));
+                }
+
+                for (int i = 0; i < sources.Length; i++)
+                {
+                    projectParser.parsers[i].ParseDeclarations(roots[i].Node);
+                }
+                projectParser.parsers.ForEach(p => p.ParseInitializers());
+                projectParser.parsers.ForEach(p => p.Emit());
+            }
+            finally
+            {
+                if (roots != null)
+                {
+                    foreach (var root in roots)
+                    {
+                        root.Dispose();
+                    }
+                }
+            }
+            
             return projectParser;
         }
 
@@ -151,14 +171,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public bool IsPrimitive(TypeReference type)
         {
             return primitives.Contains(type);
-        }
-
-        public void Dispose()
-        {
-            foreach(var parser in parsers)
-            {
-                parser.Dispose();
-            }
         }
 
         public override string ToString()
