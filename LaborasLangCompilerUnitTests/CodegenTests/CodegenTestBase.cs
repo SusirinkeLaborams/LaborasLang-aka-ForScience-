@@ -25,7 +25,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         internal TypeEmitter typeEmitter { get; private set; }
         internal AssemblyEmitter assemblyEmitter { get; private set; }
 
-        internal const string kEntryPointMethodName = "dummy";
+        internal const string kEntryPointMethodName = "ExecuteTest";
         private readonly bool bulkTesting = false;
 
         private readonly MethodReference consoleWrite;
@@ -45,8 +45,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         internal static AssemblyEmitter CreateTempAssembly()
         {
-            var tempLocation = Path.GetTempPath() + Guid.NewGuid().ToString() + ".exe";
-            var compilerArgs = CompilerArguments.Parse(new[] { "dummy.il", "/out:" + tempLocation });
+            var tempLocation = Path.Combine(GetTestDirectory(), "TestExecutable.exe");
+            var compilerArgs = CompilerArguments.Parse(new[] { "ExecuteTest.il", "/out:" + tempLocation });
             return new AssemblyEmitter(compilerArgs);
         }
 
@@ -128,24 +128,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             methodEmitter.SetAsEntryPoint();
             assemblyEmitter.Save();
 
-            try
-            {
-                PEVerifyRunner.Run(assemblyEmitter.OutputPath);
-                var stdout = ManagedCodeRunner.CreateProcessAndRun(assemblyEmitter.OutputPath, new string[0] { });
-                Assert.AreEqual(ExpectedOutput.Trim(), stdout.Trim());
-            }
-            finally
-            {
-                try
-                {   // Deleting PDB will fail if we're debugging, 
-                    // since we're executing the code in the same process, so VS will have it loaded
-                    File.Delete(assemblyEmitter.OutputPath);
-                    File.Delete(Path.ChangeExtension(assemblyEmitter.OutputPath, ".pdb"));
-                }
-                catch
-                {
-                }
-            }
+            PEVerifyRunner.Run(assemblyEmitter.OutputPath);
+            var stdout = ManagedCodeRunner.CreateProcessAndRun(assemblyEmitter.OutputPath, new string[0] { });
+            Assert.AreEqual(ExpectedOutput.Trim(), stdout.Trim());
         }
 
         internal void GenerateBodyToOutputExpression(IExpressionNode expression)
