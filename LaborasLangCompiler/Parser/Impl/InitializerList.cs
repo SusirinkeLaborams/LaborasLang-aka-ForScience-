@@ -102,7 +102,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             instance.Initializers = Utils.Utils.ConcatAll(subLists.Select(s => s.Initializers));
             instance.ElementType = TypeUtils.GetCommonBaseClass(context.Assembly, subLists.Select(s => s.ElementType));
-            instance.Dimensions = first.Dimensions.Concat(subLists.Count().Enumerate());
+            instance.Dimensions = subLists.Count().Enumerate().Concat(first.Dimensions);
             return instance;
         }
 

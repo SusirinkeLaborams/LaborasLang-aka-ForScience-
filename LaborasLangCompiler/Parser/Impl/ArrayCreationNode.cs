@@ -76,7 +76,7 @@ namespace LaborasLangCompiler.Parser.Impl
             //dims are declared inside the type, both must be null or not null
             Contract.Requires((dims == null) == (elementType == null));
             //cant have [5,] or some shit
-            Contract.Requires(dims.All(d => d == null) || !dims.Any(d => d == null));
+            Contract.Requires(dims == null || dims.All(d => d == null) || !dims.Any(d => d == null));
 
             var instance = new ArrayCreationNode(point);
 
