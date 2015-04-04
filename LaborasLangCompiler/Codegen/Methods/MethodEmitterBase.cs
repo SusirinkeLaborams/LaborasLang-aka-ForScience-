@@ -488,7 +488,13 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
 
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
 
+        protected void Ldelema(TypeReference type)
+        {
+            Contract.Requires(type != null);
+            ilProcessor.Emit(OpCodes.Ldelema, type);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
         protected void Ldfld(FieldReference field)

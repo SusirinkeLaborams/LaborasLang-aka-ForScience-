@@ -59,6 +59,7 @@ namespace LaborasLangCompiler.Codegen
         private readonly Dictionary<ArrayTypeKey, ArrayType> arrayTypes;
         private readonly Dictionary<ArrayType, MethodReference> arrayConstructors;
         private readonly Dictionary<ArrayType, MethodReference> arrayLoadElementMethods;
+        private readonly Dictionary<ArrayType, MethodReference> arrayLoadElementAddressMethods;
         private readonly Dictionary<ArrayType, MethodReference> arrayStoreElementMethods;
         private readonly Dictionary<ArrayInitializerKey, FieldDefinition> arrayInitializers;
         private readonly AssemblyDefinition mscorlib;
@@ -74,6 +75,7 @@ namespace LaborasLangCompiler.Codegen
             arrayTypes = new Dictionary<ArrayTypeKey, ArrayType>();
             arrayConstructors = new Dictionary<ArrayType, MethodReference>();
             arrayLoadElementMethods = new Dictionary<ArrayType, MethodReference>();
+            arrayLoadElementAddressMethods = new Dictionary<ArrayType, MethodReference>();
             arrayStoreElementMethods = new Dictionary<ArrayType, MethodReference>();
             arrayInitializers = new Dictionary<ArrayInitializerKey, FieldDefinition>();
         }
@@ -489,6 +491,27 @@ namespace LaborasLangCompiler.Codegen
 
             instance.arrayLoadElementMethods.Add(arrayType, loadElement);
             return loadElement;
+        }
+
+        public static MethodReference GetArrayLoadElementAddress(ArrayType arrayType)
+        {
+            Contract.Requires(!arrayType.IsVector);
+
+            MethodReference loadElementAddress;
+
+            if (instance.arrayLoadElementAddressMethods.TryGetValue(arrayType, out loadElementAddress))
+                return loadElementAddress;
+
+            loadElementAddress = new MethodReference("Address", new ByReferenceType(arrayType.ElementType), arrayType);
+            loadElementAddress.HasThis = true;
+
+            for (int i = 0; i < arrayType.Rank; i++)
+            {
+                loadElementAddress.Parameters.Add(new ParameterDefinition(arrayType.Module.TypeSystem.Int32));
+            }
+
+            instance.arrayLoadElementAddressMethods.Add(arrayType, loadElementAddress);
+            return loadElementAddress;
         }
 
         public static MethodReference GetArrayStoreElement(ArrayType arrayType)
