@@ -994,5 +994,24 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestIndexOpAccess()
+        {
+            string source = @"
+                use System.Collections;
+                auto list = ArrayList();
+                auto bar = list[5];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayOfLists()
+        {
+            string source = @"
+                use System.Collections;
+                auto bar = ArrayList[5];
+            ";
+            CompareTrees(source);
+        }
     }
 }

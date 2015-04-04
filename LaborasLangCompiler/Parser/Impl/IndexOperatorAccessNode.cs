@@ -16,7 +16,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ExpressionReturnType { get { return type; } }
         public IExpressionNode Array { get { return array; } }
 
-        public IReadOnlyList<IExpressionNode> Indices { get; private set; }
+        public IReadOnlyList<IExpressionNode> Indices { get { return indices; } }
 
         public override bool IsSettable
         {
@@ -28,6 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
             get { return getter != null && TypeUtils.IsAccessbile(getter, context.GetClass().TypeReference); }
         }
 
+        private IReadOnlyList<ExpressionNode> indices;
         private ExpressionNode array;
         private TypeReference type;
         private MethodReference getter;
@@ -40,7 +41,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             this.context = context;
             this.array = array;
-            this.Indices = indices;
+            this.indices= indices;
             this.type = elementType;
             this.getter = getter;
             this.setter = setter;
@@ -48,7 +49,19 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public override string ToString(int indent)
         {
-            throw new NotImplementedException();
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("IndexOpAccess:");
+            builder.Indent(indent + 1).AppendLine("Expression:");
+            builder.Append(array.ToString(indent + 2)).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("ElementType: {0}", type.FullName).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("Settable: {0}", setter != null).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("Gettable: {0}", getter != null).AppendLine();
+            builder.Indent(indent + 1).AppendLine("Indices:");
+            foreach (var ind in indices)
+            {
+                builder.AppendLine(ind.ToString(indent + 2));
+            }
+            return builder.ToString();
         }
     }
 }
