@@ -22,16 +22,17 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ExpressionReturnType { get { return type; } }
         public IExpressionNode Array { get { return array; } }
 
-        public IReadOnlyList<IExpressionNode> Indices { get; private set; }
+        public IReadOnlyList<IExpressionNode> Indices { get { return indices; } }
 
         private ExpressionNode array;
         private TypeReference type;
+        private IReadOnlyList<ExpressionNode> indices;
 
         private ArrayAccessNode(ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point) : base(point)
         {
             Contract.Requires(array.ExpressionReturnType is ArrayType);
             this.array = array;
-            this.Indices = indices;
+            this.indices = indices;
             this.type = ((ArrayType)array.ExpressionReturnType).ElementType;
         }
 
@@ -163,7 +164,17 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public override string ToString(int indent)
         {
-            throw new NotImplementedException();
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("ArrayAccess:");
+            builder.Indent(indent + 1).AppendLine("Array:");
+            builder.Append(array.ToString(indent + 2)).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("ElementType: {0}", type.FullName).AppendLine();
+            builder.Indent(indent + 1).AppendLine("Indices:");
+            foreach (var ind in indices)
+            {
+                builder.AppendLine(ind.ToString(indent + 2));
+            }
+            return builder.ToString();
         }
     }
 }

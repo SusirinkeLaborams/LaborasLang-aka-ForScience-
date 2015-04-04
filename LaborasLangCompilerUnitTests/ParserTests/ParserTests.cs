@@ -966,5 +966,33 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayAccess()
+        {
+            string source = @"
+                int[] foo;
+                auto bar = foo[5];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayAccessCallArg()
+        {
+            string source = @"
+                int[] foo;
+                mutable int() ind;
+                auto bar = foo[ind()];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayAccessOnCall()
+        {
+            string source = @"
+                mutable int[]() foo;
+                auto bar = foo()[5];
+            ";
+            CompareTrees(source);
+        }
     }
 }
