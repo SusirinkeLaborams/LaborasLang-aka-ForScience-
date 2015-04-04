@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using LaborasLangCompiler.Codegen;
 using System.Diagnostics.Contracts;
 using Lexer.Containers;
+using LaborasLangCompiler.Parser.Utils;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -19,13 +20,14 @@ namespace LaborasLangCompiler.Parser.Impl
         public override bool IsSettable { get { return true; } }
         public override TypeReference ExpressionReturnType { get { return type; } }
 
-        public IReadOnlyList<IExpressionNode> Dimensions { get; private set; }
+        public IReadOnlyList<IExpressionNode> Dimensions { get { return dimensions.ToArray(); } }
         public IReadOnlyList<IExpressionNode> Initializer { get { return InitializerList.Initializers.ToArray(); } }
         public InitializerList InitializerList { get; private set; }
 
         public bool IsImplicit { get; private set; }
 
-        private TypeReference type;
+        private ArrayType type;
+        private IEnumerable<ExpressionNode> dimensions;
 
         private ArrayCreationNode(SequencePoint point)
             : base(point)
@@ -49,7 +51,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     builder.Append(lexerType.Children[i]);
                 }
-                var last = lexerType.Children.Last();
+                //.Last() returns parameter list
+                var last = lexerType.Children.Last().Children[0];
                 var elementType = builder.Type;
                 IEnumerable<ExpressionNode> dims;
                 if(ArrayAccessNode.IsEmptyIndexer(last))
@@ -122,7 +125,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
             instance.type = AssemblyRegistry.GetArrayType(elementType, dims.Count());
-            instance.Dimensions = dims.ToArray();
+            instance.dimensions = dims;
             instance.InitializerList = initializer;
             return instance;
         }
@@ -139,7 +142,21 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public override string ToString(int indent)
         {
-            throw new NotImplementedException();
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("ArrayCreation:");
+            builder.Indent(indent + 1).AppendFormat("ElementType: {0}", type.ElementType).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("Rank: {0}", type.Rank).AppendLine();
+            builder.Indent(indent + 1).AppendLine("Dimensions:");
+            foreach(var dim in dimensions)
+            {
+                builder.AppendLine(dim.ToString(indent + 2));
+            }
+            if(InitializerList != null)
+            {
+                builder.Indent(indent + 1).AppendLine("Initializer:");
+                builder.AppendLine(InitializerList.ToString(indent + 2));
+            }
+            return builder.ToString();
         }
     }
 }

@@ -128,13 +128,13 @@ namespace LaborasLangCompiler.Parser.Impl
         [Pure]
         public static bool IsEmptyIndexer(AstNode lexerNode)
         {
-            Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexAccessNode);
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexNode);
             return lexerNode.Children.Count(n => n.Type == Lexer.TokenType.Value) == 0;
         }
 
         public static int CountEmptyIndexerDims(AstNode lexerNode)
         {
-            Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexAccessNode);
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexNode);
             Contract.Requires(IsEmptyIndexer(lexerNode));
 
             return lexerNode.Children.Count(n => n.Type == Lexer.TokenType.Comma) + 1;
@@ -142,7 +142,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static IEnumerable<ExpressionNode> ParseIndex(ContextNode context, AstNode lexerNode)
         {
-            Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexAccessNode);
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexNode);
             Contract.Requires(!IsEmptyIndexer(lexerNode));
 
             return lexerNode.Children.Where(n => n.Type == Lexer.TokenType.Value).Select(n => ExpressionNode.Parse(context, n));
