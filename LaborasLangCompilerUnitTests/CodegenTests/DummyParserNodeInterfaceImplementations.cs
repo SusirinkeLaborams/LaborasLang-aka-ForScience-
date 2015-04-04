@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser;
+﻿using LaborasLangCompiler.Codegen;
+using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
@@ -168,17 +169,14 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Property; } }
 
-        public TypeReference ExpressionReturnType { get { return Property.PropertyType; } }
+        public TypeReference ExpressionReturnType { get; private set; }
         public IExpressionNode ObjectInstance { get; set; }
         public PropertyReference Property { get; set; }
-
-        public PropertyNode()
-        {
-        }
-
-        public PropertyNode(PropertyDefinition property)
+        
+        public PropertyNode(AssemblyEmitter assembly, PropertyReference property)
         {
             Property = property;
+            ExpressionReturnType = AssemblyRegistry.GetPropertyType(assembly, property);
         }
     }
 

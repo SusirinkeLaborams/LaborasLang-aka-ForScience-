@@ -178,7 +178,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         ExpressionReturnType = assemblyEmitter.TypeSystem.Void,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new PropertyNode(property),
+                            LeftOperand = new PropertyNode(assemblyEmitter, property),
                             RightOperand = new LocalVariableNode(localVariable)
                         }
                     },
@@ -226,7 +226,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         Operand = new AssignmentOperatorNode()
                         {
                             LeftOperand = new ParameterNode(argument),
-                            RightOperand = new PropertyNode(property)
+                            RightOperand = new PropertyNode(assemblyEmitter, property)
                         }
                     },
                     CallConsoleWriteLine(new ParameterNode(argument))
@@ -1792,6 +1792,69 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             TestCanEmit_SetElementHelper(arrayType, new[] { 3, 4, 3 }, arrayItems.Select(value => new LiteralNode(assemblyEmitter.TypeSystem.String, value)).ToArray());
+        }
+        
+        private void TestCanEmit_DateTimeArrayGetMinuteHelper(ArrayType arrayType)
+        {
+            var dateTimeType = AssemblyRegistry.FindType(assemblyEmitter, "System.DateTime");
+            var minuteProperty = AssemblyRegistry.GetProperty(assemblyEmitter, dateTimeType, "Minute");
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    CallConsoleWriteLine(new PropertyNode(assemblyEmitter, minuteProperty)
+                    {
+                        ObjectInstance = new ArrayAccessNode()
+                        {
+                            ExpressionReturnType = dateTimeType,
+                            Array = new ArrayCreationNode()
+                            {
+                                ExpressionReturnType = arrayType,
+                                Dimensions = Enumerable.Repeat(1, arrayType.Rank).Select(i => new LiteralNode(assemblyEmitter.TypeSystem.Int32, i)).ToArray(),
+                                Initializer = new IExpressionNode[]
+                                {
+                                    new ObjectCreationNode()
+                                    {
+                                        ExpressionReturnType = dateTimeType,
+                                        Constructor = AssemblyRegistry.GetCompatibleConstructor(assemblyEmitter, dateTimeType, Enumerable.Repeat(assemblyEmitter.TypeSystem.Int32, 6).ToArray()),
+                                        Args = new IExpressionNode[]
+                                        {
+                                            new LiteralNode(assemblyEmitter.TypeSystem.Int32, 1),
+                                            new LiteralNode(assemblyEmitter.TypeSystem.Int32, 2),
+                                            new LiteralNode(assemblyEmitter.TypeSystem.Int32, 3),
+                                            new LiteralNode(assemblyEmitter.TypeSystem.Int32, 4),
+                                            new LiteralNode(assemblyEmitter.TypeSystem.Int32, 5),
+                                            new LiteralNode(assemblyEmitter.TypeSystem.Int32, 6)
+                                        }
+                                    }
+                                }
+                            },
+                            Indices = Enumerable.Repeat(0, arrayType.Rank).Select(i => new LiteralNode(assemblyEmitter.TypeSystem.Int32, i)).ToArray()
+                        },
+                        Property = minuteProperty
+                    })
+                }
+            };
+
+            ExpectedOutput = "5";
+            AssertSuccessByExecution();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_DateTimeVectorGetMinute()
+        {
+            var dateTimeType = AssemblyRegistry.FindType(assemblyEmitter, "System.DateTime");
+            var arrayType = AssemblyRegistry.GetArrayType(dateTimeType, 1);
+            TestCanEmit_DateTimeArrayGetMinuteHelper(arrayType);
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_DateTimeArrayGetMinute()
+        {
+            var dateTimeType = AssemblyRegistry.FindType(assemblyEmitter, "System.DateTime");
+            var arrayType = AssemblyRegistry.GetArrayType(dateTimeType, 3);
+            TestCanEmit_DateTimeArrayGetMinuteHelper(arrayType);
         }
 
         [TestMethod, TestCategory("Execution Based Codegen Tests")]

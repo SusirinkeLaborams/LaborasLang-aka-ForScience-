@@ -381,7 +381,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (arrayType != null)
             {
-                emitReference &= array.ExpressionReturnType.IsValueType;
+                emitReference &= arrayAccess.ExpressionReturnType.IsValueType;
 
                 if (arrayType.IsVector)
                 {

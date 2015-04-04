@@ -558,6 +558,11 @@ namespace LaborasLangCompiler.Codegen
             return resolvedType.Properties.SingleOrDefault(property => property.Name == propertyName);
         }
 
+        public static TypeReference GetPropertyType(AssemblyEmitter assembly, PropertyReference property)
+        {
+            return ScopeToAssembly(assembly, property.PropertyType);
+        }
+
         public static MethodReference GetPropertyGetter(AssemblyEmitter assembly, PropertyReference property)
         {
             var resolvedProperty = property.Resolve();

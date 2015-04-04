@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser.Utils;
+﻿using LaborasLangCompiler.Codegen;
+using LaborasLangCompiler.Parser.Utils;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
@@ -22,7 +23,7 @@ namespace LaborasLangCompiler.Parser.Impl
             get 
             {
                 Contract.Assume(Property.PropertyType != null);
-                return Property.PropertyType; 
+                return AssemblyRegistry.GetPropertyType(Scope.Assembly, Property); 
             }
         }
 
