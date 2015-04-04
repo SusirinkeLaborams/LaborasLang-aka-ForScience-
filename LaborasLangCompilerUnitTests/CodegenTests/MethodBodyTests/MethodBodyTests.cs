@@ -1533,6 +1533,151 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             TestCanEmit_CreateInitializedArrayHelper(arrayType, new[] { 2, 3, 4 }, initializer);
         }
 
+        private void TestCanEmit_GetElementHelper(ArrayType arrayType, int[] dimensions, LiteralNode[] values)
+        {
+            var arrayVariable = new VariableDefinition(arrayType);
+            var arrayVariableNode = new LocalVariableNode(arrayVariable);
+            var stringVariable = new VariableDefinition(assemblyEmitter.TypeSystem.String);
+            var stringVariableNode = new LocalVariableNode(stringVariable);
+
+            var bodyNodes = new List<IParserNode>()
+            {
+                new SymbolDeclarationNode()
+                {
+                    Variable = arrayVariable,
+                    Initializer = new ArrayCreationNode()
+                    {
+                        ExpressionReturnType = arrayType,
+                        Dimensions = dimensions.Select(x => new LiteralNode(assemblyEmitter.TypeSystem.Int32, x)).ToArray<IExpressionNode>(),
+                        Initializer = values
+                    }
+                },
+                new SymbolDeclarationNode()
+                {
+                    Variable = stringVariable
+                }
+            };
+
+            BodyCodeBlock = new CodeBlockNode() { Nodes = bodyNodes };
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                var indices = new LiteralNode[arrayType.Rank];
+                var indexSizes = 1;
+
+                for (int j = arrayType.Rank - 1; j > -1; j--)
+                {
+                    indices[j] = new LiteralNode(assemblyEmitter.TypeSystem.Int32, (i / indexSizes) % dimensions[j]);
+                    indexSizes *= dimensions[j];
+                }
+
+                bodyNodes.Add(new UnaryOperatorNode()
+                {
+                    UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                    ExpressionReturnType = assemblyEmitter.TypeSystem.Void,
+                    Operand = new AssignmentOperatorNode()
+                    {
+                        LeftOperand = stringVariableNode,
+                        RightOperand = new BinaryOperatorNode()
+                        {
+                            ExpressionReturnType = assemblyEmitter.TypeSystem.String,
+                            BinaryOperatorType = BinaryOperatorNodeType.Addition,
+                            LeftOperand = stringVariableNode,
+                            RightOperand = new BinaryOperatorNode()
+                            {
+                                ExpressionReturnType = assemblyEmitter.TypeSystem.String,
+                                BinaryOperatorType = BinaryOperatorNodeType.Addition,
+                                LeftOperand = new LiteralNode(assemblyEmitter.TypeSystem.String, " "),
+                                RightOperand = new ArrayAccessNode()
+                                {
+                                    ExpressionReturnType = values[i].ExpressionReturnType,
+                                    Array = arrayVariableNode,
+                                    Indices = indices
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            bodyNodes.Add(CallConsoleWriteLine(stringVariableNode));
+
+            ExpectedOutput = values.Select(v => (string)v.Value).Aggregate((x, y) => x + " " + y);
+            AssertSuccessByExecution();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_IntVectorGetElement()
+        {
+            var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.Int32, 1);
+            var arrayItems = new int[] { 1337, 42, 314, 41597456 };
+
+            TestCanEmit_GetElementHelper(arrayType, new[] { arrayItems.Length }, arrayItems.Select(value => new LiteralNode(assemblyEmitter.TypeSystem.Int32, value)).ToArray());
+        }
+
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_StringVectorGetElements()
+        {
+            var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.String, 1);
+            var arrayItems = new string[] { "Just", "why", "I", "ask", "it", "doesn't", "make", "much", "sense" };
+
+            TestCanEmit_GetElementHelper(arrayType, new[] { arrayItems.Length }, arrayItems.Select(value => new LiteralNode(assemblyEmitter.TypeSystem.String, value)).ToArray());
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_IntArrayGetElements()
+        {
+            var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.Int32, 3);
+            var arrayItems = new int[]
+            {
+                15, 849, 1596,
+                18, 15, 11,
+                
+                4, 5, 6,
+                7849, 489, 654,
+                
+                48, 77, 777,
+                111, 11, 123
+            };
+
+            TestCanEmit_GetElementHelper(arrayType, new[] { 3, 2, 3 }, arrayItems.Select(value => new LiteralNode(assemblyEmitter.TypeSystem.Int32, value)).ToArray());
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_StringArrayGetElements()
+        {
+            var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.String, 3);
+            var arrayItems = new string[]
+            {
+                "How", "many", "code", "must", "a", "man", "type", "in",
+                "Before", "you", "can", "call", "him", "a", "man", "?",
+                
+                "How", "many", "C", "must", "a", "compiler", "process", "",
+                "Before", "it", "can", "sleep", "in", "the", "RAM", "?",
+
+                "How", "many", "times", "must", "a", "program", "crash", "",
+                "before", "it", "is", "forever", "banned", "?", "", "",
+
+                "The", "answer,", "my", "friend,", "is", "not", "a", "boolean",
+                "The", "answer", "is", "not", "a", "boolean.", "", "",
+                
+                "How", "many", "times", "must", "a", "man", "read", "his source",
+                "before", "he", "can", "see", "what", "is", "wrong", "?",
+
+                "How", "many", "years", "must", "known", "bugs", "exist", "",
+                "before", "you", "get", "an", "update", "for", "free", "?",
+
+                "How", "many", "times", "can", "a drive", "move", "its", "head",
+                "and", "pretend", "there's", "no", "data", "to", "read", "?",
+
+                "The", "answer,", "my", "friend,", "is", "not", "a", "boolean",
+                "The", "answer", "is", "not", "a", "boolean.", "", "",
+            };
+
+            TestCanEmit_GetElementHelper(arrayType, new[] { 8, 2, 8 }, arrayItems.Select(value => new LiteralNode(assemblyEmitter.TypeSystem.String, value)).ToArray());
+        }
+
         private void TestCanEmit_SetElementHelper(ArrayType arrayType, int[] dimensions, LiteralNode[] values)       
         {
             var arrayVariable = new VariableDefinition(arrayType);

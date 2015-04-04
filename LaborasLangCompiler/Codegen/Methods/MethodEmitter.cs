@@ -737,11 +737,11 @@ namespace LaborasLangCompiler.Codegen.Methods
             var methodParameters = method.Parameters;
             var resolvedMethod = method.Resolve();
 
-            if (resolvedMethod.IsParamsMethod())
+            if (resolvedMethod != null && resolvedMethod.IsParamsMethod())
             {
                 EmitArgumentsForParamsCall(arguments, methodParameters);
             }
-            else if (methodParameters.Count > arguments.Count)    // Method with optional parameters call
+            else if (resolvedMethod != null && methodParameters.Count > arguments.Count)    // Method with optional parameters call
             {
                 EmitArgumentsForCallWithOptionalParameters(arguments, methodParameters, resolvedMethod);
             }
