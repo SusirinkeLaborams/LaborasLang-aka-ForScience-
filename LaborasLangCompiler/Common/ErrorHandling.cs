@@ -54,7 +54,8 @@ namespace LaborasLangCompiler.Common
         InvalidIndexCount = 0028,
         InvalidIndexType = 0029,
         CannotIndex = 0030,
-        MissingArraySize = 0031
+        MissingArraySize = 0031,
+        ArrayDimMissmatch = 0032
     }
 
     public static class Errors

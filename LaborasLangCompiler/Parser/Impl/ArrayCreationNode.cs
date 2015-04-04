@@ -54,10 +54,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 //.Last() returns parameter list
                 var last = lexerType.Children.Last().Children[0];
                 var elementType = builder.Type;
-                IEnumerable<ExpressionNode> dims;
+                IReadOnlyList<ExpressionNode> dims;
                 if(ArrayAccessNode.IsEmptyIndexer(last))
                 {
-                    dims = Enumerable.Repeat((ExpressionNode)null, ArrayAccessNode.CountEmptyIndexerDims(last));
+                    dims = Enumerable.Repeat((ExpressionNode)null, ArrayAccessNode.CountEmptyIndexerDims(last)).ToArray();
                 }
                 else
                 {
@@ -68,7 +68,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public static ArrayCreationNode Create(ContextNode context, TypeReference elementType, IEnumerable<ExpressionNode> dims, InitializerList initializer,  SequencePoint point)
+        public static ArrayCreationNode Create(ContextNode context, TypeReference elementType, IReadOnlyList<ExpressionNode> dims, InitializerList initializer,  SequencePoint point)
         {
             //rank 0 makes no sense
             Contract.Requires(dims == null || dims.Any());
@@ -109,7 +109,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             foreach(var dim in dims)
             {
-                if(!dim.IsGettable || !dim.ExpressionReturnType.IsIntegerType())
+                if (!dim.IsGettable || !dim.ExpressionReturnType.IsIntegerType())
                 {
                     ErrorCode.NotAnRValue.ReportAndThrow(dim.SequencePoint, "Array dimensions must be gettable integer expressions");
                 }
@@ -123,6 +123,21 @@ namespace LaborasLangCompiler.Parser.Impl
                         "Cannot initializer array of element type {0} when initializer element type is {1}",
                         elementType.FullName, initializer.ElementType.FullName);
                 }
+
+                for(int i = 0; i < dims.Count; i++)
+                {
+                    var num = dims[i] as LiteralNode;
+                    if(num != null)
+                    {
+                        int value = (int)num.Value;
+                        if(value != initializer.Dimensions[i])
+                        {
+                            ErrorCode.ArrayDimMissmatch.ReportAndThrow(point,
+                                "Dimension mismatch, array dimension {0} is {1}, initializer is {2}",
+                                i, value, initializer.Dimensions[i]);
+                        }
+                    }
+                }
             }
             instance.type = AssemblyRegistry.GetArrayType(elementType, dims.Count());
             instance.dimensions = dims;
@@ -135,9 +150,9 @@ namespace LaborasLangCompiler.Parser.Impl
             return Create(context, null, null, initializer, point);
         }
 
-        private static IEnumerable<LiteralNode> CreateArrayDims(ContextNode context, SequencePoint point, params int[] dims)
+        private static IReadOnlyList<LiteralNode> CreateArrayDims(ContextNode context, SequencePoint point, params int[] dims)
         {
-            return dims.Select(dim => LiteralNode.Create(context, dim, point));
+            return dims.Select(dim => LiteralNode.Create(context, dim, point)).ToArray();
         }
 
         public override string ToString(int indent)

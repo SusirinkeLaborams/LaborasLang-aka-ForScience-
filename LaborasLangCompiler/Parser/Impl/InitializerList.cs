@@ -18,7 +18,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public IEnumerable<ExpressionNode> Initializers { get; private set; }
 
         public TypeReference ElementType { get; private set; }
-        public IEnumerable<int> Dimensions { get; private set; }
+        public IReadOnlyList<int> Dimensions { get; private set; }
 
         private InitializerList(SequencePoint point) : base(point)
         {
@@ -102,7 +102,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             instance.Initializers = Utils.Utils.ConcatAll(subLists.Select(s => s.Initializers));
             instance.ElementType = TypeUtils.GetCommonBaseClass(context.Assembly, subLists.Select(s => s.ElementType));
-            instance.Dimensions = subLists.Count().Enumerate().Concat(first.Dimensions);
+            instance.Dimensions = subLists.Count().Enumerate().Concat(first.Dimensions).ToArray();
             return instance;
         }
 

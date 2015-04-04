@@ -140,12 +140,12 @@ namespace LaborasLangCompiler.Parser.Impl
             return lexerNode.Children.Count(n => n.Type == Lexer.TokenType.Comma) + 1;
         }
 
-        public static IEnumerable<ExpressionNode> ParseIndex(ContextNode context, AstNode lexerNode)
+        public static IReadOnlyList<ExpressionNode> ParseIndex(ContextNode context, AstNode lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexNode);
             Contract.Requires(!IsEmptyIndexer(lexerNode));
 
-            return lexerNode.Children.Where(n => n.Type == Lexer.TokenType.Value).Select(n => ExpressionNode.Parse(context, n));
+            return lexerNode.Children.Where(n => n.Type == Lexer.TokenType.Value).Select(n => ExpressionNode.Parse(context, n)).ToArray();
         }
 
         public override string ToString(int indent)
