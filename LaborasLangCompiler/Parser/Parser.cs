@@ -34,7 +34,6 @@ namespace LaborasLangCompiler.Parser
         public TypeReference UInt64 { get { return ProjectParser.UInt64; } }
         public TypeReference Float { get { return ProjectParser.Float; } }
         public TypeReference Double { get { return ProjectParser.Double; } }
-        public TypeReference Decimal { get { return ProjectParser.Decimal; } }
         public TypeReference String { get { return ProjectParser.String; } }
         public TypeReference Void { get { return ProjectParser.Void; } }
         public TypeReference Auto { get { return ProjectParser.Auto; } }

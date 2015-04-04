@@ -40,6 +40,7 @@ namespace LaborasLangCompiler.Parser
         ObjectCreation,
         BinaryOperator,
         UnaryOperator,
+        IncrementDecrementOperator,
         AssignmentOperator,
         This,
         LocalVariable,
@@ -163,11 +164,13 @@ namespace LaborasLangCompiler.Parser
         BinaryNot,
         LogicalNot,
         Negation,
-        PreIncrement,
+        VoidOperator,    // Discards Operand result
+
+        // not used, kept so codegen builds
         PreDecrement,
-        PostIncrement,
+        PreIncrement,
         PostDecrement,
-        VoidOperator    // Discards Operand result
+        PostIncrement
     }
 
     [ContractClass(typeof(IUnaryOperatorNodeContract))]
@@ -186,10 +189,11 @@ namespace LaborasLangCompiler.Parser
     }
 
     //nothing to contract
-    interface IIncrementDecrementOperatorNode : IUnaryOperatorNode
+    interface IIncrementDecrementOperatorNode : IExpressionNode
     {
         IncrementDecrementOperatorType IncrementDecrementType { get; }
         MethodReference OverloadedOperatorMethod { get; }
+        IExpressionNode Operand { get; }
     }
 
     [ContractClass(typeof(IAssignmentOperatorNodeContract))]

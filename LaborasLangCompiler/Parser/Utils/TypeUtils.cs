@@ -142,5 +142,10 @@ namespace LaborasLangCompiler.Parser.Utils
             return AssemblyRegistry.GetMethods(assembly, left.ExpressionReturnType, name)
                 .Concat(AssemblyRegistry.GetMethods(assembly, right.ExpressionReturnType, name));
         }
+
+        public static IEnumerable<MethodReference> GetOperatorMethods(AssemblyEmitter assembly, IExpressionNode operand, string name)
+        {
+            return AssemblyRegistry.GetMethods(assembly, operand.ExpressionReturnType, name);
+        }
     }
 }

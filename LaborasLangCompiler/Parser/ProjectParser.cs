@@ -37,7 +37,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeReference UInt64 { get; private set; }
         public TypeReference Float { get; private set; }
         public TypeReference Double { get; private set; }
-        public TypeReference Decimal { get; private set; }
         public TypeReference String { get; private set; }
         public TypeReference Void { get; private set; }
         public TypeReference Auto { get; private set; }
@@ -69,7 +68,6 @@ namespace LaborasLangCompiler.Parser.Impl
 
             aliases["float"] = Float = assembly.TypeSystem.Single;
             aliases["double"] = Double = assembly.TypeSystem.Double;
-            aliases["decimal"] = Decimal = AssemblyRegistry.FindType(Assembly, "System.Decimal");
 
             aliases["string"] = String = assembly.TypeSystem.String;
             aliases["object"] = Object = assembly.TypeSystem.Object;
@@ -77,7 +75,7 @@ namespace LaborasLangCompiler.Parser.Impl
             aliases["void"] = Void = assembly.TypeSystem.Void;
             aliases["auto"] = Auto = AutoType.Instance;
 
-            primitives = new HashSet<TypeReference>(Utils.Utils.Enumerate(Bool, Char, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Float, Double, Decimal, String), new TypeComparer());
+            primitives = new HashSet<TypeReference>(Utils.Utils.Enumerate(Bool, Char, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Float, Double, String), new TypeComparer());
 
             MaxValues = new Dictionary<ulong, TypeReference>()
             {

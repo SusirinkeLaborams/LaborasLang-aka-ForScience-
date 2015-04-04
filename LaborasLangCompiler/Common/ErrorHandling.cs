@@ -50,7 +50,11 @@ namespace LaborasLangCompiler.Common
         DuplicateImport = 0025,
 
         CannotCreate = 0026,
-        MisshapedMatrix = 0027
+        MisshapedMatrix = 0027,
+        InvalidIndexCount = 0028,
+        InvalidIndexType = 0029,
+        CannotIndex = 0030,
+        MissingArraySize = 0031
     }
 
     public static class Errors

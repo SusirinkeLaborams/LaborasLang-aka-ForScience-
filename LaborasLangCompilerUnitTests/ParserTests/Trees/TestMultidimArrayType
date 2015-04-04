@@ -1,0 +1,12 @@
+Class:
+	TestMultidimArrayType
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Int32[0...,0...,0...]
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+
+	Methods:

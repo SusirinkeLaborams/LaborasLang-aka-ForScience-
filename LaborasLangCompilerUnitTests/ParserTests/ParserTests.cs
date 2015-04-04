@@ -13,12 +13,25 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompilerUnitTests.ParserTests
 {
     [TestClass]
     public class ParserTests : ParserTestBase
     {
+        [AssemblyInitialize]
+        public static void Initialize(TestContext ctx)
+        {
+            // avoid contract violation kill the process  
+            Contract.ContractFailed += new EventHandler<ContractFailedEventArgs>(Contract_ContractFailed);
+        }
+
+        static void Contract_ContractFailed(object sender, System.Diagnostics.Contracts.ContractFailedEventArgs e)
+        {
+            e.SetHandled();
+            Assert.Fail("{0}: {1} {2}", e.FailureKind, e.Message, e.Condition);
+        } 
 
         [TestMethod, TestCategory("Parser")]
         public void FieldDeclarationTest()
@@ -775,6 +788,114 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string source = @"
                 auto foo = ""foo"" == ""bar"";";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayType()
+        {
+            string source = @"
+                int[] foo;
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestMultidimArrayType()
+        {
+            string source = @"
+                int[,,] foo;
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestFunctorArrayType()
+        {
+            string source = @"
+                int()[] foo;
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestFunctorReturningArrayType()
+        {
+            string source = @"
+                mutable int[]() foo;
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestHorribleMixedType()
+        {
+            string source = @"
+                int[]()[,](int, float[])[] foo;
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestIncrement()
+        {
+            string source = @"
+                entry auto main = void()
+                {
+                    auto a = 5;
+                    a++;
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestSingleElementArrayCreationInitialized()
+        {
+            string source = @"
+                auto foo = int[1]{5};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestMultiElementArrayCreationInitialized()
+        {
+            string source = @"
+                auto foo = int[3]{5, 6, 7};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayCreationInitializedImplicitSize()
+        {
+            string source = @"
+                auto foo = int[]{5, 6};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayCreationMatrixInitializedImplicitSize()
+        {
+            string source = @"
+                auto foo = int[,]{{1}, {2}};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayCreationMatrixInitialized()
+        {
+            string source = @"
+                auto foo = int[1, 1]{{1}, {2}};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestEmptyInitializedArray()
+        {
+            string source = @"
+                auto foo = int[]{};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestJaggedArray()
+        {
+            string source = @"
+                auto foo = int[][]{int[]{}, int[]{}};
+            ";
             CompareTrees(source);
         }
     }

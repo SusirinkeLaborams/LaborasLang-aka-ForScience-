@@ -1,0 +1,12 @@
+Class:
+	TestFunctorReturningArrayType
+	Fields:
+		FieldDeclaration:
+			Type:
+				$Functors.$System_Int32[]?
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+
+	Methods:

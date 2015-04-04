@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace Lexer.Containers
 {
-    public unsafe struct AstNodeList
+    public unsafe struct AstNodeList : IEnumerable<AstNode>
     {
         private const int kInitialCapacity = 6;
 
@@ -66,15 +66,20 @@ namespace Lexer.Containers
             }
         }
 
-        public AstNodeEnumerator GetEnumerator()
-        {
-            return new AstNodeEnumerator(this);
-        }
-
         public void Initialize()
         {
             m_Count = 0;
             m_Capacity = 0;
+        }
+
+        public IEnumerator<AstNode> GetEnumerator()
+        {
+            return new AstNodeEnumerator(this);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

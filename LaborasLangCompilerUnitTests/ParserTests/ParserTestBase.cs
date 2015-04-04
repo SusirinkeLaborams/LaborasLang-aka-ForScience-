@@ -13,12 +13,13 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompilerUnitTests.ParserTests
 {
     public class ParserTestBase
     {
-        protected const string path = @"..\..\ParserTests\Trees\";
+        protected const string path = @"..\..\ParserTests\Trees\"; 
 
         protected static void CompareTrees(string source, [CallerMemberName] string name = "")
         {
