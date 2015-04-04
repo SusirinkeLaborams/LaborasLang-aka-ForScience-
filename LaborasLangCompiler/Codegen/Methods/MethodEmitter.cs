@@ -265,7 +265,8 @@ namespace LaborasLangCompiler.Codegen.Methods
             switch (expression.ExpressionType)
             {
                 case ExpressionNodeType.ArrayAccess:
-                    throw new NotImplementedException();
+                    EmitStore((IArrayAccessNode)expression);
+                    break;
 
                 case ExpressionNodeType.Field:
                     EmitStore((IFieldNode)expression);
@@ -406,6 +407,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             else
             {
                 var getter = AssemblyRegistry.GetCompatibleMethod(Assembly, array.ExpressionReturnType, "get_Item", indices.Select(index => index.ExpressionReturnType).ToArray());
+                Contract.Assume(getter != null);
 
                 for (int i = 0; i < indices.Count; i++)
                 {
@@ -1463,6 +1465,56 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             var setter = AssemblyRegistry.GetPropertySetter(Assembly, property.Property);
             Call(setter);
+        }
+
+        private void EmitStore(IArrayAccessNode arrayAccess)
+        {
+            var array = arrayAccess.Array;
+            var arrayType = array.ExpressionReturnType as ArrayType;
+            var indices = arrayAccess.Indices;
+            
+            var valueVariable = temporaryVariables.Acquire(arrayAccess.ExpressionReturnType);
+            Stloc(valueVariable.Index);
+
+            Emit(arrayAccess.Array, true);
+
+            if (arrayType != null)
+            {
+                if (arrayType.IsVector)
+                {
+                    Contract.Assume(indices.Count == 1);
+                    Emit(indices[0], false);
+                    Ldloc(valueVariable.Index);
+                    Stelem(arrayType.ElementType);
+                }
+                else
+                {
+                    var storeElementMethod = AssemblyRegistry.GetArrayStoreElement(arrayType);
+
+                    for (int i = 0; i < indices.Count; i++)
+                    {
+                        EmitArgumentForCall(indices[i], storeElementMethod.Parameters[i].ParameterType);
+                    }
+
+                    Ldloc(valueVariable.Index);
+                    Call(storeElementMethod);
+                }
+            }
+            else
+            {
+                var setter = AssemblyRegistry.GetCompatibleMethod(Assembly, array.ExpressionReturnType, "set_Item", indices.Select(index => index.ExpressionReturnType).ToArray());
+                Contract.Assume(setter != null);
+
+                for (int i = 0; i < indices.Count; i++)
+                {
+                    Emit(indices[i], false);
+                }
+
+                Ldloc(valueVariable.Index);
+                Call(setter);
+            }
+
+            temporaryVariables.Release(valueVariable);
         }
 
         private void EmitStore(IUnaryOperatorNode unaryOperatorNode)

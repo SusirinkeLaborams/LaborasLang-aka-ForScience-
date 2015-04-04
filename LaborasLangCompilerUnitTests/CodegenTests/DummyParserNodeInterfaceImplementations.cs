@@ -116,6 +116,17 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public IReadOnlyList<IExpressionNode> Initializer { get; set; }
     }
 
+    class ArrayAccessNode : IArrayAccessNode
+    {
+        public NodeType Type { get { return NodeType.Expression; } }
+        public SequencePoint SequencePoint { get { return null; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ArrayAccess; } }
+
+        public TypeReference ExpressionReturnType { get; set; }
+        public IExpressionNode Array { get; set; }
+        public IReadOnlyList<IExpressionNode> Indices { get; set; }
+    }
+
     class LocalVariableNode : ILocalVariableNode
     {
         public SequencePoint SequencePoint { get { return null; } }
