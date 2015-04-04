@@ -1100,7 +1100,28 @@ namespace LaborasLangCompiler.Codegen.Methods
             Emit(incrementDecrementOperator.Operand, EmissionType.Value);
 
             if (incrementDecrementOperator.OverloadedOperatorMethod != null)
-                throw new NotImplementedException();
+            {
+                switch (incrementDecrementOperator.IncrementDecrementType)
+                {
+                    case IncrementDecrementOperatorType.PreDecrement:
+                    case IncrementDecrementOperatorType.PreIncrement:
+                        Call(incrementDecrementOperator.OverloadedOperatorMethod);
+                        Dup();
+                        EmitStore(incrementDecrementOperator.Operand);
+                        return;
+
+                    case IncrementDecrementOperatorType.PostDecrement:
+                    case IncrementDecrementOperatorType.PostIncrement:
+                        Dup();
+                        Call(incrementDecrementOperator.OverloadedOperatorMethod);
+                        EmitStore(incrementDecrementOperator.Operand);
+                        return;
+
+                    default:
+                        ContractsHelper.AssertUnreachable(string.Format("Unknown unary operator type: {0}", incrementDecrementOperator.IncrementDecrementType));
+                        return;
+                }
+            }
 
             switch (incrementDecrementOperator.IncrementDecrementType)
             {
