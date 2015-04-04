@@ -106,6 +106,14 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 dims = CreateArrayDims(context, point, initializer.Dimensions.ToArray());
             }
+            else
+            {
+                if(dims.Any(dim => !(dim is LiteralNode)))
+                {
+                    ErrorCode.NotLiteralArrayDims.ReportAndThrow(point,
+                        "When initializing arrays, dimensions must be literal, or implicit");
+                }
+            }
 
             foreach(var dim in dims)
             {
@@ -124,22 +132,20 @@ namespace LaborasLangCompiler.Parser.Impl
                         elementType.FullName, initializer.ElementType.FullName);
                 }
 
+                var numericDims = dims.Cast<LiteralNode>().Select(num => (int)num.Value).ToArray();
+
                 for(int i = 0; i < dims.Count; i++)
                 {
-                    var num = dims[i] as LiteralNode;
-                    if(num != null)
+                    var value = numericDims[i];
+                    if (value != initializer.Dimensions[i])
                     {
-                        int value = (int)num.Value;
-                        if(value != initializer.Dimensions[i])
-                        {
-                            ErrorCode.ArrayDimMissmatch.ReportAndThrow(point,
-                                "Dimension mismatch, array dimension {0} is {1}, initializer is {2}",
-                                i, value, initializer.Dimensions[i]);
-                        }
+                        ErrorCode.ArrayDimMissmatch.ReportAndThrow(point,
+                            "Dimension mismatch, array dimensions are [{0}] initializer are [{1}]",
+                            String.Join(", ", numericDims), String.Join(", ", initializer.Dimensions));
                     }
                 }
             }
-            instance.type = AssemblyRegistry.GetArrayType(elementType, dims.Count());
+            instance.type = AssemblyRegistry.GetArrayType(elementType, dims.Count);
             instance.dimensions = dims;
             instance.InitializerList = initializer;
             return instance;
