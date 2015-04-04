@@ -84,7 +84,7 @@ namespace Lexer.Containers
 
         private class EnumerableWrapper : IEnumerable<AstNode>
         {
-            private AstNodeList m_NodeList;
+            private readonly AstNodeList m_NodeList;
 
             public EnumerableWrapper(AstNodeList list)
             {
@@ -104,7 +104,7 @@ namespace Lexer.Containers
 
         private class EnumerableEnumerator : IEnumerator<AstNode>
         {
-            private AstNodeList m_NodeList;
+            private readonly AstNodeList m_NodeList;
             private int m_Position;
 
             internal EnumerableEnumerator(AstNodeList list)
