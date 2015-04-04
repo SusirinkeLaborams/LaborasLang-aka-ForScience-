@@ -88,14 +88,14 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 elementType = initializer.ElementType;
                 instance.IsImplicit = true;
-                dims = CreateArrayDims(context, point, initializer.Dimmensions.ToArray());
+                dims = CreateArrayDims(context, point, initializer.Dimensions.ToArray());
             }
 
-            if(initializer != null && dims.Count() != initializer.Dimmensions.Count())
+            if(initializer != null && dims.Count() != initializer.Dimensions.Count())
             {
                 ErrorCode.MisshapedMatrix.ReportAndThrow(point,
                         "Cannot initialize array of {0} dimmensions with a matrix of {1} dimmensions",
-                        dims.Count(), initializer.Dimmensions.Count());
+                        dims.Count(), initializer.Dimensions.Count());
             }
 
             if(dims.Any(d => d == null))
@@ -104,7 +104,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     ErrorCode.MissingArraySize.ReportAndThrow(point, "Cannot create array with implicit dimensions without initialization");
                 }
-                dims = CreateArrayDims(context, point, initializer.Dimmensions.ToArray());
+                dims = CreateArrayDims(context, point, initializer.Dimensions.ToArray());
             }
 
             foreach(var dim in dims)

@@ -21,6 +21,10 @@ Class:
 
 					Initializer:
 						InitializerList:
+							Element type: System.Int32
+							Dimensions:
+								2
+							Values:
 								Literal:
 									Type:
 										System.Int32

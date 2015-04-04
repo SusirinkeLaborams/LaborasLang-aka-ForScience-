@@ -18,7 +18,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public IEnumerable<ExpressionNode> Initializers { get; private set; }
 
         public TypeReference ElementType { get; private set; }
-        public IEnumerable<int> Dimmensions { get; private set; }
+        public IEnumerable<int> Dimensions { get; private set; }
 
         private InitializerList(SequencePoint point) : base(point)
         {
@@ -75,7 +75,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             var instance = new InitializerList(point);
             instance.ElementType = TypeUtils.GetCommonBaseClass(context.Assembly, expressions.Select(e => e.ExpressionReturnType));
-            instance.Dimmensions = new int[]{expressions.Count()};
+            instance.Dimensions = new int[]{expressions.Count()};
             instance.Initializers = expressions;
             return instance;
         }
@@ -83,7 +83,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private static InitializerList CreateEmpty(ContextNode context, SequencePoint point)
         {
             var instace = new InitializerList(point);
-            instace.Dimmensions = new int[] { 0 };
+            instace.Dimensions = new int[] { 0 };
             instace.Initializers = Enumerable.Empty<ExpressionNode>();
             instace.ElementType = context.Parser.Object;
             return instace;
@@ -94,7 +94,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (!subLists.Any())
                 ErrorCode.InvalidStructure.ReportAndThrow(point, "Initializer list must not be empty");
             var first = subLists.First();
-            if(!subLists.Skip(1).All(l => l.Dimmensions.SequenceEqual(first.Dimmensions)))
+            if(!subLists.Skip(1).All(l => l.Dimensions.SequenceEqual(first.Dimensions)))
             {
                 ErrorCode.MisshapedMatrix.ReportAndThrow(point, "Invalid intializer list structure, all sublists must have same dimmensions");
             }
@@ -102,7 +102,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             instance.Initializers = Utils.Utils.ConcatAll(subLists.Select(s => s.Initializers));
             instance.ElementType = TypeUtils.GetCommonBaseClass(context.Assembly, subLists.Select(s => s.ElementType));
-            instance.Dimmensions = first.Dimmensions.Concat(subLists.Count().Enumerate());
+            instance.Dimensions = first.Dimensions.Concat(subLists.Count().Enumerate());
             return instance;
         }
 
@@ -110,9 +110,20 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("InitializerList:");
-            foreach (var exp in Initializers)
+            builder.Indent(indent + 1).AppendFormat("Element type: {0}", ElementType.FullName).AppendLine();
+            builder.Indent(indent + 1).AppendLine("Dimensions:");
+            builder.Indent(indent + 2).AppendLine(String.Join(", ", Dimensions));
+            builder.Indent(indent + 1).AppendLine("Values:");
+            if (Initializers.Any())
             {
-                builder.AppendLine(exp.ToString(indent + 2));
+                foreach (var exp in Initializers)
+                {
+                    builder.AppendLine(exp.ToString(indent + 2));
+                }
+            }
+            else
+            {
+                builder.Indent(indent + 2).AppendLine("Empty");
             }
             return builder.ToString();
         }

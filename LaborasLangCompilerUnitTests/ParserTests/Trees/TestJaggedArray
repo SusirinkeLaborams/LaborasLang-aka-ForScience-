@@ -21,6 +21,10 @@ Class:
 
 					Initializer:
 						InitializerList:
+							Element type: System.Int32[]
+							Dimensions:
+								2
+							Values:
 								ArrayCreation:
 									ElementType: System.Int32
 									Rank: 1
@@ -33,6 +37,11 @@ Class:
 
 									Initializer:
 										InitializerList:
+											Element type: System.Object
+											Dimensions:
+												0
+											Values:
+												Empty
 
 
 								ArrayCreation:
@@ -47,6 +56,11 @@ Class:
 
 									Initializer:
 										InitializerList:
+											Element type: System.Object
+											Dimensions:
+												0
+											Values:
+												Empty
 
 
 
