@@ -1,0 +1,49 @@
+Class:
+	TestImplicitArraySingleDimObjects
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Collections.ArrayList[]
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ArrayCreation:
+					ElementType: System.Collections.ArrayList
+					Rank: 1
+					Dimensions:
+						Literal:
+							Type:
+								System.Int32
+							Value:
+								3
+
+					Initializer:
+						InitializerList:
+							Element type: System.Collections.ArrayList
+							Dimensions:
+								3
+							Values:
+								ObjectCreation:
+									Type: System.Collections.ArrayList
+									Args:
+									Constructor:
+										System.Void System.Collections.ArrayList::.ctor()
+
+								ObjectCreation:
+									Type: System.Collections.ArrayList
+									Args:
+									Constructor:
+										System.Void System.Collections.ArrayList::.ctor()
+
+								ObjectCreation:
+									Type: System.Collections.ArrayList
+									Args:
+									Constructor:
+										System.Void System.Collections.ArrayList::.ctor()
+
+
+
+
+	Methods:

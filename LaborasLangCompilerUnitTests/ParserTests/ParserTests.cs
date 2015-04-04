@@ -924,5 +924,47 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source, ErrorCode.NotLiteralArrayDims.Enumerate());
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestImplicitArraySingleDimIntegers()
+        {
+            string source = @"
+                auto foo = {5, 8, 695, 0};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestImplicitArraySingleDimDoubles()
+        {
+            string source = @"
+                auto foo = {5.0, 8.0, 695.0, 0.0};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestImplicitArraySingleDimStrings()
+        {
+            string source = @"
+                auto foo = {""foo"", ""bar""};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestImplicitArraySingleDimObjects()
+        {
+            string source = @"
+                use System.Collections;
+                auto foo = {ArrayList(), ArrayList(), ArrayList()};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestImplicitArraySingleDimObjectsDifferentTypes()
+        {
+            string source = @"
+                use System.Collections;
+                auto foo = {ArrayList(), ArrayList(), Hashtable()};
+            ";
+            CompareTrees(source);
+        }
     }
 }
