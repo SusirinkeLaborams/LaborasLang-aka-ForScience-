@@ -1,0 +1,49 @@
+Class:
+	TestMultiElementArrayCreationInitialized
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Int32[]
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ArrayCreation:
+					ElementType: System.Int32
+					Rank: 1
+					Dimensions:
+						Literal:
+							Type:
+								System.Int32
+							Value:
+								3
+
+					Initializer:
+						InitializerList:
+							Element type: System.Int32
+							Dimensions:
+								3
+							Values:
+								Literal:
+									Type:
+										System.Int32
+									Value:
+										5
+
+								Literal:
+									Type:
+										System.Int32
+									Value:
+										6
+
+								Literal:
+									Type:
+										System.Int32
+									Value:
+										7
+
+
+
+
+	Methods:

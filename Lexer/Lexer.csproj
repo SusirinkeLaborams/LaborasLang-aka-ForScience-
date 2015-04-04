@@ -149,6 +149,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="Containers\RootNode.cs" />
+    <Compile Include="RulePool\RulePool.cs" />
+    <Compile Include="RulePool\RulePoolConditions.cs" />
+    <Compile Include="RulePool\RulePoolTokens.cs" />
     <Compile Include="SourceReader.cs" />
     <Compile Include="SyntaxMatcher.cs" />
     <Compile Include="Containers\Token.cs" />

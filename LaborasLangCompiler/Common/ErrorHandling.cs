@@ -50,7 +50,13 @@ namespace LaborasLangCompiler.Common
         DuplicateImport = 0025,
 
         CannotCreate = 0026,
-        MisshapedMatrix = 0027
+        MisshapedMatrix = 0027,
+        InvalidIndexCount = 0028,
+        InvalidIndexType = 0029,
+        CannotIndex = 0030,
+        MissingArraySize = 0031,
+        ArrayDimMissmatch = 0032,
+        NotLiteralArrayDims = 0033
     }
 
     public static class Errors
@@ -120,7 +126,7 @@ namespace LaborasLangCompiler.Common
                 {
                     builder.AppendFormat("{0}({1},{2},{3},{4}): ", Point.Document.Url, Point.StartLine, Point.StartColumn, Point.EndLine, Point.EndColumn);
                 }
-                builder.AppendFormat("error LL{0:0000}: {1}", (int)ErrorCode, Message);
+                builder.AppendFormat("error LL{0:0000} {1}: {2}", (int)ErrorCode, ErrorCode, Message);
                 return builder.ToString();
             }
         }

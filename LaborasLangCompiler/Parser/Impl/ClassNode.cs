@@ -24,7 +24,6 @@ namespace LaborasLangCompiler.Parser.Impl
         private readonly List<FunctionDeclarationNode> lambdas;
         private readonly List<Namespace> globalImports;
         private int lambdaCounter = 0;
-        private readonly AstNode lexerNode;
         #endregion fields
 
         #region properties
@@ -36,9 +35,8 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #endregion properties
 
-        private ClassNode(Parser parser, ClassNode parent, AstNode lexerNode) : base(parser, parent, parser.GetSequencePoint(lexerNode))
+        private ClassNode(Parser parser, ContextNode parent, SequencePoint point) : base(parser, parent, point)
         {
-            this.lexerNode = lexerNode;
             this.declaredMethods = new List<FunctionDeclarationNode>();
             this.lambdas = new List<FunctionDeclarationNode>();
             fields = new List<FieldDeclarationNode>();
@@ -47,10 +45,14 @@ namespace LaborasLangCompiler.Parser.Impl
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
 
-        public static ClassNode ParseFile(Parser parser, AstNode lexerNode)
+        public static ClassNode ForFile(Parser parser)
         {
-            Contract.Requires(!lexerNode.IsNull);
-            return new ClassNode(parser, null, lexerNode);
+            return new ClassNode(parser, null, null);
+        }
+
+        public static ClassNode ForGen(ContextNode context)
+        {
+            return new ClassNode(context.Parser, context.Parent, null);
         }
 
         #region type wrapper
@@ -183,7 +185,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #region parsing
 
-        public void ParseDeclarations()
+        public void ParseDeclarations(AstNode lexerNode)
         {
             foreach (var node in lexerNode.Children)
             {

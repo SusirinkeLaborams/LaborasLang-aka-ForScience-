@@ -1,0 +1,55 @@
+Class:
+	TestImplicitArraySingleDimDoubles
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Double[]
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ArrayCreation:
+					ElementType: System.Double
+					Rank: 1
+					Dimensions:
+						Literal:
+							Type:
+								System.Int32
+							Value:
+								4
+
+					Initializer:
+						InitializerList:
+							Element type: System.Double
+							Dimensions:
+								4
+							Values:
+								Literal:
+									Type:
+										System.Double
+									Value:
+										5
+
+								Literal:
+									Type:
+										System.Double
+									Value:
+										8
+
+								Literal:
+									Type:
+										System.Double
+									Value:
+										695
+
+								Literal:
+									Type:
+										System.Double
+									Value:
+										0
+
+
+
+
+	Methods:

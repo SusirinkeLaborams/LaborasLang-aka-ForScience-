@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser
 {
-    class Parser : IDisposable
+    class Parser
     {
         public ProjectParser ProjectParser { get; private set; }
         public AssemblyEmitter Assembly { get { return ProjectParser.Assembly; } }
@@ -34,15 +34,12 @@ namespace LaborasLangCompiler.Parser
         public TypeReference UInt64 { get { return ProjectParser.UInt64; } }
         public TypeReference Float { get { return ProjectParser.Float; } }
         public TypeReference Double { get { return ProjectParser.Double; } }
-        public TypeReference Decimal { get { return ProjectParser.Decimal; } }
         public TypeReference String { get { return ProjectParser.String; } }
         public TypeReference Void { get { return ProjectParser.Void; } }
         public TypeReference Auto { get { return ProjectParser.Auto; } }
         public TypeReference Object { get { return ProjectParser.Object; } }
 
-        private readonly RootNode lexerRoot;
-
-        public Parser(ProjectParser parser, RootNode root, string filePath)
+        public Parser(ProjectParser parser, string filePath)
         {
             Filename = Path.GetFileNameWithoutExtension(filePath);
             Document = new Document(filePath);
@@ -51,8 +48,22 @@ namespace LaborasLangCompiler.Parser
             Document.Type = DocumentType.Text;
             ProjectParser = parser;
 
-            lexerRoot = root;
-            Root = ClassNode.ParseFile(this, root.Node);
+            Root = ClassNode.ForFile(this);
+        }
+
+        public void ParseDeclarations(AstNode root)
+        {
+            Root.ParseDeclarations(root);
+        }
+
+        public void ParseInitializers()
+        {
+            Root.ParseInitializers();
+        }
+
+        public void Emit()
+        {
+            Root.Emit();
         }
 
         public SequencePoint GetSequencePoint(AstNode lexerNode)
@@ -95,11 +106,6 @@ namespace LaborasLangCompiler.Parser
         public bool IsPrimitive(TypeReference type)
         {
             return ProjectParser.IsPrimitive(type);
-        }
-
-        public void Dispose()
-        {
-            lexerRoot.Dispose();
         }
     }
 }

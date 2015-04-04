@@ -37,7 +37,7 @@ namespace LaborasLangCompiler.Codegen
                 case MetadataType.Double:
                     return 8;
             }
-
+            
             throw new NotSupportedException(string.Format("{0} is not an integer!", type.FullName));
         }
 
@@ -123,7 +123,7 @@ namespace LaborasLangCompiler.Codegen
         public static bool IsFunctorType(this TypeReference type)
         {
             Contract.Assume(type.FullName != null);
-            return type.FullName.StartsWith("$Functors.");
+            return type.FullName.StartsWith("$Functors.") && type.IsDefinition;
         }
 
         public static bool IsAssignableTo(this TypeReference right, TypeReference left)
@@ -144,7 +144,7 @@ namespace LaborasLangCompiler.Codegen
                 right = right.GetElementType();
                 Contract.Assume(right != null);
             }
-
+            
             if (left.FullName == right.FullName)
             {
                 return true;
@@ -171,7 +171,7 @@ namespace LaborasLangCompiler.Codegen
             {
                 return rightType.Interfaces.Any(interfaze => interfaze.FullName == leftType.FullName);
             }
-
+                        
             while (rightType.BaseType != null)
             {
                 rightType = rightType.BaseType.Resolve();
@@ -194,7 +194,7 @@ namespace LaborasLangCompiler.Codegen
 
             var child = childRef.Resolve();
             var parent = parentRef.Resolve();
-
+            
             if (parent.IsInterface)
             {
                 if (child.Interfaces.Any(interfaze => interfaze.FullName == parent.FullName))
@@ -333,10 +333,10 @@ namespace LaborasLangCompiler.Codegen
             return invokeMethod.ReturnType;
         }
 
-        public static TypeReference GetFunctorReturnTypeAndArguments(AssemblyEmitter assemblyScope, TypeReference functorType,
+        public static TypeReference GetFunctorReturnTypeAndArguments(AssemblyEmitter assemblyScope, TypeReference functorType, 
             out List<TypeReference> arguments)
         {
-            var invokeMethod = GetFunctorInvokeMethod(assemblyScope, functorType);
+            var invokeMethod = GetFunctorInvokeMethod(assemblyScope, functorType);      
             arguments = invokeMethod.Parameters.Select(parameter => parameter.ParameterType).ToList();
             return invokeMethod.ReturnType;
         }
@@ -417,7 +417,7 @@ namespace LaborasLangCompiler.Codegen
 
                 case MethodAttributes.Public:
                     return true;
-
+                    
                 default:
                     throw new NotSupportedException(string.Format("Unknown method visibility: {0}", method.Attributes & MethodAttributes.MemberAccessMask));
             }
@@ -454,65 +454,51 @@ namespace LaborasLangCompiler.Codegen
             }
         }
 
-        public static bool TryGetBuiltInTypeReference(AssemblyEmitter assemblyEmitter, Type type, out TypeReference typeReference)
+        public static TypeReference GetBuiltInTypeReference(AssemblyEmitter assemblyEmitter, Type type)
         {
             switch (type.FullName)
             {
                 case "System.String":
-                    typeReference = assemblyEmitter.TypeSystem.String;
-                    return true;
+                    return assemblyEmitter.TypeSystem.String;
 
                 case "System.Boolean":
-                    typeReference = assemblyEmitter.TypeSystem.Boolean;
-                    return true;
-
+                    return assemblyEmitter.TypeSystem.Boolean;
+                    
                 case "System.SByte":
-                    typeReference = assemblyEmitter.TypeSystem.SByte;
-                    return true;
+                    return assemblyEmitter.TypeSystem.SByte;
 
                 case "System.Byte":
-                    typeReference = assemblyEmitter.TypeSystem.Byte;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Byte;
 
                 case "System.Char":
-                    typeReference = assemblyEmitter.TypeSystem.Char;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Char;
 
                 case "System.Int16":
-                    typeReference = assemblyEmitter.TypeSystem.Int16;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Int16;
 
                 case "System.Uint16":
-                    typeReference = assemblyEmitter.TypeSystem.UInt16;
-                    return true;
+                    return assemblyEmitter.TypeSystem.UInt16;
 
                 case "System.Int32":
-                    typeReference = assemblyEmitter.TypeSystem.Int32;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Int32;
 
                 case "System.UInt32":
-                    typeReference = assemblyEmitter.TypeSystem.UInt32;
-                    return true;
+                    return assemblyEmitter.TypeSystem.UInt32;
 
                 case "System.Int64":
-                    typeReference = assemblyEmitter.TypeSystem.Int64;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Int64;
 
                 case "System.UInt64":
-                    typeReference = assemblyEmitter.TypeSystem.UInt64;
-                    return true;
+                    return assemblyEmitter.TypeSystem.UInt64;
 
                 case "System.Single":
-                    typeReference = assemblyEmitter.TypeSystem.Single;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Single;
 
                 case "System.Double":
-                    typeReference = assemblyEmitter.TypeSystem.Double;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Double;
 
                 default:
-                    typeReference = null;
-                    return false;
+                    return null;
             }
         }
 

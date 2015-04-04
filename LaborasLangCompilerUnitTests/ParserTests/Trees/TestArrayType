@@ -1,0 +1,12 @@
+Class:
+	TestArrayType
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Int32[]
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+
+	Methods:

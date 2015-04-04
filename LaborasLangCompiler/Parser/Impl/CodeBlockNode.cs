@@ -75,7 +75,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (node.ExpressionReturnType.TypeEquals(Parser.Void))
                 nodes.Add(node);
             else
-                nodes.Add(UnaryOperatorNode.Void(node));
+                nodes.Add(UnaryOperators.Void(node));
         }
 
         public CodeBlockNode AddNode(ParserNode node)

@@ -22,9 +22,9 @@ namespace LaborasLangCompiler.Parser.Utils
             return builder;
         }
 
-        public static IEnumerable<T> Enumerate<T>(this T item)
+        public static IReadOnlyList<T> Enumerate<T>(this T item)
         {
-            yield return item;
+            return new T[] { item };
         }
 
         public static HashSet<T> ToHashSet<T>(this IEnumerable<T> collection)
