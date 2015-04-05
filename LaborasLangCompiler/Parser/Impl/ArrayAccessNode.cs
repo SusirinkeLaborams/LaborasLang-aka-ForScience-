@@ -99,35 +99,15 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static IndexOperatorAccessNode AsIndexOp(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
         {
-            var args = indices.Select(a => a.ExpressionReturnType).ToArray();
-            var setter = AssemblyRegistry.GetCompatibleMethod(context.Assembly, array.ExpressionReturnType, "set_Item", args);
-            var getter = AssemblyRegistry.GetCompatibleMethod(context.Assembly, array.ExpressionReturnType, "get_Item", args);
-
-            if(getter == null && setter == null)
-                return null;
-
-            if(getter != null && getter.IsStatic())
+            var itemProperty = AssemblyRegistry.GetProperty(context.Assembly, array.ExpressionReturnType, "Item");
+            if(itemProperty != null)
+            {
+                return new IndexOperatorAccessNode(context, array, itemProperty, indices, point);
+            }
+            else
             {
                 return null;
             }
-
-            if(setter != null && setter.IsStatic())
-            {
-                return null;
-            }
-
-            var getType = getter != null ? getter.ReturnType : null;
-            var setType = setter != null ? setter.ReturnType : null;
-
-            if(getType != null && setType != null)
-            {
-                if(!getType.TypeEquals(setType))
-                {
-                    return null;
-                }
-            }
-
-            return new IndexOperatorAccessNode(context, array, getType, getter, setter, indices, point);
         }
 
         private static ArrayCreationNode AsArrayCreation(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)

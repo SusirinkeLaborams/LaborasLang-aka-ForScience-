@@ -9,42 +9,20 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class IndexOperatorAccessNode : ExpressionNode, IArrayAccessNode
+    class IndexOperatorAccessNode : PropertyNode, IArrayAccessNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ArrayAccess; } }
 
-        public override TypeReference ExpressionReturnType { get { return type; } }
-        public IExpressionNode Array { get { return array; } }
+        public IExpressionNode Array { get { return Instance; } }
 
         public IReadOnlyList<IExpressionNode> Indices { get { return indices; } }
 
-        public override bool IsSettable
-        {
-            get { return setter != null && TypeUtils.IsAccessbile(setter, context.GetClass().TypeReference); }
-        }
-
-        public override bool IsGettable
-        {
-            get { return getter != null && TypeUtils.IsAccessbile(getter, context.GetClass().TypeReference); }
-        }
-
         private IReadOnlyList<ExpressionNode> indices;
-        private ExpressionNode array;
-        private TypeReference type;
-        private MethodReference getter;
-        private MethodReference setter;
-        private ContextNode context;
 
-        internal IndexOperatorAccessNode(ContextNode context, ExpressionNode array, TypeReference elementType, 
-            MethodReference getter, MethodReference setter, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
-            : base(point)
+        internal IndexOperatorAccessNode(ContextNode context, ExpressionNode instance, PropertyReference property, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
+            : base(instance, property, context, point)
         {
-            this.context = context;
-            this.array = array;
             this.indices= indices;
-            this.type = elementType;
-            this.getter = getter;
-            this.setter = setter;
         }
 
         public override string ToString(int indent)
@@ -52,10 +30,10 @@ namespace LaborasLangCompiler.Parser.Impl
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("IndexOpAccess:");
             builder.Indent(indent + 1).AppendLine("Expression:");
-            builder.Append(array.ToString(indent + 2)).AppendLine();
-            builder.Indent(indent + 1).AppendFormat("ElementType: {0}", type.FullName).AppendLine();
-            builder.Indent(indent + 1).AppendFormat("Settable: {0}", setter != null).AppendLine();
-            builder.Indent(indent + 1).AppendFormat("Gettable: {0}", getter != null).AppendLine();
+            builder.Append(Instance.ToString(indent + 2)).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("ElementType: {0}", ExpressionReturnType.FullName).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("Settable: {0}", IsSettable).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("Gettable: {0}", IsGettable).AppendLine();
             builder.Indent(indent + 1).AppendLine("Indices:");
             foreach (var ind in indices)
             {

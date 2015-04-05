@@ -31,7 +31,7 @@ Class:
 							Instance:
 								null
 					ElementType: System.Object
-					Settable: False
+					Settable: True
 					Gettable: True
 					Indices:
 						Literal:
