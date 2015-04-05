@@ -1853,7 +1853,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         private void TestCanEmit_DateTimeArrayGetMinuteHelper(ArrayType arrayType)
         {
             var dateTimeType = AssemblyRegistry.FindType(assemblyEmitter, "System.DateTime");
-            var minuteProperty = AssemblyRegistry.GetProperty(assemblyEmitter, dateTimeType, "Minute");
+            var minuteProperty = AssemblyRegistry.GetProperty(dateTimeType, "Minute");
 
             BodyCodeBlock = new CodeBlockNode()
             {

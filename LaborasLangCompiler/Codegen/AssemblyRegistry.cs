@@ -145,33 +145,60 @@ namespace LaborasLangCompiler.Codegen
             instance.assemblies.Add(assemblyDefinition);
         }
 
-        private static MethodReference GetBestMatch(IReadOnlyList<TypeReference> arguments, List<MethodReference> methods)
+        struct ParameterKeyValuePair<T>
         {
-            Contract.Requires(methods.Any());
-            if (methods.Count > 1)
+            public readonly T key;
+            public readonly IList<ParameterDefinition> parameters;
+
+            public ParameterKeyValuePair(T key, IList<ParameterDefinition> parameters)
             {
-                methods.Sort((x, y) => CompareMatches(arguments, y, x));
+                this.key = key;
+                this.parameters = parameters;
+            }
+        }
 
-                if (CompareMatches(arguments, methods[0], methods[1]) != 1)
-                {
-                    var matches = new List<string>
-                    {
-                        methods[0].FullName,
-                        methods[1].FullName
-                    };
+        private static int GetBestMatches<T>(IReadOnlyList<TypeReference> arguments, ParameterKeyValuePair<T>[] parameters)
+        {
+            Contract.Requires(parameters.Length > 0);
+            int i = 0;
 
-                    int i = 2;
-                    while (i < methods.Count && CompareMatches(arguments, methods[i - 1], methods[i]) == 0)
-                    {
-                        matches.Add(methods[i].FullName);
-                    }
+            if (parameters.Length > 1)
+            {
+                Array.Sort(parameters, (x, y) => CompareMatches(arguments, y.parameters, x.parameters));
 
-                    throw new Exception(string.Format("Method is ambigous. Could be: \r\n{0}", string.Join("\r\n", matches)));
-                }
-
+                while (i < parameters.Length - 1 && CompareMatches(arguments, parameters[i].parameters, parameters[i + 1].parameters) == 0)
+                    i++;
             }
 
-            return methods[0];
+            return i;
+        }
+
+        private static MethodReference GetBestMatch(IReadOnlyList<TypeReference> arguments, List<MethodReference> methods)
+        {
+            Contract.Requires(methods.Count > 0);
+
+            var parameterArray = methods.Select(method => new ParameterKeyValuePair<MethodReference>(method, method.Resolve().Parameters)).ToArray();
+            var bestMatchIndex = GetBestMatches(arguments, parameterArray);
+
+            if (bestMatchIndex == 0)
+                return parameterArray[0].key;
+
+            var matches = parameterArray.Take(bestMatchIndex + 1).Select(match => match.key.FullName);
+            throw new Exception(string.Format("Method is ambigous. Could be: \r\n{0}", string.Join("\r\n", matches)));
+        }
+
+        private static PropertyReference GetBestMatch(IReadOnlyList<TypeReference> arguments, PropertyDefinition[] properties)
+        {
+            Contract.Requires(properties.Length > 0);
+
+            var parameterArray = properties.Select(property => new ParameterKeyValuePair<PropertyDefinition>(property, property.Parameters)).ToArray();
+            var bestMatchIndex = GetBestMatches(arguments, parameterArray);
+
+            if (bestMatchIndex == 0)
+                return parameterArray[0].key;
+
+            var matches = parameterArray.Take(bestMatchIndex + 1).Select(match => match.key.FullName);
+            throw new Exception(string.Format("Property is ambigous. Could be: \r\n{0}", string.Join("\r\n", matches)));
         }
 
         #region Type/Method/Property/Field getters
@@ -379,14 +406,10 @@ namespace LaborasLangCompiler.Codegen
             var filtered = methods.Where(methodRef => methodRef.MatchesArgumentList(arguments)).ToList();
 
             if (filtered.Count > 1)
-            {
-                // More than one is compatible, so one must match exactly, or we have ambiguity
-                return GetBestMatch(arguments, filtered);
-            }
-            else if (filtered.Count == 0)
-            {
+                return GetBestMatch(arguments, filtered); // More than one is compatible, so one must match exactly, or we have ambiguity
+
+            if (filtered.Count == 0)
                 return null;
-            }
 
             return filtered.Single();
         }
@@ -536,27 +559,40 @@ namespace LaborasLangCompiler.Codegen
             return storeElement;
         }
 
-        public static PropertyReference GetProperty(AssemblyEmitter assembly, string typeName, string propertyName)
+        public static PropertyReference[] GetProperties(TypeReference type, string propertyName)
         {
-            return GetProperty(assembly, FindTypeInternal(typeName), propertyName);
+            return type.Resolve().Properties.Where(property => property.Name == propertyName).ToArray();
         }
 
-        public static PropertyReference GetProperty(AssemblyEmitter assembly, TypeEmitter type, string propertyName)
+        public static PropertyReference GetProperty(string typeName, string propertyName)
         {
-            return GetProperty(assembly, type.Get(assembly), propertyName);
+            return GetProperty(FindTypeInternal(typeName), propertyName);
         }
 
-        public static PropertyReference GetProperty(AssemblyEmitter assembly, TypeReference type, string propertyName)
+        public static PropertyReference GetProperty(TypeReference type, string propertyName)
         {
-            var resolvedType = type.Resolve();
+            return GetProperties(type, propertyName).SingleOrDefault();
+        }
 
-            if (!resolvedType.HasProperties)
-            {
+        public static PropertyReference GetCompatibleProperty(TypeReference type, string propertyName, IReadOnlyList<TypeReference> arguments)
+        {
+            return GetCompatibleProperty(GetProperties(type, propertyName), arguments);
+        }
+
+        public static PropertyReference GetCompatibleProperty(IEnumerable<PropertyReference> properties, IReadOnlyList<TypeReference> arguments)
+        {
+            var filtered = properties.Select(property => property.Resolve()).Where(property => property.MatchesArgumentList(arguments)).ToArray();
+
+            if (filtered.Length > 1)
+                return GetBestMatch(arguments, filtered);
+
+            if (filtered.Length == 0)
                 return null;
-            }
 
-            return resolvedType.Properties.SingleOrDefault(property => property.Name == propertyName);
+            return filtered[0];
         }
+
+
 
         public static TypeReference GetPropertyType(AssemblyEmitter assembly, PropertyReference property)
         {
@@ -657,60 +693,60 @@ namespace LaborasLangCompiler.Codegen
             return null;
         }
 
-        private static int CompareMatches(IReadOnlyList<TypeReference> arguments, MethodReference a, MethodReference b)
+        private static int CompareMatches(IReadOnlyList<TypeReference> arguments, IList<ParameterDefinition> aParameters, IList<ParameterDefinition> bParameters)
         {
             var argumentNames = arguments.Select(arg => arg.FullName);
 
-            if (a.Parameters.Select(parameter => parameter.ParameterType.FullName).SequenceEqual(argumentNames))
+            if (aParameters.Select(parameter => parameter.ParameterType.FullName).SequenceEqual(argumentNames))
             {
                 return 1;
             }
 
-            if (b.Parameters.Select(parameter => parameter.ParameterType.FullName).SequenceEqual(argumentNames))
+            if (bParameters.Select(parameter => parameter.ParameterType.FullName).SequenceEqual(argumentNames))
             {
                 return -1;
             }
 
-            List<TypeReference> aParameters, bParameters;
+            List<TypeReference> aParameterTypes, bParameterTypes;
 
-            var aIsParamsMethod = a.IsParamsMethod();
-            var bIsParamsMethod = b.IsParamsMethod();
+            var aIsParamsMethod = aParameters[aParameters.Count - 1].IsParams();
+            var bIsParamsMethod = bParameters[bParameters.Count - 1].IsParams();
 
             if (aIsParamsMethod)
             {
-                aParameters = a.Parameters.Take(a.Parameters.Count - 1).Select(parameter => parameter.ParameterType).ToList();
+                aParameterTypes = aParameters.Take(aParameters.Count - 1).Select(parameter => parameter.ParameterType).ToList();
 
-                var paramsType = a.Parameters.Last().ParameterType;
-                for (int i = 0; i < arguments.Count - a.Parameters.Count + 1; i++)
+                var paramsType = aParameters.Last().ParameterType;
+                for (int i = 0; i < arguments.Count - aParameters.Count + 1; i++)
                 {
-                    aParameters.Add(paramsType);
+                    aParameterTypes.Add(paramsType);
                 }
             }
             else
             {
-                aParameters = a.Parameters.Select(parameter => parameter.ParameterType).ToList();
+                aParameterTypes = aParameters.Select(parameter => parameter.ParameterType).ToList();
             }
 
             if (bIsParamsMethod)
             {
-                bParameters = b.Parameters.Take(b.Parameters.Count - 1).Select(parameter => parameter.ParameterType).ToList();
+                bParameterTypes = bParameters.Take(bParameters.Count - 1).Select(parameter => parameter.ParameterType).ToList();
 
-                var paramsType = b.Parameters.Last().ParameterType.GetElementType();
-                for (int i = 0; i < arguments.Count - b.Parameters.Count + 1; i++)
+                var paramsType = bParameters.Last().ParameterType.GetElementType();
+                for (int i = 0; i < arguments.Count - bParameters.Count + 1; i++)
                 {
-                    bParameters.Add(paramsType);
+                    bParameterTypes.Add(paramsType);
                 }
             }
             else
             {
-                bParameters = b.Parameters.Select(parameter => parameter.ParameterType).ToList();
+                bParameterTypes = bParameters.Select(parameter => parameter.ParameterType).ToList();
             }
 
             for (int i = 0; i < arguments.Count; i++)
             {
                 var argument = arguments[i];
-                var aParameter = aParameters[i];
-                var bParameter = bParameters[i];
+                var aParameter = aParameterTypes[i];
+                var bParameter = bParameterTypes[i];
 
                 while (argument != null)
                 {

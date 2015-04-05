@@ -75,7 +75,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             ienumeratorMoveNext = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, ienumerator,
                 "MoveNext", new TypeReference[0]);
 
-            var ienumerableCurrent = AssemblyRegistry.GetProperty(assemblyEmitter, ienumerator, "Current");
+            var ienumerableCurrent = AssemblyRegistry.GetProperty(ienumerator, "Current");
             ienumeratorGetCurrent = AssemblyRegistry.GetPropertyGetter(assemblyEmitter, ienumerableCurrent);
 
             this.bulkTesting = bulkTesting;
