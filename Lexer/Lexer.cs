@@ -21,7 +21,7 @@ namespace Lexer
                 var exposedTree = new AbstractSyntaxTree(nodes);
                 foreach (var postProcessor in PostProcessor.BuildAll())
                 {
-                    postProcessor.Transform(exposedTree);
+                    postProcessor.Apply(exposedTree);
                 }
                 nodes.Cleanup(root);
                 return exposedTree;

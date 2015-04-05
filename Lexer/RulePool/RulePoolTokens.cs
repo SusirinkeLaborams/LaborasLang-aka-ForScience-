@@ -8,8 +8,6 @@ namespace Lexer
 {
     partial class RulePool
     {
-        private static Condition FunctionType { get { return TokenType.FunctionType; } }
-        private static Condition ArrayType { get { return TokenType.ArrayType; } }
         private static Condition EndOfLine { get { return TokenType.EndOfLine; } }
         private static Condition Comma { get { return TokenType.Comma; } }
         private static Condition Period { get { return TokenType.Period; } }

@@ -118,11 +118,7 @@
         IndexAccessNode,
         IndexNode,        
         FunctorParameters,
-        FunctionType,
-        ArrayType,
         LexerInternalTokens,    // Lexer internal-only tokens start from here
-        
-        RawOperatorNode,
 
         StatementNode,
         DeclarationSubnode,

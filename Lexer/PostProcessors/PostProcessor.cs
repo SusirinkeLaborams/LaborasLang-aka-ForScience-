@@ -19,12 +19,12 @@ namespace Lexer.PostProcessors
         {
         }
 
-        private void Traverse(AbstractSyntaxTree tree)
+        public void Apply(AbstractSyntaxTree tree)
         {
             tree.Children.ForEach(t =>
             {
                 Transform(t);
-                Traverse(t);
+                Apply(t);
             });
         }
 
