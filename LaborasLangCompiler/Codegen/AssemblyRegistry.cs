@@ -173,7 +173,7 @@ namespace LaborasLangCompiler.Codegen
             return i;
         }
 
-        private static MethodReference GetBestMatch(IReadOnlyList<TypeReference> arguments, List<MethodReference> methods)
+        private static MethodReference GetBestMatch(IReadOnlyList<TypeReference> arguments, IReadOnlyList<MethodReference> methods)
         {
             Contract.Requires(methods.Count > 0);
 
@@ -187,9 +187,9 @@ namespace LaborasLangCompiler.Codegen
             throw new Exception(string.Format("Method is ambigous. Could be: \r\n{0}", string.Join("\r\n", matches)));
         }
 
-        private static PropertyReference GetBestMatch(IReadOnlyList<TypeReference> arguments, PropertyDefinition[] properties)
+        private static PropertyReference GetBestMatch(IReadOnlyList<TypeReference> arguments, IReadOnlyList<PropertyDefinition> properties)
         {
-            Contract.Requires(properties.Length > 0);
+            Contract.Requires(properties.Count > 0);
 
             var parameterArray = properties.Select(property => new ParameterKeyValuePair<PropertyDefinition>(property, property.Parameters)).ToArray();
             var bestMatchIndex = GetBestMatches(arguments, parameterArray);
@@ -351,7 +351,7 @@ namespace LaborasLangCompiler.Codegen
 
             if (!resolvedType.HasMethods)
             {
-                return new List<MethodReference>();
+                return new MethodReference[0];
             }
 
             return resolvedType.Methods.Where(methodDef => methodDef.Name == methodName)
