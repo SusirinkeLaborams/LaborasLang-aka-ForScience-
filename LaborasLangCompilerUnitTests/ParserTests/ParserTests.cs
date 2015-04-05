@@ -995,7 +995,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             CompareTrees(source);
         }
         [TestMethod, TestCategory("Parser")]
-        public void TestIndexOpAccess()
+        public void TestIndexOpGet()
         {
             string source = @"
                 use System.Collections;
@@ -1010,6 +1010,19 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 use System.Collections;
                 auto bar = ArrayList[5];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestIndexOpSet()
+        {
+            string source = @"
+                use System.Collections;
+                auto list = ArrayList();
+                auto func = void()
+                {
+                    list[5] = ""explosions"";
+                };
             ";
             CompareTrees(source);
         }
