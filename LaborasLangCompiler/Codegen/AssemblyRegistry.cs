@@ -349,13 +349,13 @@ namespace LaborasLangCompiler.Codegen
         {
             var filtered = methods.Where(methodRef => methodRef.MatchesArgumentList(arguments)).ToArray();
 
-            if (filtered.Count > 1)
+            if (filtered.Length > 1)
                 return GetBestMatch(arguments, filtered); // More than one is compatible, so one must match exactly, or we have ambiguity
 
-            if (filtered.Count == 0)
+            if (filtered.Length == 0)
                 return null;
 
-            return filtered.Single();
+            return filtered[0];
         }
 
         public static MethodReference GetConstructor(AssemblyEmitter assembly, string typeName, bool staticCtor = false)
