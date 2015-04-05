@@ -383,12 +383,12 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void Emit(IArrayAccessNode arrayAccess, EmissionType emissionType)
         {
-            var array = arrayAccess.Array;
+            var array = arrayAccess.ObjectInstance;
             var arrayType = array.ExpressionReturnType as ArrayType;
             var indices = arrayAccess.Indices;
             bool loadAddress = (emissionType == EmissionType.ThisArg && arrayAccess.ExpressionReturnType.IsValueType) || emissionType == EmissionType.ReferenceToValue;
 
-            Emit(arrayAccess.Array, EmissionType.ThisArg);
+            Emit(array, EmissionType.ThisArg);
 
             if (arrayType != null)
             {
@@ -1518,14 +1518,14 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void EmitStore(IArrayAccessNode arrayAccess)
         {
-            var array = arrayAccess.Array;
+            var array = arrayAccess.ObjectInstance;
             var arrayType = array.ExpressionReturnType as ArrayType;
             var indices = arrayAccess.Indices;
             
             var valueVariable = temporaryVariables.Acquire(arrayAccess.ExpressionReturnType);
             Stloc(valueVariable.Index);
 
-            Emit(arrayAccess.Array, EmissionType.ThisArg);
+            Emit(array, EmissionType.ThisArg);
 
             if (arrayType != null)
             {

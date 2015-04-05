@@ -13,8 +13,6 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ArrayAccess; } }
 
-        public IExpressionNode Array { get { return Instance; } }
-
         public IReadOnlyList<IExpressionNode> Indices { get { return indices; } }
 
         private IReadOnlyList<ExpressionNode> indices;

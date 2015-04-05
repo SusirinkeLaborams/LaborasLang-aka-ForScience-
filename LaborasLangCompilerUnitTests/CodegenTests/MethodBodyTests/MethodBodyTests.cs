@@ -1647,7 +1647,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                                 RightOperand = new ArrayAccessNode()
                                 {
                                     ExpressionReturnType = values[i].ExpressionReturnType,
-                                    Array = arrayVariableNode,
+                                    ObjectInstance = arrayVariableNode,
                                     Indices = indices
                                 }
                             }
@@ -1774,7 +1774,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         LeftOperand = new ArrayAccessNode()
                         {
                             ExpressionReturnType = values[i].ExpressionReturnType,
-                            Array = arrayVariableNode,
+                            ObjectInstance = arrayVariableNode,
                             Indices = indices
                         },
                         RightOperand = values[i]
@@ -1864,7 +1864,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         ObjectInstance = new ArrayAccessNode()
                         {
                             ExpressionReturnType = dateTimeType,
-                            Array = new ArrayCreationNode()
+                            ObjectInstance = new ArrayCreationNode()
                             {
                                 ExpressionReturnType = arrayType,
                                 Dimensions = Enumerable.Repeat(1, arrayType.Rank).Select(i => new LiteralNode(assemblyEmitter.TypeSystem.Int32, i)).ToArray(),
