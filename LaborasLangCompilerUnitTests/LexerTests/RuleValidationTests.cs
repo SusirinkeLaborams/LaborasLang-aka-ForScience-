@@ -10,7 +10,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
     [TestClass]
     public class RuleValidation
     {
-        [TestMethod, TestCategory("Lexer")]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Rule validation")]
         public void TestRulePoolContainsAllRules()
         {
             var missingRules = new List<TokenType>();
@@ -19,7 +19,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             var requiredRules = allTokens.Where(t => !t.IsTerminal() && !notRequiredRules.Contains(t));
             foreach (var token in requiredRules)
             {
-                var contains = SyntaxMatcher.ParseRulePool.Any(item => item.Result == token);
+                var contains = RulePool.LaborasLangRuleset.Any(item => item.Result == token);
                 if(!contains)
                 {
                     missingRules.Add(token);
@@ -28,12 +28,12 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             Assert.AreEqual(0, missingRules.Count);
         }
 
-        [TestMethod, TestCategory("Lexer")]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Rule validation")]
         public void TestNoUnreachableRules()
         {
             var rules = new ParseRule[(int)TokenType.TokenTypeCount];
 
-            foreach (var rule in SyntaxMatcher.ParseRulePool)
+            foreach (var rule in RulePool.LaborasLangRuleset)
             {
                 rules[(int)rule.Result] = rule;
             }
@@ -82,18 +82,18 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             Assert.AreEqual(0, unreachableTokens.Count, "Unreachable rules: " + stringified);
         }
 
-        [TestMethod, TestCategory("Lexer")]
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Rule validation")]
         public void TestNoInfiniteRecursionInRules()
         {
             var rules = new ParseRule[(int)TokenType.TokenTypeCount];
             var visited = new bool[rules.Length];
 
-            foreach (var rule in SyntaxMatcher.ParseRulePool)
+            foreach (var rule in RulePool.LaborasLangRuleset)
             {
                 rules[(int)rule.Result] = rule;
             }
 
-            foreach (var rule in SyntaxMatcher.ParseRulePool)
+            foreach (var rule in RulePool.LaborasLangRuleset)
             {
                 TraverseRules(rules, visited, new Stack<ParseRule>(), (int)rule.Result);
             }

@@ -40,7 +40,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             }
 
             var tests = new List<CodegenTestBase>();
-            var compilerArgs = CompilerArguments.Parse(new[] { "dummy.il" });
+            var compilerArgs = CompilerArguments.Parse(new[] { "ExecuteTest.il" });
             AssemblyRegistry.CreateAndOverrideIfNeeded(compilerArgs.References);
             var assembly = CodegenTestBase.CreateTempAssembly();
 
@@ -57,22 +57,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             EmitEntryPoint(assembly, testMethods);
             assembly.Save();
 
-            try
-            {
-                ExecuteTests(assembly.OutputPath, testMethods, tests);
-            }
-            finally
-            {
-                try
-                {   // Deleting PDB will fail if we're debugging, 
-                    // since we're executing the code in the same process, so VS will have it loaded
-                    File.Delete(assembly.OutputPath);
-                    File.Delete(Path.ChangeExtension(assembly.OutputPath, ".pdb"));
-                }
-                catch
-                {
-                }
-            }
+            ExecuteTests(assembly.OutputPath, testMethods, tests);
         }
 
         private void EmitEntryPoint(AssemblyEmitter assembly, IEnumerable<MethodInfo> testMethods)

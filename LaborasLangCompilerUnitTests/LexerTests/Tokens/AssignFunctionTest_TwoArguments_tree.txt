@@ -31,48 +31,51 @@ Children:
 						Type: Symbol
 						Children:
 
-					Content: Type: TypeParameters, Start: 1, 10, End: 1, 26, Content: ""
-					Type: TypeParameters
+					Content: Type: ParameterList, Start: 1, 10, End: 1, 26, Content: ""
+					Type: ParameterList
 					Children:
-						Content: Type: LeftParenthesis, Start: 1, 10, End: 1, 11, Content: "("
-						Type: LeftParenthesis
+						Content: Type: FunctorParameters, Start: 1, 10, End: 1, 26, Content: ""
+						Type: FunctorParameters
 						Children:
-
-						Content: Type: Type, Start: 1, 11, End: 1, 14, Content: ""
-						Type: Type
-						Children:
-							Content: Type: FullSymbol, Start: 1, 11, End: 1, 14, Content: ""
-							Type: FullSymbol
+							Content: Type: LeftParenthesis, Start: 1, 10, End: 1, 11, Content: "("
+							Type: LeftParenthesis
 							Children:
-								Content: Type: Symbol, Start: 1, 11, End: 1, 14, Content: "int"
-								Type: Symbol
-								Children:
 
-						Content: Type: Symbol, Start: 1, 15, End: 1, 16, Content: "a"
-						Type: Symbol
-						Children:
-
-						Content: Type: Comma, Start: 1, 16, End: 1, 17, Content: ","
-						Type: Comma
-						Children:
-
-						Content: Type: Type, Start: 1, 18, End: 1, 23, Content: ""
-						Type: Type
-						Children:
-							Content: Type: FullSymbol, Start: 1, 18, End: 1, 23, Content: ""
-							Type: FullSymbol
+							Content: Type: Type, Start: 1, 11, End: 1, 14, Content: ""
+							Type: Type
 							Children:
-								Content: Type: Symbol, Start: 1, 18, End: 1, 23, Content: "float"
-								Type: Symbol
+								Content: Type: FullSymbol, Start: 1, 11, End: 1, 14, Content: ""
+								Type: FullSymbol
 								Children:
+									Content: Type: Symbol, Start: 1, 11, End: 1, 14, Content: "int"
+									Type: Symbol
+									Children:
 
-						Content: Type: Symbol, Start: 1, 24, End: 1, 25, Content: "c"
-						Type: Symbol
-						Children:
+							Content: Type: Symbol, Start: 1, 15, End: 1, 16, Content: "a"
+							Type: Symbol
+							Children:
 
-						Content: Type: RightParenthesis, Start: 1, 25, End: 1, 26, Content: ")"
-						Type: RightParenthesis
-						Children:
+							Content: Type: Comma, Start: 1, 16, End: 1, 17, Content: ","
+							Type: Comma
+							Children:
+
+							Content: Type: Type, Start: 1, 18, End: 1, 23, Content: ""
+							Type: Type
+							Children:
+								Content: Type: FullSymbol, Start: 1, 18, End: 1, 23, Content: ""
+								Type: FullSymbol
+								Children:
+									Content: Type: Symbol, Start: 1, 18, End: 1, 23, Content: "float"
+									Type: Symbol
+									Children:
+
+							Content: Type: Symbol, Start: 1, 24, End: 1, 25, Content: "c"
+							Type: Symbol
+							Children:
+
+							Content: Type: RightParenthesis, Start: 1, 25, End: 1, 26, Content: ")"
+							Type: RightParenthesis
+							Children:
 
 				Content: Type: CodeBlockNode, Start: 1, 27, End: 1, 37, Content: ""
 				Type: CodeBlockNode

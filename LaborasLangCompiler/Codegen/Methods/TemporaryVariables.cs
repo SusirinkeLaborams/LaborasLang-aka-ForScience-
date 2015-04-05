@@ -67,5 +67,19 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             ContractsHelper.AssertUnreachable("Invalid variable was passed to TemporaryVairables.Release().");
         }
+
+        public void ReleaseAll()
+        {
+            if (temporaryVariables == null)
+                return;
+
+            for (int i = 0; i < temporaryVariables.Count; i++)
+            {
+                if (temporaryVariables[i].isTaken)
+                {
+                    temporaryVariables[i] = new TempVariable(temporaryVariables[i].variable, false);
+                }
+            }
+        }
     }
 }

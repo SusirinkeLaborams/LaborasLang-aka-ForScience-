@@ -2,7 +2,7 @@
 
 namespace Lexer.Containers
 {
-    public unsafe sealed class RootNode : IDisposable
+    internal unsafe sealed class RootNode : IDisposable
     {
         private static readonly int kTokenSize = sizeof(Token.InternalToken);
         private AstNode m_Node;
@@ -10,7 +10,7 @@ namespace Lexer.Containers
 
         internal PermanentAllocator Allocator { get; private set; }
         internal AstNodePool NodePool { get; private set; }
-        public AstNode Node { get { return m_Node; } }
+        internal AstNode Node { get { return m_Node; } }
         
         internal RootNode()
         {

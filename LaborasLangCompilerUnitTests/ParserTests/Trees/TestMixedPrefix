@@ -28,7 +28,7 @@ Class:
 					Operator:
 						Negation
 					Operand:
-						UnaryOperator:
+						IncrementDecrementOperator:
 							Operator:
 								PreIncrement
 							Operand:

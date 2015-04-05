@@ -12,6 +12,7 @@ using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using LaborasLangCompiler.Common;
 using System.Diagnostics.Contracts;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -36,7 +37,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         protected BinaryOperatorNode(SequencePoint point) : base(point) { }
 
-        public static ExpressionNode Parse(ContextNode context, AstNode lexerNode)
+        public static ExpressionNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             if (lexerNode.Children.Count == 1)
             {
@@ -46,11 +47,11 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 ExpressionNode left, right;
                 left = ExpressionNode.Parse(context, lexerNode.Children[0]);
-                
+
                 for (int i = 1; i < lexerNode.Children.Count; i += 2)
                 {
                     right = ExpressionNode.Parse(context, lexerNode.Children[i + 1]);
-                    left = Create(context, Operators[lexerNode.Children[i].Type], left, right, 
+                    left = Create(context, Operators[lexerNode.Children[i].Type], left, right,
                         Parser.GetSequencePoint(left.SequencePoint, right.SequencePoint));
                 }
                 return left;
@@ -123,8 +124,12 @@ namespace LaborasLangCompiler.Parser.Impl
         private static ExpressionNode AsOverload(ContextNode context, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right, SequencePoint point)
         {
             var name = Overloads[op];
-            var methods = AssemblyRegistry.GetMethods(context.Parser.Assembly, left.ExpressionReturnType, name)
-                .Union(AssemblyRegistry.GetMethods(context.Parser.Assembly, right.ExpressionReturnType, name));
+            return AsOverload(context, name, left, right, point);
+        }
+
+        public static ExpressionNode AsOverload(ContextNode context, string name, ExpressionNode left, ExpressionNode right, SequencePoint point)
+        {
+            var methods = TypeUtils.GetOperatorMethods(context.Assembly, left, right, name);
 
             var args = Utils.Utils.Enumerate(left, right);
             var argsTypes = args.Select(a => a.ExpressionReturnType).ToList();
@@ -133,7 +138,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             var method = AssemblyRegistry.GetCompatibleMethod(methods, argsTypes);
 
-            if(method != null)
+            if (method != null)
             {
                 return MethodCallNode.Create(context, new MethodNode(method, null, context, point), args, point);
             }
@@ -146,8 +151,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 else
                 {
                     ErrorCode.TypeMissmatch.ReportAndThrow(point,
-                        "Overloaded operator ({0}) for operands {1} and {2} is ambiguous",
-                        op, left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName);
+                        "Overloaded operator {0} for operands {1} and {2} is ambiguous",
+                        name, left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName);
                     return null;//unreachable
                 }
             }
@@ -217,7 +222,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (!(left.ExpressionReturnType.IsIntegerType() && right.ExpressionReturnType.IsIntegerType()))
                 return false;
 
-            if (left.ExpressionReturnType.GetIntegerWidth() != right.ExpressionReturnType.GetIntegerWidth())
+            if (left.ExpressionReturnType.GetPrimitiveWidth() != right.ExpressionReturnType.GetPrimitiveWidth())
                 return false;
 
             return true;

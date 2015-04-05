@@ -1,9 +1,12 @@
 ﻿using LaborasLangCompiler.Codegen.Types;
+using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace LaborasLangCompiler.Codegen
 {
@@ -25,11 +28,25 @@ namespace LaborasLangCompiler.Codegen
         {
             private readonly TypeReference elementType;
             private readonly int rank;
-            
+
             public ArrayTypeKey(TypeReference elementType, int rank)
             {
                 this.elementType = elementType;
                 this.rank = rank;
+            }
+        }
+
+        private struct ArrayInitializerKey
+        {
+            private readonly ulong hash1, hash2;
+
+            public unsafe ArrayInitializerKey(byte[] hash)
+            {
+                fixed (byte* hashPtr = hash)
+                {
+                    hash1 = *(ulong*)hashPtr;
+                    hash2 = *(ulong*)(hashPtr + sizeof(ulong));
+                }
             }
         }
 
@@ -41,6 +58,10 @@ namespace LaborasLangCompiler.Codegen
         private readonly Dictionary<FunctorImplementationTypesKey, TypeDefinition> functorImplementationTypes;
         private readonly Dictionary<ArrayTypeKey, ArrayType> arrayTypes;
         private readonly Dictionary<ArrayType, MethodReference> arrayConstructors;
+        private readonly Dictionary<ArrayType, MethodReference> arrayLoadElementMethods;
+        private readonly Dictionary<ArrayType, MethodReference> arrayLoadElementAddressMethods;
+        private readonly Dictionary<ArrayType, MethodReference> arrayStoreElementMethods;
+        private readonly Dictionary<ArrayInitializerKey, FieldDefinition> arrayInitializers;
         private readonly AssemblyDefinition mscorlib;
 
         private AssemblyRegistry()
@@ -53,6 +74,10 @@ namespace LaborasLangCompiler.Codegen
             functorImplementationTypes = new Dictionary<FunctorImplementationTypesKey, TypeDefinition>();
             arrayTypes = new Dictionary<ArrayTypeKey, ArrayType>();
             arrayConstructors = new Dictionary<ArrayType, MethodReference>();
+            arrayLoadElementMethods = new Dictionary<ArrayType, MethodReference>();
+            arrayLoadElementAddressMethods = new Dictionary<ArrayType, MethodReference>();
+            arrayStoreElementMethods = new Dictionary<ArrayType, MethodReference>();
+            arrayInitializers = new Dictionary<ArrayInitializerKey, FieldDefinition>();
         }
 
         private AssemblyRegistry(IEnumerable<string> references)
@@ -122,6 +147,7 @@ namespace LaborasLangCompiler.Codegen
 
         private static MethodReference GetBestMatch(IReadOnlyList<TypeReference> arguments, List<MethodReference> methods)
         {
+            Contract.Requires(methods.Any());
             if (methods.Count > 1)
             {
                 methods.Sort((x, y) => CompareMatches(arguments, y, x));
@@ -224,8 +250,28 @@ namespace LaborasLangCompiler.Codegen
             return value;
         }
 
+        public static FieldDefinition GetArrayInitializerField(AssemblyEmitter assembly, TypeReference elementType, IReadOnlyList<IExpressionNode> arrayInitializer)
+        {
+            var md5 = MD5.Create();
+            var initializerBytes = GetArrayInitializerBytes(elementType, arrayInitializer);
+
+            var hash = md5.ComputeHash(initializerBytes);
+            var key = new ArrayInitializerKey(hash);
+
+            FieldDefinition field;
+
+            if (!instance.arrayInitializers.TryGetValue(key, out field))
+            {
+                field = ArrayInitializerEmitter.Emit(assembly, initializerBytes);
+                instance.arrayInitializers.Add(key, field);
+            }
+
+            return field;
+        }
+
         public static ArrayType GetArrayType(TypeReference elementType, int rank)
         {
+            Contract.Requires(rank > 0);
             var key = new ArrayTypeKey(elementType, rank);
             ArrayType arrayType;
 
@@ -243,10 +289,10 @@ namespace LaborasLangCompiler.Codegen
             }
 
             instance.arrayTypes.Add(key, arrayType);
-            
+
             return arrayType;
         }
-        
+
         public static MethodReference GetMethod(AssemblyEmitter assembly, string typeName, string methodName)
         {
             return GetMethods(assembly, FindTypeInternal(typeName), methodName).Single();
@@ -327,7 +373,7 @@ namespace LaborasLangCompiler.Codegen
         {
             return GetCompatibleMethod(GetMethods(assembly, type, methodName), arguments);
         }
-            
+
         public static MethodReference GetCompatibleMethod(IEnumerable<MethodReference> methods, IReadOnlyList<TypeReference> arguments)
         {
             var filtered = methods.Where(methodRef => methodRef.MatchesArgumentList(arguments)).ToList();
@@ -407,6 +453,8 @@ namespace LaborasLangCompiler.Codegen
 
         public static MethodReference GetArrayConstructor(ArrayType arrayType)
         {
+            Contract.Requires(!arrayType.IsVector);
+
             MethodReference constructor;
 
             if (instance.arrayConstructors.TryGetValue(arrayType, out constructor))
@@ -417,11 +465,75 @@ namespace LaborasLangCompiler.Codegen
 
             for (int i = 0; i < arrayType.Rank; i++)
             {
-                constructor.Parameters.Add(new ParameterDefinition(arrayType.ElementType));
+                constructor.Parameters.Add(new ParameterDefinition(arrayType.Module.TypeSystem.Int32));
             }
 
             instance.arrayConstructors.Add(arrayType, constructor);
             return constructor;
+        }
+
+        public static MethodReference GetArrayLoadElement(ArrayType arrayType)
+        {
+            Contract.Requires(!arrayType.IsVector);
+
+            MethodReference loadElement;
+
+            if (instance.arrayLoadElementMethods.TryGetValue(arrayType, out loadElement))
+                return loadElement;
+
+            loadElement = new MethodReference("Get", arrayType.ElementType, arrayType);
+            loadElement.HasThis = true;
+
+            for (int i = 0; i < arrayType.Rank; i++)
+            {
+                loadElement.Parameters.Add(new ParameterDefinition(arrayType.Module.TypeSystem.Int32));
+            }
+
+            instance.arrayLoadElementMethods.Add(arrayType, loadElement);
+            return loadElement;
+        }
+
+        public static MethodReference GetArrayLoadElementAddress(ArrayType arrayType)
+        {
+            Contract.Requires(!arrayType.IsVector);
+
+            MethodReference loadElementAddress;
+
+            if (instance.arrayLoadElementAddressMethods.TryGetValue(arrayType, out loadElementAddress))
+                return loadElementAddress;
+
+            loadElementAddress = new MethodReference("Address", new ByReferenceType(arrayType.ElementType), arrayType);
+            loadElementAddress.HasThis = true;
+
+            for (int i = 0; i < arrayType.Rank; i++)
+            {
+                loadElementAddress.Parameters.Add(new ParameterDefinition(arrayType.Module.TypeSystem.Int32));
+            }
+
+            instance.arrayLoadElementAddressMethods.Add(arrayType, loadElementAddress);
+            return loadElementAddress;
+        }
+
+        public static MethodReference GetArrayStoreElement(ArrayType arrayType)
+        {
+            Contract.Requires(!arrayType.IsVector);
+
+            MethodReference storeElement;
+
+            if (instance.arrayStoreElementMethods.TryGetValue(arrayType, out storeElement))
+                return storeElement;
+
+            storeElement = new MethodReference("Set", arrayType.Module.TypeSystem.Void, arrayType);
+            storeElement.HasThis = true;
+
+            for (int i = 0; i < arrayType.Rank; i++)
+            {
+                storeElement.Parameters.Add(new ParameterDefinition(arrayType.Module.TypeSystem.Int32));
+            }
+
+            storeElement.Parameters.Add(new ParameterDefinition(arrayType.ElementType));
+            instance.arrayStoreElementMethods.Add(arrayType, storeElement);
+            return storeElement;
         }
 
         public static PropertyReference GetProperty(AssemblyEmitter assembly, string typeName, string propertyName)
@@ -444,6 +556,11 @@ namespace LaborasLangCompiler.Codegen
             }
 
             return resolvedType.Properties.SingleOrDefault(property => property.Name == propertyName);
+        }
+
+        public static TypeReference GetPropertyType(AssemblyEmitter assembly, PropertyReference property)
+        {
+            return ScopeToAssembly(assembly, property.PropertyType);
         }
 
         public static MethodReference GetPropertyGetter(AssemblyEmitter assembly, PropertyReference property)
@@ -573,7 +690,7 @@ namespace LaborasLangCompiler.Codegen
             {
                 aParameters = a.Parameters.Select(parameter => parameter.ParameterType).ToList();
             }
-            
+
             if (bIsParamsMethod)
             {
                 bParameters = b.Parameters.Take(b.Parameters.Count - 1).Select(parameter => parameter.ParameterType).ToList();
@@ -615,11 +732,11 @@ namespace LaborasLangCompiler.Codegen
                             break;
                         }
                     }
-                    
+
                     argument = argument.Resolve().BaseType;
                 }
             }
-            
+
             if (aIsParamsMethod && !bIsParamsMethod)
             {
                 return -1;
@@ -677,6 +794,88 @@ namespace LaborasLangCompiler.Codegen
             {
                 return reference.Resolve();
             }
+        }
+
+        private static unsafe void CopyValueToByteArray(byte[] byteArray, int elementSize, int index, byte* valuePtr, int valueSize)
+        {
+            var targetIndex = index * elementSize;
+
+            for (int i = 0; i < valueSize && i < elementSize; i++)
+            {
+                byteArray[targetIndex + i] = valuePtr[i];
+            }
+
+            for (int i = valueSize; i < elementSize; i++)
+            {
+                byteArray[targetIndex + i] = 0;
+            }
+        }
+
+        private static unsafe byte[] GetArrayInitializerBytes(TypeReference elementType, IReadOnlyList<IExpressionNode> arrayInitializer)
+        {
+            var elementSize = MetadataHelpers.GetPrimitiveWidth(elementType);
+            var initializerBytes = new byte[elementSize * arrayInitializer.Count];
+
+            for (int i = 0; i < arrayInitializer.Count; i++)
+            {
+                var literalNode = ((ILiteralNode)arrayInitializer[i]);
+
+                switch (literalNode.ExpressionReturnType.MetadataType)
+                {
+                    case MetadataType.Boolean:
+                    case MetadataType.Byte:
+                    case MetadataType.SByte:
+                        {
+                            var value = (byte)literalNode.Value;
+                            CopyValueToByteArray(initializerBytes, elementSize, i, (byte*)&value, sizeof(byte));
+                        }
+                        break;
+
+                    case MetadataType.Char:
+                    case MetadataType.Int16:
+                    case MetadataType.UInt16:
+                        {
+                            var value = (ushort)literalNode.Value;
+                            CopyValueToByteArray(initializerBytes, elementSize, i, (byte*)&value, sizeof(ushort));
+                        }
+                        break;
+
+                    case MetadataType.Int32:
+                    case MetadataType.UInt32:
+                        {
+                            var value = (uint)literalNode.Value;
+                            CopyValueToByteArray(initializerBytes, elementSize, i, (byte*)&value, sizeof(uint));
+                        }
+                        break;
+
+                    case MetadataType.Single:
+                        {
+                            var value = (float)literalNode.Value;
+                            CopyValueToByteArray(initializerBytes, elementSize, i, (byte*)&value, sizeof(float));
+                        }
+                        break;
+
+                    case MetadataType.Int64:
+                    case MetadataType.UInt64:
+                        {
+                            var value = (ulong)literalNode.Value;
+                            CopyValueToByteArray(initializerBytes, elementSize, i, (byte*)&value, sizeof(ulong));
+                        }
+                        break;
+
+                    case MetadataType.Double:
+                        {
+                            var value = (double)literalNode.Value;
+                            CopyValueToByteArray(initializerBytes, elementSize, i, (byte*)&value, sizeof(double));
+                        }
+                        break;
+
+                    default:
+                        throw new ArgumentException();
+                }
+            }
+
+            return initializerBytes;
         }
 
         #endregion

@@ -23,7 +23,6 @@ namespace LaborasLangCompiler.Parser.Impl
         private AmbiguousMethodNode(IEnumerable<MethodReference> methods, ExpressionNode instance, ContextNode context, SequencePoint sequencePoint)
             : base(null, context, sequencePoint)
         {
-            Contract.Requires(methods.Any());
             this.methods = methods;
             this.instance = instance;
             FullName = methods.First().FullName;
@@ -50,13 +49,8 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ExpressionNode Create(IEnumerable<MethodReference> methods, ContextNode context, ExpressionNode instance, SequencePoint sequencePoint)
         {
-            if(methods.Count() == 0)
-            {
-                //should never happen
-                ErrorCode.SymbolNotFound.ReportAndThrow(sequencePoint, "Method not found");
-                return null;//unreachable
-            }
-            else if(methods.Count() == 1)
+            Contract.Requires(methods.Any());
+            if(methods.Count() == 1)
             {
                 return new MethodNode(methods.Single(), instance, context, sequencePoint);
             }

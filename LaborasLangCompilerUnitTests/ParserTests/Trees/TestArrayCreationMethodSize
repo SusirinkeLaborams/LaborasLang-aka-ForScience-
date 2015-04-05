@@ -1,0 +1,52 @@
+Class:
+	TestArrayCreationMethodSize
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Int32[]
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ArrayCreation:
+					ElementType: System.Int32
+					Rank: 1
+					Dimensions:
+						MethodCall:
+							ReturnType: System.Int32
+							Args:
+							Function:
+								Method:
+									Instance:
+										null
+									Method:
+										System.Int32 TestArrayCreationMethodSize::size()
+
+
+
+
+	Methods:
+		Method:
+			Name:
+				size
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Int32
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						Return:
+							Expression:
+								Literal:
+									Type:
+										System.Int32
+									Value:
+										4
+
+
+
+

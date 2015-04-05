@@ -38,27 +38,33 @@ Children:
 						Type: Symbol
 						Children:
 
-					Content: Type: TypeParameters, Start: 2, 16, End: 2, 18, Content: ""
-					Type: TypeParameters
+					Content: Type: ParameterList, Start: 2, 16, End: 2, 18, Content: ""
+					Type: ParameterList
 					Children:
-						Content: Type: LeftParenthesis, Start: 2, 16, End: 2, 17, Content: "("
-						Type: LeftParenthesis
+						Content: Type: FunctorParameters, Start: 2, 16, End: 2, 18, Content: ""
+						Type: FunctorParameters
 						Children:
+							Content: Type: LeftParenthesis, Start: 2, 16, End: 2, 17, Content: "("
+							Type: LeftParenthesis
+							Children:
 
-						Content: Type: RightParenthesis, Start: 2, 17, End: 2, 18, Content: ")"
-						Type: RightParenthesis
-						Children:
+							Content: Type: RightParenthesis, Start: 2, 17, End: 2, 18, Content: ")"
+							Type: RightParenthesis
+							Children:
 
-					Content: Type: TypeParameters, Start: 2, 18, End: 2, 20, Content: ""
-					Type: TypeParameters
+					Content: Type: ParameterList, Start: 2, 18, End: 2, 20, Content: ""
+					Type: ParameterList
 					Children:
-						Content: Type: LeftParenthesis, Start: 2, 18, End: 2, 19, Content: "("
-						Type: LeftParenthesis
+						Content: Type: FunctorParameters, Start: 2, 18, End: 2, 20, Content: ""
+						Type: FunctorParameters
 						Children:
+							Content: Type: LeftParenthesis, Start: 2, 18, End: 2, 19, Content: "("
+							Type: LeftParenthesis
+							Children:
 
-						Content: Type: RightParenthesis, Start: 2, 19, End: 2, 20, Content: ")"
-						Type: RightParenthesis
-						Children:
+							Content: Type: RightParenthesis, Start: 2, 19, End: 2, 20, Content: ")"
+							Type: RightParenthesis
+							Children:
 
 				Content: Type: CodeBlockNode, Start: 3, 1, End: 5, 2, Content: ""
 				Type: CodeBlockNode
@@ -90,16 +96,19 @@ Children:
 										Type: Symbol
 										Children:
 
-									Content: Type: TypeParameters, Start: 4, 16, End: 4, 18, Content: ""
-									Type: TypeParameters
+									Content: Type: ParameterList, Start: 4, 16, End: 4, 18, Content: ""
+									Type: ParameterList
 									Children:
-										Content: Type: LeftParenthesis, Start: 4, 16, End: 4, 17, Content: "("
-										Type: LeftParenthesis
+										Content: Type: FunctorParameters, Start: 4, 16, End: 4, 18, Content: ""
+										Type: FunctorParameters
 										Children:
+											Content: Type: LeftParenthesis, Start: 4, 16, End: 4, 17, Content: "("
+											Type: LeftParenthesis
+											Children:
 
-										Content: Type: RightParenthesis, Start: 4, 17, End: 4, 18, Content: ")"
-										Type: RightParenthesis
-										Children:
+											Content: Type: RightParenthesis, Start: 4, 17, End: 4, 18, Content: ")"
+											Type: RightParenthesis
+											Children:
 
 								Content: Type: CodeBlockNode, Start: 4, 18, End: 4, 20, Content: ""
 								Type: CodeBlockNode

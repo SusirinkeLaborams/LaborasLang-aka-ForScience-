@@ -9,7 +9,7 @@ namespace LaborasLangCompiler.Codegen
     static class MetadataHelpers
     {
         // 0 means native
-        public static int GetIntegerWidth(this TypeReference type)
+        public static int GetPrimitiveWidth(this TypeReference type)
         {
             switch (type.MetadataType)
             {
@@ -19,6 +19,7 @@ namespace LaborasLangCompiler.Codegen
 
                 case MetadataType.SByte:
                 case MetadataType.Byte:
+                case MetadataType.Boolean:
                     return 1;
 
                 case MetadataType.Char:
@@ -28,28 +29,16 @@ namespace LaborasLangCompiler.Codegen
 
                 case MetadataType.Int32:
                 case MetadataType.UInt32:
+                case MetadataType.Single:
                     return 4;
 
                 case MetadataType.Int64:
                 case MetadataType.UInt64:
-                    return 8;
-            }
-            
-            throw new NotSupportedException(string.Format("{0} is not an integer!", type.FullName));
-        }
-
-        public static float GetFloatWidth(TypeReference type)
-        {
-            switch (type.MetadataType)
-            {
-                case MetadataType.Single:
-                    return 4;
-
                 case MetadataType.Double:
                     return 8;
             }
             
-            throw new NotSupportedException(string.Format("{0} is not a float!", type.FullName));
+            throw new NotSupportedException(string.Format("{0} is not an integer!", type.FullName));
         }
 
         public static bool IsUnsignedInteger(this TypeReference type)
@@ -134,7 +123,7 @@ namespace LaborasLangCompiler.Codegen
         public static bool IsFunctorType(this TypeReference type)
         {
             Contract.Assume(type.FullName != null);
-            return type.FullName.StartsWith("$Functors.");
+            return type.FullName.StartsWith("$Functors.") && type.IsDefinition;
         }
 
         public static bool IsAssignableTo(this TypeReference right, TypeReference left)
@@ -465,65 +454,51 @@ namespace LaborasLangCompiler.Codegen
             }
         }
 
-        public static bool TryGetBuiltInTypeReference(AssemblyEmitter assemblyEmitter, Type type, out TypeReference typeReference)
+        public static TypeReference GetBuiltInTypeReference(AssemblyEmitter assemblyEmitter, Type type)
         {
             switch (type.FullName)
             {
                 case "System.String":
-                    typeReference = assemblyEmitter.TypeSystem.String;
-                    return true;
+                    return assemblyEmitter.TypeSystem.String;
 
                 case "System.Boolean":
-                    typeReference = assemblyEmitter.TypeSystem.Boolean;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Boolean;
                     
                 case "System.SByte":
-                    typeReference = assemblyEmitter.TypeSystem.SByte;
-                    return true;
+                    return assemblyEmitter.TypeSystem.SByte;
 
                 case "System.Byte":
-                    typeReference = assemblyEmitter.TypeSystem.Byte;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Byte;
 
                 case "System.Char":
-                    typeReference = assemblyEmitter.TypeSystem.Char;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Char;
 
                 case "System.Int16":
-                    typeReference = assemblyEmitter.TypeSystem.Int16;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Int16;
 
                 case "System.Uint16":
-                    typeReference = assemblyEmitter.TypeSystem.UInt16;
-                    return true;
+                    return assemblyEmitter.TypeSystem.UInt16;
 
                 case "System.Int32":
-                    typeReference = assemblyEmitter.TypeSystem.Int32;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Int32;
 
                 case "System.UInt32":
-                    typeReference = assemblyEmitter.TypeSystem.UInt32;
-                    return true;
+                    return assemblyEmitter.TypeSystem.UInt32;
 
                 case "System.Int64":
-                    typeReference = assemblyEmitter.TypeSystem.Int64;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Int64;
 
                 case "System.UInt64":
-                    typeReference = assemblyEmitter.TypeSystem.UInt64;
-                    return true;
+                    return assemblyEmitter.TypeSystem.UInt64;
 
                 case "System.Single":
-                    typeReference = assemblyEmitter.TypeSystem.Single;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Single;
 
                 case "System.Double":
-                    typeReference = assemblyEmitter.TypeSystem.Double;
-                    return true;
+                    return assemblyEmitter.TypeSystem.Double;
 
                 default:
-                    typeReference = null;
-                    return false;
+                    return null;
             }
         }
 

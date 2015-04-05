@@ -1,0 +1,162 @@
+Content: Type: RootNode, Start: 2, 13, End: 2, 51, Content: ""
+Type: RootNode
+Children:
+	Content: Type: DeclarationNode, Start: 2, 13, End: 2, 51, Content: ""
+	Type: DeclarationNode
+	Children:
+		Content: Type: Type, Start: 2, 13, End: 2, 26, Content: ""
+		Type: Type
+		Children:
+			Content: Type: FullSymbol, Start: 2, 13, End: 2, 17, Content: ""
+			Type: FullSymbol
+			Children:
+				Content: Type: Symbol, Start: 2, 13, End: 2, 17, Content: "void"
+				Type: Symbol
+				Children:
+
+			Content: Type: ParameterList, Start: 2, 17, End: 2, 19, Content: ""
+			Type: ParameterList
+			Children:
+				Content: Type: FunctorParameters, Start: 2, 17, End: 2, 19, Content: ""
+				Type: FunctorParameters
+				Children:
+					Content: Type: LeftParenthesis, Start: 2, 17, End: 2, 18, Content: "("
+					Type: LeftParenthesis
+					Children:
+
+					Content: Type: RightParenthesis, Start: 2, 18, End: 2, 19, Content: ")"
+					Type: RightParenthesis
+					Children:
+
+			Content: Type: ParameterList, Start: 2, 19, End: 2, 21, Content: ""
+			Type: ParameterList
+			Children:
+				Content: Type: IndexNode, Start: 2, 19, End: 2, 21, Content: ""
+				Type: IndexNode
+				Children:
+					Content: Type: LeftBracket, Start: 2, 19, End: 2, 20, Content: "["
+					Type: LeftBracket
+					Children:
+
+					Content: Type: RightBracket, Start: 2, 20, End: 2, 21, Content: "]"
+					Type: RightBracket
+					Children:
+
+			Content: Type: ParameterList, Start: 2, 21, End: 2, 26, Content: ""
+			Type: ParameterList
+			Children:
+				Content: Type: FunctorParameters, Start: 2, 21, End: 2, 26, Content: ""
+				Type: FunctorParameters
+				Children:
+					Content: Type: LeftParenthesis, Start: 2, 21, End: 2, 22, Content: "("
+					Type: LeftParenthesis
+					Children:
+
+					Content: Type: Type, Start: 2, 22, End: 2, 25, Content: ""
+					Type: Type
+					Children:
+						Content: Type: FullSymbol, Start: 2, 22, End: 2, 25, Content: ""
+						Type: FullSymbol
+						Children:
+							Content: Type: Symbol, Start: 2, 22, End: 2, 25, Content: "int"
+							Type: Symbol
+							Children:
+
+					Content: Type: RightParenthesis, Start: 2, 25, End: 2, 26, Content: ")"
+					Type: RightParenthesis
+					Children:
+
+		Content: Type: Symbol, Start: 2, 27, End: 2, 30, Content: "foo"
+		Type: Symbol
+		Children:
+
+		Content: Type: Assignment, Start: 2, 31, End: 2, 32, Content: "="
+		Type: Assignment
+		Children:
+
+		Content: Type: Value, Start: 2, 33, End: 2, 50, Content: ""
+		Type: Value
+		Children:
+			Content: Type: Function, Start: 2, 33, End: 2, 50, Content: ""
+			Type: Function
+			Children:
+				Content: Type: Type, Start: 2, 33, End: 2, 48, Content: ""
+				Type: Type
+				Children:
+					Content: Type: FullSymbol, Start: 2, 33, End: 2, 37, Content: ""
+					Type: FullSymbol
+					Children:
+						Content: Type: Symbol, Start: 2, 33, End: 2, 37, Content: "void"
+						Type: Symbol
+						Children:
+
+					Content: Type: ParameterList, Start: 2, 37, End: 2, 39, Content: ""
+					Type: ParameterList
+					Children:
+						Content: Type: FunctorParameters, Start: 2, 37, End: 2, 39, Content: ""
+						Type: FunctorParameters
+						Children:
+							Content: Type: LeftParenthesis, Start: 2, 37, End: 2, 38, Content: "("
+							Type: LeftParenthesis
+							Children:
+
+							Content: Type: RightParenthesis, Start: 2, 38, End: 2, 39, Content: ")"
+							Type: RightParenthesis
+							Children:
+
+					Content: Type: ParameterList, Start: 2, 39, End: 2, 41, Content: ""
+					Type: ParameterList
+					Children:
+						Content: Type: IndexNode, Start: 2, 39, End: 2, 41, Content: ""
+						Type: IndexNode
+						Children:
+							Content: Type: LeftBracket, Start: 2, 39, End: 2, 40, Content: "["
+							Type: LeftBracket
+							Children:
+
+							Content: Type: RightBracket, Start: 2, 40, End: 2, 41, Content: "]"
+							Type: RightBracket
+							Children:
+
+					Content: Type: ParameterList, Start: 2, 41, End: 2, 48, Content: ""
+					Type: ParameterList
+					Children:
+						Content: Type: FunctorParameters, Start: 2, 41, End: 2, 48, Content: ""
+						Type: FunctorParameters
+						Children:
+							Content: Type: LeftParenthesis, Start: 2, 41, End: 2, 42, Content: "("
+							Type: LeftParenthesis
+							Children:
+
+							Content: Type: Type, Start: 2, 42, End: 2, 45, Content: ""
+							Type: Type
+							Children:
+								Content: Type: FullSymbol, Start: 2, 42, End: 2, 45, Content: ""
+								Type: FullSymbol
+								Children:
+									Content: Type: Symbol, Start: 2, 42, End: 2, 45, Content: "int"
+									Type: Symbol
+									Children:
+
+							Content: Type: Symbol, Start: 2, 46, End: 2, 47, Content: "a"
+							Type: Symbol
+							Children:
+
+							Content: Type: RightParenthesis, Start: 2, 47, End: 2, 48, Content: ")"
+							Type: RightParenthesis
+							Children:
+
+				Content: Type: CodeBlockNode, Start: 2, 48, End: 2, 50, Content: ""
+				Type: CodeBlockNode
+				Children:
+					Content: Type: LeftCurlyBrace, Start: 2, 48, End: 2, 49, Content: "{"
+					Type: LeftCurlyBrace
+					Children:
+
+					Content: Type: RightCurlyBrace, Start: 2, 49, End: 2, 50, Content: "}"
+					Type: RightCurlyBrace
+					Children:
+
+		Content: Type: EndOfLine, Start: 2, 50, End: 2, 51, Content: ";"
+		Type: EndOfLine
+		Children:

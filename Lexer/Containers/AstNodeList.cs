@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace Lexer.Containers
 {
-    public unsafe struct AstNodeList
+    internal unsafe struct AstNodeList
     {
         private const int kInitialCapacity = 6;
 
@@ -18,8 +18,6 @@ namespace Lexer.Containers
             get
             {
 #if DEBUG
-                m_Capacity = -1;
-
                 if (index < 0 || index >= m_Count)
                 {
                     throw new IndexOutOfRangeException(String.Format("AstNodeList index out of range, index {0}, count {1}", index, m_Count));
@@ -39,13 +37,6 @@ namespace Lexer.Containers
 
         private void EnsureThereIsSpace(RootNode rootNode)
         {
-#if DEBUG
-            if (m_Capacity == -1)
-            {
-                throw new NotSupportedException("Can't add to list after accessing it via indexer!");
-            }
-#endif
-
             if (m_Capacity == 0)
             {
                 m_Capacity = kInitialCapacity;
@@ -71,10 +62,87 @@ namespace Lexer.Containers
             return new AstNodeEnumerator(this);
         }
 
+        public IEnumerable<AstNode> AsEnumerable()
+        {
+            return new EnumerableWrapper(this);
+        }
+
         public void Initialize()
         {
             m_Count = 0;
             m_Capacity = 0;
+        }
+
+        private class EnumerableWrapper : IEnumerable<AstNode>
+        {
+            private readonly AstNodeList m_NodeList;
+
+            public EnumerableWrapper(AstNodeList list)
+            {
+                m_NodeList = list;
+            }
+
+            public IEnumerator<AstNode> GetEnumerator()
+            {
+                return new EnumerableEnumerator(m_NodeList);
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return new EnumerableEnumerator(m_NodeList);
+            }
+        }
+
+        private class EnumerableEnumerator : IEnumerator<AstNode>
+        {
+            private readonly AstNodeList m_NodeList;
+            private int m_Position;
+
+            internal EnumerableEnumerator(AstNodeList list)
+            {
+                m_NodeList = list;
+                m_Position = -1;
+            }
+
+            public AstNode Current 
+            { 
+                get 
+                { 
+                    if (IsValid())
+                    {
+                        return m_NodeList[m_Position];
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("AstNodeEnumerator is invalid");
+                    }
+                } 
+            }
+
+            public bool MoveNext()
+            {
+                m_Position++;
+                return IsValid();
+            }
+
+            private bool IsValid()
+            {
+                return m_Position >= 0 && m_Position < m_NodeList.Count;
+            }
+
+            public void Reset()
+            {
+                m_Position = -1;
+            }
+
+            public void Dispose()
+            {
+            }
+
+            object IEnumerator.Current
+            {
+                get { return Current; }
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using LaborasLangCompiler.Parser;
+﻿using LaborasLangCompiler.Codegen;
+using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
@@ -116,6 +117,17 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public IReadOnlyList<IExpressionNode> Initializer { get; set; }
     }
 
+    class ArrayAccessNode : IArrayAccessNode
+    {
+        public NodeType Type { get { return NodeType.Expression; } }
+        public SequencePoint SequencePoint { get { return null; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ArrayAccess; } }
+
+        public TypeReference ExpressionReturnType { get; set; }
+        public IExpressionNode Array { get; set; }
+        public IReadOnlyList<IExpressionNode> Indices { get; set; }
+    }
+
     class LocalVariableNode : ILocalVariableNode
     {
         public SequencePoint SequencePoint { get { return null; } }
@@ -157,17 +169,14 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Property; } }
 
-        public TypeReference ExpressionReturnType { get { return Property.PropertyType; } }
+        public TypeReference ExpressionReturnType { get; private set; }
         public IExpressionNode ObjectInstance { get; set; }
         public PropertyReference Property { get; set; }
-
-        public PropertyNode()
-        {
-        }
-
-        public PropertyNode(PropertyDefinition property)
+        
+        public PropertyNode(AssemblyEmitter assembly, PropertyReference property)
         {
             Property = property;
+            ExpressionReturnType = AssemblyRegistry.GetPropertyType(assembly, property);
         }
     }
 
@@ -207,6 +216,18 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public TypeReference ExpressionReturnType { get; set; }
         public UnaryOperatorNodeType UnaryOperatorType { get; set; }
         public IExpressionNode Operand { get; set; }
+    }
+
+    class IncrementDecrementOperatorNode : IIncrementDecrementOperatorNode
+    {
+        public SequencePoint SequencePoint { get { return null; } }
+        public NodeType Type { get { return NodeType.Expression; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.IncrementDecrementOperator; } }
+
+        public TypeReference ExpressionReturnType { get; set; }
+        public IncrementDecrementOperatorType IncrementDecrementType { get; set; }
+        public IExpressionNode Operand { get; set; }
+        public MethodReference OverloadedOperatorMethod { get; set; }
     }
 
     class AssignmentOperatorNode : IAssignmentOperatorNode

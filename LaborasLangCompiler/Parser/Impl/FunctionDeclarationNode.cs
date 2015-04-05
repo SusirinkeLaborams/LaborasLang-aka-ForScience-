@@ -13,6 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Common;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -23,13 +24,13 @@ namespace LaborasLangCompiler.Parser.Impl
         public IEnumerable<TypeReference> ParamTypes { get; private set; }
         public TypeReference MethodReturnType { get; private set; }
 
-        private readonly AstNode body;
+        private readonly AbstractSyntaxTree body;
         private CodeBlockNode parsedBody;
         private MethodEmitter emitter;
         private readonly Dictionary<string, ParameterDefinition> symbols = new Dictionary<string, ParameterDefinition>();
         private Modifiers modifiers;
 
-        private FunctionDeclarationNode(ContextNode parent, Modifiers modifiers, string name, AstNode method)
+        private FunctionDeclarationNode(ContextNode parent, Modifiers modifiers, string name, AbstractSyntaxTree method)
             : base(parent.Parser, parent, parent.Parser.GetSequencePoint(method))
         {
             this.body = method.Children[1];
@@ -45,11 +46,11 @@ namespace LaborasLangCompiler.Parser.Impl
                 emitter.ParseTree(parsedBody);
         }
 
-        private void ParseHeader(Modifiers mods, AstNode lexerNode, string methodName)
+        private void ParseHeader(Modifiers mods, AbstractSyntaxTree lexerNode, string methodName)
         {
             var point = Parser.GetSequencePoint(lexerNode);
             var builder = new TypeNode.TypeBuilder(Parent);
-            int count = lexerNode.ChildrenCount;
+            int count = lexerNode.Children.Count;
             var paramz = ParseParams(Parser, lexerNode.Children[count - 1]);
             for (int i = 0; i < count - 1; i++)
             {
@@ -100,7 +101,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return false;
         }
 
-        private ParameterDefinition ParseParameter(ContextNode parent, AstNode typeNode, AstNode nameNode)
+        private ParameterDefinition ParseParameter(ContextNode parent, AbstractSyntaxTree typeNode, AbstractSyntaxTree nameNode)
         {
             var type = TypeNode.Parse(parent, typeNode);
             var name = nameNode.GetSingleSymbolOrThrow();
@@ -127,7 +128,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return Parent.GetClass();
         }
 
-        public static FunctionDeclarationNode ParseAsFunctor(ContextNode context, AstNode function)
+        public static FunctionDeclarationNode ParseAsFunctor(ContextNode context, AbstractSyntaxTree function)
         {
             var instance = new FunctionDeclarationNode(context, Modifiers.NoInstance | Modifiers.Private, context.GetClass().NewFunctionName(), function);
             context.GetClass().AddLambda(instance);
@@ -141,10 +142,10 @@ namespace LaborasLangCompiler.Parser.Impl
             return instance;
         }
 
-        public static TypeReference ParseFunctorType(ContextNode context, AstNode lexerNode)
+        public static TypeReference ParseFunctorType(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             var builder = new TypeNode.TypeBuilder(context);
-            int count = lexerNode.ChildrenCount;
+            int count = lexerNode.Children.Count;
             for (int i = 0; i < count - 1; i++)
             {
                 builder.Append(lexerNode.Children[i]);
@@ -218,11 +219,14 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.ToString();
         }
 
-        private static List<FunctionParamInfo> ParseParams(Parser parser, AstNode lexerNode)
+        private static List<FunctionParamInfo> ParseParams(Parser parser, AbstractSyntaxTree lexerNode)
         {
+            lexerNode = lexerNode.Children[0];
+            if (lexerNode.Type != Lexer.TokenType.FunctorParameters)
+                ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(lexerNode), "Method parameter list expected, {0} found", lexerNode.Type);
             var ret = new List<FunctionParamInfo>();
             int i = 1;
-            while (i < lexerNode.ChildrenCount)
+            while (i < lexerNode.Children.Count)
             {
                 var param = lexerNode.Children[i];
                 switch (param.Type)
@@ -250,13 +254,35 @@ namespace LaborasLangCompiler.Parser.Impl
 
         struct FunctionParamInfo
         {
-            public AstNode Type { get; private set; }
-            public AstNode Name { get; private set; }
-
-            public FunctionParamInfo(AstNode type, AstNode name)
+            private AbstractSyntaxTree m_Type;
+            private AbstractSyntaxTree m_Name;
+            public AbstractSyntaxTree Type
             {
-                Type = type;
-                Name = name;
+                get
+                {
+                    return m_Type;
+                }
+                internal set
+                {
+                    m_Type = value;
+                }
+            }
+            public AbstractSyntaxTree Name
+            {
+                get
+                {
+                    return m_Name;
+                }
+                set
+                {
+                    m_Name = value;
+                }
+            }
+
+            public FunctionParamInfo(AbstractSyntaxTree type, AbstractSyntaxTree name)
+            {
+                m_Type = type;
+                m_Name = name;
             }
         }
 
@@ -277,7 +303,7 @@ namespace LaborasLangCompiler.Parser.Impl
             ErrorCode.InvalidMethodMods.ReportAndThrow(point, "Only one of {0} is allowed, {1} found", all, mods | all);
         }
 
-        private static void InvalidMethodDefinition(Parser parser, AstNode lexerNode)
+        private static void InvalidMethodDefinition(Parser parser, AbstractSyntaxTree lexerNode)
         {
             ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(lexerNode), "Not a valid method definition, {0}", lexerNode.FullContent);
         }

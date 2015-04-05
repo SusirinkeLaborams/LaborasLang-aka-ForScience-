@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Parser.Utils;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -27,7 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 TypeUtils.VerifyAccessible(ParsedType, Scope.GetClass().TypeReference, point);
         }
 
-        public new static TypeReference Parse(ContextNode parent, AstNode lexerNode)
+        public new static TypeReference Parse(ContextNode parent, AbstractSyntaxTree lexerNode)
         {
             if (lexerNode.Type == Lexer.TokenType.FullSymbol)
             {
@@ -39,7 +40,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
 
             TypeBuilder builder = new TypeBuilder(parent);
-            foreach(AstNode node in lexerNode.Children)
+            foreach(AbstractSyntaxTree node in lexerNode.Children)
             {
                 builder.Append(node);
             }
@@ -52,28 +53,6 @@ namespace LaborasLangCompiler.Parser.Impl
             return new TypeNode(type, scope, point);
         }
 
-        private static List<TypeReference> ParseArgumentList(ContextNode context, AstNode lexerNode)
-        {
-            var args = new List<TypeReference>();
-            foreach(AstNode node in lexerNode.Children)
-            {
-                switch (node.Type)
-                {
-                    case Lexer.TokenType.LeftParenthesis:
-                    case Lexer.TokenType.RightParenthesis:
-                    case Lexer.TokenType.Comma:
-                        break;
-                    case Lexer.TokenType.Type:
-                        args.Add(Parse(context, node));
-                        break;
-                    default:
-                        ErrorCode.InvalidStructure.ReportAndThrow(context.Parser.GetSequencePoint(node), "Unexpected node {0} while parsing functor types", node.Type);
-                        break;//unreachable
-                }
-            }
-            return args;
-        }
-
         public override string ToString(int indent)
         {
             throw new InvalidOperationException();
@@ -84,28 +63,85 @@ namespace LaborasLangCompiler.Parser.Impl
             public TypeReference Type { get; private set; }
 
             private readonly Parser parser;
-            private readonly ContextNode parent;
+            private readonly ContextNode context;
 
-            public TypeBuilder(ContextNode parent)
+            public TypeBuilder(ContextNode context)
             {
-                this.parser = parent.Parser;
-                this.parent = parent;
+                this.parser = context.Parser;
+                this.context = context;
             }
 
-            public void Append(AstNode node)
+            public void Append(AbstractSyntaxTree node)
             {
                 if(Type == null)
                 {
-                    Type = TypeNode.Parse(parent, node);
+                    Type = TypeNode.Parse(context, node);
                 }
                 else
                 {
-                    var args = ParseArgumentList(parent, node);
-                    if (args.Any(a => a.IsVoid()))
+                    var list = node.Children[0];
+                    if (list.Type == Lexer.TokenType.FunctorParameters)
+                    {
+                        AppendFunctorTypeParams(list);
+                    }
+                    else if (list.Type == Lexer.TokenType.IndexNode)
+                    {
+                        AppendArrayParams(list);
+                    }
+                    else
+                    {
+                        ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(list), "Unexpected node type {0} in type", list.Type);
+                    }
+                }
+            }
+
+            private void AppendFunctorTypeParams(AbstractSyntaxTree node)
+            {
+                var args = new List<TypeReference>();
+                foreach (AbstractSyntaxTree param in node.Children)
+                {
+                    switch (param.Type)
+                    {
+                        case Lexer.TokenType.LeftParenthesis:
+                        case Lexer.TokenType.RightParenthesis:
+                        case Lexer.TokenType.Comma:
+                            break;
+                        case Lexer.TokenType.Type:
+                            args.Add(Parse(context, param));
+                            break;
+                        default:
+                            ErrorCode.InvalidStructure.ReportAndThrow(context.Parser.GetSequencePoint(param), "Unexpected node {0} while parsing functor type", param.Type);
+                            break;//unreachable
+                    }
+                }
+
+                if (args.Any(a => a.IsVoid()))
                         ErrorCode.IllegalMethodParam.ReportAndThrow(parser.GetSequencePoint(node), "Cannot declare method parameter of type void");
 
-                    Type = AssemblyRegistry.GetFunctorType(parser.Assembly, Type, args);
+                Type = AssemblyRegistry.GetFunctorType(parser.Assembly, Type, args);
+            }
+
+            private void AppendArrayParams(AbstractSyntaxTree node)
+            {
+                // [] has one dim
+                int dims = 1;
+                foreach(var subnode in node.Children)
+                {
+                    switch(subnode.Type)
+                    {
+                        case Lexer.TokenType.LeftBracket:
+                        case Lexer.TokenType.RightBracket:
+                            break;
+                        case Lexer.TokenType.Comma:
+                            dims++;
+                            break;
+                        default:
+                            ErrorCode.InvalidStructure.ReportAndThrow(context.Parser.GetSequencePoint(subnode), "Unexpected node {0} while parsing array type", subnode.Type);
+                            break;//unreachable
+                    }
                 }
+
+                Type = AssemblyRegistry.GetArrayType(Type, dims);
             }
 
             public void Append(IEnumerable<TypeReference> paramz)

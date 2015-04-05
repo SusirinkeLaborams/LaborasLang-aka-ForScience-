@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Parser.Utils;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -28,7 +29,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.type = type;
         }
 
-        public static ThisNode Parse(ContextNode parent, AstNode lexerNode)
+        public static ThisNode Parse(ContextNode parent, AbstractSyntaxTree lexerNode)
         {
             var point = parent.Parser.GetSequencePoint(lexerNode);
             return Create(parent, point);

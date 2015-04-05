@@ -1,0 +1,32 @@
+Class:
+	TestEmptyInitializedArray
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Int32[]
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ArrayCreation:
+					ElementType: System.Int32
+					Rank: 1
+					Dimensions:
+						Literal:
+							Type:
+								System.Int32
+							Value:
+								0
+
+					Initializer:
+						InitializerList:
+							Element type: System.Object
+							Dimensions:
+								0
+							Values:
+								Empty
+
+
+
+	Methods:

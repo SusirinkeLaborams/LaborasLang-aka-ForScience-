@@ -13,6 +13,7 @@ using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using System.Diagnostics.Contracts;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -24,7 +25,6 @@ namespace LaborasLangCompiler.Parser.Impl
         private readonly List<FunctionDeclarationNode> lambdas;
         private readonly List<Namespace> globalImports;
         private int lambdaCounter = 0;
-        private readonly AstNode lexerNode;
         #endregion fields
 
         #region properties
@@ -36,16 +36,24 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #endregion properties
 
-
-        public ClassNode(Parser parser, ClassNode parent, AstNode lexerNode) : base(parser, parent, parser.GetSequencePoint(lexerNode))
+        private ClassNode(Parser parser, ContextNode parent, SequencePoint point) : base(parser, parent, point)
         {
-            this.lexerNode = lexerNode;
             this.declaredMethods = new List<FunctionDeclarationNode>();
             this.lambdas = new List<FunctionDeclarationNode>();
             fields = new List<FieldDeclarationNode>();
             globalImports = new List<Namespace>();
             FullName = parser.Filename;
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
+        }
+
+        public static ClassNode ForFile(Parser parser)
+        {
+            return new ClassNode(parser, null, null);
+        }
+
+        public static ClassNode ForGen(ContextNode context)
+        {
+            return new ClassNode(context.Parser, context.Parent, null);
         }
 
         #region type wrapper
@@ -178,7 +186,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #region parsing
 
-        public void ParseDeclarations()
+        public void ParseDeclarations(AbstractSyntaxTree lexerNode)
         {
             foreach (var node in lexerNode.Children)
             {
@@ -201,11 +209,11 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private void ParseDeclaration(AstNode lexerNode)
+        private void ParseDeclaration(AbstractSyntaxTree lexerNode)
         {
             var declaration = DeclarationInfo.Parse(Parser, lexerNode);
 
-            if(!declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration() && !declaration.Modifiers.HasFlag(Modifiers.Mutable))
+            if(declaration.Initializer != null && declaration.Initializer.IsFunctionDeclaration() && !declaration.Modifiers.HasFlag(Modifiers.Mutable))
             {
                 //method
                 var method = FunctionDeclarationNode.ParseAsMethod(this, declaration);

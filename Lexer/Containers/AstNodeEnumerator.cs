@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Lexer.Containers
 {
-    public struct AstNodeEnumerator
+    internal struct AstNodeEnumerator
     {
         private AstNodeList m_NodeList;
         private int m_Position;

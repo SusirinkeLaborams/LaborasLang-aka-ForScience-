@@ -12,6 +12,7 @@ using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -40,15 +41,18 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static LiteralNode Create(ContextNode context, IConvertible value, SequencePoint point)
         {
-            TypeReference type;
+            var type = MetadataHelpers.GetBuiltInTypeReference(context.Parser.Assembly, value.GetType());
 
-            if (!MetadataHelpers.TryGetBuiltInTypeReference(context.Parser.Assembly, value.GetType(), out type))
-                Errors.ReportAndThrow(ErrorCode.TypeMissmatch, point, "Cannot create literal of type {0} with value {1}", type, value);
+            if (type == null)
+            {
+                Errors.ReportAndThrow(ErrorCode.TypeMissmatch, point, "Cannot create literal of type {0} with value {1}",
+                    value.GetType().FullName, value);
+            }
 
             return new LiteralNode(new Literal(value), type, point);
         }
 
-        public static LiteralNode Parse(ContextNode context, AstNode lexerNode)
+        public static LiteralNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             lexerNode = lexerNode.Children[0];
             var point = context.Parser.GetSequencePoint(lexerNode);
@@ -57,7 +61,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return new LiteralNode(value, type, point);
         }
 
-        private static TypeReference ParseLiteralType(Parser parser, AstNode lexerNode)
+        private static TypeReference ParseLiteralType(Parser parser, AbstractSyntaxTree lexerNode)
         {
             switch(lexerNode.Type)
             {

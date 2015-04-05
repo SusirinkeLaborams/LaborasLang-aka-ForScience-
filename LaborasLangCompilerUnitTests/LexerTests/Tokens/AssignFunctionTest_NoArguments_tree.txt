@@ -31,16 +31,19 @@ Children:
 						Type: Symbol
 						Children:
 
-					Content: Type: TypeParameters, Start: 1, 10, End: 1, 12, Content: ""
-					Type: TypeParameters
+					Content: Type: ParameterList, Start: 1, 10, End: 1, 12, Content: ""
+					Type: ParameterList
 					Children:
-						Content: Type: LeftParenthesis, Start: 1, 10, End: 1, 11, Content: "("
-						Type: LeftParenthesis
+						Content: Type: FunctorParameters, Start: 1, 10, End: 1, 12, Content: ""
+						Type: FunctorParameters
 						Children:
+							Content: Type: LeftParenthesis, Start: 1, 10, End: 1, 11, Content: "("
+							Type: LeftParenthesis
+							Children:
 
-						Content: Type: RightParenthesis, Start: 1, 11, End: 1, 12, Content: ")"
-						Type: RightParenthesis
-						Children:
+							Content: Type: RightParenthesis, Start: 1, 11, End: 1, 12, Content: ")"
+							Type: RightParenthesis
+							Children:
 
 				Content: Type: CodeBlockNode, Start: 1, 13, End: 1, 23, Content: ""
 				Type: CodeBlockNode

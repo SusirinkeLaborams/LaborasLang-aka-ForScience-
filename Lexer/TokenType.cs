@@ -66,14 +66,19 @@
         Virtual,
         While,
 
-
         NoInstance,
         Private,
         Public,
         Mutable,
 
+        LeftBracket,
+        RightBracket,
+
         //Non terminals
         NonTerminalToken,
+
+        ArrayLiteral,
+        InitializerList,
 
         CodeBlockNode,
         DeclarationNode,
@@ -110,13 +115,16 @@
         ParenthesesNode,
         LiteralNode,
         UnknownNode,
+        IndexAccessNode,
+        IndexNode,        
+        FunctorParameters,
         LexerInternalTokens,    // Lexer internal-only tokens start from here
 
         StatementNode,
         DeclarationSubnode,
         ValueStatementNode,
 
-        TypeParameters,
+        ParameterList,
         TypeSubnode,
         TypeAndSymbolSubnode,
         CommaAndValue,
@@ -146,7 +154,8 @@
         EqualityOperator,
         AssignmentOperator,
 
-        TokenTypeCount
+        TokenTypeCount,
+        
     }
 
     public static class TokenInfo
@@ -168,6 +177,11 @@
                 default:
                     return false;
             }
+        }
+
+        public static bool IsMeaningful(this TokenType token)
+        {
+            return true;
         }
     }
     

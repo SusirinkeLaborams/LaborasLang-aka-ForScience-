@@ -1,5 +1,7 @@
 ﻿using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer;
+using Lexer.Containers;
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
@@ -10,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ProjectParser : IDisposable
+    class ProjectParser
     {
         public AssemblyEmitter Assembly { get; private set; }
         public bool ShouldEmit { get; private set; }
@@ -37,7 +39,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public TypeReference UInt64 { get; private set; }
         public TypeReference Float { get; private set; }
         public TypeReference Double { get; private set; }
-        public TypeReference Decimal { get; private set; }
         public TypeReference String { get; private set; }
         public TypeReference Void { get; private set; }
         public TypeReference Auto { get; private set; }
@@ -69,7 +70,6 @@ namespace LaborasLangCompiler.Parser.Impl
 
             aliases["float"] = Float = assembly.TypeSystem.Single;
             aliases["double"] = Double = assembly.TypeSystem.Double;
-            aliases["decimal"] = Decimal = AssemblyRegistry.FindType(Assembly, "System.Decimal");
 
             aliases["string"] = String = assembly.TypeSystem.String;
             aliases["object"] = Object = assembly.TypeSystem.Object;
@@ -77,7 +77,7 @@ namespace LaborasLangCompiler.Parser.Impl
             aliases["void"] = Void = assembly.TypeSystem.Void;
             aliases["auto"] = Auto = AutoType.Instance;
 
-            primitives = new HashSet<TypeReference>(Utils.Utils.Enumerate(Bool, Char, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Float, Double, Decimal, String), new TypeComparer());
+            primitives = new HashSet<TypeReference>(Utils.Utils.Enumerate(Bool, Char, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Float, Double, String), new TypeComparer());
 
             MaxValues = new Dictionary<ulong, TypeReference>()
             {
@@ -114,18 +114,23 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ProjectParser ParseAll(AssemblyEmitter assembly, string[] sources, string[] names, bool emit)
         {
-            
             ProjectParser projectParser = new ProjectParser(assembly, emit);
-            for(int i = 0; i < sources.Length; i++)
+            var roots = sources.Select(s => Lexer.Lexer.Lex(s)).ToArray();
+
+            for (int i = 0; i < sources.Length; i++)
             {
                 var source = sources[i];
                 var name = names[i];
-                projectParser.parsers.Add(new Parser(projectParser, Lexer.Lexer.Lex(source), name));
+                projectParser.parsers.Add(new Parser(projectParser, name));
             }
 
-            projectParser.parsers.ForEach(p => p.Root.ParseDeclarations());
-            projectParser.parsers.ForEach(p => p.Root.ParseInitializers());
-            projectParser.parsers.ForEach(p => p.Root.Emit());
+            for (int i = 0; i < sources.Length; i++)
+            {
+                projectParser.parsers[i].ParseDeclarations(roots[i]);
+            }
+            projectParser.parsers.ForEach(p => p.ParseInitializers());
+            projectParser.parsers.ForEach(p => p.Emit());
+            
             return projectParser;
         }
 
@@ -153,14 +158,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public bool IsPrimitive(TypeReference type)
         {
             return primitives.Contains(type);
-        }
-
-        public void Dispose()
-        {
-            foreach(var parser in parsers)
-            {
-                parser.Dispose();
-            }
         }
 
         public override string ToString()

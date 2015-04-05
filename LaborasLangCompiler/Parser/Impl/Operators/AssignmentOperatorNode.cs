@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Parser.Utils;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -34,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         protected AssignmentOperatorNode(SequencePoint point) : base(point) { }
 
-        public static AssignmentOperatorNode Parse(ContextNode context, AstNode lexerNode)
+        public static ExpressionNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             var left = ExpressionNode.Parse(context, lexerNode.Children[0]);
             var right = ExpressionNode.Parse(context, lexerNode.Children[2], left.ExpressionReturnType);
@@ -43,7 +44,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return Create(context, LexerToAssignemnt[lexerNode.Children[1].Type], left, right, point);    
         }
 
-        public static AssignmentOperatorNode Create(ContextNode context, AssignmentOperatorType op, ExpressionNode left, ExpressionNode right, SequencePoint point)
+        public static ExpressionNode Create(ContextNode context, AssignmentOperatorType op, ExpressionNode left, ExpressionNode right, SequencePoint point)
         {
             if (!left.IsSettable)
                 ErrorCode.NotAnLValue.ReportAndThrow(left.SequencePoint, "Left of assignment operator must be settable");
@@ -53,8 +54,16 @@ namespace LaborasLangCompiler.Parser.Impl
 
             var type = left.ExpressionReturnType;
 
+            var overloaded = AsOverloadedMethod(context, op, left, right, point);
+            if (overloaded != null)
+                return overloaded;
+
             if(op != AssignmentOperatorType.Assignment)
             {
+                //only transform primitives
+                if (!(context.Parser.IsPrimitive(left.ExpressionReturnType) && context.Parser.IsPrimitive(right.ExpressionReturnType)))
+                    AssignmentMissmatch(left, right, point);
+
                 if (!left.IsGettable)
                     ErrorCode.NotAnRValue.ReportAndThrow(right.SequencePoint, "Left of this type of assignment operator must be gettable");
 
@@ -71,7 +80,23 @@ namespace LaborasLangCompiler.Parser.Impl
             instance.left = left;
             instance.right = right;
             instance.type = left.ExpressionReturnType;
+            
             return instance;
+        }
+
+        private static ExpressionNode AsOverloadedMethod(ContextNode context, AssignmentOperatorType op, ExpressionNode left, ExpressionNode right, SequencePoint point)
+        {
+            if (!OperatorMethods.ContainsKey(op))
+                return null;
+
+            string name = OperatorMethods[op];
+            return BinaryOperatorNode.AsOverload(context, name, left, right, point);
+        }
+
+        private static void AssignmentMissmatch(ExpressionNode left, ExpressionNode right, SequencePoint point)
+        {
+            ErrorCode.TypeMissmatch.ReportAndThrow(point,
+                    "Cannot assign {0} to {1}", right.ExpressionReturnType, left.ExpressionReturnType);
         }
 
         public override string ToString(int indent)

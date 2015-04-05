@@ -136,5 +136,16 @@ namespace LaborasLangCompiler.Parser.Utils
 
             return result;
         }
+
+        public static IEnumerable<MethodReference> GetOperatorMethods(AssemblyEmitter assembly, IExpressionNode left, IExpressionNode right, string name)
+        {
+            return AssemblyRegistry.GetMethods(assembly, left.ExpressionReturnType, name)
+                .Concat(AssemblyRegistry.GetMethods(assembly, right.ExpressionReturnType, name));
+        }
+
+        public static IEnumerable<MethodReference> GetOperatorMethods(AssemblyEmitter assembly, IExpressionNode operand, string name)
+        {
+            return AssemblyRegistry.GetMethods(assembly, operand.ExpressionReturnType, name);
+        }
     }
 }

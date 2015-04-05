@@ -45,13 +45,13 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (isStatic)
             {
-                Emit(initializer, false);
+                Emit(initializer, EmissionType.Value);
                 Stsfld(field);
             }
             else
             {
                 Ldarg(0);
-                Emit(initializer, false);
+                Emit(initializer, EmissionType.Value);
                 Stfld(field);
             }
 
@@ -73,8 +73,8 @@ namespace LaborasLangCompiler.Codegen.Methods
             {
                 Ldarg(0);
             }
-            
-            Emit(initializer, false);
+
+            Emit(initializer, EmissionType.Value);
             Call(setter);
 
             AddEpilogue();

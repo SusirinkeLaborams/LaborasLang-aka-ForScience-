@@ -36,6 +36,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Checked|AnyCPU'">
     <OutputPath>bin\Checked\</OutputPath>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <DefineConstants>TRACE;CONTRACTS_FULL</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.Decompiler">
@@ -98,6 +103,7 @@
     <None Include="IntegrationTests\SourceFiles\MinMaxValues.ll" />
     <None Include="IntegrationTests\SourceFiles\PrintPrimesWithInlineLambda.ll" />
     <None Include="IntegrationTests\SourceFiles\AssignToPreIncrementedValue.ll" />
+    <Compile Include="LexerTests\SyntaxMatcherTestBase.cs" />
     <Compile Include="LexerTests\TokenizerTests.cs" />
     <Compile Include="LexerTests\SyntaxMatcherTests.cs" />
     <Compile Include="LexerTests\RuleValidationTests.cs" />
@@ -109,7 +115,6 @@
     <None Include="IntegrationTests\SourceFiles\Recursion.ll" />
     <None Include="IntegrationTests\SourceFiles\StdInWorks.ll" />
     <Compile Include="ManagedCodeRunner.cs" />
-    <Compile Include="ParserTests\AllParserTests.cs" />
     <Compile Include="ParserTests\ParserTestBase.cs" />
     <Compile Include="TestBase.cs" />
     <Compile Include="ParserTests\ParserTests.cs" />

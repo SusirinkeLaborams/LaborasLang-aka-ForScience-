@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -30,7 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private ConditionBlockNode(SequencePoint sequencePoint) : base(sequencePoint) { }
 
-        public static ConditionBlockNode Parse(ContextNode context, AstNode lexerNode)
+        public static ConditionBlockNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             var point = context.Parser.GetSequencePoint(lexerNode);
             var condition = ExpressionNode.Parse(context, lexerNode.Children[2]);

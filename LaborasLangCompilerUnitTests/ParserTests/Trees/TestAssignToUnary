@@ -32,7 +32,7 @@ Class:
 							Operand:
 								Assignment:
 									Left:
-										UnaryOperator:
+										IncrementDecrementOperator:
 											Operator:
 												PreIncrement
 											Operand:
