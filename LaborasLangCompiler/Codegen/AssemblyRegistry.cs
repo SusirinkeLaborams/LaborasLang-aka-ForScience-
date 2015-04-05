@@ -145,62 +145,6 @@ namespace LaborasLangCompiler.Codegen
             instance.assemblies.Add(assemblyDefinition);
         }
 
-        struct ParameterKeyValuePair<T>
-        {
-            public readonly T key;
-            public readonly IList<ParameterDefinition> parameters;
-
-            public ParameterKeyValuePair(T key, IList<ParameterDefinition> parameters)
-            {
-                this.key = key;
-                this.parameters = parameters;
-            }
-        }
-
-        private static int GetBestMatches<T>(IReadOnlyList<TypeReference> arguments, ParameterKeyValuePair<T>[] parameters)
-        {
-            Contract.Requires(parameters.Length > 0);
-            int i = 0;
-
-            if (parameters.Length > 1)
-            {
-                Array.Sort(parameters, (x, y) => CompareMatches(arguments, y.parameters, x.parameters));
-
-                while (i < parameters.Length - 1 && CompareMatches(arguments, parameters[i].parameters, parameters[i + 1].parameters) == 0)
-                    i++;
-            }
-
-            return i;
-        }
-
-        private static MethodReference GetBestMatch(IReadOnlyList<TypeReference> arguments, IReadOnlyList<MethodReference> methods)
-        {
-            Contract.Requires(methods.Count > 0);
-
-            var parameterArray = methods.Select(method => new ParameterKeyValuePair<MethodReference>(method, method.Resolve().Parameters)).ToArray();
-            var bestMatchIndex = GetBestMatches(arguments, parameterArray);
-
-            if (bestMatchIndex == 0)
-                return parameterArray[0].key;
-
-            var matches = parameterArray.Take(bestMatchIndex + 1).Select(match => match.key.FullName);
-            throw new Exception(string.Format("Method is ambigous. Could be: \r\n{0}", string.Join("\r\n", matches)));
-        }
-
-        private static PropertyReference GetBestMatch(IReadOnlyList<TypeReference> arguments, IReadOnlyList<PropertyDefinition> properties)
-        {
-            Contract.Requires(properties.Count > 0);
-
-            var parameterArray = properties.Select(property => new ParameterKeyValuePair<PropertyDefinition>(property, property.Parameters)).ToArray();
-            var bestMatchIndex = GetBestMatches(arguments, parameterArray);
-
-            if (bestMatchIndex == 0)
-                return parameterArray[0].key;
-
-            var matches = parameterArray.Take(bestMatchIndex + 1).Select(match => match.key.FullName);
-            throw new Exception(string.Format("Property is ambigous. Could be: \r\n{0}", string.Join("\r\n", matches)));
-        }
-
         #region Type/Method/Property/Field getters
 
         public static bool IsTypeKnown(string typeName)
@@ -653,6 +597,61 @@ namespace LaborasLangCompiler.Codegen
         #endregion
 
         #region Privates
+        struct ParameterKeyValuePair<T>
+        {
+            public readonly T key;
+            public readonly IList<ParameterDefinition> parameters;
+
+            public ParameterKeyValuePair(T key, IList<ParameterDefinition> parameters)
+            {
+                this.key = key;
+                this.parameters = parameters;
+            }
+        }
+
+        private static int GetBestMatches<T>(IReadOnlyList<TypeReference> arguments, ParameterKeyValuePair<T>[] parameters)
+        {
+            Contract.Requires(parameters.Length > 0);
+            int i = 0;
+
+            if (parameters.Length > 1)
+            {
+                Array.Sort(parameters, (x, y) => CompareMatches(arguments, y.parameters, x.parameters));
+
+                while (i < parameters.Length - 1 && CompareMatches(arguments, parameters[i].parameters, parameters[i + 1].parameters) == 0)
+                    i++;
+            }
+
+            return i;
+        }
+
+        private static MethodReference GetBestMatch(IReadOnlyList<TypeReference> arguments, IReadOnlyList<MethodReference> methods)
+        {
+            Contract.Requires(methods.Count > 0);
+
+            var parameterArray = methods.Select(method => new ParameterKeyValuePair<MethodReference>(method, method.Resolve().Parameters)).ToArray();
+            var bestMatchIndex = GetBestMatches(arguments, parameterArray);
+
+            if (bestMatchIndex == 0)
+                return parameterArray[0].key;
+
+            var matches = parameterArray.Take(bestMatchIndex + 1).Select(match => match.key.FullName);
+            throw new Exception(string.Format("Method is ambigous. Could be: \r\n{0}", string.Join("\r\n", matches)));
+        }
+
+        private static PropertyReference GetBestMatch(IReadOnlyList<TypeReference> arguments, IReadOnlyList<PropertyDefinition> properties)
+        {
+            Contract.Requires(properties.Count > 0);
+
+            var parameterArray = properties.Select(property => new ParameterKeyValuePair<PropertyDefinition>(property, property.Parameters)).ToArray();
+            var bestMatchIndex = GetBestMatches(arguments, parameterArray);
+
+            if (bestMatchIndex == 0)
+                return parameterArray[0].key;
+
+            var matches = parameterArray.Take(bestMatchIndex + 1).Select(match => match.key.FullName);
+            throw new Exception(string.Format("Property is ambigous. Could be: \r\n{0}", string.Join("\r\n", matches)));
+        }
 
         private TypeDefinition FindTypeInternal(IList<TypeDefinition> types, string typeName)
         {
