@@ -11,7 +11,7 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class IndexOperatorAccessNode : PropertyNode, IArrayAccessNode
     {
-        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ArrayAccess; } }
+        public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.IndexOperator; } }
 
         public IReadOnlyList<IExpressionNode> Indices { get { return indices; } }
 
