@@ -559,7 +559,7 @@ namespace LaborasLangCompiler.Codegen
             return storeElement;
         }
 
-        public static PropertyReference[] GetProperties(TypeReference type, string propertyName)
+        public static IReadOnlyList<PropertyReference> GetProperties(TypeReference type, string propertyName)
         {
             return type.Resolve().Properties.Where(property => property.Name == propertyName).ToArray();
         }
@@ -591,8 +591,6 @@ namespace LaborasLangCompiler.Codegen
 
             return filtered[0];
         }
-
-
 
         public static TypeReference GetPropertyType(AssemblyEmitter assembly, PropertyReference property)
         {
