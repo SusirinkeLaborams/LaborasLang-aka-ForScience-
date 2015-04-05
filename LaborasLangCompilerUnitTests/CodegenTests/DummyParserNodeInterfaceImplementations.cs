@@ -124,7 +124,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ArrayAccess; } }
 
         public TypeReference ExpressionReturnType { get; set; }
-        public IExpressionNode Array { get; set; }
+        public IExpressionNode ObjectInstance { get; set; }
         public IReadOnlyList<IExpressionNode> Indices { get; set; }
     }
 

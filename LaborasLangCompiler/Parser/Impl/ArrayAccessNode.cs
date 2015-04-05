@@ -20,7 +20,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override bool IsSettable { get { return true; } }
 
         public override TypeReference ExpressionReturnType { get { return type; } }
-        public IExpressionNode Array { get { return array; } }
+        public IExpressionNode ObjectInstance { get { return array; } }
 
         public IReadOnlyList<IExpressionNode> Indices { get; private set; }
 

@@ -207,8 +207,12 @@ namespace LaborasLangCompiler.Parser
     [ContractClass(typeof(IArrayAccessNodeContract))]
     interface IArrayAccessNode : IExpressionNode
     {
-        IExpressionNode Array { get; }
+        IExpressionNode ObjectInstance { get; }
         IReadOnlyList<IExpressionNode> Indices { get; }
+    }
+
+    interface IIndexOperatorNode : IArrayAccessNode, IPropertyNode
+    {
     }
 
     [ContractClass(typeof(ISymbolDeclarationNodeContract))]
@@ -660,7 +664,7 @@ namespace LaborasLangCompiler.Parser
         public abstract NodeType Type { get; }
         public abstract SequencePoint SequencePoint { get; }
 
-        public IExpressionNode Array
+        public IExpressionNode ObjectInstance
         {
             get
             {
