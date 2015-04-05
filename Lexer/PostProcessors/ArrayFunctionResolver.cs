@@ -30,7 +30,7 @@ namespace Lexer.PostProcessors
                     }
 
                     //Transform it to a function
-                    astNode.Type = TokenType.FunctionType;
+                    astNode.Type = TokenType.Function;
                     var initializerList = astNode.Children.Last();
 
                     Contract.Assume(initializerList.Type == TokenType.InitializerList);
