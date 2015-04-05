@@ -185,7 +185,7 @@ namespace LaborasLangCompiler.Codegen
 
         public static TypeReference GetFunctorType(AssemblyEmitter assembly, MethodReference containedMethod)
         {
-            var parameters = containedMethod.Parameters.Select(parameter => parameter.ParameterType).ToList();
+            var parameters = containedMethod.Parameters.Select(parameter => parameter.ParameterType).ToArray();
             return GetFunctorType(assembly, containedMethod.ReturnType, parameters);
         }
 
@@ -335,7 +335,7 @@ namespace LaborasLangCompiler.Codegen
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeReference type,
             string methodName, IReadOnlyList<string> arguments)
         {
-            var argumentTypes = arguments.Select(arg => FindTypeInternal(arg)).ToList();
+            var argumentTypes = arguments.Select(arg => FindTypeInternal(arg)).ToArray();
             return GetCompatibleMethod(assembly, type, methodName, argumentTypes);
         }
 
@@ -347,7 +347,7 @@ namespace LaborasLangCompiler.Codegen
 
         public static MethodReference GetCompatibleMethod(IEnumerable<MethodReference> methods, IReadOnlyList<TypeReference> arguments)
         {
-            var filtered = methods.Where(methodRef => methodRef.MatchesArgumentList(arguments)).ToList();
+            var filtered = methods.Where(methodRef => methodRef.MatchesArgumentList(arguments)).ToArray();
 
             if (filtered.Count > 1)
                 return GetBestMatch(arguments, filtered); // More than one is compatible, so one must match exactly, or we have ambiguity
