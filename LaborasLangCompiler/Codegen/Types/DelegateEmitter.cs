@@ -3,7 +3,7 @@ using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 
-namespace LaborasLangCompiler.Codegen
+namespace LaborasLangCompiler.Codegen.Types
 {
     internal class DelegateEmitter : TypeEmitter
     {

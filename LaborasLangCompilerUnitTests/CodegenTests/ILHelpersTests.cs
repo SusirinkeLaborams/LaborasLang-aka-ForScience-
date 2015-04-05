@@ -165,7 +165,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         public ILHelpersTests()
         {
-            assembly = new AssemblyEmitter(CompilerArguments.Parse(new[] { "dummy.il" }));
+            assembly = new AssemblyEmitter(CompilerArguments.Parse(new[] { "ExecuteTest.il" }));
         }
     }
 }

@@ -165,12 +165,6 @@ namespace LaborasLangCompiler.Parser
         LogicalNot,
         Negation,
         VoidOperator,    // Discards Operand result
-
-        // not used, kept so codegen builds
-        PreDecrement,
-        PreIncrement,
-        PostDecrement,
-        PostIncrement
     }
 
     [ContractClass(typeof(IUnaryOperatorNodeContract))]
@@ -188,7 +182,7 @@ namespace LaborasLangCompiler.Parser
         PostIncrement
     }
 
-    //nothing to contract
+    [ContractClass(typeof(IIncrementDecrementOperatorNodeContract))]
     interface IIncrementDecrementOperatorNode : IExpressionNode
     {
         IncrementDecrementOperatorType IncrementDecrementType { get; }
@@ -584,6 +578,27 @@ namespace LaborasLangCompiler.Parser
                 Contract.Ensures(Contract.Result<IExpressionNode>() != null);
                 Contract.Ensures(Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
                 throw new NotImplementedException(); 
+            }
+        }
+    }
+
+    [ContractClassFor(typeof(IIncrementDecrementOperatorNode))]
+    abstract class IIncrementDecrementOperatorNodeContract : IIncrementDecrementOperatorNode
+    {
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+        public abstract IncrementDecrementOperatorType IncrementDecrementType { get; }
+        public abstract MethodReference OverloadedOperatorMethod { get; }
+
+        public IExpressionNode Operand
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<IExpressionNode>() != null);
+                Contract.Ensures(Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
+                throw new NotImplementedException();
             }
         }
     }

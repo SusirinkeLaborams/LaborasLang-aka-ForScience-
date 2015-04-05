@@ -519,7 +519,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new PropertyNode(functorProperty),
+                            LeftOperand = new PropertyNode(assemblyEmitter, functorProperty),
                             RightOperand = new FunctionNode()
                             {
                                 ExpressionReturnType = functorType,
@@ -534,15 +534,15 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
                         Operand = new AssignmentOperatorNode()
                         {
-                            LeftOperand = new PropertyNode(delegateProperty),
-                            RightOperand = new PropertyNode(functorProperty)
+                            LeftOperand = new PropertyNode(assemblyEmitter, delegateProperty),
+                            RightOperand = new PropertyNode(assemblyEmitter, functorProperty)
                         }
                     },
 
                     new MethodCallNode()
                     {
                         ExpressionReturnType = voidType,
-                        Function = new PropertyNode(delegateProperty),
+                        Function = new PropertyNode(assemblyEmitter, delegateProperty),
                         Args = new IExpressionNode[]
                         {
                             new LiteralNode(intType, kArg1),

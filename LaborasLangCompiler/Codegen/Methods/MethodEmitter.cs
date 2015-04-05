@@ -19,7 +19,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             base(declaringType, name, returnType, methodAttributes)
         {
         }
-        
+
         public void ParseTree(ICodeBlockNode tree)
         {
             Contract.Requires(!Parsed, "Can't set same method twice.");
@@ -53,13 +53,20 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         #region Emitters
 
-        protected void Emit(IParserNode node, bool emitReference)
+        protected enum EmissionType
+        {
+            Value,
+            ThisArg,
+            ReferenceToValue
+        }
+
+        private void Emit(IParserNode node, EmissionType emissionType)
         {
             Contract.Requires(node != null);
             Contract.Requires(node.Type != NodeType.ParserInternal);
 
             var oldSequencePoint = CurrentSequencePoint;
-            
+
             if (node.SequencePoint != null)
             {
                 CurrentSequencePoint = node.SequencePoint;
@@ -67,6 +74,9 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             switch (node.Type)
             {
+                case NodeType.Catch:
+                    throw new NotImplementedException();
+
                 case NodeType.CodeBlockNode:
                     Emit((ICodeBlockNode)node);
                     break;
@@ -75,8 +85,11 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Emit((IConditionBlock)node);
                     break;
 
+                case NodeType.ExceptionHandler:
+                    throw new NotImplementedException();
+
                 case NodeType.Expression:
-                    Emit((IExpressionNode)node, emitReference);
+                    Emit((IExpressionNode)node, emissionType);
                     break;
 
                 case NodeType.ReturnNode:
@@ -86,6 +99,9 @@ namespace LaborasLangCompiler.Codegen.Methods
                 case NodeType.SymbolDeclaration:
                     Emit((ISymbolDeclarationNode)node);
                     break;
+
+                case NodeType.Throw:
+                    throw new NotImplementedException();
 
                 case NodeType.WhileBlock:
                     Emit((IWhileBlockNode)node);
@@ -101,20 +117,22 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         #region Parser node
 
-        protected void Emit(ICodeBlockNode codeBlock)
+        private void Emit(ICodeBlockNode codeBlock)
         {
             foreach (var node in codeBlock.Nodes)
             {
-                Emit(node, false);
+                Emit(node, EmissionType.Value);
             }
+
+            temporaryVariables.ReleaseAll();
         }
 
-        protected void Emit(IConditionBlock conditionBlock)
+        private void Emit(IConditionBlock conditionBlock)
         {
             var elseBlock = CreateLabel();
             var end = CreateLabel();
 
-            Emit(conditionBlock.Condition, false);
+            Emit(conditionBlock.Condition, EmissionType.Value);
 
             if (conditionBlock.FalseBlock != null)
             {
@@ -137,28 +155,20 @@ namespace LaborasLangCompiler.Codegen.Methods
             Emit(end);
         }
 
-        protected void Emit(IExpressionNode expression, bool emitReference)
+        protected void Emit(IExpressionNode expression, EmissionType emissionType)
         {
             Contract.Requires(expression != null);
             Contract.Requires(expression.ExpressionType != ExpressionNodeType.ParserInternal);
 
             switch (expression.ExpressionType)
             {
-                case ExpressionNodeType.Field:
-                    Emit((IFieldNode)expression, emitReference);
-                    return;
+                case ExpressionNodeType.ArrayAccess:
+                    Emit((IArrayAccessNode)expression, emissionType);
+                    break;
 
-                case ExpressionNodeType.FunctionArgument:
-                    Emit((IParameterNode)expression, emitReference);
-                    return;
-
-                case ExpressionNodeType.LocalVariable:
-                    Emit((ILocalVariableNode)expression, emitReference);
-                    return;
-
-                case ExpressionNodeType.Property:
-                    Emit((IPropertyNode)expression);
-                    return;
+                case ExpressionNodeType.ArrayCreation:
+                    Emit((IArrayCreationNode)expression);
+                    break;
 
                 case ExpressionNodeType.AssignmentOperator:
                     Emit((IAssignmentOperatorNode)expression);
@@ -172,24 +182,40 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Emit((IFunctionCallNode)expression);
                     return;
 
+                case ExpressionNodeType.Field:
+                    Emit((IFieldNode)expression, emissionType);
+                    return;
+
                 case ExpressionNodeType.Function:
                     Emit((IMethodNode)expression);
+                    return;
+
+                case ExpressionNodeType.FunctionArgument:
+                    Emit((IParameterNode)expression, emissionType);
+                    return;
+
+                case ExpressionNodeType.IncrementDecrementOperator:
+                    Emit((IIncrementDecrementOperatorNode)expression);
                     return;
 
                 case ExpressionNodeType.Literal:
                     Emit((ILiteralNode)expression);
                     return;
 
+                case ExpressionNodeType.LocalVariable:
+                    Emit((ILocalVariableNode)expression, emissionType);
+                    return;
+
                 case ExpressionNodeType.ObjectCreation:
                     Emit((IObjectCreationNode)expression);
                     return;
 
+                case ExpressionNodeType.Property:
+                    Emit((IPropertyNode)expression);
+                    return;
+
                 case ExpressionNodeType.ValueCreation:
                     throw new NotImplementedException();
-
-                case ExpressionNodeType.ArrayCreation:
-                    Emit((IArrayCreationNode)expression);
-                    break;
 
                 case ExpressionNodeType.This:
                     EmitThis();
@@ -205,17 +231,17 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void Emit(IReturnNode returnNode)
+        private void Emit(IReturnNode returnNode)
         {
             if (returnNode.Expression != null)
             {
-                Emit(returnNode.Expression, false);
+                Emit(returnNode.Expression, EmissionType.Value);
             }
 
             Ret();
         }
 
-        protected void Emit(ISymbolDeclarationNode symbolDeclaration)
+        private void Emit(ISymbolDeclarationNode symbolDeclaration)
         {
             body.Variables.Add(symbolDeclaration.Variable);
 
@@ -226,14 +252,14 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void Emit(IWhileBlockNode whileBlockNode)
+        private void Emit(IWhileBlockNode whileBlockNode)
         {
             var loopStart = CreateLabel();
             var loopEnd = CreateLabel();
 
             Emit(loopStart);
 
-            Emit(whileBlockNode.Condition, false);
+            Emit(whileBlockNode.Condition, EmissionType.Value);
             Brfalse(loopEnd);
 
             Emit(whileBlockNode.ExecutedBlock);
@@ -247,10 +273,14 @@ namespace LaborasLangCompiler.Codegen.Methods
         #region Expression node
 
 
-        protected void EmitStore(IExpressionNode expression)
+        private void EmitStore(IExpressionNode expression)
         {
             switch (expression.ExpressionType)
             {
+                case ExpressionNodeType.ArrayAccess:
+                    EmitStore((IArrayAccessNode)expression);
+                    break;
+
                 case ExpressionNodeType.Field:
                     EmitStore((IFieldNode)expression);
                     return;
@@ -267,8 +297,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     EmitStore((IPropertyNode)expression);
                     return;
 
-                case ExpressionNodeType.UnaryOperator:
-                    EmitStore((IUnaryOperatorNode)expression);
+                case ExpressionNodeType.IncrementDecrementOperator:
+                    EmitStore((IIncrementDecrementOperatorNode)expression);
                     return;
 
                 default:
@@ -279,16 +309,16 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         #region Load expression node
 
-        protected void Emit(IFieldNode field, bool emitReference)
+        private void Emit(IFieldNode field, EmissionType emissionType)
         {
-            emitReference &= field.Field.FieldType.IsValueType;
+            bool loadAddress = (emissionType == EmissionType.ThisArg && field.Field.FieldType.IsValueType) || emissionType == EmissionType.ReferenceToValue;
 
             if (!field.Field.Resolve().IsStatic)
             {
                 Contract.Assume(field.ObjectInstance != null);
-                Emit(field.ObjectInstance, true);
+                Emit(field.ObjectInstance, EmissionType.ThisArg);
 
-                if (emitReference)
+                if (loadAddress)
                 {
                     Ldflda(field.Field);
                 }
@@ -299,7 +329,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
             else
             {
-                if (emitReference)
+                if (loadAddress)
                 {
                     Ldsflda(field.Field);
                 }
@@ -310,14 +340,13 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void Emit(IParameterNode argument, bool emitReference)
+        private void Emit(IParameterNode argument, EmissionType emissionType)
         {
             Contract.Assume(argument.Parameter.Index >= 0);
 
             var index = argument.Parameter.Index + (methodDefinition.HasThis ? 1 : 0);
-            emitReference &= argument.Parameter.ParameterType.IsValueType;
 
-            if (emitReference)
+            if ((emissionType == EmissionType.ThisArg && argument.Parameter.ParameterType.IsValueType) || emissionType == EmissionType.ReferenceToValue)
             {
                 Ldarga(index);
             }
@@ -327,11 +356,9 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void Emit(ILocalVariableNode variable, bool emitReference)
+        private void Emit(ILocalVariableNode variable, EmissionType emissionType)
         {
-            emitReference &= variable.LocalVariable.VariableType.IsValueType;
-
-            if (emitReference)
+            if ((emissionType == EmissionType.ThisArg && variable.LocalVariable.VariableType.IsValueType) || emissionType == EmissionType.ReferenceToValue)
             {
                 Ldloca(variable.LocalVariable.Index);
             }
@@ -341,17 +368,66 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void Emit(IPropertyNode property)
+        private void Emit(IPropertyNode property)
         {
             var getter = AssemblyRegistry.GetPropertyGetter(Assembly, property.Property);
 
             if (getter.HasThis)
             {
                 Contract.Assume(property.ObjectInstance != null);
-                Emit(property.ObjectInstance, true);
+                Emit(property.ObjectInstance, EmissionType.ThisArg);
             }
 
             Call(getter);
+        }
+
+        private void Emit(IArrayAccessNode arrayAccess, EmissionType emissionType)
+        {
+            var array = arrayAccess.Array;
+            var arrayType = array.ExpressionReturnType as ArrayType;
+            var indices = arrayAccess.Indices;
+            bool loadAddress = (emissionType == EmissionType.ThisArg && arrayAccess.ExpressionReturnType.IsValueType) || emissionType == EmissionType.ReferenceToValue;
+
+            Emit(arrayAccess.Array, EmissionType.ThisArg);
+
+            if (arrayType != null)
+            {
+                if (arrayType.IsVector)
+                {
+                    Contract.Assume(indices.Count == 1);
+                    EmitExpressionWithTargetType(indices[0], Assembly.TypeSystem.Int32);
+
+                    if (loadAddress)
+                    {
+                        Ldelema(arrayType.ElementType);
+                    }
+                    else
+                    {
+                        Ldelem(arrayType.ElementType);
+                    }
+                }
+                else
+                {
+                    var loadElementMethod = loadAddress ? AssemblyRegistry.GetArrayLoadElementAddress(arrayType) : AssemblyRegistry.GetArrayLoadElement(arrayType);
+                    EmitArgumentsForCall(indices, loadElementMethod);
+                    Call(loadElementMethod);
+                }
+            }
+            else
+            {
+                var getter = AssemblyRegistry.GetCompatibleMethod(Assembly, array.ExpressionReturnType, "get_Item", indices.Select(index => index.ExpressionReturnType).ToArray());
+                Contract.Assume(getter != null);
+
+                EmitArgumentsForCall(indices, getter);
+                Call(getter);
+
+                if (loadAddress)
+                {
+                    var variable = temporaryVariables.Acquire(arrayAccess.ExpressionReturnType);
+                    Stloc(variable.Index);
+                    Ldloca(variable.Index);
+                }
+            }
         }
 
         #endregion
@@ -387,7 +463,7 @@ namespace LaborasLangCompiler.Codegen.Methods
         // We need to store value in case of setting to a non static property because
         // we cannot guarantee whether getter will return the same result as we set in the setter
         // (that would also be inefficient even if we could)
-        protected void Emit(IAssignmentOperatorNode assignmentOperator, bool duplicateValueInStack = true)
+        private void Emit(IAssignmentOperatorNode assignmentOperator, bool duplicateValueInStack = true)
         {
             // If we're storing to field or property and it's not static, we need to load object instance now
             // and if we're also duplicating value, we got to save it to temp variable
@@ -428,7 +504,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (memberHasThis)
             {
-                Emit(objectInstance, true);
+                Emit(objectInstance, EmissionType.ThisArg);
             }
 
             EmitExpressionWithTargetType(assignmentOperator.RightOperand, assignmentOperator.LeftOperand.ExpressionReturnType);
@@ -461,14 +537,19 @@ namespace LaborasLangCompiler.Codegen.Methods
                 }
                 else
                 {
-                    Emit(assignmentOperator.LeftOperand, false);
+                    Emit(assignmentOperator.LeftOperand, EmissionType.Value);
                 }
             }
         }
 
-        private void EmitExpressionWithTargetType(IExpressionNode expression, TypeReference targetType, bool emitAsReference = false)
+        private void EmitExpressionWithTargetType(IExpressionNode expression, TypeReference targetType)//, bool emitAsReference = false)
         {
-            Contract.Requires(!emitAsReference || CanEmitAsReference(expression), "Can't pass RValue by reference.");
+            if (targetType is ByReferenceType)
+            {
+                Contract.Assert(CanEmitAsReference(expression));
+                Emit(expression, EmissionType.ReferenceToValue);
+                return;
+            }
 
             bool expressionIsFunction = expression.ExpressionType == ExpressionNodeType.Function;
             bool expressionIsFunctor = expression.ExpressionReturnType.IsFunctorType();
@@ -477,7 +558,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             bool targetIsDelegate = targetBaseType != null && targetBaseType.FullName == "System.MulticastDelegate";
 
             // We'll want to emit expression in all cases
-            Emit(expression, emitAsReference);
+            Emit(expression, EmissionType.Value);
 
             if (targetIsDelegate)
             {
@@ -487,7 +568,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 if (expressionIsFunctor)
                 {
                     // Here we have a functor object on top of the stack
-                    
+
                     var delegateType = targetType;
                     var functorType = expression.ExpressionReturnType;
 
@@ -508,7 +589,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         #endregion
 
-        protected void Emit(IBinaryOperatorNode binaryOperator)
+        private void Emit(IBinaryOperatorNode binaryOperator)
         {
             switch (binaryOperator.BinaryOperatorType)
             {
@@ -594,7 +675,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void Emit(IMethodNode function)
+        private void Emit(IMethodNode function)
         {
             var returnTypeIsDelegate = function.ExpressionReturnType.Resolve().BaseType.FullName == "System.MulticastDelegate";
 
@@ -606,7 +687,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 if (function.Method.HasThis)
                 {
                     Contract.Assume(function.ObjectInstance != null);
-                    Emit(function.ObjectInstance, false);
+                    Emit(function.ObjectInstance, EmissionType.ThisArg);
                 }
 
                 Newobj(ctor);
@@ -618,7 +699,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 if (function.Method.HasThis)
                 {
                     Contract.Assume(function.ObjectInstance != null);
-                    Emit(function.ObjectInstance, false);
+                    EmitExpressionWithTargetType(function.ObjectInstance, Assembly.TypeSystem.Int32);
                 }
                 else
                 {
@@ -630,7 +711,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void Emit(IFunctionCallNode functionCall)
+        private void Emit(IFunctionCallNode functionCall)
         {
             var function = functionCall.Function;
 
@@ -642,7 +723,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 if (functionNode.Method.HasThis)
                 {
                     Contract.Assume(functionNode.ObjectInstance != null);
-                    Emit(functionNode.ObjectInstance, true);
+                    Emit(functionNode.ObjectInstance, EmissionType.ThisArg);
                 }
 
                 EmitArgumentsForCall(functionCall.Args, functionNode.Method);
@@ -661,7 +742,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 // Functor Call
                 var invokeMethod = AssemblyRegistry.GetMethod(Assembly, function.ExpressionReturnType, "Invoke");
 
-                Emit(function, true);
+                Emit(function, EmissionType.ThisArg);
                 EmitArgumentsForCall(functionCall.Args, invokeMethod);
 
                 Callvirt(invokeMethod);
@@ -673,11 +754,11 @@ namespace LaborasLangCompiler.Codegen.Methods
             var methodParameters = method.Parameters;
             var resolvedMethod = method.Resolve();
 
-            if (resolvedMethod.IsParamsMethod())
+            if (resolvedMethod != null && resolvedMethod.IsParamsMethod())
             {
                 EmitArgumentsForParamsCall(arguments, methodParameters);
             }
-            else if (methodParameters.Count > arguments.Count)    // Method with optional parameters call
+            else if (resolvedMethod != null && methodParameters.Count > arguments.Count)    // Method with optional parameters call
             {
                 EmitArgumentsForCallWithOptionalParameters(arguments, methodParameters, resolvedMethod);
             }
@@ -709,15 +790,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 Ldloc(arrayVariable.Index);
                 Ldc_I4(i - methodParameters.Count + 1);
                 EmitArgumentForCall(arguments[i], elementType);
-
-                if (elementType.IsValueType)
-                {
-                    Stelem_Any(elementType);
-                }
-                else
-                {
-                    Stelem_Ref();
-                }
+                Stelem(elementType);
             }
 
             Ldloc(arrayVariable.Index);
@@ -781,10 +854,10 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void EmitArgumentForCall(IExpressionNode argument, TypeReference targetParameterType)
         {
-            EmitExpressionWithTargetType(argument, targetParameterType, targetParameterType.IsByReference);
+            EmitExpressionWithTargetType(argument, targetParameterType);
         }
 
-        protected void Emit(ILiteralNode literal)
+        private void Emit(ILiteralNode literal)
         {
             switch (literal.ExpressionReturnType.MetadataType)
             {
@@ -848,26 +921,22 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void Emit(IObjectCreationNode objectCreation)
+        private void Emit(IObjectCreationNode objectCreation)
         {
-            foreach (var argument in objectCreation.Args)
-            {
-                Emit(argument, false);
-            }
-
+            EmitArgumentsForCall(objectCreation.Args, objectCreation.Constructor);
             Newobj(objectCreation.Constructor);
         }
 
-        protected void Emit(IArrayCreationNode arrayCreation)
+        private void Emit(IArrayCreationNode arrayCreation)
         {
             Contract.Requires(arrayCreation.ExpressionReturnType.IsArray, "Return type of IArrayCreationNode must be an array type.");
             Contract.Requires(arrayCreation.Dimensions.Count == ((ArrayType)arrayCreation.ExpressionReturnType).Rank, "Array creation node dimension count must match array type rank.");
-            
+
             var arrayType = (ArrayType)arrayCreation.ExpressionReturnType;
 
             if (arrayType.IsVector)
             {
-                Emit(arrayCreation.Dimensions[0], false);
+                Emit(arrayCreation.Dimensions[0], EmissionType.Value);
                 Newarr(arrayType.ElementType);
             }
             else
@@ -877,23 +946,123 @@ namespace LaborasLangCompiler.Codegen.Methods
 
                 for (int i = 0; i < rank; i++)
                 {
-                    Emit(arrayCreation.Dimensions[i], false);
+                    Emit(arrayCreation.Dimensions[i], EmissionType.Value);
                 }
 
                 Newobj(constructor);
             }
 
             if (arrayCreation.Initializer != null)
-                throw new NotImplementedException();
+            {
+                if (CanEmitArrayInitializerFastPath(arrayCreation.Initializer))
+                {
+                    EmitInitializerFastPath(arrayType, arrayCreation.Initializer);
+                }
+                else if (arrayType.IsVector)
+                {
+                    EmitVectorInitializerSlowPath(arrayType, arrayCreation.Initializer);
+                }
+                else
+                {
+                    EmitArrayInitializerSlowPath(arrayCreation);
+                }
+            }
         }
 
-        protected void EmitThis()
+        [Pure]
+        private bool CanEmitArrayInitializerFastPath(IReadOnlyList<IExpressionNode> initializer)
+        {
+            for (int i = 0; i < initializer.Count; i++)
+            {
+                if (initializer[i].ExpressionType != ExpressionNodeType.Literal || !initializer[i].ExpressionReturnType.IsValueType)
+                    return false;
+            }
+
+            return true;
+        }
+
+        // Assumes array is on the stack but it must leave it on the stack after the function is done
+        private void EmitInitializerFastPath(ArrayType arrayType, IReadOnlyList<IExpressionNode> initializer)
+        {
+            Contract.Requires(CanEmitArrayInitializerFastPath(initializer));
+
+            var field = AssemblyRegistry.GetArrayInitializerField(Assembly, arrayType.ElementType, initializer);
+            var initializeArrayMethod = AssemblyRegistry.GetMethod(Assembly, "System.Runtime.CompilerServices.RuntimeHelpers", "InitializeArray");
+
+            Dup();
+            Ldtoken(field);
+            Call(initializeArrayMethod);
+        }
+
+        // Assumes array is on the stack but it must leave it on the stack after the function is done
+        private void EmitVectorInitializerSlowPath(ArrayType arrayType, IReadOnlyList<IExpressionNode> initializer)
+        {
+            Contract.Requires(arrayType.IsVector);
+
+            var oldSequencePoint = CurrentSequencePoint;
+
+            for (int i = 0; i < initializer.Count; i++)
+            {
+                CurrentSequencePoint = initializer[i].SequencePoint;
+
+                Dup();
+                Ldc_I4(i);
+                EmitExpressionWithTargetType(initializer[i], arrayType.ElementType);
+                Stelem(arrayType.ElementType);
+            }
+
+            CurrentSequencePoint = oldSequencePoint;
+        }
+
+        // Assumes array is on the stack but it must leave it on the stack after the function is done
+        private void EmitArrayInitializerSlowPath(IArrayCreationNode arrayCreation)
+        {
+            Contract.Requires(arrayCreation.ExpressionReturnType is ArrayType);
+            Contract.Requires(!((ArrayType)arrayCreation.ExpressionReturnType).IsVector);
+
+            var oldSequencePoint = CurrentSequencePoint;
+
+            var arrayType = (ArrayType)arrayCreation.ExpressionReturnType;
+            var storeElementMethod = AssemblyRegistry.GetArrayStoreElement(arrayType);
+            var initializer = arrayCreation.Initializer;
+
+            var dimensionCount = arrayCreation.Dimensions.Count;
+            var dimensions = new int[dimensionCount];
+            var indexSizes = new int[dimensionCount];
+
+            for (int i = dimensionCount - 1; i > -1; i--)
+            {
+                Contract.Assume(arrayCreation.Dimensions[i] is ILiteralNode);
+
+                dimensions[i] = (int)((ILiteralNode)arrayCreation.Dimensions[i]).Value;
+                indexSizes[i] = i != dimensionCount - 1 ? indexSizes[i + 1] * dimensions[i + 1] : 1;
+            }
+
+            for (int i = 0; i < initializer.Count; i++)
+            {
+                CurrentSequencePoint = initializer[i].SequencePoint;
+
+                Dup();
+
+                for (int j = 0; j < dimensionCount; j++)
+                {
+                    Ldc_I4((i / indexSizes[j]) % dimensions[j]);
+                }
+
+                EmitExpressionWithTargetType(initializer[i], arrayType.ElementType);
+                Call(storeElementMethod);
+            }
+
+            CurrentSequencePoint = oldSequencePoint;
+        }
+
+        private void EmitThis()
         {
             Contract.Requires(!methodDefinition.IsStatic);
             Ldarg(0);
         }
 
-        protected void Emit(IUnaryOperatorNode unaryOperator)
+        private void Emit(IUnaryOperatorNode unaryOperator)
         {
             if (unaryOperator.UnaryOperatorType == UnaryOperatorNodeType.VoidOperator)
             {
@@ -901,7 +1070,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 return;
             }
 
-            Emit(unaryOperator.Operand, false);
+            Emit(unaryOperator.Operand, EmissionType.Value);
 
             Contract.Assume(unaryOperator.UnaryOperatorType != UnaryOperatorNodeType.VoidOperator);
 
@@ -920,43 +1089,79 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Neg();
                     return;
 
-                case UnaryOperatorNodeType.PostDecrement:
-                    Dup();
-                    Ldc_I4(-1);
-                    Add();
-                    EmitStore(unaryOperator.Operand);
-                    return;
-
-                case UnaryOperatorNodeType.PostIncrement:
-                    Dup();
-                    Ldc_I4(1);
-                    Add();
-                    EmitStore(unaryOperator.Operand);
-                    return;
-
-                case UnaryOperatorNodeType.PreDecrement:
-                    Ldc_I4(-1);
-                    Add();
-                    Dup();
-                    EmitStore(unaryOperator.Operand);
-                    return;
-
-                case UnaryOperatorNodeType.PreIncrement:
-                    Ldc_I4(1);
-                    Add();
-                    Dup();
-                    EmitStore(unaryOperator.Operand);
-                    return;
-
                 default:
                     ContractsHelper.AssertUnreachable(string.Format("Unknown unary operator type: {0}", unaryOperator.UnaryOperatorType));
                     return;
             }
         }
 
+        private void Emit(IIncrementDecrementOperatorNode incrementDecrementOperator)
+        {
+            Emit(incrementDecrementOperator.Operand, EmissionType.Value);
+
+            if (incrementDecrementOperator.OverloadedOperatorMethod != null)
+            {
+                switch (incrementDecrementOperator.IncrementDecrementType)
+                {
+                    case IncrementDecrementOperatorType.PreDecrement:
+                    case IncrementDecrementOperatorType.PreIncrement:
+                        Call(incrementDecrementOperator.OverloadedOperatorMethod);
+                        Dup();
+                        EmitStore(incrementDecrementOperator.Operand);
+                        return;
+
+                    case IncrementDecrementOperatorType.PostDecrement:
+                    case IncrementDecrementOperatorType.PostIncrement:
+                        Dup();
+                        Call(incrementDecrementOperator.OverloadedOperatorMethod);
+                        EmitStore(incrementDecrementOperator.Operand);
+                        return;
+
+                    default:
+                        ContractsHelper.AssertUnreachable(string.Format("Unknown unary operator type: {0}", incrementDecrementOperator.IncrementDecrementType));
+                        return;
+                }
+            }
+
+            switch (incrementDecrementOperator.IncrementDecrementType)
+            {
+                case IncrementDecrementOperatorType.PreDecrement:
+                    Ldc_I4(-1);
+                    Add();
+                    Dup();
+                    EmitStore(incrementDecrementOperator.Operand);
+                    return;
+
+                case IncrementDecrementOperatorType.PreIncrement:
+                    Ldc_I4(1);
+                    Add();
+                    Dup();
+                    EmitStore(incrementDecrementOperator.Operand);
+                    return;
+
+                case IncrementDecrementOperatorType.PostDecrement:
+                    Dup();
+                    Ldc_I4(-1);
+                    Add();
+                    EmitStore(incrementDecrementOperator.Operand);
+                    return;
+
+                case IncrementDecrementOperatorType.PostIncrement:
+                    Dup();
+                    Ldc_I4(1);
+                    Add();
+                    EmitStore(incrementDecrementOperator.Operand);
+                    return;
+
+                default:
+                    ContractsHelper.AssertUnreachable(string.Format("Unknown unary operator type: {0}", incrementDecrementOperator.IncrementDecrementType));
+                    return;
+            }
+        }
+
         #region Add emitter
 
-        protected void EmitAdd(IBinaryOperatorNode binaryOperator)
+        private void EmitAdd(IBinaryOperatorNode binaryOperator)
         {
             if (IsAtLeastOneOperandString(binaryOperator))
             {
@@ -968,22 +1173,22 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void EmitAddNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
+        private void EmitAddNumeral(IExpressionNode left, IExpressionNode right, TypeReference resultType)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
             Add();
         }
 
-        protected void EmitAddString(IExpressionNode left, IExpressionNode right)
+        private void EmitAddString(IExpressionNode left, IExpressionNode right)
         {
-            Emit(left, false);
+            Emit(left, EmissionType.Value);
 
             if (left.ExpressionReturnType.IsValueType)
             {
                 Box(left.ExpressionReturnType);
             }
 
-            Emit(right, false);
+            Emit(right, EmissionType.Value);
 
             if (right.ExpressionReturnType.IsValueType)
             {
@@ -1003,30 +1208,30 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         #region Logical And/Logical Or emitters
 
-        protected void EmitLogicalAnd(IBinaryOperatorNode binaryOperator)
+        private void EmitLogicalAnd(IBinaryOperatorNode binaryOperator)
         {
             var emitFalse = ilProcessor.Create(OpCodes.Ldc_I4, 0);
             var end = CreateLabel();
 
-            Emit(binaryOperator.LeftOperand, false);
+            Emit(binaryOperator.LeftOperand, EmissionType.Value);
             Brfalse(emitFalse);
 
-            Emit(binaryOperator.RightOperand, false);
+            Emit(binaryOperator.RightOperand, EmissionType.Value);
             Br(end);
 
             Emit(emitFalse);
             Emit(end);
         }
 
-        protected void EmitLogicalOr(IBinaryOperatorNode binaryOperator)
+        private void EmitLogicalOr(IBinaryOperatorNode binaryOperator)
         {
             var emitTrue = ilProcessor.Create(OpCodes.Ldc_I4, 1);
             var end = CreateLabel();
 
-            Emit(binaryOperator.LeftOperand, false);
+            Emit(binaryOperator.LeftOperand, EmissionType.Value);
             Brtrue(emitTrue);
 
-            Emit(binaryOperator.RightOperand, false);
+            Emit(binaryOperator.RightOperand, EmissionType.Value);
             Br(end);
 
             Emit(emitTrue);
@@ -1039,7 +1244,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         #region Greater equal than emitter
 
-        protected void EmitGreaterEqualThan(IBinaryOperatorNode binaryOperator)
+        private void EmitGreaterEqualThan(IBinaryOperatorNode binaryOperator)
         {
             if (IsAtLeastOneOperandString(binaryOperator))
             {
@@ -1051,7 +1256,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void EmitGreaterEqualThanString(IExpressionNode left, IExpressionNode right)
+        private void EmitGreaterEqualThanString(IExpressionNode left, IExpressionNode right)
         {
             var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, Assembly.TypeSystem.String, "CompareOrdinal",
                 new TypeReference[]
@@ -1060,8 +1265,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Assembly.TypeSystem.String
                 });
 
-            Emit(left, false);
-            Emit(right, false);
+            Emit(left, EmissionType.Value);
+            Emit(right, EmissionType.Value);
 
             Call(stringComparisonMethod);
 
@@ -1072,7 +1277,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             Ceq();
         }
 
-        protected void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right)
+        private void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
 
@@ -1085,7 +1290,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         #region Greater than emitter
 
-        protected void EmitGreaterThan(IBinaryOperatorNode binaryOperator)
+        private void EmitGreaterThan(IBinaryOperatorNode binaryOperator)
         {
             if (IsAtLeastOneOperandString(binaryOperator))
             {
@@ -1097,7 +1302,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void EmitGreaterThanString(IExpressionNode left, IExpressionNode right)
+        private void EmitGreaterThanString(IExpressionNode left, IExpressionNode right)
         {
             var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, Assembly.TypeSystem.String, "CompareOrdinal",
                 new TypeReference[]
@@ -1107,8 +1312,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                 });
 
 
-            Emit(left, false);
-            Emit(right, false);
+            Emit(left, EmissionType.Value);
+            Emit(right, EmissionType.Value);
 
             Call(stringComparisonMethod);
 
@@ -1116,7 +1321,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             Cgt();
         }
 
-        protected void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right)
+        private void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
             Cgt();
@@ -1126,7 +1331,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         #region Less equal than emitter
 
-        protected void EmitLessEqualThan(IBinaryOperatorNode binaryOperator)
+        private void EmitLessEqualThan(IBinaryOperatorNode binaryOperator)
         {
             if (IsAtLeastOneOperandString(binaryOperator))
             {
@@ -1138,7 +1343,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void EmitLessEqualThanString(IExpressionNode left, IExpressionNode right)
+        private void EmitLessEqualThanString(IExpressionNode left, IExpressionNode right)
         {
             var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, Assembly.TypeSystem.String, "CompareOrdinal",
                 new TypeReference[]
@@ -1148,8 +1353,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                 });
 
 
-            Emit(left, false);
-            Emit(right, false);
+            Emit(left, EmissionType.Value);
+            Emit(right, EmissionType.Value);
 
             Call(stringComparisonMethod);
 
@@ -1160,7 +1365,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             Ceq();
         }
 
-        protected void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right)
+        private void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
 
@@ -1173,7 +1378,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         #region Emit less than
 
-        protected void EmitLessThan(IBinaryOperatorNode binaryOperator)
+        private void EmitLessThan(IBinaryOperatorNode binaryOperator)
         {
             if (IsAtLeastOneOperandString(binaryOperator))
             {
@@ -1185,7 +1390,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void EmitLessThanString(IExpressionNode left, IExpressionNode right)
+        private void EmitLessThanString(IExpressionNode left, IExpressionNode right)
         {
             var stringComparisonMethod = AssemblyRegistry.GetCompatibleMethod(Assembly, Assembly.TypeSystem.String, "CompareOrdinal",
                 new TypeReference[]
@@ -1195,8 +1400,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                 });
 
 
-            Emit(left, false);
-            Emit(right, false);
+            Emit(left, EmissionType.Value);
+            Emit(right, EmissionType.Value);
 
             Call(stringComparisonMethod);
 
@@ -1204,7 +1409,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             Clt();
         }
 
-        protected void EmitLessThanNumeral(IExpressionNode left, IExpressionNode right)
+        private void EmitLessThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
 
@@ -1217,7 +1422,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         #region Division/Remainder emitters
 
-        protected void EmitDivision(IBinaryOperatorNode binaryOperator)
+        private void EmitDivision(IBinaryOperatorNode binaryOperator)
         {
             if (AreBothOperandsUnsigned(binaryOperator))
             {
@@ -1229,7 +1434,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void EmitRemainder(IBinaryOperatorNode binaryOperator)
+        private void EmitRemainder(IBinaryOperatorNode binaryOperator)
         {
             if (AreBothOperandsUnsigned(binaryOperator))
             {
@@ -1247,8 +1452,8 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             Contract.Requires(binaryOperator.BinaryOperatorType == BinaryOperatorNodeType.ShiftLeft || binaryOperator.BinaryOperatorType == BinaryOperatorNodeType.ShiftRight);
 
-            Emit(binaryOperator.LeftOperand, false);
-            Emit(binaryOperator.RightOperand, false);
+            Emit(binaryOperator.LeftOperand, EmissionType.Value);
+            Emit(binaryOperator.RightOperand, EmissionType.Value);
 
             switch (binaryOperator.BinaryOperatorType)
             {
@@ -1266,7 +1471,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void EmitVoidOperator(IUnaryOperatorNode unaryOperator)
+        private void EmitVoidOperator(IUnaryOperatorNode unaryOperator)
         {
             if (unaryOperator.Operand.ExpressionType == ExpressionNodeType.AssignmentOperator)
             {
@@ -1274,7 +1479,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
             else
             {
-                Emit(unaryOperator.Operand, false);
+                Emit(unaryOperator.Operand, EmissionType.Value);
                 Pop();
             }
         }
@@ -1283,7 +1488,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         #region Store expression node
 
-        protected void EmitStore(IFieldNode field)
+        private void EmitStore(IFieldNode field)
         {
             if (!field.Field.Resolve().IsStatic)
             {
@@ -1295,33 +1500,83 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void EmitStore(IParameterNode argument)
+        private void EmitStore(IParameterNode argument)
         {
             Starg(argument.Parameter.Index);
         }
 
-        protected void EmitStore(ILocalVariableNode variable)
+        private void EmitStore(ILocalVariableNode variable)
         {
             Stloc(variable.LocalVariable.Index);
         }
 
-        protected void EmitStore(IPropertyNode property)
+        private void EmitStore(IPropertyNode property)
         {
             var setter = AssemblyRegistry.GetPropertySetter(Assembly, property.Property);
             Call(setter);
         }
 
-        private void EmitStore(IUnaryOperatorNode unaryOperatorNode)
+        private void EmitStore(IArrayAccessNode arrayAccess)
         {
-            switch (unaryOperatorNode.UnaryOperatorType)
+            var array = arrayAccess.Array;
+            var arrayType = array.ExpressionReturnType as ArrayType;
+            var indices = arrayAccess.Indices;
+            
+            var valueVariable = temporaryVariables.Acquire(arrayAccess.ExpressionReturnType);
+            Stloc(valueVariable.Index);
+
+            Emit(arrayAccess.Array, EmissionType.ThisArg);
+
+            if (arrayType != null)
             {
-                case UnaryOperatorNodeType.PreDecrement:
-                case UnaryOperatorNodeType.PreIncrement:
-                    EmitStore(unaryOperatorNode.Operand);
+                if (arrayType.IsVector)
+                {
+                    Contract.Assume(indices.Count == 1);
+                    EmitExpressionWithTargetType(indices[0], Assembly.TypeSystem.Int32);
+                    Ldloc(valueVariable.Index);
+                    Stelem(arrayType.ElementType);
+                }
+                else
+                {
+                    var storeElementMethod = AssemblyRegistry.GetArrayStoreElement(arrayType);
+
+                    for (int i = 0; i < indices.Count; i++)
+                    {
+                        EmitArgumentForCall(indices[i], storeElementMethod.Parameters[i].ParameterType);
+                    }
+
+                    Ldloc(valueVariable.Index);
+                    Call(storeElementMethod);
+                }
+            }
+            else
+            {
+                var setter = AssemblyRegistry.GetCompatibleMethod(Assembly, array.ExpressionReturnType, "set_Item", indices.Select(index => index.ExpressionReturnType).ToArray());
+                Contract.Assume(setter != null);
+
+                for (int i = 0; i < indices.Count; i++)
+                {
+                    Emit(indices[i], EmissionType.Value);
+                }
+
+                Ldloc(valueVariable.Index);
+                Call(setter);
+            }
+
+            temporaryVariables.Release(valueVariable);
+        }
+
+        private void EmitStore(IIncrementDecrementOperatorNode incrementDecrementOperator)
+        {
+            switch (incrementDecrementOperator.IncrementDecrementType)
+            {
+                case IncrementDecrementOperatorType.PreDecrement:
+                case IncrementDecrementOperatorType.PreIncrement:
+                    EmitStore(incrementDecrementOperator.Operand);
                     return;
             }
 
-            ContractsHelper.AssertUnreachable(string.Format("Cannot store unary operator {0}.", unaryOperatorNode.UnaryOperatorType));
+            ContractsHelper.AssertUnreachable(string.Format("Cannot store increment/decrement operator {0}.", incrementDecrementOperator.IncrementDecrementType));
         }
 
         #endregion
@@ -1332,19 +1587,19 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (!conversionNeeded)
             {
-                Emit(left, false);
-                Emit(right, false);
+                Emit(left, EmissionType.Value);
+                Emit(right, EmissionType.Value);
             }
             else if (left.ExpressionReturnType.IsAssignableTo(right.ExpressionReturnType))
             {
-                Emit(left, false);
+                Emit(left, EmissionType.Value);
                 EmitConversionIfNeeded(left.ExpressionReturnType, right.ExpressionReturnType);
-                Emit(right, false);
+                Emit(right, EmissionType.Value);
             }
             else if (right.ExpressionReturnType.IsAssignableTo(right.ExpressionReturnType))
             {
-                Emit(left, false);
-                Emit(right, false);
+                Emit(left, EmissionType.Value);
+                Emit(right, EmissionType.Value);
                 EmitConversionIfNeeded(right.ExpressionReturnType, left.ExpressionReturnType);
             }
             else

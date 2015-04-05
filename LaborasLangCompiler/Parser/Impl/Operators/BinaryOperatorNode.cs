@@ -46,11 +46,11 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 ExpressionNode left, right;
                 left = ExpressionNode.Parse(context, lexerNode.Children[0]);
-                
+
                 for (int i = 1; i < lexerNode.Children.Count; i += 2)
                 {
                     right = ExpressionNode.Parse(context, lexerNode.Children[i + 1]);
-                    left = Create(context, Operators[lexerNode.Children[i].Type], left, right, 
+                    left = Create(context, Operators[lexerNode.Children[i].Type], left, right,
                         Parser.GetSequencePoint(left.SequencePoint, right.SequencePoint));
                 }
                 return left;
@@ -221,7 +221,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (!(left.ExpressionReturnType.IsIntegerType() && right.ExpressionReturnType.IsIntegerType()))
                 return false;
 
-            if (left.ExpressionReturnType.GetIntegerWidth() != right.ExpressionReturnType.GetIntegerWidth())
+            if (left.ExpressionReturnType.GetPrimitiveWidth() != right.ExpressionReturnType.GetPrimitiveWidth())
                 return false;
 
             return true;

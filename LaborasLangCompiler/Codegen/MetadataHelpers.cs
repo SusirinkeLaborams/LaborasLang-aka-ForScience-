@@ -9,7 +9,7 @@ namespace LaborasLangCompiler.Codegen
     static class MetadataHelpers
     {
         // 0 means native
-        public static int GetIntegerWidth(this TypeReference type)
+        public static int GetPrimitiveWidth(this TypeReference type)
         {
             switch (type.MetadataType)
             {
@@ -19,6 +19,7 @@ namespace LaborasLangCompiler.Codegen
 
                 case MetadataType.SByte:
                 case MetadataType.Byte:
+                case MetadataType.Boolean:
                     return 1;
 
                 case MetadataType.Char:
@@ -28,28 +29,16 @@ namespace LaborasLangCompiler.Codegen
 
                 case MetadataType.Int32:
                 case MetadataType.UInt32:
+                case MetadataType.Single:
                     return 4;
 
                 case MetadataType.Int64:
                 case MetadataType.UInt64:
-                    return 8;
-            }
-            
-            throw new NotSupportedException(string.Format("{0} is not an integer!", type.FullName));
-        }
-
-        public static float GetFloatWidth(TypeReference type)
-        {
-            switch (type.MetadataType)
-            {
-                case MetadataType.Single:
-                    return 4;
-
                 case MetadataType.Double:
                     return 8;
             }
             
-            throw new NotSupportedException(string.Format("{0} is not a float!", type.FullName));
+            throw new NotSupportedException(string.Format("{0} is not an integer!", type.FullName));
         }
 
         public static bool IsUnsignedInteger(this TypeReference type)

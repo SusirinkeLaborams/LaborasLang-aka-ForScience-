@@ -1,6 +1,5 @@
 ﻿using LaborasLangCompilerUnitTests.CodegenTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -58,23 +57,16 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
 
         protected void Test(IntegrationTestInfo testInfo)
         {
-            var temp = Path.GetTempPath() + Guid.NewGuid().ToString();
-            var exePath = temp + ".exe";
-            var pdbPath = temp + ".pdb";
+            var filePath = Path.Combine(TestBase.GetTestDirectory(), "TestExecutable");
+
+            var exePath = filePath + ".exe";
+            var pdbPath = filePath + ".pdb";
 
             var files = testInfo.SourceFiles.Select(file => Path.Combine(IntegrationTestsPath, "SourceFiles", file));
             
-            try
-            {
-                Build(files, exePath);
-                PEVerifyRunner.Run(exePath);
-                Run(exePath, testInfo);
-            }
-            finally
-            {
-                if (File.Exists(exePath)) File.Delete(exePath);
-                if (File.Exists(pdbPath)) File.Delete(pdbPath);
-            }
+            Build(files, exePath);
+            PEVerifyRunner.Run(exePath);
+            Run(exePath, testInfo);
         }
 
         private void Build(IEnumerable<string> sourceFiles, string outPath)

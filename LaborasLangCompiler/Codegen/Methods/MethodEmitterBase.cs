@@ -80,7 +80,8 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             return node.ExpressionType == ExpressionNodeType.LocalVariable ||
                 node.ExpressionType == ExpressionNodeType.Field ||
-                node.ExpressionType == ExpressionNodeType.FunctionArgument;
+                node.ExpressionType == ExpressionNodeType.FunctionArgument ||
+                node.ExpressionType == ExpressionNodeType.ArrayAccess;
         }
 
         protected static bool IsAtLeastOneOperandString(IBinaryOperatorNode binaryOperator)
@@ -433,6 +434,70 @@ namespace LaborasLangCompiler.Codegen.Methods
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
+        protected void Ldelem(TypeReference elementType)
+        {
+            Contract.Requires(elementType != null);
+
+            switch (elementType.MetadataType)
+            {
+                case MetadataType.IntPtr:
+                case MetadataType.UIntPtr:
+                case MetadataType.Pointer:
+                    ilProcessor.Emit(OpCodes.Ldelem_I);
+                    break;
+
+                case MetadataType.Boolean:
+                case MetadataType.Byte:
+                case MetadataType.SByte:
+                    ilProcessor.Emit(OpCodes.Ldelem_I1);
+                    break;
+
+                case MetadataType.Char:
+                case MetadataType.UInt16:
+                case MetadataType.Int16:
+                    ilProcessor.Emit(OpCodes.Ldelem_I2);
+                    break;
+
+                case MetadataType.UInt32:
+                case MetadataType.Int32:
+                    ilProcessor.Emit(OpCodes.Ldelem_I4);
+                    break;
+
+                case MetadataType.UInt64:
+                case MetadataType.Int64:
+                    ilProcessor.Emit(OpCodes.Ldelem_I8);
+                    break;
+
+                case MetadataType.Single:
+                    ilProcessor.Emit(OpCodes.Ldelem_R4);
+                    break;
+
+                case MetadataType.Double:
+                    ilProcessor.Emit(OpCodes.Ldelem_R8);
+                    break;
+
+                case MetadataType.Array:
+                case MetadataType.Class:
+                case MetadataType.Object:
+                case MetadataType.String:
+                    ilProcessor.Emit(OpCodes.Ldelem_Ref);
+                    break;
+
+                default:
+                    ilProcessor.Emit(OpCodes.Ldelem_Any, elementType);
+                    break;
+            }
+
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
+        protected void Ldelema(TypeReference type)
+        {
+            Contract.Requires(type != null);
+            ilProcessor.Emit(OpCodes.Ldelema, type);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
         protected void Ldfld(FieldReference field)
         {
             Contract.Requires(field != null);
@@ -544,6 +609,30 @@ namespace LaborasLangCompiler.Codegen.Methods
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
+        protected void Ldtoken(FieldReference fieldReference)
+        {
+            Contract.Requires(fieldReference != null);
+
+            ilProcessor.Emit(OpCodes.Ldtoken, fieldReference);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
+        protected void Ldtoken(MethodReference methodReference)
+        {
+            Contract.Requires(methodReference != null);
+
+            ilProcessor.Emit(OpCodes.Ldtoken, methodReference);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
+        protected void Ldtoken(TypeReference typeReference)
+        {
+            Contract.Requires(typeReference != null);
+
+            ilProcessor.Emit(OpCodes.Ldtoken, typeReference);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
         protected void Mul()
         {
             ilProcessor.Emit(OpCodes.Mul);
@@ -648,18 +737,60 @@ namespace LaborasLangCompiler.Codegen.Methods
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
-        protected void Stelem_Any(TypeReference valueType)
+        protected void Stelem(TypeReference elementType)
         {
-            Contract.Requires(valueType != null);
-            Contract.Requires(valueType.IsValueType);
+            Contract.Requires(elementType != null);
 
-            ilProcessor.Emit(OpCodes.Stelem_Any, valueType);
-            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
-        }
+            switch (elementType.MetadataType)
+            {
+                case MetadataType.IntPtr:
+                case MetadataType.UIntPtr:
+                case MetadataType.Pointer:
+                    ilProcessor.Emit(OpCodes.Stelem_I);
+                    break;
 
-        protected void Stelem_Ref()
-        {
-            ilProcessor.Emit(OpCodes.Stelem_Ref);
+                case MetadataType.Boolean:
+                case MetadataType.Byte:
+                case MetadataType.SByte:
+                    ilProcessor.Emit(OpCodes.Stelem_I1);
+                    break;
+
+                case MetadataType.Char:
+                case MetadataType.UInt16:
+                case MetadataType.Int16:
+                    ilProcessor.Emit(OpCodes.Stelem_I2);
+                    break;
+
+                case MetadataType.UInt32:
+                case MetadataType.Int32:
+                    ilProcessor.Emit(OpCodes.Stelem_I4);
+                    break;
+
+                case MetadataType.UInt64:
+                case MetadataType.Int64:
+                    ilProcessor.Emit(OpCodes.Stelem_I8);
+                    break;
+
+                case MetadataType.Single:
+                    ilProcessor.Emit(OpCodes.Stelem_R4);
+                    break;
+
+                case MetadataType.Double:
+                    ilProcessor.Emit(OpCodes.Stelem_R8);
+                    break;
+
+                case MetadataType.Array:
+                case MetadataType.Class:
+                case MetadataType.Object:
+                case MetadataType.String:
+                    ilProcessor.Emit(OpCodes.Stelem_Ref);
+                    break;
+
+                default:
+                    ilProcessor.Emit(OpCodes.Stelem_Any, elementType);
+                    break;
+            }
+
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
