@@ -25,9 +25,9 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public IReadOnlyList<IExpressionNode> Indices { get { return indices; } }
 
-        private ExpressionNode array;
-        private TypeReference type;
-        private IReadOnlyList<ExpressionNode> indices;
+        private readonly ExpressionNode array;
+        private readonly TypeReference type;
+        private readonly IReadOnlyList<ExpressionNode> indices;
 
         private ArrayAccessNode(ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point) : base(point)
         {
