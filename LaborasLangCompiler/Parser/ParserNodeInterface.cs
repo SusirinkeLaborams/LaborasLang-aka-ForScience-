@@ -50,6 +50,7 @@ namespace LaborasLangCompiler.Parser
         ValueCreation,
         ArrayCreation,
         ArrayAccess,
+        IndexOperator,
         ParserInternal
     }
 
