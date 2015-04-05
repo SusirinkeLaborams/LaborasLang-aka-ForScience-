@@ -9,6 +9,7 @@ using LaborasLangCompiler.Parser.Utils;
 using Mono.Cecil;
 using Lexer.Containers;
 using System.Diagnostics.Contracts;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -24,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
         }
 
-        public static InitializerList Parse(ContextNode context, AstNode lexerNode)
+        public static InitializerList Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.InitializerList);
             var point = context.Parser.GetSequencePoint(lexerNode);

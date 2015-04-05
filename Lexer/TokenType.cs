@@ -118,8 +118,12 @@
         IndexAccessNode,
         IndexNode,        
         FunctorParameters,
+        FunctionType,
+        ArrayType,
         LexerInternalTokens,    // Lexer internal-only tokens start from here
         
+        RawOperatorNode,
+
         StatementNode,
         DeclarationSubnode,
         ValueStatementNode,
@@ -182,22 +186,6 @@
         public static bool IsMeaningful(this TokenType token)
         {
             return true;
-            switch(token)
-            {
-                case TokenType.Comma:
-                case TokenType.LeftBracket:
-                case TokenType.RightBracket:                
-                case TokenType.LeftCurlyBrace:
-                case TokenType.RightCurlyBrace:
-                case TokenType.LeftParenthesis:
-                case TokenType.RightParenthesis:
-                case TokenType.EndOfLine:
-                case TokenType.Period:
-                case TokenType.Return:
-                    return false;
-                default:
-                    return true;
-            }
         }
     }
     

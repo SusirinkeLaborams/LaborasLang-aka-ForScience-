@@ -1,4 +1,4 @@
-//#define REMATCH
+#define REMATCH
 
 using Lexer;
 using Lexer.Containers;
@@ -36,15 +36,13 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         private void VerifyNotModified(string source, string fileName)
         {
             var serializedTree = Path + fileName + "_tree.txt";
-            Lexer.Lexer.WithTree(source, tree =>
-            {
+            var tree = Lexer.Lexer.Lex(source);            
 #if REMATCH
-                System.IO.File.WriteAllText(serializedTree, tree.ToString());
+            System.IO.File.WriteAllText(serializedTree, tree.ToString());
 #else
-                string expected = ReadFromFile(serializedTree);
-                Assert.AreEqual(expected, tree.ToString());
+            string expected = ReadFromFile(serializedTree);
+            Assert.AreEqual(expected, tree.ToString());
 #endif
-            });
         }
 
         private static string ReadFromFile(string fileName)
@@ -61,29 +59,25 @@ namespace LaborasLangCompilerUnitTests.LexerTests
 
         protected void AssertContainsNoUnknowns(string source)
         {
-            Lexer.Lexer.WithTree(source, tree =>
+            var tree = Lexer.Lexer.Lex(source);
+            if (ContaintsUnknowns(tree))
             {
-                if (ContaintsUnknowns(tree))
-                {
-                    Assert.Fail("Unknown symbols found in tree:\r\n" + tree.ToString());
-                }
-            });
+                Assert.Fail("Unknown symbols found in tree:\r\n" + tree.ToString());
+            }
         }
 
         protected void AssertContainsUnkowns(string source)
         {
-            Lexer.Lexer.WithTree(source, tree =>
+            var tree = Lexer.Lexer.Lex(source);
+            if (!ContaintsUnknowns(tree))
             {
-                if (!ContaintsUnknowns(tree))
-                {
-                    Assert.Fail("Unknowns expected in tree:\r\n" + tree.ToString());
-                }
-            });
+                Assert.Fail("Unknowns expected in tree:\r\n" + tree.ToString());
+            }
         }
 
-        private bool ContaintsUnknowns(AstNode tree)
+        private bool ContaintsUnknowns(AbstractSyntaxTree tree)
         {
-            if (TokenType.UnknownNode == tree.Token.Type)
+            if (TokenType.UnknownNode == tree.Type)
             {
                 return true;
             }

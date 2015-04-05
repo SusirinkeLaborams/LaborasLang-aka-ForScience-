@@ -10,6 +10,7 @@ using LaborasLangCompiler.Codegen;
 using System.Diagnostics.Contracts;
 using Lexer.Containers;
 using LaborasLangCompiler.Parser.Utils;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -34,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
         { 
         }
 
-        public static ArrayCreationNode Parse(ContextNode context, AstNode lexerNode)
+        public static ArrayCreationNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.ArrayLiteral);
             var point = context.Parser.GetSequencePoint(lexerNode);
@@ -52,7 +53,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     builder.Append(lexerType.Children[i]);
                 }
                 //.Last() returns parameter list
-                var last = lexerType.Children[lexerType.ChildrenCount - 1].Children[0];
+                var last = lexerType.Children[lexerType.Children.Count - 1].Children[0];
                 var elementType = builder.Type;
                 IReadOnlyList<ExpressionNode> dims;
                 if(ArrayAccessNode.IsEmptyIndexer(last))

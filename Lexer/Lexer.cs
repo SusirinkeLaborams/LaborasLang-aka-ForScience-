@@ -1,28 +1,33 @@
 ﻿using Lexer.Containers;
+using Lexer.PostProcessors;
 using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
 
 namespace Lexer
 {
     public sealed class Lexer
     {
-        public static RootNode Lex(string source)
+        public static AbstractSyntaxTree Lex(string source)
         {
-            var rootNode = new RootNode();
-            var tokens = Tokenizer.Tokenize(source, rootNode);
-            var matcher = new SyntaxMatcher(tokens, rootNode);
-            matcher.Match();
-
-            return rootNode;
-        }
-
-        public static void WithTree(string source, Action<AstNode> consumer)
-        {
-            using (var rootNode = new RootNode())
+            using (var root = new RootNode())
             {
-                var tokens = Tokenizer.Tokenize(source, rootNode);
-                var matcher = new SyntaxMatcher(tokens, rootNode);
-                consumer.Invoke(matcher.Match());
+
+                var sourceTokens = Tokenizer.Tokenize(source, root);
+                var syntaxMatcher = new SyntaxMatcher(sourceTokens, root);
+
+                var nodes = syntaxMatcher.Match();
+                var exposedTree = new AbstractSyntaxTree(nodes);
+                foreach (var postProcessor in PostProcessor.BuildAll())
+                {
+                    postProcessor.Transform(exposedTree);
+                }
+                nodes.Cleanup(root);
+                return exposedTree;
             }
+
         }
+
     }
 }

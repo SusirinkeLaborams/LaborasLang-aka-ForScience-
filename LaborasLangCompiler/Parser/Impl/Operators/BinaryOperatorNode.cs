@@ -12,6 +12,7 @@ using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using LaborasLangCompiler.Common;
 using System.Diagnostics.Contracts;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -36,7 +37,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         protected BinaryOperatorNode(SequencePoint point) : base(point) { }
 
-        public static ExpressionNode Parse(ContextNode context, AstNode lexerNode)
+        public static ExpressionNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             if (lexerNode.Children.Count == 1)
             {

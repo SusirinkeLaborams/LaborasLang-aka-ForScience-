@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -40,7 +41,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.type = returnType;
         }
 
-        public static ExpressionNode Parse(ContextNode context, AstNode lexerNode)
+        public static ExpressionNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             var function = ExpressionNode.Parse(context, lexerNode.Children[0]);
             for(int i = 1; i < lexerNode.Children.Count; i++)
@@ -52,7 +53,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return function;
         }
 
-        private static List<ExpressionNode> ParseArgList(ContextNode parent, AstNode lexerNode)
+        private static List<ExpressionNode> ParseArgList(ContextNode parent, AbstractSyntaxTree lexerNode)
         {
             var args = new List<ExpressionNode>();
             foreach (var node in lexerNode.Children)

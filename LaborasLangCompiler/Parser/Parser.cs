@@ -1,7 +1,7 @@
 ﻿using LaborasLangCompiler.Codegen;
-
 using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer;
 using Lexer.Containers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -51,7 +51,7 @@ namespace LaborasLangCompiler.Parser
             Root = ClassNode.ForFile(this);
         }
 
-        public void ParseDeclarations(AstNode root)
+        public void ParseDeclarations(AbstractSyntaxTree root)
         {
             Root.ParseDeclarations(root);
         }
@@ -66,7 +66,7 @@ namespace LaborasLangCompiler.Parser
             Root.Emit();
         }
 
-        public SequencePoint GetSequencePoint(AstNode lexerNode)
+        public SequencePoint GetSequencePoint(AbstractSyntaxTree lexerNode)
         {
             var sequencePoint = new SequencePoint(Document);
             var start = lexerNode.Token.Start;
@@ -78,7 +78,7 @@ namespace LaborasLangCompiler.Parser
             return sequencePoint; 
         }
 
-        public SequencePoint GetSequencePoint(AstNode start, AstNode end)
+        public SequencePoint GetSequencePoint(AbstractSyntaxTree start, AbstractSyntaxTree end)
         {
             var sequencePoint = new SequencePoint(Document);
             sequencePoint.StartLine = start.Token.Start.Row;
