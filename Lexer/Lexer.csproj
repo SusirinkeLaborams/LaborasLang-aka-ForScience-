@@ -138,6 +138,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AbstractSyntaxTree.cs" />
     <Compile Include="Containers\AstNodeEnumerator.cs" />
     <Compile Include="Containers\AstNodeList.cs" />
     <Compile Include="Containers\AstNodePool.cs" />
@@ -145,7 +146,10 @@
     <Compile Include="Containers\FastString.cs" />
     <Compile Include="Containers\PermanentAllocator.cs" />
     <Compile Include="Lexer.cs" />
+    <Compile Include="Node.cs" />
     <Compile Include="ParseRule.cs" />
+    <Compile Include="PostProcessors\ArrayFunctionResolver.cs" />
+    <Compile Include="PostProcessors\PostProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="Containers\RootNode.cs" />

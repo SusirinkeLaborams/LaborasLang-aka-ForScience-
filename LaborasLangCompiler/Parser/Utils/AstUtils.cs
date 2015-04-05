@@ -1,4 +1,5 @@
-﻿using Lexer.Containers;
+﻿using Lexer;
+using Lexer.Containers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace LaborasLangCompiler.Parser.Utils
 {
     static class AstUtils
     {
-        public static bool IsFunctionDeclaration(this AstNode node)
+        public static bool IsFunctionDeclaration(this AbstractSyntaxTree node)
         {
             if (node.Type == Lexer.TokenType.Function)
                 return true;
@@ -20,12 +21,12 @@ namespace LaborasLangCompiler.Parser.Utils
             return false;
         }
 
-        public static string GetSingleSymbolOrThrow(this AstNode node)
+        public static string GetSingleSymbolOrThrow(this AbstractSyntaxTree node)
         {
             if (node.Type == Lexer.TokenType.Symbol)
                 return node.Content.ToString();
 
-            if (node.Type == Lexer.TokenType.FullSymbol && node.ChildrenCount == 1)
+            if (node.Type == Lexer.TokenType.FullSymbol && node.Children.Count == 1)
                 return node.Children[0].Content.ToString();
 
             throw new InvalidOperationException("Node not a single symbol node");

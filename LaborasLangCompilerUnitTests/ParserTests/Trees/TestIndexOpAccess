@@ -1,0 +1,45 @@
+Class:
+	TestIndexOpAccess
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Collections.ArrayList
+			Name:
+				list
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ObjectCreation:
+					Type: System.Collections.ArrayList
+					Args:
+					Constructor:
+						System.Void System.Collections.ArrayList::.ctor()
+
+
+		FieldDeclaration:
+			Type:
+				System.Object
+			Name:
+				bar
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				IndexOpAccess:
+					Expression:
+						Field:
+							System.Collections.ArrayList TestIndexOpAccess::list
+							Instance:
+								null
+					ElementType: System.Object
+					Settable: True
+					Gettable: True
+					Indices:
+						Literal:
+							Type:
+								System.Int32
+							Value:
+								5
+
+
+
+	Methods:

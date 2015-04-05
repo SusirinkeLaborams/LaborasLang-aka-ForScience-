@@ -83,8 +83,8 @@ Children:
 						Content: Type: Value, Start: 4, 12, End: 4, 20, Content: ""
 						Type: Value
 						Children:
-							Content: Type: ArrayLiteral, Start: 4, 12, End: 4, 20, Content: ""
-							Type: ArrayLiteral
+							Content: Type: Function, Start: 4, 12, End: 4, 20, Content: ""
+							Type: Function
 							Children:
 								Content: Type: Type, Start: 4, 12, End: 4, 18, Content: ""
 								Type: Type
@@ -110,8 +110,8 @@ Children:
 											Type: RightParenthesis
 											Children:
 
-								Content: Type: InitializerList, Start: 4, 18, End: 4, 20, Content: ""
-								Type: InitializerList
+								Content: Type: CodeBlockNode, Start: 4, 18, End: 4, 20, Content: ""
+								Type: CodeBlockNode
 								Children:
 									Content: Type: LeftCurlyBrace, Start: 4, 18, End: 4, 19, Content: "{"
 									Type: LeftCurlyBrace

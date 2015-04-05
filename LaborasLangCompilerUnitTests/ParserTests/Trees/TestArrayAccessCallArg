@@ -1,0 +1,47 @@
+Class:
+	TestArrayAccessCallArg
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Int32[]
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+
+		FieldDeclaration:
+			Type:
+				$Functors.$System_Int32?
+			Name:
+				ind
+			Modifiers:
+				Private, Mutable, NoInstance
+
+		FieldDeclaration:
+			Type:
+				System.Int32
+			Name:
+				bar
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ArrayAccess:
+					Array:
+						Field:
+							System.Int32[] TestArrayAccessCallArg::foo
+							Instance:
+								null
+					ElementType: System.Int32
+					Indices:
+						MethodCall:
+							ReturnType: System.Int32
+							Args:
+							Function:
+								Field:
+									$Functors.$System_Int32? TestArrayAccessCallArg::ind
+									Instance:
+										null
+
+
+
+	Methods:

@@ -9,46 +9,35 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class IndexOperatorAccessNode : ExpressionNode, IArrayAccessNode
+    class IndexOperatorAccessNode : PropertyNode, IArrayAccessNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ArrayAccess; } }
 
-        public override TypeReference ExpressionReturnType { get { return type; } }
-        public IExpressionNode ObjectInstance { get { return array; } }
+        public IReadOnlyList<IExpressionNode> Indices { get { return indices; } }
 
-        public IReadOnlyList<IExpressionNode> Indices { get; private set; }
+        private IReadOnlyList<ExpressionNode> indices;
 
-        public override bool IsSettable
+        internal IndexOperatorAccessNode(ContextNode context, ExpressionNode instance, PropertyReference property, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
+            : base(instance, property, context, point)
         {
-            get { return setter != null && TypeUtils.IsAccessbile(setter, context.GetClass().TypeReference); }
-        }
-
-        public override bool IsGettable
-        {
-            get { return getter != null && TypeUtils.IsAccessbile(getter, context.GetClass().TypeReference); }
-        }
-
-        private ExpressionNode array;
-        private TypeReference type;
-        private MethodReference getter;
-        private MethodReference setter;
-        private ContextNode context;
-
-        internal IndexOperatorAccessNode(ContextNode context, ExpressionNode array, TypeReference elementType, 
-            MethodReference getter, MethodReference setter, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
-            : base(point)
-        {
-            this.context = context;
-            this.array = array;
-            this.Indices = indices;
-            this.type = elementType;
-            this.getter = getter;
-            this.setter = setter;
+            this.indices= indices;
         }
 
         public override string ToString(int indent)
         {
-            throw new NotImplementedException();
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("IndexOpAccess:");
+            builder.Indent(indent + 1).AppendLine("Expression:");
+            builder.Append(Instance.ToString(indent + 2)).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("ElementType: {0}", ExpressionReturnType.FullName).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("Settable: {0}", IsSettable).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("Gettable: {0}", IsGettable).AppendLine();
+            builder.Indent(indent + 1).AppendLine("Indices:");
+            foreach (var ind in indices)
+            {
+                builder.AppendLine(ind.ToString(indent + 2));
+            }
+            return builder.ToString();
         }
     }
 }

@@ -9,6 +9,7 @@ using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using LaborasLangCompiler.Codegen;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -21,7 +22,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public abstract bool IsSettable { get; }
         protected ExpressionNode(SequencePoint sequencePoint) : base(sequencePoint) { }
 
-        public static ExpressionNode Parse(ContextNode context, AstNode lexerNode, TypeReference expectedType = null)
+        public static ExpressionNode Parse(ContextNode context, AbstractSyntaxTree lexerNode, TypeReference expectedType = null)
         {
             ExpressionNode ret = null;
             switch (lexerNode.Type)
@@ -69,6 +70,9 @@ namespace LaborasLangCompiler.Parser.Impl
                     break;
                 case Lexer.TokenType.ArrayLiteral:
                     ret = ArrayCreationNode.Parse(context, lexerNode);
+                    break;
+                case Lexer.TokenType.IndexAccessNode:
+                    ret = ArrayAccessNode.Parse(context, lexerNode);
                     break;
                 default:
                     throw new NotImplementedException();

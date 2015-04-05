@@ -11,6 +11,7 @@ using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using LaborasLangCompiler.Common;
 using System.Diagnostics.Contracts;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -23,7 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private ExpressionNode expression;
         private ReturnNode(SequencePoint point) : base(point) { }
 
-        public static ReturnNode Parse(CodeBlockNode context, AstNode lexerNode)
+        public static ReturnNode Parse(CodeBlockNode context, AbstractSyntaxTree lexerNode)
         {
             var point = context.Parser.GetSequencePoint(lexerNode);
             var returnType = context.GetMethod().MethodReturnType;

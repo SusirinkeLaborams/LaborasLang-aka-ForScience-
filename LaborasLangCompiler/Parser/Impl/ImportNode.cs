@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -16,7 +17,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override NodeType Type { get { return NodeType.ParserInternal; } }
         private ImportNode(SequencePoint point) : base(point) { }
 
-        public static void Parse(ContextNode context, AstNode lexerNode)
+        public static void Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             var namespaze = DotOperatorNode.Parse(context, lexerNode.Children[1]) as NamespaceNode;
             var point = context.Parser.GetSequencePoint(lexerNode);

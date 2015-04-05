@@ -11,6 +11,7 @@ using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using LaborasLangCompiler.Parser.Utils;
 using System.Diagnostics.Contracts;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -129,7 +130,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public static ExpressionNode Parse(ContextNode context, AstNode lexerNode)
+        public static ExpressionNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             if(lexerNode.Children.Count == 1)
             {
@@ -150,7 +151,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private static ExpressionNode ParseSuffix(ContextNode context, AstNode lexerNode)
+        private static ExpressionNode ParseSuffix(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             var expression = ExpressionNode.Parse(context, lexerNode.Children[0]);
             var ops = new List<InternalUnaryOperatorType>();
@@ -169,7 +170,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return Create(context, expression, ops);
         }
 
-        private static ExpressionNode ParsePrefix(ContextNode context, AstNode lexerNode)
+        private static ExpressionNode ParsePrefix(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             var count = lexerNode.Children.Count;
             var expression = ExpressionNode.Parse(context, lexerNode.Children[count - 1]);

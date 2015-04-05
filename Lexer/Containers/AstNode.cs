@@ -2,7 +2,7 @@
 
 namespace Lexer.Containers
 {
-    public unsafe struct AstNode
+    internal unsafe struct AstNode
     {
         private readonly InternalNode* m_NodePtr;
 

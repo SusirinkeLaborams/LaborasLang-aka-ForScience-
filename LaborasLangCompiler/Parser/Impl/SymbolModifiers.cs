@@ -1,5 +1,5 @@
 ﻿using LaborasLangCompiler.Common;
-
+using Lexer;
 using Lexer.Containers;
 using Mono.Cecil.Cil;
 using System;
@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return Modifiers.Private | Modifiers.Protected | Modifiers.Public;
         }
 
-        public static Modifiers AddModifier(this Modifiers modifiers, Parser parser, AstNode node)
+        public static Modifiers AddModifier(this Modifiers modifiers, Parser parser, AbstractSyntaxTree node)
         {
             var toAdd = FromToken[node.Children[0].Type];
             if((modifiers & toAdd) != 0)

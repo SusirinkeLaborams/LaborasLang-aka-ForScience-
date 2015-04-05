@@ -910,7 +910,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         public void TestArrayCreationMethodSize()
         {
             string source = @"
-                auto size = int(){return 4;}
+                auto size = int(){return 4;};
                 auto foo = int[size()];
             ";
             CompareTrees(source);
@@ -963,6 +963,66 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 use System.Collections;
                 auto foo = {ArrayList(), ArrayList(), Hashtable()};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayAccess()
+        {
+            string source = @"
+                int[] foo;
+                auto bar = foo[5];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayAccessCallArg()
+        {
+            string source = @"
+                int[] foo;
+                mutable int() ind;
+                auto bar = foo[ind()];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayAccessOnCall()
+        {
+            string source = @"
+                mutable int[]() foo;
+                auto bar = foo()[5];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestIndexOpGet()
+        {
+            string source = @"
+                use System.Collections;
+                auto list = ArrayList();
+                auto bar = list[5];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayOfLists()
+        {
+            string source = @"
+                use System.Collections;
+                auto bar = ArrayList[5];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestIndexOpSet()
+        {
+            string source = @"
+                use System.Collections;
+                auto list = ArrayList();
+                auto func = void()
+                {
+                    list[5] = ""explosions"";
+                };
             ";
             CompareTrees(source);
         }

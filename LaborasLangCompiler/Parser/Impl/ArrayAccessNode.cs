@@ -10,6 +10,7 @@ using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
 using Lexer.Containers;
 using System.Diagnostics.Contracts;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -22,30 +23,44 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ExpressionReturnType { get { return type; } }
         public IExpressionNode ObjectInstance { get { return array; } }
 
-        public IReadOnlyList<IExpressionNode> Indices { get; private set; }
+        public IReadOnlyList<IExpressionNode> Indices { get { return indices; } }
 
-        private ExpressionNode array;
-        private TypeReference type;
+        private readonly ExpressionNode array;
+        private readonly TypeReference type;
+        private readonly IReadOnlyList<ExpressionNode> indices;
 
         private ArrayAccessNode(ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point) : base(point)
         {
             Contract.Requires(array.ExpressionReturnType is ArrayType);
             this.array = array;
-            this.Indices = indices;
+            this.indices = indices;
             this.type = ((ArrayType)array.ExpressionReturnType).ElementType;
         }
 
-        public static ExpressionNode Parse(ContextNode context, AstNode lexerNode)
+        public static ExpressionNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexAccessNode);
             var array = ExpressionNode.Parse(context, lexerNode.Children[0]);
-            throw new NotImplementedException();
+            for(int i = 1; i < lexerNode.Children.Count; i++)
+            {
+                var node = lexerNode.Children[i];
+                Contract.Assume(node.Type == Lexer.TokenType.IndexNode);
+                var point = context.Parser.GetSequencePoint(node);
+                if(IsEmptyIndexer(node))
+                {
+                    ErrorCode.MissingArraySize.ReportAndThrow(point, "Can only use implicit array size with initialization");
+                }
+                var init = ParseIndex(context, node);
+                array = Create(context, array, init, point);
+            }
+            return array;
         }
 
         public static ExpressionNode Create(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
         {
-            foreach(var index in indices)
+            foreach (var index in indices)
             {
-                if(!index.IsGettable || 
+                if (!index.IsGettable ||
                     !(index.ExpressionReturnType.IsAssignableTo(context.Parser.Int32) || index.ExpressionReturnType.IsAssignableTo(context.Parser.UInt32)))
                 {
                     ErrorCode.InvalidIndexType.ReportAndThrow(index.SequencePoint, "Invalid index, must be a gettable integer");
@@ -85,35 +100,15 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static IndexOperatorAccessNode AsIndexOp(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
         {
-            var args = indices.Select(a => a.ExpressionReturnType).ToArray();
-            var setter = AssemblyRegistry.GetCompatibleMethod(context.Assembly, array.ExpressionReturnType, "set_Item", args);
-            var getter = AssemblyRegistry.GetCompatibleMethod(context.Assembly, array.ExpressionReturnType, "get_Item", args);
-
-            if(getter == null && setter == null)
-                return null;
-
-            if(getter != null && getter.IsStatic())
+            var itemProperty = AssemblyRegistry.GetProperty(array.ExpressionReturnType, "Item");
+            if(itemProperty != null)
+            {
+                return new IndexOperatorAccessNode(context, array, itemProperty, indices, point);
+            }
+            else
             {
                 return null;
             }
-
-            if(setter != null && setter.IsStatic())
-            {
-                return null;
-            }
-
-            var getType = getter != null ? getter.ReturnType : null;
-            var setType = setter != null ? setter.ReturnType : null;
-
-            if(getType != null && setType != null)
-            {
-                if(!getType.TypeEquals(setType))
-                {
-                    return null;
-                }
-            }
-
-            return new IndexOperatorAccessNode(context, array, getType, getter, setter, indices, point);
         }
 
         private static ArrayCreationNode AsArrayCreation(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
@@ -126,13 +121,13 @@ namespace LaborasLangCompiler.Parser.Impl
         }
 
         [Pure]
-        public static bool IsEmptyIndexer(AstNode lexerNode)
+        public static bool IsEmptyIndexer(AbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexNode);
             return lexerNode.Children.AsEnumerable().Count(n => n.Type == Lexer.TokenType.Value) == 0;
         }
 
-        public static int CountEmptyIndexerDims(AstNode lexerNode)
+        public static int CountEmptyIndexerDims(AbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexNode);
             Contract.Requires(IsEmptyIndexer(lexerNode));
@@ -140,7 +135,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return lexerNode.Children.AsEnumerable().Count(n => n.Type == Lexer.TokenType.Comma) + 1;
         }
 
-        public static IReadOnlyList<ExpressionNode> ParseIndex(ContextNode context, AstNode lexerNode)
+        public static IReadOnlyList<ExpressionNode> ParseIndex(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexNode);
             Contract.Requires(!IsEmptyIndexer(lexerNode));
@@ -150,7 +145,17 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public override string ToString(int indent)
         {
-            throw new NotImplementedException();
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("ArrayAccess:");
+            builder.Indent(indent + 1).AppendLine("Array:");
+            builder.Append(array.ToString(indent + 2)).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("ElementType: {0}", type.FullName).AppendLine();
+            builder.Indent(indent + 1).AppendLine("Indices:");
+            foreach (var ind in indices)
+            {
+                builder.AppendLine(ind.ToString(indent + 2));
+            }
+            return builder.ToString();
         }
     }
 }

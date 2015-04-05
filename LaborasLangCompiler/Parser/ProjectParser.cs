@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer;
 using Lexer.Containers;
 using Mono.Cecil;
 using System;
@@ -114,35 +115,21 @@ namespace LaborasLangCompiler.Parser.Impl
         public static ProjectParser ParseAll(AssemblyEmitter assembly, string[] sources, string[] names, bool emit)
         {
             ProjectParser projectParser = new ProjectParser(assembly, emit);
-            IReadOnlyList<RootNode> roots = null;
-            try
-            {
-                roots = sources.Select(s => Lexer.Lexer.Lex(s)).ToArray();
+            var roots = sources.Select(s => Lexer.Lexer.Lex(s)).ToArray();
 
-                for (int i = 0; i < sources.Length; i++)
-                {
-                    var source = sources[i];
-                    var name = names[i];
-                    projectParser.parsers.Add(new Parser(projectParser, name));
-                }
-
-                for (int i = 0; i < sources.Length; i++)
-                {
-                    projectParser.parsers[i].ParseDeclarations(roots[i].Node);
-                }
-                projectParser.parsers.ForEach(p => p.ParseInitializers());
-                projectParser.parsers.ForEach(p => p.Emit());
-            }
-            finally
+            for (int i = 0; i < sources.Length; i++)
             {
-                if (roots != null)
-                {
-                    foreach (var root in roots)
-                    {
-                        root.Dispose();
-                    }
-                }
+                var source = sources[i];
+                var name = names[i];
+                projectParser.parsers.Add(new Parser(projectParser, name));
             }
+
+            for (int i = 0; i < sources.Length; i++)
+            {
+                projectParser.parsers[i].ParseDeclarations(roots[i]);
+            }
+            projectParser.parsers.ForEach(p => p.ParseInitializers());
+            projectParser.parsers.ForEach(p => p.Emit());
             
             return projectParser;
         }

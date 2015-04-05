@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -30,7 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.functorType = new Lazy<TypeReference>(() => AssemblyRegistry.GetFunctorType(context.Parser.Assembly, Method));
         }
 
-        public static MethodNode Parse(ContextNode context, AstNode lexerNode)
+        public static MethodNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             var method = FunctionDeclarationNode.ParseAsFunctor(context, lexerNode);
             return new MethodNode(method.MethodReference, null, context, method.SequencePoint);

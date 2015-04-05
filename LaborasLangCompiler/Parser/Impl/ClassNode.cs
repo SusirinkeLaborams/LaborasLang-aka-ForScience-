@@ -13,6 +13,7 @@ using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using System.Diagnostics.Contracts;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -185,7 +186,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #region parsing
 
-        public void ParseDeclarations(AstNode lexerNode)
+        public void ParseDeclarations(AbstractSyntaxTree lexerNode)
         {
             foreach (var node in lexerNode.Children)
             {
@@ -208,11 +209,11 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private void ParseDeclaration(AstNode lexerNode)
+        private void ParseDeclaration(AbstractSyntaxTree lexerNode)
         {
             var declaration = DeclarationInfo.Parse(Parser, lexerNode);
 
-            if(!declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration() && !declaration.Modifiers.HasFlag(Modifiers.Mutable))
+            if(declaration.Initializer != null && declaration.Initializer.IsFunctionDeclaration() && !declaration.Modifiers.HasFlag(Modifiers.Mutable))
             {
                 //method
                 var method = FunctionDeclarationNode.ParseAsMethod(this, declaration);

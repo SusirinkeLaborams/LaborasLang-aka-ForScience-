@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer;
 using Lexer.Containers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -28,7 +29,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Scope = scope;
         }
 
-        public static SymbolNode Parse(ContextNode context, AstNode lexerNode)
+        public static SymbolNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             return new SymbolNode(lexerNode.Content.ToString(), context, context.Parser.GetSequencePoint(lexerNode));
         }
