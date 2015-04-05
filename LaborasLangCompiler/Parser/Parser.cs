@@ -69,8 +69,8 @@ namespace LaborasLangCompiler.Parser
         public SequencePoint GetSequencePoint(AbstractSyntaxTree lexerNode)
         {
             var sequencePoint = new SequencePoint(Document);
-            var start = lexerNode.Token.Start;
-            var end = lexerNode.Token.End;
+            var start = lexerNode.Node.Start;
+            var end = lexerNode.Node.End;
             sequencePoint.StartLine = start.Row;
             sequencePoint.StartColumn = start.Column;
             sequencePoint.EndLine = end.Row;
@@ -81,10 +81,10 @@ namespace LaborasLangCompiler.Parser
         public SequencePoint GetSequencePoint(AbstractSyntaxTree start, AbstractSyntaxTree end)
         {
             var sequencePoint = new SequencePoint(Document);
-            sequencePoint.StartLine = start.Token.Start.Row;
-            sequencePoint.StartColumn = start.Token.Start.Column;
-            sequencePoint.EndLine = end.Token.Start.Row;
-            sequencePoint.EndColumn = end.Token.Start.Column + 1;
+            sequencePoint.StartLine = start.Node.Start.Row;
+            sequencePoint.StartColumn = start.Node.Start.Column;
+            sequencePoint.EndLine = end.Node.Start.Row;
+            sequencePoint.EndColumn = end.Node.Start.Column + 1;
             return sequencePoint;
         }
 

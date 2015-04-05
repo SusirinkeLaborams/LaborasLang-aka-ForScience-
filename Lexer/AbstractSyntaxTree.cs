@@ -11,17 +11,6 @@ namespace Lexer
     {
         public List<AbstractSyntaxTree> Children { get; set; }
         public Node Node { get; set; }
-        public Node Token 
-        {
-            get 
-            {
-                return Node;
-            }
-            set
-            {
-                Node = value;
-            }
-        }
         #region Node shortcuts
         public TokenType Type
         {
@@ -71,7 +60,7 @@ namespace Lexer
         {
             get
             {
-                if (Token.Type.IsTerminal())
+                if (Node.Type.IsTerminal())
                     return Content.ToString();
 
                 StringBuilder builder = new StringBuilder();
