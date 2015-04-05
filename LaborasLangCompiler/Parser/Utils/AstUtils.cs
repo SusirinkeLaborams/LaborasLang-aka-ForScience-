@@ -10,7 +10,7 @@ namespace LaborasLangCompiler.Parser.Utils
 {
     static class AstUtils
     {
-        public static bool IsFunctionDeclaration(this AbstractSyntaxTree node)
+        public static bool IsFunctionDeclaration(this IAbstractSyntaxTree node)
         {
             if (node.Type == Lexer.TokenType.Function)
                 return true;
@@ -21,7 +21,7 @@ namespace LaborasLangCompiler.Parser.Utils
             return false;
         }
 
-        public static string GetSingleSymbolOrThrow(this AbstractSyntaxTree node)
+        public static string GetSingleSymbolOrThrow(this IAbstractSyntaxTree node)
         {
             if (node.Type == Lexer.TokenType.Symbol)
                 return node.Content.ToString();

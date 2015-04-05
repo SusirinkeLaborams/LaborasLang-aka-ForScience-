@@ -32,7 +32,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.IsConst = isConst;
         }
 
-        public static SymbolDeclarationNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
+        public static SymbolDeclarationNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             var info = DeclarationInfo.Parse(context.Parser, lexerNode);
             var name = info.SymbolName.GetSingleSymbolOrThrow();

@@ -20,7 +20,7 @@ namespace LaborasLangCompiler.Parser.Impl
         internal IndexOperatorAccessNode(ContextNode context, ExpressionNode instance, PropertyReference property, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
             : base(instance, property, context, point)
         {
-            this.indices= indices;
+            this.indices = indices;
         }
 
         public override string ToString(int indent)

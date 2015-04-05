@@ -31,7 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.functorType = new Lazy<TypeReference>(() => AssemblyRegistry.GetFunctorType(context.Parser.Assembly, Method));
         }
 
-        public static MethodNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
+        public static MethodNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             var method = FunctionDeclarationNode.ParseAsFunctor(context, lexerNode);
             return new MethodNode(method.MethodReference, null, context, method.SequencePoint);

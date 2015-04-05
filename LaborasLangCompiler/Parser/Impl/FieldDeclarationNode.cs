@@ -26,7 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public MemberReference MemberReference { get { return FieldReference; } }
 
         private Modifiers modifiers;
-        private readonly AbstractSyntaxTree initializer;
+        private readonly IAbstractSyntaxTree initializer;
         private readonly Lazy<FieldDefinition> field;
 
         public override ClassNode GetClass()

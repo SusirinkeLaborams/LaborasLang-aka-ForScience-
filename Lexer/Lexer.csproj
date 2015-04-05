@@ -145,6 +145,7 @@
     <Compile Include="Containers\AstNode.cs" />
     <Compile Include="Containers\FastString.cs" />
     <Compile Include="Containers\PermanentAllocator.cs" />
+    <Compile Include="IAbstractSyntaxTree.cs" />
     <Compile Include="Lexer.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="ParseRule.cs" />

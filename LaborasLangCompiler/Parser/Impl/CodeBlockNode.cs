@@ -110,7 +110,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return null;//unreachable
         }
 
-        private ParserNode ParseNode(AbstractSyntaxTree lexerNode)
+        private ParserNode ParseNode(IAbstractSyntaxTree lexerNode)
         {
             switch (lexerNode.Type)
             {
@@ -132,7 +132,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public static CodeBlockNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
+        public static CodeBlockNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             CodeBlockNode instance = null;
             if(lexerNode.Type == Lexer.TokenType.CodeBlockNode)

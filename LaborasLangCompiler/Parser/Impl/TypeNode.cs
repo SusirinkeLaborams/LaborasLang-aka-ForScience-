@@ -28,7 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 TypeUtils.VerifyAccessible(ParsedType, Scope.GetClass().TypeReference, point);
         }
 
-        public new static TypeReference Parse(ContextNode parent, AbstractSyntaxTree lexerNode)
+        public new static TypeReference Parse(ContextNode parent, IAbstractSyntaxTree lexerNode)
         {
             if (lexerNode.Type == Lexer.TokenType.FullSymbol)
             {
@@ -40,7 +40,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
 
             TypeBuilder builder = new TypeBuilder(parent);
-            foreach(AbstractSyntaxTree node in lexerNode.Children)
+            foreach (var node in lexerNode.Children)
             {
                 builder.Append(node);
             }
@@ -71,7 +71,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 this.context = context;
             }
 
-            public void Append(AbstractSyntaxTree node)
+            public void Append(IAbstractSyntaxTree node)
             {
                 if(Type == null)
                 {
@@ -95,10 +95,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            private void AppendFunctorTypeParams(AbstractSyntaxTree node)
+            private void AppendFunctorTypeParams(IAbstractSyntaxTree node)
             {
                 var args = new List<TypeReference>();
-                foreach (AbstractSyntaxTree param in node.Children)
+                foreach (var param in node.Children)
                 {
                     switch (param.Type)
                     {
@@ -121,7 +121,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 Type = AssemblyRegistry.GetFunctorType(parser.Assembly, Type, args);
             }
 
-            private void AppendArrayParams(AbstractSyntaxTree node)
+            private void AppendArrayParams(IAbstractSyntaxTree node)
             {
                 // [] has one dim
                 int dims = 1;

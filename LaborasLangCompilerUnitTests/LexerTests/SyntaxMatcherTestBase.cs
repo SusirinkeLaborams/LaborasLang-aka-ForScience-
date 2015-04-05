@@ -75,7 +75,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             }
         }
 
-        private bool ContaintsUnknowns(AbstractSyntaxTree tree)
+        private bool ContaintsUnknowns(IAbstractSyntaxTree tree)
         {
             if (TokenType.UnknownNode == tree.Type)
             {

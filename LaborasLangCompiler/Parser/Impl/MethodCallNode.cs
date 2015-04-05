@@ -41,7 +41,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.type = returnType;
         }
 
-        public static ExpressionNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
+        public static ExpressionNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             var function = ExpressionNode.Parse(context, lexerNode.Children[0]);
             for(int i = 1; i < lexerNode.Children.Count; i++)
@@ -53,7 +53,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return function;
         }
 
-        private static List<ExpressionNode> ParseArgList(ContextNode parent, AbstractSyntaxTree lexerNode)
+        private static List<ExpressionNode> ParseArgList(ContextNode parent, IAbstractSyntaxTree lexerNode)
         {
             var args = new List<ExpressionNode>();
             foreach (var node in lexerNode.Children)

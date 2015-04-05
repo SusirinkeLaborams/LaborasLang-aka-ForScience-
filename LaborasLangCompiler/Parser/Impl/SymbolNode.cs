@@ -29,7 +29,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Scope = scope;
         }
 
-        public static SymbolNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
+        public static SymbolNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             return new SymbolNode(lexerNode.Content.ToString(), context, context.Parser.GetSequencePoint(lexerNode));
         }

@@ -35,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
         { 
         }
 
-        public static ArrayCreationNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
+        public static ArrayCreationNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.ArrayLiteral);
             var point = context.Parser.GetSequencePoint(lexerNode);

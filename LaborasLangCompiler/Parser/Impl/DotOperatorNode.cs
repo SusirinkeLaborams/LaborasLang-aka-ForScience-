@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.parser = context.Parser;
         }
 
-        public static ExpressionNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
+        public static ExpressionNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             var instance = new DotOperatorNode(context);
             foreach(var node in lexerNode.Children)

@@ -52,7 +52,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return new LiteralNode(new Literal(value), type, point);
         }
 
-        public static LiteralNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
+        public static LiteralNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             lexerNode = lexerNode.Children[0];
             var point = context.Parser.GetSequencePoint(lexerNode);
@@ -61,7 +61,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return new LiteralNode(value, type, point);
         }
 
-        private static TypeReference ParseLiteralType(Parser parser, AbstractSyntaxTree lexerNode)
+        private static TypeReference ParseLiteralType(Parser parser, IAbstractSyntaxTree lexerNode)
         {
             switch(lexerNode.Type)
             {

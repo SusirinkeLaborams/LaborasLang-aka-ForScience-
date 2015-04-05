@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
         }
 
-        public static InitializerList Parse(ContextNode context, AbstractSyntaxTree lexerNode)
+        public static InitializerList Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.InitializerList);
             var point = context.Parser.GetSequencePoint(lexerNode);

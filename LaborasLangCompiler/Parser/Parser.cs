@@ -51,7 +51,7 @@ namespace LaborasLangCompiler.Parser
             Root = ClassNode.ForFile(this);
         }
 
-        public void ParseDeclarations(AbstractSyntaxTree root)
+        public void ParseDeclarations(IAbstractSyntaxTree root)
         {
             Root.ParseDeclarations(root);
         }
@@ -66,7 +66,7 @@ namespace LaborasLangCompiler.Parser
             Root.Emit();
         }
 
-        public SequencePoint GetSequencePoint(AbstractSyntaxTree lexerNode)
+        public SequencePoint GetSequencePoint(IAbstractSyntaxTree lexerNode)
         {
             var sequencePoint = new SequencePoint(Document);
             var start = lexerNode.Node.Start;
@@ -78,7 +78,7 @@ namespace LaborasLangCompiler.Parser
             return sequencePoint; 
         }
 
-        public SequencePoint GetSequencePoint(AbstractSyntaxTree start, AbstractSyntaxTree end)
+        public SequencePoint GetSequencePoint(IAbstractSyntaxTree start, IAbstractSyntaxTree end)
         {
             var sequencePoint = new SequencePoint(Document);
             sequencePoint.StartLine = start.Node.Start.Row;

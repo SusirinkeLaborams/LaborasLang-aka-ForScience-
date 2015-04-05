@@ -24,7 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private ExpressionNode expression;
         private ReturnNode(SequencePoint point) : base(point) { }
 
-        public static ReturnNode Parse(CodeBlockNode context, AbstractSyntaxTree lexerNode)
+        public static ReturnNode Parse(CodeBlockNode context, IAbstractSyntaxTree lexerNode)
         {
             var point = context.Parser.GetSequencePoint(lexerNode);
             var returnType = context.GetMethod().MethodReturnType;

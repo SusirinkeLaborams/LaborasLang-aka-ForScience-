@@ -186,7 +186,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #region parsing
 
-        public void ParseDeclarations(AbstractSyntaxTree lexerNode)
+        public void ParseDeclarations(IAbstractSyntaxTree lexerNode)
         {
             foreach (var node in lexerNode.Children)
             {
@@ -209,7 +209,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private void ParseDeclaration(AbstractSyntaxTree lexerNode)
+        private void ParseDeclaration(IAbstractSyntaxTree lexerNode)
         {
             var declaration = DeclarationInfo.Parse(Parser, lexerNode);
 

@@ -21,7 +21,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private CodeBlockNode block;
         protected WhileBlock(SequencePoint point) : base(point) { }
 
-        public static WhileBlock Parse(ContextNode context, AbstractSyntaxTree lexerNode)
+        public static WhileBlock Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             var point = context.Parser.GetSequencePoint(lexerNode);
             var condition = ExpressionNode.Parse(context, lexerNode.Children[2]);

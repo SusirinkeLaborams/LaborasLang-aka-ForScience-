@@ -22,7 +22,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public abstract bool IsSettable { get; }
         protected ExpressionNode(SequencePoint sequencePoint) : base(sequencePoint) { }
 
-        public static ExpressionNode Parse(ContextNode context, AbstractSyntaxTree lexerNode, TypeReference expectedType = null)
+        public static ExpressionNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode, TypeReference expectedType = null)
         {
             ExpressionNode ret = null;
             switch (lexerNode.Type)

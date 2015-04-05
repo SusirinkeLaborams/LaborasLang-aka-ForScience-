@@ -35,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         protected AssignmentOperatorNode(SequencePoint point) : base(point) { }
 
-        public static ExpressionNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
+        public static ExpressionNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             var left = ExpressionNode.Parse(context, lexerNode.Children[0]);
             var right = ExpressionNode.Parse(context, lexerNode.Children[2], left.ExpressionReturnType);

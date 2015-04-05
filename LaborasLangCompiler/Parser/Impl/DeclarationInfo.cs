@@ -15,13 +15,13 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class DeclarationInfo
     {
-        public AbstractSyntaxTree Type { get; private set; }
-        public AbstractSyntaxTree Initializer { get; private set; }
-        public AbstractSyntaxTree SymbolName { get; private set; }
+        public IAbstractSyntaxTree Type { get; private set; }
+        public IAbstractSyntaxTree Initializer { get; private set; }
+        public IAbstractSyntaxTree SymbolName { get; private set; }
         public Modifiers Modifiers { get; private set; }
         public SequencePoint Point { get; private set; }
 
-        public static DeclarationInfo Parse(Parser parser, AbstractSyntaxTree lexerNode)
+        public static DeclarationInfo Parse(Parser parser, IAbstractSyntaxTree lexerNode)
         {
             DeclarationInfo instance = new DeclarationInfo();
 

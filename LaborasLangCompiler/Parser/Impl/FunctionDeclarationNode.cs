@@ -24,13 +24,13 @@ namespace LaborasLangCompiler.Parser.Impl
         public IEnumerable<TypeReference> ParamTypes { get; private set; }
         public TypeReference MethodReturnType { get; private set; }
 
-        private readonly AbstractSyntaxTree body;
+        private readonly IAbstractSyntaxTree body;
         private CodeBlockNode parsedBody;
         private MethodEmitter emitter;
         private readonly Dictionary<string, ParameterDefinition> symbols = new Dictionary<string, ParameterDefinition>();
         private Modifiers modifiers;
 
-        private FunctionDeclarationNode(ContextNode parent, Modifiers modifiers, string name, AbstractSyntaxTree method)
+        private FunctionDeclarationNode(ContextNode parent, Modifiers modifiers, string name, IAbstractSyntaxTree method)
             : base(parent.Parser, parent, parent.Parser.GetSequencePoint(method))
         {
             this.body = method.Children[1];
@@ -46,7 +46,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 emitter.ParseTree(parsedBody);
         }
 
-        private void ParseHeader(Modifiers mods, AbstractSyntaxTree lexerNode, string methodName)
+        private void ParseHeader(Modifiers mods, IAbstractSyntaxTree lexerNode, string methodName)
         {
             var point = Parser.GetSequencePoint(lexerNode);
             var builder = new TypeNode.TypeBuilder(Parent);
@@ -101,7 +101,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return false;
         }
 
-        private ParameterDefinition ParseParameter(ContextNode parent, AbstractSyntaxTree typeNode, AbstractSyntaxTree nameNode)
+        private ParameterDefinition ParseParameter(ContextNode parent, IAbstractSyntaxTree typeNode, IAbstractSyntaxTree nameNode)
         {
             var type = TypeNode.Parse(parent, typeNode);
             var name = nameNode.GetSingleSymbolOrThrow();
@@ -128,7 +128,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return Parent.GetClass();
         }
 
-        public static FunctionDeclarationNode ParseAsFunctor(ContextNode context, AbstractSyntaxTree function)
+        public static FunctionDeclarationNode ParseAsFunctor(ContextNode context, IAbstractSyntaxTree function)
         {
             var instance = new FunctionDeclarationNode(context, Modifiers.NoInstance | Modifiers.Private, context.GetClass().NewFunctionName(), function);
             context.GetClass().AddLambda(instance);
@@ -142,7 +142,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return instance;
         }
 
-        public static TypeReference ParseFunctorType(ContextNode context, AbstractSyntaxTree lexerNode)
+        public static TypeReference ParseFunctorType(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             var builder = new TypeNode.TypeBuilder(context);
             int count = lexerNode.Children.Count;
@@ -219,7 +219,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.ToString();
         }
 
-        private static List<FunctionParamInfo> ParseParams(Parser parser, AbstractSyntaxTree lexerNode)
+        private static List<FunctionParamInfo> ParseParams(Parser parser, IAbstractSyntaxTree lexerNode)
         {
             lexerNode = lexerNode.Children[0];
             if (lexerNode.Type != Lexer.TokenType.FunctorParameters)
@@ -252,11 +252,12 @@ namespace LaborasLangCompiler.Parser.Impl
             return ret;
         }
 
+#warning wtf
         struct FunctionParamInfo
         {
-            private AbstractSyntaxTree m_Type;
-            private AbstractSyntaxTree m_Name;
-            public AbstractSyntaxTree Type
+            private IAbstractSyntaxTree m_Type;
+            private IAbstractSyntaxTree m_Name;
+            public IAbstractSyntaxTree Type
             {
                 get
                 {
@@ -267,7 +268,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     m_Type = value;
                 }
             }
-            public AbstractSyntaxTree Name
+            public IAbstractSyntaxTree Name
             {
                 get
                 {
@@ -279,7 +280,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            public FunctionParamInfo(AbstractSyntaxTree type, AbstractSyntaxTree name)
+            public FunctionParamInfo(IAbstractSyntaxTree type, IAbstractSyntaxTree name)
             {
                 m_Type = type;
                 m_Name = name;
@@ -303,7 +304,7 @@ namespace LaborasLangCompiler.Parser.Impl
             ErrorCode.InvalidMethodMods.ReportAndThrow(point, "Only one of {0} is allowed, {1} found", all, mods | all);
         }
 
-        private static void InvalidMethodDefinition(Parser parser, AbstractSyntaxTree lexerNode)
+        private static void InvalidMethodDefinition(Parser parser, IAbstractSyntaxTree lexerNode)
         {
             ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(lexerNode), "Not a valid method definition, {0}", lexerNode.FullContent);
         }

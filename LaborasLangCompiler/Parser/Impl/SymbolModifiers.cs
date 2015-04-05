@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return Modifiers.Private | Modifiers.Protected | Modifiers.Public;
         }
 
-        public static Modifiers AddModifier(this Modifiers modifiers, Parser parser, AbstractSyntaxTree node)
+        public static Modifiers AddModifier(this Modifiers modifiers, Parser parser, IAbstractSyntaxTree node)
         {
             var toAdd = FromToken[node.Children[0].Type];
             if((modifiers & toAdd) != 0)

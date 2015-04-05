@@ -31,7 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private ConditionBlockNode(SequencePoint sequencePoint) : base(sequencePoint) { }
 
-        public static ConditionBlockNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
+        public static ConditionBlockNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             var point = context.Parser.GetSequencePoint(lexerNode);
             var condition = ExpressionNode.Parse(context, lexerNode.Children[2]);

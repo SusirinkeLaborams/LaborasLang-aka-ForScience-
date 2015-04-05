@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 
 namespace Lexer
 {
-    public class AbstractSyntaxTree
+    internal class AbstractSyntaxTree : IAbstractSyntaxTree
     {
         public List<AbstractSyntaxTree> Children { get; set; }
+        IReadOnlyList<IAbstractSyntaxTree> IAbstractSyntaxTree.Children { get { return Children; } }
+
         public Node Node { get; set; }
         #region Node shortcuts
         public TokenType Type
@@ -23,27 +25,7 @@ namespace Lexer
                 Node.Type = value;
             }
         }
-        public Location Start {
-            get
-            {
-                return Node.Start;
-            }
-            set
-            {
-                Node.Start = value;
-            }
-        }
-        public Location End
-        {
-            get
-            {
-                return Node.End;
-            }
-            set
-            {
-                Node.End = value;
-            }
-        }
+
         public string Content 
         {
             get

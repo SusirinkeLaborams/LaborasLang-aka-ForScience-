@@ -9,7 +9,7 @@ namespace Lexer
 {
     public sealed class Lexer
     {
-        public static AbstractSyntaxTree Lex(string source)
+        public static IAbstractSyntaxTree Lex(string source)
         {
             using (var root = new RootNode())
             {
