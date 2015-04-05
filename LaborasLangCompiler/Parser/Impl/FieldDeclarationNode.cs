@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Parser.Utils;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -25,7 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public MemberReference MemberReference { get { return FieldReference; } }
 
         private Modifiers modifiers;
-        private readonly AstNode initializer;
+        private readonly AbstractSyntaxTree initializer;
         private readonly Lazy<FieldDefinition> field;
 
         public override ClassNode GetClass()
@@ -58,7 +59,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.modifiers = declaration.Modifiers;
             this.field = new Lazy<FieldDefinition>(() => new FieldDefinition(Name, GetAttributes(), TypeReference));
 
-            if (TypeReference.IsAuto() && !declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration())
+            if (TypeReference.IsAuto() && declaration.Initializer != null && declaration.Initializer.IsFunctionDeclaration())
                 TypeReference = FunctionDeclarationNode.ParseFunctorType(parent, declaration.Initializer);
 
             if (!TypeReference.IsAuto())
@@ -72,7 +73,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public void Initialize()
         {
-            if(initializer.IsNull)
+            if(initializer == null)
             {
                 if (TypeReference.IsAuto())
                     ErrorCode.MissingInit.ReportAndThrow(SequencePoint, "Type inference requires initialization");

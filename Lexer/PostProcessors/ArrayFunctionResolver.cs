@@ -9,14 +9,12 @@ namespace Lexer.PostProcessors
 {
     class ArrayFunctionResolver : PostProcessor
     {
-        private unsafe RootNode root;
-
-        public unsafe ArrayFunctionResolver(RootNode root) : base(root)
+        public unsafe ArrayFunctionResolver()
         {
-            this.root = root;
+
         }
 
-        public override void Transform(RootNode RootNode, AstNode astNode)
+        public override void Transform(AbstractSyntaxTree astNode)
         {
             if (astNode.Type == TokenType.ArrayLiteral)
             {

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class ProjectParser : IDisposable
+    class ProjectParser
     {
         public AssemblyEmitter Assembly { get; private set; }
         public bool ShouldEmit { get; private set; }
@@ -151,14 +151,6 @@ namespace LaborasLangCompiler.Parser.Impl
         public bool IsPrimitive(TypeReference type)
         {
             return primitives.Contains(type);
-        }
-
-        public void Dispose()
-        {
-            foreach(var parser in parsers)
-            {
-                parser.Dispose();
-            }
         }
 
         public override string ToString()

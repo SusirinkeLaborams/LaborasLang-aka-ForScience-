@@ -12,6 +12,7 @@ using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -51,7 +52,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return new LiteralNode(new Literal(value), type, point);
         }
 
-        public static LiteralNode Parse(ContextNode context, AstNode lexerNode)
+        public static LiteralNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             lexerNode = lexerNode.Children[0];
             var point = context.Parser.GetSequencePoint(lexerNode);
@@ -60,7 +61,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return new LiteralNode(value, type, point);
         }
 
-        private static TypeReference ParseLiteralType(Parser parser, AstNode lexerNode)
+        private static TypeReference ParseLiteralType(Parser parser, AbstractSyntaxTree lexerNode)
         {
             switch(lexerNode.Type)
             {

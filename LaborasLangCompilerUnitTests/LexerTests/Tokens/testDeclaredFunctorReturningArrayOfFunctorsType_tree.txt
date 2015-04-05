@@ -77,8 +77,8 @@ Children:
 		Content: Type: Value, Start: 2, 33, End: 2, 50, Content: ""
 		Type: Value
 		Children:
-			Content: Type: FunctionType, Start: 2, 33, End: 2, 50, Content: ""
-			Type: FunctionType
+			Content: Type: ArrayLiteral, Start: 2, 33, End: 2, 50, Content: ""
+			Type: ArrayLiteral
 			Children:
 				Content: Type: Type, Start: 2, 33, End: 2, 48, Content: ""
 				Type: Type
@@ -146,8 +146,8 @@ Children:
 							Type: RightParenthesis
 							Children:
 
-				Content: Type: CodeBlockNode, Start: 2, 48, End: 2, 50, Content: ""
-				Type: CodeBlockNode
+				Content: Type: InitializerList, Start: 2, 48, End: 2, 50, Content: ""
+				Type: InitializerList
 				Children:
 					Content: Type: LeftCurlyBrace, Start: 2, 48, End: 2, 49, Content: "{"
 					Type: LeftCurlyBrace

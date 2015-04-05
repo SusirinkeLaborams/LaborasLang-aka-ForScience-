@@ -9,18 +9,19 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Parser;
 using LaborasLangCompiler.Common;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
     class DeclarationInfo
     {
-        public AstNode Type { get; private set; }
-        public AstNode Initializer { get; private set; }
-        public AstNode SymbolName { get; private set; }
+        public AbstractSyntaxTree Type { get; private set; }
+        public AbstractSyntaxTree Initializer { get; private set; }
+        public AbstractSyntaxTree SymbolName { get; private set; }
         public Modifiers Modifiers { get; private set; }
         public SequencePoint Point { get; private set; }
 
-        public static DeclarationInfo Parse(Parser parser, AstNode lexerNode)
+        public static DeclarationInfo Parse(Parser parser, AbstractSyntaxTree lexerNode)
         {
             DeclarationInfo instance = new DeclarationInfo();
 
@@ -50,7 +51,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            if (instance.SymbolName.IsNull || instance.Type.IsNull)
+            if (instance.SymbolName == null || instance.Type == null)
             {
                 ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(lexerNode),
                     "Missing elements in declaration {0}, lexer messed up", lexerNode.Content);

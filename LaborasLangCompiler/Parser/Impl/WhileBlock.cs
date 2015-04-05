@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Parser.Utils;
+using Lexer;
 using Lexer.Containers;
 using Mono.Cecil.Cil;
 using System;
@@ -20,7 +21,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private CodeBlockNode block;
         protected WhileBlock(SequencePoint point) : base(point) { }
 
-        public static WhileBlock Parse(ContextNode context, AstNode lexerNode)
+        public static WhileBlock Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             var point = context.Parser.GetSequencePoint(lexerNode);
             var condition = ExpressionNode.Parse(context, lexerNode.Children[2]);

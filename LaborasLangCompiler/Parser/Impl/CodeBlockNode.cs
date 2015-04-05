@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics.Contracts;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -109,7 +110,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return null;//unreachable
         }
 
-        private ParserNode ParseNode(AstNode lexerNode)
+        private ParserNode ParseNode(AbstractSyntaxTree lexerNode)
         {
             switch (lexerNode.Type)
             {
@@ -131,7 +132,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public static CodeBlockNode Parse(ContextNode context, AstNode lexerNode)
+        public static CodeBlockNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             CodeBlockNode instance = null;
             if(lexerNode.Type == Lexer.TokenType.CodeBlockNode)

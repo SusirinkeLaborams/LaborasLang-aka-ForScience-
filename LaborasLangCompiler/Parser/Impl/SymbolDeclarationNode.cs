@@ -11,6 +11,7 @@ using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using LaborasLangCompiler.Common;
 using Mono.Cecil;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -31,13 +32,13 @@ namespace LaborasLangCompiler.Parser.Impl
             this.IsConst = isConst;
         }
 
-        public static SymbolDeclarationNode Parse(ContextNode context, AstNode lexerNode)
+        public static SymbolDeclarationNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             var info = DeclarationInfo.Parse(context.Parser, lexerNode);
             var name = info.SymbolName.GetSingleSymbolOrThrow();
             var declaredType = TypeNode.Parse(context, info.Type);
             var point = context.Parser.GetSequencePoint(lexerNode);
-            ExpressionNode initializer = info.Initializer.IsNull ? null : ExpressionNode.Parse(context, info.Initializer, declaredType);
+            ExpressionNode initializer = info.Initializer == null ? null : ExpressionNode.Parse(context, info.Initializer, declaredType);
 
             return Create(context, info.Modifiers, declaredType, name, initializer, point);
         }

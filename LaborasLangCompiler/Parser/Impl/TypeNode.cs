@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Parser.Utils;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -27,7 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 TypeUtils.VerifyAccessible(ParsedType, Scope.GetClass().TypeReference, point);
         }
 
-        public new static TypeReference Parse(ContextNode parent, AstNode lexerNode)
+        public new static TypeReference Parse(ContextNode parent, AbstractSyntaxTree lexerNode)
         {
             if (lexerNode.Type == Lexer.TokenType.FullSymbol)
             {
@@ -39,7 +40,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
 
             TypeBuilder builder = new TypeBuilder(parent);
-            foreach(AstNode node in lexerNode.Children)
+            foreach(AbstractSyntaxTree node in lexerNode.Children)
             {
                 builder.Append(node);
             }
@@ -70,7 +71,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 this.context = context;
             }
 
-            public void Append(AstNode node)
+            public void Append(AbstractSyntaxTree node)
             {
                 if(Type == null)
                 {
@@ -94,10 +95,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            private void AppendFunctorTypeParams(AstNode node)
+            private void AppendFunctorTypeParams(AbstractSyntaxTree node)
             {
                 var args = new List<TypeReference>();
-                foreach (AstNode param in node.Children)
+                foreach (AbstractSyntaxTree param in node.Children)
                 {
                     switch (param.Type)
                     {
@@ -120,7 +121,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 Type = AssemblyRegistry.GetFunctorType(parser.Assembly, Type, args);
             }
 
-            private void AppendArrayParams(AstNode node)
+            private void AppendArrayParams(AbstractSyntaxTree node)
             {
                 // [] has one dim
                 int dims = 1;

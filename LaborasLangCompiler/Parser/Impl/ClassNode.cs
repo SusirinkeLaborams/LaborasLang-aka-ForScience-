@@ -13,6 +13,7 @@ using Mono.Cecil.Cil;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer.Containers;
 using System.Diagnostics.Contracts;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -24,7 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
         private readonly List<FunctionDeclarationNode> lambdas;
         private readonly List<Namespace> globalImports;
         private int lambdaCounter = 0;
-        private readonly AstNode lexerNode;
+        private readonly AbstractSyntaxTree lexerNode;
         #endregion fields
 
         #region properties
@@ -36,7 +37,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         #endregion properties
 
-        private ClassNode(Parser parser, ClassNode parent, AstNode lexerNode) : base(parser, parent, parser.GetSequencePoint(lexerNode))
+        private ClassNode(Parser parser, ClassNode parent, AbstractSyntaxTree lexerNode) : base(parser, parent, parser.GetSequencePoint(lexerNode))
         {
             this.lexerNode = lexerNode;
             this.declaredMethods = new List<FunctionDeclarationNode>();
@@ -47,9 +48,9 @@ namespace LaborasLangCompiler.Parser.Impl
             TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
         }
 
-        public static ClassNode ParseFile(Parser parser, AstNode lexerNode)
+        public static ClassNode ParseFile(Parser parser, AbstractSyntaxTree lexerNode)
         {
-            Contract.Requires(!lexerNode.IsNull);
+            Contract.Requires(lexerNode != null);
             return new ClassNode(parser, null, lexerNode);
         }
 
@@ -206,11 +207,11 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private void ParseDeclaration(AstNode lexerNode)
+        private void ParseDeclaration(AbstractSyntaxTree lexerNode)
         {
             var declaration = DeclarationInfo.Parse(Parser, lexerNode);
 
-            if(!declaration.Initializer.IsNull && declaration.Initializer.IsFunctionDeclaration() && !declaration.Modifiers.HasFlag(Modifiers.Mutable))
+            if(declaration.Initializer != null && declaration.Initializer.IsFunctionDeclaration() && !declaration.Modifiers.HasFlag(Modifiers.Mutable))
             {
                 //method
                 var method = FunctionDeclarationNode.ParseAsMethod(this, declaration);

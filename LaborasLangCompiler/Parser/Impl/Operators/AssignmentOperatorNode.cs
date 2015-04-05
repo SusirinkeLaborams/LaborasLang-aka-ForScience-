@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Parser.Utils;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -34,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         protected AssignmentOperatorNode(SequencePoint point) : base(point) { }
 
-        public static ExpressionNode Parse(ContextNode context, AstNode lexerNode)
+        public static ExpressionNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             var left = ExpressionNode.Parse(context, lexerNode.Children[0]);
             var right = ExpressionNode.Parse(context, lexerNode.Children[2], left.ExpressionReturnType);

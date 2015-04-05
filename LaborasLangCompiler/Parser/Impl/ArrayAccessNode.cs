@@ -10,6 +10,7 @@ using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
 using Lexer.Containers;
 using System.Diagnostics.Contracts;
+using Lexer;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -35,7 +36,7 @@ namespace LaborasLangCompiler.Parser.Impl
             this.type = ((ArrayType)array.ExpressionReturnType).ElementType;
         }
 
-        public static ExpressionNode Parse(ContextNode context, AstNode lexerNode)
+        public static ExpressionNode Parse(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             var array = ExpressionNode.Parse(context, lexerNode.Children[0]);
             throw new NotImplementedException();
@@ -126,13 +127,13 @@ namespace LaborasLangCompiler.Parser.Impl
         }
 
         [Pure]
-        public static bool IsEmptyIndexer(AstNode lexerNode)
+        public static bool IsEmptyIndexer(AbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexNode);
             return lexerNode.Children.Count(n => n.Type == Lexer.TokenType.Value) == 0;
         }
 
-        public static int CountEmptyIndexerDims(AstNode lexerNode)
+        public static int CountEmptyIndexerDims(AbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexNode);
             Contract.Requires(IsEmptyIndexer(lexerNode));
@@ -140,7 +141,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return lexerNode.Children.Count(n => n.Type == Lexer.TokenType.Comma) + 1;
         }
 
-        public static IEnumerable<ExpressionNode> ParseIndex(ContextNode context, AstNode lexerNode)
+        public static IEnumerable<ExpressionNode> ParseIndex(ContextNode context, AbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexNode);
             Contract.Requires(!IsEmptyIndexer(lexerNode));

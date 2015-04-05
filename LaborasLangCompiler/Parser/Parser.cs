@@ -1,7 +1,7 @@
 ﻿using LaborasLangCompiler.Codegen;
-
 using LaborasLangCompiler.Parser.Impl;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
+using Lexer;
 using Lexer.Containers;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser
 {
-    class Parser : IDisposable
+    class Parser
     {
         public ProjectParser ProjectParser { get; private set; }
         public AssemblyEmitter Assembly { get { return ProjectParser.Assembly; } }
@@ -39,9 +39,7 @@ namespace LaborasLangCompiler.Parser
         public TypeReference Auto { get { return ProjectParser.Auto; } }
         public TypeReference Object { get { return ProjectParser.Object; } }
 
-        private readonly RootNode lexerRoot;
-
-        public Parser(ProjectParser parser, RootNode root, string filePath)
+        public Parser(ProjectParser parser, AbstractSyntaxTree tree, string filePath)
         {
             Filename = Path.GetFileNameWithoutExtension(filePath);
             Document = new Document(filePath);
@@ -50,11 +48,10 @@ namespace LaborasLangCompiler.Parser
             Document.Type = DocumentType.Text;
             ProjectParser = parser;
 
-            lexerRoot = root;
-            Root = ClassNode.ParseFile(this, root.Node);
+            Root = ClassNode.ParseFile(this, tree);
         }
 
-        public SequencePoint GetSequencePoint(AstNode lexerNode)
+        public SequencePoint GetSequencePoint(AbstractSyntaxTree lexerNode)
         {
             var sequencePoint = new SequencePoint(Document);
             var start = lexerNode.Token.Start;
@@ -66,7 +63,7 @@ namespace LaborasLangCompiler.Parser
             return sequencePoint; 
         }
 
-        public SequencePoint GetSequencePoint(AstNode start, AstNode end)
+        public SequencePoint GetSequencePoint(AbstractSyntaxTree start, AbstractSyntaxTree end)
         {
             var sequencePoint = new SequencePoint(Document);
             sequencePoint.StartLine = start.Token.Start.Row;
@@ -94,11 +91,6 @@ namespace LaborasLangCompiler.Parser
         public bool IsPrimitive(TypeReference type)
         {
             return ProjectParser.IsPrimitive(type);
-        }
-
-        public void Dispose()
-        {
-            lexerRoot.Dispose();
         }
     }
 }

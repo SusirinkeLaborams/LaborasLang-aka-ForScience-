@@ -10,30 +10,25 @@ namespace Lexer.PostProcessors
     abstract class PostProcessor
     {
 
-        public static IEnumerable<PostProcessor> BuildAll(RootNode root)
+        public static IEnumerable<PostProcessor> BuildAll()
         {
-            return new PostProcessor[]{new ArrayFunctionResolver(root)};
-        }
-        public unsafe RootNode RootNode { get; set; }
-
-        public PostProcessor(RootNode root)
-        {
-            this.RootNode = root;
-        }
-        public void Transform(AstNode tree)
-        {
-            Traverse(tree);
+            return new PostProcessor[]{new ArrayFunctionResolver()};
         }
 
-        private void Traverse(AstNode tree)
+        public PostProcessor()
         {
- 	        for(int i = 0; i < tree.ChildrenCount; i++)
+        }
+
+        private void Traverse(AbstractSyntaxTree tree)
+        {
+            tree.Children.ForEach(t =>
             {
-                Transform(RootNode, tree.Children[i]);
-                Traverse(tree.Children[i]);
-            }
+                Transform(t);
+                Traverse(t);
+            });
         }
 
-        public abstract void Transform(RootNode RootNode, AstNode astNode);
+        public abstract void Transform(AbstractSyntaxTree astNode);
+
     }
 }

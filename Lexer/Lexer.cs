@@ -9,61 +9,25 @@ namespace Lexer
 {
     public sealed class Lexer
     {
-        [Obsolete]
-        public static RootNode Lex(string source)
+        public static AbstractSyntaxTree Lex(string source)
         {
-            var rootNode = new RootNode();
-            AstNodeExtractor.Invoke(rootNode, source);
-          
-            return rootNode;
-        }
-
-        public static void WithTree(string source, Action<AstNode> consumer)
-        {
-            using (var rootNode = new RootNode())
+            using (var root = new RootNode())
             {
-                consumer.Invoke(AstNodeExtractor.Invoke(rootNode, source));
-            }
-        }
 
-        public static void WithTree(IReadOnlyList<string> sources, Action<IReadOnlyList<AstNode>> consumer)
-        {
-            var roots = new List<RootNode>();
-            try
-            {
-                roots.AddRange(sources.Select(source => new RootNode()));
+                var sourceTokens = Tokenizer.Tokenize(source, root);
+                var syntaxMatcher = new SyntaxMatcher(sourceTokens, root);
 
-                var nodes = roots.Zip(sources, AstNodeExtractor).ToArray();
-                consumer.Invoke(nodes);
-            }
-            finally
-            {
-                foreach (var rootNode in roots)
+                var nodes = syntaxMatcher.Match();
+                var exposedTree = new AbstractSyntaxTree(nodes);
+                foreach (var postProcessor in PostProcessor.BuildAll())
                 {
-                    rootNode.Dispose();
+                    postProcessor.Transform(exposedTree);
                 }
+                nodes.Cleanup(root);
+                return exposedTree;
             }
+
         }
 
-        private static Func<RootNode, string, AstNode> AstNodeExtractor
-        {
-            get
-            {
-                return (root, source) =>
-                {
-                    var sourceTokens = Tokenizer.Tokenize(source, root);
-                    var syntaxMatcher = new SyntaxMatcher(sourceTokens, root);
-
-                    var nodes = syntaxMatcher.Match();
-
-                    foreach (var postProcessor in PostProcessor.BuildAll(root))
-                    {
-                        postProcessor.Transform(nodes);
-                    }
-
-                    return nodes;
-                };
-            }
-        }
     }
 }
