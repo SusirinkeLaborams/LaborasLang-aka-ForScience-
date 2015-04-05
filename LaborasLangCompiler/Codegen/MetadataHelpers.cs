@@ -233,6 +233,12 @@ namespace LaborasLangCompiler.Codegen
             return MatchesArgumentList(methodParameters, desiredParameters);
         }
 
+        public static bool MatchesArgumentList(this PropertyReference property, IReadOnlyList<TypeReference> desiredParameters)
+        {
+            var propertyParameters = property.Resolve().Parameters;
+            return MatchesArgumentList(propertyParameters, desiredParameters);
+        }
+
         public static bool MatchesArgumentList(IList<ParameterDefinition> methodParameters, IReadOnlyList<TypeReference> desiredParameters)
         {
             // Doesn't match if parameter count doesn't match and either method has no parameters, or last parameter is neither params, nor default one.

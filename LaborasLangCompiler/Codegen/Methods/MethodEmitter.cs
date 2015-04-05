@@ -1551,7 +1551,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
             else
             {
-                var setter = AssemblyRegistry.GetCompatibleMethod(Assembly, array.ExpressionReturnType, "set_Item", indices.Select(index => index.ExpressionReturnType).ToArray());
+                var setter = AssemblyRegistry.GetCompatibleMethod(Assembly, array.ExpressionReturnType, "set_Item", indices.Select(index => index.ExpressionReturnType).Union(new[] { arrayAccess.ExpressionReturnType }).ToArray());
                 Contract.Assume(setter != null);
 
                 for (int i = 0; i < indices.Count; i++)

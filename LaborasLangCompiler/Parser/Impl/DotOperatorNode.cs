@@ -208,13 +208,13 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if(builtNode is TypeNode)
             {
-                property = AssemblyRegistry.GetProperty(parser.Assembly, ((TypeNode)builtNode).ParsedType, node.Name);
+                property = AssemblyRegistry.GetProperty(((TypeNode)builtNode).ParsedType, node.Name);
                 if (property != null && !property.IsStatic())
                     property = null;
             }
             else if(builtNode.ExpressionType != ExpressionNodeType.ParserInternal)
             {
-                property = AssemblyRegistry.GetProperty(parser.Assembly, builtNode.ExpressionReturnType, node.Name);
+                property = AssemblyRegistry.GetProperty(builtNode.ExpressionReturnType, node.Name);
                 if (property != null && property.IsStatic() || !builtNode.IsGettable)
                     property = null;
             }
