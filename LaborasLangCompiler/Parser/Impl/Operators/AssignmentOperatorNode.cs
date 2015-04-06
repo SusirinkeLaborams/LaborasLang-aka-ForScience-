@@ -38,10 +38,11 @@ namespace LaborasLangCompiler.Parser.Impl
         public static ExpressionNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             var left = ExpressionNode.Parse(context, lexerNode.Children[0]);
-            var right = ExpressionNode.Parse(context, lexerNode.Children[2], left.ExpressionReturnType);
+#warning fix, first need to check type
+            var right = ExpressionNode.Parse(context, lexerNode.Children[1], left.ExpressionReturnType);
             var point = context.Parser.GetSequencePoint(lexerNode);
 
-            return Create(context, LexerToAssignemnt[lexerNode.Children[1].Type], left, right, point);    
+            return Create(context, LexerToAssignemnt[lexerNode.Children[2].Type], left, right, point);    
         }
 
         public static ExpressionNode Create(ContextNode context, AssignmentOperatorType op, ExpressionNode left, ExpressionNode right, SequencePoint point)

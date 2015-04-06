@@ -178,6 +178,63 @@
                     return false;
             }
         }
+
+        public static bool IsAssignmentOp(this TokenType token)
+        {
+            switch(token)
+            {
+                case TokenType.Assignment:
+                case TokenType.PlusEqual:
+                case TokenType.MinusEqual:
+                case TokenType.DivideEqual:
+                case TokenType.MultiplyEqual:
+                case TokenType.RemainderEqual:
+                case TokenType.LeftShiftEqual:
+                case TokenType.RightShiftEqual:
+                case TokenType.LogicalAndEqual:
+                case TokenType.LogicalOrEqual:
+                case TokenType.BitwiseAndEqual:
+                case TokenType.BitwiseXorEqual:
+                case TokenType.BitwiseOrEqual:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsPeriodOp(this TokenType token)
+        {
+            return token == TokenType.Period;
+        }
+
+        public static bool IsBinaryOp(this TokenType token)
+        {
+            switch (token)
+            {
+                case TokenType.LeftShift:
+                case TokenType.RightShift:
+                case TokenType.Plus:
+                case TokenType.Minus:
+                case TokenType.Multiply:
+                case TokenType.Divide:
+                case TokenType.Remainder:
+                case TokenType.BitwiseAnd:
+                case TokenType.BitwiseOr:
+                case TokenType.BitwiseXor:
+                case TokenType.BitwiseComplement:
+                case TokenType.Equal:
+                case TokenType.NotEqual:
+                case TokenType.More:
+                case TokenType.Less:
+                case TokenType.MoreOrEqual:
+                case TokenType.LessOrEqual:
+                case TokenType.LogicalAnd:
+                case TokenType.LogicalOr: 
+                    return true;
+                default:
+                    return false;
+            }
+        }
     }
     
 }

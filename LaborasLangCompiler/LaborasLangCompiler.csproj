@@ -234,6 +234,7 @@
     <Compile Include="Parser\Impl\LocalVariableNode.cs" />
     <Compile Include="Parser\Impl\MemberNode.cs" />
     <Compile Include="Parser\Impl\ObjectCreationNode.cs" />
+    <Compile Include="Parser\Impl\Operators\InfixParser.cs" />
     <Compile Include="Parser\Impl\PropertyNode.cs" />
     <Compile Include="Parser\Impl\ValueCreationNode.cs" />
     <Compile Include="Parser\Literal.cs" />
