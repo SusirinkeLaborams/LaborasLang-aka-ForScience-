@@ -60,7 +60,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             ReferenceToValue
         }
 
-        private void Emit(IParserNode node, EmissionType emissionType)
+        private void Emit(IParserNode node)
         {
             Contract.Requires(node != null);
             Contract.Requires(node.Type != NodeType.ParserInternal);
@@ -89,7 +89,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     throw new NotImplementedException();
 
                 case NodeType.Expression:
-                    Emit((IExpressionNode)node, emissionType);
+                    Emit((IExpressionNode)node, EmissionType.Value);
                     break;
 
                 case NodeType.ReturnNode:
@@ -113,6 +113,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
 
             CurrentSequencePoint = oldSequencePoint;
+            temporaryVariables.ReleaseAll();
         }
 
         #region Parser node
@@ -121,22 +122,20 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             foreach (var node in codeBlock.Nodes)
             {
-                Emit(node, EmissionType.Value);
+                Emit(node);
             }
-
-            temporaryVariables.ReleaseAll();
         }
 
         private void Emit(IConditionBlock conditionBlock)
         {
-            var elseBlock = CreateLabel();
+            var elseBlockLabel = CreateLabel();
             var end = CreateLabel();
 
             Emit(conditionBlock.Condition, EmissionType.Value);
 
             if (conditionBlock.FalseBlock != null)
             {
-                Brfalse(elseBlock);
+                Brfalse(elseBlockLabel);
             }
             else
             {
@@ -148,7 +147,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             if (conditionBlock.FalseBlock != null)
             {
                 Br(end);
-                Emit(elseBlock);
+                Emit(elseBlockLabel);
                 Emit(conditionBlock.FalseBlock);
             }
 
