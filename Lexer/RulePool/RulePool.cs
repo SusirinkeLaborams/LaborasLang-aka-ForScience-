@@ -112,13 +112,19 @@ namespace Lexer
                     CollapsableParseRule(ParenthesesNode,
                         LeftParenthesis + Value + RightParenthesis,
                         Operand),
-
+                        
+                    /*PrefixNode is transformed using PrefixResolver. It is transformed to a recursive list {T, PrefixOperator}
+                      where T can be PrefixNode, ParenthesesNode, Operand. T will be as specific as possible.*/
                     CollapsableParseRule(PrefixNode,
                          ZeroOrMore(PrefixOperator) + ParenthesesNode),
-
+                         
+                    /*PostfixNode is transformed using InfixResolver. It is transformed to a recursive list {T, PostfixOperator}
+                      where T can be PostfixNode, PrefixNode, ParenthesesNode, Operand. T will be as specific as possible.*/
                     CollapsableParseRule(PostfixNode,
                         PrefixNode + ZeroOrMore(PostfixOperator)),
 
+                    /*InfixNode is transformed using InfixResolver. It is transformed to a tree with structure {A, B, InfixOperator}.
+                      A, B can have types of InfixNode, PostfixNode, PrefixNode, ParenthesesNode, Operand. A, B will be as specific as possible.*/
                     CollapsableParseRule(InfixNode,
                         PostfixNode + ZeroOrMore(InfixSubnode)),
 
@@ -159,6 +165,8 @@ namespace Lexer
                     AlwaysCollapsableParseRule(CommaAndValue,
                         Comma + Value),
 
+                    /*Tail of FullSymbol is transformed using FullSymbolPostProcessor.
+                        It is transformed to a recursive list of {Symbol, FullSymbol(Optional)}*/
                     ParseRule(FullSymbol,
                         Symbol + ZeroOrMore(SubSymbol)),
 
