@@ -38,7 +38,7 @@ namespace LaborasLangCompiler.Codegen
                     return 8;
             }
             
-            throw new NotSupportedException(string.Format("{0} is not an integer!", type.FullName));
+            throw new NotSupportedException(string.Format("{0} is not a primitive!", type.FullName));
         }
 
         public static bool IsUnsignedInteger(this TypeReference type)
