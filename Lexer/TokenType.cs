@@ -98,6 +98,7 @@
         Function,
         ConditionalSentence,
 
+        CastOperator,
         PrefixNode,
         PostfixNode,
         FunctionArgumentsList,

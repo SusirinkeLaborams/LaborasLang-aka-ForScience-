@@ -126,7 +126,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             var source = @"
             a = int[1]{ 1 };
             ";
-            AssertContainsNoUnknowns(source);
+            ExecuteTest(source);
         }
 
 
@@ -681,6 +681,36 @@ foo().bar = 5;
         public void TestPrefixSuffix()
         {
             var source = "foo = ++i++;";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestCast()
+        {
+            var source = "foo = (bar) foo;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestSumCast()
+        {
+            var source = "foo = (foo) (foo + 6);";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestMultipleCasts()
+        {
+            var source = "foo = (foo)(bar) foo;";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testFunctionCast()
+        {
+            var source = "foo = (bar(int)) foo;";
             ExecuteTest(source);
         }
 

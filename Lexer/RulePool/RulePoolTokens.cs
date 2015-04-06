@@ -8,6 +8,7 @@ namespace Lexer
 {
     partial class RulePool
     {
+        private static Condition CastOperator { get { return TokenType.CastOperator; } }
         private static Condition ForLoop { get { return TokenType.ForLoop; } }
         private static Condition For { get { return TokenType.For; } }
         private static Condition In { get { return TokenType.In; } }

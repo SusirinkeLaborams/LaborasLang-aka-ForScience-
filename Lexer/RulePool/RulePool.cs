@@ -95,7 +95,11 @@ namespace Lexer
                         MinusMinus, 
                         Minus, 
                         Not,
-                        BitwiseComplement),
+                        BitwiseComplement,
+                        CastOperator),
+
+                    ParseRule(CastOperator,
+                    LeftParenthesis + Type +  RightParenthesis),
                         
                     CollapsableParseRule(CodeBlockNode,
                         LeftCurlyBrace + ZeroOrMore(StatementNode) + RightCurlyBrace),

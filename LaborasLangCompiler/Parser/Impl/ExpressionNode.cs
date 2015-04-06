@@ -71,9 +71,9 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.ArrayLiteral:
                     ret = ArrayCreationNode.Parse(context, lexerNode);
                     break;
-                case Lexer.TokenType.IndexAccessNode:
+                /*case Lexer.TokenType.PostfixNode:
                     ret = ArrayAccessNode.Parse(context, lexerNode);
-                    break;
+                    break;*/
                 default:
                     throw new NotImplementedException();
             }
