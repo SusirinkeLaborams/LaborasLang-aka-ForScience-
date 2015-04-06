@@ -22,7 +22,15 @@ namespace LaborasLangCompiler.Parser.Impl
         public override TypeReference ExpressionReturnType { get { return type; } }
 
         public IReadOnlyList<IExpressionNode> Dimensions { get { return dimensions.ToArray(); } }
-        public IReadOnlyList<IExpressionNode> Initializer { get { return InitializerList.Initializers.ToArray(); } }
+        public IReadOnlyList<IExpressionNode> Initializer 
+        { 
+            get 
+            { 
+                return InitializerList != null ? 
+                    InitializerList.Initializers.ToArray() :
+                    new IExpressionNode[]{}; 
+            } 
+        }
         public InitializerList InitializerList { get; private set; }
 
         public bool IsImplicit { get; private set; }
