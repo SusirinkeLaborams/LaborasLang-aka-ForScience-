@@ -27,7 +27,7 @@ namespace LaborasLangCompiler.Parser.Impl
             ExpressionNode ret = null;
             switch (lexerNode.Type)
             {
-                case Lexer.TokenType.PeriodNode:
+                //case Lexer.TokenType.PeriodNode:
                 case Lexer.TokenType.FullSymbol:
                     ret = DotOperatorNode.Parse(context, lexerNode);
                     break;
@@ -43,22 +43,22 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.Function:
                     ret = MethodNode.Parse(context, lexerNode);
                     break;
-                case Lexer.TokenType.AssignmentOperatorNode:
+                //case Lexer.TokenType.AssignmentOperatorNode:
                     ret = AssignmentOperatorNode.Parse(context, lexerNode);
                     break;
-                case Lexer.TokenType.FunctionCallNode:
+                //case Lexer.TokenType.FunctionCallNode:
                     ret = MethodCallNode.Parse(context, lexerNode);
                     break;
-                case Lexer.TokenType.LogicalOrNode:
-                case Lexer.TokenType.LogicalAndNode:
-                case Lexer.TokenType.BitwiseOrNode:
-                case Lexer.TokenType.BitwiseXorNode:
-                case Lexer.TokenType.BitwiseAndNode:
-                case Lexer.TokenType.EqualityOperatorNode:
-                case Lexer.TokenType.RelationalOperatorNode:
-                case Lexer.TokenType.ShiftOperatorNode:
-                case Lexer.TokenType.AdditiveOperatorNode:
-                case Lexer.TokenType.MultiplicativeOperatorNode:
+                case Lexer.TokenType.InfixNode:
+                //case Lexer.TokenType.LogicalAndNode:
+                //case Lexer.TokenType.BitwiseOrNode:
+                //case Lexer.TokenType.BitwiseXorNode:
+                //case Lexer.TokenType.BitwiseAndNode:
+                //case Lexer.TokenType.EqualityOperatorNode:
+                //case Lexer.TokenType.RelationalOperatorNode:
+                //case Lexer.TokenType.ShiftOperatorNode:
+                //case Lexer.TokenType.AdditiveOperatorNode:
+                //case Lexer.TokenType.MultiplicativeOperatorNode:
                     ret = BinaryOperatorNode.Parse(context, lexerNode);
                     break;
                 case Lexer.TokenType.PostfixNode:

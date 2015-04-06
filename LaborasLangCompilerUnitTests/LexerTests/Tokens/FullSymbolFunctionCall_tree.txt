@@ -4,8 +4,8 @@ Children:
 	Content: Type: Value, Start: 1, 1, End: 1, 21, Content: ""
 	Type: Value
 	Children:
-		Content: Type: FunctionCallNode, Start: 1, 1, End: 1, 21, Content: ""
-		Type: FunctionCallNode
+		Content: Type: PostfixNode, Start: 1, 1, End: 1, 21, Content: ""
+		Type: PostfixNode
 		Children:
 			Content: Type: FullSymbol, Start: 1, 1, End: 1, 18, Content: ""
 			Type: FullSymbol

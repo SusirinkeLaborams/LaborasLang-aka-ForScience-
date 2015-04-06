@@ -4,8 +4,8 @@ Children:
 	Content: Type: Value, Start: 1, 1, End: 1, 17, Content: ""
 	Type: Value
 	Children:
-		Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 17, Content: ""
-		Type: AssignmentOperatorNode
+		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: InfixNode
 		Children:
 			Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
 			Type: FullSymbol
@@ -14,10 +14,6 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
-			Type: Assignment
-			Children:
-
 			Content: Type: PrefixNode, Start: 1, 7, End: 1, 17, Content: ""
 			Type: PrefixNode
 			Children:
@@ -25,28 +21,47 @@ Children:
 				Type: MinusMinus
 				Children:
 
-				Content: Type: PlusPlus, Start: 1, 9, End: 1, 11, Content: "++"
-				Type: PlusPlus
+				Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
+				Type: PrefixNode
 				Children:
-
-				Content: Type: Not, Start: 1, 11, End: 1, 12, Content: "!"
-				Type: Not
-				Children:
-
-				Content: Type: PlusPlus, Start: 1, 12, End: 1, 14, Content: "++"
-				Type: PlusPlus
-				Children:
-
-				Content: Type: MinusMinus, Start: 1, 14, End: 1, 16, Content: "--"
-				Type: MinusMinus
-				Children:
-
-				Content: Type: FullSymbol, Start: 1, 16, End: 1, 17, Content: ""
-				Type: FullSymbol
-				Children:
-					Content: Type: Symbol, Start: 1, 16, End: 1, 17, Content: "i"
-					Type: Symbol
+					Content: Type: PlusPlus, Start: 1, 9, End: 1, 11, Content: "++"
+					Type: PlusPlus
 					Children:
+
+					Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
+					Type: PrefixNode
+					Children:
+						Content: Type: Not, Start: 1, 11, End: 1, 12, Content: "!"
+						Type: Not
+						Children:
+
+						Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
+						Type: PrefixNode
+						Children:
+							Content: Type: PlusPlus, Start: 1, 12, End: 1, 14, Content: "++"
+							Type: PlusPlus
+							Children:
+
+							Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
+							Type: PrefixNode
+							Children:
+								Content: Type: MinusMinus, Start: 1, 14, End: 1, 16, Content: "--"
+								Type: MinusMinus
+								Children:
+
+								Content: Type: FullSymbol, Start: 1, 16, End: 1, 17, Content: ""
+								Type: FullSymbol
+								Children:
+									Content: Type: Symbol, Start: 1, 16, End: 1, 17, Content: "i"
+									Type: Symbol
+									Children:
+
+			Content: Type: InfixOperator, Start: 1, 5, End: 1, 6, Content: ""
+			Type: InfixOperator
+			Children:
+				Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
+				Type: Assignment
+				Children:
 
 	Content: Type: EndOfLine, Start: 1, 17, End: 1, 18, Content: ";"
 	Type: EndOfLine

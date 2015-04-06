@@ -4,8 +4,8 @@ Children:
 	Content: Type: Value, Start: 2, 13, End: 2, 34, Content: ""
 	Type: Value
 	Children:
-		Content: Type: FunctionCallNode, Start: 2, 13, End: 2, 34, Content: ""
-		Type: FunctionCallNode
+		Content: Type: PostfixNode, Start: 2, 13, End: 2, 34, Content: ""
+		Type: PostfixNode
 		Children:
 			Content: Type: FullSymbol, Start: 2, 13, End: 2, 16, Content: ""
 			Type: FullSymbol
@@ -24,8 +24,8 @@ Children:
 				Content: Type: Value, Start: 2, 17, End: 2, 23, Content: ""
 				Type: Value
 				Children:
-					Content: Type: IndexAccessNode, Start: 2, 17, End: 2, 23, Content: ""
-					Type: IndexAccessNode
+					Content: Type: PostfixNode, Start: 2, 17, End: 2, 23, Content: ""
+					Type: PostfixNode
 					Children:
 						Content: Type: FullSymbol, Start: 2, 17, End: 2, 20, Content: ""
 						Type: FullSymbol
@@ -62,8 +62,8 @@ Children:
 				Content: Type: Value, Start: 2, 25, End: 2, 33, Content: ""
 				Type: Value
 				Children:
-					Content: Type: IndexAccessNode, Start: 2, 25, End: 2, 33, Content: ""
-					Type: IndexAccessNode
+					Content: Type: PostfixNode, Start: 2, 25, End: 2, 33, Content: ""
+					Type: PostfixNode
 					Children:
 						Content: Type: FullSymbol, Start: 2, 25, End: 2, 30, Content: ""
 						Type: FullSymbol

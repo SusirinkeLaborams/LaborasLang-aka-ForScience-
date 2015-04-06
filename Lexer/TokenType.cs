@@ -95,29 +95,17 @@
         Function,
         ConditionalSentence,
 
-        AssignmentOperatorNode,
-        LogicalOrNode,
-        LogicalAndNode,
-        BitwiseOrNode,
-        BitwiseXorNode,
-        BitwiseAndNode,
-        PeriodNode,
         PrefixNode,
         PostfixNode,
-        InlineFunctionCallNode,
-        FunctionCallNode,
         FunctionArgumentsList,
-        EqualityOperatorNode,
-        RelationalOperatorNode,
-        ShiftOperatorNode,
-        AdditiveOperatorNode,
-        MultiplicativeOperatorNode,
         ParenthesesNode,
         LiteralNode,
         UnknownNode,
-        IndexAccessNode,
         IndexNode,        
         FunctorParameters,
+        InfixNode,
+        InfixOperator,
+        InfixSubnode,
         LexerInternalTokens,    // Lexer internal-only tokens start from here
 
         StatementNode,
@@ -133,27 +121,10 @@
         Operand,
         VariableModifier,
 
-        PeriodSubnode,
-        MultiplicativeOperatorSubnode,
-        AdditiveOperatorSubnode,
-        ShiftOperatorSubnode,
-        RelationalOperatorSubnode,
-        EqualityOperatorSubnode,
-        BitwiseAndSubnode,
-        BitwiseXorSubnode,
-        BitwiseOrSubnode,
-        LogicalAndSubnode,
-        LogicalOrSubnode,
-
+                                                                                        
         PrefixOperator,
         PostfixOperator,
-        MultiplicativeOperator,
-        AdditiveOperator,
-        ShiftOperator,
-        RelationalOperator,
-        EqualityOperator,
-        AssignmentOperator,
-
+                                                
         TokenTypeCount,
         
     }
@@ -182,6 +153,30 @@
         public static bool IsMeaningful(this TokenType token)
         {
             return true;
+        }
+
+        public static bool IsRightAssociative(this TokenType token)
+        {
+            switch (token)
+            {
+                case TokenType.Period:
+                case TokenType.Assignment:
+                case TokenType.PlusEqual:
+                case TokenType.MinusEqual:
+                case TokenType.DivideEqual:
+                case TokenType.MultiplyEqual:
+                case TokenType.RemainderEqual:
+                case TokenType.LeftShiftEqual:
+                case TokenType.RightShiftEqual:
+                case TokenType.LogicalAndEqual:
+                case TokenType.LogicalOrEqual:
+                case TokenType.BitwiseAndEqual:
+                case TokenType.BitwiseXorEqual:
+                case TokenType.BitwiseOrEqual:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
     

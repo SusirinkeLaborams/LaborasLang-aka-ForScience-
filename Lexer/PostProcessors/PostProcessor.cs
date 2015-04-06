@@ -12,14 +12,14 @@ namespace Lexer.PostProcessors
 
         public static IEnumerable<PostProcessor> BuildAll()
         {
-            return new PostProcessor[]{new ArrayFunctionResolver()};
+            return new PostProcessor[]{new ArrayFunctionResolver(), new PostfixResolver(), new PrefixResolver(), new InfixResolver()};
         }
 
         public PostProcessor()
         {
         }
 
-        public void Apply(AbstractSyntaxTree tree)
+        public virtual void Apply(AbstractSyntaxTree tree)
         {
             tree.Children.ForEach(t =>
             {

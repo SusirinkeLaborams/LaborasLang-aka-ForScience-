@@ -4,8 +4,8 @@ Children:
 	Content: Type: Value, Start: 1, 1, End: 1, 37, Content: ""
 	Type: Value
 	Children:
-		Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 37, Content: ""
-		Type: AssignmentOperatorNode
+		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: InfixNode
 		Children:
 			Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
 			Type: FullSymbol
@@ -13,10 +13,6 @@ Children:
 				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
 				Type: Symbol
 				Children:
-
-			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
-			Type: Assignment
-			Children:
 
 			Content: Type: Function, Start: 1, 7, End: 1, 37, Content: ""
 			Type: Function
@@ -87,8 +83,8 @@ Children:
 					Content: Type: Value, Start: 1, 29, End: 1, 34, Content: ""
 					Type: Value
 					Children:
-						Content: Type: FunctionCallNode, Start: 1, 29, End: 1, 34, Content: ""
-						Type: FunctionCallNode
+						Content: Type: PostfixNode, Start: 1, 29, End: 1, 34, Content: ""
+						Type: PostfixNode
 						Children:
 							Content: Type: FullSymbol, Start: 1, 29, End: 1, 32, Content: ""
 							Type: FullSymbol
@@ -115,6 +111,13 @@ Children:
 					Content: Type: RightCurlyBrace, Start: 1, 36, End: 1, 37, Content: "}"
 					Type: RightCurlyBrace
 					Children:
+
+			Content: Type: InfixOperator, Start: 1, 5, End: 1, 6, Content: ""
+			Type: InfixOperator
+			Children:
+				Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
+				Type: Assignment
+				Children:
 
 	Content: Type: EndOfLine, Start: 1, 37, End: 1, 38, Content: ";"
 	Type: EndOfLine

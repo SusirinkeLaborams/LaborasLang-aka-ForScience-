@@ -43,8 +43,8 @@ Children:
 		Content: Type: Value, Start: 1, 12, End: 1, 20, Content: ""
 		Type: Value
 		Children:
-			Content: Type: IndexAccessNode, Start: 1, 12, End: 1, 20, Content: ""
-			Type: IndexAccessNode
+			Content: Type: PostfixNode, Start: 1, 12, End: 1, 20, Content: ""
+			Type: PostfixNode
 			Children:
 				Content: Type: FullSymbol, Start: 1, 12, End: 1, 15, Content: ""
 				Type: FullSymbol

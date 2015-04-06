@@ -525,6 +525,21 @@ foo().bar = 5;
             ExecuteTest(source);
         }
 
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestValue()
+        {
+            var source = @"1";
+
+            AssertCanBeLexedAs(source, TokenType.Operand);
+            AssertCanBeLexedAs(source, TokenType.ParenthesesNode);
+            AssertCanBeLexedAs(source, TokenType.PrefixNode);
+            AssertCanBeLexedAs(source, TokenType.PostfixNode);
+            AssertCanBeLexedAs(source, TokenType.InfixNode);
+            AssertCanBeLexedAs(source, TokenType.Value);
+        }
+
+
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void TestBinaryAnd()
         {
@@ -563,7 +578,7 @@ foo().bar = 5;
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void TestAdditionAndMultiplicationOrder()
         {
-            var source = @"foo = 5 + 1.2 * bar;";
+            var source = @"f().oo = 5 + 1.2 * bar;";
             ExecuteTest(source);
         }
 

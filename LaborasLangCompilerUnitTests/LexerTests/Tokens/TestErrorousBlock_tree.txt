@@ -27,8 +27,8 @@ Children:
 	Content: Type: Value, Start: 3, 17, End: 3, 30, Content: ""
 	Type: Value
 	Children:
-		Content: Type: AssignmentOperatorNode, Start: 3, 17, End: 3, 30, Content: ""
-		Type: AssignmentOperatorNode
+		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: InfixNode
 		Children:
 			Content: Type: FullSymbol, Start: 3, 17, End: 3, 23, Content: ""
 			Type: FullSymbol
@@ -37,15 +37,18 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: Assignment, Start: 3, 24, End: 3, 25, Content: "="
-			Type: Assignment
-			Children:
-
 			Content: Type: FullSymbol, Start: 3, 26, End: 3, 30, Content: ""
 			Type: FullSymbol
 			Children:
 				Content: Type: Symbol, Start: 3, 26, End: 3, 30, Content: "work"
 				Type: Symbol
+				Children:
+
+			Content: Type: InfixOperator, Start: 3, 24, End: 3, 25, Content: ""
+			Type: InfixOperator
+			Children:
+				Content: Type: Assignment, Start: 3, 24, End: 3, 25, Content: "="
+				Type: Assignment
 				Children:
 
 	Content: Type: EndOfLine, Start: 3, 30, End: 3, 31, Content: ";"

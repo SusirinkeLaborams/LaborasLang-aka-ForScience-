@@ -1,6 +1,7 @@
 ﻿using Lexer.Containers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -65,6 +66,23 @@ namespace Lexer
             }
         }
 
+        internal AbstractSyntaxTree(Node node, List<AbstractSyntaxTree> children) 
+        {
+            Node = node;
+            Children = children;
+        }
+
+        internal void ReplaceWith(AbstractSyntaxTree other)
+        {
+            this.Children = other.Children;
+            this.Node = other.Node;
+
+        }
+        internal void Collapse()
+        {
+            Contract.Assume(Children.Count == 1);
+            this.ReplaceWith(Children[0]);
+        }
 
         private string ToString(int indentation)
         {

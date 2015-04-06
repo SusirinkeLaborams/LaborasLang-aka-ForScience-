@@ -4,8 +4,8 @@ Children:
 	Content: Type: Value, Start: 1, 1, End: 1, 26, Content: ""
 	Type: Value
 	Children:
-		Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 26, Content: ""
-		Type: AssignmentOperatorNode
+		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: InfixNode
 		Children:
 			Content: Type: FullSymbol, Start: 1, 1, End: 1, 2, Content: ""
 			Type: FullSymbol
@@ -13,10 +13,6 @@ Children:
 				Content: Type: Symbol, Start: 1, 1, End: 1, 2, Content: "a"
 				Type: Symbol
 				Children:
-
-			Content: Type: Assignment, Start: 1, 3, End: 1, 4, Content: "="
-			Type: Assignment
-			Children:
 
 			Content: Type: Function, Start: 1, 5, End: 1, 26, Content: ""
 			Type: Function
@@ -94,6 +90,13 @@ Children:
 					Content: Type: RightCurlyBrace, Start: 1, 25, End: 1, 26, Content: "}"
 					Type: RightCurlyBrace
 					Children:
+
+			Content: Type: InfixOperator, Start: 1, 3, End: 1, 4, Content: ""
+			Type: InfixOperator
+			Children:
+				Content: Type: Assignment, Start: 1, 3, End: 1, 4, Content: "="
+				Type: Assignment
+				Children:
 
 	Content: Type: EndOfLine, Start: 1, 26, End: 1, 27, Content: ";"
 	Type: EndOfLine

@@ -76,8 +76,8 @@ Children:
 					Content: Type: Value, Start: 1, 26, End: 1, 31, Content: ""
 					Type: Value
 					Children:
-						Content: Type: FunctionCallNode, Start: 1, 26, End: 1, 31, Content: ""
-						Type: FunctionCallNode
+						Content: Type: PostfixNode, Start: 1, 26, End: 1, 31, Content: ""
+						Type: PostfixNode
 						Children:
 							Content: Type: FullSymbol, Start: 1, 26, End: 1, 29, Content: ""
 							Type: FullSymbol

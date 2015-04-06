@@ -4,8 +4,8 @@ Children:
 	Content: Type: Value, Start: 1, 1, End: 1, 14, Content: ""
 	Type: Value
 	Children:
-		Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 14, Content: ""
-		Type: AssignmentOperatorNode
+		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: InfixNode
 		Children:
 			Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
 			Type: FullSymbol
@@ -14,12 +14,8 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
-			Type: Assignment
-			Children:
-
-			Content: Type: BitwiseAndNode, Start: 1, 7, End: 1, 14, Content: ""
-			Type: BitwiseAndNode
+			Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Type: InfixNode
 			Children:
 				Content: Type: LiteralNode, Start: 1, 7, End: 1, 8, Content: ""
 				Type: LiteralNode
@@ -28,16 +24,26 @@ Children:
 					Type: Integer
 					Children:
 
-				Content: Type: BitwiseAnd, Start: 1, 9, End: 1, 10, Content: "&"
-				Type: BitwiseAnd
-				Children:
-
 				Content: Type: FullSymbol, Start: 1, 11, End: 1, 14, Content: ""
 				Type: FullSymbol
 				Children:
 					Content: Type: Symbol, Start: 1, 11, End: 1, 14, Content: "bar"
 					Type: Symbol
 					Children:
+
+				Content: Type: InfixOperator, Start: 1, 9, End: 1, 10, Content: ""
+				Type: InfixOperator
+				Children:
+					Content: Type: BitwiseAnd, Start: 1, 9, End: 1, 10, Content: "&"
+					Type: BitwiseAnd
+					Children:
+
+			Content: Type: InfixOperator, Start: 1, 5, End: 1, 6, Content: ""
+			Type: InfixOperator
+			Children:
+				Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
+				Type: Assignment
+				Children:
 
 	Content: Type: EndOfLine, Start: 1, 14, End: 1, 15, Content: ";"
 	Type: EndOfLine

@@ -12,7 +12,7 @@ namespace Lexer
     }
 
     [DebuggerDisplay("Condition, {Type} {Token}")]
-    struct Condition
+    public struct Condition
     {
         public readonly TokenType Token;
         public ConditionType Type;
@@ -51,7 +51,7 @@ namespace Lexer
         }
     }
 
-    class ConditionList : List<Condition>
+    public class ConditionList : List<Condition>
     {
         public ConditionList()
         {
@@ -72,14 +72,14 @@ namespace Lexer
             return list;
         }
     }
-    enum ParseRuleCollapsableLevel
+    public enum ParseRuleCollapsableLevel
     {
         Never,
         OneChild,
         Always
     }
 
-    struct ParseRule
+    public struct ParseRule
     {
         public readonly TokenType Result;
         public Condition[][] RequiredTokens { get; private set; }

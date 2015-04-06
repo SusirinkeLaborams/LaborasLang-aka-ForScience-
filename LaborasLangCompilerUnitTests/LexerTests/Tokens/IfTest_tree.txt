@@ -36,8 +36,8 @@ Children:
 			Content: Type: Value, Start: 4, 17, End: 4, 24, Content: ""
 			Type: Value
 			Children:
-				Content: Type: FunctionCallNode, Start: 4, 17, End: 4, 24, Content: ""
-				Type: FunctionCallNode
+				Content: Type: PostfixNode, Start: 4, 17, End: 4, 24, Content: ""
+				Type: PostfixNode
 				Children:
 					Content: Type: FullSymbol, Start: 4, 17, End: 4, 22, Content: ""
 					Type: FullSymbol
@@ -79,8 +79,8 @@ Children:
 			Content: Type: Value, Start: 8, 13, End: 8, 21, Content: ""
 			Type: Value
 			Children:
-				Content: Type: FunctionCallNode, Start: 8, 13, End: 8, 21, Content: ""
-				Type: FunctionCallNode
+				Content: Type: PostfixNode, Start: 8, 13, End: 8, 21, Content: ""
+				Type: PostfixNode
 				Children:
 					Content: Type: FullSymbol, Start: 8, 13, End: 8, 19, Content: ""
 					Type: FullSymbol
@@ -143,8 +143,8 @@ Children:
 			Content: Type: Value, Start: 13, 17, End: 13, 24, Content: ""
 			Type: Value
 			Children:
-				Content: Type: FunctionCallNode, Start: 13, 17, End: 13, 24, Content: ""
-				Type: FunctionCallNode
+				Content: Type: PostfixNode, Start: 13, 17, End: 13, 24, Content: ""
+				Type: PostfixNode
 				Children:
 					Content: Type: FullSymbol, Start: 13, 17, End: 13, 22, Content: ""
 					Type: FullSymbol

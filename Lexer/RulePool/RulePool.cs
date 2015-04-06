@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lexer
     {
-        partial class RulePool
+        public partial class RulePool
         {
             public static ParseRule[] LaborasLangRuleset = new ParseRule[]
                 {
@@ -46,7 +46,8 @@ namespace Lexer
                         Entry,
                         Mutable),
                                 
-                    AlwaysCollapsableParseRule(AssignmentOperator,
+                    ParseRule(InfixOperator,
+                        Period,          
                         Assignment,
                         PlusEqual,
                         MinusEqual,
@@ -59,34 +60,33 @@ namespace Lexer
                         LogicalOrEqual,
                         BitwiseAndEqual,
                         BitwiseXorEqual,
-                        BitwiseOrEqual),
-
-                    AlwaysCollapsableParseRule(EqualityOperator,
+                        BitwiseOrEqual,              
+                        LeftShift,
+                        RightShift,
+                        Plus,
+                        Minus,
+                        Multiply,
+                        Divide,
+                        Remainder,
+                        BitwiseAnd,
+                        BitwiseOr,
+                        BitwiseXor,
+                        BitwiseComplement,
                         Equal,
-                        NotEqual),
-
-                    AlwaysCollapsableParseRule(RelationalOperator,
+                        NotEqual,
                         More,
                         Less,
                         MoreOrEqual,
-                        LessOrEqual),
-
-                    AlwaysCollapsableParseRule(ShiftOperator,
-                        LeftShift,
-                        RightShift),
-
-                    AlwaysCollapsableParseRule(AdditiveOperator,
-                        Plus,
-                        Minus),
-
-                    AlwaysCollapsableParseRule(MultiplicativeOperator,
-                        Multiply,
-                        Divide,
-                        Remainder),
+                        LessOrEqual,      
+                        LogicalAnd,
+                        LogicalOr
+               ),
 
                     AlwaysCollapsableParseRule(PostfixOperator,
                         PlusPlus, 
-                        MinusMinus),
+                        MinusMinus,
+                        IndexNode,
+                        FunctionArgumentsList),
 
                     AlwaysCollapsableParseRule(PrefixOperator,
                         PlusPlus, 
@@ -102,121 +102,29 @@ namespace Lexer
                     LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket,
                     LeftBracket + ZeroOrMore(Comma) + RightBracket),
 
-                    #region Operators
-
-                    /* Operator precedence:
-                            Parentheses
-                            Period
-                            PostfixOperator
-                            PrefixOperator
-                            MultiplicativeOperator (Remainder, Division, Multiplication)
-                            AdditiveOperator (Minus, Plus)
-                            ShiftOperator (LeftShift, RightShift)
-                            RelationalOperator (LessOrEqual, MoreOrEqual, Less, More)
-                            EqualityOperator (Equal, NotEqual)
-                            BitwiseAnd
-                            BitwiseXor
-                            BitwiseOr
-                            And
-                            Or
-                            Assignment operator
-                        */
                     
                     CollapsableParseRule(ParenthesesNode,
                         LeftParenthesis + Value + RightParenthesis,
                         Operand),
 
-                    CollapsableParseRule(PeriodNode,
-                        ParenthesesNode + ZeroOrMore(PeriodSubnode)),
-
-                    AlwaysCollapsableParseRule(PeriodSubnode,
-                        Period + ParenthesesNode),
-
-                    CollapsableParseRule(IndexAccessNode,
-                        PeriodNode + ZeroOrMore(IndexNode)),
+                    CollapsableParseRule(PrefixNode,
+                         ZeroOrMore(PrefixOperator) + ParenthesesNode),
 
                     CollapsableParseRule(PostfixNode,
-                        IndexAccessNode + ZeroOrMore(PostfixOperator)),
+                        PrefixNode + ZeroOrMore(PostfixOperator)),
 
-                    CollapsableParseRule(PrefixNode,
-                        ZeroOrMore(PrefixOperator) + PostfixNode),
+                    CollapsableParseRule(InfixNode,
+                        PostfixNode + ZeroOrMore(InfixSubnode)),
 
-                    CollapsableParseRule(MultiplicativeOperatorNode,
-                        PrefixNode + ZeroOrMore(MultiplicativeOperatorSubnode)),
-
-                    AlwaysCollapsableParseRule(MultiplicativeOperatorSubnode,
-                        MultiplicativeOperator + PrefixNode),
-
-                    CollapsableParseRule(AdditiveOperatorNode,
-                        MultiplicativeOperatorNode + ZeroOrMore(AdditiveOperatorSubnode)),
-
-                    AlwaysCollapsableParseRule(AdditiveOperatorSubnode,
-                        AdditiveOperator + MultiplicativeOperatorNode),
-
-                    CollapsableParseRule(ShiftOperatorNode,
-                        AdditiveOperatorNode + ZeroOrMore(ShiftOperatorSubnode)),
-
-                    AlwaysCollapsableParseRule(ShiftOperatorSubnode,
-                        ShiftOperator + AdditiveOperatorNode),
-
-                    CollapsableParseRule(RelationalOperatorNode,
-                        ShiftOperatorNode + ZeroOrMore(RelationalOperatorSubnode)),
-
-                    AlwaysCollapsableParseRule(RelationalOperatorSubnode,
-                        RelationalOperator + ShiftOperatorNode),
-
-                    CollapsableParseRule(EqualityOperatorNode,
-                        RelationalOperatorNode + ZeroOrMore(EqualityOperatorSubnode)),
-
-                    AlwaysCollapsableParseRule(EqualityOperatorSubnode,
-                        EqualityOperator + RelationalOperatorNode),
-                        
-                    CollapsableParseRule(BitwiseAndNode,
-                        EqualityOperatorNode + ZeroOrMore(BitwiseAndSubnode)),
-
-                    AlwaysCollapsableParseRule(BitwiseAndSubnode,
-                        BitwiseAnd + EqualityOperatorNode),
-                        
-                    CollapsableParseRule(BitwiseXorNode,
-                        BitwiseAndNode + ZeroOrMore(BitwiseXorSubnode)),
-
-                    AlwaysCollapsableParseRule(BitwiseXorSubnode,
-                        BitwiseXor + BitwiseAndNode),
-                        
-                    CollapsableParseRule(BitwiseOrNode,
-                        BitwiseXorNode + ZeroOrMore(BitwiseOrSubnode)),
-
-                    AlwaysCollapsableParseRule(BitwiseOrSubnode,
-                        BitwiseOr + BitwiseXorNode),
-                        
-                    CollapsableParseRule(LogicalAndNode,
-                        BitwiseOrNode + ZeroOrMore(LogicalAndSubnode)),
-
-                    AlwaysCollapsableParseRule(LogicalAndSubnode,
-                        LogicalAnd + BitwiseOrNode),
-                        
-                    CollapsableParseRule(LogicalOrNode,
-                        LogicalAndNode + ZeroOrMore(LogicalOrSubnode)),
-
-                    AlwaysCollapsableParseRule(LogicalOrSubnode,
-                        LogicalOr + LogicalAndNode),
-
-
-                    // Assignment operator is evaluated right to left
-                    CollapsableParseRule(AssignmentOperatorNode,
-                        LogicalOrNode + AssignmentOperator + AssignmentOperatorNode,
-                        LogicalOrNode),
- 
-                    #endregion
+                   AlwaysCollapsableParseRule(InfixSubnode,
+                        InfixOperator + PostfixNode),
 
                     ParseRule(Value,
-                        AssignmentOperatorNode),
+                        InfixNode),
                        
                     AlwaysCollapsableParseRule(Operand,
                         ArrayLiteral,
-                        InlineFunctionCallNode,
                         Function,
-                        FunctionCallNode,
                         FullSymbol,
                         Type,
                         LiteralNode),
@@ -237,12 +145,6 @@ namespace Lexer
                     ParseRule(InitializerList,     
                         LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
                         LeftCurlyBrace + RightCurlyBrace),
-                        
-                    ParseRule(InlineFunctionCallNode,
-                        Function + OneOrMore(FunctionArgumentsList)),
-
-                    ParseRule(FunctionCallNode,
-                        FullSymbol + OneOrMore(FunctionArgumentsList)),
 
                     ParseRule(FunctionArgumentsList,
                         LeftParenthesis + RightParenthesis,

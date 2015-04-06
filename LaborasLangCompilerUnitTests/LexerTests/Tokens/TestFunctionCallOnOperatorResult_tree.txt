@@ -4,8 +4,8 @@ Children:
 	Content: Type: Value, Start: 1, 1, End: 1, 22, Content: ""
 	Type: Value
 	Children:
-		Content: Type: PeriodNode, Start: 1, 1, End: 1, 22, Content: ""
-		Type: PeriodNode
+		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: InfixNode
 		Children:
 			Content: Type: ParenthesesNode, Start: 1, 1, End: 1, 8, Content: ""
 			Type: ParenthesesNode
@@ -17,8 +17,8 @@ Children:
 				Content: Type: Value, Start: 1, 2, End: 1, 7, Content: ""
 				Type: Value
 				Children:
-					Content: Type: AdditiveOperatorNode, Start: 1, 2, End: 1, 7, Content: ""
-					Type: AdditiveOperatorNode
+					Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+					Type: InfixNode
 					Children:
 						Content: Type: LiteralNode, Start: 1, 2, End: 1, 3, Content: ""
 						Type: LiteralNode
@@ -27,10 +27,6 @@ Children:
 							Type: Integer
 							Children:
 
-						Content: Type: Plus, Start: 1, 4, End: 1, 5, Content: "+"
-						Type: Plus
-						Children:
-
 						Content: Type: LiteralNode, Start: 1, 6, End: 1, 7, Content: ""
 						Type: LiteralNode
 						Children:
@@ -38,16 +34,19 @@ Children:
 							Type: Integer
 							Children:
 
+						Content: Type: InfixOperator, Start: 1, 4, End: 1, 5, Content: ""
+						Type: InfixOperator
+						Children:
+							Content: Type: Plus, Start: 1, 4, End: 1, 5, Content: "+"
+							Type: Plus
+							Children:
+
 				Content: Type: RightParenthesis, Start: 1, 7, End: 1, 8, Content: ")"
 				Type: RightParenthesis
 				Children:
 
-			Content: Type: Period, Start: 1, 8, End: 1, 9, Content: "."
-			Type: Period
-			Children:
-
-			Content: Type: FunctionCallNode, Start: 1, 9, End: 1, 22, Content: ""
-			Type: FunctionCallNode
+			Content: Type: PostfixNode, Start: 1, 9, End: 1, 22, Content: ""
+			Type: PostfixNode
 			Children:
 				Content: Type: FullSymbol, Start: 1, 9, End: 1, 17, Content: ""
 				Type: FullSymbol
@@ -76,6 +75,13 @@ Children:
 					Content: Type: RightParenthesis, Start: 1, 21, End: 1, 22, Content: ")"
 					Type: RightParenthesis
 					Children:
+
+			Content: Type: InfixOperator, Start: 1, 8, End: 1, 9, Content: ""
+			Type: InfixOperator
+			Children:
+				Content: Type: Period, Start: 1, 8, End: 1, 9, Content: "."
+				Type: Period
+				Children:
 
 	Content: Type: EndOfLine, Start: 1, 22, End: 1, 23, Content: ";"
 	Type: EndOfLine
