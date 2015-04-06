@@ -128,10 +128,8 @@ namespace LaborasLangCompiler.Parser.Impl
                         return Convert.ToDouble(value, CultureInfo.InvariantCulture);
                         
                     default:
-                        if (type.FullName == "System.Decimal")
-                            return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
 
-                        ErrorCode.InvalidStructure.ReportAndThrow(point, "Unexpected literal type {0}", type.FullName);
+                        ContractsHelper.AssertUnreachable(String.Format("Unexpected literal type {0}", type.FullName));
                         return null;//unreachable
                 }
             }
