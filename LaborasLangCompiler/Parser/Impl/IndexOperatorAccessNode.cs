@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
-    class IndexOperatorAccessNode : PropertyNode, IArrayAccessNode
+    class IndexOperatorAccessNode : PropertyNode, IIndexOperatorNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.IndexOperator; } }
 
