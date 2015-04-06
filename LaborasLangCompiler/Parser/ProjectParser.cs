@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.Codegen;
+using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer;
 using Lexer.Containers;

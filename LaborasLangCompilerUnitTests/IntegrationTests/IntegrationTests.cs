@@ -69,6 +69,23 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         }
 
         [TestMethod, TestCategory("Integration Tests")]
+        public void Test_ArrayItemSwap()
+        {
+            var testInfo = new IntegrationTestInfo("ArrayItemSwap.ll");
+
+            testInfo.StdIn =
+@"2 3 5 6 7 8 9 411 419 0
+1 5
+";
+
+            testInfo.StdOut =
+@"2 8 5 6 7 3 9 411 419 0
+";
+
+            Test(testInfo);
+        }
+
+        [TestMethod, TestCategory("Integration Tests")]
         public void Test_InlineFunctorCall()
         {
             Test("InlineFunctorCall.ll", "It Works!");
