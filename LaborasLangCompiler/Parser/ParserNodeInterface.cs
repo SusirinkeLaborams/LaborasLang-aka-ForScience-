@@ -640,7 +640,16 @@ namespace LaborasLangCompiler.Parser
         public abstract TypeReference ExpressionReturnType { get; }
         public abstract NodeType Type { get; }
         public abstract SequencePoint SequencePoint { get; }
-        public abstract IReadOnlyList<IExpressionNode> Initializer { get; }
+
+        public IReadOnlyList<IExpressionNode> Initializer 
+        { 
+            get
+            {
+                var result = Contract.Result<IReadOnlyList<IExpressionNode>>();
+                Contract.Ensures(result == null || result.Any());
+                throw new NotImplementedException();
+            }
+        }
 
         public IReadOnlyList<IExpressionNode> Dimensions
         {

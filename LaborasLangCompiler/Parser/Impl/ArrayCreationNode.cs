@@ -28,7 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
             { 
                 return InitializerList != null ? 
                     InitializerList.Initializers.ToArray() :
-                    new IExpressionNode[]{}; 
+                    null; 
             } 
         }
         public InitializerList InitializerList { get; private set; }
@@ -132,9 +132,14 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
+            if (initializer != null && !initializer.Initializers.Any())
+            {
+                initializer = null;
+            }
+
             if (initializer != null)
             {
-                if(!initializer.ElementType.IsAssignableTo(elementType) && initializer.Initializers.Any())
+                if(!initializer.ElementType.IsAssignableTo(elementType))
                 {
                     ErrorCode.TypeMissmatch.ReportAndThrow(point,
                         "Cannot initializer array of element type {0} when initializer element type is {1}",
