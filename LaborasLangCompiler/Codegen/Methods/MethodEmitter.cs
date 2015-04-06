@@ -454,67 +454,32 @@ namespace LaborasLangCompiler.Codegen.Methods
         //
         // Duplicating in stack can happen in two ways. 
         // Asterisks show which instructions would not be present if we're not duplicating
-        // If left side is a non static field:
-        //  - Emit object instance
-        //  - Emit right side
-        //  - Stfld left side
-        //  - Ldfld left side (*)
-        // Else if left side is a non static property:
-        //  - Emit object instance
+        // If storing left side requires prologue in stack before the value (for example, emitting 'this' pointer) OR we need to load address to the value:
+        //  - Emit storing prologue
         //  - Emit right side
         //  - Dup (*)
         //  - Stloc temp (*)
-        //  - Call setter
-        //  - Ldloc temp (*)
+        //  - EmitStore left side
+        //  - Ldloc(a) temp (*) 
         // Else:
         //  - Emit right side
         //  - Dup (*)
         //  - EmitStore left side
-        // We need to store value in case of setting to a non static property because
-        // we cannot guarantee whether getter will return the same result as we set in the setter
-        // (that would also be inefficient even if we could)
+        // In case of duplicating left side if it's a property, we don't actually call a getter on it,
+        // because that would be inefficient and could change semantics if the getter doesn't return the same value
         private void Emit(IAssignmentOperatorNode assignmentOperator, bool duplicateValueInStack = true)
         {
             // If we're storing to field or property and it's not static, we need to load object instance now
             // and if we're also duplicating value, we got to save it to temp variable
-            bool isField = assignmentOperator.LeftOperand.ExpressionType == ExpressionNodeType.Field;
-            bool isProperty = assignmentOperator.LeftOperand.ExpressionType == ExpressionNodeType.Property;
-            IExpressionNode objectInstance = null;
             VariableDefinition tempVariable = null;
 
             bool memberHasThis = false;
+            var memberNode = assignmentOperator.LeftOperand as IMemberNode;
 
-            if (isField)
+            if (memberNode != null && memberNode.ObjectInstance != null)
             {
-                var fieldNode = (IFieldNode)assignmentOperator.LeftOperand;
-
-                if (!fieldNode.Field.Resolve().IsStatic)
-                {
-                    Contract.Assume(fieldNode.ObjectInstance != null);
-
-                    memberHasThis = true;
-                    objectInstance = fieldNode.ObjectInstance;
-                }
-            }
-            else if (isProperty)
-            {
-                var propertyNode = (IPropertyNode)assignmentOperator.LeftOperand;
-                var property = propertyNode.Property.Resolve();
-
-                Contract.Assume(property.SetMethod != null);
-
-                if (property.SetMethod.HasThis)
-                {
-                    Contract.Assume(propertyNode.ObjectInstance != null);
-
-                    memberHasThis = true;
-                    objectInstance = propertyNode.ObjectInstance;
-                }
-            }
-
-            if (memberHasThis)
-            {
-                Emit(objectInstance, EmissionType.ThisArg);
+                Emit(memberNode.ObjectInstance, EmissionType.ThisArg);
+                memberHasThis = true;
             }
 
             EmitExpressionWithTargetType(assignmentOperator.RightOperand, assignmentOperator.LeftOperand.ExpressionReturnType);
@@ -525,10 +490,10 @@ namespace LaborasLangCompiler.Codegen.Methods
                 {
                     Dup();
                 }
-                else if (isProperty)    // HasThis and IsProperty
+                else
                 {
                     // Right operand could be a different type, 
-                    // so it will get casted to left operand type
+                    // but it will get casted to left operand type
                     tempVariable = temporaryVariables.Acquire(assignmentOperator.LeftOperand.ExpressionReturnType);
 
                     Dup();
@@ -540,15 +505,8 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (duplicateValueInStack && memberHasThis)
             {
-                if (isProperty)
-                {
-                    Ldloc(tempVariable.Index);
-                    temporaryVariables.Release(tempVariable);
-                }
-                else
-                {
-                    Emit(assignmentOperator.LeftOperand, EmissionType.Value);
-                }
+                Ldloc(tempVariable.Index);
+                temporaryVariables.Release(tempVariable);
             }
         }
 
@@ -1566,8 +1524,6 @@ namespace LaborasLangCompiler.Codegen.Methods
             var valueVariable = temporaryVariables.Acquire(arrayType.ElementType);
             Stloc(valueVariable.Index);
 
-            Emit(array, EmissionType.ThisArg);
-
             if (arrayType.IsVector)
             {
                 Contract.Assume(indices.Count == 1);
@@ -1598,12 +1554,6 @@ namespace LaborasLangCompiler.Codegen.Methods
             
             var valueVariable = temporaryVariables.Acquire(setter.Parameters[setter.Parameters.Count - 1].ParameterType);
             Stloc(valueVariable.Index);
-
-            if (setter.HasThis)
-            {
-                Contract.Assume(indexOperator.ObjectInstance != null);
-                Emit(indexOperator.ObjectInstance, EmissionType.ThisArg);
-            }
 
             for (int i = 0; i < indexOperator.Indices.Count; i++)
             {
