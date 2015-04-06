@@ -245,7 +245,6 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                                     Operand = new IncrementDecrementOperatorNode()
                                     {
                                         IncrementDecrementType = IncrementDecrementOperatorType.PreIncrement,
-                                        ExpressionReturnType = assemblyEmitter.TypeSystem.Int32,
                                         Operand = counter
                                     }
                                 }

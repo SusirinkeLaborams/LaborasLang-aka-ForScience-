@@ -1257,7 +1257,6 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     Initializer = new IncrementDecrementOperatorNode()
                     {
                         IncrementDecrementType = operators[i - 1],
-                        ExpressionReturnType = intType,
                         Operand = variables[0]
                     }
                 });
@@ -1275,6 +1274,98 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             ExpectedOutput = "Results: \r\n5\r\n5\r\n4\r\n4\r\n5\r\n";
             AssertSuccessByExecution();
 
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_IncrementField()
+        {
+            var field = new FieldDefinition("fieldToIncrement", FieldAttributes.Private, assemblyEmitter.TypeSystem.Int32);
+            typeEmitter.AddField(field);
+            typeEmitter.AddFieldInitializer(field, new LiteralNode(assemblyEmitter.TypeSystem.Int32, 3));
+
+            LocalVariableNode objectInstance;
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    ConstructTypeEmitterInstance(out objectInstance),
+                    CallConsoleWriteLine(new FieldNode()
+                    {
+                        ObjectInstance = objectInstance,
+                        Field = field
+                    }), 
+                    new UnaryOperatorNode()
+                    {
+                        ExpressionReturnType = assemblyEmitter.TypeSystem.Int32,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new IncrementDecrementOperatorNode()
+                        {
+                            IncrementDecrementType = IncrementDecrementOperatorType.PostIncrement,
+                            Operand = new FieldNode()
+                            {
+                                ObjectInstance = objectInstance,
+                                Field = field
+                            }
+                        }
+                    },
+                    CallConsoleWriteLine(new FieldNode()
+                    {
+                        ObjectInstance = objectInstance,
+                        Field = field
+                    })
+                }
+            };
+
+            ExpectedOutput = "3" + Environment.NewLine + "4";
+            AssertSuccessByExecution();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_DecrementArrayItem()
+        {
+            var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.Int32, 1);
+            var arrayVariable = new VariableDefinition(arrayType);
+            var arrayNode = new LocalVariableNode(arrayVariable);
+
+            var arrayAccessNode = new ArrayAccessNode()
+            {
+                ExpressionReturnType = assemblyEmitter.TypeSystem.Int32,
+                ObjectInstance = arrayNode,
+                Indices = new IExpressionNode[] { new LiteralNode(assemblyEmitter.TypeSystem.Int32, 0) }
+            };
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        Variable = arrayVariable,
+                        Initializer = new ArrayCreationNode()
+                        {
+                            ExpressionReturnType = arrayType,
+                            Dimensions = new IExpressionNode[] { new LiteralNode(assemblyEmitter.TypeSystem.Int32, 1) },
+                            Initializer = new IExpressionNode[] { new LiteralNode(assemblyEmitter.TypeSystem.Int32, 9) }
+                        }
+                    },
+                    CallConsoleWriteLine(arrayAccessNode),
+                    new UnaryOperatorNode()
+                    {
+                        ExpressionReturnType = assemblyEmitter.TypeSystem.Int32,
+                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                        Operand = new IncrementDecrementOperatorNode()
+                        {
+                            IncrementDecrementType = IncrementDecrementOperatorType.PostDecrement,
+                            Operand = arrayAccessNode
+                        }
+                    },
+                    CallConsoleWriteLine(arrayAccessNode)
+                }
+            };
+
+            ExpectedOutput = "9" + Environment.NewLine + "8";
+            AssertSuccessByExecution();
         }
 
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
@@ -1354,7 +1445,6 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                                 CallConsoleWriteLine(new LiteralNode(stringType, "The loop has looped {0} time(s)."),
                                     new IncrementDecrementOperatorNode()
                                     {
-                                        ExpressionReturnType = intType,
                                         IncrementDecrementType = IncrementDecrementOperatorType.PostIncrement,
                                         Operand = localVariable
                                     })

@@ -259,7 +259,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.IncrementDecrementOperator; } }
 
-        public TypeReference ExpressionReturnType { get; set; }
+        public TypeReference ExpressionReturnType { get { return Operand.ExpressionReturnType; } }
         public IncrementDecrementOperatorType IncrementDecrementType { get; set; }
         public IExpressionNode Operand { get; set; }
         public MethodReference OverloadedOperatorMethod { get; set; }

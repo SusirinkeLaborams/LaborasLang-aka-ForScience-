@@ -55,6 +55,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected enum EmissionType
         {
+            None,
             Value,
             ThisArg,
             ReferenceToValue
@@ -170,7 +171,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 case ExpressionNodeType.AssignmentOperator:
-                    Emit((IAssignmentOperatorNode)expression);
+                    Emit((IAssignmentOperatorNode)expression, emissionType);
                     return;
 
                 case ExpressionNodeType.BinaryOperator:
@@ -275,6 +276,55 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         #region Expression node
 
+        [Pure]
+        private bool NeedsStorePrologue(IExpressionNode expression)
+        {
+            switch (expression.ExpressionType)
+            {
+                case ExpressionNodeType.ArrayAccess:
+                case ExpressionNodeType.Field:
+                case ExpressionNodeType.IndexOperator:
+                case ExpressionNodeType.Property:
+                    return true;
+
+                case ExpressionNodeType.IncrementDecrementOperator:
+                    return NeedsStorePrologue(((IIncrementDecrementOperatorNode)expression).Operand);
+            }
+
+            return false;
+        }
+
+        private void EmitStorePrologue(IExpressionNode expression)
+        {
+            Contract.Requires(NeedsStorePrologue(expression));
+
+            switch (expression.ExpressionType)
+            {
+                case ExpressionNodeType.ArrayAccess:
+                    EmitStorePrologue((IArrayAccessNode)expression);
+                    break;
+
+                case ExpressionNodeType.Field:
+                    EmitStorePrologue((IFieldNode)expression);
+                    return;
+
+                case ExpressionNodeType.IncrementDecrementOperator:
+                    EmitStorePrologue((IIncrementDecrementOperatorNode)expression);
+                    return;
+
+                case ExpressionNodeType.IndexOperator:
+                    EmitStorePrologue((IIndexOperatorNode)expression);
+                    return;
+
+                case ExpressionNodeType.Property:
+                    EmitStorePrologue((IPropertyNode)expression);
+                    return;
+
+                default:
+                    ContractsHelper.AssumeUnreachable(string.Format("{0} ExpressionNode does not support emitting store prologue.", expression.ExpressionType));
+                    return;
+            }
+        }
 
         private void EmitStore(IExpressionNode expression)
         {
@@ -292,6 +342,10 @@ namespace LaborasLangCompiler.Codegen.Methods
                     EmitStore((IParameterNode)expression);
                     return;
 
+                case ExpressionNodeType.IncrementDecrementOperator:
+                    EmitStore((IIncrementDecrementOperatorNode)expression);
+                    return;
+
                 case ExpressionNodeType.IndexOperator:
                     EmitStore((IIndexOperatorNode)expression);
                     return;
@@ -302,10 +356,6 @@ namespace LaborasLangCompiler.Codegen.Methods
 
                 case ExpressionNodeType.Property:
                     EmitStore((IPropertyNode)expression);
-                    return;
-
-                case ExpressionNodeType.IncrementDecrementOperator:
-                    EmitStore((IIncrementDecrementOperatorNode)expression);
                     return;
 
                 default:
@@ -455,7 +505,7 @@ namespace LaborasLangCompiler.Codegen.Methods
         // Duplicating in stack can happen in two ways. 
         // Asterisks show which instructions would not be present if we're not duplicating
         // If storing left side requires prologue in stack before the value (for example, emitting 'this' pointer) OR we need to load address to the value:
-        //  - Emit storing prologue
+        //  - Emit storing prologue (if needed)
         //  - Emit right side
         //  - Dup (*)
         //  - Stloc temp (*)
@@ -467,46 +517,49 @@ namespace LaborasLangCompiler.Codegen.Methods
         //  - EmitStore left side
         // In case of duplicating left side if it's a property, we don't actually call a getter on it,
         // because that would be inefficient and could change semantics if the getter doesn't return the same value
-        private void Emit(IAssignmentOperatorNode assignmentOperator, bool duplicateValueInStack = true)
+        private void Emit(IAssignmentOperatorNode assignmentOperator, EmissionType emissionType)
         {
             // If we're storing to field or property and it's not static, we need to load object instance now
             // and if we're also duplicating value, we got to save it to temp variable
             VariableDefinition tempVariable = null;
 
-            bool memberHasThis = false;
-            var memberNode = assignmentOperator.LeftOperand as IMemberNode;
+            bool needsStorePrologue = NeedsStorePrologue(assignmentOperator.LeftOperand);
+            bool shouldEmitAddress = ShouldEmitAddress(assignmentOperator, emissionType);
+            bool storeResultInTempVariable = needsStorePrologue || shouldEmitAddress;
 
-            if (memberNode != null && memberNode.ObjectInstance != null)
+            if (needsStorePrologue)
             {
-                Emit(memberNode.ObjectInstance, EmissionType.ThisArg);
-                memberHasThis = true;
+                EmitStorePrologue(assignmentOperator.LeftOperand);
             }
 
             EmitExpressionWithTargetType(assignmentOperator.RightOperand, assignmentOperator.LeftOperand.ExpressionReturnType);
 
-            if (duplicateValueInStack)
+            if (emissionType != EmissionType.None)
             {
-                if (!memberHasThis)
-                {
-                    Dup();
-                }
-                else
+                Dup();
+
+                if (storeResultInTempVariable)
                 {
                     // Right operand could be a different type, 
                     // but it will get casted to left operand type
                     tempVariable = temporaryVariables.Acquire(assignmentOperator.LeftOperand.ExpressionReturnType);
-
-                    Dup();
                     Stloc(tempVariable.Index);
                 }
             }
 
             EmitStore(assignmentOperator.LeftOperand);
 
-            if (duplicateValueInStack && memberHasThis)
+            if (emissionType != EmissionType.None && storeResultInTempVariable)
             {
-                Ldloc(tempVariable.Index);
-                temporaryVariables.Release(tempVariable);
+                if (shouldEmitAddress)
+                {
+                    Ldloca(tempVariable.Index);
+                }
+                else
+                {
+                    Ldloc(tempVariable.Index);
+                    temporaryVariables.Release(tempVariable);
+                }
             }
         }
 
@@ -1087,9 +1140,124 @@ namespace LaborasLangCompiler.Codegen.Methods
                 LoadAddressOfValue(unaryOperator);
         }
 
+        private void EmitIncrementDecrement(IExpressionNode operand, Action beforeValueSnapshot, Action afterValueSnapshot)
+        {
+            VariableDefinition tempVariable;
+            bool hasStoreEpilogue = NeedsStorePrologue(operand);
+
+            if (hasStoreEpilogue)
+                EmitStorePrologue(operand);
+
+            Emit(operand, EmissionType.Value);
+            beforeValueSnapshot();
+
+            Dup();
+
+            if (hasStoreEpilogue)
+            {
+                tempVariable = temporaryVariables.Acquire(operand.ExpressionReturnType);
+                Stloc(tempVariable.Index);
+                afterValueSnapshot();
+                Ldloc(tempVariable.Index);
+            }
+            else
+            {
+                afterValueSnapshot();
+            }
+        }
+
+        private void Emit(IIncrementDecrementOperatorNode incrementDecrementOperator, EmissionType emissionType)
+        {
+            Action beforeValueSnapshot, afterValueSnapshot;
+
+            if (incrementDecrementOperator.OverloadedOperatorMethod != null)
+            {
+                switch (incrementDecrementOperator.IncrementDecrementType)
+                {
+                    case IncrementDecrementOperatorType.PreDecrement:
+                    case IncrementDecrementOperatorType.PreIncrement:
+                        beforeValueSnapshot = () => Call(incrementDecrementOperator.OverloadedOperatorMethod);
+                        afterValueSnapshot = () => EmitStore(incrementDecrementOperator.Operand);
+                        break;
+
+                    case IncrementDecrementOperatorType.PostDecrement:
+                    case IncrementDecrementOperatorType.PostIncrement:
+                        beforeValueSnapshot = () => { };
+                        afterValueSnapshot = () =>
+                        {
+                            Call(incrementDecrementOperator.OverloadedOperatorMethod);
+                            EmitStore(incrementDecrementOperator.Operand);
+                        };
+                        break;
+
+                    default:
+                        ContractsHelper.AssertUnreachable(string.Format("Unknown unary operator type: {0}", incrementDecrementOperator.IncrementDecrementType));
+                        return;
+                }
+            }
+            else
+            {
+                switch (incrementDecrementOperator.IncrementDecrementType)
+                {
+                    case IncrementDecrementOperatorType.PreDecrement:
+                        beforeValueSnapshot = () =>
+                        {
+                            Ldc_I4(-1);
+                            Add();
+                        };
+                        afterValueSnapshot = () => EmitStore(incrementDecrementOperator.Operand);
+                        break;
+
+                    case IncrementDecrementOperatorType.PreIncrement:
+                        beforeValueSnapshot = () =>
+                        {
+                            Ldc_I4(1);
+                            Add();
+                        };
+                        afterValueSnapshot = () => EmitStore(incrementDecrementOperator.Operand);
+                        break;
+
+                    case IncrementDecrementOperatorType.PostDecrement:
+                        beforeValueSnapshot = () => { };
+                        afterValueSnapshot = () =>
+                        {
+                            Ldc_I4(-1);
+                            Add();
+                            EmitStore(incrementDecrementOperator.Operand);
+                        };
+                        break;
+
+                    case IncrementDecrementOperatorType.PostIncrement:
+                        beforeValueSnapshot = () => { };
+                        afterValueSnapshot = () =>
+                        {
+                            Ldc_I4(1);
+                            Add();
+                            EmitStore(incrementDecrementOperator.Operand);
+                        };
+                        break;
+
+                    default:
+                        ContractsHelper.AssertUnreachable(string.Format("Unknown unary operator type: {0}", incrementDecrementOperator.IncrementDecrementType));
+                        return;
+                }
+            }
+
+            EmitIncrementDecrement(incrementDecrementOperator.Operand, beforeValueSnapshot, afterValueSnapshot);
+
+            if (ShouldEmitAddress(incrementDecrementOperator, emissionType))
+                LoadAddressOfValue(incrementDecrementOperator);
+        }
+
+        /*
         private void Emit(IIncrementDecrementOperatorNode incrementDecrementOperator, EmissionType emissionType)
         {
             Emit(incrementDecrementOperator.Operand, EmissionType.Value);
+
+            bool hasStoreEpilogue = NeedsStorePrologue(incrementDecrementOperator.Operand);
+
+            if (hasStoreEpilogue)
+                EmitStorePrologue(incrementDecrementOperator.Operand);
 
             if (incrementDecrementOperator.OverloadedOperatorMethod != null)
             {
@@ -1154,7 +1322,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (ShouldEmitAddress(incrementDecrementOperator, emissionType))
                 LoadAddressOfValue(incrementDecrementOperator);
-        }
+        }*/
 
         #region Add emitter
 
@@ -1472,7 +1640,7 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             if (unaryOperator.Operand.ExpressionType == ExpressionNodeType.AssignmentOperator)
             {
-                Emit(((IAssignmentOperatorNode)unaryOperator.Operand), false);
+                Emit(((IAssignmentOperatorNode)unaryOperator.Operand), EmissionType.None);
             }
             else
             {
@@ -1484,6 +1652,99 @@ namespace LaborasLangCompiler.Codegen.Methods
         #endregion
 
         #region Store expression node
+
+        private void EmitStorePrologue(IArrayAccessNode arrayAccess)
+        {
+            Contract.Assume(arrayAccess.ObjectInstance != null);
+            Emit(arrayAccess.ObjectInstance, EmissionType.ThisArg);
+
+            var arrayType = (ArrayType)arrayAccess.ObjectInstance.ExpressionReturnType;
+            var indices = arrayAccess.Indices;
+
+            if (arrayType.IsVector)
+            {
+                Contract.Assume(indices.Count == 1);
+                EmitExpressionWithTargetType(indices[0], Assembly.TypeSystem.Int32);
+            }
+            else
+            {
+                var storeElementMethod = AssemblyRegistry.GetArrayStoreElement(arrayType);
+
+                for (int i = 0; i < indices.Count; i++)
+                {
+                    EmitArgumentForCall(indices[i], storeElementMethod.Parameters[i].ParameterType);
+                }
+            }
+        }
+
+        private void EmitStorePrologue(IFieldNode field)
+        {
+            if (!field.Field.Resolve().IsStatic)
+            {
+                Contract.Assume(field.ObjectInstance != null);
+                Emit(field.ObjectInstance, EmissionType.ThisArg);
+            }
+        }
+
+        private void EmitStorePrologue(IIncrementDecrementOperatorNode incrementDecrementOperator)
+        {
+            switch (incrementDecrementOperator.IncrementDecrementType)
+            {
+                case IncrementDecrementOperatorType.PreDecrement:
+                case IncrementDecrementOperatorType.PreIncrement:
+                    EmitStorePrologue(incrementDecrementOperator.Operand);
+                    return;
+            }
+
+            ContractsHelper.AssertUnreachable(string.Format("Cannot store increment/decrement operator {0}.", incrementDecrementOperator.IncrementDecrementType));
+        }
+
+        private void EmitStorePrologue(IIndexOperatorNode indexOperator)
+        {
+            var setter = AssemblyRegistry.GetPropertySetter(Assembly, indexOperator.Property);
+            Contract.Assume(setter != null);
+
+            if (setter.HasThis)
+            {
+                Contract.Assume(indexOperator.ObjectInstance != null);
+                Emit(indexOperator.ObjectInstance, EmissionType.ThisArg);
+            }
+
+            for (int i = 0; i < indexOperator.Indices.Count; i++)
+            {
+                EmitArgumentForCall(indexOperator.Indices[i], setter.Parameters[i].ParameterType);
+            }
+        }
+
+        private void EmitStorePrologue(IPropertyNode property)
+        {
+            var propertyDef = property.Property.Resolve();
+            Contract.Assume(propertyDef.SetMethod != null);
+
+            if (propertyDef.SetMethod.HasThis)
+            {
+                Contract.Assume(property.ObjectInstance != null);
+                Emit(property.ObjectInstance, EmissionType.ThisArg);
+            }
+        }
+
+        private void EmitStore(IArrayAccessNode arrayAccess)
+        {
+            var array = arrayAccess.ObjectInstance;
+            Contract.Assume(array != null && array.ExpressionReturnType is ArrayType);
+
+            var arrayType = (ArrayType)array.ExpressionReturnType;
+
+            if (arrayType.IsVector)
+            {
+                Stelem(arrayType.ElementType);
+            }
+            else
+            {
+                var storeElementMethod = AssemblyRegistry.GetArrayStoreElement(arrayType);
+                Call(storeElementMethod);
+            }
+        }
 
         private void EmitStore(IFieldNode field)
         {
@@ -1497,75 +1758,6 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        private void EmitStore(IParameterNode argument)
-        {
-            Starg(argument.Parameter.Index);
-        }
-
-        private void EmitStore(ILocalVariableNode variable)
-        {
-            Stloc(variable.LocalVariable.Index);
-        }
-
-        private void EmitStore(IPropertyNode property)
-        {
-            var setter = AssemblyRegistry.GetPropertySetter(Assembly, property.Property);
-            Call(setter);
-        }
-
-        private void EmitStore(IArrayAccessNode arrayAccess)
-        {
-            var array = arrayAccess.ObjectInstance;
-            Contract.Assume(array != null && array.ExpressionReturnType is ArrayType);
-
-            var arrayType = (ArrayType)array.ExpressionReturnType;
-            var indices = arrayAccess.Indices;
-
-            var valueVariable = temporaryVariables.Acquire(arrayType.ElementType);
-            Stloc(valueVariable.Index);
-
-            if (arrayType.IsVector)
-            {
-                Contract.Assume(indices.Count == 1);
-                EmitExpressionWithTargetType(indices[0], Assembly.TypeSystem.Int32);
-                Ldloc(valueVariable.Index);
-                Stelem(arrayType.ElementType);
-            }
-            else
-            {
-                var storeElementMethod = AssemblyRegistry.GetArrayStoreElement(arrayType);
-
-                for (int i = 0; i < indices.Count; i++)
-                {
-                    EmitArgumentForCall(indices[i], storeElementMethod.Parameters[i].ParameterType);
-                }
-
-                Ldloc(valueVariable.Index);
-                Call(storeElementMethod);
-            }
-
-            temporaryVariables.Release(valueVariable);
-        }
-
-        private void EmitStore(IIndexOperatorNode indexOperator)
-        {
-            var setter = AssemblyRegistry.GetPropertySetter(Assembly, indexOperator.Property);
-            Contract.Assume(setter != null);
-            
-            var valueVariable = temporaryVariables.Acquire(setter.Parameters[setter.Parameters.Count - 1].ParameterType);
-            Stloc(valueVariable.Index);
-
-            for (int i = 0; i < indexOperator.Indices.Count; i++)
-            {
-                EmitArgumentForCall(indexOperator.Indices[i], setter.Parameters[i].ParameterType);
-            }
-
-            Ldloc(valueVariable.Index);
-            Call(setter);
-
-            temporaryVariables.Release(valueVariable);
-        }
-
         private void EmitStore(IIncrementDecrementOperatorNode incrementDecrementOperator)
         {
             switch (incrementDecrementOperator.IncrementDecrementType)
@@ -1577,6 +1769,29 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
 
             ContractsHelper.AssertUnreachable(string.Format("Cannot store increment/decrement operator {0}.", incrementDecrementOperator.IncrementDecrementType));
+        }
+
+        private void EmitStore(IIndexOperatorNode indexOperator)
+        {
+            var setter = AssemblyRegistry.GetPropertySetter(Assembly, indexOperator.Property);
+            Contract.Assume(setter != null);
+            Call(setter);
+        }
+
+        private void EmitStore(ILocalVariableNode variable)
+        {
+            Stloc(variable.LocalVariable.Index);
+        }
+
+        private void EmitStore(IParameterNode argument)
+        {
+            Starg(argument.Parameter.Index);
+        }
+
+        private void EmitStore(IPropertyNode property)
+        {
+            var setter = AssemblyRegistry.GetPropertySetter(Assembly, property.Property);
+            Call(setter);
         }
 
         #endregion
