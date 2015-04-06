@@ -17,30 +17,16 @@ Children:
 			Content: Type: PrefixNode, Start: 1, 7, End: 1, 21, Content: ""
 			Type: PrefixNode
 			Children:
-				Content: Type: CastOperator, Start: 1, 7, End: 1, 12, Content: ""
-				Type: CastOperator
-				Children:
-					Content: Type: LeftParenthesis, Start: 1, 7, End: 1, 8, Content: "("
-					Type: LeftParenthesis
-					Children:
-
-					Content: Type: Type, Start: 1, 8, End: 1, 11, Content: ""
-					Type: Type
-					Children:
-						Content: Type: FullSymbol, Start: 1, 8, End: 1, 11, Content: ""
-						Type: FullSymbol
-						Children:
-							Content: Type: Symbol, Start: 1, 8, End: 1, 11, Content: "foo"
-							Type: Symbol
-							Children:
-
-					Content: Type: RightParenthesis, Start: 1, 11, End: 1, 12, Content: ")"
-					Type: RightParenthesis
-					Children:
-
 				Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
 				Type: PrefixNode
 				Children:
+					Content: Type: FullSymbol, Start: 1, 18, End: 1, 21, Content: ""
+					Type: FullSymbol
+					Children:
+						Content: Type: Symbol, Start: 1, 18, End: 1, 21, Content: "foo"
+						Type: Symbol
+						Children:
+
 					Content: Type: CastOperator, Start: 1, 12, End: 1, 17, Content: ""
 					Type: CastOperator
 					Children:
@@ -62,12 +48,26 @@ Children:
 						Type: RightParenthesis
 						Children:
 
-					Content: Type: FullSymbol, Start: 1, 18, End: 1, 21, Content: ""
-					Type: FullSymbol
+				Content: Type: CastOperator, Start: 1, 7, End: 1, 12, Content: ""
+				Type: CastOperator
+				Children:
+					Content: Type: LeftParenthesis, Start: 1, 7, End: 1, 8, Content: "("
+					Type: LeftParenthesis
 					Children:
-						Content: Type: Symbol, Start: 1, 18, End: 1, 21, Content: "foo"
-						Type: Symbol
+
+					Content: Type: Type, Start: 1, 8, End: 1, 11, Content: ""
+					Type: Type
+					Children:
+						Content: Type: FullSymbol, Start: 1, 8, End: 1, 11, Content: ""
+						Type: FullSymbol
 						Children:
+							Content: Type: Symbol, Start: 1, 8, End: 1, 11, Content: "foo"
+							Type: Symbol
+							Children:
+
+					Content: Type: RightParenthesis, Start: 1, 11, End: 1, 12, Content: ")"
+					Type: RightParenthesis
+					Children:
 
 			Content: Type: InfixOperator, Start: 1, 5, End: 1, 6, Content: ""
 			Type: InfixOperator

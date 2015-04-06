@@ -10,16 +10,16 @@ Children:
 			Content: Type: PrefixNode, Start: 1, 2, End: 1, 7, Content: ""
 			Type: PrefixNode
 			Children:
-				Content: Type: PlusPlus, Start: 1, 2, End: 1, 4, Content: "++"
-				Type: PlusPlus
-				Children:
-
 				Content: Type: FullSymbol, Start: 1, 4, End: 1, 7, Content: ""
 				Type: FullSymbol
 				Children:
 					Content: Type: Symbol, Start: 1, 4, End: 1, 7, Content: "foo"
 					Type: Symbol
 					Children:
+
+				Content: Type: PlusPlus, Start: 1, 2, End: 1, 4, Content: "++"
+				Type: PlusPlus
+				Children:
 
 			Content: Type: LiteralNode, Start: 1, 10, End: 1, 11, Content: ""
 			Type: LiteralNode

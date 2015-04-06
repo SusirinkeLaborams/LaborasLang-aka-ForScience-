@@ -17,27 +17,6 @@ Children:
 			Content: Type: PrefixNode, Start: 1, 7, End: 1, 22, Content: ""
 			Type: PrefixNode
 			Children:
-				Content: Type: CastOperator, Start: 1, 7, End: 1, 12, Content: ""
-				Type: CastOperator
-				Children:
-					Content: Type: LeftParenthesis, Start: 1, 7, End: 1, 8, Content: "("
-					Type: LeftParenthesis
-					Children:
-
-					Content: Type: Type, Start: 1, 8, End: 1, 11, Content: ""
-					Type: Type
-					Children:
-						Content: Type: FullSymbol, Start: 1, 8, End: 1, 11, Content: ""
-						Type: FullSymbol
-						Children:
-							Content: Type: Symbol, Start: 1, 8, End: 1, 11, Content: "foo"
-							Type: Symbol
-							Children:
-
-					Content: Type: RightParenthesis, Start: 1, 11, End: 1, 12, Content: ")"
-					Type: RightParenthesis
-					Children:
-
 				Content: Type: ParenthesesNode, Start: 1, 13, End: 1, 22, Content: ""
 				Type: ParenthesesNode
 				Children:
@@ -73,6 +52,27 @@ Children:
 								Children:
 
 					Content: Type: RightParenthesis, Start: 1, 21, End: 1, 22, Content: ")"
+					Type: RightParenthesis
+					Children:
+
+				Content: Type: CastOperator, Start: 1, 7, End: 1, 12, Content: ""
+				Type: CastOperator
+				Children:
+					Content: Type: LeftParenthesis, Start: 1, 7, End: 1, 8, Content: "("
+					Type: LeftParenthesis
+					Children:
+
+					Content: Type: Type, Start: 1, 8, End: 1, 11, Content: ""
+					Type: Type
+					Children:
+						Content: Type: FullSymbol, Start: 1, 8, End: 1, 11, Content: ""
+						Type: FullSymbol
+						Children:
+							Content: Type: Symbol, Start: 1, 8, End: 1, 11, Content: "foo"
+							Type: Symbol
+							Children:
+
+					Content: Type: RightParenthesis, Start: 1, 11, End: 1, 12, Content: ")"
 					Type: RightParenthesis
 					Children:
 

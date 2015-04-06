@@ -17,16 +17,16 @@ Children:
 			Content: Type: PrefixNode, Start: 1, 7, End: 1, 9, Content: ""
 			Type: PrefixNode
 			Children:
-				Content: Type: Minus, Start: 1, 7, End: 1, 8, Content: "-"
-				Type: Minus
-				Children:
-
 				Content: Type: LiteralNode, Start: 1, 8, End: 1, 9, Content: ""
 				Type: LiteralNode
 				Children:
 					Content: Type: Integer, Start: 1, 8, End: 1, 9, Content: "1"
 					Type: Integer
 					Children:
+
+				Content: Type: Minus, Start: 1, 7, End: 1, 8, Content: "-"
+				Type: Minus
+				Children:
 
 			Content: Type: InfixOperator, Start: 1, 5, End: 1, 6, Content: ""
 			Type: InfixOperator

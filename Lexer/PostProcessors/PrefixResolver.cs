@@ -20,9 +20,9 @@ namespace Lexer.PostProcessors
                 else
                 {
                     var source = astNode.Children;
-                    var prefix = new AbstractSyntaxTree(new Node(TokenType.PrefixNode), source.GetRange(1, source.Count - 1));
-
-                    astNode.Children = new List<AbstractSyntaxTree>() { source.First(), prefix };
+                    var value = new AbstractSyntaxTree(new Node(TokenType.PrefixNode), source.GetRange(1, source.Count - 1));
+                    var prefix = source.First();
+                    astNode.Children = new List<AbstractSyntaxTree>() { value, prefix };
                 }
             }
 
