@@ -423,12 +423,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     {
                         Function = new FunctionNode()
                         {
-                            ObjectInstance = new ObjectCreationNode()
-                            {
-                                ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
-                                Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
-                                Args = new IExpressionNode[] { }
-                            },
+                            ObjectInstance = ConstructTypeEmitterInstance(),
                             Method = testMethod.Get(),
                         },
                         Args = new IExpressionNode[] { }
@@ -1464,29 +1459,18 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_CreateObject()
         {
-            typeEmitter.AddDefaultConstructor();
-            var myType = typeEmitter.Get(assemblyEmitter);
-
-            var variable = new VariableDefinition("myInstance", myType);
+            LocalVariableNode variable;
 
             BodyCodeBlock = new CodeBlockNode()
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new SymbolDeclarationNode()
-                    {
-                        Variable = variable,
-                        Initializer = new ObjectCreationNode()
-                        {
-                            ExpressionReturnType = myType,
-                            Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
-                            Args = new List<IExpressionNode>()
-                        }
-                    },
-                    CallConsoleWriteLine(new LocalVariableNode(variable))
+                    ConstructTypeEmitterInstance(out variable),
+                    CallConsoleWriteLine(variable)
                 }
             };
 
+            var myType = typeEmitter.Get(assemblyEmitter);
             ExpectedOutput = myType.FullName;
             AssertSuccessByExecution();
         }
@@ -2066,28 +2050,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             return property;
         }
 
-        private void TestCanEmit_IndexOperatorGetterHelper(TypeReference elementType, int[] dimensions, IConvertible[] values)
+        private void TestCanEmit_IndexOperatorGetterHelper(PropertyDefinition property, int[] dimensions, IConvertible[] values, List<IParserNode> nodes, IExpressionNode thisObjectInstance)
         {
             var rank = dimensions.Length;
-            var property = SetupIndexedProperty(elementType, dimensions.Length, dimensions, values.Select(value => new LiteralNode(elementType, value)).ToArray());
-
-            var nodes = new List<IParserNode>();
-            
-            typeEmitter.AddDefaultConstructor();
-            var objectInstanceType = typeEmitter.Get(assemblyEmitter);
-            var objectInstanceVariable = new VariableDefinition(objectInstanceType);
-            var objectInstanceNode = new LocalVariableNode(objectInstanceVariable);
-
-            nodes.Add(new SymbolDeclarationNode()
-            {
-                Variable = objectInstanceVariable,
-                Initializer = new ObjectCreationNode()
-                {
-                    ExpressionReturnType = objectInstanceType,
-                    Constructor = AssemblyRegistry.GetConstructor(assemblyEmitter, typeEmitter),
-                    Args = new IExpressionNode[0]
-                }
-            });
 
             for (int i = 0; i < values.Length; i++)
             {
@@ -2102,8 +2067,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
                 nodes.Add(CallConsoleWriteLine(new IndexOperatorNode()
                     {
-                        ExpressionReturnType = elementType,
-                        ObjectInstance = objectInstanceNode,
+                        ObjectInstance = thisObjectInstance,
                         Property = property,
                         Indices = indices
                     }));
@@ -2116,6 +2080,16 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             ExpectedOutput = values.Select(value => value.ToString() + Environment.NewLine).Aggregate((x, y) => x + y);
             AssertSuccessByExecution();
+        }
+
+        private void TestCanEmit_IndexOperatorGetterHelper(TypeReference elementType, int[] dimensions, IConvertible[] values)
+        {
+            var property = SetupIndexedProperty(elementType, dimensions.Length, dimensions, values.Select(value => new LiteralNode(elementType, value)).ToArray());
+            var nodes = new List<IParserNode>();
+
+            LocalVariableNode objectInstance;
+            nodes.Add(ConstructTypeEmitterInstance(out objectInstance));
+            TestCanEmit_IndexOperatorGetterHelper(property, dimensions, values, nodes, objectInstance);
         }
 
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
@@ -2144,7 +2118,6 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 });
         }
 
-
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
         public void TestCanEmit_SingleDimentionalStringIndexOperatorGetter()
         {
@@ -2162,6 +2135,98 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         public void TestCanEmit_MultiDimentionalStringIndexOperatorGetter()
         {
             TestCanEmit_IndexOperatorGetterHelper(assemblyEmitter.TypeSystem.String, new int[] { 5, 2 }, new IConvertible[]
+                {
+                    "a", "b",
+                    "c", "d",
+                    "e", "f",
+                    "g", "h",
+                    "i", "j"
+                });
+        }
+
+        private void TestCanEmit_IndexOperatorSetterHelper(TypeReference elementType, int[] dimensions, IConvertible[] values)
+        {
+            LocalVariableNode objectInstance;
+            var rank = dimensions.Length;
+            var property = SetupIndexedProperty(elementType, dimensions.Length, dimensions);
+            var nodes = new List<IParserNode>();
+            
+            nodes.Add(ConstructTypeEmitterInstance(out objectInstance));
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                var indices = new LiteralNode[rank];
+                var indexSizes = 1;
+
+                for (int j = rank - 1; j > -1; j--)
+                {
+                    indices[j] = new LiteralNode(assemblyEmitter.TypeSystem.Int32, (i / indexSizes) % dimensions[j]);
+                    indexSizes *= dimensions[j];
+                }
+
+                nodes.Add(new UnaryOperatorNode()
+                {
+                    ExpressionReturnType = assemblyEmitter.TypeSystem.Void,
+                    UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
+                    Operand = new AssignmentOperatorNode()
+                    {
+                        LeftOperand = new IndexOperatorNode()
+                        {
+                            ObjectInstance = objectInstance,
+                            Property = property,
+                            Indices = indices
+                        },
+                        RightOperand = new LiteralNode(elementType, values[i])
+                    }
+                });
+            }
+            
+            TestCanEmit_IndexOperatorGetterHelper(property, dimensions, values, nodes, objectInstance);
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_SingleDimentionalIntIndexOperatorSetter()
+        {
+            TestCanEmit_IndexOperatorSetterHelper(assemblyEmitter.TypeSystem.Int32, new int[] { 5 }, new IConvertible[]
+                {
+                    12,
+                    34,
+                    56,
+                    78,
+                    90
+                });
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_MultiDimentionalIntIndexOperatorSetter()
+        {
+            TestCanEmit_IndexOperatorSetterHelper(assemblyEmitter.TypeSystem.Int32, new int[] { 5, 2 }, new IConvertible[]
+                {
+                    1, 2,
+                    3, 4,
+                    5, 6,
+                    7, 8,
+                    9, 0
+                });
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_SingleDimentionalStringIndexOperatorSetter()
+        {
+            TestCanEmit_IndexOperatorSetterHelper(assemblyEmitter.TypeSystem.String, new int[] { 5 }, new IConvertible[]
+                {
+                    "ab",
+                    "cd",
+                    "ef",
+                    "gh",
+                    "ij"
+                });
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_MultiDimentionalStringIndexOperatorSetter()
+        {
+            TestCanEmit_IndexOperatorSetterHelper(assemblyEmitter.TypeSystem.String, new int[] { 5, 2 }, new IConvertible[]
                 {
                     "a", "b",
                     "c", "d",

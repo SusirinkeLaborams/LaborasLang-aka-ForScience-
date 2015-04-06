@@ -302,5 +302,28 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
             return targetMethod.Get();
         }
+
+        internal IExpressionNode ConstructTypeEmitterInstance()
+        {
+            typeEmitter.AddDefaultConstructor();
+            return new ObjectCreationNode()
+            {
+                ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
+                Constructor = AssemblyRegistry.GetConstructor(assemblyEmitter, typeEmitter),
+                Args = new IExpressionNode[0]
+            };
+        }
+
+        internal IParserNode ConstructTypeEmitterInstance(out LocalVariableNode variable)
+        {
+            var variableDef = new VariableDefinition(typeEmitter.Get(assemblyEmitter));
+            variable = new LocalVariableNode(variableDef);
+
+            return new SymbolDeclarationNode()
+            {
+                Variable = variableDef,
+                Initializer = ConstructTypeEmitterInstance() 
+            };
+        }
     }
 }

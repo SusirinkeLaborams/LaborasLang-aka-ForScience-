@@ -36,12 +36,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             var loadFieldExpression = new FieldNode()
             {
-                ObjectInstance = new ObjectCreationNode()
-                {
-                    ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
-                    Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
-                    Args = new List<IExpressionNode>()
-                },
+                ObjectInstance = ConstructTypeEmitterInstance(),
                 Field = field
             };
 
@@ -113,12 +108,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             var loadFieldExpression = new FieldNode()
             {
-                ObjectInstance = new ObjectCreationNode()
-                {
-                    ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
-                    Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
-                    Args = new List<IExpressionNode>()
-                },
+                ObjectInstance = ConstructTypeEmitterInstance(),
                 Field = backingField
             };
 

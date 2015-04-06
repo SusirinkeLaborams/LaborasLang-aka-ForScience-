@@ -151,12 +151,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         Function = new FieldNode()
                         {
                             Field = field,
-                            ObjectInstance = new ObjectCreationNode()
-                            {
-                                ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
-                                Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
-                                Args = new IExpressionNode[0]
-                            }
+                            ObjectInstance = ConstructTypeEmitterInstance()
                         },
                         Args = new IExpressionNode[0]
                     }
