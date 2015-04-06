@@ -16,8 +16,10 @@ namespace Lexer
                         ValueStatementNode,
                         CodeBlockNode,
                         WhileLoop,
+                        ForLoop,
                         ReturnNode,
-                        ConditionalSentence),
+                        ConditionalSentence,
+                        EndOfLine),
             
                     ParseRule(UseNode,
                         Use + FullSymbol + EndOfLine),
@@ -26,7 +28,7 @@ namespace Lexer
                         DeclarationSubnode + EndOfLine),
             
                     AlwaysCollapsableParseRule(DeclarationSubnode,
-                        ZeroOrMore(VariableModifier) + Type + Symbol + Optional(Assignment + Value)),
+                        ZeroOrMore(VariableModifier) + Type + Symbol + OptionalTail(Assignment + Value)),
 
                     AlwaysCollapsableParseRule(ValueStatementNode,
                         Value + EndOfLine),
@@ -184,8 +186,14 @@ namespace Lexer
                     ParseRule(WhileLoop,
                         While + LeftParenthesis + Value + RightParenthesis + StatementNode),
 
+                    ParseRule(ForLoop,
+                        For + LeftParenthesis + DeclarationSubnode + In + Value + RightParenthesis + StatementNode,
+                        For + LeftParenthesis + Optional(Value) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + StatementNode,
+                        For + LeftParenthesis + Optional(DeclarationSubnode) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + StatementNode
+                     ),
+
                     ParseRule(ConditionalSentence,
-                        If + LeftParenthesis + Value + RightParenthesis + StatementNode + Optional(Else + StatementNode)),
+                        If + LeftParenthesis + Value + RightParenthesis + StatementNode + OptionalTail(Else + StatementNode)),
             };
 
     }

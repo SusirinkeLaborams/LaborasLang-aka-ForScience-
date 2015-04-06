@@ -65,6 +65,8 @@
         Use,
         Virtual,
         While,
+        For, 
+        In,
 
         NoInstance,
         Private,
@@ -92,6 +94,7 @@
         UseNode,
 
         WhileLoop,
+        ForLoop,
         Function,
         ConditionalSentence,
 

@@ -694,7 +694,10 @@ namespace Lexer
             keywordTypeMap[(FastStringBuilder)"true"] = (int)TokenType.True;
             keywordTypeMap[(FastStringBuilder)"use"] = (int)TokenType.Use;
             keywordTypeMap[(FastStringBuilder)"virtual"] = (int)TokenType.Virtual;
-            keywordTypeMap[(FastStringBuilder)"while"] = (int)TokenType.While;            
+            keywordTypeMap[(FastStringBuilder)"while"] = (int)TokenType.While;
+            keywordTypeMap[(FastStringBuilder)"for"] = (int)TokenType.For;
+            keywordTypeMap[(FastStringBuilder)"in"] = (int)TokenType.In;
+            
         }
 
         class StringBuilderCacheField

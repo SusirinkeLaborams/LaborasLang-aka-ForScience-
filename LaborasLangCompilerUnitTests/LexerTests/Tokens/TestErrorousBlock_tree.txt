@@ -62,12 +62,9 @@ Children:
 		Type: RightCurlyBrace
 		Children:
 
-	Content: Type: UnknownNode, Start: 4, 14, End: 4, 15, Content: ""
-	Type: UnknownNode
+	Content: Type: EndOfLine, Start: 4, 14, End: 4, 15, Content: ";"
+	Type: EndOfLine
 	Children:
-		Content: Type: EndOfLine, Start: 4, 14, End: 4, 15, Content: ";"
-		Type: EndOfLine
-		Children:
 
 	Content: Type: DeclarationNode, Start: 5, 13, End: 5, 23, Content: ""
 	Type: DeclarationNode

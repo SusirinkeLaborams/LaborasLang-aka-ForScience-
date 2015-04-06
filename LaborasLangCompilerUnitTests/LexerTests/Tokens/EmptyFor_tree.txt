@@ -1,0 +1,29 @@
+Content: Type: RootNode, Start: 1, 1, End: 1, 9, Content: ""
+Type: RootNode
+Children:
+	Content: Type: ForLoop, Start: 1, 1, End: 1, 9, Content: ""
+	Type: ForLoop
+	Children:
+		Content: Type: For, Start: 1, 1, End: 1, 4, Content: "for"
+		Type: For
+		Children:
+
+		Content: Type: LeftParenthesis, Start: 1, 4, End: 1, 5, Content: "("
+		Type: LeftParenthesis
+		Children:
+
+		Content: Type: EndOfLine, Start: 1, 5, End: 1, 6, Content: ";"
+		Type: EndOfLine
+		Children:
+
+		Content: Type: EndOfLine, Start: 1, 6, End: 1, 7, Content: ";"
+		Type: EndOfLine
+		Children:
+
+		Content: Type: RightParenthesis, Start: 1, 7, End: 1, 8, Content: ")"
+		Type: RightParenthesis
+		Children:
+
+		Content: Type: EndOfLine, Start: 1, 8, End: 1, 9, Content: ";"
+		Type: EndOfLine
+		Children:

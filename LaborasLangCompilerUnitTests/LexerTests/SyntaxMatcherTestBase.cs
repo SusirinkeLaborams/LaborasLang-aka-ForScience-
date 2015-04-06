@@ -86,7 +86,10 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         protected void AssertContainsNoUnknowns(string source)
         {
             var tree = Lexer.Lexer.Lex(source);
-            AssertContainsNoUnknowns(tree);            
+            if (ContaintsUnknowns(tree))
+            {
+                throw new Exception("Unknown symbols found in tree:\r\n" + tree.ToString());
+            }         
         }
 
         protected void AssertContainsUnkowns(string source)
@@ -107,7 +110,10 @@ namespace LaborasLangCompilerUnitTests.LexerTests
 
             foreach (var child in tree.Children)
             {
-                return ContaintsUnknowns(child);
+                if (ContaintsUnknowns(child))
+                {
+                    return true;
+                }
             }
 
             return false;

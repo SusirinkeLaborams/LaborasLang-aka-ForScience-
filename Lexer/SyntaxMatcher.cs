@@ -177,8 +177,8 @@ namespace Lexer
 
                 return true;
             }
-
-            return false;
+            bool success = token.Type == ConditionType.ZeroOrOne;
+            return success;
         }
 
         private bool MatchNonTerminal(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)
@@ -192,8 +192,8 @@ namespace Lexer
                     return true;
                 }
             }
-
-            return false;
+            bool success = token.Type == ConditionType.ZeroOrOne;
+            return success;
         }
 
         private bool MatchRule(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)

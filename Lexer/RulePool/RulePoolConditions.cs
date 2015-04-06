@@ -19,7 +19,7 @@ namespace Lexer
             return new Condition(c, ConditionType.ZeroOrMore);
         }
 
-        private static ConditionList Optional(ConditionList conditions)
+        private static ConditionList OptionalTail(ConditionList conditions)
         {
             Contract.Requires(conditions.Count > 0);
 
@@ -29,6 +29,10 @@ namespace Lexer
             return conditions;
         }
 
+        private static ConditionList Optional(Condition c)
+        {
+            return new Condition(c, ConditionType.ZeroOrOne);
+        }
         private static ParseRule ParseRule(Condition result, params List<Condition>[] requiredTokens)
         {
             Contract.Requires(requiredTokens.Length > 0);

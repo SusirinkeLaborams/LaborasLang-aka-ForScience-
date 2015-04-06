@@ -398,6 +398,45 @@ foo()()();";
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void BasicForeach()
+        {
+            var source = @"for(auto i in foo);";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void BasicFor()
+        {
+            var source = @"for(auto i = 0; i < 5; i++);";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void ForWithoutDeclaration()
+        {
+            var source = @"for(; i < 5; i++);";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void EmptyFor()
+        {
+            var source = @"for(;;);";
+            ExecuteTest(source);
+        }
+
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void BasicForWithAssignment()
+        {
+            var source = @"for(i = 0; i < 5; i++);";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void AssignFunctionTest_OneArgument()
         {
             var source = @"foo = int(int a) { bar(); };";
@@ -757,7 +796,7 @@ auto foo = void()()
         {
             var source = @"int i = 4;
 sudo bring me beer;";
-            ExecuteTest(source);
+            ExecuteFailingTest(source);
         }       
     }
 }
