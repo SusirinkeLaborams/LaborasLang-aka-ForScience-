@@ -954,7 +954,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (arrayCreation.Initializer != null)
             {
-                if (CanEmitArrayInitializerFastPath(arrayCreation.Initializer))
+                if (CanEmitArrayInitializerFastPath(arrayType.ElementType, arrayCreation.Initializer))
                 {
                     EmitInitializerFastPath(arrayType, arrayCreation.Initializer);
                 }
@@ -970,8 +970,11 @@ namespace LaborasLangCompiler.Codegen.Methods
         }
 
         [Pure]
-        private bool CanEmitArrayInitializerFastPath(IReadOnlyList<IExpressionNode> initializer)
+        private bool CanEmitArrayInitializerFastPath(TypeReference elementType, IReadOnlyList<IExpressionNode> initializer)
         {
+            if (!elementType.IsValueType)
+                return false;
+
             for (int i = 0; i < initializer.Count; i++)
             {
                 if (initializer[i].ExpressionType != ExpressionNodeType.Literal || !initializer[i].ExpressionReturnType.IsValueType)
@@ -984,7 +987,7 @@ namespace LaborasLangCompiler.Codegen.Methods
         // Assumes array is on the stack but it must leave it on the stack after the function is done
         private void EmitInitializerFastPath(ArrayType arrayType, IReadOnlyList<IExpressionNode> initializer)
         {
-            Contract.Requires(CanEmitArrayInitializerFastPath(initializer));
+            Contract.Requires(CanEmitArrayInitializerFastPath(arrayType.ElementType, initializer));
 
             var field = AssemblyRegistry.GetArrayInitializerField(Assembly, arrayType.ElementType, initializer);
             var initializeArrayMethod = AssemblyRegistry.GetMethod(Assembly, "System.Runtime.CompilerServices.RuntimeHelpers", "InitializeArray");
