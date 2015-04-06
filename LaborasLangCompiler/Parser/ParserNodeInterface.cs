@@ -67,10 +67,15 @@ namespace LaborasLangCompiler.Parser
         Literal Value { get; }
     }
 
-    [ContractClass(typeof(IMethodNodeContract))]
-    interface IMethodNode : IExpressionNode
+    [ContractClass(typeof(IMemberNodeContract))]
+    interface IMemberNode : IExpressionNode
     {
         IExpressionNode ObjectInstance { get; }
+    }
+
+    [ContractClass(typeof(IMethodNodeContract))]
+    interface IMethodNode : IMemberNode
+    {
         MethodReference Method { get; }
     }
 
@@ -111,16 +116,14 @@ namespace LaborasLangCompiler.Parser
 
 
     [ContractClass(typeof(IFieldNodeContract))]
-    interface IFieldNode : IExpressionNode
+    interface IFieldNode : IMemberNode
     {
-        IExpressionNode ObjectInstance { get; }
         FieldReference Field { get; }
     }
 
     [ContractClass(typeof(IPropertyNodeContract))]
-    interface IPropertyNode : IExpressionNode
+    interface IPropertyNode : IMemberNode
     {
-        IExpressionNode ObjectInstance { get; }
         PropertyReference Property { get; }
     }
 
@@ -206,9 +209,8 @@ namespace LaborasLangCompiler.Parser
     }
 
     [ContractClass(typeof(IArrayAccessNodeContract))]
-    interface IArrayAccessNode : IExpressionNode
+    interface IArrayAccessNode : IMemberNode
     {
-        IExpressionNode ObjectInstance { get; }
         IReadOnlyList<IExpressionNode> Indices { get; }
     }
 
@@ -310,8 +312,8 @@ namespace LaborasLangCompiler.Parser
         }
     }
 
-    [ContractClassFor(typeof(IMethodNode))]
-    abstract class IMethodNodeContract : IMethodNode
+    [ContractClassFor(typeof(IMemberNode))]
+    abstract class IMemberNodeContract : IMemberNode
     {
         public abstract TypeReference ExpressionReturnType { get; }
         public abstract ExpressionNodeType ExpressionType { get; }
@@ -327,6 +329,16 @@ namespace LaborasLangCompiler.Parser
                 throw new NotImplementedException();
             }
         }
+    }
+
+    [ContractClassFor(typeof(IMethodNode))]
+    abstract class IMethodNodeContract : IMethodNode
+    {
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+        public abstract IExpressionNode ObjectInstance { get; }
 
         public MethodReference Method
         {
@@ -471,15 +483,7 @@ namespace LaborasLangCompiler.Parser
         public abstract TypeReference ExpressionReturnType { get; }
         public abstract NodeType Type { get; }
         public abstract SequencePoint SequencePoint { get; }
-
-        public IExpressionNode ObjectInstance
-        {
-            get
-            {
-                Contract.Ensures(Contract.Result<IExpressionNode>() == null || Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
-                throw new NotImplementedException();
-            }
-        }
+        public abstract IExpressionNode ObjectInstance { get; }
 
         public FieldReference Field
         {
@@ -499,15 +503,7 @@ namespace LaborasLangCompiler.Parser
         public abstract TypeReference ExpressionReturnType { get; }
         public abstract NodeType Type { get; }
         public abstract SequencePoint SequencePoint { get; }
-
-        public IExpressionNode ObjectInstance
-        {
-            get
-            {
-                Contract.Ensures(Contract.Result<IExpressionNode>() == null || Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
-                throw new NotImplementedException();
-            }
-        }
+        public abstract IExpressionNode ObjectInstance { get; }
 
         public PropertyReference Property
         {
@@ -664,16 +660,7 @@ namespace LaborasLangCompiler.Parser
         public abstract TypeReference ExpressionReturnType { get; }
         public abstract NodeType Type { get; }
         public abstract SequencePoint SequencePoint { get; }
-
-        public IExpressionNode ObjectInstance
-        {
-            get
-            {
-                Contract.Ensures(Contract.Result<IExpressionNode>() != null);
-                Contract.Ensures(Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
-                throw new NotImplementedException();
-            }
-        }
+        public abstract IExpressionNode ObjectInstance { get; }
 
         public IReadOnlyList<IExpressionNode> Indices
         {
