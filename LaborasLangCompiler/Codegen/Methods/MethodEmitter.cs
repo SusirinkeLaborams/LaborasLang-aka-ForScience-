@@ -198,6 +198,10 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Emit((IIncrementDecrementOperatorNode)expression);
                     return;
 
+                case ExpressionNodeType.IndexOperator:
+                    Emit((IIndexOperatorNode)expression, emissionType);
+                    return;
+
                 case ExpressionNodeType.Literal:
                     Emit((ILiteralNode)expression);
                     return;
@@ -289,6 +293,10 @@ namespace LaborasLangCompiler.Codegen.Methods
                     EmitStore((IParameterNode)expression);
                     return;
 
+                case ExpressionNodeType.IndexOperator:
+                    EmitStore((IIndexOperatorNode)expression);
+                    return;
+
                 case ExpressionNodeType.LocalVariable:
                     EmitStore((ILocalVariableNode)expression);
                     return;
@@ -311,14 +319,12 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void Emit(IFieldNode field, EmissionType emissionType)
         {
-            bool loadAddress = (emissionType == EmissionType.ThisArg && field.Field.FieldType.IsValueType) || emissionType == EmissionType.ReferenceToValue;
-
             if (!field.Field.Resolve().IsStatic)
             {
                 Contract.Assume(field.ObjectInstance != null);
                 Emit(field.ObjectInstance, EmissionType.ThisArg);
 
-                if (loadAddress)
+                if (ShouldEmitAddress(field, emissionType))
                 {
                     Ldflda(field.Field);
                 }
@@ -329,7 +335,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
             else
             {
-                if (loadAddress)
+                if (ShouldEmitAddress(field, emissionType))
                 {
                     Ldsflda(field.Field);
                 }
@@ -346,7 +352,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             var index = argument.Parameter.Index + (methodDefinition.HasThis ? 1 : 0);
 
-            if ((emissionType == EmissionType.ThisArg && argument.Parameter.ParameterType.IsValueType) || emissionType == EmissionType.ReferenceToValue)
+            if (ShouldEmitAddress(argument, emissionType))
             {
                 Ldarga(index);
             }
@@ -358,7 +364,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void Emit(ILocalVariableNode variable, EmissionType emissionType)
         {
-            if ((emissionType == EmissionType.ThisArg && variable.LocalVariable.VariableType.IsValueType) || emissionType == EmissionType.ReferenceToValue)
+            if (ShouldEmitAddress(variable, emissionType))
             {
                 Ldloca(variable.LocalVariable.Index);
             }
@@ -384,50 +390,52 @@ namespace LaborasLangCompiler.Codegen.Methods
         private void Emit(IArrayAccessNode arrayAccess, EmissionType emissionType)
         {
             var array = arrayAccess.ObjectInstance;
-            var arrayType = array.ExpressionReturnType as ArrayType;
+            Contract.Assume(array != null && array.ExpressionReturnType is ArrayType);
+
+            var arrayType = (ArrayType)array.ExpressionReturnType;
+
             var indices = arrayAccess.Indices;
-            bool loadAddress = (emissionType == EmissionType.ThisArg && arrayAccess.ExpressionReturnType.IsValueType) || emissionType == EmissionType.ReferenceToValue;
 
             Emit(array, EmissionType.ThisArg);
 
-            if (arrayType != null)
+            if (arrayType.IsVector)
             {
-                if (arrayType.IsVector)
-                {
-                    Contract.Assume(indices.Count == 1);
-                    EmitExpressionWithTargetType(indices[0], Assembly.TypeSystem.Int32);
+                Contract.Assume(indices.Count == 1);
+                EmitExpressionWithTargetType(indices[0], Assembly.TypeSystem.Int32);
 
-                    if (loadAddress)
-                    {
-                        Ldelema(arrayType.ElementType);
-                    }
-                    else
-                    {
-                        Ldelem(arrayType.ElementType);
-                    }
+                if (ShouldEmitAddress(arrayAccess, emissionType))
+                {
+                    Ldelema(arrayType.ElementType);
                 }
                 else
                 {
-                    var loadElementMethod = loadAddress ? AssemblyRegistry.GetArrayLoadElementAddress(arrayType) : AssemblyRegistry.GetArrayLoadElement(arrayType);
-                    EmitArgumentsForCall(indices, loadElementMethod);
-                    Call(loadElementMethod);
+                    Ldelem(arrayType.ElementType);
                 }
             }
             else
             {
-                var getter = AssemblyRegistry.GetCompatibleMethod(Assembly, array.ExpressionReturnType, "get_Item", indices.Select(index => index.ExpressionReturnType).ToArray());
-                Contract.Assume(getter != null);
-
-                EmitArgumentsForCall(indices, getter);
-                Call(getter);
-
-                if (loadAddress)
-                {
-                    var variable = temporaryVariables.Acquire(arrayAccess.ExpressionReturnType);
-                    Stloc(variable.Index);
-                    Ldloca(variable.Index);
-                }
+                var loadElementMethod = ShouldEmitAddress(arrayAccess, emissionType) ? AssemblyRegistry.GetArrayLoadElementAddress(arrayType) : AssemblyRegistry.GetArrayLoadElement(arrayType);
+                EmitArgumentsForCall(indices, loadElementMethod);
+                Call(loadElementMethod);
             }
+        }
+
+        private void Emit(IIndexOperatorNode indexOperator, EmissionType emissionType)
+        {
+            var getter = AssemblyRegistry.GetPropertyGetter(Assembly, indexOperator.Property);
+            Contract.Assume(getter != null);
+
+            if (getter.HasThis)
+            {
+                Contract.Assume(indexOperator.ObjectInstance != null);
+                Emit(indexOperator.ObjectInstance, EmissionType.ThisArg);
+            }
+
+            EmitArgumentsForCall(indexOperator.Indices, getter);
+            Call(getter);
+
+            if (ShouldEmitAddress(indexOperator, emissionType))
+                LoadAddressOfValue(indexOperator);
         }
 
         #endregion
@@ -727,15 +735,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 }
 
                 EmitArgumentsForCall(functionCall.Args, functionNode.Method);
-
-                if (functionNode.Method.Resolve().IsVirtual)
-                {
-                    Callvirt(functionNode.Method);
-                }
-                else
-                {
-                    Call(functionNode.Method);
-                }
+                Call(functionNode.Method);
             }
             else
             {
@@ -1519,49 +1519,60 @@ namespace LaborasLangCompiler.Codegen.Methods
         private void EmitStore(IArrayAccessNode arrayAccess)
         {
             var array = arrayAccess.ObjectInstance;
-            var arrayType = array.ExpressionReturnType as ArrayType;
+            Contract.Assume(array != null && array.ExpressionReturnType is ArrayType);
+
+            var arrayType = (ArrayType)array.ExpressionReturnType;
             var indices = arrayAccess.Indices;
-            
-            var valueVariable = temporaryVariables.Acquire(arrayAccess.ExpressionReturnType);
+
+            var valueVariable = temporaryVariables.Acquire(arrayType.ElementType);
             Stloc(valueVariable.Index);
 
             Emit(array, EmissionType.ThisArg);
 
-            if (arrayType != null)
+            if (arrayType.IsVector)
             {
-                if (arrayType.IsVector)
-                {
-                    Contract.Assume(indices.Count == 1);
-                    EmitExpressionWithTargetType(indices[0], Assembly.TypeSystem.Int32);
-                    Ldloc(valueVariable.Index);
-                    Stelem(arrayType.ElementType);
-                }
-                else
-                {
-                    var storeElementMethod = AssemblyRegistry.GetArrayStoreElement(arrayType);
-
-                    for (int i = 0; i < indices.Count; i++)
-                    {
-                        EmitArgumentForCall(indices[i], storeElementMethod.Parameters[i].ParameterType);
-                    }
-
-                    Ldloc(valueVariable.Index);
-                    Call(storeElementMethod);
-                }
+                Contract.Assume(indices.Count == 1);
+                EmitExpressionWithTargetType(indices[0], Assembly.TypeSystem.Int32);
+                Ldloc(valueVariable.Index);
+                Stelem(arrayType.ElementType);
             }
             else
             {
-                var setter = AssemblyRegistry.GetCompatibleMethod(Assembly, array.ExpressionReturnType, "set_Item", indices.Select(index => index.ExpressionReturnType).Union(new[] { arrayAccess.ExpressionReturnType }).ToArray());
-                Contract.Assume(setter != null);
+                var storeElementMethod = AssemblyRegistry.GetArrayStoreElement(arrayType);
 
                 for (int i = 0; i < indices.Count; i++)
                 {
-                    Emit(indices[i], EmissionType.Value);
+                    EmitArgumentForCall(indices[i], storeElementMethod.Parameters[i].ParameterType);
                 }
 
                 Ldloc(valueVariable.Index);
-                Call(setter);
+                Call(storeElementMethod);
             }
+
+            temporaryVariables.Release(valueVariable);
+        }
+
+        private void EmitStore(IIndexOperatorNode indexOperator)
+        {
+            var setter = AssemblyRegistry.GetPropertySetter(Assembly, indexOperator.Property);
+            Contract.Assume(setter != null);
+            
+            var valueVariable = temporaryVariables.Acquire(setter.Parameters[setter.Parameters.Count - 1].ParameterType);
+            Stloc(valueVariable.Index);
+
+            if (setter.HasThis)
+            {
+                Contract.Assume(indexOperator.ObjectInstance != null);
+                Emit(indexOperator.ObjectInstance, EmissionType.ThisArg);
+            }
+
+            for (int i = 0; i < indexOperator.Indices.Count; i++)
+            {
+                EmitArgumentForCall(indexOperator.Indices[i], setter.Parameters[i].ParameterType);
+            }
+
+            Ldloc(valueVariable.Index);
+            Call(setter);
 
             temporaryVariables.Release(valueVariable);
         }
@@ -1705,6 +1716,18 @@ namespace LaborasLangCompiler.Codegen.Methods
                     ContractsHelper.AssumeUnreachable(string.Format("Unknown primitive type: {0}", targetType.FullName));
                     break;
             }
+        }
+
+        private bool ShouldEmitAddress(IExpressionNode expression, EmissionType emissionType)
+        {
+            return (expression.ExpressionReturnType.IsValueType && emissionType == EmissionType.ThisArg) || emissionType == EmissionType.ReferenceToValue;
+        }
+
+        private void LoadAddressOfValue(IExpressionNode expression)
+        {
+            var variable = temporaryVariables.Acquire(expression.ExpressionReturnType);
+            Stloc(variable.Index);
+            Ldloca(variable.Index);
         }
 
         #endregion

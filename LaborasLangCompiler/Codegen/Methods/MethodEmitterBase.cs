@@ -174,7 +174,17 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             Contract.Requires(method != null);
 
-            ilProcessor.Emit(OpCodes.Call, method);
+            OpCode opcode = OpCodes.Call;
+
+            if (method.HasThis && !method.DeclaringType.IsValueType)
+            {
+                var resolvedMethod = method.Resolve();
+
+                if (resolvedMethod != null && resolvedMethod.IsVirtual)
+                    opcode = OpCodes.Callvirt;
+            }
+
+            ilProcessor.Emit(opcode, method);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 

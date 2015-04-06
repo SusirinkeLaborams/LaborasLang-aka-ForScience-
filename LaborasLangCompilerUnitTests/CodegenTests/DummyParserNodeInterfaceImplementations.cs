@@ -128,6 +128,18 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public IReadOnlyList<IExpressionNode> Indices { get; set; }
     }
 
+    class IndexOperatorNode : IIndexOperatorNode
+    {
+        public NodeType Type { get { return NodeType.Expression; } }
+        public SequencePoint SequencePoint { get { return null; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.IndexOperator; } }
+
+        public TypeReference ExpressionReturnType { get; set; }
+        public IExpressionNode ObjectInstance { get; set; }
+        public PropertyReference Property { get; set; }
+        public IReadOnlyList<IExpressionNode> Indices { get; set; }
+    }
+
     class LocalVariableNode : ILocalVariableNode
     {
         public SequencePoint SequencePoint { get { return null; } }
