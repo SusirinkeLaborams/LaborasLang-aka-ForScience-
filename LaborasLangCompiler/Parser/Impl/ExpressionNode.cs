@@ -43,12 +43,11 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.Function:
                     ret = MethodNode.Parse(context, lexerNode);
                     break;
-                //case Lexer.TokenType.AssignmentOperatorNode:
+                    /*
+                case Lexer.TokenType.AssignmentOperatorNode:
                     ret = AssignmentOperatorNode.Parse(context, lexerNode);
                     break;
-                //case Lexer.TokenType.FunctionCallNode:
-                    ret = MethodCallNode.Parse(context, lexerNode);
-                    break;
+                     */
                 case Lexer.TokenType.InfixNode:
                 //case Lexer.TokenType.LogicalAndNode:
                 //case Lexer.TokenType.BitwiseOrNode:
@@ -71,9 +70,11 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.ArrayLiteral:
                     ret = ArrayCreationNode.Parse(context, lexerNode);
                     break;
+                    /*
                 case Lexer.TokenType.IndexAccessNode:
                     ret = ArrayAccessNode.Parse(context, lexerNode);
                     break;
+                     */
                 default:
                     throw new NotImplementedException();
             }

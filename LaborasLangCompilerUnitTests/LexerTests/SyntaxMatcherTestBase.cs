@@ -74,7 +74,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
         }
 
 
-        private void AssertContainsNoUnknowns(AbstractSyntaxTree tree)
+        private void AssertContainsNoUnknowns(IAbstractSyntaxTree tree)
         {
             if (ContaintsUnknowns(tree))
             {

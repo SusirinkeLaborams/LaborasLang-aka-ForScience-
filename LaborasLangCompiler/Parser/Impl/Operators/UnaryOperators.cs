@@ -132,6 +132,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ExpressionNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
+            throw new NotImplementedException();
             if(lexerNode.Children.Count == 1)
             {
                 return ExpressionNode.Parse(context, lexerNode.Children[0]);
