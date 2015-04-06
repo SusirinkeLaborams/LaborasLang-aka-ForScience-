@@ -10,10 +10,8 @@ Class:
 				Private, Mutable, NoInstance
 			Initializer:
 				Literal:
-					Type:
-						System.Int32
-					Value:
-						5
+					Type: System.Int32
+					Value: 5
 
 
 	Methods:
@@ -30,10 +28,8 @@ Class:
 				Private, Mutable, NoInstance
 			Initializer:
 				Literal:
-					Type:
-						System.String
-					Value:
-						asfasfa
+					Type: System.String
+					Value: asfasfa
 
 
 	Methods:

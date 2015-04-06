@@ -10,10 +10,8 @@ Class:
 				Private, Mutable, NoInstance
 			Initializer:
 				Literal:
-					Type:
-						System.UInt64
-					Value:
-						5
+					Type: System.UInt64
+					Value: 5
 
 
 	Methods:

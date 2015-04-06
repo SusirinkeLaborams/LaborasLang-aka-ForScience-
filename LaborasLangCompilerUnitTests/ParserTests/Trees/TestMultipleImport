@@ -18,10 +18,8 @@ Class:
 							ReturnType: System.Void
 							Args:
 								Literal:
-									Type:
-										System.String
-									Value:
-										Hello, World!
+									Type: System.String
+									Value: Hello, World!
 
 							Function:
 								Method:
@@ -39,10 +37,8 @@ Class:
 									ReturnType: System.Boolean
 									Args:
 										Literal:
-											Type:
-												System.String
-											Value:
-												
+											Type: System.String
+											Value: 
 
 									Function:
 										Method:

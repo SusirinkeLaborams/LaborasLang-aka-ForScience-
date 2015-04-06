@@ -18,49 +18,39 @@ Class:
 										BinaryOperator:
 											Left:
 												Literal:
-													Type:
-														System.Int32
-													Value:
-														1
+													Type: System.Int32
+													Value: 1
 
 											Operator:
 												Multiplication
 											Right:
 												Literal:
-													Type:
-														System.Int32
-													Value:
-														2
+													Type: System.Int32
+													Value: 2
 
 
 									Operator:
 										Division
 									Right:
 										Literal:
-											Type:
-												System.Int32
-											Value:
-												3
+											Type: System.Int32
+											Value: 3
 
 
 							Operator:
 								Multiplication
 							Right:
 								Literal:
-									Type:
-										System.Int32
-									Value:
-										4
+									Type: System.Int32
+									Value: 4
 
 
 					Operator:
 						Modulus
 					Right:
 						Literal:
-							Type:
-								System.Int32
-							Value:
-								5
+							Type: System.Int32
+							Value: 5
 
 
 

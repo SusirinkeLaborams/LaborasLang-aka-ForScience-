@@ -10,10 +10,8 @@ Class:
 				Private, Mutable, NoInstance
 			Initializer:
 				Literal:
-					Type:
-						System.Double
-					Value:
-						0
+					Type: System.Double
+					Value: 0
 
 
 	Methods:

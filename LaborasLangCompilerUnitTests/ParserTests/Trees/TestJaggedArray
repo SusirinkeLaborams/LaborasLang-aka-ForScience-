@@ -14,10 +14,8 @@ Class:
 					Rank: 1
 					Dimensions:
 						Literal:
-							Type:
-								System.Int32
-							Value:
-								2
+							Type: System.Int32
+							Value: 2
 
 					Initializer:
 						InitializerList:
@@ -30,10 +28,8 @@ Class:
 									Rank: 1
 									Dimensions:
 										Literal:
-											Type:
-												System.Int32
-											Value:
-												0
+											Type: System.Int32
+											Value: 0
 
 									Initializer:
 										InitializerList:
@@ -49,10 +45,8 @@ Class:
 									Rank: 1
 									Dimensions:
 										Literal:
-											Type:
-												System.Int32
-											Value:
-												0
+											Type: System.Int32
+											Value: 0
 
 									Initializer:
 										InitializerList:

@@ -12,19 +12,15 @@ Class:
 				BinaryOperator:
 					Left:
 						Literal:
-							Type:
-								System.Boolean
-							Value:
-								True
+							Type: System.Boolean
+							Value: True
 
 					Operator:
 						Equals
 					Right:
 						Literal:
-							Type:
-								System.Boolean
-							Value:
-								False
+							Type: System.Boolean
+							Value: False
 
 
 
@@ -46,10 +42,8 @@ Class:
 						NotEquals
 					Right:
 						Literal:
-							Type:
-								System.Boolean
-							Value:
-								True
+							Type: System.Boolean
+							Value: True
 
 
 
@@ -64,19 +58,15 @@ Class:
 				BinaryOperator:
 					Left:
 						Literal:
-							Type:
-								System.Int32
-							Value:
-								5
+							Type: System.Int32
+							Value: 5
 
 					Operator:
 						GreaterThan
 					Right:
 						Literal:
-							Type:
-								System.Int32
-							Value:
-								6
+							Type: System.Int32
+							Value: 6
 
 
 
@@ -91,19 +81,15 @@ Class:
 				BinaryOperator:
 					Left:
 						Literal:
-							Type:
-								System.Int32
-							Value:
-								8
+							Type: System.Int32
+							Value: 8
 
 					Operator:
 						LessEqualThan
 					Right:
 						Literal:
-							Type:
-								System.Int32
-							Value:
-								10
+							Type: System.Int32
+							Value: 10
 
 
 

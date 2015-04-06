@@ -13,16 +13,12 @@ Class:
 					ReturnType: System.Boolean
 					Args:
 						Literal:
-							Type:
-								System.String
-							Value:
-								foo
+							Type: System.String
+							Value: foo
 
 						Literal:
-							Type:
-								System.String
-							Value:
-								bar
+							Type: System.String
+							Value: bar
 
 					Function:
 						Method:

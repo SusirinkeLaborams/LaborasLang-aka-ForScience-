@@ -17,10 +17,8 @@ Class:
 						While:
 							Condition:
 								Literal:
-									Type:
-										System.Boolean
-									Value:
-										True
+									Type: System.Boolean
+									Value: True
 
 							Block:
 								CodeBlock:

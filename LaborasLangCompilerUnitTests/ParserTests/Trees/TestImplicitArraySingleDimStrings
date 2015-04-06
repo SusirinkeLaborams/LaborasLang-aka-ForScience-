@@ -14,10 +14,8 @@ Class:
 					Rank: 1
 					Dimensions:
 						Literal:
-							Type:
-								System.Int32
-							Value:
-								2
+							Type: System.Int32
+							Value: 2
 
 					Initializer:
 						InitializerList:
@@ -26,16 +24,12 @@ Class:
 								2
 							Values:
 								Literal:
-									Type:
-										System.String
-									Value:
-										foo
+									Type: System.String
+									Value: foo
 
 								Literal:
-									Type:
-										System.String
-									Value:
-										bar
+									Type: System.String
+									Value: bar
 
 
 

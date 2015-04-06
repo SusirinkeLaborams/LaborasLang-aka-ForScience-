@@ -45,10 +45,8 @@ Class:
 
 									Right:
 										Literal:
-											Type:
-												System.Int32
-											Value:
-												5
+											Type: System.Int32
+											Value: 5
 
 
 

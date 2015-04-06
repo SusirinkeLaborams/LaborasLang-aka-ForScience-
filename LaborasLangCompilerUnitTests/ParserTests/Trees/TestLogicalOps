@@ -12,19 +12,15 @@ Class:
 				BinaryOperator:
 					Left:
 						Literal:
-							Type:
-								System.Boolean
-							Value:
-								True
+							Type: System.Boolean
+							Value: True
 
 					Operator:
 						LogicalAnd
 					Right:
 						Literal:
-							Type:
-								System.Boolean
-							Value:
-								False
+							Type: System.Boolean
+							Value: False
 
 
 
@@ -46,10 +42,8 @@ Class:
 						LogicalOr
 					Right:
 						Literal:
-							Type:
-								System.Boolean
-							Value:
-								True
+							Type: System.Boolean
+							Value: True
 
 
 

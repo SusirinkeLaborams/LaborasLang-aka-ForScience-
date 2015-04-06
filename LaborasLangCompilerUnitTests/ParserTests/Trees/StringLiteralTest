@@ -10,10 +10,8 @@ Class:
 				Private, Mutable, NoInstance
 			Initializer:
 				Literal:
-					Type:
-						System.String
-					Value:
-						word
+					Type: System.String
+					Value: word
 
 
 	Methods:

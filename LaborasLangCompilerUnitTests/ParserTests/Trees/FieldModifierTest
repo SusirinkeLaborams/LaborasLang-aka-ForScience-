@@ -10,10 +10,8 @@ Class:
 				Private, Mutable, NoInstance
 			Initializer:
 				Literal:
-					Type:
-						System.Int32
-					Value:
-						5
+					Type: System.Int32
+					Value: 5
 
 
 		FieldDeclaration:
@@ -33,10 +31,8 @@ Class:
 				Public, Mutable, NoInstance
 			Initializer:
 				Literal:
-					Type:
-						System.Int32
-					Value:
-						10
+					Type: System.Int32
+					Value: 10
 
 
 	Methods:

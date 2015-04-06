@@ -202,10 +202,8 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             StringBuilder builder = new StringBuilder();
             builder.Indent(indent).AppendLine("Literal:");
-            builder.Indent(indent + 1).AppendLine("Type:");
-            builder.Indent(indent + 2).AppendLine(type.FullName);
-            builder.Indent(indent + 1).AppendLine("Value:");
-            builder.Indent(indent + 2).AppendLine(Value.ToString());
+            builder.Indent(indent + 1).AppendFormat("Type: {0}", type.FullName).AppendLine();
+            builder.Indent(indent + 1).AppendFormat("Value: {0}", Value.ToString()).AppendLine();
             return builder.ToString();
         }
     }

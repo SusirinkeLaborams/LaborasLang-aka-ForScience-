@@ -10,10 +10,8 @@ Class:
 				Private, Mutable, NoInstance
 			Initializer:
 				Literal:
-					Type:
-						System.Int32
-					Value:
-						5
+					Type: System.Int32
+					Value: 5
 
 
 		FieldDeclaration:
@@ -50,10 +48,8 @@ Class:
 								System.Int32 a
 							Initializer:
 								Literal:
-									Type:
-										System.Int32
-									Value:
-										20
+									Type: System.Int32
+									Value: 20
 
 
 						UnaryOperator:
@@ -70,10 +66,8 @@ Class:
 
 									Right:
 										Literal:
-											Type:
-												System.Int32
-											Value:
-												10
+											Type: System.Int32
+											Value: 10
 
 
 

@@ -20,10 +20,8 @@ Class:
 								System.Boolean a
 							Initializer:
 								Literal:
-									Type:
-										System.Boolean
-									Value:
-										True
+									Type: System.Boolean
+									Value: True
 
 
 						While:

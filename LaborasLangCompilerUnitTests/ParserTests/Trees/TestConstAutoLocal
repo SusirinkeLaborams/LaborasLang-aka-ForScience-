@@ -20,10 +20,8 @@ Class:
 								const System.String bar
 							Initializer:
 								Literal:
-									Type:
-										System.String
-									Value:
-										bar
+									Type: System.String
+									Value: bar
 
 
 
