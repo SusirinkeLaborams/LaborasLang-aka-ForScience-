@@ -1026,5 +1026,63 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayAccessMatrix()
+        {
+            string source = @"
+                int[,] foo;
+                auto bar = foo[5, 6];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayAccessMatrixCallArgs()
+        {
+            string source = @"
+                int[,] foo;
+                mutable int() ind;
+                auto bar = foo[ind(), ind()];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayAccessJagged1()
+        {
+            string source = @"
+                int[][] foo;
+                auto bar = foo[5];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayAccessJagged2()
+        {
+            string source = @"
+                int[][] foo;
+                auto bar = foo[5][6];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayAccessJaggedInvalid()
+        {
+            string source = @"
+                int[][] foo;
+                auto bar = foo[5][6][7];
+            ";
+            CompareTrees(source, ErrorCode.CannotIndex.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestArrayInPlaceReassign()
+        {
+            string source = @"
+                int[] foo;
+                auto func = void()
+                {
+                    foo[0] = foo[1];
+                };
+            ";
+            CompareTrees(source);
+        }
     }
 }

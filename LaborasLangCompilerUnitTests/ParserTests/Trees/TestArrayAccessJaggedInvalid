@@ -1,0 +1,20 @@
+Class:
+	TestArrayAccessJaggedInvalid
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Int32[][]
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+
+		FieldDeclaration:
+			Type:
+				auto
+			Name:
+				bar
+			Modifiers:
+				0
+
+	Methods:
