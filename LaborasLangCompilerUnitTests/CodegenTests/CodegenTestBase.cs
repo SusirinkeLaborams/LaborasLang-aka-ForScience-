@@ -190,7 +190,6 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                         Variable = enumerator.LocalVariable,
                         Initializer = new MethodCallNode()
                         {
-                            ExpressionReturnType = ienumerator,
                             Function = new FunctionNode()
                             {
                                 ObjectInstance = enumerable,
@@ -228,7 +227,6 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                                             BinaryOperatorType = BinaryOperatorNodeType.Addition,
                                             LeftOperand = new MethodCallNode()
                                             {
-                                                ExpressionReturnType = assemblyEmitter.TypeSystem.Object,
                                                 Function = new FunctionNode()
                                                 {
                                                     ObjectInstance = enumerator,

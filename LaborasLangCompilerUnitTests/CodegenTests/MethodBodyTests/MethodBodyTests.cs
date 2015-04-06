@@ -239,6 +239,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 {
                     new MethodCallNode()
                     {
+                        ExpressionReturnType = methodWithArgument.Get().ReturnType,
                         Function = new FunctionNode()
                         {
                             Method = methodWithArgument.Get()
@@ -1168,7 +1169,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             for (int i = 0; i < operators.Length + 1; i++)
             {
-                variableDefs.Add(new VariableDefinition(((char)i + 'a').ToString(), intType));
+                variableDefs.Add(new VariableDefinition(((char)(i + 'a')).ToString(), intType));
             }
 
             var variables = variableDefs.Select(def => new LocalVariableNode(def)).ToList();

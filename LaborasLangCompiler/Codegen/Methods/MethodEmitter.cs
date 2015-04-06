@@ -163,22 +163,22 @@ namespace LaborasLangCompiler.Codegen.Methods
             {
                 case ExpressionNodeType.ArrayAccess:
                     Emit((IArrayAccessNode)expression, emissionType);
-                    break;
+                    return;
 
                 case ExpressionNodeType.ArrayCreation:
-                    Emit((IArrayCreationNode)expression);
-                    break;
+                    Emit((IArrayCreationNode)expression, emissionType);
+                    return;
 
                 case ExpressionNodeType.AssignmentOperator:
                     Emit((IAssignmentOperatorNode)expression);
                     return;
 
                 case ExpressionNodeType.BinaryOperator:
-                    Emit((IBinaryOperatorNode)expression);
+                    Emit((IBinaryOperatorNode)expression, emissionType);
                     return;
 
                 case ExpressionNodeType.Call:
-                    Emit((IFunctionCallNode)expression);
+                    Emit((IFunctionCallNode)expression, emissionType);
                     return;
 
                 case ExpressionNodeType.Field:
@@ -186,7 +186,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 case ExpressionNodeType.Function:
-                    Emit((IMethodNode)expression);
+                    Emit((IMethodNode)expression, emissionType);
                     return;
 
                 case ExpressionNodeType.FunctionArgument:
@@ -194,7 +194,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 case ExpressionNodeType.IncrementDecrementOperator:
-                    Emit((IIncrementDecrementOperatorNode)expression);
+                    Emit((IIncrementDecrementOperatorNode)expression, emissionType);
                     return;
 
                 case ExpressionNodeType.IndexOperator:
@@ -202,7 +202,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 case ExpressionNodeType.Literal:
-                    Emit((ILiteralNode)expression);
+                    Emit((ILiteralNode)expression, emissionType);
                     return;
 
                 case ExpressionNodeType.LocalVariable:
@@ -210,22 +210,22 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 case ExpressionNodeType.ObjectCreation:
-                    Emit((IObjectCreationNode)expression);
+                    Emit((IObjectCreationNode)expression, emissionType);
                     return;
 
                 case ExpressionNodeType.Property:
-                    Emit((IPropertyNode)expression);
+                    Emit((IPropertyNode)expression, emissionType);
                     return;
 
                 case ExpressionNodeType.ValueCreation:
                     throw new NotImplementedException();
 
                 case ExpressionNodeType.This:
-                    EmitThis();
+                    EmitThis(expression, emissionType);
                     return;
 
                 case ExpressionNodeType.UnaryOperator:
-                    Emit((IUnaryOperatorNode)expression);
+                    Emit((IUnaryOperatorNode)expression, emissionType);
                     return;
 
                 default:
@@ -373,7 +373,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        private void Emit(IPropertyNode property)
+        private void Emit(IPropertyNode property, EmissionType emissionType)
         {
             var getter = AssemblyRegistry.GetPropertyGetter(Assembly, property.Property);
 
@@ -384,6 +384,9 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
 
             Call(getter);
+
+            if (ShouldEmitAddress(property, emissionType))
+                LoadAddressOfValue(property);
         }
 
         private void Emit(IArrayAccessNode arrayAccess, EmissionType emissionType)
@@ -596,7 +599,15 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         #endregion
 
-        private void Emit(IBinaryOperatorNode binaryOperator)
+        private void Emit(IBinaryOperatorNode binaryOperator, EmissionType emissionType)
+        {
+            EmitBinaryOperator(binaryOperator, emissionType);
+
+            if (ShouldEmitAddress(binaryOperator, emissionType))
+                LoadAddressOfValue(binaryOperator);
+        }
+
+        private void EmitBinaryOperator(IBinaryOperatorNode binaryOperator, EmissionType emissionType)
         {
             switch (binaryOperator.BinaryOperatorType)
             {
@@ -682,7 +693,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        private void Emit(IMethodNode function)
+        private void Emit(IMethodNode function, EmissionType emissionType)
         {
             var returnTypeIsDelegate = function.ExpressionReturnType.Resolve().BaseType.FullName == "System.MulticastDelegate";
 
@@ -716,9 +727,12 @@ namespace LaborasLangCompiler.Codegen.Methods
                 Ldftn(function.Method);
                 Newobj(ctor);
             }
+
+            if (ShouldEmitAddress(function, emissionType))
+                LoadAddressOfValue(function);
         }
 
-        private void Emit(IFunctionCallNode functionCall)
+        private void Emit(IFunctionCallNode functionCall, EmissionType emissionType)
         {
             var function = functionCall.Function;
 
@@ -746,6 +760,9 @@ namespace LaborasLangCompiler.Codegen.Methods
 
                 Callvirt(invokeMethod);
             }
+
+            if (ShouldEmitAddress(functionCall, emissionType))
+                LoadAddressOfValue(functionCall);
         }
 
         private void EmitArgumentsForCall(IReadOnlyList<IExpressionNode> arguments, MethodReference method)
@@ -856,77 +873,83 @@ namespace LaborasLangCompiler.Codegen.Methods
             EmitExpressionWithTargetType(argument, targetParameterType);
         }
 
-        private void Emit(ILiteralNode literal)
+        private void Emit(ILiteralNode literal, EmissionType emissionType)
         {
             switch (literal.ExpressionReturnType.MetadataType)
             {
                 case MetadataType.Boolean:
                     Ldc_I4((bool)literal.Value ? 1 : 0);
-                    return;
+                    break;
 
                 case MetadataType.SByte:
                     Ldc_I4((sbyte)literal.Value);
-                    return;
+                    break;
 
                 case MetadataType.Int16:
                     Ldc_I4((short)literal.Value);
-                    return;
+                    break;
 
                 case MetadataType.Int32:
                     Ldc_I4((int)literal.Value);
-                    return;
+                    break;
 
                 case MetadataType.Int64:
                     Ldc_I8((long)literal.Value);
-                    return;
+                    break;
 
                 case MetadataType.Byte:
                     Ldc_I4((byte)literal.Value);
-                    return;
+                    break;
 
                 case MetadataType.UInt16:
                     Ldc_I4((ushort)literal.Value);
-                    return;
+                    break;
 
                 case MetadataType.Char:
                     Ldc_I4((char)literal.Value);
-                    return;
+                    break;
 
                 // first cast is checked
                 case MetadataType.UInt32:
                     Ldc_I4((int)(uint)literal.Value);
-                    return;
+                    break;
 
                 // first cast is checked
                 case MetadataType.UInt64:
                     Ldc_I8((long)(ulong)literal.Value);
-                    return;
+                    break;
 
                 case MetadataType.Single:
                     Ldc_R4((float)literal.Value);
-                    return;
+                    break;
 
                 case MetadataType.Double:
                     Ldc_R8((double)literal.Value);
-                    return;
+                    break;
 
                 case MetadataType.String:
                     Ldstr((string)literal.Value);
-                    return;
+                    break;
 
                 default:
                     ContractsHelper.AssertUnreachable("Unknown literal type: " + literal.ExpressionReturnType.FullName);
                     return;
             }
+
+            if (ShouldEmitAddress(literal, emissionType))
+                LoadAddressOfValue(literal);
         }
 
-        private void Emit(IObjectCreationNode objectCreation)
+        private void Emit(IObjectCreationNode objectCreation, EmissionType emissionType)
         {
             EmitArgumentsForCall(objectCreation.Args, objectCreation.Constructor);
             Newobj(objectCreation.Constructor);
+
+            if (ShouldEmitAddress(objectCreation, emissionType))
+                LoadAddressOfValue(objectCreation);
         }
 
-        private void Emit(IArrayCreationNode arrayCreation)
+        private void Emit(IArrayCreationNode arrayCreation, EmissionType emissionType)
         {
             Contract.Requires(arrayCreation.ExpressionReturnType.IsArray, "Return type of IArrayCreationNode must be an array type.");
             Contract.Requires(arrayCreation.Dimensions.Count == ((ArrayType)arrayCreation.ExpressionReturnType).Rank, "Array creation node dimension count must match array type rank.");
@@ -966,6 +989,9 @@ namespace LaborasLangCompiler.Codegen.Methods
                     EmitArrayInitializerSlowPath(arrayCreation);
                 }
             }
+
+            if (ShouldEmitAddress(arrayCreation, emissionType))
+                LoadAddressOfValue(arrayCreation);
         }
 
         [Pure]
@@ -1058,13 +1084,16 @@ namespace LaborasLangCompiler.Codegen.Methods
             CurrentSequencePoint = oldSequencePoint;
         }
 
-        private void EmitThis()
+        private void EmitThis(IExpressionNode expression, EmissionType emissionType)
         {
             Contract.Requires(!methodDefinition.IsStatic);
             Ldarg(0);
+
+            if (emissionType == EmissionType.ReferenceToValue && !methodDefinition.DeclaringType.IsValueType)
+                LoadAddressOfValue(expression);
         }
 
-        private void Emit(IUnaryOperatorNode unaryOperator)
+        private void Emit(IUnaryOperatorNode unaryOperator, EmissionType emissionType)
         {
             if (unaryOperator.UnaryOperatorType == UnaryOperatorNodeType.VoidOperator)
             {
@@ -1080,24 +1109,27 @@ namespace LaborasLangCompiler.Codegen.Methods
             {
                 case UnaryOperatorNodeType.BinaryNot:
                     Not();
-                    return;
+                    break;
 
                 case UnaryOperatorNodeType.LogicalNot:
                     Ldc_I4(0);
                     Ceq();
-                    return;
+                    break;
 
                 case UnaryOperatorNodeType.Negation:
                     Neg();
-                    return;
+                    break;
 
                 default:
                     ContractsHelper.AssertUnreachable(string.Format("Unknown unary operator type: {0}", unaryOperator.UnaryOperatorType));
                     return;
             }
+
+            if (ShouldEmitAddress(unaryOperator, emissionType))
+                LoadAddressOfValue(unaryOperator);
         }
 
-        private void Emit(IIncrementDecrementOperatorNode incrementDecrementOperator)
+        private void Emit(IIncrementDecrementOperatorNode incrementDecrementOperator, EmissionType emissionType)
         {
             Emit(incrementDecrementOperator.Operand, EmissionType.Value);
 
@@ -1110,14 +1142,51 @@ namespace LaborasLangCompiler.Codegen.Methods
                         Call(incrementDecrementOperator.OverloadedOperatorMethod);
                         Dup();
                         EmitStore(incrementDecrementOperator.Operand);
-                        return;
+                        break;
 
                     case IncrementDecrementOperatorType.PostDecrement:
                     case IncrementDecrementOperatorType.PostIncrement:
                         Dup();
                         Call(incrementDecrementOperator.OverloadedOperatorMethod);
                         EmitStore(incrementDecrementOperator.Operand);
+                        break;
+
+                    default:
+                        ContractsHelper.AssertUnreachable(string.Format("Unknown unary operator type: {0}", incrementDecrementOperator.IncrementDecrementType));
                         return;
+                }
+            }
+            else
+            {
+                switch (incrementDecrementOperator.IncrementDecrementType)
+                {
+                    case IncrementDecrementOperatorType.PreDecrement:
+                        Ldc_I4(-1);
+                        Add();
+                        Dup();
+                        EmitStore(incrementDecrementOperator.Operand);
+                        break;
+
+                    case IncrementDecrementOperatorType.PreIncrement:
+                        Ldc_I4(1);
+                        Add();
+                        Dup();
+                        EmitStore(incrementDecrementOperator.Operand);
+                        break;
+
+                    case IncrementDecrementOperatorType.PostDecrement:
+                        Dup();
+                        Ldc_I4(-1);
+                        Add();
+                        EmitStore(incrementDecrementOperator.Operand);
+                        break;
+
+                    case IncrementDecrementOperatorType.PostIncrement:
+                        Dup();
+                        Ldc_I4(1);
+                        Add();
+                        EmitStore(incrementDecrementOperator.Operand);
+                        break;
 
                     default:
                         ContractsHelper.AssertUnreachable(string.Format("Unknown unary operator type: {0}", incrementDecrementOperator.IncrementDecrementType));
@@ -1125,40 +1194,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                 }
             }
 
-            switch (incrementDecrementOperator.IncrementDecrementType)
-            {
-                case IncrementDecrementOperatorType.PreDecrement:
-                    Ldc_I4(-1);
-                    Add();
-                    Dup();
-                    EmitStore(incrementDecrementOperator.Operand);
-                    return;
-
-                case IncrementDecrementOperatorType.PreIncrement:
-                    Ldc_I4(1);
-                    Add();
-                    Dup();
-                    EmitStore(incrementDecrementOperator.Operand);
-                    return;
-
-                case IncrementDecrementOperatorType.PostDecrement:
-                    Dup();
-                    Ldc_I4(-1);
-                    Add();
-                    EmitStore(incrementDecrementOperator.Operand);
-                    return;
-
-                case IncrementDecrementOperatorType.PostIncrement:
-                    Dup();
-                    Ldc_I4(1);
-                    Add();
-                    EmitStore(incrementDecrementOperator.Operand);
-                    return;
-
-                default:
-                    ContractsHelper.AssertUnreachable(string.Format("Unknown unary operator type: {0}", incrementDecrementOperator.IncrementDecrementType));
-                    return;
-            }
+            if (ShouldEmitAddress(incrementDecrementOperator, emissionType))
+                LoadAddressOfValue(incrementDecrementOperator);
         }
 
         #region Add emitter

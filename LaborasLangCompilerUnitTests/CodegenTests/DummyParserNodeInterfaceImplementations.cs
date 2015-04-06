@@ -58,7 +58,30 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Call; } }
 
-        public TypeReference ExpressionReturnType { get; set; }
+        private TypeReference expressionReturnType;
+        public TypeReference ExpressionReturnType
+        {
+            get
+            {
+                if (expressionReturnType != null)
+                    return expressionReturnType;
+
+                var methodNode = Function as IMethodNode;
+                if (methodNode != null)
+                    return methodNode.Method.ReturnType;
+
+                var functorType = Function.ExpressionReturnType;
+
+                if (functorType != null)
+                    return functorType.Resolve().Methods.SingleOrDefault(method => method.Name == "Invoke").ReturnType;
+
+                return null;
+            }
+            set
+            {
+                expressionReturnType = value;
+            }
+        }
         public IExpressionNode Function { get; set; }
 
         public IReadOnlyList<IExpressionNode> Args
