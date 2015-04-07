@@ -38,12 +38,9 @@ Children:
 					Type: Symbol
 					Children:
 
-				Content: Type: InfixOperator, Start: 1, 6, End: 1, 7, Content: ""
-				Type: InfixOperator
+				Content: Type: Period, Start: 1, 6, End: 1, 7, Content: "."
+				Type: Period
 				Children:
-					Content: Type: Period, Start: 1, 6, End: 1, 7, Content: "."
-					Type: Period
-					Children:
 
 			Content: Type: LiteralNode, Start: 1, 13, End: 1, 14, Content: ""
 			Type: LiteralNode
@@ -52,12 +49,9 @@ Children:
 				Type: Integer
 				Children:
 
-			Content: Type: InfixOperator, Start: 1, 11, End: 1, 12, Content: ""
-			Type: InfixOperator
+			Content: Type: Assignment, Start: 1, 11, End: 1, 12, Content: "="
+			Type: Assignment
 			Children:
-				Content: Type: Assignment, Start: 1, 11, End: 1, 12, Content: "="
-				Type: Assignment
-				Children:
 
 	Content: Type: EndOfLine, Start: 1, 14, End: 1, 15, Content: ";"
 	Type: EndOfLine

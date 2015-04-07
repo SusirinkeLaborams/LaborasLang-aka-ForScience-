@@ -34,12 +34,9 @@ Children:
 							Type: Symbol
 							Children:
 
-						Content: Type: InfixOperator, Start: 1, 6, End: 1, 7, Content: ""
-						Type: InfixOperator
+						Content: Type: Plus, Start: 1, 6, End: 1, 7, Content: "+"
+						Type: Plus
 						Children:
-							Content: Type: Plus, Start: 1, 6, End: 1, 7, Content: "+"
-							Type: Plus
-							Children:
 
 				Content: Type: RightParenthesis, Start: 1, 11, End: 1, 12, Content: ")"
 				Type: RightParenthesis
@@ -52,12 +49,9 @@ Children:
 				Type: Integer
 				Children:
 
-			Content: Type: InfixOperator, Start: 1, 13, End: 1, 14, Content: ""
-			Type: InfixOperator
+			Content: Type: Assignment, Start: 1, 13, End: 1, 14, Content: "="
+			Type: Assignment
 			Children:
-				Content: Type: Assignment, Start: 1, 13, End: 1, 14, Content: "="
-				Type: Assignment
-				Children:
 
 	Content: Type: EndOfLine, Start: 1, 16, End: 1, 17, Content: ";"
 	Type: EndOfLine

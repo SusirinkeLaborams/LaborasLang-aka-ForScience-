@@ -31,19 +31,13 @@ Children:
 					Type: False
 					Children:
 
-				Content: Type: InfixOperator, Start: 1, 7, End: 1, 9, Content: ""
-				Type: InfixOperator
+				Content: Type: LogicalAnd, Start: 1, 7, End: 1, 9, Content: "&&"
+				Type: LogicalAnd
 				Children:
-					Content: Type: LogicalAnd, Start: 1, 7, End: 1, 9, Content: "&&"
-					Type: LogicalAnd
-					Children:
 
-			Content: Type: InfixOperator, Start: 1, 3, End: 1, 4, Content: ""
-			Type: InfixOperator
+			Content: Type: Assignment, Start: 1, 3, End: 1, 4, Content: "="
+			Type: Assignment
 			Children:
-				Content: Type: Assignment, Start: 1, 3, End: 1, 4, Content: "="
-				Type: Assignment
-				Children:
 
 	Content: Type: EndOfLine, Start: 1, 15, End: 1, 16, Content: ";"
 	Type: EndOfLine

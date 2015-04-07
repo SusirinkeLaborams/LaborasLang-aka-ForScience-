@@ -44,12 +44,9 @@ Children:
 								Type: Integer
 								Children:
 
-							Content: Type: InfixOperator, Start: 1, 18, End: 1, 19, Content: ""
-							Type: InfixOperator
+							Content: Type: Plus, Start: 1, 18, End: 1, 19, Content: "+"
+							Type: Plus
 							Children:
-								Content: Type: Plus, Start: 1, 18, End: 1, 19, Content: "+"
-								Type: Plus
-								Children:
 
 					Content: Type: RightParenthesis, Start: 1, 21, End: 1, 22, Content: ")"
 					Type: RightParenthesis
@@ -76,12 +73,9 @@ Children:
 					Type: RightParenthesis
 					Children:
 
-			Content: Type: InfixOperator, Start: 1, 5, End: 1, 6, Content: ""
-			Type: InfixOperator
+			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
+			Type: Assignment
 			Children:
-				Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
-				Type: Assignment
-				Children:
 
 	Content: Type: EndOfLine, Start: 1, 22, End: 1, 23, Content: ";"
 	Type: EndOfLine

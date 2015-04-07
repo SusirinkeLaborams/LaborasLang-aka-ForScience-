@@ -28,12 +28,9 @@ Children:
 				Type: Integer
 				Children:
 
-			Content: Type: InfixOperator, Start: 1, 8, End: 1, 9, Content: ""
-			Type: InfixOperator
+			Content: Type: Assignment, Start: 1, 8, End: 1, 9, Content: "="
+			Type: Assignment
 			Children:
-				Content: Type: Assignment, Start: 1, 8, End: 1, 9, Content: "="
-				Type: Assignment
-				Children:
 
 	Content: Type: EndOfLine, Start: 1, 11, End: 1, 12, Content: ";"
 	Type: EndOfLine

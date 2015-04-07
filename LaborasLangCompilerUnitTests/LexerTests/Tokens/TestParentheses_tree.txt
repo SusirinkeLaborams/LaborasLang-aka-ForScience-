@@ -54,12 +54,9 @@ Children:
 										Type: Integer
 										Children:
 
-									Content: Type: InfixOperator, Start: 1, 11, End: 1, 12, Content: ""
-									Type: InfixOperator
+									Content: Type: Plus, Start: 1, 11, End: 1, 12, Content: "+"
+									Type: Plus
 									Children:
-										Content: Type: Plus, Start: 1, 11, End: 1, 12, Content: "+"
-										Type: Plus
-										Children:
 
 							Content: Type: RightParenthesis, Start: 1, 14, End: 1, 15, Content: ")"
 							Type: RightParenthesis
@@ -112,41 +109,29 @@ Children:
 												Type: Integer
 												Children:
 
-											Content: Type: InfixOperator, Start: 1, 28, End: 1, 29, Content: ""
-											Type: InfixOperator
+											Content: Type: Plus, Start: 1, 28, End: 1, 29, Content: "+"
+											Type: Plus
 											Children:
-												Content: Type: Plus, Start: 1, 28, End: 1, 29, Content: "+"
-												Type: Plus
-												Children:
 
 									Content: Type: RightParenthesis, Start: 1, 31, End: 1, 32, Content: ")"
 									Type: RightParenthesis
 									Children:
 
-							Content: Type: InfixOperator, Start: 1, 20, End: 1, 21, Content: ""
-							Type: InfixOperator
-							Children:
-								Content: Type: Plus, Start: 1, 20, End: 1, 21, Content: "+"
-								Type: Plus
-								Children:
-
-						Content: Type: InfixOperator, Start: 1, 16, End: 1, 17, Content: ""
-						Type: InfixOperator
-						Children:
-							Content: Type: Plus, Start: 1, 16, End: 1, 17, Content: "+"
+							Content: Type: Plus, Start: 1, 20, End: 1, 21, Content: "+"
 							Type: Plus
 							Children:
+
+						Content: Type: Plus, Start: 1, 16, End: 1, 17, Content: "+"
+						Type: Plus
+						Children:
 
 				Content: Type: RightParenthesis, Start: 1, 32, End: 1, 33, Content: ")"
 				Type: RightParenthesis
 				Children:
 
-			Content: Type: InfixOperator, Start: 1, 5, End: 1, 6, Content: ""
-			Type: InfixOperator
+			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
+			Type: Assignment
 			Children:
-				Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
-				Type: Assignment
-				Children:
 
 	Content: Type: EndOfLine, Start: 1, 33, End: 1, 34, Content: ";"
 	Type: EndOfLine

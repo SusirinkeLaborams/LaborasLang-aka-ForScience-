@@ -35,12 +35,9 @@ Children:
 				Type: PlusPlus
 				Children:
 
-			Content: Type: InfixOperator, Start: 1, 5, End: 1, 6, Content: ""
-			Type: InfixOperator
+			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
+			Type: Assignment
 			Children:
-				Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
-				Type: Assignment
-				Children:
 
 	Content: Type: EndOfLine, Start: 1, 12, End: 1, 13, Content: ";"
 	Type: EndOfLine
