@@ -153,6 +153,7 @@
     <Compile Include="PostProcessors\BottomUpPostProcessor.cs" />
     <Compile Include="PostProcessors\FullSymbolPostProcessor.cs" />
     <Compile Include="PostProcessors\InfixResolver.cs" />
+    <Compile Include="PostProcessors\OperatorColapser.cs" />
     <Compile Include="PostProcessors\PostProcessor.cs" />
     <Compile Include="PostProcessors\PostfixResolver.cs" />
     <Compile Include="PostProcessors\PrefixResolver.cs" />

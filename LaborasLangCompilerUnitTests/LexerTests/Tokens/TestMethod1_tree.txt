@@ -63,12 +63,9 @@ Children:
 				Type: Symbol
 				Children:
 
-			Content: Type: InfixOperator, Start: 4, 3, End: 4, 4, Content: ""
-			Type: InfixOperator
+			Content: Type: Assignment, Start: 4, 3, End: 4, 4, Content: "="
+			Type: Assignment
 			Children:
-				Content: Type: Assignment, Start: 4, 3, End: 4, 4, Content: "="
-				Type: Assignment
-				Children:
 
 	Content: Type: EndOfLine, Start: 4, 6, End: 4, 7, Content: ";"
 	Type: EndOfLine
@@ -94,12 +91,9 @@ Children:
 				Type: Integer
 				Children:
 
-			Content: Type: InfixOperator, Start: 5, 3, End: 5, 4, Content: ""
-			Type: InfixOperator
+			Content: Type: Assignment, Start: 5, 3, End: 5, 4, Content: "="
+			Type: Assignment
 			Children:
-				Content: Type: Assignment, Start: 5, 3, End: 5, 4, Content: "="
-				Type: Assignment
-				Children:
 
 	Content: Type: EndOfLine, Start: 5, 6, End: 5, 7, Content: ";"
 	Type: EndOfLine

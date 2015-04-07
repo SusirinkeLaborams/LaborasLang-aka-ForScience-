@@ -64,12 +64,9 @@ Children:
 					Type: Integer
 					Children:
 
-				Content: Type: InfixOperator, Start: 1, 19, End: 1, 20, Content: ""
-				Type: InfixOperator
+				Content: Type: Less, Start: 1, 19, End: 1, 20, Content: "<"
+				Type: Less
 				Children:
-					Content: Type: Less, Start: 1, 19, End: 1, 20, Content: "<"
-					Type: Less
-					Children:
 
 		Content: Type: EndOfLine, Start: 1, 22, End: 1, 23, Content: ";"
 		Type: EndOfLine

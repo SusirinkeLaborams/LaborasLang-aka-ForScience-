@@ -34,12 +34,9 @@ Children:
 							Type: Integer
 							Children:
 
-						Content: Type: InfixOperator, Start: 1, 4, End: 1, 5, Content: ""
-						Type: InfixOperator
+						Content: Type: Plus, Start: 1, 4, End: 1, 5, Content: "+"
+						Type: Plus
 						Children:
-							Content: Type: Plus, Start: 1, 4, End: 1, 5, Content: "+"
-							Type: Plus
-							Children:
 
 				Content: Type: RightParenthesis, Start: 1, 7, End: 1, 8, Content: ")"
 				Type: RightParenthesis
@@ -76,12 +73,9 @@ Children:
 					Type: RightParenthesis
 					Children:
 
-			Content: Type: InfixOperator, Start: 1, 8, End: 1, 9, Content: ""
-			Type: InfixOperator
+			Content: Type: Period, Start: 1, 8, End: 1, 9, Content: "."
+			Type: Period
 			Children:
-				Content: Type: Period, Start: 1, 8, End: 1, 9, Content: "."
-				Type: Period
-				Children:
 
 	Content: Type: EndOfLine, Start: 1, 22, End: 1, 23, Content: ";"
 	Type: EndOfLine

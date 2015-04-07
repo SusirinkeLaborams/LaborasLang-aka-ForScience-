@@ -138,12 +138,9 @@ Children:
 					Type: RightCurlyBrace
 					Children:
 
-			Content: Type: InfixOperator, Start: 2, 15, End: 2, 16, Content: ""
-			Type: InfixOperator
+			Content: Type: Assignment, Start: 2, 15, End: 2, 16, Content: "="
+			Type: Assignment
 			Children:
-				Content: Type: Assignment, Start: 2, 15, End: 2, 16, Content: "="
-				Type: Assignment
-				Children:
 
 	Content: Type: EndOfLine, Start: 2, 40, End: 2, 41, Content: ";"
 	Type: EndOfLine

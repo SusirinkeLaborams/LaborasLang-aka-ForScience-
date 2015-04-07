@@ -35,12 +35,9 @@ Children:
 					Type: RightBracket
 					Children:
 
-			Content: Type: InfixOperator, Start: 2, 15, End: 2, 16, Content: ""
-			Type: InfixOperator
+			Content: Type: Assignment, Start: 2, 15, End: 2, 16, Content: "="
+			Type: Assignment
 			Children:
-				Content: Type: Assignment, Start: 2, 15, End: 2, 16, Content: "="
-				Type: Assignment
-				Children:
 
 	Content: Type: EndOfLine, Start: 2, 22, End: 2, 23, Content: ";"
 	Type: EndOfLine

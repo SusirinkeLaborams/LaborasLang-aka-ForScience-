@@ -49,12 +49,9 @@ Children:
 					Type: RightParenthesis
 					Children:
 
-			Content: Type: InfixOperator, Start: 2, 6, End: 2, 7, Content: ""
-			Type: InfixOperator
+			Content: Type: Period, Start: 2, 6, End: 2, 7, Content: "."
+			Type: Period
 			Children:
-				Content: Type: Period, Start: 2, 6, End: 2, 7, Content: "."
-				Type: Period
-				Children:
 
 	Content: Type: EndOfLine, Start: 2, 12, End: 2, 13, Content: ";"
 	Type: EndOfLine
@@ -97,12 +94,9 @@ Children:
 					Type: Symbol
 					Children:
 
-				Content: Type: InfixOperator, Start: 3, 6, End: 3, 7, Content: ""
-				Type: InfixOperator
+				Content: Type: Period, Start: 3, 6, End: 3, 7, Content: "."
+				Type: Period
 				Children:
-					Content: Type: Period, Start: 3, 6, End: 3, 7, Content: "."
-					Type: Period
-					Children:
 
 			Content: Type: LiteralNode, Start: 3, 13, End: 3, 14, Content: ""
 			Type: LiteralNode
@@ -111,12 +105,9 @@ Children:
 				Type: Integer
 				Children:
 
-			Content: Type: InfixOperator, Start: 3, 11, End: 3, 12, Content: ""
-			Type: InfixOperator
+			Content: Type: Assignment, Start: 3, 11, End: 3, 12, Content: "="
+			Type: Assignment
 			Children:
-				Content: Type: Assignment, Start: 3, 11, End: 3, 12, Content: "="
-				Type: Assignment
-				Children:
 
 	Content: Type: EndOfLine, Start: 3, 14, End: 3, 15, Content: ";"
 	Type: EndOfLine
@@ -155,12 +146,9 @@ Children:
 							Type: Integer
 							Children:
 
-						Content: Type: InfixOperator, Start: 4, 6, End: 4, 7, Content: ""
-						Type: InfixOperator
+						Content: Type: Plus, Start: 4, 6, End: 4, 7, Content: "+"
+						Type: Plus
 						Children:
-							Content: Type: Plus, Start: 4, 6, End: 4, 7, Content: "+"
-							Type: Plus
-							Children:
 
 				Content: Type: RightParenthesis, Start: 4, 9, End: 4, 10, Content: ")"
 				Type: RightParenthesis
@@ -187,12 +175,9 @@ Children:
 					Type: RightParenthesis
 					Children:
 
-			Content: Type: InfixOperator, Start: 4, 10, End: 4, 11, Content: ""
-			Type: InfixOperator
+			Content: Type: Period, Start: 4, 10, End: 4, 11, Content: "."
+			Type: Period
 			Children:
-				Content: Type: Period, Start: 4, 10, End: 4, 11, Content: "."
-				Type: Period
-				Children:
 
 	Content: Type: EndOfLine, Start: 4, 16, End: 4, 17, Content: ";"
 	Type: EndOfLine
