@@ -4,11 +4,12 @@ using System.Diagnostics;
 namespace Lexer
 {
     public enum ConditionType
-    {
+    {   
+        ZeroOrOne,
         OptionalFromThis,
         One,
         OneOrMore,
-        ZeroOrMore
+        ZeroOrMore,
     }
 
     [DebuggerDisplay("Condition, {Type} {Token}")]

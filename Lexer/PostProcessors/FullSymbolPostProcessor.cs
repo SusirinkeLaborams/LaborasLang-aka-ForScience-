@@ -2,26 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Lexer.PostProcessors
 {
-    class PostfixResolver : PostProcessor
+    class FullSymbolPostProcessor : PostProcessor
     {
         public override void Transform(AbstractSyntaxTree astNode)
         {
-            if (astNode.Type == TokenType.PostfixNode)
+            if (astNode.Type == TokenType.FullSymbol)
             {
                 if (astNode.Children.Count == 1)
                 {
-                    astNode.Collapse();
                     return;
                 }
                 else
                 {
+                    var symbol = astNode.Children.First();
+                    
                     var source = astNode.Children;
-                    var value = new AbstractSyntaxTree(new Node(TokenType.PostfixNode), source.GetRange(0, source.Count - 1));
-                    var postfix = source.Last(); 
-                    astNode.Children = new List<AbstractSyntaxTree>() { value, postfix };
+                    var remainder = new AbstractSyntaxTree(new Node(TokenType.FullSymbol), source.GetRange(2, source.Count - 2));
+                    
+                    astNode.Children = new List<AbstractSyntaxTree>() { symbol, remainder };
                 }
             }
         }

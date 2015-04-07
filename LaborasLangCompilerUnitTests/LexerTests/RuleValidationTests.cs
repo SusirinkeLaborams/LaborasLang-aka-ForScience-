@@ -98,21 +98,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
                 TraverseRules(rules, visited, new Stack<ParseRule>(), (int)rule.Result);
             }
         }
-        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Rule validation")]
-        public void TestNoIncompleteRules()
-        {
-            bool[] resolvedRules = new bool[(int)TokenType.TokenTypeCount];
-            for(int i = 0; i < resolvedRules.Length; i++)
-            {
-                resolvedRules[i] = ((TokenType) i).IsTerminal();
-            }
 
-
-            foreach (var rule in RulePool.LaborasLangRuleset)
-            {
-
-            }
-        }
 
         void TraverseRules(ParseRule[] rules, bool[] visited, Stack<ParseRule> traverseStack, int token)
         {

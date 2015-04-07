@@ -16,8 +16,10 @@ namespace Lexer
                         ValueStatementNode,
                         CodeBlockNode,
                         WhileLoop,
+                        ForLoop,
                         ReturnNode,
-                        ConditionalSentence),
+                        ConditionalSentence,
+                        EndOfLine),
             
                     ParseRule(UseNode,
                         Use + FullSymbol + EndOfLine),
@@ -26,7 +28,7 @@ namespace Lexer
                         DeclarationSubnode + EndOfLine),
             
                     AlwaysCollapsableParseRule(DeclarationSubnode,
-                        ZeroOrMore(VariableModifier) + Type + Symbol + Optional(Assignment + Value)),
+                        ZeroOrMore(VariableModifier) + Type + Symbol + OptionalTail(Assignment + Value)),
 
                     AlwaysCollapsableParseRule(ValueStatementNode,
                         Value + EndOfLine),
@@ -93,7 +95,11 @@ namespace Lexer
                         MinusMinus, 
                         Minus, 
                         Not,
-                        BitwiseComplement),
+                        BitwiseComplement,
+                        CastOperator),
+
+                    ParseRule(CastOperator,
+                    LeftParenthesis + Type +  RightParenthesis),
                         
                     CollapsableParseRule(CodeBlockNode,
                         LeftCurlyBrace + ZeroOrMore(StatementNode) + RightCurlyBrace),
@@ -106,13 +112,19 @@ namespace Lexer
                     CollapsableParseRule(ParenthesesNode,
                         LeftParenthesis + Value + RightParenthesis,
                         Operand),
-
+                        
+                    /*PrefixNode is transformed using PrefixResolver. It is transformed to a recursive list {T, PrefixOperator}
+                      where T can be PrefixNode, ParenthesesNode, Operand. T will be as specific as possible.*/
                     CollapsableParseRule(PrefixNode,
                          ZeroOrMore(PrefixOperator) + ParenthesesNode),
-
+                         
+                    /*PostfixNode is transformed using InfixResolver. It is transformed to a recursive list {T, PostfixOperator}
+                      where T can be PostfixNode, PrefixNode, ParenthesesNode, Operand. T will be as specific as possible.*/
                     CollapsableParseRule(PostfixNode,
                         PrefixNode + ZeroOrMore(PostfixOperator)),
 
+                    /*InfixNode is transformed using InfixResolver. It is transformed to a tree with structure {A, B, InfixOperator}.
+                      A, B can have types of InfixNode, PostfixNode, PrefixNode, ParenthesesNode, Operand. A, B will be as specific as possible.*/
                     CollapsableParseRule(InfixNode,
                         PostfixNode + ZeroOrMore(InfixSubnode)),
 
@@ -153,6 +165,8 @@ namespace Lexer
                     AlwaysCollapsableParseRule(CommaAndValue,
                         Comma + Value),
 
+                    /*Tail of FullSymbol is transformed using FullSymbolPostProcessor.
+                        It is transformed to a recursive list of {Symbol, FullSymbol(Optional)}*/
                     ParseRule(FullSymbol,
                         Symbol + ZeroOrMore(SubSymbol)),
 
@@ -184,8 +198,14 @@ namespace Lexer
                     ParseRule(WhileLoop,
                         While + LeftParenthesis + Value + RightParenthesis + StatementNode),
 
+                    ParseRule(ForLoop,
+                        For + LeftParenthesis + DeclarationSubnode + In + Value + RightParenthesis + StatementNode,
+                        For + LeftParenthesis + Optional(Value) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + StatementNode,
+                        For + LeftParenthesis + Optional(DeclarationSubnode) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + StatementNode
+                     ),
+
                     ParseRule(ConditionalSentence,
-                        If + LeftParenthesis + Value + RightParenthesis + StatementNode + Optional(Else + StatementNode)),
+                        If + LeftParenthesis + Value + RightParenthesis + StatementNode + OptionalTail(Else + StatementNode)),
             };
 
     }
