@@ -173,7 +173,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     op = InternalUnaryOperatorType.PreIncrement;
                     break;
                 case Lexer.TokenType.MinusMinus:
-                    op = InternalUnaryOperatorType.PreIncrement;
+                    op = InternalUnaryOperatorType.PreDecrement;
                     break;
                 case Lexer.TokenType.Not:
                     op = InternalUnaryOperatorType.LogicalNot;

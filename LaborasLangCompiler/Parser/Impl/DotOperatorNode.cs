@@ -72,12 +72,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private void AppendFirst(ExpressionNode node)
         {
-            if (node.ExpressionType != ExpressionNodeType.ParserInternal)
-            {
-                //non-symbol expressions
-                builtNode = node;
-            }
-            else if (node is SymbolNode)
+            if (node is SymbolNode)
             {
                 SymbolNode symbol = node as SymbolNode;
                 builtNode = context.GetSymbol(symbol.Name, context, node.SequencePoint);
@@ -86,7 +81,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                ErrorCode.InvalidDot.ReportAndThrow(node.SequencePoint, "Unexpected node type {0}", node.ExpressionType);
+                builtNode = node;
             }
         }
 
