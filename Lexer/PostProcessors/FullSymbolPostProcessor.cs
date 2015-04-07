@@ -18,12 +18,16 @@ namespace Lexer.PostProcessors
                 }
                 else
                 {
-                    var symbol = astNode.Children.First();
-                    
-                    var source = astNode.Children;
-                    var remainder = new AbstractSyntaxTree(new Node(TokenType.FullSymbol), source.GetRange(2, source.Count - 2));
-                    
-                    astNode.Children = new List<AbstractSyntaxTree>() { symbol, remainder };
+                    var old = astNode.Children;
+                    int count = old.Count;
+
+                    var head = old.Take(count - 2);
+                    var dot = old[count - 2];
+                    var tail = old[count - 1];
+
+                    var headNode = head.Count() > 1 ? new AbstractSyntaxTree(new Node(TokenType.FullSymbol), head.ToList()) : head.First();
+
+                    astNode.Children = new List<AbstractSyntaxTree>() { headNode, tail, dot };
                 }
             }
         }

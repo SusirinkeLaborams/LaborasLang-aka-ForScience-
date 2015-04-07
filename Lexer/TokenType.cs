@@ -163,7 +163,6 @@
         {
             switch (token)
             {
-                case TokenType.Period:
                 case TokenType.Assignment:
                 case TokenType.PlusEqual:
                 case TokenType.MinusEqual:
