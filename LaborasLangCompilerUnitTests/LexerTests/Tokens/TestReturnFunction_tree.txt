@@ -22,8 +22,8 @@ Children:
 		Type: Assignment
 		Children:
 
-		Content: Type: Value, Start: 2, 12, End: 5, 2, Content: ""
-		Type: Value
+		Content: Type: ParenthesesNode, Start: 2, 12, End: 5, 2, Content: ""
+		Type: ParenthesesNode
 		Children:
 			Content: Type: Function, Start: 2, 12, End: 5, 2, Content: ""
 			Type: Function
@@ -80,8 +80,8 @@ Children:
 						Type: Return
 						Children:
 
-						Content: Type: Value, Start: 4, 12, End: 4, 20, Content: ""
-						Type: Value
+						Content: Type: ParenthesesNode, Start: 4, 12, End: 4, 20, Content: ""
+						Type: ParenthesesNode
 						Children:
 							Content: Type: Function, Start: 4, 12, End: 4, 20, Content: ""
 							Type: Function

@@ -19,8 +19,8 @@ Children:
 		Type: Return
 		Children:
 
-		Content: Type: Value, Start: 3, 16, End: 3, 17, Content: ""
-		Type: Value
+		Content: Type: ParenthesesNode, Start: 3, 16, End: 3, 17, Content: ""
+		Type: ParenthesesNode
 		Children:
 			Content: Type: LiteralNode, Start: 3, 16, End: 3, 17, Content: ""
 			Type: LiteralNode

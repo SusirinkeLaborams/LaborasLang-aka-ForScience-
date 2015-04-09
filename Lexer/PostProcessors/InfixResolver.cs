@@ -9,39 +9,88 @@ namespace Lexer.PostProcessors
 {
     class InfixResolver : BottomUpPostProcessor
     {
-        private TokenType[] m_PrioritizedOperators;
+        private static TokenType[][] c_OperatorGroups = new[]{
+        #region period
+            new[]{TokenType.Period},
+        #endregion
+        #region assignments
+            new[]{TokenType.Assignment, TokenType.PlusEqual, TokenType.MinusEqual, TokenType.DivideEqual, TokenType.MultiplyEqual, TokenType.RemainderEqual, TokenType.LeftShiftEqual, TokenType.RightShiftEqual, TokenType.LogicalAndEqual, TokenType.LogicalOrEqual, TokenType.BitwiseAndEqual, TokenType.BitwiseXorEqual, TokenType.BitwiseOrEqual },
+        #endregion
+ 
+        #region prefixes
+            new[]{TokenType.PrefixOperator},
+        #endregion
+        #region postfixes
+            new[]{TokenType.PostfixOperator},
+        #endregion     
+        #region shifts
+            new[]{TokenType.LeftShift, TokenType.RightShift },
+        #endregion
+        #region addition
+            new[]{TokenType.Plus, TokenType.Minus},
+        #endregion
+        #region multiplication
+            new[]{TokenType.Multiply, TokenType.Divide, TokenType.Remainder},
+        #endregion
+        #region bitwise
+            new[]{TokenType.BitwiseAnd, TokenType.BitwiseOr, TokenType.BitwiseXor, TokenType.BitwiseComplement},
+        #endregion
+        #region comparison
+            new[]{TokenType.Equal, TokenType.NotEqual, TokenType.More, TokenType.Less, TokenType.MoreOrEqual, TokenType.LessOrEqual},
+        #endregion
+        #region logical
+            new[]{TokenType.LogicalOr, TokenType.LogicalAnd},
+        #endregion
+        
+        };
+        private int[] m_Priorities;
 
         public InfixResolver()
         {
-            var operators = RulePool.LaborasLangRuleset.First(rule => rule.Result == TokenType.InfixOperator).RequiredTokens;
-            m_PrioritizedOperators = operators.Select(op => op[0].Token).ToArray();
+            m_Priorities = Enumerable.Repeat(int.MaxValue, (int) TokenType.TokenTypeCount).ToArray();
+           
+            for (int i = 0; i < c_OperatorGroups.Length; i++)
+            {
+                foreach (var op in c_OperatorGroups[i])
+                {
+                    m_Priorities[(int)op] = i;
+                }
+            }
         }
 
         private int Priority(AbstractSyntaxTree type)
         {
-            return Array.IndexOf(m_PrioritizedOperators, type.Children[0].Type);
+            var parentPriority = m_Priorities[(int)type.Type];
+            var childPriority = m_Priorities[(int)type.Children[0].Type];
+
+            return parentPriority < childPriority ? parentPriority : childPriority;
         }
 
         public override void Transform(AbstractSyntaxTree astNode)
         {
-            if (astNode.Type == TokenType.InfixNode)
+            if (astNode.Type == TokenType.Value)
             {
                 var tree = new AbstractSyntaxTree(new Node(TokenType.InfixNode), new List<AbstractSyntaxTree>());
 
                 var stack = new Stack<AbstractSyntaxTree>();
                 foreach (var item in astNode.Children)
                 {
-                    if (item.Type == TokenType.InfixOperator)
+                    switch(item.Type)
                     {
-                        while (stack.Count != 0 && ShouldPop(stack, item))
-                        {
-                            FormSubnode(tree, stack.Pop());
-                        }
-                        stack.Push(item);
-                    }
-                    else
-                    {
-                        Append(tree, item);
+                        case TokenType.PrefixOperator:
+                            stack.Push(item);
+                            break;
+                        case TokenType.InfixOperator:
+                        case TokenType.PostfixOperator:
+                             while (stack.Count != 0 && ShouldPop(stack, item))
+                            {
+                                FormSubnode(tree, stack.Pop());
+                            }
+                            stack.Push(item);
+                            break;
+                        default:
+                            Append(tree, item);
+                            break;
                     }
                 }
 
@@ -62,22 +111,38 @@ namespace Lexer.PostProcessors
 
         private static void FormSubnode(AbstractSyntaxTree tree, AbstractSyntaxTree value)
         {
-            var source = tree.Children.GetRange(tree.Children.Count - 2, 2);
-            tree.Children.RemoveRange(tree.Children.Count - 2, 2);
+            switch (value.Type)
+            {
+                case TokenType.InfixOperator:
+                    FormSubnode(tree, value, 2);
+                    return;
+                case TokenType.PostfixOperator:
+                case TokenType.PrefixOperator:
+                    FormSubnode(tree, value, 1);
+                    return;
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
+        private static void FormSubnode(AbstractSyntaxTree tree, AbstractSyntaxTree value, int tokensToConsume)
+        {
+            var source = tree.Children.GetRange(tree.Children.Count - tokensToConsume, tokensToConsume);
+            tree.Children.RemoveRange(tree.Children.Count - tokensToConsume, tokensToConsume);
             source.Add(value);
 
             tree.Children.Add(new AbstractSyntaxTree(new Node(TokenType.InfixNode), source));
             
         }
         private bool ShouldPop(Stack<AbstractSyntaxTree> stack, AbstractSyntaxTree item)
-        {
-            if (item.Children[0].Type.IsRightAssociative())
+        {            
+            if (item.Type.IsRightAssociative())
             {
                 return Priority(stack.Peek()) < Priority(item);
             }
             else
             {
-                return Priority(stack.Peek()) > Priority(item);
+                return Priority(stack.Peek()) >= Priority(item);
             }
         }
     }

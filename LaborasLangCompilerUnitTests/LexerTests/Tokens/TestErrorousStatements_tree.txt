@@ -22,8 +22,8 @@ Children:
 		Type: Assignment
 		Children:
 
-		Content: Type: Value, Start: 1, 9, End: 1, 10, Content: ""
-		Type: Value
+		Content: Type: ParenthesesNode, Start: 1, 9, End: 1, 10, Content: ""
+		Type: ParenthesesNode
 		Children:
 			Content: Type: LiteralNode, Start: 1, 9, End: 1, 10, Content: ""
 			Type: LiteralNode

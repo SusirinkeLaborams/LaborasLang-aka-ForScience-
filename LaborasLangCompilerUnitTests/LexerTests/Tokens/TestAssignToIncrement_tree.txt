@@ -1,26 +1,32 @@
 Content: Type: RootNode, Start: 1, 2, End: 1, 12, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 1, 2, End: 1, 11, Content: ""
-	Type: Value
+	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+	Type: InfixNode
 	Children:
 		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 		Type: InfixNode
 		Children:
-			Content: Type: PrefixNode, Start: 1, 2, End: 1, 7, Content: ""
-			Type: PrefixNode
+			Content: Type: ParenthesesNode, Start: 1, 4, End: 1, 7, Content: ""
+			Type: ParenthesesNode
 			Children:
-				Content: Type: FullSymbol, Start: 1, 4, End: 1, 7, Content: ""
-				Type: FullSymbol
+				Content: Type: Type, Start: 1, 4, End: 1, 7, Content: ""
+				Type: Type
 				Children:
-					Content: Type: Symbol, Start: 1, 4, End: 1, 7, Content: "foo"
-					Type: Symbol
+					Content: Type: FullSymbol, Start: 1, 4, End: 1, 7, Content: ""
+					Type: FullSymbol
 					Children:
+						Content: Type: Symbol, Start: 1, 4, End: 1, 7, Content: "foo"
+						Type: Symbol
+						Children:
 
-				Content: Type: PlusPlus, Start: 1, 2, End: 1, 4, Content: "++"
-				Type: PlusPlus
-				Children:
+			Content: Type: PlusPlus, Start: 1, 2, End: 1, 4, Content: "++"
+			Type: PlusPlus
+			Children:
 
+		Content: Type: ParenthesesNode, Start: 1, 10, End: 1, 11, Content: ""
+		Type: ParenthesesNode
+		Children:
 			Content: Type: LiteralNode, Start: 1, 10, End: 1, 11, Content: ""
 			Type: LiteralNode
 			Children:
@@ -28,9 +34,9 @@ Children:
 				Type: Integer
 				Children:
 
-			Content: Type: Assignment, Start: 1, 8, End: 1, 9, Content: "="
-			Type: Assignment
-			Children:
+		Content: Type: Assignment, Start: 1, 8, End: 1, 9, Content: "="
+		Type: Assignment
+		Children:
 
 	Content: Type: EndOfLine, Start: 1, 11, End: 1, 12, Content: ";"
 	Type: EndOfLine

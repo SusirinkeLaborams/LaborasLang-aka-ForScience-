@@ -22,11 +22,11 @@ Children:
 		Type: Assignment
 		Children:
 
-		Content: Type: Value, Start: 1, 10, End: 1, 15, Content: ""
-		Type: Value
+		Content: Type: ParenthesesNode, Start: 1, 10, End: 1, 15, Content: ""
+		Type: ParenthesesNode
 		Children:
-			Content: Type: PostfixNode, Start: 1, 10, End: 1, 15, Content: ""
-			Type: PostfixNode
+			Content: Type: Type, Start: 1, 10, End: 1, 15, Content: ""
+			Type: Type
 			Children:
 				Content: Type: FullSymbol, Start: 1, 10, End: 1, 13, Content: ""
 				Type: FullSymbol
@@ -35,16 +35,19 @@ Children:
 					Type: Symbol
 					Children:
 
-				Content: Type: IndexNode, Start: 1, 13, End: 1, 15, Content: ""
-				Type: IndexNode
+				Content: Type: ParameterList, Start: 1, 13, End: 1, 15, Content: ""
+				Type: ParameterList
 				Children:
-					Content: Type: LeftBracket, Start: 1, 13, End: 1, 14, Content: "["
-					Type: LeftBracket
+					Content: Type: IndexNode, Start: 1, 13, End: 1, 15, Content: ""
+					Type: IndexNode
 					Children:
+						Content: Type: LeftBracket, Start: 1, 13, End: 1, 14, Content: "["
+						Type: LeftBracket
+						Children:
 
-					Content: Type: RightBracket, Start: 1, 14, End: 1, 15, Content: "]"
-					Type: RightBracket
-					Children:
+						Content: Type: RightBracket, Start: 1, 14, End: 1, 15, Content: "]"
+						Type: RightBracket
+						Children:
 
 		Content: Type: EndOfLine, Start: 1, 15, End: 1, 16, Content: ";"
 		Type: EndOfLine

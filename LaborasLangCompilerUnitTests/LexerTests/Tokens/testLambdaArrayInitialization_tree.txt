@@ -22,8 +22,8 @@ Children:
 		Type: Assignment
 		Children:
 
-		Content: Type: Value, Start: 1, 10, End: 1, 53, Content: ""
-		Type: Value
+		Content: Type: ParenthesesNode, Start: 1, 10, End: 1, 53, Content: ""
+		Type: ParenthesesNode
 		Children:
 			Content: Type: ArrayLiteral, Start: 1, 10, End: 1, 53, Content: ""
 			Type: ArrayLiteral
@@ -73,8 +73,8 @@ Children:
 					Type: LeftCurlyBrace
 					Children:
 
-					Content: Type: Value, Start: 1, 19, End: 1, 35, Content: ""
-					Type: Value
+					Content: Type: ParenthesesNode, Start: 1, 19, End: 1, 35, Content: ""
+					Type: ParenthesesNode
 					Children:
 						Content: Type: Function, Start: 1, 19, End: 1, 35, Content: ""
 						Type: Function
@@ -129,8 +129,8 @@ Children:
 					Type: Comma
 					Children:
 
-					Content: Type: Value, Start: 1, 37, End: 1, 52, Content: ""
-					Type: Value
+					Content: Type: ParenthesesNode, Start: 1, 37, End: 1, 52, Content: ""
+					Type: ParenthesesNode
 					Children:
 						Content: Type: Function, Start: 1, 37, End: 1, 52, Content: ""
 						Type: Function

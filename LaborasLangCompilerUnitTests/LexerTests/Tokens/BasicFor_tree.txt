@@ -30,8 +30,8 @@ Children:
 		Type: Assignment
 		Children:
 
-		Content: Type: Value, Start: 1, 14, End: 1, 15, Content: ""
-		Type: Value
+		Content: Type: ParenthesesNode, Start: 1, 14, End: 1, 15, Content: ""
+		Type: ParenthesesNode
 		Children:
 			Content: Type: LiteralNode, Start: 1, 14, End: 1, 15, Content: ""
 			Type: LiteralNode
@@ -44,19 +44,25 @@ Children:
 		Type: EndOfLine
 		Children:
 
-		Content: Type: Value, Start: 1, 17, End: 1, 22, Content: ""
-		Type: Value
+		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: InfixNode
 		Children:
-			Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
-			Type: InfixNode
+			Content: Type: ParenthesesNode, Start: 1, 17, End: 1, 18, Content: ""
+			Type: ParenthesesNode
 			Children:
-				Content: Type: FullSymbol, Start: 1, 17, End: 1, 18, Content: ""
-				Type: FullSymbol
+				Content: Type: Type, Start: 1, 17, End: 1, 18, Content: ""
+				Type: Type
 				Children:
-					Content: Type: Symbol, Start: 1, 17, End: 1, 18, Content: "i"
-					Type: Symbol
+					Content: Type: FullSymbol, Start: 1, 17, End: 1, 18, Content: ""
+					Type: FullSymbol
 					Children:
+						Content: Type: Symbol, Start: 1, 17, End: 1, 18, Content: "i"
+						Type: Symbol
+						Children:
 
+			Content: Type: ParenthesesNode, Start: 1, 21, End: 1, 22, Content: ""
+			Type: ParenthesesNode
+			Children:
 				Content: Type: LiteralNode, Start: 1, 21, End: 1, 22, Content: ""
 				Type: LiteralNode
 				Children:
@@ -64,30 +70,33 @@ Children:
 					Type: Integer
 					Children:
 
-				Content: Type: Less, Start: 1, 19, End: 1, 20, Content: "<"
-				Type: Less
-				Children:
+			Content: Type: Less, Start: 1, 19, End: 1, 20, Content: "<"
+			Type: Less
+			Children:
 
 		Content: Type: EndOfLine, Start: 1, 22, End: 1, 23, Content: ";"
 		Type: EndOfLine
 		Children:
 
-		Content: Type: Value, Start: 1, 24, End: 1, 27, Content: ""
-		Type: Value
+		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: InfixNode
 		Children:
-			Content: Type: PostfixNode, Start: 1, 24, End: 1, 27, Content: ""
-			Type: PostfixNode
+			Content: Type: ParenthesesNode, Start: 1, 24, End: 1, 25, Content: ""
+			Type: ParenthesesNode
 			Children:
-				Content: Type: FullSymbol, Start: 1, 24, End: 1, 25, Content: ""
-				Type: FullSymbol
+				Content: Type: Type, Start: 1, 24, End: 1, 25, Content: ""
+				Type: Type
 				Children:
-					Content: Type: Symbol, Start: 1, 24, End: 1, 25, Content: "i"
-					Type: Symbol
+					Content: Type: FullSymbol, Start: 1, 24, End: 1, 25, Content: ""
+					Type: FullSymbol
 					Children:
+						Content: Type: Symbol, Start: 1, 24, End: 1, 25, Content: "i"
+						Type: Symbol
+						Children:
 
-				Content: Type: PlusPlus, Start: 1, 25, End: 1, 27, Content: "++"
-				Type: PlusPlus
-				Children:
+			Content: Type: PlusPlus, Start: 1, 25, End: 1, 27, Content: "++"
+			Type: PlusPlus
+			Children:
 
 		Content: Type: RightParenthesis, Start: 1, 27, End: 1, 28, Content: ")"
 		Type: RightParenthesis

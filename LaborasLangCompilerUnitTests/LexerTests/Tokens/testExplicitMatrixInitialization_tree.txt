@@ -1,19 +1,25 @@
 Content: Type: RootNode, Start: 2, 13, End: 2, 42, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 2, 13, End: 2, 41, Content: ""
-	Type: Value
+	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+	Type: InfixNode
 	Children:
-		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
-		Type: InfixNode
+		Content: Type: ParenthesesNode, Start: 2, 13, End: 2, 14, Content: ""
+		Type: ParenthesesNode
 		Children:
-			Content: Type: FullSymbol, Start: 2, 13, End: 2, 14, Content: ""
-			Type: FullSymbol
+			Content: Type: Type, Start: 2, 13, End: 2, 14, Content: ""
+			Type: Type
 			Children:
-				Content: Type: Symbol, Start: 2, 13, End: 2, 14, Content: "a"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 2, 13, End: 2, 14, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 2, 13, End: 2, 14, Content: "a"
+					Type: Symbol
+					Children:
 
+		Content: Type: ParenthesesNode, Start: 2, 17, End: 2, 41, Content: ""
+		Type: ParenthesesNode
+		Children:
 			Content: Type: ArrayLiteral, Start: 2, 17, End: 2, 41, Content: ""
 			Type: ArrayLiteral
 			Children:
@@ -52,8 +58,8 @@ Children:
 					Type: LeftCurlyBrace
 					Children:
 
-					Content: Type: Value, Start: 2, 25, End: 2, 31, Content: ""
-					Type: Value
+					Content: Type: ParenthesesNode, Start: 2, 25, End: 2, 31, Content: ""
+					Type: ParenthesesNode
 					Children:
 						Content: Type: ArrayLiteral, Start: 2, 25, End: 2, 31, Content: ""
 						Type: ArrayLiteral
@@ -65,8 +71,8 @@ Children:
 								Type: LeftCurlyBrace
 								Children:
 
-								Content: Type: Value, Start: 2, 26, End: 2, 27, Content: ""
-								Type: Value
+								Content: Type: ParenthesesNode, Start: 2, 26, End: 2, 27, Content: ""
+								Type: ParenthesesNode
 								Children:
 									Content: Type: LiteralNode, Start: 2, 26, End: 2, 27, Content: ""
 									Type: LiteralNode
@@ -79,8 +85,8 @@ Children:
 								Type: Comma
 								Children:
 
-								Content: Type: Value, Start: 2, 29, End: 2, 30, Content: ""
-								Type: Value
+								Content: Type: ParenthesesNode, Start: 2, 29, End: 2, 30, Content: ""
+								Type: ParenthesesNode
 								Children:
 									Content: Type: LiteralNode, Start: 2, 29, End: 2, 30, Content: ""
 									Type: LiteralNode
@@ -97,8 +103,8 @@ Children:
 					Type: Comma
 					Children:
 
-					Content: Type: Value, Start: 2, 33, End: 2, 39, Content: ""
-					Type: Value
+					Content: Type: ParenthesesNode, Start: 2, 33, End: 2, 39, Content: ""
+					Type: ParenthesesNode
 					Children:
 						Content: Type: ArrayLiteral, Start: 2, 33, End: 2, 39, Content: ""
 						Type: ArrayLiteral
@@ -110,8 +116,8 @@ Children:
 								Type: LeftCurlyBrace
 								Children:
 
-								Content: Type: Value, Start: 2, 34, End: 2, 35, Content: ""
-								Type: Value
+								Content: Type: ParenthesesNode, Start: 2, 34, End: 2, 35, Content: ""
+								Type: ParenthesesNode
 								Children:
 									Content: Type: LiteralNode, Start: 2, 34, End: 2, 35, Content: ""
 									Type: LiteralNode
@@ -124,8 +130,8 @@ Children:
 								Type: Comma
 								Children:
 
-								Content: Type: Value, Start: 2, 37, End: 2, 38, Content: ""
-								Type: Value
+								Content: Type: ParenthesesNode, Start: 2, 37, End: 2, 38, Content: ""
+								Type: ParenthesesNode
 								Children:
 									Content: Type: LiteralNode, Start: 2, 37, End: 2, 38, Content: ""
 									Type: LiteralNode
@@ -142,9 +148,9 @@ Children:
 					Type: RightCurlyBrace
 					Children:
 
-			Content: Type: Assignment, Start: 2, 15, End: 2, 16, Content: "="
-			Type: Assignment
-			Children:
+		Content: Type: Assignment, Start: 2, 15, End: 2, 16, Content: "="
+		Type: Assignment
+		Children:
 
 	Content: Type: EndOfLine, Start: 2, 41, End: 2, 42, Content: ";"
 	Type: EndOfLine

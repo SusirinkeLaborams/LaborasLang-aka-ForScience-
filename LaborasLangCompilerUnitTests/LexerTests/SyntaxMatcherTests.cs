@@ -678,6 +678,28 @@ foo().bar = 5;
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestInfixOperatorPrecedence()
+        {
+            var source = "foo = 1 * 2 / 3 % 4;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestPeriodPrecedence()
+        {
+            var source = "foo = a.b.c.d.e * 2 / 3 % 4;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestRightAssociativeOperators()
+        {
+            var source = "foo = bar = foobar = foobar2k;";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void TestPrefixSuffix()
         {
             var source = "foo = ++i++;";

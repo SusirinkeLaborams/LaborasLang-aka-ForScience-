@@ -1,20 +1,20 @@
 Content: Type: RootNode, Start: 1, 1, End: 5, 4, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 1, 1, End: 5, 3, Content: ""
-	Type: Value
+	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+	Type: InfixNode
 	Children:
-		Content: Type: PostfixNode, Start: 1, 1, End: 5, 3, Content: ""
-		Type: PostfixNode
+		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: InfixNode
 		Children:
-			Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
-			Type: PostfixNode
+			Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Type: InfixNode
 			Children:
-				Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
-				Type: PostfixNode
+				Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+				Type: InfixNode
 				Children:
-					Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
-					Type: PostfixNode
+					Content: Type: ParenthesesNode, Start: 1, 1, End: 1, 20, Content: ""
+					Type: ParenthesesNode
 					Children:
 						Content: Type: Function, Start: 1, 1, End: 1, 20, Content: ""
 						Type: Function
@@ -64,19 +64,25 @@ Children:
 								Type: LeftCurlyBrace
 								Children:
 
-								Content: Type: Value, Start: 1, 13, End: 1, 18, Content: ""
-								Type: Value
+								Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+								Type: InfixNode
 								Children:
-									Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
-									Type: InfixNode
+									Content: Type: ParenthesesNode, Start: 1, 13, End: 1, 14, Content: ""
+									Type: ParenthesesNode
 									Children:
-										Content: Type: FullSymbol, Start: 1, 13, End: 1, 14, Content: ""
-										Type: FullSymbol
+										Content: Type: Type, Start: 1, 13, End: 1, 14, Content: ""
+										Type: Type
 										Children:
-											Content: Type: Symbol, Start: 1, 13, End: 1, 14, Content: "a"
-											Type: Symbol
+											Content: Type: FullSymbol, Start: 1, 13, End: 1, 14, Content: ""
+											Type: FullSymbol
 											Children:
+												Content: Type: Symbol, Start: 1, 13, End: 1, 14, Content: "a"
+												Type: Symbol
+												Children:
 
+									Content: Type: ParenthesesNode, Start: 1, 17, End: 1, 18, Content: ""
+									Type: ParenthesesNode
+									Children:
 										Content: Type: LiteralNode, Start: 1, 17, End: 1, 18, Content: ""
 										Type: LiteralNode
 										Children:
@@ -84,9 +90,9 @@ Children:
 											Type: Integer
 											Children:
 
-										Content: Type: Assignment, Start: 1, 15, End: 1, 16, Content: "="
-										Type: Assignment
-										Children:
+									Content: Type: Assignment, Start: 1, 15, End: 1, 16, Content: "="
+									Type: Assignment
+									Children:
 
 								Content: Type: EndOfLine, Start: 1, 18, End: 1, 19, Content: ";"
 								Type: EndOfLine
@@ -96,59 +102,59 @@ Children:
 								Type: RightCurlyBrace
 								Children:
 
-						Content: Type: FunctionArgumentsList, Start: 2, 1, End: 2, 4, Content: ""
-						Type: FunctionArgumentsList
-						Children:
-							Content: Type: LeftParenthesis, Start: 2, 1, End: 2, 2, Content: "("
-							Type: LeftParenthesis
-							Children:
-
-							Content: Type: Value, Start: 2, 2, End: 2, 3, Content: ""
-							Type: Value
-							Children:
-								Content: Type: LiteralNode, Start: 2, 2, End: 2, 3, Content: ""
-								Type: LiteralNode
-								Children:
-									Content: Type: Integer, Start: 2, 2, End: 2, 3, Content: "5"
-									Type: Integer
-									Children:
-
-							Content: Type: RightParenthesis, Start: 2, 3, End: 2, 4, Content: ")"
-							Type: RightParenthesis
-							Children:
-
-					Content: Type: FunctionArgumentsList, Start: 3, 1, End: 3, 3, Content: ""
+					Content: Type: FunctionArgumentsList, Start: 2, 1, End: 2, 4, Content: ""
 					Type: FunctionArgumentsList
 					Children:
-						Content: Type: LeftParenthesis, Start: 3, 1, End: 3, 2, Content: "("
+						Content: Type: LeftParenthesis, Start: 2, 1, End: 2, 2, Content: "("
 						Type: LeftParenthesis
 						Children:
 
-						Content: Type: RightParenthesis, Start: 3, 2, End: 3, 3, Content: ")"
+						Content: Type: ParenthesesNode, Start: 2, 2, End: 2, 3, Content: ""
+						Type: ParenthesesNode
+						Children:
+							Content: Type: LiteralNode, Start: 2, 2, End: 2, 3, Content: ""
+							Type: LiteralNode
+							Children:
+								Content: Type: Integer, Start: 2, 2, End: 2, 3, Content: "5"
+								Type: Integer
+								Children:
+
+						Content: Type: RightParenthesis, Start: 2, 3, End: 2, 4, Content: ")"
 						Type: RightParenthesis
 						Children:
 
-				Content: Type: FunctionArgumentsList, Start: 4, 1, End: 4, 3, Content: ""
+				Content: Type: FunctionArgumentsList, Start: 3, 1, End: 3, 3, Content: ""
 				Type: FunctionArgumentsList
 				Children:
-					Content: Type: LeftParenthesis, Start: 4, 1, End: 4, 2, Content: "("
+					Content: Type: LeftParenthesis, Start: 3, 1, End: 3, 2, Content: "("
 					Type: LeftParenthesis
 					Children:
 
-					Content: Type: RightParenthesis, Start: 4, 2, End: 4, 3, Content: ")"
+					Content: Type: RightParenthesis, Start: 3, 2, End: 3, 3, Content: ")"
 					Type: RightParenthesis
 					Children:
 
-			Content: Type: FunctionArgumentsList, Start: 5, 1, End: 5, 3, Content: ""
+			Content: Type: FunctionArgumentsList, Start: 4, 1, End: 4, 3, Content: ""
 			Type: FunctionArgumentsList
 			Children:
-				Content: Type: LeftParenthesis, Start: 5, 1, End: 5, 2, Content: "("
+				Content: Type: LeftParenthesis, Start: 4, 1, End: 4, 2, Content: "("
 				Type: LeftParenthesis
 				Children:
 
-				Content: Type: RightParenthesis, Start: 5, 2, End: 5, 3, Content: ")"
+				Content: Type: RightParenthesis, Start: 4, 2, End: 4, 3, Content: ")"
 				Type: RightParenthesis
 				Children:
+
+		Content: Type: FunctionArgumentsList, Start: 5, 1, End: 5, 3, Content: ""
+		Type: FunctionArgumentsList
+		Children:
+			Content: Type: LeftParenthesis, Start: 5, 1, End: 5, 2, Content: "("
+			Type: LeftParenthesis
+			Children:
+
+			Content: Type: RightParenthesis, Start: 5, 2, End: 5, 3, Content: ")"
+			Type: RightParenthesis
+			Children:
 
 	Content: Type: EndOfLine, Start: 5, 3, End: 5, 4, Content: ";"
 	Type: EndOfLine

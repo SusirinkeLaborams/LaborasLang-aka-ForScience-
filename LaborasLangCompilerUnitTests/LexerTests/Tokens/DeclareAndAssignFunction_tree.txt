@@ -22,8 +22,8 @@ Children:
 		Type: Assignment
 		Children:
 
-		Content: Type: Value, Start: 1, 12, End: 1, 26, Content: ""
-		Type: Value
+		Content: Type: ParenthesesNode, Start: 1, 12, End: 1, 26, Content: ""
+		Type: ParenthesesNode
 		Children:
 			Content: Type: Function, Start: 1, 12, End: 1, 26, Content: ""
 			Type: Function
@@ -59,11 +59,11 @@ Children:
 					Type: LeftCurlyBrace
 					Children:
 
-					Content: Type: Value, Start: 1, 19, End: 1, 24, Content: ""
-					Type: Value
+					Content: Type: ParenthesesNode, Start: 1, 19, End: 1, 24, Content: ""
+					Type: ParenthesesNode
 					Children:
-						Content: Type: PostfixNode, Start: 1, 19, End: 1, 24, Content: ""
-						Type: PostfixNode
+						Content: Type: Type, Start: 1, 19, End: 1, 24, Content: ""
+						Type: Type
 						Children:
 							Content: Type: FullSymbol, Start: 1, 19, End: 1, 22, Content: ""
 							Type: FullSymbol
@@ -72,16 +72,19 @@ Children:
 								Type: Symbol
 								Children:
 
-							Content: Type: FunctionArgumentsList, Start: 1, 22, End: 1, 24, Content: ""
-							Type: FunctionArgumentsList
+							Content: Type: ParameterList, Start: 1, 22, End: 1, 24, Content: ""
+							Type: ParameterList
 							Children:
-								Content: Type: LeftParenthesis, Start: 1, 22, End: 1, 23, Content: "("
-								Type: LeftParenthesis
+								Content: Type: FunctorParameters, Start: 1, 22, End: 1, 24, Content: ""
+								Type: FunctorParameters
 								Children:
+									Content: Type: LeftParenthesis, Start: 1, 22, End: 1, 23, Content: "("
+									Type: LeftParenthesis
+									Children:
 
-								Content: Type: RightParenthesis, Start: 1, 23, End: 1, 24, Content: ")"
-								Type: RightParenthesis
-								Children:
+									Content: Type: RightParenthesis, Start: 1, 23, End: 1, 24, Content: ")"
+									Type: RightParenthesis
+									Children:
 
 					Content: Type: EndOfLine, Start: 1, 24, End: 1, 25, Content: ";"
 					Type: EndOfLine

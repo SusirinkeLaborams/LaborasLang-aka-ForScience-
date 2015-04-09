@@ -12,7 +12,7 @@ namespace Lexer.PostProcessors
             tree.Children.ForEach(t =>
             {
                 Apply(t);
-                Transform(t);
+                Transform(t);   
             });
         }
     }

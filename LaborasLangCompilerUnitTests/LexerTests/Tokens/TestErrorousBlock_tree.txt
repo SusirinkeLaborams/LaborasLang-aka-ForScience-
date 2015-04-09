@@ -24,29 +24,38 @@ Children:
 		Type: LeftCurlyBrace
 		Children:
 
-	Content: Type: Value, Start: 3, 17, End: 3, 30, Content: ""
-	Type: Value
+	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+	Type: InfixNode
 	Children:
-		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
-		Type: InfixNode
+		Content: Type: ParenthesesNode, Start: 3, 17, End: 3, 23, Content: ""
+		Type: ParenthesesNode
 		Children:
-			Content: Type: FullSymbol, Start: 3, 17, End: 3, 23, Content: ""
-			Type: FullSymbol
+			Content: Type: Type, Start: 3, 17, End: 3, 23, Content: ""
+			Type: Type
 			Children:
-				Content: Type: Symbol, Start: 3, 17, End: 3, 23, Content: "should"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 3, 17, End: 3, 23, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 3, 17, End: 3, 23, Content: "should"
+					Type: Symbol
+					Children:
 
-			Content: Type: FullSymbol, Start: 3, 26, End: 3, 30, Content: ""
-			Type: FullSymbol
+		Content: Type: ParenthesesNode, Start: 3, 26, End: 3, 30, Content: ""
+		Type: ParenthesesNode
+		Children:
+			Content: Type: Type, Start: 3, 26, End: 3, 30, Content: ""
+			Type: Type
 			Children:
-				Content: Type: Symbol, Start: 3, 26, End: 3, 30, Content: "work"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 3, 26, End: 3, 30, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 3, 26, End: 3, 30, Content: "work"
+					Type: Symbol
+					Children:
 
-			Content: Type: Assignment, Start: 3, 24, End: 3, 25, Content: "="
-			Type: Assignment
-			Children:
+		Content: Type: Assignment, Start: 3, 24, End: 3, 25, Content: "="
+		Type: Assignment
+		Children:
 
 	Content: Type: EndOfLine, Start: 3, 30, End: 3, 31, Content: ";"
 	Type: EndOfLine
@@ -84,8 +93,8 @@ Children:
 		Type: Assignment
 		Children:
 
-		Content: Type: Value, Start: 5, 21, End: 5, 22, Content: ""
-		Type: Value
+		Content: Type: ParenthesesNode, Start: 5, 21, End: 5, 22, Content: ""
+		Type: ParenthesesNode
 		Children:
 			Content: Type: LiteralNode, Start: 5, 21, End: 5, 22, Content: ""
 			Type: LiteralNode

@@ -176,6 +176,7 @@
                 case TokenType.BitwiseAndEqual:
                 case TokenType.BitwiseXorEqual:
                 case TokenType.BitwiseOrEqual:
+                case TokenType.PrefixOperator:
                     return true;
                 default:
                     return false;

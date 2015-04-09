@@ -84,13 +84,13 @@ namespace Lexer
                         LogicalOr
                ),
 
-                    AlwaysCollapsableParseRule(PostfixOperator,
+                    ParseRule(PostfixOperator,
                         PlusPlus, 
                         MinusMinus,
                         IndexNode,
                         FunctionArgumentsList),
 
-                    AlwaysCollapsableParseRule(PrefixOperator,
+                    ParseRule(PrefixOperator,
                         PlusPlus, 
                         MinusMinus, 
                         Minus, 
@@ -109,23 +109,23 @@ namespace Lexer
                     LeftBracket + ZeroOrMore(Comma) + RightBracket),
 
                     
-                    CollapsableParseRule(ParenthesesNode,
+                    ParseRule(ParenthesesNode,
                         LeftParenthesis + Value + RightParenthesis,
                         Operand),
                         
                     /*PrefixNode is transformed using PrefixResolver. It is transformed to a recursive list {T, PrefixOperator}
                       where T can be PrefixNode, ParenthesesNode, Operand. T will be as specific as possible.*/
-                    CollapsableParseRule(PrefixNode,
+                    AlwaysCollapsableParseRule(PrefixNode,
                          ZeroOrMore(PrefixOperator) + ParenthesesNode),
                          
                     /*PostfixNode is transformed using InfixResolver. It is transformed to a recursive list {T, PostfixOperator}
                       where T can be PostfixNode, PrefixNode, ParenthesesNode, Operand. T will be as specific as possible.*/
-                    CollapsableParseRule(PostfixNode,
+                    AlwaysCollapsableParseRule(PostfixNode,
                         PrefixNode + ZeroOrMore(PostfixOperator)),
 
                     /*InfixNode is transformed using InfixResolver. It is transformed to a tree with structure {A, B, InfixOperator}.
                       A, B can have types of InfixNode, PostfixNode, PrefixNode, ParenthesesNode, Operand. A, B will be as specific as possible.*/
-                    CollapsableParseRule(InfixNode,
+                    AlwaysCollapsableParseRule(InfixNode,
                         PostfixNode + ZeroOrMore(InfixSubnode)),
 
                    AlwaysCollapsableParseRule(InfixSubnode,
@@ -137,8 +137,8 @@ namespace Lexer
                     AlwaysCollapsableParseRule(Operand,
                         ArrayLiteral,
                         Function,
-                        FullSymbol,
                         Type,
+                        Symbol,
                         LiteralNode),
 
                     ParseRule(LiteralNode,                       

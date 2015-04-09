@@ -36,15 +36,18 @@ Children:
 		Type: Assignment
 		Children:
 
-		Content: Type: Value, Start: 1, 11, End: 1, 14, Content: ""
-		Type: Value
+		Content: Type: ParenthesesNode, Start: 1, 11, End: 1, 14, Content: ""
+		Type: ParenthesesNode
 		Children:
-			Content: Type: FullSymbol, Start: 1, 11, End: 1, 14, Content: ""
-			Type: FullSymbol
+			Content: Type: Type, Start: 1, 11, End: 1, 14, Content: ""
+			Type: Type
 			Children:
-				Content: Type: Symbol, Start: 1, 11, End: 1, 14, Content: "bar"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 1, 11, End: 1, 14, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 1, 11, End: 1, 14, Content: "bar"
+					Type: Symbol
+					Children:
 
 		Content: Type: EndOfLine, Start: 1, 14, End: 1, 15, Content: ";"
 		Type: EndOfLine
