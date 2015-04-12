@@ -11,26 +11,32 @@ namespace LaborasLangCompiler.FrontEnd
         internal static int Main(params string[] args)
         {
             Errors.Clear();
+            
             var compilerArgs = CompilerArguments.Parse(args);
+
+            if (compilerArgs == null)
+                return FailCompilation();
+
             AssemblyRegistry.Create(compilerArgs.References);
             var assembly = new AssemblyEmitter(compilerArgs);
 
             ProjectParser.ParseAll(assembly, compilerArgs, true);
 
-            if (Errors.Reported.Count == 0)
-            {
-                assembly.Save();
-                return 0;
-            }
-            else
-            {
-                Console.WriteLine("Compilation failed. Aborting.");
-                if (Debugger.IsAttached)
-                {
-                    Console.ReadKey();
-                }
-                return -1;
-            }
+            if (Errors.Reported.Count > 0)
+                return FailCompilation();
+
+            assembly.Save();
+            return 0;
+        }
+
+        private static int FailCompilation()
+        {
+            Console.WriteLine("Compilation failed. Aborting.");
+
+            if (Debugger.IsAttached)
+                Debugger.Break();
+
+            return -1;
         }
     }
 }

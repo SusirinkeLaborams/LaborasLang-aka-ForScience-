@@ -10,6 +10,7 @@ namespace LaborasLangCompiler.Common
 {
     public enum ErrorCode
     {
+        ParserErrors = 0000,
         InvalidStructure = 0001,
         SymbolAlreadyDeclared = 0002,
         SymbolNotFound = 0003,
@@ -56,7 +57,20 @@ namespace LaborasLangCompiler.Common
         CannotIndex = 0030,
         MissingArraySize = 0031,
         ArrayDimMissmatch = 0032,
-        NotLiteralArrayDims = 0033
+        NotLiteralArrayDims = 0033,
+
+        CompilerArgumentErrors = 1000,
+        NoSourceFiles = 1001,
+        UnknownCompilerSwitch = 1002,
+        MoreThanOneModuleKind = 1003,
+        NoOutputPaths = 1004,
+        MoreThanOneOutputPath = 1005,
+        OutputPathAndModuleKindMismatch = 1006,
+        IllegalCharactersInPath = 1007,
+        UnspecifiedNamespace = 1008,
+        TypeNameClash = 1009,
+        SourceFileDoesNotExist = 1010,
+        UnresolvedReference = 1011,
     }
 
     public static class Errors

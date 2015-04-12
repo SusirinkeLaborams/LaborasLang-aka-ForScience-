@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace LaborasLangCompilerUnitTests.IntegrationTests
 {
-    public class IntegrationTestBase
+    public class IntegrationTestBase : TestBase
     {
         private const int kBuildTimeOut = 4000;
         private const int kRunTimeOut = 500;
@@ -42,6 +42,11 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
                 SourceFiles = sourceFiles;
                 StdOut = expectedOutput;
             }
+        }
+
+        public IntegrationTestBase() :
+            base(false)
+        {
         }
 
         protected void Test(string sourceFile, string expectedOutput)

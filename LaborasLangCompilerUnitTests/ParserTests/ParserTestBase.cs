@@ -18,12 +18,13 @@ using System.IO;
 
 namespace LaborasLangCompilerUnitTests.ParserTests
 {
-    public class ParserTestBase
+    public class ParserTestBase : TestBase
     {
         protected const string path = @"..\..\ParserTests\Trees\";
         private AssemblyEmitter assembly;
 
-        protected ParserTestBase()
+        protected ParserTestBase() :
+            base(false)
         {
             var compilerArgs = CompilerArguments.Parse(new[] { "ParserTests.il" });
             AssemblyRegistry.CreateAndOverrideIfNeeded(compilerArgs.References);
