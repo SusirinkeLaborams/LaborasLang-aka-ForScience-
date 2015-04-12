@@ -219,7 +219,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 case ExpressionNodeType.ValueCreation:
-                    throw new NotImplementedException();
+                    EmitValueCreation(expression, emissionType);
+                    return;
 
                 case ExpressionNodeType.This:
                     EmitThis(expression, emissionType);
@@ -990,6 +991,30 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (ShouldEmitAddress(literal, emissionType))
                 LoadAddressOfValue(literal);
+        }
+
+        private void EmitValueCreation(IExpressionNode valueCreation, EmissionType emissionType)
+        {
+            Contract.Requires(valueCreation.ExpressionReturnType.IsValueType);
+
+            if (emissionType == EmissionType.None)
+                return;
+
+            var variableToInitialize = temporaryVariables.Acquire(valueCreation.ExpressionReturnType);
+            
+            if (!ShouldEmitAddress(valueCreation, emissionType))
+            {
+                Ldloca(variableToInitialize.Index);
+                Initobj(valueCreation.ExpressionReturnType);
+                Ldloc(variableToInitialize.Index);
+                temporaryVariables.Release(variableToInitialize);
+            }
+            else
+            {
+                Ldloca(variableToInitialize.Index);
+                Dup();
+                Initobj(valueCreation.ExpressionReturnType);
+            }
         }
 
         private void Emit(IObjectCreationNode objectCreation, EmissionType emissionType)

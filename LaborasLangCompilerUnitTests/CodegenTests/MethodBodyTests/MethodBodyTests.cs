@@ -2207,5 +2207,144 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         }
 
         #endregion
+
+        #region Value Creation tests
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_ValueCreation()
+        {
+            var localVariable = new VariableDefinition(assemblyEmitter.TypeSystem.Int32);
+            var localVariableNode = new LocalVariableNode(localVariable);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        Variable = localVariable,
+                        Initializer = new LiteralNode(assemblyEmitter.TypeSystem.Int32, 5)
+                    },
+                    new AssignmentOperatorNode()
+                    {
+                        LeftOperand = localVariableNode,
+                        RightOperand = new ValueCreationNode(assemblyEmitter.TypeSystem.Int32)
+                    },
+                    CallConsoleWriteLine(localVariableNode)
+                }
+            };
+
+            ExpectedOutput = "0";
+            AssertSuccessByExecution();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_ValueCreationOfDifferentType()
+        {
+            var localVariable = new VariableDefinition(assemblyEmitter.TypeSystem.Byte);
+            var localVariableNode = new LocalVariableNode(localVariable);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        Variable = localVariable,
+                        Initializer = new LiteralNode(assemblyEmitter.TypeSystem.Int32, 22)
+                    },
+                    new AssignmentOperatorNode()
+                    {
+                        LeftOperand = localVariableNode,
+                        RightOperand = new ValueCreationNode(assemblyEmitter.TypeSystem.Int64)
+                    },
+                    CallConsoleWriteLine(localVariableNode)
+                }
+            };
+
+            ExpectedOutput = "0";
+            AssertSuccessByExecution();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_ValueCreationAssignmentToField()
+        {
+            var field = new FieldDefinition("_testField", FieldAttributes.Private, assemblyEmitter.TypeSystem.Int32);
+
+            typeEmitter.AddField(field);
+            typeEmitter.AddFieldInitializer(field, new LiteralNode(assemblyEmitter.TypeSystem.Int32, 12));
+
+            var thisVariable = new VariableDefinition(typeEmitter.Get(assemblyEmitter));
+            var thisVariableNode = new LocalVariableNode(thisVariable);
+
+            var fieldNode = new FieldNode()
+            {
+                ObjectInstance = thisVariableNode,
+                Field = field
+            };
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        Variable = thisVariable,
+                        Initializer = ConstructTypeEmitterInstance()
+                    },
+                    new AssignmentOperatorNode()
+                    {
+                        LeftOperand = fieldNode,
+                        RightOperand = new ValueCreationNode(assemblyEmitter.TypeSystem.Int32)
+                    },
+                    CallConsoleWriteLine(fieldNode)
+                }
+            };
+
+            ExpectedOutput = "0";
+            AssertSuccessByExecution();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_ValueCreationPassToMethod()
+        {
+            var targetMethod = new MethodEmitter(typeEmitter, "PrintInt", assemblyEmitter.TypeSystem.Void, MethodAttributes.Private | MethodAttributes.Static);
+            var parameter = new ParameterDefinition(assemblyEmitter.TypeSystem.Int32);
+            
+            targetMethod.AddArgument(parameter);
+            targetMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    CallConsoleWriteLine(new ParameterNode(parameter))
+                }
+            });
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new MethodCallNode()
+                    {
+                        Function = new FunctionNode()
+                        {
+                            Method = targetMethod.Get()
+                        },
+                        Args = new IExpressionNode[]
+                        {
+                            new ValueCreationNode()
+                            {
+                                ExpressionReturnType = assemblyEmitter.TypeSystem.Int32
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedOutput = "0";
+            AssertSuccessByExecution();
+        }
+
+        #endregion
     }
 }

@@ -101,6 +101,23 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         }
     }
 
+    class ValueCreationNode : IExpressionNode
+    {
+        public SequencePoint SequencePoint { get { return null; } }
+        public NodeType Type { get { return NodeType.Expression; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ValueCreation; } }
+        public TypeReference ExpressionReturnType { get; set; }
+
+        public ValueCreationNode()
+        {
+        }
+
+        public ValueCreationNode(TypeReference type)
+        {
+            ExpressionReturnType = type;
+        }
+    }
+
     class ObjectCreationNode : IObjectCreationNode
     {
         public SequencePoint SequencePoint { get { return null; } }

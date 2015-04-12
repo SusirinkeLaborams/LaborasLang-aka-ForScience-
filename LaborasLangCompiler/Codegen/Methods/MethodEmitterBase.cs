@@ -318,6 +318,14 @@ namespace LaborasLangCompiler.Codegen.Methods
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
+        protected void Initobj(TypeReference type)
+        {
+            Contract.Requires(type != null);
+
+            ilProcessor.Emit(OpCodes.Initobj, type);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
         protected void Ldarg(int index)
         {
             if (index < 4)
