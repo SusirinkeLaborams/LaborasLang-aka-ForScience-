@@ -219,7 +219,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 case ExpressionNodeType.ValueCreation:
-                    throw new NotImplementedException();
+                    EmitValueCreation(expression, emissionType);
+                    return;
 
                 case ExpressionNodeType.This:
                     EmitThis(expression, emissionType);
@@ -249,7 +250,7 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             body.Variables.Add(symbolDeclaration.Variable);
 
-            if (symbolDeclaration.Initializer != null)
+            if (symbolDeclaration.Initializer != null && symbolDeclaration.Initializer.ExpressionType != ExpressionNodeType.ValueCreation)
             {
                 EmitExpressionWithTargetType(symbolDeclaration.Initializer, symbolDeclaration.Variable.VariableType);
                 Stloc(symbolDeclaration.Variable.Index);
@@ -519,6 +520,20 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         #region Assignment
 
+        private void Emit(IAssignmentOperatorNode assignmentOperator, EmissionType emissionType)
+        {
+            switch (assignmentOperator.RightOperand.ExpressionType)
+            {
+                case ExpressionNodeType.ValueCreation:
+                    EmitValueCreationAssignment(assignmentOperator, emissionType);
+                    return;
+                    
+                default:
+                    EmitAssignment(assignmentOperator, emissionType);
+                    return;
+            }
+        }
+
         // There are 2 types of assignment
         //
         // LValue <- Value
@@ -542,7 +557,7 @@ namespace LaborasLangCompiler.Codegen.Methods
         //  - EmitStore left side
         // In case of duplicating left side if it's a property, we don't actually call a getter on it,
         // because that would be inefficient and could change semantics if the getter doesn't return the same value
-        private void Emit(IAssignmentOperatorNode assignmentOperator, EmissionType emissionType)
+        private void EmitAssignment(IAssignmentOperatorNode assignmentOperator, EmissionType emissionType)
         {
             // If we're storing to field or property and it's not static, we need to load object instance now
             // and if we're also duplicating value, we got to save it to temp variable
@@ -588,7 +603,50 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        private void EmitExpressionWithTargetType(IExpressionNode expression, TypeReference targetType)//, bool emitAsReference = false)
+        private void EmitValueCreationAssignment(IAssignmentOperatorNode assignmentOperator, EmissionType emissionType)
+        {
+            var leftOperand = assignmentOperator.LeftOperand;
+            bool canInitObjDirectly = leftOperand.ExpressionReturnType == assignmentOperator.RightOperand.ExpressionReturnType;
+
+            if (canInitObjDirectly)
+            {
+                switch (leftOperand.ExpressionType)
+                {
+                    case ExpressionNodeType.Field:
+                    case ExpressionNodeType.FunctionArgument:
+                    case ExpressionNodeType.LocalVariable:
+                        break;
+
+                    default:
+                        canInitObjDirectly = false;
+                        break;
+                }
+            }
+
+            if (canInitObjDirectly)
+            {
+                if (!ShouldEmitAddress(assignmentOperator, emissionType))
+                {
+                    Emit(leftOperand, EmissionType.ReferenceToValue);
+                    Initobj(leftOperand.ExpressionReturnType);
+
+                    if (emissionType != EmissionType.None)
+                        Emit(leftOperand, EmissionType.Value);
+                }
+                else
+                {
+                    Emit(leftOperand, EmissionType.ReferenceToValue);
+                    Dup();
+                    Initobj(leftOperand.ExpressionReturnType);
+                }
+            }
+            else
+            {
+                EmitAssignment(assignmentOperator, emissionType);
+            }
+        }
+
+        private void EmitExpressionWithTargetType(IExpressionNode expression, TypeReference targetType)
         {
             if (targetType is ByReferenceType)
             {
@@ -990,6 +1048,30 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (ShouldEmitAddress(literal, emissionType))
                 LoadAddressOfValue(literal);
+        }
+
+        private void EmitValueCreation(IExpressionNode valueCreation, EmissionType emissionType)
+        {
+            Contract.Requires(valueCreation.ExpressionReturnType.IsValueType);
+
+            if (emissionType == EmissionType.None)
+                return;
+
+            var variableToInitialize = temporaryVariables.Acquire(valueCreation.ExpressionReturnType);
+            
+            if (!ShouldEmitAddress(valueCreation, emissionType))
+            {
+                Ldloca(variableToInitialize.Index);
+                Initobj(valueCreation.ExpressionReturnType);
+                Ldloc(variableToInitialize.Index);
+                temporaryVariables.Release(variableToInitialize);
+            }
+            else
+            {
+                Ldloca(variableToInitialize.Index);
+                Dup();
+                Initobj(valueCreation.ExpressionReturnType);
+            }
         }
 
         private void Emit(IObjectCreationNode objectCreation, EmissionType emissionType)
