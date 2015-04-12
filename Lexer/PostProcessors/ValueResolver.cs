@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Lexer.PostProcessors
 {
-    class InfixResolver : BottomUpPostProcessor
+    class ValueResolver : BottomUpPostProcessor
     {
         private static TokenType[][] c_OperatorGroups = new[]{
         #region period
@@ -16,13 +16,6 @@ namespace Lexer.PostProcessors
         #region assignments
             new[]{TokenType.Assignment, TokenType.PlusEqual, TokenType.MinusEqual, TokenType.DivideEqual, TokenType.MultiplyEqual, TokenType.RemainderEqual, TokenType.LeftShiftEqual, TokenType.RightShiftEqual, TokenType.LogicalAndEqual, TokenType.LogicalOrEqual, TokenType.BitwiseAndEqual, TokenType.BitwiseXorEqual, TokenType.BitwiseOrEqual },
         #endregion
- 
-        #region prefixes
-            new[]{TokenType.PrefixOperator},
-        #endregion
-        #region postfixes
-            new[]{TokenType.PostfixOperator},
-        #endregion     
         #region shifts
             new[]{TokenType.LeftShift, TokenType.RightShift },
         #endregion
@@ -35,6 +28,13 @@ namespace Lexer.PostProcessors
         #region bitwise
             new[]{TokenType.BitwiseAnd, TokenType.BitwiseOr, TokenType.BitwiseXor, TokenType.BitwiseComplement},
         #endregion
+ 
+        #region prefixes
+            new[]{TokenType.PrefixOperator},
+        #endregion
+        #region postfixes
+            new[]{TokenType.PostfixOperator},
+        #endregion     
         #region comparison
             new[]{TokenType.Equal, TokenType.NotEqual, TokenType.More, TokenType.Less, TokenType.MoreOrEqual, TokenType.LessOrEqual},
         #endregion
@@ -45,7 +45,7 @@ namespace Lexer.PostProcessors
         };
         private int[] m_Priorities;
 
-        public InfixResolver()
+        public ValueResolver()
         {
             m_Priorities = Enumerable.Repeat(int.MaxValue, (int) TokenType.TokenTypeCount).ToArray();
            
@@ -89,7 +89,18 @@ namespace Lexer.PostProcessors
                             stack.Push(item);
                             break;
                         default:
-                            Append(tree, item);
+                            if (stack.Count != 0 && stack.Peek().Type == TokenType.PrefixOperator)
+                            {
+                                tree.Children.Add(item);
+                                while (stack.Count != 0 && stack.Peek().Type == TokenType.PrefixOperator)
+                                {
+                                    FormSubnode(tree, stack.Pop(), 1, TokenType.PrefixNode);
+                                }
+                            } 
+                            else
+                            {
+                                Append(tree, item);
+                            }
                             break;
                     }
                 }
@@ -114,24 +125,23 @@ namespace Lexer.PostProcessors
             switch (value.Type)
             {
                 case TokenType.InfixOperator:
-                    FormSubnode(tree, value, 2);
+                    FormSubnode(tree, value, 2, TokenType.InfixNode);
                     return;
                 case TokenType.PostfixOperator:
-                case TokenType.PrefixOperator:
-                    FormSubnode(tree, value, 1);
+                    FormSubnode(tree, value, 1, TokenType.PostfixNode);
                     return;
                 default:
                     throw new ArgumentException();
             }
         }
 
-        private static void FormSubnode(AbstractSyntaxTree tree, AbstractSyntaxTree value, int tokensToConsume)
+        private static void FormSubnode(AbstractSyntaxTree tree, AbstractSyntaxTree value, int tokensToConsume, TokenType nodetype)
         {
             var source = tree.Children.GetRange(tree.Children.Count - tokensToConsume, tokensToConsume);
             tree.Children.RemoveRange(tree.Children.Count - tokensToConsume, tokensToConsume);
             source.Add(value);
 
-            tree.Children.Add(new AbstractSyntaxTree(new Node(TokenType.InfixNode), source));
+            tree.Children.Add(new AbstractSyntaxTree(new Node(nodetype), source));
             
         }
         private bool ShouldPop(Stack<AbstractSyntaxTree> stack, AbstractSyntaxTree item)

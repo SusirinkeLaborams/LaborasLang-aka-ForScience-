@@ -4,79 +4,67 @@ Children:
 	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: InfixNode
 	Children:
-		Content: Type: ParenthesesNode, Start: 2, 13, End: 2, 14, Content: ""
-		Type: ParenthesesNode
+		Content: Type: Type, Start: 2, 13, End: 2, 14, Content: ""
+		Type: Type
 		Children:
-			Content: Type: Type, Start: 2, 13, End: 2, 14, Content: ""
+			Content: Type: FullSymbol, Start: 2, 13, End: 2, 14, Content: ""
+			Type: FullSymbol
+			Children:
+				Content: Type: Symbol, Start: 2, 13, End: 2, 14, Content: "a"
+				Type: Symbol
+				Children:
+
+		Content: Type: ArrayLiteral, Start: 2, 17, End: 2, 28, Content: ""
+		Type: ArrayLiteral
+		Children:
+			Content: Type: Type, Start: 2, 17, End: 2, 23, Content: ""
 			Type: Type
 			Children:
-				Content: Type: FullSymbol, Start: 2, 13, End: 2, 14, Content: ""
+				Content: Type: FullSymbol, Start: 2, 17, End: 2, 20, Content: ""
 				Type: FullSymbol
 				Children:
-					Content: Type: Symbol, Start: 2, 13, End: 2, 14, Content: "a"
+					Content: Type: Symbol, Start: 2, 17, End: 2, 20, Content: "int"
 					Type: Symbol
 					Children:
 
-		Content: Type: ParenthesesNode, Start: 2, 17, End: 2, 28, Content: ""
-		Type: ParenthesesNode
-		Children:
-			Content: Type: ArrayLiteral, Start: 2, 17, End: 2, 28, Content: ""
-			Type: ArrayLiteral
-			Children:
-				Content: Type: Type, Start: 2, 17, End: 2, 23, Content: ""
-				Type: Type
+				Content: Type: ParameterList, Start: 2, 20, End: 2, 23, Content: ""
+				Type: ParameterList
 				Children:
-					Content: Type: FullSymbol, Start: 2, 17, End: 2, 20, Content: ""
-					Type: FullSymbol
+					Content: Type: IndexNode, Start: 2, 20, End: 2, 23, Content: ""
+					Type: IndexNode
 					Children:
-						Content: Type: Symbol, Start: 2, 17, End: 2, 20, Content: "int"
-						Type: Symbol
+						Content: Type: LeftBracket, Start: 2, 20, End: 2, 21, Content: "["
+						Type: LeftBracket
 						Children:
 
-					Content: Type: ParameterList, Start: 2, 20, End: 2, 23, Content: ""
-					Type: ParameterList
-					Children:
-						Content: Type: IndexNode, Start: 2, 20, End: 2, 23, Content: ""
-						Type: IndexNode
-						Children:
-							Content: Type: LeftBracket, Start: 2, 20, End: 2, 21, Content: "["
-							Type: LeftBracket
-							Children:
-
-							Content: Type: ParenthesesNode, Start: 2, 21, End: 2, 22, Content: ""
-							Type: ParenthesesNode
-							Children:
-								Content: Type: LiteralNode, Start: 2, 21, End: 2, 22, Content: ""
-								Type: LiteralNode
-								Children:
-									Content: Type: Integer, Start: 2, 21, End: 2, 22, Content: "1"
-									Type: Integer
-									Children:
-
-							Content: Type: RightBracket, Start: 2, 22, End: 2, 23, Content: "]"
-							Type: RightBracket
-							Children:
-
-				Content: Type: InitializerList, Start: 2, 23, End: 2, 28, Content: ""
-				Type: InitializerList
-				Children:
-					Content: Type: LeftCurlyBrace, Start: 2, 23, End: 2, 24, Content: "{"
-					Type: LeftCurlyBrace
-					Children:
-
-					Content: Type: ParenthesesNode, Start: 2, 25, End: 2, 26, Content: ""
-					Type: ParenthesesNode
-					Children:
-						Content: Type: LiteralNode, Start: 2, 25, End: 2, 26, Content: ""
+						Content: Type: LiteralNode, Start: 2, 21, End: 2, 22, Content: ""
 						Type: LiteralNode
 						Children:
-							Content: Type: Integer, Start: 2, 25, End: 2, 26, Content: "1"
+							Content: Type: Integer, Start: 2, 21, End: 2, 22, Content: "1"
 							Type: Integer
 							Children:
 
-					Content: Type: RightCurlyBrace, Start: 2, 27, End: 2, 28, Content: "}"
-					Type: RightCurlyBrace
+						Content: Type: RightBracket, Start: 2, 22, End: 2, 23, Content: "]"
+						Type: RightBracket
+						Children:
+
+			Content: Type: InitializerList, Start: 2, 23, End: 2, 28, Content: ""
+			Type: InitializerList
+			Children:
+				Content: Type: LeftCurlyBrace, Start: 2, 23, End: 2, 24, Content: "{"
+				Type: LeftCurlyBrace
+				Children:
+
+				Content: Type: LiteralNode, Start: 2, 25, End: 2, 26, Content: ""
+				Type: LiteralNode
+				Children:
+					Content: Type: Integer, Start: 2, 25, End: 2, 26, Content: "1"
+					Type: Integer
 					Children:
+
+				Content: Type: RightCurlyBrace, Start: 2, 27, End: 2, 28, Content: "}"
+				Type: RightCurlyBrace
+				Children:
 
 		Content: Type: Assignment, Start: 2, 15, End: 2, 16, Content: "="
 		Type: Assignment

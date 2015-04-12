@@ -115,6 +115,7 @@
     <None Include="IntegrationTests\SourceFiles\MultipleFiles.ll" />
     <None Include="IntegrationTests\SourceFiles\Recursion.ll" />
     <None Include="IntegrationTests\SourceFiles\StdInWorks.ll" />
+    <Compile Include="LexerTests\ValueBlockTests.cs" />
     <Compile Include="ManagedCodeRunner.cs" />
     <Compile Include="ParserTests\ParserTestBase.cs" />
     <Compile Include="TestBase.cs" />

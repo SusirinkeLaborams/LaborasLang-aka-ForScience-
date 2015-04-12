@@ -16,6 +16,12 @@ namespace Lexer.PostProcessors
                 case TokenType.PrefixOperator:
                     astNode.Collapse();
                     return;
+                case TokenType.ParenthesesNode:
+                    if(astNode.Children.Count == 1)
+                    {
+                        astNode.Collapse();
+                    }
+                    return;
                 default:
                     return;
             }

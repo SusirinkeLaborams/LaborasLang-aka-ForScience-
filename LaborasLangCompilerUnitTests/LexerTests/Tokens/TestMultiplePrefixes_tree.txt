@@ -4,46 +4,40 @@ Children:
 	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: InfixNode
 	Children:
-		Content: Type: ParenthesesNode, Start: 1, 1, End: 1, 4, Content: ""
-		Type: ParenthesesNode
+		Content: Type: Type, Start: 1, 1, End: 1, 4, Content: ""
+		Type: Type
 		Children:
-			Content: Type: Type, Start: 1, 1, End: 1, 4, Content: ""
-			Type: Type
+			Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
+			Type: FullSymbol
 			Children:
-				Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
-				Type: FullSymbol
+				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+				Type: Symbol
 				Children:
-					Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
-					Type: Symbol
-					Children:
 
-		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
-		Type: InfixNode
+		Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: PrefixNode
 		Children:
-			Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
-			Type: InfixNode
+			Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Type: PrefixNode
 			Children:
-				Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
-				Type: InfixNode
+				Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
+				Type: PrefixNode
 				Children:
-					Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
-					Type: InfixNode
+					Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
+					Type: PrefixNode
 					Children:
-						Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
-						Type: InfixNode
+						Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
+						Type: PrefixNode
 						Children:
-							Content: Type: ParenthesesNode, Start: 1, 16, End: 1, 17, Content: ""
-							Type: ParenthesesNode
+							Content: Type: Type, Start: 1, 16, End: 1, 17, Content: ""
+							Type: Type
 							Children:
-								Content: Type: Type, Start: 1, 16, End: 1, 17, Content: ""
-								Type: Type
+								Content: Type: FullSymbol, Start: 1, 16, End: 1, 17, Content: ""
+								Type: FullSymbol
 								Children:
-									Content: Type: FullSymbol, Start: 1, 16, End: 1, 17, Content: ""
-									Type: FullSymbol
+									Content: Type: Symbol, Start: 1, 16, End: 1, 17, Content: "i"
+									Type: Symbol
 									Children:
-										Content: Type: Symbol, Start: 1, 16, End: 1, 17, Content: "i"
-										Type: Symbol
-										Children:
 
 							Content: Type: MinusMinus, Start: 1, 14, End: 1, 16, Content: "--"
 							Type: MinusMinus

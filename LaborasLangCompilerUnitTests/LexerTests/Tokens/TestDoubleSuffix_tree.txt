@@ -4,37 +4,31 @@ Children:
 	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: InfixNode
 	Children:
-		Content: Type: ParenthesesNode, Start: 1, 1, End: 1, 4, Content: ""
-		Type: ParenthesesNode
+		Content: Type: Type, Start: 1, 1, End: 1, 4, Content: ""
+		Type: Type
 		Children:
-			Content: Type: Type, Start: 1, 1, End: 1, 4, Content: ""
-			Type: Type
+			Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
+			Type: FullSymbol
 			Children:
-				Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
-				Type: FullSymbol
+				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+				Type: Symbol
 				Children:
-					Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
-					Type: Symbol
-					Children:
 
-		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
-		Type: InfixNode
+		Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: PostfixNode
 		Children:
-			Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
-			Type: InfixNode
+			Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Type: PostfixNode
 			Children:
-				Content: Type: ParenthesesNode, Start: 1, 7, End: 1, 8, Content: ""
-				Type: ParenthesesNode
+				Content: Type: Type, Start: 1, 7, End: 1, 8, Content: ""
+				Type: Type
 				Children:
-					Content: Type: Type, Start: 1, 7, End: 1, 8, Content: ""
-					Type: Type
+					Content: Type: FullSymbol, Start: 1, 7, End: 1, 8, Content: ""
+					Type: FullSymbol
 					Children:
-						Content: Type: FullSymbol, Start: 1, 7, End: 1, 8, Content: ""
-						Type: FullSymbol
+						Content: Type: Symbol, Start: 1, 7, End: 1, 8, Content: "i"
+						Type: Symbol
 						Children:
-							Content: Type: Symbol, Start: 1, 7, End: 1, 8, Content: "i"
-							Type: Symbol
-							Children:
 
 				Content: Type: PlusPlus, Start: 1, 8, End: 1, 10, Content: "++"
 				Type: PlusPlus
