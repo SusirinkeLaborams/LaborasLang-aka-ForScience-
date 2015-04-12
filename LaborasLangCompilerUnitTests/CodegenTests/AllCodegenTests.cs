@@ -76,7 +76,6 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             {
                 nodes.Add(new MethodCallNode()
                 {
-                    ExpressionReturnType = voidType,
                     Function = new FunctionNode()
                     {
                         Method = consoleWriteLine
@@ -89,7 +88,6 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
                 nodes.Add(new MethodCallNode()
                 {
-                    ExpressionReturnType = voidType,
                     Function = new FunctionNode()
                     {
                         Method = AssemblyRegistry.GetMethod(assembly, method.Name, CodegenTestBase.kEntryPointMethodName)

@@ -58,7 +58,30 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Call; } }
 
-        public TypeReference ExpressionReturnType { get; set; }
+        private TypeReference expressionReturnType;
+        public TypeReference ExpressionReturnType
+        {
+            get
+            {
+                if (expressionReturnType != null)
+                    return expressionReturnType;
+
+                var methodNode = Function as IMethodNode;
+                if (methodNode != null)
+                    return methodNode.Method.ReturnType;
+
+                var functorType = Function.ExpressionReturnType;
+
+                if (functorType != null)
+                    return functorType.Resolve().Methods.SingleOrDefault(method => method.Name == "Invoke").ReturnType;
+
+                return null;
+            }
+            set
+            {
+                expressionReturnType = value;
+            }
+        }
         public IExpressionNode Function { get; set; }
 
         public IReadOnlyList<IExpressionNode> Args
@@ -133,8 +156,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public NodeType Type { get { return NodeType.Expression; } }
         public SequencePoint SequencePoint { get { return null; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.IndexOperator; } }
+        public TypeReference ExpressionReturnType { get { return Property.PropertyType; } }
 
-        public TypeReference ExpressionReturnType { get; set; }
         public IExpressionNode ObjectInstance { get; set; }
         public PropertyReference Property { get; set; }
         public IReadOnlyList<IExpressionNode> Indices { get; set; }
@@ -236,7 +259,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.IncrementDecrementOperator; } }
 
-        public TypeReference ExpressionReturnType { get; set; }
+        public TypeReference ExpressionReturnType { get { return Operand.ExpressionReturnType; } }
         public IncrementDecrementOperatorType IncrementDecrementType { get; set; }
         public IExpressionNode Operand { get; set; }
         public MethodReference OverloadedOperatorMethod { get; set; }

@@ -28,8 +28,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         internal const string kEntryPointMethodName = "ExecuteTest";
         private readonly bool bulkTesting = false;
 
-        private readonly MethodReference consoleWrite;
-        private readonly MethodReference consoleWriteLine;
+        private readonly TypeReference console;
+        private readonly MethodReference consoleWriteString;
         private readonly MethodReference consoleWriteLineParams;
 
         private readonly MethodReference ienumerableGetEnumerator;
@@ -58,13 +58,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             methodEmitter = new MethodEmitter(typeEmitter, kEntryPointMethodName, assemblyEmitter.TypeSystem.Void,
                 MethodAttributes.Static | MethodAttributes.Assembly);
 
-            consoleWrite = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "Write",
-                new[] { assemblyEmitter.TypeSystem.Object });
-
-            consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine",
-                new[] { assemblyEmitter.TypeSystem.Object });
-            
-            consoleWriteLineParams = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine",
+            console = AssemblyRegistry.FindType(assemblyEmitter, "System.Console");
+            consoleWriteString = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, console, "Write", new[] { assemblyEmitter.TypeSystem.String });
+            consoleWriteLineParams = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, console, "WriteLine",
                 new[] { assemblyEmitter.TypeSystem.String, new ArrayType(assemblyEmitter.TypeSystem.Object) });
 
             ienumerableGetEnumerator = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Collections.IEnumerable",
@@ -150,7 +146,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             {
                 Function = new FunctionNode()
                 {
-                    Method = consoleWriteLine
+                    Method = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, console, "WriteLine", new[] { expression.ExpressionReturnType })
                 },
                 Args = new List<IExpressionNode>()
                 {
@@ -190,7 +186,6 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                         Variable = enumerator.LocalVariable,
                         Initializer = new MethodCallNode()
                         {
-                            ExpressionReturnType = ienumerator,
                             Function = new FunctionNode()
                             {
                                 ObjectInstance = enumerable,
@@ -218,7 +213,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                                 {
                                     Function = new FunctionNode()
                                     {
-                                        Method = consoleWrite
+                                        Method = consoleWriteString
                                     },
                                     Args = new IExpressionNode[]
                                     {
@@ -228,7 +223,6 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                                             BinaryOperatorType = BinaryOperatorNodeType.Addition,
                                             LeftOperand = new MethodCallNode()
                                             {
-                                                ExpressionReturnType = assemblyEmitter.TypeSystem.Object,
                                                 Function = new FunctionNode()
                                                 {
                                                     ObjectInstance = enumerator,
@@ -239,17 +233,11 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                                             RightOperand = new LiteralNode(assemblyEmitter.TypeSystem.String, " ")
                                         }
                                     }
-                                },
-                                new UnaryOperatorNode()
+                                }, 
+                                new IncrementDecrementOperatorNode()
                                 {
-                                    UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                                    ExpressionReturnType = assemblyEmitter.TypeSystem.Void,
-                                    Operand = new IncrementDecrementOperatorNode()
-                                    {
-                                        IncrementDecrementType = IncrementDecrementOperatorType.PreIncrement,
-                                        ExpressionReturnType = assemblyEmitter.TypeSystem.Int32,
-                                        Operand = counter
-                                    }
+                                    IncrementDecrementType = IncrementDecrementOperatorType.PreIncrement,
+                                    Operand = counter
                                 }
                             }
                         }
@@ -301,6 +289,29 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             });
 
             return targetMethod.Get();
+        }
+
+        internal IExpressionNode ConstructTypeEmitterInstance()
+        {
+            typeEmitter.AddDefaultConstructor();
+            return new ObjectCreationNode()
+            {
+                ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
+                Constructor = AssemblyRegistry.GetConstructor(assemblyEmitter, typeEmitter),
+                Args = new IExpressionNode[0]
+            };
+        }
+
+        internal IParserNode ConstructTypeEmitterInstance(out LocalVariableNode variable)
+        {
+            var variableDef = new VariableDefinition(typeEmitter.Get(assemblyEmitter));
+            variable = new LocalVariableNode(variableDef);
+
+            return new SymbolDeclarationNode()
+            {
+                Variable = variableDef,
+                Initializer = ConstructTypeEmitterInstance() 
+            };
         }
     }
 }
