@@ -18,7 +18,7 @@ namespace LaborasLangCompiler.FrontEnd
 
         public static CompilerArguments Parse(string[] args)
         {
-            var sourceFiles = args.Where(arg => !arg.StartsWith("/", StringComparison.InvariantCultureIgnoreCase)).ToArray();
+            var sourceFiles = args.Where(arg => !arg.StartsWith("/", StringComparison.InvariantCultureIgnoreCase)).Distinct().ToArray();
             var references = args.Where(arg => arg.StartsWith("/ref:", StringComparison.InvariantCultureIgnoreCase));
             var outputPaths = args.Where(arg => arg.StartsWith("/out:", StringComparison.InvariantCultureIgnoreCase));
             var debugBuild = args.Any(arg => arg.Equals("/debug", StringComparison.InvariantCultureIgnoreCase));
@@ -132,6 +132,8 @@ namespace LaborasLangCompiler.FrontEnd
         private static Dictionary<string, string> ParseRootDirectories(string[] sourceFiles, string[] rootDirectories)
         {
             var fileToNamespaceMap = new Dictionary<string, string>();
+            var typeFullNames = new Dictionary<string, List<string>>();
+            bool namesClash = false;
             List<string> filesWithoutMatchingRoot = null;
 
             for (int i = 0; i < sourceFiles.Length; i++)
@@ -163,15 +165,14 @@ namespace LaborasLangCompiler.FrontEnd
                     }
                 }
 
+                string namespaze = null;
+
                 if (foundMatchingRootDirectory)
                 {
-                    var namespaze = Path.GetDirectoryName(filePath.Substring(bestMatchingRootDirectory)).Replace(Path.DirectorySeparatorChar, '.');
-                    fileToNamespaceMap.Add(sourceFiles[i], namespaze);
+                    namespaze = Path.GetDirectoryName(filePath.Substring(bestMatchingRootDirectoryScore + 1)).Replace(Path.DirectorySeparatorChar, '.');
                 }
                 else if (rootDirectories.Length == 0)
                 {
-                    string namespaze;
-
                     if (Path.IsPathRooted(sourceFiles[i]))
                     {
                         namespaze = string.Empty;
@@ -180,8 +181,22 @@ namespace LaborasLangCompiler.FrontEnd
                     {
                         namespaze = Path.GetDirectoryName(sourceFiles[i]).Replace(Path.DirectorySeparatorChar, '.');
                     }
+                }
 
-                    fileToNamespaceMap.Add(sourceFiles[i], namespaze);
+                if (namespaze != null)
+                {
+                    var typeFullName = ((namespaze.Length > 0) ? namespaze + "." : string.Empty) + Path.GetFileNameWithoutExtension(sourceFiles[i]);
+
+                    if (typeFullNames.ContainsKey(typeFullName))
+                    {
+                        namesClash = true;
+                        typeFullNames[typeFullName].Add(sourceFiles[i]);
+                    }
+                    else
+                    {
+                        typeFullNames.Add(typeFullName, new List<string>() { sourceFiles[i] });
+                        fileToNamespaceMap.Add(sourceFiles[i], namespaze);
+                    }
                 }
                 else
                 {
@@ -192,16 +207,34 @@ namespace LaborasLangCompiler.FrontEnd
                 }
             }
 
+            var errorMessage = (filesWithoutMatchingRoot != null || namesClash) ? new StringBuilder() : null;
+
             if (filesWithoutMatchingRoot != null)
             {
-                var errorMessage = new StringBuilder();
-                errorMessage.AppendLine("Error: could not determine the namespace of the following files with given root directories:");
+                errorMessage.AppendLine("Error: Could not determine the namespace of the following files with given root directories:");
 
                 foreach (var file in filesWithoutMatchingRoot)
                     errorMessage.AppendFormat("\t{0}{1}", file, Environment.NewLine);
-
-                throw new Exception(errorMessage.ToString());
             }
+
+            if (namesClash)
+            {
+                foreach (var typeFullName in typeFullNames)
+                {
+                    if (typeFullName.Value.Count > 1)
+                    {
+                        errorMessage.AppendFormat("Error: Type name clash. The type of following files is \"{0}\":{1}", typeFullName.Key, Environment.NewLine);
+
+                        foreach (var file in typeFullName.Value)
+                        {
+                            errorMessage.AppendFormat("\t{0}{1}", file, Environment.NewLine);
+                        }
+                    }
+                }
+            }
+
+            if (errorMessage != null)                    
+                throw new Exception(errorMessage.ToString());
 
             return fileToNamespaceMap;
         }
