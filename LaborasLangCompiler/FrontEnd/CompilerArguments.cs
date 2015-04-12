@@ -9,23 +9,25 @@ namespace LaborasLangCompiler.FrontEnd
 {
     internal class CompilerArguments
     {
-        public readonly string[] SourceFiles;
-        public readonly string[] References;
+        public readonly IReadOnlyList<string> SourceFiles;
+        public readonly IReadOnlyList<string> References;
+        public readonly IReadOnlyDictionary<string, string> FileToNamespaceMap;
         public readonly string OutputPath;
         public readonly ModuleKind ModuleKind;
         public readonly bool DebugBuild;
 
         public static CompilerArguments Parse(string[] args)
         {
-            var sourceFiles = args.Where(arg => !arg.StartsWith("/", StringComparison.InvariantCultureIgnoreCase));
+            var sourceFiles = args.Where(arg => !arg.StartsWith("/", StringComparison.InvariantCultureIgnoreCase)).ToArray();
             var references = args.Where(arg => arg.StartsWith("/ref:", StringComparison.InvariantCultureIgnoreCase));
             var outputPaths = args.Where(arg => arg.StartsWith("/out:", StringComparison.InvariantCultureIgnoreCase));
             var debugBuild = args.Any(arg => arg.Equals("/debug", StringComparison.InvariantCultureIgnoreCase));
             var moduleKinds = args.Where(arg => arg.Equals("/console", StringComparison.InvariantCultureIgnoreCase) ||
                                             arg.Equals("/windows", StringComparison.InvariantCultureIgnoreCase) ||
                                             arg.Equals("/dll", StringComparison.InvariantCultureIgnoreCase));
+            var rootDirectories = args.Where(arg => arg.StartsWith("/root:", StringComparison.InvariantCultureIgnoreCase));
 
-            var unknownOptions = args.Except(sourceFiles.Union(references).Union(outputPaths).Union(moduleKinds).Union(new string[] { "/debug" }));
+            var unknownOptions = args.Except(sourceFiles.Union(references).Union(outputPaths).Union(moduleKinds).Union(rootDirectories).Union(new string[] { "/debug" }));
             ParseUnknownOptions(unknownOptions);
 
             if (sourceFiles.Count() == 0)
@@ -35,11 +37,14 @@ namespace LaborasLangCompiler.FrontEnd
 
             var moduleKind = ParseModuleKinds(moduleKinds);
             var outputPath = ParseOutputPaths(outputPaths, sourceFiles, moduleKind);
-            references = references.Select(reference => reference.Substring(5))
+            var referencesArray = references.Select(reference => reference.Substring(5))
                                    .Select(dllName => Path.Combine(ReferenceAssembliesPath, dllName))
-                                   .Union(GetDefaultReferences());
+                                   .Union(GetDefaultReferences())
+                                   .ToArray();
 
-            return new CompilerArguments(sourceFiles, references, outputPath, moduleKind, debugBuild);
+            var fileToNamespaceMap = ParseRootDirectories(sourceFiles, rootDirectories.Select(dir => Path.GetFullPath(dir.Substring(6))).ToArray());
+
+            return new CompilerArguments(sourceFiles, referencesArray, fileToNamespaceMap, outputPath, moduleKind, debugBuild);
         }
 
         private static void ParseUnknownOptions(IEnumerable<string> unknownOptions)
@@ -124,6 +129,83 @@ namespace LaborasLangCompiler.FrontEnd
             return outputPath;
         }
 
+        private static Dictionary<string, string> ParseRootDirectories(string[] sourceFiles, string[] rootDirectories)
+        {
+            var fileToNamespaceMap = new Dictionary<string, string>();
+            List<string> filesWithoutMatchingRoot = null;
+
+            for (int i = 0; i < sourceFiles.Length; i++)
+            {
+                var filePath = Path.GetFullPath(sourceFiles[i]);
+                int bestMatchingRootDirectory = -1;
+                int bestMatchingRootDirectoryScore = -1;
+                bool foundMatchingRootDirectory = false;
+
+                for (int j = 0; j < rootDirectories.Length; j++)
+                {
+                    if (filePath.Length <= rootDirectories[j].Length)
+                        continue;
+
+                    int matchScore = 0;
+
+                    while (matchScore < rootDirectories[j].Length && matchScore < filePath.Length && rootDirectories[j][matchScore] == filePath[matchScore])
+                        matchScore++;
+
+                    if (matchScore > 0)
+                    {
+                        foundMatchingRootDirectory = true;
+
+                        if (matchScore > bestMatchingRootDirectoryScore)
+                        {
+                            bestMatchingRootDirectory = j;
+                            bestMatchingRootDirectoryScore = matchScore;
+                        }
+                    }
+                }
+
+                if (foundMatchingRootDirectory)
+                {
+                    var namespaze = Path.GetDirectoryName(filePath.Substring(bestMatchingRootDirectory)).Replace(Path.DirectorySeparatorChar, '.');
+                    fileToNamespaceMap.Add(sourceFiles[i], namespaze);
+                }
+                else if (rootDirectories.Length == 0)
+                {
+                    string namespaze;
+
+                    if (Path.IsPathRooted(sourceFiles[i]))
+                    {
+                        namespaze = string.Empty;
+                    }
+                    else
+                    {
+                        namespaze = Path.GetDirectoryName(sourceFiles[i]).Replace(Path.DirectorySeparatorChar, '.');
+                    }
+
+                    fileToNamespaceMap.Add(sourceFiles[i], namespaze);
+                }
+                else
+                {
+                    if (filesWithoutMatchingRoot == null)
+                        filesWithoutMatchingRoot = new List<string>();
+
+                    filesWithoutMatchingRoot.Add(sourceFiles[i]);
+                }
+            }
+
+            if (filesWithoutMatchingRoot != null)
+            {
+                var errorMessage = new StringBuilder();
+                errorMessage.AppendLine("Error: could not determine the namespace of the following files with given root directories:");
+
+                foreach (var file in filesWithoutMatchingRoot)
+                    errorMessage.AppendFormat("\t{0}{1}", file, Environment.NewLine);
+
+                throw new Exception(errorMessage.ToString());
+            }
+
+            return fileToNamespaceMap;
+        }
+
         private static string ModuleKindToExtension(ModuleKind moduleKind)
         {
             switch (moduleKind)
@@ -155,7 +237,6 @@ namespace LaborasLangCompiler.FrontEnd
             }
         }
 
-
         private static IEnumerable<string> GetDefaultReferences()
         {
             var references = new List<string>
@@ -166,11 +247,12 @@ namespace LaborasLangCompiler.FrontEnd
             return references;
         }
 
-        private CompilerArguments(IEnumerable<string> sourceFiles, IEnumerable<string> references, string outputPath, 
+        private CompilerArguments(IReadOnlyList<string> sourceFiles, IReadOnlyList<string> references, IReadOnlyDictionary<string, string> fileToNamespaceMap, string outputPath, 
             ModuleKind moduleKind, bool debugBuild)
         {
-            SourceFiles = sourceFiles.ToArray();
-            References = references.ToArray();
+            SourceFiles = sourceFiles;
+            References = references;
+            FileToNamespaceMap = fileToNamespaceMap;
             OutputPath = outputPath;
             ModuleKind = moduleKind;
             DebugBuild = debugBuild;

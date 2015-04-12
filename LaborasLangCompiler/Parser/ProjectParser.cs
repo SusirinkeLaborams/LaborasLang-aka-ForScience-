@@ -1,11 +1,13 @@
 ﻿using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
+using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.Parser.Impl.Wrappers;
 using Lexer;
 using Lexer.Containers;
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -113,16 +115,17 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        public static ProjectParser ParseAll(AssemblyEmitter assembly, string[] sources, string[] names, bool emit)
+        public static ProjectParser ParseAll(AssemblyEmitter assembly, CompilerArguments compilerArguments, string[] sources, bool emit)
         {
+            Contract.Requires(compilerArguments.SourceFiles.Count == sources.Length);
+
             ProjectParser projectParser = new ProjectParser(assembly, emit);
             var roots = sources.Select(s => Lexer.Lexer.Lex(s)).ToArray();
 
             for (int i = 0; i < sources.Length; i++)
             {
-                var source = sources[i];
-                var name = names[i];
-                projectParser.parsers.Add(new Parser(projectParser, name));
+                var filePath = compilerArguments.SourceFiles[i];
+                projectParser.parsers.Add(new Parser(projectParser, filePath, compilerArguments.FileToNamespaceMap[filePath]));
             }
 
             for (int i = 0; i < sources.Length; i++)
@@ -135,9 +138,9 @@ namespace LaborasLangCompiler.Parser.Impl
             return projectParser;
         }
 
-        public static ProjectParser ParseAll(AssemblyEmitter assembly, string[] files, bool emit)
+        public static ProjectParser ParseAll(AssemblyEmitter assembly, CompilerArguments compilerArguments, bool emit)
         {
-            return ParseAll(assembly, files.Select(f => File.ReadAllText(f)).ToArray(), files, emit);
+            return ParseAll(assembly, compilerArguments, compilerArguments.SourceFiles.Select(f => File.ReadAllText(f)).ToArray(), emit);
         }
 
         public TypeReference FindType(string fullname)

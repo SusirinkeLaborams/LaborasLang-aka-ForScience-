@@ -15,7 +15,7 @@ namespace LaborasLangCompiler.FrontEnd
             AssemblyRegistry.Create(compilerArgs.References);
             var assembly = new AssemblyEmitter(compilerArgs);
 
-            ProjectParser.ParseAll(assembly, compilerArgs.SourceFiles, true);
+            ProjectParser.ParseAll(assembly, compilerArgs, true);
 
             if (Errors.Reported.Count == 0)
             {

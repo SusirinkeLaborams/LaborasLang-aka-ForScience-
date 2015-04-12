@@ -30,29 +30,28 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             assembly = new AssemblyEmitter(compilerArgs);
         }
 
-        protected void CompareTrees(string source, [CallerMemberName] string name = "")
+        protected void CompareTrees(string source, [CallerMemberName] string testName = "")
         {
-            CompareTrees(source.Enumerate(), name.Enumerate(), name);
+            CompareTrees(source.Enumerate(), testName.Enumerate(), testName);
         }
 
-        protected void CompareTrees(string source, IEnumerable<ErrorCode> errors, [CallerMemberName] string name = "")
+        protected void CompareTrees(string source, IEnumerable<ErrorCode> errors, [CallerMemberName] string testName = "")
         {
-            CompareTrees(source.Enumerate(), name.Enumerate(), errors, name);
+            CompareTrees(source.Enumerate(), testName.Enumerate(), errors, testName);
         }
 
-        protected void CompareTrees(IEnumerable<string> sources, IEnumerable<string> names, [CallerMemberName] string name = "")
+        protected void CompareTrees(IEnumerable<string> sources, IEnumerable<string> fileNames, [CallerMemberName] string testName = "")
         {
-            CompareTrees(sources, names, Enumerable.Empty<ErrorCode>(), name);
+            CompareTrees(sources, fileNames, Enumerable.Empty<ErrorCode>(), testName);
         }
 
-        protected void CompareTrees(IEnumerable<string> sources, IEnumerable<string> names, IEnumerable<ErrorCode> errors, [CallerMemberName] string name = "")
+        protected void CompareTrees(IEnumerable<string> sources, IEnumerable<string> fileNames, IEnumerable<ErrorCode> errors, [CallerMemberName] string testName = "")
         {
             Errors.Clear();
 
-            var file = path + name;
-
-            names = names.Select(n => Path.Combine("$" + name, n));
-            var parser = ProjectParser.ParseAll(assembly, sources.ToArray(), names.ToArray(), false);
+            var file = path + testName;
+            var compilerArgs = CompilerArguments.Parse(fileNames.Select(n => Path.Combine("$" + testName, n)).Union(new[] { string.Format("/out:{0}.exe", testName) }).ToArray());
+            var parser = ProjectParser.ParseAll(assembly, compilerArgs, sources.ToArray(), false);
             string result = parser.ToString();
 
             string expected = "";

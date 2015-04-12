@@ -40,15 +40,10 @@ namespace LaborasLangCompiler.Parser
         public TypeReference Auto { get { return ProjectParser.Auto; } }
         public TypeReference Object { get { return ProjectParser.Object; } }
 
-        public Parser(ProjectParser parser, string filePath)
+        public Parser(ProjectParser parser, string filePath, string namespaze)
         {
-            var directoryName = Path.GetDirectoryName(filePath);
-
-            if (Path.IsPathRooted(directoryName))
-                directoryName = string.Empty;
-
             Filename = Path.GetFileNameWithoutExtension(filePath);
-            Namespace = new Namespace(directoryName, parser.Assembly);
+            Namespace = new Namespace(namespaze, parser.Assembly);
             Document = new Document(filePath);
             Document.Language = DocumentLanguage.Other;
             Document.LanguageVendor = DocumentLanguageVendor.Other;
