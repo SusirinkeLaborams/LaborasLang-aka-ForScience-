@@ -14,37 +14,44 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics.Contracts;
+using System.IO;
 
 namespace LaborasLangCompilerUnitTests.ParserTests
 {
     public class ParserTestBase
     {
-        protected const string path = @"..\..\ParserTests\Trees\"; 
+        protected const string path = @"..\..\ParserTests\Trees\";
+        private AssemblyEmitter assembly;
 
-        protected static void CompareTrees(string source, [CallerMemberName] string name = "")
+        protected ParserTestBase()
+        {
+            var compilerArgs = CompilerArguments.Parse(new[] { "ParserTests.il" });
+            AssemblyRegistry.CreateAndOverrideIfNeeded(compilerArgs.References);
+            assembly = new AssemblyEmitter(compilerArgs);
+        }
+
+        protected void CompareTrees(string source, [CallerMemberName] string name = "")
         {
             CompareTrees(source.Enumerate(), name.Enumerate(), name);
         }
 
-        protected static void CompareTrees(string source, IEnumerable<ErrorCode> errors, [CallerMemberName] string name = "")
+        protected void CompareTrees(string source, IEnumerable<ErrorCode> errors, [CallerMemberName] string name = "")
         {
             CompareTrees(source.Enumerate(), name.Enumerate(), errors, name);
         }
 
-        protected static void CompareTrees(IEnumerable<string> sources, IEnumerable<string> names, [CallerMemberName] string name = "")
+        protected void CompareTrees(IEnumerable<string> sources, IEnumerable<string> names, [CallerMemberName] string name = "")
         {
             CompareTrees(sources, names, Enumerable.Empty<ErrorCode>(), name);
         }
 
-        protected static void CompareTrees(IEnumerable<string> sources, IEnumerable<string> names, IEnumerable<ErrorCode> errors, [CallerMemberName] string name = "")
+        protected void CompareTrees(IEnumerable<string> sources, IEnumerable<string> names, IEnumerable<ErrorCode> errors, [CallerMemberName] string name = "")
         {
             Errors.Clear();
 
-            var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").Union("/out:out.exe".Enumerate()).ToArray());
-            AssemblyRegistry.CreateAndOverrideIfNeeded(compilerArgs.References);
-            var assembly = new AssemblyEmitter(compilerArgs);
             var file = path + name;
 
+            names = names.Select(n => Path.Combine("$" + name, n));
             var parser = ProjectParser.ParseAll(assembly, sources.ToArray(), names.ToArray(), false);
             string result = parser.ToString();
 

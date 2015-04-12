@@ -35,14 +35,14 @@ Class:
 				BinaryOperator:
 					Left:
 						Field:
-							System.Int32 TestBinaryOps::i
+							System.Int32 $TestBinaryOps.TestBinaryOps::i
 							Instance:
 								null
 					Operator:
 						BinaryAnd
 					Right:
 						Field:
-							System.Int32 TestBinaryOps::i
+							System.Int32 $TestBinaryOps.TestBinaryOps::i
 							Instance:
 								null
 
@@ -58,14 +58,14 @@ Class:
 				BinaryOperator:
 					Left:
 						Field:
-							System.Int32 TestBinaryOps::i
+							System.Int32 $TestBinaryOps.TestBinaryOps::i
 							Instance:
 								null
 					Operator:
 						BinaryOr
 					Right:
 						Field:
-							System.Int32 TestBinaryOps::a
+							System.Int32 $TestBinaryOps.TestBinaryOps::a
 							Instance:
 								null
 

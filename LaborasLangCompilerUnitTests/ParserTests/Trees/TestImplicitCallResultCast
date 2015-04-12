@@ -17,7 +17,7 @@ Class:
 							Instance:
 								null
 							Method:
-								System.Int32 TestImplicitCallResultCast::foo()
+								System.Int32 $TestImplicitCallResultCast.TestImplicitCallResultCast::foo()
 
 
 

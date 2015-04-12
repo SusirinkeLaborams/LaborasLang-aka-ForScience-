@@ -38,7 +38,7 @@ Class:
 										IndexOpAccess:
 											Expression:
 												Field:
-													System.Collections.ArrayList TestIndexOpSet::list
+													System.Collections.ArrayList $TestIndexOpSet.TestIndexOpSet::list
 													Instance:
 														null
 											ElementType: System.Object

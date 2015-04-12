@@ -43,7 +43,10 @@ namespace LaborasLangCompiler.Parser.Impl
             fields = new List<FieldDeclarationNode>();
             globalImports = new List<Namespace>();
             FullName = parser.Filename;
-            TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename);
+            TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename, parser.Namespace.Name);
+
+            if (!string.IsNullOrEmpty(parser.Namespace.Name))
+                globalImports.Add(parser.Namespace);
         }
 
         public static ClassNode ForFile(Parser parser)

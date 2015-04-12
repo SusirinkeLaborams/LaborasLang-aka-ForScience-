@@ -21,7 +21,7 @@ Class:
 									Instance:
 										null
 									Method:
-										System.Int32 TestArrayCreationMethodSize::size()
+										System.Int32 $TestArrayCreationMethodSize.TestArrayCreationMethodSize::size()
 
 
 

@@ -35,7 +35,7 @@ Class:
 				BinaryOperator:
 					Left:
 						Field:
-							System.Boolean TestLogicalOps::i
+							System.Boolean $TestLogicalOps.TestLogicalOps::i
 							Instance:
 								null
 					Operator:
