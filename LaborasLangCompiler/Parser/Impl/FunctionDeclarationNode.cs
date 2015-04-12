@@ -252,38 +252,15 @@ namespace LaborasLangCompiler.Parser.Impl
             return ret;
         }
 
-#warning wtf
         struct FunctionParamInfo
         {
-            private IAbstractSyntaxTree m_Type;
-            private IAbstractSyntaxTree m_Name;
-            public IAbstractSyntaxTree Type
-            {
-                get
-                {
-                    return m_Type;
-                }
-                internal set
-                {
-                    m_Type = value;
-                }
-            }
-            public IAbstractSyntaxTree Name
-            {
-                get
-                {
-                    return m_Name;
-                }
-                set
-                {
-                    m_Name = value;
-                }
-            }
+            public IAbstractSyntaxTree Type;
+            public IAbstractSyntaxTree Name;
 
             public FunctionParamInfo(IAbstractSyntaxTree type, IAbstractSyntaxTree name)
             {
-                m_Type = type;
-                m_Name = name;
+                Type = type;
+                Name = name;
             }
         }
 
