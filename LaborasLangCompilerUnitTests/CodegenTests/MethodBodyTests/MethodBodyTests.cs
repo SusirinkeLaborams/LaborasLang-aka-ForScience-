@@ -2310,7 +2310,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         {
             var targetMethod = new MethodEmitter(typeEmitter, "PrintInt", assemblyEmitter.TypeSystem.Void, MethodAttributes.Private | MethodAttributes.Static);
             var parameter = new ParameterDefinition(assemblyEmitter.TypeSystem.Int32);
-            
+
             targetMethod.AddArgument(parameter);
             targetMethod.ParseTree(new CodeBlockNode()
             {
@@ -2336,6 +2336,49 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                             {
                                 ExpressionReturnType = assemblyEmitter.TypeSystem.Int32
                             }
+                        }
+                    }
+                }
+            };
+
+            ExpectedOutput = "0";
+            AssertSuccessByExecution();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_ValueCreationAssignmentToFunctionParameter()
+        {
+            var targetMethod = new MethodEmitter(typeEmitter, "PrintDefaultInt", assemblyEmitter.TypeSystem.Void, MethodAttributes.Private | MethodAttributes.Static);
+            var parameter = new ParameterDefinition(assemblyEmitter.TypeSystem.Int32);
+            var parameterNode = new ParameterNode(parameter);
+
+            targetMethod.AddArgument(parameter);
+            targetMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new AssignmentOperatorNode()
+                    {
+                        LeftOperand = parameterNode,
+                        RightOperand = new ValueCreationNode(parameterNode.ExpressionReturnType)
+                    },
+                    CallConsoleWriteLine(parameterNode)
+                }
+            });
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new MethodCallNode()
+                    {
+                        Function = new FunctionNode()
+                        {
+                            Method = targetMethod.Get()
+                        },
+                        Args = new IExpressionNode[]
+                        {
+                            new LiteralNode(assemblyEmitter.TypeSystem.Int32, 125637)
                         }
                     }
                 }
