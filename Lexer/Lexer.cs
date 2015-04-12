@@ -13,7 +13,6 @@ namespace Lexer
         {
             using (var root = new RootNode())
             {
-
                 var sourceTokens = Tokenizer.Tokenize(source, root);
                 var syntaxMatcher = new SyntaxMatcher(sourceTokens, root);
 
@@ -23,7 +22,7 @@ namespace Lexer
                 {
                     postProcessor.Apply(exposedTree);
                 }
-                nodes.Cleanup(root);
+
                 return exposedTree;
             }
 
