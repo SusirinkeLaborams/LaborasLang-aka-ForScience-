@@ -90,7 +90,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     throw new NotImplementedException();
 
                 case NodeType.Expression:
-                    Emit((IExpressionNode)node, EmissionType.Value);
+                    Emit((IExpressionNode)node, EmissionType.None);
                     break;
 
                 case NodeType.ReturnNode:

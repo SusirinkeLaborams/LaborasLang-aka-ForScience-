@@ -233,16 +233,11 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                                             RightOperand = new LiteralNode(assemblyEmitter.TypeSystem.String, " ")
                                         }
                                     }
-                                },
-                                new UnaryOperatorNode()
+                                }, 
+                                new IncrementDecrementOperatorNode()
                                 {
-                                    UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                                    ExpressionReturnType = assemblyEmitter.TypeSystem.Void,
-                                    Operand = new IncrementDecrementOperatorNode()
-                                    {
-                                        IncrementDecrementType = IncrementDecrementOperatorType.PreIncrement,
-                                        Operand = counter
-                                    }
+                                    IncrementDecrementType = IncrementDecrementOperatorType.PreIncrement,
+                                    Operand = counter
                                 }
                             }
                         }

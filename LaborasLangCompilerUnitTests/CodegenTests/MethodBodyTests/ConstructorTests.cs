@@ -77,22 +77,17 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new UnaryOperatorNode()
+                    new AssignmentOperatorNode()
                     {
-                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ExpressionReturnType = voidType,
-                        Operand = new AssignmentOperatorNode()
+                        LeftOperand = new FieldNode()
                         {
-                            LeftOperand = new FieldNode()
+                            ObjectInstance = new ThisNode()
                             {
-                                ObjectInstance = new ThisNode()
-                                {
-                                    ExpressionReturnType = backingField.DeclaringType
-                                },
-                                Field = backingField
+                                ExpressionReturnType = backingField.DeclaringType
                             },
-                            RightOperand = new ParameterNode(value)
-                        }
+                            Field = backingField
+                        },
+                        RightOperand = new ParameterNode(value)
                     }
                 }
             };
@@ -133,15 +128,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new UnaryOperatorNode()
+                    new AssignmentOperatorNode()
                     {
-                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ExpressionReturnType = voidType,
-                        Operand = new AssignmentOperatorNode()
-                        {
-                            LeftOperand = new FieldNode(backingField),
-                            RightOperand = new ParameterNode(value)
-                        }
+                        LeftOperand = new FieldNode(backingField),
+                        RightOperand = new ParameterNode(value)
                     }
                 }
             };
