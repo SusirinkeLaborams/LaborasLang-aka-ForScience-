@@ -28,8 +28,8 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         internal const string kEntryPointMethodName = "ExecuteTest";
         private readonly bool bulkTesting = false;
 
-        private readonly MethodReference consoleWrite;
-        private readonly MethodReference consoleWriteLine;
+        private readonly TypeReference console;
+        private readonly MethodReference consoleWriteString;
         private readonly MethodReference consoleWriteLineParams;
 
         private readonly MethodReference ienumerableGetEnumerator;
@@ -58,13 +58,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             methodEmitter = new MethodEmitter(typeEmitter, kEntryPointMethodName, assemblyEmitter.TypeSystem.Void,
                 MethodAttributes.Static | MethodAttributes.Assembly);
 
-            consoleWrite = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "Write",
-                new[] { assemblyEmitter.TypeSystem.Object });
-
-            consoleWriteLine = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine",
-                new[] { assemblyEmitter.TypeSystem.Object });
-            
-            consoleWriteLineParams = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Console", "WriteLine",
+            console = AssemblyRegistry.FindType(assemblyEmitter, "System.Console");
+            consoleWriteString = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, console, "Write", new[] { assemblyEmitter.TypeSystem.String });
+            consoleWriteLineParams = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, console, "WriteLine",
                 new[] { assemblyEmitter.TypeSystem.String, new ArrayType(assemblyEmitter.TypeSystem.Object) });
 
             ienumerableGetEnumerator = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, "System.Collections.IEnumerable",
@@ -150,7 +146,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             {
                 Function = new FunctionNode()
                 {
-                    Method = consoleWriteLine
+                    Method = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, console, "WriteLine", new[] { expression.ExpressionReturnType })
                 },
                 Args = new List<IExpressionNode>()
                 {
@@ -217,7 +213,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                                 {
                                     Function = new FunctionNode()
                                     {
-                                        Method = consoleWrite
+                                        Method = consoleWriteString
                                     },
                                     Args = new IExpressionNode[]
                                     {

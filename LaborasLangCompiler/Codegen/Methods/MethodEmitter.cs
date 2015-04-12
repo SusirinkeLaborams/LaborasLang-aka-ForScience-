@@ -368,6 +368,9 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void Emit(IFieldNode field, EmissionType emissionType)
         {
+            if (emissionType == EmissionType.None)
+                return;
+
             if (!field.Field.Resolve().IsStatic)
             {
                 Contract.Assume(field.ObjectInstance != null);
@@ -397,6 +400,9 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void Emit(IParameterNode argument, EmissionType emissionType)
         {
+            if (emissionType == EmissionType.None)
+                return;
+
             Contract.Assume(argument.Parameter.Index >= 0);
 
             var index = argument.Parameter.Index + (methodDefinition.HasThis ? 1 : 0);
@@ -413,6 +419,9 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void Emit(ILocalVariableNode variable, EmissionType emissionType)
         {
+            if (emissionType == EmissionType.None)
+                return;
+
             if (ShouldEmitAddress(variable, emissionType))
             {
                 Ldloca(variable.LocalVariable.Index);
@@ -435,17 +444,26 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             Call(getter);
 
-            if (ShouldEmitAddress(property, emissionType))
+            if (emissionType == EmissionType.None)
+            {
+                Contract.Assume(property.ExpressionReturnType.MetadataType != MetadataType.Void);
+                Pop();
+            }
+            else if (ShouldEmitAddress(property, emissionType))
+            {
                 LoadAddressOfValue(property);
+            }
         }
 
         private void Emit(IArrayAccessNode arrayAccess, EmissionType emissionType)
         {
+            if (emissionType == EmissionType.None)
+                return;
+
             var array = arrayAccess.ObjectInstance;
             Contract.Assume(array != null && array.ExpressionReturnType is ArrayType);
 
             var arrayType = (ArrayType)array.ExpressionReturnType;
-
             var indices = arrayAccess.Indices;
 
             Emit(array, EmissionType.ThisArg);
@@ -486,8 +504,15 @@ namespace LaborasLangCompiler.Codegen.Methods
             EmitArgumentsForCall(indexOperator.Indices, getter);
             Call(getter);
 
-            if (ShouldEmitAddress(indexOperator, emissionType))
+            if (emissionType == EmissionType.None)
+            {
+                Contract.Assume(indexOperator.ExpressionReturnType.MetadataType != MetadataType.Void);
+                Pop();
+            }
+            else if (ShouldEmitAddress(indexOperator, emissionType))
+            {
                 LoadAddressOfValue(indexOperator);
+            }
         }
 
         #endregion
@@ -612,6 +637,9 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void Emit(IBinaryOperatorNode binaryOperator, EmissionType emissionType)
         {
+            if (emissionType == EmissionType.None)
+                return;
+
             EmitBinaryOperator(binaryOperator, emissionType);
 
             if (ShouldEmitAddress(binaryOperator, emissionType))
@@ -706,6 +734,9 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void Emit(IMethodNode function, EmissionType emissionType)
         {
+            if (emissionType == EmissionType.None)
+                return;
+
             var returnTypeIsDelegate = function.ExpressionReturnType.Resolve().BaseType.FullName == "System.MulticastDelegate";
 
             if (!returnTypeIsDelegate)
@@ -772,8 +803,15 @@ namespace LaborasLangCompiler.Codegen.Methods
                 Callvirt(invokeMethod);
             }
 
-            if (ShouldEmitAddress(functionCall, emissionType))
+            if (emissionType == EmissionType.None)
+            {
+                if (functionCall.ExpressionReturnType.MetadataType != MetadataType.Void)
+                    Pop();
+            }
+            else if (ShouldEmitAddress(functionCall, emissionType))
+            {
                 LoadAddressOfValue(functionCall);
+            }
         }
 
         private void EmitArgumentsForCall(IReadOnlyList<IExpressionNode> arguments, MethodReference method)
@@ -874,7 +912,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 else
                 {
                     ContractsHelper.AssumeUnreachable(string.Format("Unknown default value literal: {0} with value of {1}.",
-                            defaultValue.GetType().FullName, defaultValue));
+                        defaultValue.GetType().FullName, defaultValue));
                 }
             }
         }
@@ -886,6 +924,9 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void Emit(ILiteralNode literal, EmissionType emissionType)
         {
+            if (emissionType == EmissionType.None)
+                return;
+
             switch (literal.ExpressionReturnType.MetadataType)
             {
                 case MetadataType.Boolean:
@@ -956,14 +997,24 @@ namespace LaborasLangCompiler.Codegen.Methods
             EmitArgumentsForCall(objectCreation.Args, objectCreation.Constructor);
             Newobj(objectCreation.Constructor);
 
-            if (ShouldEmitAddress(objectCreation, emissionType))
+            if (emissionType == EmissionType.None)
+            {
+                Contract.Assume(objectCreation.ExpressionReturnType.MetadataType != MetadataType.Void);
+                Pop();
+            }
+            else if (ShouldEmitAddress(objectCreation, emissionType))
+            {
                 LoadAddressOfValue(objectCreation);
+            }
         }
 
         private void Emit(IArrayCreationNode arrayCreation, EmissionType emissionType)
         {
             Contract.Requires(arrayCreation.ExpressionReturnType.IsArray, "Return type of IArrayCreationNode must be an array type.");
             Contract.Requires(arrayCreation.Dimensions.Count == ((ArrayType)arrayCreation.ExpressionReturnType).Rank, "Array creation node dimension count must match array type rank.");
+
+            if (emissionType == EmissionType.None)
+                return;
 
             var arrayType = (ArrayType)arrayCreation.ExpressionReturnType;
 
@@ -1017,7 +1068,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return false;
             }
 
-            return true;
+            return initializer.Count > 2;   // It's not worth calling initializer function if there's less than 3 elements in the array
         }
 
         // Assumes array is on the stack but it must leave it on the stack after the function is done
@@ -1098,6 +1149,10 @@ namespace LaborasLangCompiler.Codegen.Methods
         private void EmitThis(IExpressionNode expression, EmissionType emissionType)
         {
             Contract.Requires(!methodDefinition.IsStatic);
+
+            if (emissionType == EmissionType.None)
+                return;
+
             Ldarg(0);
 
             if (emissionType == EmissionType.ReferenceToValue && !methodDefinition.DeclaringType.IsValueType)
@@ -1111,6 +1166,9 @@ namespace LaborasLangCompiler.Codegen.Methods
                 EmitVoidOperator(unaryOperator);
                 return;
             }
+            
+            if (emissionType == EmissionType.None)
+                return;
 
             Emit(unaryOperator.Operand, EmissionType.Value);
 
@@ -1140,9 +1198,10 @@ namespace LaborasLangCompiler.Codegen.Methods
                 LoadAddressOfValue(unaryOperator);
         }
 
-        private void EmitIncrementDecrement(IExpressionNode operand, Action beforeValueSnapshot, Action afterValueSnapshot)
+        private void EmitIncrementDecrement(IIncrementDecrementOperatorNode incrementDecrementOperator, EmissionType emissionType, Action beforeValueSnapshot, Action afterValueSnapshot)
         {
             VariableDefinition tempVariable;
+            var operand = incrementDecrementOperator.Operand;
             bool hasStoreEpilogue = NeedsStorePrologue(operand);
 
             if (hasStoreEpilogue)
@@ -1151,9 +1210,10 @@ namespace LaborasLangCompiler.Codegen.Methods
             Emit(operand, EmissionType.Value);
             beforeValueSnapshot();
 
-            Dup();
+            if (emissionType != EmissionType.None)
+                Dup();
 
-            if (hasStoreEpilogue)
+            if (emissionType != EmissionType.None && hasStoreEpilogue)
             {
                 tempVariable = temporaryVariables.Acquire(operand.ExpressionReturnType);
                 Stloc(tempVariable.Index);
@@ -1164,6 +1224,9 @@ namespace LaborasLangCompiler.Codegen.Methods
             {
                 afterValueSnapshot();
             }
+
+            if (ShouldEmitAddress(incrementDecrementOperator, emissionType))
+                LoadAddressOfValue(incrementDecrementOperator);
         }
 
         private void Emit(IIncrementDecrementOperatorNode incrementDecrementOperator, EmissionType emissionType)
@@ -1243,10 +1306,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 }
             }
 
-            EmitIncrementDecrement(incrementDecrementOperator.Operand, beforeValueSnapshot, afterValueSnapshot);
-
-            if (ShouldEmitAddress(incrementDecrementOperator, emissionType))
-                LoadAddressOfValue(incrementDecrementOperator);
+            EmitIncrementDecrement(incrementDecrementOperator, emissionType, beforeValueSnapshot, afterValueSnapshot);
         }
 
         /*
@@ -1638,15 +1698,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void EmitVoidOperator(IUnaryOperatorNode unaryOperator)
         {
-            if (unaryOperator.Operand.ExpressionType == ExpressionNodeType.AssignmentOperator)
-            {
-                Emit(((IAssignmentOperatorNode)unaryOperator.Operand), EmissionType.None);
-            }
-            else
-            {
-                Emit(unaryOperator.Operand, EmissionType.Value);
-                Pop();
-            }
+            Emit(unaryOperator.Operand, EmissionType.None);
         }
 
         #endregion
