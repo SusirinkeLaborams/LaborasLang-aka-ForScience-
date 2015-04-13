@@ -539,12 +539,20 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CompareTrees(source, ErrorCode.IllegalMethodParam.Enumerate());
         }
-        [TestMethod, TestCategory("Parser")]
+        [TestMethod, TestCategory("Parser"), TestCategory("Lexer: SyntaxMatcher")]
         public void TestUnaryOnCall()
         {
             string source = @"
                 mutable int() foo;
                 auto a = -foo();";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestParenthesisProduceExplosions()
+        {
+            string source = @"
+                mutable int() foo;
+                auto a = -(foo());";
             CompareTrees(source);
         }
         [TestMethod, TestCategory("Parser")]
