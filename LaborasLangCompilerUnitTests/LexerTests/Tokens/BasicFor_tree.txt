@@ -44,15 +44,9 @@ Children:
 		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 		Type: InfixNode
 		Children:
-			Content: Type: Type, Start: 1, 17, End: 1, 18, Content: ""
-			Type: Type
+			Content: Type: Symbol, Start: 1, 17, End: 1, 18, Content: "i"
+			Type: Symbol
 			Children:
-				Content: Type: FullSymbol, Start: 1, 17, End: 1, 18, Content: ""
-				Type: FullSymbol
-				Children:
-					Content: Type: Symbol, Start: 1, 17, End: 1, 18, Content: "i"
-					Type: Symbol
-					Children:
 
 			Content: Type: LiteralNode, Start: 1, 21, End: 1, 22, Content: ""
 			Type: LiteralNode
@@ -72,15 +66,9 @@ Children:
 		Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
 		Type: PostfixNode
 		Children:
-			Content: Type: Type, Start: 1, 24, End: 1, 25, Content: ""
-			Type: Type
+			Content: Type: Symbol, Start: 1, 24, End: 1, 25, Content: "i"
+			Type: Symbol
 			Children:
-				Content: Type: FullSymbol, Start: 1, 24, End: 1, 25, Content: ""
-				Type: FullSymbol
-				Children:
-					Content: Type: Symbol, Start: 1, 24, End: 1, 25, Content: "i"
-					Type: Symbol
-					Children:
 
 			Content: Type: PlusPlus, Start: 1, 25, End: 1, 27, Content: "++"
 			Type: PlusPlus

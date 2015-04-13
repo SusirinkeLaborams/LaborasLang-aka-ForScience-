@@ -10,9 +10,7 @@ namespace Lexer.PostProcessors
     class ValueResolver : BottomUpPostProcessor
     {
         private static TokenType[][] c_OperatorGroups = new[]{
-        #region period
-            new[]{TokenType.Period},
-        #endregion
+        
         #region assignments
             new[]{TokenType.Assignment, TokenType.PlusEqual, TokenType.MinusEqual, TokenType.DivideEqual, TokenType.MultiplyEqual, TokenType.RemainderEqual, TokenType.LeftShiftEqual, TokenType.RightShiftEqual, TokenType.LogicalAndEqual, TokenType.LogicalOrEqual, TokenType.BitwiseAndEqual, TokenType.BitwiseXorEqual, TokenType.BitwiseOrEqual },
         #endregion
@@ -40,6 +38,10 @@ namespace Lexer.PostProcessors
         #endregion
         #region logical
             new[]{TokenType.LogicalOr, TokenType.LogicalAnd},
+        #endregion
+
+        #region period
+            new[]{TokenType.Period},
         #endregion
         
         };

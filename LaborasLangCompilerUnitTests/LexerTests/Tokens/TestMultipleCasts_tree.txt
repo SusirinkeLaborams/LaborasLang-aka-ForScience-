@@ -4,15 +4,9 @@ Children:
 	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: InfixNode
 	Children:
-		Content: Type: Type, Start: 1, 1, End: 1, 4, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
-				Type: Symbol
-				Children:
 
 		Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
 		Type: PrefixNode
@@ -20,15 +14,9 @@ Children:
 			Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
 			Type: PrefixNode
 			Children:
-				Content: Type: Type, Start: 1, 18, End: 1, 21, Content: ""
-				Type: Type
+				Content: Type: Symbol, Start: 1, 18, End: 1, 21, Content: "foo"
+				Type: Symbol
 				Children:
-					Content: Type: FullSymbol, Start: 1, 18, End: 1, 21, Content: ""
-					Type: FullSymbol
-					Children:
-						Content: Type: Symbol, Start: 1, 18, End: 1, 21, Content: "foo"
-						Type: Symbol
-						Children:
 
 				Content: Type: CastOperator, Start: 1, 12, End: 1, 17, Content: ""
 				Type: CastOperator

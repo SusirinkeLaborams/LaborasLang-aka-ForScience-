@@ -4,46 +4,34 @@ Children:
 	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: InfixNode
 	Children:
-		Content: Type: Type, Start: 2, 13, End: 2, 14, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 2, 13, End: 2, 14, Content: "a"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 2, 13, End: 2, 14, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 2, 13, End: 2, 14, Content: "a"
-				Type: Symbol
-				Children:
 
-		Content: Type: Type, Start: 2, 17, End: 2, 25, Content: ""
-		Type: Type
+		Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: PostfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 2, 17, End: 2, 22, Content: ""
-			Type: FullSymbol
+			Content: Type: Symbol, Start: 2, 17, End: 2, 22, Content: "value"
+			Type: Symbol
 			Children:
-				Content: Type: Symbol, Start: 2, 17, End: 2, 22, Content: "value"
-				Type: Symbol
+
+			Content: Type: IndexNode, Start: 2, 22, End: 2, 25, Content: ""
+			Type: IndexNode
+			Children:
+				Content: Type: LeftBracket, Start: 2, 22, End: 2, 23, Content: "["
+				Type: LeftBracket
 				Children:
 
-			Content: Type: ParameterList, Start: 2, 22, End: 2, 25, Content: ""
-			Type: ParameterList
-			Children:
-				Content: Type: IndexNode, Start: 2, 22, End: 2, 25, Content: ""
-				Type: IndexNode
+				Content: Type: LiteralNode, Start: 2, 23, End: 2, 24, Content: ""
+				Type: LiteralNode
 				Children:
-					Content: Type: LeftBracket, Start: 2, 22, End: 2, 23, Content: "["
-					Type: LeftBracket
+					Content: Type: Integer, Start: 2, 23, End: 2, 24, Content: "5"
+					Type: Integer
 					Children:
 
-					Content: Type: LiteralNode, Start: 2, 23, End: 2, 24, Content: ""
-					Type: LiteralNode
-					Children:
-						Content: Type: Integer, Start: 2, 23, End: 2, 24, Content: "5"
-						Type: Integer
-						Children:
-
-					Content: Type: RightBracket, Start: 2, 24, End: 2, 25, Content: "]"
-					Type: RightBracket
-					Children:
+				Content: Type: RightBracket, Start: 2, 24, End: 2, 25, Content: "]"
+				Type: RightBracket
+				Children:
 
 		Content: Type: Assignment, Start: 2, 15, End: 2, 16, Content: "="
 		Type: Assignment

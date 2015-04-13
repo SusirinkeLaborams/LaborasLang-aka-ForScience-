@@ -4,23 +4,20 @@ Children:
 	Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: PostfixNode
 	Children:
-		Content: Type: Type, Start: 1, 1, End: 1, 18, Content: ""
-		Type: Type
+		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: InfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 1, 1, End: 1, 18, Content: ""
-			Type: FullSymbol
+			Content: Type: Symbol, Start: 1, 1, End: 1, 8, Content: "Console"
+			Type: Symbol
 			Children:
-				Content: Type: Symbol, Start: 1, 1, End: 1, 8, Content: "Console"
-				Type: Symbol
-				Children:
 
-				Content: Type: Symbol, Start: 1, 9, End: 1, 18, Content: "WriteLine"
-				Type: Symbol
-				Children:
+			Content: Type: Symbol, Start: 1, 9, End: 1, 18, Content: "WriteLine"
+			Type: Symbol
+			Children:
 
-				Content: Type: Period, Start: 1, 8, End: 1, 9, Content: "."
-				Type: Period
-				Children:
+			Content: Type: Period, Start: 1, 8, End: 1, 9, Content: "."
+			Type: Period
+			Children:
 
 		Content: Type: FunctionArgumentsList, Start: 1, 18, End: 1, 21, Content: ""
 		Type: FunctionArgumentsList

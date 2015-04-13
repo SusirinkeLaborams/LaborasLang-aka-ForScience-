@@ -4,15 +4,9 @@ Children:
 	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: InfixNode
 	Children:
-		Content: Type: Type, Start: 1, 1, End: 1, 4, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
-				Type: Symbol
-				Children:
 
 		Content: Type: Function, Start: 1, 7, End: 1, 37, Content: ""
 		Type: Function
@@ -80,29 +74,23 @@ Children:
 				Type: LeftCurlyBrace
 				Children:
 
-				Content: Type: Type, Start: 1, 29, End: 1, 34, Content: ""
-				Type: Type
+				Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+				Type: PostfixNode
 				Children:
-					Content: Type: FullSymbol, Start: 1, 29, End: 1, 32, Content: ""
-					Type: FullSymbol
+					Content: Type: Symbol, Start: 1, 29, End: 1, 32, Content: "bar"
+					Type: Symbol
 					Children:
-						Content: Type: Symbol, Start: 1, 29, End: 1, 32, Content: "bar"
-						Type: Symbol
+
+					Content: Type: FunctionArgumentsList, Start: 1, 32, End: 1, 34, Content: ""
+					Type: FunctionArgumentsList
+					Children:
+						Content: Type: LeftParenthesis, Start: 1, 32, End: 1, 33, Content: "("
+						Type: LeftParenthesis
 						Children:
 
-					Content: Type: ParameterList, Start: 1, 32, End: 1, 34, Content: ""
-					Type: ParameterList
-					Children:
-						Content: Type: FunctorParameters, Start: 1, 32, End: 1, 34, Content: ""
-						Type: FunctorParameters
+						Content: Type: RightParenthesis, Start: 1, 33, End: 1, 34, Content: ")"
+						Type: RightParenthesis
 						Children:
-							Content: Type: LeftParenthesis, Start: 1, 32, End: 1, 33, Content: "("
-							Type: LeftParenthesis
-							Children:
-
-							Content: Type: RightParenthesis, Start: 1, 33, End: 1, 34, Content: ")"
-							Type: RightParenthesis
-							Children:
 
 				Content: Type: EndOfLine, Start: 1, 34, End: 1, 35, Content: ";"
 				Type: EndOfLine

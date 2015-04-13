@@ -22,7 +22,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public override bool IsGettable { get { return false; } }
         public override bool IsSettable { get { return false; } }
 
-        protected SymbolNode(string value, ContextNode scope, SequencePoint point)
+        internal SymbolNode(string value, ContextNode scope, SequencePoint point)
             : base(point)
         {
             Name = value;

@@ -4,15 +4,9 @@ Children:
 	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: InfixNode
 	Children:
-		Content: Type: Type, Start: 1, 1, End: 1, 2, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 1, 1, End: 1, 2, Content: "a"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 1, 1, End: 1, 2, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 1, 1, End: 1, 2, Content: "a"
-				Type: Symbol
-				Children:
 
 		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 		Type: InfixNode
@@ -46,15 +40,9 @@ Children:
 	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: InfixNode
 	Children:
-		Content: Type: Type, Start: 2, 1, End: 2, 2, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 2, 1, End: 2, 2, Content: "b"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 2, 1, End: 2, 2, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 2, 1, End: 2, 2, Content: "b"
-				Type: Symbol
-				Children:
 
 		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 		Type: InfixNode
@@ -88,15 +76,9 @@ Children:
 	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: InfixNode
 	Children:
-		Content: Type: Type, Start: 3, 1, End: 3, 2, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 3, 1, End: 3, 2, Content: "a"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 3, 1, End: 3, 2, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 3, 1, End: 3, 2, Content: "a"
-				Type: Symbol
-				Children:
 
 		Content: Type: LiteralNode, Start: 3, 7, End: 3, 11, Content: ""
 		Type: LiteralNode
@@ -116,25 +98,13 @@ Children:
 	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: InfixNode
 	Children:
-		Content: Type: Type, Start: 4, 1, End: 4, 2, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 4, 1, End: 4, 2, Content: "b"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 4, 1, End: 4, 2, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 4, 1, End: 4, 2, Content: "b"
-				Type: Symbol
-				Children:
 
-		Content: Type: Type, Start: 4, 7, End: 4, 8, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 4, 7, End: 4, 8, Content: "a"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 4, 7, End: 4, 8, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 4, 7, End: 4, 8, Content: "a"
-				Type: Symbol
-				Children:
 
 		Content: Type: LogicalAndEqual, Start: 4, 3, End: 4, 6, Content: "&&="
 		Type: LogicalAndEqual

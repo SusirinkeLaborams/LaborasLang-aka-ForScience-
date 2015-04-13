@@ -7,15 +7,9 @@ Children:
 		Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
 		Type: PrefixNode
 		Children:
-			Content: Type: Type, Start: 1, 4, End: 1, 7, Content: ""
-			Type: Type
+			Content: Type: Symbol, Start: 1, 4, End: 1, 7, Content: "foo"
+			Type: Symbol
 			Children:
-				Content: Type: FullSymbol, Start: 1, 4, End: 1, 7, Content: ""
-				Type: FullSymbol
-				Children:
-					Content: Type: Symbol, Start: 1, 4, End: 1, 7, Content: "foo"
-					Type: Symbol
-					Children:
 
 			Content: Type: PlusPlus, Start: 1, 2, End: 1, 4, Content: "++"
 			Type: PlusPlus

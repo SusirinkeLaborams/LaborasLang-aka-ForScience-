@@ -56,29 +56,23 @@ Children:
 				Type: LeftCurlyBrace
 				Children:
 
-				Content: Type: Type, Start: 1, 19, End: 1, 24, Content: ""
-				Type: Type
+				Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+				Type: PostfixNode
 				Children:
-					Content: Type: FullSymbol, Start: 1, 19, End: 1, 22, Content: ""
-					Type: FullSymbol
+					Content: Type: Symbol, Start: 1, 19, End: 1, 22, Content: "foo"
+					Type: Symbol
 					Children:
-						Content: Type: Symbol, Start: 1, 19, End: 1, 22, Content: "foo"
-						Type: Symbol
+
+					Content: Type: FunctionArgumentsList, Start: 1, 22, End: 1, 24, Content: ""
+					Type: FunctionArgumentsList
+					Children:
+						Content: Type: LeftParenthesis, Start: 1, 22, End: 1, 23, Content: "("
+						Type: LeftParenthesis
 						Children:
 
-					Content: Type: ParameterList, Start: 1, 22, End: 1, 24, Content: ""
-					Type: ParameterList
-					Children:
-						Content: Type: FunctorParameters, Start: 1, 22, End: 1, 24, Content: ""
-						Type: FunctorParameters
+						Content: Type: RightParenthesis, Start: 1, 23, End: 1, 24, Content: ")"
+						Type: RightParenthesis
 						Children:
-							Content: Type: LeftParenthesis, Start: 1, 22, End: 1, 23, Content: "("
-							Type: LeftParenthesis
-							Children:
-
-							Content: Type: RightParenthesis, Start: 1, 23, End: 1, 24, Content: ")"
-							Type: RightParenthesis
-							Children:
 
 				Content: Type: EndOfLine, Start: 1, 24, End: 1, 25, Content: ";"
 				Type: EndOfLine

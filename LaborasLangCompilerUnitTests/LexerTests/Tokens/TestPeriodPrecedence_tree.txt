@@ -4,15 +4,9 @@ Children:
 	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: InfixNode
 	Children:
-		Content: Type: Type, Start: 1, 1, End: 1, 4, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
-				Type: Symbol
-				Children:
 
 		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 		Type: InfixNode
@@ -23,56 +17,53 @@ Children:
 				Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 				Type: InfixNode
 				Children:
-					Content: Type: Type, Start: 1, 7, End: 1, 16, Content: ""
-					Type: Type
+					Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+					Type: InfixNode
 					Children:
-						Content: Type: FullSymbol, Start: 1, 7, End: 1, 16, Content: ""
-						Type: FullSymbol
+						Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+						Type: InfixNode
 						Children:
-							Content: Type: FullSymbol, Start: 0, 0, End: 0, 0, Content: ""
-							Type: FullSymbol
+							Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+							Type: InfixNode
 							Children:
-								Content: Type: FullSymbol, Start: 0, 0, End: 0, 0, Content: ""
-								Type: FullSymbol
+								Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+								Type: InfixNode
 								Children:
-									Content: Type: FullSymbol, Start: 0, 0, End: 0, 0, Content: ""
-									Type: FullSymbol
-									Children:
-										Content: Type: Symbol, Start: 1, 7, End: 1, 8, Content: "a"
-										Type: Symbol
-										Children:
-
-										Content: Type: Symbol, Start: 1, 9, End: 1, 10, Content: "b"
-										Type: Symbol
-										Children:
-
-										Content: Type: Period, Start: 1, 8, End: 1, 9, Content: "."
-										Type: Period
-										Children:
-
-									Content: Type: Symbol, Start: 1, 11, End: 1, 12, Content: "c"
+									Content: Type: Symbol, Start: 1, 7, End: 1, 8, Content: "a"
 									Type: Symbol
 									Children:
 
-									Content: Type: Period, Start: 1, 10, End: 1, 11, Content: "."
+									Content: Type: Symbol, Start: 1, 9, End: 1, 10, Content: "b"
+									Type: Symbol
+									Children:
+
+									Content: Type: Period, Start: 1, 8, End: 1, 9, Content: "."
 									Type: Period
 									Children:
 
-								Content: Type: Symbol, Start: 1, 13, End: 1, 14, Content: "d"
+								Content: Type: Symbol, Start: 1, 11, End: 1, 12, Content: "c"
 								Type: Symbol
 								Children:
 
-								Content: Type: Period, Start: 1, 12, End: 1, 13, Content: "."
+								Content: Type: Period, Start: 1, 10, End: 1, 11, Content: "."
 								Type: Period
 								Children:
 
-							Content: Type: Symbol, Start: 1, 15, End: 1, 16, Content: "e"
+							Content: Type: Symbol, Start: 1, 13, End: 1, 14, Content: "d"
 							Type: Symbol
 							Children:
 
-							Content: Type: Period, Start: 1, 14, End: 1, 15, Content: "."
+							Content: Type: Period, Start: 1, 12, End: 1, 13, Content: "."
 							Type: Period
 							Children:
+
+						Content: Type: Symbol, Start: 1, 15, End: 1, 16, Content: "e"
+						Type: Symbol
+						Children:
+
+						Content: Type: Period, Start: 1, 14, End: 1, 15, Content: "."
+						Type: Period
+						Children:
 
 					Content: Type: LiteralNode, Start: 1, 19, End: 1, 20, Content: ""
 					Type: LiteralNode

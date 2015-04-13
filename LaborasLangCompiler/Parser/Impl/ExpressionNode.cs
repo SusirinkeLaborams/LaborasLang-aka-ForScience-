@@ -28,12 +28,9 @@ namespace LaborasLangCompiler.Parser.Impl
             ExpressionNode ret = null;
             switch (lexerNode.Type)
             {
-                //case Lexer.TokenType.PeriodNode:
                 case Lexer.TokenType.FullSymbol:
-                    ret = DotOperatorNode.Parse(context, lexerNode);
-                    break;
                 case Lexer.TokenType.Symbol:
-                    ret = SymbolNode.Parse(context, lexerNode);
+                    ret = DotOperatorNode.Parse(context, lexerNode);
                     break;
                 case Lexer.TokenType.LiteralNode:
                     ret = LiteralNode.Parse(context, lexerNode);

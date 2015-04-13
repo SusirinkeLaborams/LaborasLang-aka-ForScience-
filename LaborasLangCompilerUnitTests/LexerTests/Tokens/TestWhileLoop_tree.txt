@@ -12,43 +12,31 @@ Children:
 		Type: LeftParenthesis
 		Children:
 
-		Content: Type: Type, Start: 1, 7, End: 1, 16, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 1, 7, End: 1, 16, Content: "condition"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 1, 7, End: 1, 16, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 1, 7, End: 1, 16, Content: "condition"
-				Type: Symbol
-				Children:
 
 		Content: Type: RightParenthesis, Start: 1, 16, End: 1, 17, Content: ")"
 		Type: RightParenthesis
 		Children:
 
-		Content: Type: Type, Start: 1, 18, End: 1, 28, Content: ""
-		Type: Type
+		Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: PostfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 1, 18, End: 1, 26, Content: ""
-			Type: FullSymbol
+			Content: Type: Symbol, Start: 1, 18, End: 1, 26, Content: "function"
+			Type: Symbol
 			Children:
-				Content: Type: Symbol, Start: 1, 18, End: 1, 26, Content: "function"
-				Type: Symbol
+
+			Content: Type: FunctionArgumentsList, Start: 1, 26, End: 1, 28, Content: ""
+			Type: FunctionArgumentsList
+			Children:
+				Content: Type: LeftParenthesis, Start: 1, 26, End: 1, 27, Content: "("
+				Type: LeftParenthesis
 				Children:
 
-			Content: Type: ParameterList, Start: 1, 26, End: 1, 28, Content: ""
-			Type: ParameterList
-			Children:
-				Content: Type: FunctorParameters, Start: 1, 26, End: 1, 28, Content: ""
-				Type: FunctorParameters
+				Content: Type: RightParenthesis, Start: 1, 27, End: 1, 28, Content: ")"
+				Type: RightParenthesis
 				Children:
-					Content: Type: LeftParenthesis, Start: 1, 26, End: 1, 27, Content: "("
-					Type: LeftParenthesis
-					Children:
-
-					Content: Type: RightParenthesis, Start: 1, 27, End: 1, 28, Content: ")"
-					Type: RightParenthesis
-					Children:
 
 		Content: Type: EndOfLine, Start: 1, 28, End: 1, 29, Content: ";"
 		Type: EndOfLine
@@ -65,29 +53,23 @@ Children:
 		Type: LeftParenthesis
 		Children:
 
-		Content: Type: Type, Start: 2, 19, End: 2, 30, Content: ""
-		Type: Type
+		Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Type: PostfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 2, 19, End: 2, 28, Content: ""
-			Type: FullSymbol
+			Content: Type: Symbol, Start: 2, 19, End: 2, 28, Content: "condition"
+			Type: Symbol
 			Children:
-				Content: Type: Symbol, Start: 2, 19, End: 2, 28, Content: "condition"
-				Type: Symbol
+
+			Content: Type: FunctionArgumentsList, Start: 2, 28, End: 2, 30, Content: ""
+			Type: FunctionArgumentsList
+			Children:
+				Content: Type: LeftParenthesis, Start: 2, 28, End: 2, 29, Content: "("
+				Type: LeftParenthesis
 				Children:
 
-			Content: Type: ParameterList, Start: 2, 28, End: 2, 30, Content: ""
-			Type: ParameterList
-			Children:
-				Content: Type: FunctorParameters, Start: 2, 28, End: 2, 30, Content: ""
-				Type: FunctorParameters
+				Content: Type: RightParenthesis, Start: 2, 29, End: 2, 30, Content: ")"
+				Type: RightParenthesis
 				Children:
-					Content: Type: LeftParenthesis, Start: 2, 28, End: 2, 29, Content: "("
-					Type: LeftParenthesis
-					Children:
-
-					Content: Type: RightParenthesis, Start: 2, 29, End: 2, 30, Content: ")"
-					Type: RightParenthesis
-					Children:
 
 		Content: Type: RightParenthesis, Start: 2, 30, End: 2, 31, Content: ")"
 		Type: RightParenthesis
@@ -100,29 +82,23 @@ Children:
 			Type: LeftCurlyBrace
 			Children:
 
-			Content: Type: Type, Start: 2, 33, End: 2, 43, Content: ""
-			Type: Type
+			Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Type: PostfixNode
 			Children:
-				Content: Type: FullSymbol, Start: 2, 33, End: 2, 41, Content: ""
-				Type: FullSymbol
+				Content: Type: Symbol, Start: 2, 33, End: 2, 41, Content: "function"
+				Type: Symbol
 				Children:
-					Content: Type: Symbol, Start: 2, 33, End: 2, 41, Content: "function"
-					Type: Symbol
+
+				Content: Type: FunctionArgumentsList, Start: 2, 41, End: 2, 43, Content: ""
+				Type: FunctionArgumentsList
+				Children:
+					Content: Type: LeftParenthesis, Start: 2, 41, End: 2, 42, Content: "("
+					Type: LeftParenthesis
 					Children:
 
-				Content: Type: ParameterList, Start: 2, 41, End: 2, 43, Content: ""
-				Type: ParameterList
-				Children:
-					Content: Type: FunctorParameters, Start: 2, 41, End: 2, 43, Content: ""
-					Type: FunctorParameters
+					Content: Type: RightParenthesis, Start: 2, 42, End: 2, 43, Content: ")"
+					Type: RightParenthesis
 					Children:
-						Content: Type: LeftParenthesis, Start: 2, 41, End: 2, 42, Content: "("
-						Type: LeftParenthesis
-						Children:
-
-						Content: Type: RightParenthesis, Start: 2, 42, End: 2, 43, Content: ")"
-						Type: RightParenthesis
-						Children:
 
 			Content: Type: EndOfLine, Start: 2, 43, End: 2, 44, Content: ";"
 			Type: EndOfLine

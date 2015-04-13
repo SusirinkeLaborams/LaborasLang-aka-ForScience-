@@ -14,25 +14,13 @@ Children:
 			Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 			Type: InfixNode
 			Children:
-				Content: Type: Type, Start: 1, 2, End: 1, 5, Content: ""
-				Type: Type
+				Content: Type: Symbol, Start: 1, 2, End: 1, 5, Content: "foo"
+				Type: Symbol
 				Children:
-					Content: Type: FullSymbol, Start: 1, 2, End: 1, 5, Content: ""
-					Type: FullSymbol
-					Children:
-						Content: Type: Symbol, Start: 1, 2, End: 1, 5, Content: "foo"
-						Type: Symbol
-						Children:
 
-				Content: Type: Type, Start: 1, 8, End: 1, 11, Content: ""
-				Type: Type
+				Content: Type: Symbol, Start: 1, 8, End: 1, 11, Content: "bar"
+				Type: Symbol
 				Children:
-					Content: Type: FullSymbol, Start: 1, 8, End: 1, 11, Content: ""
-					Type: FullSymbol
-					Children:
-						Content: Type: Symbol, Start: 1, 8, End: 1, 11, Content: "bar"
-						Type: Symbol
-						Children:
 
 				Content: Type: Plus, Start: 1, 6, End: 1, 7, Content: "+"
 				Type: Plus

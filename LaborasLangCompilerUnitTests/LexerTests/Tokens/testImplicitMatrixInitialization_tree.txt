@@ -4,15 +4,9 @@ Children:
 	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: InfixNode
 	Children:
-		Content: Type: Type, Start: 2, 13, End: 2, 14, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 2, 13, End: 2, 14, Content: "a"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 2, 13, End: 2, 14, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 2, 13, End: 2, 14, Content: "a"
-				Type: Symbol
-				Children:
 
 		Content: Type: ArrayLiteral, Start: 2, 17, End: 2, 35, Content: ""
 		Type: ArrayLiteral

@@ -30,15 +30,9 @@ Children:
 		Type: In
 		Children:
 
-		Content: Type: Type, Start: 1, 15, End: 1, 18, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 1, 15, End: 1, 18, Content: "foo"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 1, 15, End: 1, 18, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 1, 15, End: 1, 18, Content: "foo"
-				Type: Symbol
-				Children:
 
 		Content: Type: RightParenthesis, Start: 1, 18, End: 1, 19, Content: ")"
 		Type: RightParenthesis

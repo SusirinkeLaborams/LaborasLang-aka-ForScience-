@@ -36,15 +36,9 @@ Children:
 		Type: Assignment
 		Children:
 
-		Content: Type: Type, Start: 1, 11, End: 1, 14, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 1, 11, End: 1, 14, Content: "bar"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 1, 11, End: 1, 14, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 1, 11, End: 1, 14, Content: "bar"
-				Type: Symbol
-				Children:
 
 		Content: Type: EndOfLine, Start: 1, 14, End: 1, 15, Content: ";"
 		Type: EndOfLine

@@ -4,15 +4,9 @@ Children:
 	Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: PostfixNode
 	Children:
-		Content: Type: Type, Start: 2, 13, End: 2, 16, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 2, 13, End: 2, 16, Content: "foo"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 2, 13, End: 2, 16, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 2, 13, End: 2, 16, Content: "foo"
-				Type: Symbol
-				Children:
 
 		Content: Type: FunctionArgumentsList, Start: 2, 16, End: 2, 29, Content: ""
 		Type: FunctionArgumentsList

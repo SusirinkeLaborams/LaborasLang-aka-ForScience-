@@ -4,15 +4,9 @@ Children:
 	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: InfixNode
 	Children:
-		Content: Type: Type, Start: 1, 1, End: 1, 2, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 1, 1, End: 1, 2, Content: "a"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 1, 1, End: 1, 2, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 1, 1, End: 1, 2, Content: "a"
-				Type: Symbol
-				Children:
 
 		Content: Type: Function, Start: 1, 5, End: 1, 26, Content: ""
 		Type: Function
@@ -73,15 +67,9 @@ Children:
 					Type: Return
 					Children:
 
-					Content: Type: Type, Start: 1, 21, End: 1, 24, Content: ""
-					Type: Type
+					Content: Type: Symbol, Start: 1, 21, End: 1, 24, Content: "bar"
+					Type: Symbol
 					Children:
-						Content: Type: FullSymbol, Start: 1, 21, End: 1, 24, Content: ""
-						Type: FullSymbol
-						Children:
-							Content: Type: Symbol, Start: 1, 21, End: 1, 24, Content: "bar"
-							Type: Symbol
-							Children:
 
 					Content: Type: EndOfLine, Start: 1, 24, End: 1, 25, Content: ";"
 					Type: EndOfLine

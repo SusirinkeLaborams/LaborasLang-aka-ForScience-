@@ -137,7 +137,6 @@ namespace Lexer
                     AlwaysCollapsableParseRule(Operand,
                         ArrayLiteral,
                         Function,
-                        Type,
                         Symbol,
                         LiteralNode),
 

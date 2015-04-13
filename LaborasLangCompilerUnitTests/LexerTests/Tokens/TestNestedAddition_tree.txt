@@ -4,15 +4,9 @@ Children:
 	Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 	Type: InfixNode
 	Children:
-		Content: Type: Type, Start: 1, 1, End: 1, 4, Content: ""
-		Type: Type
+		Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+		Type: Symbol
 		Children:
-			Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
-				Type: Symbol
-				Children:
 
 		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 		Type: InfixNode
@@ -20,39 +14,21 @@ Children:
 			Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 			Type: InfixNode
 			Children:
-				Content: Type: Type, Start: 1, 7, End: 1, 8, Content: ""
-				Type: Type
+				Content: Type: Symbol, Start: 1, 7, End: 1, 8, Content: "a"
+				Type: Symbol
 				Children:
-					Content: Type: FullSymbol, Start: 1, 7, End: 1, 8, Content: ""
-					Type: FullSymbol
-					Children:
-						Content: Type: Symbol, Start: 1, 7, End: 1, 8, Content: "a"
-						Type: Symbol
-						Children:
 
-				Content: Type: Type, Start: 1, 11, End: 1, 12, Content: ""
-				Type: Type
+				Content: Type: Symbol, Start: 1, 11, End: 1, 12, Content: "b"
+				Type: Symbol
 				Children:
-					Content: Type: FullSymbol, Start: 1, 11, End: 1, 12, Content: ""
-					Type: FullSymbol
-					Children:
-						Content: Type: Symbol, Start: 1, 11, End: 1, 12, Content: "b"
-						Type: Symbol
-						Children:
 
 				Content: Type: Plus, Start: 1, 9, End: 1, 10, Content: "+"
 				Type: Plus
 				Children:
 
-			Content: Type: Type, Start: 1, 15, End: 1, 16, Content: ""
-			Type: Type
+			Content: Type: Symbol, Start: 1, 15, End: 1, 16, Content: "a"
+			Type: Symbol
 			Children:
-				Content: Type: FullSymbol, Start: 1, 15, End: 1, 16, Content: ""
-				Type: FullSymbol
-				Children:
-					Content: Type: Symbol, Start: 1, 15, End: 1, 16, Content: "a"
-					Type: Symbol
-					Children:
 
 			Content: Type: Plus, Start: 1, 13, End: 1, 14, Content: "+"
 			Type: Plus

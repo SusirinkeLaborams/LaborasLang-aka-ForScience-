@@ -64,15 +64,9 @@ Children:
 							Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
 							Type: InfixNode
 							Children:
-								Content: Type: Type, Start: 1, 13, End: 1, 14, Content: ""
-								Type: Type
+								Content: Type: Symbol, Start: 1, 13, End: 1, 14, Content: "a"
+								Type: Symbol
 								Children:
-									Content: Type: FullSymbol, Start: 1, 13, End: 1, 14, Content: ""
-									Type: FullSymbol
-									Children:
-										Content: Type: Symbol, Start: 1, 13, End: 1, 14, Content: "a"
-										Type: Symbol
-										Children:
 
 								Content: Type: LiteralNode, Start: 1, 17, End: 1, 18, Content: ""
 								Type: LiteralNode
