@@ -39,7 +39,6 @@ namespace Lexer.PostProcessors
         #region logical
             new[]{TokenType.LogicalOr, TokenType.LogicalAnd},
         #endregion
-
         #region period
             new[]{TokenType.Period},
         #endregion
@@ -72,7 +71,7 @@ namespace Lexer.PostProcessors
         {
             if (astNode.Type == TokenType.Value)
             {
-                var tree = new AbstractSyntaxTree(new Node(TokenType.InfixNode), new List<AbstractSyntaxTree>());
+                var tree = new AbstractSyntaxTree(new Node(TokenType.Value), new List<AbstractSyntaxTree>());
 
                 var stack = new Stack<AbstractSyntaxTree>();
                 foreach (var item in astNode.Children)
@@ -113,7 +112,7 @@ namespace Lexer.PostProcessors
                 }
 
                 Contract.Assume(tree.Children.Count == 1);
-                astNode.ReplaceWith(tree.Children[0]);
+                astNode.ReplaceWith(tree);
             }
         }
 

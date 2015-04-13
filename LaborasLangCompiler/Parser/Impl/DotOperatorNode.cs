@@ -34,6 +34,13 @@ namespace LaborasLangCompiler.Parser.Impl
                 lexerNode.Type == Lexer.TokenType.Symbol);
 
             var instance = new DotOperatorNode(context);
+
+            if (lexerNode.Type == Lexer.TokenType.Symbol)
+            {
+                instance.Append(new SymbolNode(lexerNode.Content, context, context.Parser.GetSequencePoint(lexerNode)));
+                return instance.builtNode;
+            }
+
             foreach(var node in lexerNode.Children)
             {
                 var point = context.Parser.GetSequencePoint(node);
