@@ -1,5 +1,5 @@
-﻿using LaborasLangCompiler.FrontEnd;
-using LaborasLangCompiler.Codegen;
+﻿using LaborasLangCompiler.Codegen;
+using LaborasLangCompiler.FrontEnd;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Cecil;
 using System;

@@ -28,7 +28,7 @@ Class:
 				ArrayAccess:
 					Array:
 						Field:
-							System.Int32[0...,0...] TestArrayAccessMatrixCallArgs::foo
+							System.Int32[0...,0...] $TestArrayAccessMatrixCallArgs.TestArrayAccessMatrixCallArgs::foo
 							Instance:
 								null
 					ElementType: System.Int32
@@ -38,7 +38,7 @@ Class:
 							Args:
 							Function:
 								Field:
-									$Functors.$System_Int32? TestArrayAccessMatrixCallArgs::ind
+									$Functors.$System_Int32? $TestArrayAccessMatrixCallArgs.TestArrayAccessMatrixCallArgs::ind
 									Instance:
 										null
 
@@ -47,7 +47,7 @@ Class:
 							Args:
 							Function:
 								Field:
-									$Functors.$System_Int32? TestArrayAccessMatrixCallArgs::ind
+									$Functors.$System_Int32? $TestArrayAccessMatrixCallArgs.TestArrayAccessMatrixCallArgs::ind
 									Instance:
 										null
 

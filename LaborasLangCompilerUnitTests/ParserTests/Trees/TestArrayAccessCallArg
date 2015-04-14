@@ -28,7 +28,7 @@ Class:
 				ArrayAccess:
 					Array:
 						Field:
-							System.Int32[] TestArrayAccessCallArg::foo
+							System.Int32[] $TestArrayAccessCallArg.TestArrayAccessCallArg::foo
 							Instance:
 								null
 					ElementType: System.Int32
@@ -38,7 +38,7 @@ Class:
 							Args:
 							Function:
 								Field:
-									$Functors.$System_Int32? TestArrayAccessCallArg::ind
+									$Functors.$System_Int32? $TestArrayAccessCallArg.TestArrayAccessCallArg::ind
 									Instance:
 										null
 

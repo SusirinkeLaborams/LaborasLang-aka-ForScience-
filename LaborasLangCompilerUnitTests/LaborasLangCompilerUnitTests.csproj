@@ -97,7 +97,8 @@
     <Compile Include="CodegenTests\MethodBodyTests\FunctorTests.cs" />
     <Compile Include="CodegenTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="CodegenTests\ILHelpersTests.cs" />
-    <Compile Include="CodegenTests\PEVerifyRunner.cs" />
+    <Compile Include="ParserTests\AllParserTests.cs" />
+    <Compile Include="PEVerifyRunner.cs" />
     <Compile Include="IntegrationTests\IntegrationTestBase.cs" />
     <Compile Include="IntegrationTests\IntegrationTests.cs" />
     <None Include="IntegrationTests\SourceFiles\ArrayItemSwap.ll" />

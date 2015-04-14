@@ -35,7 +35,7 @@ Class:
 								Method:
 									Instance:
 										Field:
-											System.Int32 TestMethodInferrence::a
+											System.Int32 $TestMethodInferrence.TestMethodInferrence::a
 											Instance:
 												null
 									Method:

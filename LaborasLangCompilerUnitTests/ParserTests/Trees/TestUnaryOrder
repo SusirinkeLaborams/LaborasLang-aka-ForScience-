@@ -31,7 +31,7 @@ Class:
 								PreDecrement
 							Operand:
 								Field:
-									System.Int32 TestUnaryOrder::i
+									System.Int32 $TestUnaryOrder.TestUnaryOrder::i
 									Instance:
 										null
 

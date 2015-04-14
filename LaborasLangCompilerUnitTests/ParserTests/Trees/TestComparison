@@ -35,7 +35,7 @@ Class:
 				BinaryOperator:
 					Left:
 						Field:
-							System.Boolean TestComparison::i
+							System.Boolean $TestComparison.TestComparison::i
 							Instance:
 								null
 					Operator:

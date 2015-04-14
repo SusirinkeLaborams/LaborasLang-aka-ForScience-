@@ -3,7 +3,6 @@ using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Codegen.Methods

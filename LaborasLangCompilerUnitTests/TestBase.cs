@@ -7,12 +7,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace LaborasLangCompilerUnitTests.CodegenTests
+namespace LaborasLangCompilerUnitTests
 {
     public class TestBase
     {
         public TestBase(bool recreateAssemblyRegistry = true)
         {
+            Environment.SetEnvironmentVariable("LLC_IGNORE_NON_EXISTING_SOURCE_FILES", "1");
+
             if (recreateAssemblyRegistry)
             {
                 var compilerArgs = CompilerArguments.Parse(new[] { "ExecuteTest.il" });

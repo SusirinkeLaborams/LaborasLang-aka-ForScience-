@@ -27,7 +27,7 @@ Class:
 									Instance:
 										null
 									Method:
-										System.Void MethodCallTest::Main(System.Int32)
+										System.Void $MethodCallTest.MethodCallTest::Main(System.Int32)
 
 
 

@@ -14,38 +14,45 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics.Contracts;
+using System.IO;
 
 namespace LaborasLangCompilerUnitTests.ParserTests
 {
-    public class ParserTestBase
+    public class ParserTestBase : TestBase
     {
-        protected const string path = @"..\..\ParserTests\Trees\"; 
+        protected const string path = @"..\..\ParserTests\Trees\";
+        private AssemblyEmitter assembly;
 
-        protected static void CompareTrees(string source, [CallerMemberName] string name = "")
+        protected ParserTestBase() :
+            base(false)
         {
-            CompareTrees(source.Enumerate(), name.Enumerate(), name);
+            var compilerArgs = CompilerArguments.Parse(new[] { "ParserTests.il" });
+            AssemblyRegistry.CreateAndOverrideIfNeeded(compilerArgs.References);
+            assembly = new AssemblyEmitter(compilerArgs);
         }
 
-        protected static void CompareTrees(string source, IEnumerable<ErrorCode> errors, [CallerMemberName] string name = "")
+        protected void CompareTrees(string source, [CallerMemberName] string testName = "")
         {
-            CompareTrees(source.Enumerate(), name.Enumerate(), errors, name);
+            CompareTrees(source.Enumerate(), testName.Enumerate(), testName);
         }
 
-        protected static void CompareTrees(IEnumerable<string> sources, IEnumerable<string> names, [CallerMemberName] string name = "")
+        protected void CompareTrees(string source, IEnumerable<ErrorCode> errors, [CallerMemberName] string testName = "")
         {
-            CompareTrees(sources, names, Enumerable.Empty<ErrorCode>(), name);
+            CompareTrees(source.Enumerate(), testName.Enumerate(), errors, testName);
         }
 
-        protected static void CompareTrees(IEnumerable<string> sources, IEnumerable<string> names, IEnumerable<ErrorCode> errors, [CallerMemberName] string name = "")
+        protected void CompareTrees(IEnumerable<string> sources, IEnumerable<string> fileNames, [CallerMemberName] string testName = "")
+        {
+            CompareTrees(sources, fileNames, Enumerable.Empty<ErrorCode>(), testName);
+        }
+
+        protected void CompareTrees(IEnumerable<string> sources, IEnumerable<string> fileNames, IEnumerable<ErrorCode> errors, [CallerMemberName] string testName = "")
         {
             Errors.Clear();
 
-            var compilerArgs = CompilerArguments.Parse(names.Select(n => n + ".ll").Union("/out:out.exe".Enumerate()).ToArray());
-            AssemblyRegistry.CreateAndOverrideIfNeeded(compilerArgs.References);
-            var assembly = new AssemblyEmitter(compilerArgs);
-            var file = path + name;
-
-            var parser = ProjectParser.ParseAll(assembly, sources.ToArray(), names.ToArray(), false);
+            var file = path + testName;
+            var compilerArgs = CompilerArguments.Parse(fileNames.Select(n => Path.Combine("$" + testName, n)).Union(new[] { string.Format("/out:{0}.exe", testName) }).ToArray());
+            var parser = ProjectParser.ParseAll(assembly, compilerArgs, sources.ToArray(), false);
             string result = parser.ToString();
 
             string expected = "";

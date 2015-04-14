@@ -20,7 +20,7 @@ Class:
 									Instance:
 										null
 									Method:
-										System.Void TestHigherOrderFunctor::$Lambda_0()
+										System.Void $TestHigherOrderFunctor.TestHigherOrderFunctor::$Lambda_0()
 
 
 

@@ -31,7 +31,7 @@ Class:
 										ArrayAccess:
 											Array:
 												Field:
-													System.Int32[] TestArrayInPlaceReassign::foo
+													System.Int32[] $TestArrayInPlaceReassign.TestArrayInPlaceReassign::foo
 													Instance:
 														null
 											ElementType: System.Int32
@@ -45,7 +45,7 @@ Class:
 										ArrayAccess:
 											Array:
 												Field:
-													System.Int32[] TestArrayInPlaceReassign::foo
+													System.Int32[] $TestArrayInPlaceReassign.TestArrayInPlaceReassign::foo
 													Instance:
 														null
 											ElementType: System.Int32

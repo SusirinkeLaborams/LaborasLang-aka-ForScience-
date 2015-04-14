@@ -22,7 +22,7 @@ Class:
 									Instance:
 										null
 									Method:
-										System.Void file2::foo()
+										System.Void $TestTwoFilesVisibilityMoar.file2::foo()
 
 
 
@@ -52,7 +52,7 @@ Class:
 									Instance:
 										null
 									Method:
-										System.Void file1::foo()
+										System.Void $TestTwoFilesVisibilityMoar.file1::foo()
 
 
 

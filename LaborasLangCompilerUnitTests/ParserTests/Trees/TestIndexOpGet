@@ -27,7 +27,7 @@ Class:
 				IndexOpAccess:
 					Expression:
 						Field:
-							System.Collections.ArrayList TestIndexOpGet::list
+							System.Collections.ArrayList $TestIndexOpGet.TestIndexOpGet::list
 							Instance:
 								null
 					ElementType: System.Object
