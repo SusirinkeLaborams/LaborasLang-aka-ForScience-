@@ -32,7 +32,7 @@ namespace LaborasLangCompiler.FrontEnd
             var unknownOptions = args.Except(sourceFiles.Union(references).Union(outputPaths).Union(moduleKinds).Union(rootDirectories).Union(new string[] { "/debug" }));
             ParseUnknownOptions(unknownOptions);
 
-            sourceFiles = CheckSourceFiles();
+            CheckSourceFiles(ref sourceFiles);
 
             var moduleKind = ParseModuleKinds(moduleKinds);
             var outputPath = ParseOutputPaths(outputPaths, sourceFiles, moduleKind);
@@ -74,18 +74,18 @@ namespace LaborasLangCompiler.FrontEnd
             return false;
         }
 
-        private static IReadOnlyList<string> CheckSourceFiles(ref string[] sourceFiles)
+        private static void CheckSourceFiles(ref IReadOnlyList<string> sourceFiles)
         {
-            if (sourceFiles.Length == 0)
+            if (sourceFiles.Count == 0)
             {
                 Errors.Report(ErrorCode.NoSourceFiles, "No source files found to compile.");
                 return;
             }
 
             bool ignoreMissingSourceFiles = Environment.GetEnvironmentVariable("LLC_IGNORE_NON_EXISTING_SOURCE_FILES") == "1";
-            var checkedSourceFiles = new List<string>(sourceFiles.Length);
+            var checkedSourceFiles = new List<string>(sourceFiles.Count);
 
-            for (int i = 0; i < sourceFiles.Length; i++)
+            for (int i = 0; i < sourceFiles.Count; i++)
             {
                 if (HasIllegalCharactersInPath(sourceFiles[i]))
                 {
@@ -101,7 +101,7 @@ namespace LaborasLangCompiler.FrontEnd
                 }
             }
 
-            return checkedSourceFiles;
+            sourceFiles = checkedSourceFiles;
         }
 
         private static ModuleKind ParseModuleKinds(IEnumerable<string> moduleKinds)
@@ -265,14 +265,14 @@ namespace LaborasLangCompiler.FrontEnd
             return parsedReferences;
         }
 
-        private static Dictionary<string, string> ParseRootDirectories(string[] sourceFiles, string[] rootDirectories)
+        private static Dictionary<string, string> ParseRootDirectories(IReadOnlyList<string> sourceFiles, string[] rootDirectories)
         {
             var fileToNamespaceMap = new Dictionary<string, string>();
             var typeFullNames = new Dictionary<string, List<string>>();
             bool namesClash = false;
             List<string> filesWithoutMatchingRoot = null;
 
-            for (int i = 0; i < sourceFiles.Length; i++)
+            for (int i = 0; i < sourceFiles.Count; i++)
             {
                 var filePath = Path.GetFullPath(sourceFiles[i]);
                 int bestMatchingRootDirectory = -1;
