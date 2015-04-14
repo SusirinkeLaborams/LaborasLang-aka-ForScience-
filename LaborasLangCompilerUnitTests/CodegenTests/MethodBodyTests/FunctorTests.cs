@@ -151,12 +151,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                         Function = new FieldNode()
                         {
                             Field = field,
-                            ObjectInstance = new ObjectCreationNode()
-                            {
-                                ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
-                                Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
-                                Args = new IExpressionNode[0]
-                            }
+                            ObjectInstance = ConstructTypeEmitterInstance()
                         },
                         Args = new IExpressionNode[0]
                     }
@@ -246,15 +241,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new UnaryOperatorNode()
+                    new AssignmentOperatorNode()
                     {
-                        ExpressionReturnType = voidType,
-                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        Operand = new AssignmentOperatorNode()
-                        {
-                            LeftOperand = new FieldNode(delegateField),
-                            RightOperand = new FieldNode(functorField)
-                        }
+                        LeftOperand = new FieldNode(delegateField),
+                        RightOperand = new FieldNode(functorField)
                     },
                     new MethodCallNode()
                     {
@@ -298,18 +288,13 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new UnaryOperatorNode()
+                    new AssignmentOperatorNode()
                     {
-                        ExpressionReturnType = voidType,
-                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        Operand = new AssignmentOperatorNode()
+                        LeftOperand = new FieldNode(delegateField),
+                        RightOperand = new FunctionNode()
                         {
-                            LeftOperand = new FieldNode(delegateField),
-                            RightOperand = new FunctionNode()
-                            {
-                                ExpressionReturnType = delegateType,
-                                Method = targetMethod.Get()
-                            }
+                            ExpressionReturnType = delegateType,
+                            Method = targetMethod.Get()
                         }
                     },
                     new MethodCallNode()
@@ -415,15 +400,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new UnaryOperatorNode()
+                    new AssignmentOperatorNode()
                     {
-                        ExpressionReturnType = voidType,
-                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        Operand = new AssignmentOperatorNode()
-                        {
-                            LeftOperand = new FieldNode(functorField),
-                            RightOperand = new ParameterNode(functorSetterArgument)
-                        }
+                        LeftOperand = new FieldNode(functorField),
+                        RightOperand = new ParameterNode(functorSetterArgument)
                     }
                 }
             });
@@ -471,15 +451,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new UnaryOperatorNode()
+                    new AssignmentOperatorNode()
                     {
-                        ExpressionReturnType = voidType,
-                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        Operand = new AssignmentOperatorNode()
-                        {
-                            LeftOperand = new FieldNode(delegateField),
-                            RightOperand = new ParameterNode(delegateSetterArgument)
-                        }
+                        LeftOperand = new FieldNode(delegateField),
+                        RightOperand = new ParameterNode(delegateSetterArgument)
                     }
                 }
             });
@@ -513,30 +488,20 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new UnaryOperatorNode()
+                    new AssignmentOperatorNode()
                     {
-                        ExpressionReturnType = voidType,
-                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        Operand = new AssignmentOperatorNode()
+                        LeftOperand = new PropertyNode(assemblyEmitter, functorProperty),
+                        RightOperand = new FunctionNode()
                         {
-                            LeftOperand = new PropertyNode(assemblyEmitter, functorProperty),
-                            RightOperand = new FunctionNode()
-                            {
-                                ExpressionReturnType = functorType,
-                                Method = EmitMethodToOutputArgs(null, arguments)
-                            }
+                            ExpressionReturnType = functorType,
+                            Method = EmitMethodToOutputArgs(null, arguments)
                         }
                     },
-
-                    new UnaryOperatorNode()
+                    
+                    new AssignmentOperatorNode()
                     {
-                        ExpressionReturnType = voidType,
-                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        Operand = new AssignmentOperatorNode()
-                        {
-                            LeftOperand = new PropertyNode(assemblyEmitter, delegateProperty),
-                            RightOperand = new PropertyNode(assemblyEmitter, functorProperty)
-                        }
+                        LeftOperand = new PropertyNode(assemblyEmitter, delegateProperty),
+                        RightOperand = new PropertyNode(assemblyEmitter, functorProperty)
                     },
 
                     new MethodCallNode()

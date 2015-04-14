@@ -36,12 +36,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             var loadFieldExpression = new FieldNode()
             {
-                ObjectInstance = new ObjectCreationNode()
-                {
-                    ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
-                    Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
-                    Args = new List<IExpressionNode>()
-                },
+                ObjectInstance = ConstructTypeEmitterInstance(),
                 Field = field
             };
 
@@ -82,22 +77,17 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new UnaryOperatorNode()
+                    new AssignmentOperatorNode()
                     {
-                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ExpressionReturnType = voidType,
-                        Operand = new AssignmentOperatorNode()
+                        LeftOperand = new FieldNode()
                         {
-                            LeftOperand = new FieldNode()
+                            ObjectInstance = new ThisNode()
                             {
-                                ObjectInstance = new ThisNode()
-                                {
-                                    ExpressionReturnType = backingField.DeclaringType
-                                },
-                                Field = backingField
+                                ExpressionReturnType = backingField.DeclaringType
                             },
-                            RightOperand = new ParameterNode(value)
-                        }
+                            Field = backingField
+                        },
+                        RightOperand = new ParameterNode(value)
                     }
                 }
             };
@@ -113,12 +103,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             var loadFieldExpression = new FieldNode()
             {
-                ObjectInstance = new ObjectCreationNode()
-                {
-                    ExpressionReturnType = typeEmitter.Get(assemblyEmitter),
-                    Constructor = AssemblyRegistry.GetMethod(assemblyEmitter, typeEmitter.Get(assemblyEmitter), ".ctor"),
-                    Args = new List<IExpressionNode>()
-                },
+                ObjectInstance = ConstructTypeEmitterInstance(),
                 Field = backingField
             };
 
@@ -143,15 +128,10 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             {
                 Nodes = new List<IParserNode>()
                 {
-                    new UnaryOperatorNode()
+                    new AssignmentOperatorNode()
                     {
-                        UnaryOperatorType = UnaryOperatorNodeType.VoidOperator,
-                        ExpressionReturnType = voidType,
-                        Operand = new AssignmentOperatorNode()
-                        {
-                            LeftOperand = new FieldNode(backingField),
-                            RightOperand = new ParameterNode(value)
-                        }
+                        LeftOperand = new FieldNode(backingField),
+                        RightOperand = new ParameterNode(value)
                     }
                 }
             };

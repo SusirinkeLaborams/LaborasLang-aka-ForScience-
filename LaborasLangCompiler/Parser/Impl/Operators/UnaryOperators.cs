@@ -26,6 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl
             PreDecrement,
             PostIncrement,
             PostDecrement,
+            [Obsolete]
             VoidOperator
         }
 

@@ -58,11 +58,21 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             startInfo.UseShellExecute = false;
             startInfo.RedirectStandardOutput = true;
             startInfo.RedirectStandardError = true;
+            
+            var stdout = new StringBuilder();
+            var stderr = new StringBuilder();
 
-            var process = Process.Start(startInfo);
+            var process = new Process { StartInfo = startInfo };
+
+            process.OutputDataReceived += (sender, args) => stdout.AppendLine(args.Data);
+            process.ErrorDataReceived += (sender, args) => stderr.AppendLine(args.Data);
+
+            process.Start();
+            process.BeginErrorReadLine();
+            process.BeginOutputReadLine();
             process.WaitForExit();
 
-            var output = process.StandardOutput.ReadToEnd();
+            var output = stdout.ToString() + "\r\n" + stderr.ToString();
 
             if (process.ExitCode != 0)
             {

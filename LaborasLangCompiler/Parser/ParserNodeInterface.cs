@@ -168,6 +168,7 @@ namespace LaborasLangCompiler.Parser
         BinaryNot,
         LogicalNot,
         Negation,
+        [Obsolete]
         VoidOperator,    // Discards Operand result
     }
 
