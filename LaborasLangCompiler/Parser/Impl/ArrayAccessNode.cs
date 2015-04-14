@@ -40,6 +40,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public static ExpressionNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Children[1].Type == Lexer.TokenType.IndexNode);
+            Contract.Ensures(Contract.Result<ExpressionNode>() != null);
             var point = context.Parser.GetSequencePoint(lexerNode);
             var array = ExpressionNode.Parse(context, lexerNode.Children[0]);
             var indexer = lexerNode.Children[1];
