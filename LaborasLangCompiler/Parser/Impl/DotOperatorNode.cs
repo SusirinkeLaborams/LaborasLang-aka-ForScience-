@@ -33,6 +33,8 @@ namespace LaborasLangCompiler.Parser.Impl
                 lexerNode.Type == Lexer.TokenType.FullSymbol ||
                 lexerNode.Type == Lexer.TokenType.Symbol);
 
+            Contract.Ensures(Contract.Result<ExpressionNode>() != null);
+
             var instance = new DotOperatorNode(context);
 
             if (lexerNode.Type == Lexer.TokenType.Symbol)

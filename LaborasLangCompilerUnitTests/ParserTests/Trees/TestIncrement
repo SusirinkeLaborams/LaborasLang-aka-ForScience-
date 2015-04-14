@@ -24,20 +24,15 @@ Class:
 									Value: 5
 
 
-						UnaryOperator:
+						IncrementDecrementOperator:
 							Operator:
-								VoidOperator
+								PostIncrement
 							Operand:
-								IncrementDecrementOperator:
-									Operator:
-										PostIncrement
-									Operand:
-										Local:
-											Name:
-												a
-											Type:
-												System.Int32
-
+								Local:
+									Name:
+										a
+									Type:
+										System.Int32
 
 
 

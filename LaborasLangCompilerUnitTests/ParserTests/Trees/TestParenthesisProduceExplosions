@@ -1,5 +1,5 @@
 Class:
-	TestUnaryOnCall
+	TestParenthesisProduceExplosions
 	Fields:
 		FieldDeclaration:
 			Type:
@@ -8,13 +8,5 @@ Class:
 				foo
 			Modifiers:
 				Private, Mutable, NoInstance
-
-		FieldDeclaration:
-			Type:
-				auto
-			Name:
-				a
-			Modifiers:
-				0
 
 	Methods:

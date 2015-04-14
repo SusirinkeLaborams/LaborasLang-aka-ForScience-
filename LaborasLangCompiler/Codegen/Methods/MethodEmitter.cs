@@ -1243,18 +1243,11 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void Emit(IUnaryOperatorNode unaryOperator, EmissionType emissionType)
         {
-            if (unaryOperator.UnaryOperatorType == UnaryOperatorNodeType.VoidOperator)
-            {
-                EmitVoidOperator(unaryOperator);
-                return;
-            }
             
             if (emissionType == EmissionType.None)
                 return;
 
             Emit(unaryOperator.Operand, EmissionType.Value);
-
-            Contract.Assume(unaryOperator.UnaryOperatorType != UnaryOperatorNodeType.VoidOperator);
 
             switch (unaryOperator.UnaryOperatorType)
             {
@@ -1701,11 +1694,6 @@ namespace LaborasLangCompiler.Codegen.Methods
                     ContractsHelper.AssumeUnreachable(string.Format("Unknown shift operator: {0}.", binaryOperator.BinaryOperatorType));
                     break;
             }
-        }
-
-        private void EmitVoidOperator(IUnaryOperatorNode unaryOperator)
-        {
-            Emit(unaryOperator.Operand, EmissionType.None);
         }
 
         #endregion

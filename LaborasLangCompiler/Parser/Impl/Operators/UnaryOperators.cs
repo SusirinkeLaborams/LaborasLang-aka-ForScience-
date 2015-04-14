@@ -25,9 +25,7 @@ namespace LaborasLangCompiler.Parser.Impl
             PreIncrement,
             PreDecrement,
             PostIncrement,
-            PostDecrement,
-            [Obsolete]
-            VoidOperator
+            PostDecrement
         }
 
         public class UnaryOperatorNode : ExpressionNode, IUnaryOperatorNode
@@ -36,7 +34,7 @@ namespace LaborasLangCompiler.Parser.Impl
             public override TypeReference ExpressionReturnType { get { return operand.ExpressionReturnType; } }
             public UnaryOperatorNodeType UnaryOperatorType { get; private set; }
             public IExpressionNode Operand { get { return operand; } }
-            public override bool IsGettable { get { return UnaryOperatorType != UnaryOperatorNodeType.VoidOperator; } }
+            public override bool IsGettable { get { return true; } }
             public override bool IsSettable { get { return false; } }
 
             private readonly ExpressionNode operand;
@@ -55,9 +53,6 @@ namespace LaborasLangCompiler.Parser.Impl
                         break;
                     case InternalUnaryOperatorType.Negation:
                         this.UnaryOperatorType = UnaryOperatorNodeType.Negation;
-                        break;
-                    case InternalUnaryOperatorType.VoidOperator:
-                        this.UnaryOperatorType = UnaryOperatorNodeType.VoidOperator;
                         break;
                     default:
                         throw new ArgumentException();
@@ -286,11 +281,6 @@ namespace LaborasLangCompiler.Parser.Impl
             return result;
         }
 
-        public static ExpressionNode Void(ExpressionNode expression)
-        {
-            return new UnaryOperatorNode(InternalUnaryOperatorType.VoidOperator, expression);
-        }
-
         private static ExpressionNode AsInc(ExpressionNode expression, InternalUnaryOperatorType op)
         {
             return expression.ExpressionReturnType.IsNumericType() ? new IncrementDecrementOperatorNode(op, expression, null) : null;
@@ -325,7 +315,6 @@ namespace LaborasLangCompiler.Parser.Impl
                 case InternalUnaryOperatorType.BinaryNot:
                 case InternalUnaryOperatorType.LogicalNot:
                 case InternalUnaryOperatorType.Negation:
-                case InternalUnaryOperatorType.VoidOperator:
                     return false;
                 case InternalUnaryOperatorType.PreIncrement:
                 case InternalUnaryOperatorType.PreDecrement:

@@ -29,24 +29,19 @@ Class:
 										System.Void System.Console::WriteLine(System.String)
 
 
-						UnaryOperator:
-							Operator:
-								VoidOperator
-							Operand:
-								MethodCall:
-									ReturnType: System.Boolean
-									Args:
-										Literal:
-											Type: System.String
-											Value: 
+						MethodCall:
+							ReturnType: System.Boolean
+							Args:
+								Literal:
+									Type: System.String
+									Value: 
 
-									Function:
-										Method:
-											Instance:
-												null
-											Method:
-												System.Boolean System.IO.File::Exists(System.String)
-
+							Function:
+								Method:
+									Instance:
+										null
+									Method:
+										System.Boolean System.IO.File::Exists(System.String)
 
 
 

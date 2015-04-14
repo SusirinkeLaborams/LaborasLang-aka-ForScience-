@@ -22,38 +22,33 @@ Class:
 				CodeBlock:
 					Symbols:
 					Nodes:
-						UnaryOperator:
-							Operator:
-								VoidOperator
-							Operand:
-								Assignment:
-									Left:
-										ArrayAccess:
-											Array:
-												Field:
-													System.Int32[] $TestArrayInPlaceReassign.TestArrayInPlaceReassign::foo
-													Instance:
-														null
-											ElementType: System.Int32
-											Indices:
-												Literal:
-													Type: System.Int32
-													Value: 0
+						Assignment:
+							Left:
+								ArrayAccess:
+									Array:
+										Field:
+											System.Int32[] $TestArrayInPlaceReassign.TestArrayInPlaceReassign::foo
+											Instance:
+												null
+									ElementType: System.Int32
+									Indices:
+										Literal:
+											Type: System.Int32
+											Value: 0
 
 
-									Right:
-										ArrayAccess:
-											Array:
-												Field:
-													System.Int32[] $TestArrayInPlaceReassign.TestArrayInPlaceReassign::foo
-													Instance:
-														null
-											ElementType: System.Int32
-											Indices:
-												Literal:
-													Type: System.Int32
-													Value: 1
-
+							Right:
+								ArrayAccess:
+									Array:
+										Field:
+											System.Int32[] $TestArrayInPlaceReassign.TestArrayInPlaceReassign::foo
+											Instance:
+												null
+									ElementType: System.Int32
+									Indices:
+										Literal:
+											Type: System.Int32
+											Value: 1
 
 
 
