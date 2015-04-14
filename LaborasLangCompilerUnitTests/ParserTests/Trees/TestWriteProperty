@@ -39,7 +39,7 @@ Class:
 											System.Int32 System.Collections.ArrayList::Capacity()
 											Instance:
 												Field:
-													System.Collections.ArrayList TestWriteProperty::lst
+													System.Collections.ArrayList $TestWriteProperty.TestWriteProperty::lst
 													Instance:
 														null
 

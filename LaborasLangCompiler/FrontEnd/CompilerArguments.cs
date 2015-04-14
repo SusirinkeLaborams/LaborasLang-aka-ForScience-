@@ -1,6 +1,8 @@
-﻿using Mono.Cecil;
+﻿using LaborasLangCompiler.Common;
+using Mono.Cecil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,37 +11,39 @@ namespace LaborasLangCompiler.FrontEnd
 {
     internal class CompilerArguments
     {
-        public readonly string[] SourceFiles;
-        public readonly string[] References;
+        public readonly IReadOnlyList<string> SourceFiles;
+        public readonly IReadOnlyList<string> References;
+        public readonly IReadOnlyDictionary<string, string> FileToNamespaceMap;
         public readonly string OutputPath;
         public readonly ModuleKind ModuleKind;
         public readonly bool DebugBuild;
 
         public static CompilerArguments Parse(string[] args)
         {
-            var sourceFiles = args.Where(arg => !arg.StartsWith("/", StringComparison.InvariantCultureIgnoreCase));
+            IReadOnlyList<string> sourceFiles = args.Where(arg => !arg.StartsWith("/", StringComparison.InvariantCultureIgnoreCase)).Distinct().ToArray();
             var references = args.Where(arg => arg.StartsWith("/ref:", StringComparison.InvariantCultureIgnoreCase));
             var outputPaths = args.Where(arg => arg.StartsWith("/out:", StringComparison.InvariantCultureIgnoreCase));
             var debugBuild = args.Any(arg => arg.Equals("/debug", StringComparison.InvariantCultureIgnoreCase));
             var moduleKinds = args.Where(arg => arg.Equals("/console", StringComparison.InvariantCultureIgnoreCase) ||
                                             arg.Equals("/windows", StringComparison.InvariantCultureIgnoreCase) ||
                                             arg.Equals("/dll", StringComparison.InvariantCultureIgnoreCase));
+            var rootDirectories = args.Where(arg => arg.StartsWith("/root:", StringComparison.InvariantCultureIgnoreCase));
 
-            var unknownOptions = args.Except(sourceFiles.Union(references).Union(outputPaths).Union(moduleKinds).Union(new string[] { "/debug" }));
+            var unknownOptions = args.Except(sourceFiles.Union(references).Union(outputPaths).Union(moduleKinds).Union(rootDirectories).Union(new string[] { "/debug" }));
             ParseUnknownOptions(unknownOptions);
 
-            if (sourceFiles.Count() == 0)
-            {
-                throw new ArgumentException("No source files found to compile!");
-            }
+            CheckSourceFiles(ref sourceFiles);
 
             var moduleKind = ParseModuleKinds(moduleKinds);
             var outputPath = ParseOutputPaths(outputPaths, sourceFiles, moduleKind);
-            references = references.Select(reference => reference.Substring(5))
-                                   .Select(dllName => Path.Combine(ReferenceAssembliesPath, dllName))
-                                   .Union(GetDefaultReferences());
+            var referencesArray = ParseReferences(references);
 
-            return new CompilerArguments(sourceFiles, references, outputPath, moduleKind, debugBuild);
+            var fileToNamespaceMap = ParseRootDirectories(sourceFiles, rootDirectories.Select(dir => Path.GetFullPath(dir.Substring(6))).ToArray());
+
+            if (Errors.Reported.Count > 0)
+                return null;
+
+            return new CompilerArguments(sourceFiles, referencesArray, fileToNamespaceMap, outputPath, moduleKind, debugBuild);
         }
 
         private static void ParseUnknownOptions(IEnumerable<string> unknownOptions)
@@ -50,26 +54,80 @@ namespace LaborasLangCompiler.FrontEnd
 
                 foreach (var option in unknownOptions)
                 {
-                    message.AppendLine(string.Format("Unknown compiler switch: {0}.", option));
+                    Errors.Report(ErrorCode.UnknownCompilerSwitch, string.Format("Unknown compiler switch: {0}.", option));
                 }
-
-                throw new ArgumentException(message.ToString());
             }
+        }
+
+        private static bool HasIllegalCharactersInPath(string path)
+        {
+            Contract.Requires(path != null);
+
+            for (int i = 0; i < path.Length; i++)
+            {
+                char c = path[i];
+
+                if (c == '\"' || c == '<' || c == '>' || c == '|' || c == '?' || c == '*' || c < 32)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static void CheckSourceFiles(ref IReadOnlyList<string> sourceFiles)
+        {
+            if (sourceFiles.Count == 0)
+            {
+                Errors.Report(ErrorCode.NoSourceFiles, "No source files found to compile.");
+                return;
+            }
+
+            bool ignoreMissingSourceFiles = Environment.GetEnvironmentVariable("LLC_IGNORE_NON_EXISTING_SOURCE_FILES") == "1";
+            var checkedSourceFiles = new List<string>(sourceFiles.Count);
+
+            for (int i = 0; i < sourceFiles.Count; i++)
+            {
+                if (HasIllegalCharactersInPath(sourceFiles[i]))
+                {
+                    Errors.Report(ErrorCode.IllegalCharactersInPath, string.Format("Illegal characters in path \"{0}\"", sourceFiles[i]));
+                }
+                else if (!ignoreMissingSourceFiles && !File.Exists(sourceFiles[i]))
+                {
+                    Errors.Report(ErrorCode.SourceFileDoesNotExist, string.Format("Source file \"{0}\" does not exist.", sourceFiles[i]));
+                }
+                else
+                {
+                    checkedSourceFiles.Add(sourceFiles[i]);
+                }
+            }
+
+            sourceFiles = checkedSourceFiles;
         }
 
         private static ModuleKind ParseModuleKinds(IEnumerable<string> moduleKinds)
         {
-            if (moduleKinds.Count() > 1)
+            Contract.Ensures(Contract.Result<ModuleKind>() != ModuleKind.NetModule);
+            var moduleKindCount = moduleKinds.Count();
+
+            if (moduleKindCount > 1)
             {
-                throw new ArgumentException("More than one module kind specified!");
+                var errorMessage = new StringBuilder("More than one module kind specified:" + Environment.NewLine);
+
+                foreach (var moduleKind in moduleKinds)
+                {
+                    errorMessage.AppendFormat("\t{0}{1}", moduleKind, Environment.NewLine);
+                }
+
+                Errors.Report(ErrorCode.MoreThanOneModuleKind, errorMessage.ToString());
+                return default(ModuleKind);
             }
-            else if (moduleKinds.Count() == 0)
+            else if (moduleKindCount == 0)
             {
                 return ModuleKind.Console;
             }
             else
             {
-                switch (moduleKinds.First().ToLowerInvariant())
+                switch (moduleKinds.Single().ToLowerInvariant())
                 {
                     case "/console":
                         return ModuleKind.Console;
@@ -81,51 +139,247 @@ namespace LaborasLangCompiler.FrontEnd
                         return ModuleKind.Dll;
 
                     default:
-                        throw new ArgumentException(string.Format("Unknown module kind string: {0}.", moduleKinds.First()));
+                        ContractsHelper.AssumeUnreachable(string.Format("Unknown module kind: \"{0}\".", moduleKinds.First()));
+                        return default(ModuleKind);
                 }
             }
         }
 
-        private static string ParseOutputPaths(IEnumerable<string> outputPaths, IEnumerable<string> sourceFiles, ModuleKind moduleKind)
+        private static string ParseOutputPaths(IEnumerable<string> outputPaths, IReadOnlyList<string> sourceFiles, ModuleKind moduleKind)
         {
-            string outputPath;
+            string outputPath = null;
             var targetExtension = ModuleKindToExtension(moduleKind);
+            var outputPathCount = outputPaths.Count();
 
-            if (outputPaths.Count() > 1)
+            if (outputPathCount > 1)
             {
-                throw new ArgumentException("More than one output path specified!");
+                Errors.Report(ErrorCode.MoreThanOneOutputPath, "More than one output path specified.");
+                return null;
             }
-            else if (outputPaths.Count() == 0)
+            else if (outputPathCount == 0)
             {
-                if (sourceFiles.Count() > 1)
+                if (sourceFiles.Count > 1)
                 {
-                    throw new ArgumentException("No output path and more than one source file specified!");
+                    Errors.Report(ErrorCode.NoOutputPaths, "No output path and more than one source file specified.");
+                    return null;
+                }
+                else if (sourceFiles.Count == 1)
+                {
+                    outputPath = Path.ChangeExtension(sourceFiles.First(), targetExtension);
                 }
                 else
                 {
-                    outputPath = Path.ChangeExtension(sourceFiles.First(), targetExtension);
+                    return null;    // "No source files" error is already reported at this point
                 }
             }
             else
             {
                 outputPath = outputPaths.First().Substring(5);
 
-                if (Path.GetExtension(outputPath) != targetExtension)
+                if (Path.GetFileNameWithoutExtension(outputPath) == Path.GetFileName(outputPath))
                 {
-                    throw new Exception(string.Join(Environment.NewLine, new string[]
+                    outputPath = outputPath + targetExtension;
+                }
+                else if (Path.GetExtension(outputPath) != targetExtension)
+                {
+                    Errors.Report(ErrorCode.OutputPathAndModuleKindMismatch, string.Join(Environment.NewLine, new string[]
                     { 
                         "Output path doesn't match specified module kind!",
                         string.Format("\tSpecified output path: \"{0}\"", outputPath),
                         string.Format("\tSpecified module kind: \"{0}\"", moduleKind)
-                    }));                                          
+                    }));
+
+                    return null;
                 }
+            }
+
+            if (HasIllegalCharactersInPath(outputPath))
+            {
+                Errors.Report(ErrorCode.IllegalCharactersInPath, string.Format("Illegal characters in path \"{0}\"", outputPath));
             }
 
             return outputPath;
         }
 
+        private static IReadOnlyList<string> ParseReferences(IEnumerable<string> references)
+        {
+            var parsedReferences = new List<string>();
+
+            foreach (var reference in references.Select(reference => reference.Substring(5)))
+            {
+                if (HasIllegalCharactersInPath(reference))
+                {
+                    Errors.Report(ErrorCode.IllegalCharactersInPath, string.Format("Illegal characters in path \"{0}\"", reference));
+                }
+                else
+                {
+                    string referencePath = reference;
+                    
+                    if (!Path.IsPathRooted(reference))
+                    {
+                        if (!File.Exists(reference))
+                        {
+                            referencePath = Path.Combine(ReferenceAssembliesPath, reference);
+
+                            if (!File.Exists(referencePath))
+                            {
+                                Errors.Report(ErrorCode.UnresolvedReference, 
+                                    string.Format("Failed to resolve referenced assembly \"{0}\".{1}" +
+                                        "\tConsidered \"{2}\", but the file could not be found.{1}" +
+                                        "\tConsidered \"{3}\", but the file could not be found.", 
+                                        reference, Environment.NewLine, Path.GetFullPath(reference), referencePath));
+                                continue;
+                            }
+                        }
+                    }
+                    else if (!File.Exists(reference))
+                    {
+                        Errors.Report(ErrorCode.UnresolvedReference, string.Format("Failed to resolve referenced assembly \"{0}\".", reference));
+                        continue;
+                    }
+                    else
+                    {
+                        referencePath = reference;
+                    }
+
+                    parsedReferences.Add(referencePath);
+                }
+            }
+
+            foreach (var defaultReference in GetDefaultReferences())
+            {
+                bool shouldAddDefaultReference = true;
+
+                foreach (var reference in parsedReferences)
+                {
+                    if (Path.GetFileNameWithoutExtension(reference) == Path.GetFileNameWithoutExtension(defaultReference))
+                    {
+                        shouldAddDefaultReference = false;
+                    }
+                }
+
+                if (shouldAddDefaultReference)
+                    parsedReferences.Add(defaultReference);
+            }
+
+            return parsedReferences;
+        }
+
+        private static Dictionary<string, string> ParseRootDirectories(IReadOnlyList<string> sourceFiles, string[] rootDirectories)
+        {
+            var fileToNamespaceMap = new Dictionary<string, string>();
+            var typeFullNames = new Dictionary<string, List<string>>();
+            bool namesClash = false;
+            List<string> filesWithoutMatchingRoot = null;
+
+            for (int i = 0; i < sourceFiles.Count; i++)
+            {
+                var filePath = Path.GetFullPath(sourceFiles[i]);
+                int bestMatchingRootDirectory = -1;
+                int bestMatchingRootDirectoryScore = -1;
+                bool foundMatchingRootDirectory = false;
+
+                for (int j = 0; j < rootDirectories.Length; j++)
+                {
+                    if (filePath.Length <= rootDirectories[j].Length)
+                        continue;
+
+                    int matchScore = 0;
+
+                    while (matchScore < rootDirectories[j].Length && rootDirectories[j][matchScore] == filePath[matchScore])
+                        matchScore++;
+
+                    if (matchScore > 0)
+                    {
+                        foundMatchingRootDirectory = true;
+
+                        if (matchScore > bestMatchingRootDirectoryScore)
+                        {
+                            bestMatchingRootDirectory = j;
+                            bestMatchingRootDirectoryScore = matchScore;
+                        }
+                    }
+                }
+
+                string namespaze = null;
+
+                if (foundMatchingRootDirectory)
+                {
+                    namespaze = Path.GetDirectoryName(filePath.Substring(bestMatchingRootDirectoryScore + 1)).Replace(Path.DirectorySeparatorChar, '.');
+                }
+                else if (rootDirectories.Length == 0)
+                {
+                    if (Path.IsPathRooted(sourceFiles[i]))
+                    {
+                        namespaze = string.Empty;
+                    }
+                    else
+                    {
+                        namespaze = Path.GetDirectoryName(sourceFiles[i]).Replace(Path.DirectorySeparatorChar, '.');
+                    }
+                }
+
+                if (namespaze != null)
+                {
+                    var typeFullName = ((namespaze.Length > 0) ? namespaze + "." : string.Empty) + Path.GetFileNameWithoutExtension(sourceFiles[i]);
+
+                    if (typeFullNames.ContainsKey(typeFullName))
+                    {
+                        namesClash = true;
+                        typeFullNames[typeFullName].Add(sourceFiles[i]);
+                    }
+                    else
+                    {
+                        typeFullNames.Add(typeFullName, new List<string>() { sourceFiles[i] });
+                        fileToNamespaceMap.Add(sourceFiles[i], namespaze);
+                    }
+                }
+                else
+                {
+                    if (filesWithoutMatchingRoot == null)
+                        filesWithoutMatchingRoot = new List<string>();
+
+                    filesWithoutMatchingRoot.Add(sourceFiles[i]);
+                }
+            }
+            
+            if (filesWithoutMatchingRoot != null)
+            {
+                var errorMessage = new StringBuilder();
+                errorMessage.AppendLine("Error: Could not determine namespace of the following files with given root directories:");
+
+                foreach (var file in filesWithoutMatchingRoot)
+                    errorMessage.AppendFormat("\t{0}{1}", file, Environment.NewLine);
+
+                Errors.Report(ErrorCode.UnspecifiedNamespace, errorMessage.ToString());
+            }
+
+            if (namesClash)
+            {
+                foreach (var typeFullName in typeFullNames)
+                {
+                    if (typeFullName.Value.Count > 1)
+                    {
+                        var errorMessage = new StringBuilder();
+                        errorMessage.AppendFormat("Type name clash. The type of following files is \"{0}\":{1}", typeFullName.Key, Environment.NewLine);
+
+                        foreach (var file in typeFullName.Value)
+                        {
+                            errorMessage.AppendFormat("\t{0}{1}", file, Environment.NewLine);
+                        }
+
+                        Errors.Report(ErrorCode.TypeNameClash, errorMessage.ToString());
+                    }
+                }
+            }
+
+            return fileToNamespaceMap;
+        }
+
         private static string ModuleKindToExtension(ModuleKind moduleKind)
         {
+            Contract.Requires(moduleKind != ModuleKind.NetModule);
+
             switch (moduleKind)
             {
                 case ModuleKind.Console:
@@ -136,7 +390,8 @@ namespace LaborasLangCompiler.FrontEnd
                     return ".dll";
 
                 default:
-                    throw new ArgumentException(string.Format("Unknown module kind: {0}.", moduleKind), "moduleKind");
+                    ContractsHelper.AssertUnreachable(string.Format("Unknown module kind: {0}.", moduleKind));
+                    return string.Empty;
             }
         }
 
@@ -155,7 +410,6 @@ namespace LaborasLangCompiler.FrontEnd
             }
         }
 
-
         private static IEnumerable<string> GetDefaultReferences()
         {
             var references = new List<string>
@@ -166,11 +420,12 @@ namespace LaborasLangCompiler.FrontEnd
             return references;
         }
 
-        private CompilerArguments(IEnumerable<string> sourceFiles, IEnumerable<string> references, string outputPath, 
+        private CompilerArguments(IReadOnlyList<string> sourceFiles, IReadOnlyList<string> references, IReadOnlyDictionary<string, string> fileToNamespaceMap, string outputPath, 
             ModuleKind moduleKind, bool debugBuild)
         {
-            SourceFiles = sourceFiles.ToArray();
-            References = references.ToArray();
+            SourceFiles = sourceFiles;
+            References = references;
+            FileToNamespaceMap = fileToNamespaceMap;
             OutputPath = outputPath;
             ModuleKind = moduleKind;
             DebugBuild = debugBuild;

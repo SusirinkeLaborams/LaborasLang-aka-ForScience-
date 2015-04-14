@@ -31,7 +31,7 @@ Class:
 								PreIncrement
 							Operand:
 								Field:
-									System.Int32 TestMixedPrefix::i
+									System.Int32 $TestMixedPrefix.TestMixedPrefix::i
 									Instance:
 										null
 

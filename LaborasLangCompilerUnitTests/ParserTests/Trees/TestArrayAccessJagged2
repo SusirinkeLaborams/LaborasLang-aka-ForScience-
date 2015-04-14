@@ -22,7 +22,7 @@ Class:
 						ArrayAccess:
 							Array:
 								Field:
-									System.Int32[][] TestArrayAccessJagged2::foo
+									System.Int32[][] $TestArrayAccessJagged2.TestArrayAccessJagged2::foo
 									Instance:
 										null
 							ElementType: System.Int32[]

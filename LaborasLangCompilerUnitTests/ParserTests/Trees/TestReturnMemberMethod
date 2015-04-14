@@ -34,7 +34,7 @@ Class:
 									Instance:
 										null
 									Method:
-										System.Void TestReturnMemberMethod::foo()
+										System.Void $TestReturnMemberMethod.TestReturnMemberMethod::foo()
 
 
 

@@ -23,7 +23,7 @@ Class:
 				Private, Mutable, NoInstance
 			Initializer:
 				Field:
-					System.Int32 SomeTest::a
+					System.Int32 $SomeTest.SomeTest::a
 					Instance:
 						null
 
@@ -79,7 +79,7 @@ Class:
 									Instance:
 										null
 									Method:
-										System.Int32 SomeTest::$Lambda_0(System.Int32,System.Single)
+										System.Int32 $SomeTest.SomeTest::$Lambda_0(System.Int32,System.Single)
 
 
 

@@ -28,7 +28,7 @@ Class:
 					System.Int32 System.Collections.ArrayList::Count()
 					Instance:
 						Field:
-							System.Collections.ArrayList TestReadProperty::lst
+							System.Collections.ArrayList $TestReadProperty.TestReadProperty::lst
 							Instance:
 								null
 

@@ -17,7 +17,7 @@ Class:
 							Instance:
 								null
 							Method:
-								System.Int32 file2::foo()
+								System.Int32 $TestTwoFilesMethodVisibility.file2::foo()
 
 
 

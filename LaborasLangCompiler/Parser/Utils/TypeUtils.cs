@@ -80,7 +80,7 @@ namespace LaborasLangCompiler.Parser.Utils
             }
             else if (member is MethodReference)
             {
-                return ((MethodReference)member).Resolve().IsStatic;
+                return !((MethodReference)member).HasThis;
             }
             else if (member is TypeReference)
             {

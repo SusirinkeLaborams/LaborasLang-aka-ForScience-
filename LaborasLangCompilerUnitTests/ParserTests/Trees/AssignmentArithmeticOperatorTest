@@ -35,14 +35,14 @@ Class:
 								Assignment:
 									Left:
 										Field:
-											System.Int32 AssignmentArithmeticOperatorTest::a
+											System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
 											Instance:
 												null
 									Right:
 										BinaryOperator:
 											Left:
 												Field:
-													System.Int32 AssignmentArithmeticOperatorTest::a
+													System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
 													Instance:
 														null
 											Operator:
@@ -82,7 +82,7 @@ Class:
 												Multiplication
 											Right:
 												Field:
-													System.Int32 AssignmentArithmeticOperatorTest::a
+													System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
 													Instance:
 														null
 
@@ -95,14 +95,14 @@ Class:
 								Assignment:
 									Left:
 										Field:
-											System.Int32 AssignmentArithmeticOperatorTest::a
+											System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
 											Instance:
 												null
 									Right:
 										BinaryOperator:
 											Left:
 												Field:
-													System.Int32 AssignmentArithmeticOperatorTest::a
+													System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
 													Instance:
 														null
 											Operator:
@@ -122,14 +122,14 @@ Class:
 								Assignment:
 									Left:
 										Field:
-											System.Int32 AssignmentArithmeticOperatorTest::a
+											System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
 											Instance:
 												null
 									Right:
 										BinaryOperator:
 											Left:
 												Field:
-													System.Int32 AssignmentArithmeticOperatorTest::a
+													System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
 													Instance:
 														null
 											Operator:

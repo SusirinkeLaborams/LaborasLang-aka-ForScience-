@@ -24,7 +24,7 @@ Class:
 							Args:
 							Function:
 								Field:
-									$Functors.$System_Int32[]? TestArrayAccessOnCall::foo
+									$Functors.$System_Int32[]? $TestArrayAccessOnCall.TestArrayAccessOnCall::foo
 									Instance:
 										null
 

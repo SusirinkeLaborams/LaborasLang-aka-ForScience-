@@ -20,7 +20,7 @@ Class:
 				ArrayAccess:
 					Array:
 						Field:
-							System.Int32[0...,0...] TestArrayAccessMatrix::foo
+							System.Int32[0...,0...] $TestArrayAccessMatrix.TestArrayAccessMatrix::foo
 							Instance:
 								null
 					ElementType: System.Int32

@@ -20,7 +20,7 @@ Class:
 									Instance:
 										null
 									Method:
-										System.Void TestCallHigherOrderFunctor::$Lambda_0()
+										System.Void $TestCallHigherOrderFunctor.TestCallHigherOrderFunctor::$Lambda_0()
 
 
 
@@ -49,7 +49,7 @@ Class:
 											Instance:
 												null
 											Method:
-												$Functors.$System_Void? TestCallHigherOrderFunctor::foo()
+												$Functors.$System_Void? $TestCallHigherOrderFunctor.TestCallHigherOrderFunctor::foo()
 
 
 

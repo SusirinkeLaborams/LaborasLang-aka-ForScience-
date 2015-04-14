@@ -28,7 +28,7 @@ Class:
 				Private, Mutable, NoInstance
 			Initializer:
 				Field:
-					System.Int32 file1::foo
+					System.Int32 $TestTwoFilesFieldVisibility.file1::foo
 					Instance:
 						null
 

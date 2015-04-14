@@ -20,6 +20,7 @@ namespace LaborasLangCompiler.Parser
         public AssemblyEmitter Assembly { get { return ProjectParser.Assembly; } }
         public ClassNode Root { get; set; }
         public string Filename { get; private set; }
+        public Namespace Namespace { get; private set; }
         public Document Document { get; private set; }
 
         public TypeReference Bool { get { return ProjectParser.Bool; } }
@@ -39,9 +40,10 @@ namespace LaborasLangCompiler.Parser
         public TypeReference Auto { get { return ProjectParser.Auto; } }
         public TypeReference Object { get { return ProjectParser.Object; } }
 
-        public Parser(ProjectParser parser, string filePath)
+        public Parser(ProjectParser parser, string filePath, string namespaze)
         {
             Filename = Path.GetFileNameWithoutExtension(filePath);
+            Namespace = new Namespace(namespaze, parser.Assembly);
             Document = new Document(filePath);
             Document.Language = DocumentLanguage.Other;
             Document.LanguageVendor = DocumentLanguageVendor.Other;

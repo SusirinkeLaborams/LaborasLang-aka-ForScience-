@@ -23,7 +23,7 @@ Class:
 				Private, Mutable, NoInstance
 			Initializer:
 				Field:
-					System.Int32 ImplicitIntToLong::a
+					System.Int32 $ImplicitIntToLong.ImplicitIntToLong::a
 					Instance:
 						null
 
