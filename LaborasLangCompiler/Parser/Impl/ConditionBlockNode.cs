@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
 using Lexer;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -33,6 +34,8 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ConditionBlockNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
+            Contract.Requires(lexerNode.Type == TokenType.ConditionalSentence);
+            Contract.Ensures(Contract.Result<ConditionBlockNode>() != null);
             var point = context.Parser.GetSequencePoint(lexerNode);
             var condition = ExpressionNode.Parse(context, lexerNode.Children[2]);
             var trueBlock = CodeBlockNode.Parse(context, lexerNode.Children[4]);
@@ -45,7 +48,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public static ConditionBlockNode Create(ContextNode context, ExpressionNode condition, CodeBlockNode trueBlock, CodeBlockNode falseBlock, SequencePoint point)
         {
             var instance = new ConditionBlockNode(point);
-            if (!condition.ExpressionReturnType.IsAssignableTo(context.Parser.Bool) || !condition.IsGettable)
+            if (!condition.IsGettable || !condition.ExpressionReturnType.IsAssignableTo(context.Parser.Bool))
             {
                 ErrorCode.InvalidCondition.ReportAndThrow(point, "Condition must be a gettable boolean expression");
             }

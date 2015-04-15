@@ -44,6 +44,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ExpressionNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.PostfixNode);
             Contract.Requires(lexerNode.Children[1].Type == Lexer.TokenType.FunctionArgumentsList);
             var function = ExpressionNode.Parse(context, lexerNode.Children[0]);
             var args = ParseArgList(context, lexerNode.Children[1]);
@@ -66,7 +67,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         args.Add(ExpressionNode.Parse(parent, node));
                         break;
                     default:
-                        ErrorCode.InvalidStructure.ReportAndThrow(parent.Parser.GetSequencePoint(node), "Unexpected node type {0} in call", node.Type);
+                        ContractsHelper.AssertUnreachable("Unexpected node {0} in call", node.Type);
                         break;
                 }
 
@@ -76,6 +77,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ExpressionNode Create(ContextNode context, ExpressionNode function, IEnumerable<ExpressionNode> args, SequencePoint point)
         {
+            Contract.Ensures(Contract.Result<ExpressionNode>() != null);
             foreach(var arg in args)
             {
                 if (!arg.IsGettable)
@@ -96,10 +98,8 @@ namespace LaborasLangCompiler.Parser.Impl
             if (method != null)
                 return method;
 
-            if (method == null)
-                ErrorCode.NotCallable.ReportAndThrow(point, "Unable to call symbol");
-
-            return method;
+            ErrorCode.NotCallable.ReportAndThrow(point, "Unable to call symbol");
+            return null;//unreachable
         }
 
         private static ExpressionNode AsFunctor(ContextNode context, ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)

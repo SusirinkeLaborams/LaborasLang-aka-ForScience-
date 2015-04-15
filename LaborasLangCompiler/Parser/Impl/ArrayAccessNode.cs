@@ -56,6 +56,8 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ExpressionNode Create(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
         {
+            Contract.Requires(indices.Any());
+            Contract.Ensures(Contract.Result<ExpressionNode>() != null);
             foreach (var index in indices)
             {
                 if (!index.IsGettable ||

@@ -11,6 +11,7 @@ using Lexer.Containers;
 using LaborasLangCompiler.Codegen;
 using Lexer;
 using LaborasLangCompiler.Parser.Impl.Operators;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -25,6 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ExpressionNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode, TypeReference expectedType = null)
         {
+            Contract.Ensures(Contract.Result<ExpressionNode>() != null);
             ExpressionNode ret = null;
             switch (lexerNode.Type)
             {

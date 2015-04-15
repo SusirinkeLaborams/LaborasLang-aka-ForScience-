@@ -5,6 +5,7 @@ using Lexer.Containers;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static WhileBlock Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
+            Contract.Requires(lexerNode.Type == TokenType.WhileLoop);
             var point = context.Parser.GetSequencePoint(lexerNode);
             var condition = ExpressionNode.Parse(context, lexerNode.Children[2]);
             var block = CodeBlockNode.Parse(context, lexerNode.Children[4]);
@@ -32,7 +34,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public static WhileBlock Create(ContextNode context, ExpressionNode condition, CodeBlockNode body, SequencePoint point)
         {
             var instance = new WhileBlock(point);
-            if (!condition.ExpressionReturnType.TypeEquals(context.Parser.Bool) || !condition.IsGettable)
+            if (!condition.IsGettable || !condition.ExpressionReturnType.TypeEquals(context.Parser.Bool))
                 ErrorCode.InvalidCondition.ReportAndThrow(point, "Condition must be a gettable boolean expression");
             instance.condition = condition;
             instance.block = body;

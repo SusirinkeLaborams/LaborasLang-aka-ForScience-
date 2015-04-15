@@ -28,6 +28,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public static InitializerList Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.InitializerList);
+            Contract.Ensures(Contract.Result<InitializerList>() != null);
             var point = context.Parser.GetSequencePoint(lexerNode);
             var instance = new InitializerList(point);
             var members = new List<ExpressionNode>();
@@ -63,6 +64,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static InitializerList Create(ContextNode context, IEnumerable<ExpressionNode> expressions, SequencePoint point)
         {
+            Contract.Ensures(Contract.Result<InitializerList>() != null);
             if (!expressions.Any())
                 return CreateEmpty(context, point);
 
@@ -92,8 +94,8 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static InitializerList Create(ContextNode context, IEnumerable<InitializerList> subLists, SequencePoint point)
         {
-            if (!subLists.Any())
-                ErrorCode.InvalidStructure.ReportAndThrow(point, "Initializer list must not be empty");
+            //cant create a matrix if the list is {}
+            Contract.Ensures(subLists.Any());
             var first = subLists.First();
             if(!subLists.Skip(1).All(l => l.Dimensions.SequenceEqual(first.Dimensions)))
             {

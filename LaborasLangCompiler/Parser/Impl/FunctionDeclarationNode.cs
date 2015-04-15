@@ -14,6 +14,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LaborasLangCompiler.Common;
 using Lexer;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -48,6 +49,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private void ParseHeader(Modifiers mods, IAbstractSyntaxTree lexerNode, string methodName)
         {
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.Type);
             var point = Parser.GetSequencePoint(lexerNode);
             var builder = new TypeNode.TypeBuilder(Parent);
             int count = lexerNode.Children.Count;
@@ -130,6 +132,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static FunctionDeclarationNode ParseAsFunctor(ContextNode context, IAbstractSyntaxTree function)
         {
+            Contract.Requires(function.Type == Lexer.TokenType.Function);
             var instance = new FunctionDeclarationNode(context, Modifiers.NoInstance | Modifiers.Private, context.GetClass().NewFunctionName(), function);
             context.GetClass().AddLambda(instance);
             instance.Emit();

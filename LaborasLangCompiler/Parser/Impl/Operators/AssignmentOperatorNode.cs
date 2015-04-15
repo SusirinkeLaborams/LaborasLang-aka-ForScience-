@@ -38,8 +38,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public static ExpressionNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             var left = ExpressionNode.Parse(context, lexerNode.Children[0]);
-#warning fix, first need to check type
-            var right = ExpressionNode.Parse(context, lexerNode.Children[1], left.ExpressionReturnType);
+            var right = ExpressionNode.Parse(context, lexerNode.Children[1], left.IsGettable ? left.ExpressionReturnType : null);
             var point = context.Parser.GetSequencePoint(lexerNode);
 
             return Create(context, LexerToAssignemnt[lexerNode.Children[2].Type], left, right, point);    

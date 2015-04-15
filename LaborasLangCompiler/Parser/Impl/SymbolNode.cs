@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
+    //[Obsolete]
     class SymbolNode : ExpressionNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }

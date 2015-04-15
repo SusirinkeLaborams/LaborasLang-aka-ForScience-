@@ -50,6 +50,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public static ExpressionNode Create(IEnumerable<MethodReference> methods, ContextNode context, ExpressionNode instance, SequencePoint sequencePoint)
         {
             Contract.Requires(methods.Any());
+            Contract.Ensures(Contract.Result<ExpressionNode>() != null);
             if(methods.Count() == 1)
             {
                 return new MethodNode(methods.Single(), instance, context, sequencePoint);

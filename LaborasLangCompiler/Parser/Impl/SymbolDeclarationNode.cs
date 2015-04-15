@@ -12,6 +12,7 @@ using Lexer.Containers;
 using LaborasLangCompiler.Common;
 using Mono.Cecil;
 using Lexer;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -34,6 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static SymbolDeclarationNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.DeclarationNode);
             var info = DeclarationInfo.Parse(context.Parser, lexerNode);
             var name = info.SymbolName.GetSingleSymbolOrThrow();
             var declaredType = TypeNode.Parse(context, info.Type);

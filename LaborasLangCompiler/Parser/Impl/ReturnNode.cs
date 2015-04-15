@@ -26,6 +26,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ReturnNode Parse(CodeBlockNode context, IAbstractSyntaxTree lexerNode)
         {
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.ReturnNode);
             var point = context.Parser.GetSequencePoint(lexerNode);
             var returnType = context.GetMethod().MethodReturnType;
             ExpressionNode expression = null;

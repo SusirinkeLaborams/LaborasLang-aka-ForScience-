@@ -24,7 +24,6 @@ namespace LaborasLangCompiler.Parser.Impl
             get { return true; }
         }
 
-
         internal ParameterNode(ParameterDefinition param, SequencePoint point)
             : base(point)
         {
