@@ -83,7 +83,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return result;
 
             ErrorCode.CannotIndex.ReportAndThrow(point, "Cannot use operator[], not type, array or object with overloaded [] operator");
-            return null;//unreachable
+            return Utils.Utils.Fail<ExpressionNode>();
         }
 
         private static ArrayAccessNode AsArray(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)

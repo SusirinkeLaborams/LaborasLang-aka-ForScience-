@@ -99,7 +99,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return method;
 
             ErrorCode.NotCallable.ReportAndThrow(point, "Unable to call symbol");
-            return null;//unreachable
+            return Utils.Utils.Fail<ExpressionNode>();
         }
 
         private static ExpressionNode AsFunctor(ContextNode context, ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)

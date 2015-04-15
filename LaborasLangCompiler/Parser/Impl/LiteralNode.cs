@@ -79,7 +79,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.Double:
                     return parser.Double;
                 default:
-                    ContractsHelper.AssertUnreachable("Unknown literal type");
+                    ContractsHelper.AssumeUnreachable("Unknown literal type");
                     return null;//unreachable
             }
         }
