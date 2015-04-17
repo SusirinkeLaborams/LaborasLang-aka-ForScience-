@@ -17,9 +17,12 @@ namespace LaborasLangCompiler.FrontEnd
         public readonly string OutputPath;
         public readonly ModuleKind ModuleKind;
         public readonly bool DebugBuild;
+        public readonly bool HasErrors;
 
         public static CompilerArguments Parse(string[] args)
         {
+            int errorCountBeforeParsingArgs = Errors.Reported.Count;
+
             IReadOnlyList<string> sourceFiles = args.Where(arg => !arg.StartsWith("/", StringComparison.InvariantCultureIgnoreCase)).Distinct().ToArray();
             var references = args.Where(arg => arg.StartsWith("/ref:", StringComparison.InvariantCultureIgnoreCase));
             var outputPaths = args.Where(arg => arg.StartsWith("/out:", StringComparison.InvariantCultureIgnoreCase));
@@ -39,11 +42,8 @@ namespace LaborasLangCompiler.FrontEnd
             var referencesArray = ParseReferences(references);
 
             var fileToNamespaceMap = ParseRootDirectories(sourceFiles, rootDirectories.Select(dir => Path.GetFullPath(dir.Substring(6))).ToArray());
-
-            if (Errors.Reported.Count > 0)
-                return null;
-
-            return new CompilerArguments(sourceFiles, referencesArray, fileToNamespaceMap, outputPath, moduleKind, debugBuild);
+            
+            return new CompilerArguments(sourceFiles, referencesArray, fileToNamespaceMap, outputPath, moduleKind, debugBuild, Errors.Reported.Count - errorCountBeforeParsingArgs > 0);
         }
 
         private static void ParseUnknownOptions(IEnumerable<string> unknownOptions)
@@ -421,7 +421,7 @@ namespace LaborasLangCompiler.FrontEnd
         }
 
         private CompilerArguments(IReadOnlyList<string> sourceFiles, IReadOnlyList<string> references, IReadOnlyDictionary<string, string> fileToNamespaceMap, string outputPath, 
-            ModuleKind moduleKind, bool debugBuild)
+            ModuleKind moduleKind, bool debugBuild, bool hasErrors)
         {
             SourceFiles = sourceFiles;
             References = references;
@@ -429,6 +429,7 @@ namespace LaborasLangCompiler.FrontEnd
             OutputPath = outputPath;
             ModuleKind = moduleKind;
             DebugBuild = debugBuild;
+            HasErrors = hasErrors;
         }
     }
 }

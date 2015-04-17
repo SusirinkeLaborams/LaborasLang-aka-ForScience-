@@ -26,6 +26,8 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         protected ParserTestBase() :
             base(false)
         {
+            Errors.Clear();
+
             var compilerArgs = CompilerArguments.Parse(new[] { "ParserTests.il" });
             AssemblyRegistry.CreateAndOverrideIfNeeded(compilerArgs.References);
             assembly = new AssemblyEmitter(compilerArgs);
