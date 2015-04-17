@@ -26,6 +26,7 @@ namespace LaborasLangCompiler.Parser
         Catch,
         ParserInternal
     }
+
     interface IParserNode
     {
         NodeType Type { get; }
@@ -53,6 +54,7 @@ namespace LaborasLangCompiler.Parser
         ArrayCreation,
         ArrayAccess,
         IndexOperator,
+        Null,
         ParserInternal
     }
 

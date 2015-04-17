@@ -216,6 +216,9 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Emit((ILocalVariableNode)expression, emissionType);
                     return;
 
+                case ExpressionNodeType.Null:
+                    throw new NotImplementedException();
+
                 case ExpressionNodeType.ObjectCreation:
                     Emit((IObjectCreationNode)expression, emissionType);
                     return;
