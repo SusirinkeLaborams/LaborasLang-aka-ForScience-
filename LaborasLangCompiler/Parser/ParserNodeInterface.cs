@@ -270,7 +270,7 @@ namespace LaborasLangCompiler.Parser
     interface IForEachLoopNode : IParserNode
     {
         IExpressionNode Collection { get; }
-        ILocalVariableNode LoopVariable { get; }
+        ISymbolDeclarationNodeContract LoopVariable { get; }
         ICodeBlockNode Body { get; }
     }
 
@@ -853,11 +853,11 @@ namespace LaborasLangCompiler.Parser
             }
         }
 
-        public ILocalVariableNode LoopVariable
+        public ISymbolDeclarationNode LoopVariable
         {
             get 
             {
-                Contract.Ensures(Contract.Result<ILocalVariableNode>() != null);
+                Contract.Ensures(Contract.Result<ISymbolDeclarationNode>() != null);
                 throw new NotImplementedException(); 
             }
         }
