@@ -94,7 +94,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     break;
 
                 case NodeType.ForLoop:
-                    throw new NotImplementedException();
+                    Emit((IForLoopNode)node);
+                    break;
 
                 case NodeType.ForEachLoop:
                     throw new NotImplementedException();
@@ -280,6 +281,23 @@ namespace LaborasLangCompiler.Codegen.Methods
             Br(loopStart);
 
             Emit(loopEnd);
+        }
+
+        private void Emit(IForLoopNode forLoop)
+        {
+            var loopBody = CreateLabel();
+            var loopCondition = CreateLabel();
+
+            Emit(forLoop.InitializationBlock);
+            Br(loopCondition);
+
+            Emit(loopBody);
+            Emit(forLoop.Body);
+            Emit(forLoop.IncrementBlock);
+
+            Emit(loopCondition);
+            Emit(forLoop.ConditionBlock, EmissionType.Value);
+            Brtrue(loopBody);
         }
 
         #endregion
