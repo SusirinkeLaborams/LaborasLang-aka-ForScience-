@@ -18,6 +18,8 @@ namespace LaborasLangCompiler.Parser
         CodeBlockNode,
         ConditionBlock,
         WhileBlock,
+        ForLoop,
+        ForEachLoop,
         ReturnNode,
         ExceptionHandler,
         Throw,

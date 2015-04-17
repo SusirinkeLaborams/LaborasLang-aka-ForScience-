@@ -93,6 +93,12 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Emit((IExpressionNode)node, EmissionType.None);
                     break;
 
+                case NodeType.ForLoop:
+                    throw new NotImplementedException();
+
+                case NodeType.ForEachLoop:
+                    throw new NotImplementedException();
+
                 case NodeType.ReturnNode:
                     Emit((IReturnNode)node);
                     break;
