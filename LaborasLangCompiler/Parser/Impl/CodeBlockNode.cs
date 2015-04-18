@@ -107,7 +107,7 @@ namespace LaborasLangCompiler.Parser.Impl
             return null;//unreachable
         }
 
-        private ParserNode ParseNode(IAbstractSyntaxTree lexerNode)
+        public ParserNode AddNode(IAbstractSyntaxTree lexerNode)
         {
             switch (lexerNode.Type)
             {
@@ -147,7 +147,7 @@ namespace LaborasLangCompiler.Parser.Impl
                             case Lexer.TokenType.EndOfLine:
                                 break;
                             default:
-                                instance.AddNode(instance.ParseNode(node));
+                                instance.AddNode(instance.AddNode(node));
                                 break;
                         }
                     }
@@ -157,7 +157,7 @@ namespace LaborasLangCompiler.Parser.Impl
             else
             {
                 instance = new CodeBlockNode(context, context.Parser.GetSequencePoint(lexerNode));
-                instance.AddNode(instance.ParseNode(lexerNode.Children[0]));
+                instance.AddNode(instance.AddNode(lexerNode.Children[0]));
             }
             return instance;
         }

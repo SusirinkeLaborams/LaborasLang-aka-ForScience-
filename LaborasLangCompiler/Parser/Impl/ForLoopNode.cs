@@ -42,7 +42,38 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 throw new NotImplementedException("foreach not implemented yet");
             }
-            throw new NotImplementedException();
+
+            CodeBlockNode init = null;
+            ExpressionNode condition = null;
+            CodeBlockNode increment = null;
+
+            IAbstractSyntaxTree initNode = lexerNode.Children[2];
+            IAbstractSyntaxTree conditionNode = lexerNode.Children[4];
+            IAbstractSyntaxTree incrementNode = lexerNode.Children[6];
+            IAbstractSyntaxTree bodyNode = lexerNode.Children[8];
+
+            if (initNode.Type != TokenType.Empty)
+            {
+                init = CodeBlockNode.Create(context, context.Parser.GetSequencePoint(initNode));
+                init.AddNode(initNode);
+                //makes init scope encompass for scope
+                context = init;
+            }
+
+            if (conditionNode.Type != TokenType.Empty)
+            {
+                condition = ExpressionNode.Parse(context, conditionNode, context.Parser.Bool);
+            }
+
+            if (incrementNode.Type != TokenType.Empty)
+            {
+                increment = CodeBlockNode.Create(context, context.Parser.GetSequencePoint(incrementNode));
+                increment.AddNode(incrementNode);
+            }
+
+            var body = CodeBlockNode.Parse(context, bodyNode);
+
+            return ForLoopNode.Create(context, init, condition, increment, body, context.Parser.GetSequencePoint(lexerNode));
         }
 
         //context should be init block if init exists
