@@ -270,7 +270,7 @@ namespace LaborasLangCompiler.Parser
     interface IForEachLoopNode : IParserNode
     {
         IExpressionNode Collection { get; }
-        ISymbolDeclarationNodeContract LoopVariable { get; }
+        ISymbolDeclarationNode LoopVariable { get; }
         ICodeBlockNode Body { get; }
     }
 

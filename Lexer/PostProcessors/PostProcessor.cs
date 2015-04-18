@@ -12,7 +12,12 @@ namespace Lexer.PostProcessors
 
         public static IEnumerable<PostProcessor> BuildAll()
         {
-            return new PostProcessor[] { new ArrayFunctionResolver(), new ValueResolver(), new FullSymbolPostProcessor(), new OperatorColapser() };
+            return new PostProcessor[] { 
+                new ArrayFunctionResolver(), 
+                new ValueResolver(), 
+                new FullSymbolPostProcessor(), 
+                new OperatorColapser(),
+                new ForResolver()};
         }
 
         public PostProcessor()

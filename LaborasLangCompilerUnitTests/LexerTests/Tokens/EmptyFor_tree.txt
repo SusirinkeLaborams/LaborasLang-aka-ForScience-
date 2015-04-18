@@ -12,12 +12,24 @@ Children:
 		Type: LeftParenthesis
 		Children:
 
+		Content: Type: Empty, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Empty
+		Children:
+
 		Content: Type: EndOfLine, Start: 1, 5, End: 1, 6, Content: ";"
 		Type: EndOfLine
 		Children:
 
+		Content: Type: Empty, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Empty
+		Children:
+
 		Content: Type: EndOfLine, Start: 1, 6, End: 1, 7, Content: ";"
 		Type: EndOfLine
+		Children:
+
+		Content: Type: Empty, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Empty
 		Children:
 
 		Content: Type: RightParenthesis, Start: 1, 7, End: 1, 8, Content: ")"

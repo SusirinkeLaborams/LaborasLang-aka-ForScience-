@@ -16,17 +16,22 @@ namespace Lexer.PostProcessors
                 return;
             }
 
-            var filled = new List<AbstractSyntaxTree>();
-            foreach (var node in astNode.Children)
+            //init
+            if(astNode.Children[2].Type == TokenType.EndOfLine)
             {
-                //for, left parenthesis
-                if (filled.Count < 2)
-                {
-                    filled.Add(node);
-                    continue;
-                }
+                astNode.Children.Insert(2, new AbstractSyntaxTree(new Node(TokenType.Empty), new List<AbstractSyntaxTree>()));
+            }
 
+            //condition
+            if(astNode.Children[4].Type == TokenType.EndOfLine)
+            {
+                astNode.Children.Insert(4, new AbstractSyntaxTree(new Node(TokenType.Empty), new List<AbstractSyntaxTree>()));
+            }
 
+            //increment
+            if (astNode.Children[6].Type == TokenType.RightParenthesis)
+            {
+                astNode.Children.Insert(6, new AbstractSyntaxTree(new Node(TokenType.Empty), new List<AbstractSyntaxTree>()));
             }
         }
     }
