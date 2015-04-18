@@ -317,11 +317,25 @@ namespace LaborasLangCompiler.Codegen.Methods
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
+        protected void EndFinally()
+        {
+            ilProcessor.Emit(OpCodes.Endfinally);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
         protected void Initobj(TypeReference type)
         {
             Contract.Requires(type != null);
 
             ilProcessor.Emit(OpCodes.Initobj, type);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
+        protected void Isinst(TypeReference type)
+        {
+            Contract.Requires(type != null);
+
+            ilProcessor.Emit(OpCodes.Isinst, type);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
@@ -650,6 +664,23 @@ namespace LaborasLangCompiler.Codegen.Methods
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
+        protected void Leave(Instruction target)
+        {
+            Contract.Requires(target != null);
+
+            if (target.Offset < 256)
+            {
+                ilProcessor.Emit(OpCodes.Leave_S, target);
+            }
+            else
+            {
+                ilProcessor.Emit(OpCodes.Leave, target);
+            }
+
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+
+        }
+
         protected void Mul()
         {
             ilProcessor.Emit(OpCodes.Mul);
@@ -871,6 +902,14 @@ namespace LaborasLangCompiler.Codegen.Methods
             Contract.Requires(targetType != null);
 
             ilProcessor.Emit(OpCodes.Unbox, targetType);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
+        protected void Unbox_Any(TypeReference targetType)
+        {
+            Contract.Requires(targetType != null);
+
+            ilProcessor.Emit(OpCodes.Unbox_Any, targetType);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 

@@ -98,7 +98,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     break;
 
                 case NodeType.ForEachLoop:
-                    throw new NotImplementedException();
+                    Emit((IForEachLoopNode)node);
+                    break;
 
                 case NodeType.ReturnNode:
                     Emit((IReturnNode)node);
@@ -300,6 +301,120 @@ namespace LaborasLangCompiler.Codegen.Methods
             Brtrue(loopBody);
         }
 
+        private void Emit(IForEachLoopNode foreachLoop)
+        {
+            Contract.Requires(foreachLoop.LoopVariable.Initializer == null);
+
+            var loopVariable = foreachLoop.LoopVariable.Variable;
+            var getEnumeratorMethod = AssemblyRegistry.GetGetEnumeratorMethod(foreachLoop.Collection.ExpressionReturnType, loopVariable.VariableType);
+            Contract.Assume(getEnumeratorMethod != null);
+
+            var enumeratorType = getEnumeratorMethod.GetReturnType();
+            var moveNextMethod = AssemblyRegistry.GetEnumeratorMoveNextMethod(enumeratorType, loopVariable.VariableType);
+            var getCurrentMethod = AssemblyRegistry.GetEnumeratorCurrentMethod(enumeratorType, loopVariable.VariableType);
+            var idisposable = AssemblyRegistry.FindType(Assembly, "System.IDisposable");
+            bool isDisposable = enumeratorType.DerivesFrom(idisposable);
+
+            // Define labels for later use
+            var loopStart = CreateLabel();
+            var loopCondition = CreateLabel();
+            var beginTry = CreateLabel();
+            var endTry = CreateLabel();
+            var endFinally = CreateLabel();
+
+            // Declare loop vriable
+            Emit(foreachLoop.LoopVariable);
+
+            // Claim temporary variable for enumerator
+            var enumeratorVariable = temporaryVariables.Acquire(enumeratorType);
+
+            // enumerator = collection.GetEnumerator()
+            Emit(foreachLoop.Collection, EmissionType.ThisArg);
+            Call(getEnumeratorMethod);
+            Stloc(enumeratorVariable.Index);
+
+            // try
+            {
+                Emit(beginTry);
+
+                // Jump to condition block
+                Br(loopCondition);
+
+                // loopVariable = enumerator.get_Current()
+                Emit(loopStart);
+                EmitLocalVariable(enumeratorVariable, EmissionType.ThisArg);
+                Call(getCurrentMethod);
+                EmitConversionIfNeeded(getCurrentMethod.GetReturnType(), loopVariable.VariableType);
+                Stloc(loopVariable.Index);
+
+                // Emit loop body
+                Emit(foreachLoop.Body);
+
+                // Emit condition block
+                // if (enumerator.MoveNext) goto loopStart;
+                Emit(loopCondition);
+                EmitLocalVariable(enumeratorVariable, EmissionType.ThisArg);
+                Call(moveNextMethod);
+                Brtrue(loopStart);
+
+                Leave(endFinally);
+                Emit(endTry);
+            }
+            // finally
+            {
+                var justBeforeEndFinally = CreateLabel();
+
+                var disposeMethod = AssemblyRegistry.GetMethod(Assembly, idisposable, "Dispose");
+                VariableDefinition disposableVariable = null;
+
+                // If enumerator is not disposable, we have to check it at runtime
+                if (!isDisposable)
+                {
+                    disposableVariable = temporaryVariables.Acquire(idisposable);
+
+                    // Check if enumerator is disposable, and if it is, store it into a temporary variable
+                    // Otherwise jump to just before finally end
+                    EmitLocalVariable(enumeratorVariable, EmissionType.Value);
+                    Isinst(idisposable);
+                    Stloc(disposableVariable.Index);
+                    EmitLocalVariable(disposableVariable, EmissionType.Value);
+                    Brfalse(justBeforeEndFinally);
+
+                    // Dispose enumerator
+                    EmitLocalVariable(disposableVariable, EmissionType.ThisArg);
+                    Call(disposeMethod);
+                }
+                else
+                {
+                    // Check if enumerator is null, jump to just before finally end
+
+                    if (!enumeratorType.IsValueType)
+                    {
+                        EmitLocalVariable(enumeratorVariable, EmissionType.Value);
+                        Brfalse(justBeforeEndFinally);
+                    }
+
+                    EmitLocalVariable(enumeratorVariable, EmissionType.ThisArg);
+                    Call(AssemblyRegistry.GetCompatibleMethod(Assembly, enumeratorType, "Dispose", new TypeReference[0]));
+                }
+
+                // Done
+                Emit(justBeforeEndFinally);
+                EndFinally();
+                Emit(endFinally);
+            }
+
+            body.ExceptionHandlers.Add(new ExceptionHandler(ExceptionHandlerType.Finally)
+                {
+                    TryStart = beginTry,
+                    TryEnd = endTry,
+                    HandlerStart = endTry,
+                    HandlerEnd = endFinally
+                });
+
+            temporaryVariables.Release(enumeratorVariable);
+        }
+
         #endregion
 
         #region Expression node
@@ -447,16 +562,21 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void Emit(ILocalVariableNode variable, EmissionType emissionType)
         {
+            EmitLocalVariable(variable.LocalVariable, emissionType);
+        }
+
+        private void EmitLocalVariable(VariableDefinition variable, EmissionType emissionType)
+        {
             if (emissionType == EmissionType.None)
                 return;
 
             if (ShouldEmitAddress(variable, emissionType))
             {
-                Ldloca(variable.LocalVariable.Index);
+                Ldloca(variable.Index);
             }
             else
             {
-                Ldloc(variable.LocalVariable.Index);
+                Ldloc(variable.Index);
             }
         }
 
@@ -685,8 +805,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             bool expressionIsFunction = expression.ExpressionType == ExpressionNodeType.Function;
             bool expressionIsFunctor = expression.ExpressionReturnType.IsFunctorType();
 
-            var targetBaseType = targetType.Resolve().BaseType;
-            bool targetIsDelegate = targetBaseType != null && targetBaseType.FullName == "System.MulticastDelegate";
+            bool targetIsDelegate = targetType.IsDelegate();
 
             // We'll want to emit expression in all cases
             Emit(expression, EmissionType.Value);
@@ -704,7 +823,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     var functorType = expression.ExpressionReturnType;
 
                     var asDelegateMethod = AssemblyRegistry.GetMethod(Assembly, functorType, "AsDelegate");
-                    var delegateInvokeMethod = AssemblyRegistry.GetMethod(Assembly, asDelegateMethod.ReturnType, "Invoke");
+                    var delegateInvokeMethod = AssemblyRegistry.GetMethod(Assembly, asDelegateMethod.GetReturnType(), "Invoke");
                     var delegateCtor = AssemblyRegistry.GetMethod(Assembly, delegateType, ".ctor");
 
                     Callvirt(asDelegateMethod);
@@ -822,7 +941,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             if (emissionType == EmissionType.None)
                 return;
 
-            var returnTypeIsDelegate = function.ExpressionReturnType.Resolve().BaseType.FullName == "System.MulticastDelegate";
+            var returnTypeIsDelegate = function.ExpressionReturnType.IsDelegate();
 
             if (!returnTypeIsDelegate)
             {
@@ -901,7 +1020,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void EmitArgumentsForCall(IReadOnlyList<IExpressionNode> arguments, MethodReference method)
         {
-            var methodParameters = method.Parameters;
+            var methodParameters = method.GetParameterTypes();
             var resolvedMethod = method.Resolve();
 
             if (resolvedMethod != null && resolvedMethod.IsParamsMethod())
@@ -916,29 +1035,29 @@ namespace LaborasLangCompiler.Codegen.Methods
             {
                 for (int i = 0; i < arguments.Count; i++)
                 {
-                    EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
+                    EmitArgumentForCall(arguments[i], methodParameters[i]);
                 }
             }
         }
 
-        private void EmitArgumentsForParamsCall(IReadOnlyList<IExpressionNode> arguments, IList<ParameterDefinition> methodParameters)
+        private void EmitArgumentsForParamsCall(IReadOnlyList<IExpressionNode> arguments, IReadOnlyList<TypeReference> methodParameterTypes)
         {
-            for (int i = 0; i < methodParameters.Count - 1; i++)
+            for (int i = 0; i < methodParameterTypes.Count - 1; i++)
             {
-                EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
+                EmitArgumentForCall(arguments[i], methodParameterTypes[i]);
             }
 
-            var arrayVariable = temporaryVariables.Acquire(methodParameters.Last().ParameterType);
-            var elementType = methodParameters.Last().ParameterType.GetElementType();
+            var arrayVariable = temporaryVariables.Acquire(methodParameterTypes[methodParameterTypes.Count - 1]);
+            var elementType = methodParameterTypes[methodParameterTypes.Count - 1].GetElementType();
 
-            Ldc_I4(arguments.Count - methodParameters.Count + 1);
+            Ldc_I4(arguments.Count - methodParameterTypes.Count + 1);
             Newarr(elementType);
             Stloc(arrayVariable.Index);
 
-            for (int i = methodParameters.Count - 1; i < arguments.Count; i++)
+            for (int i = methodParameterTypes.Count - 1; i < arguments.Count; i++)
             {
                 Ldloc(arrayVariable.Index);
-                Ldc_I4(i - methodParameters.Count + 1);
+                Ldc_I4(i - methodParameterTypes.Count + 1);
                 EmitArgumentForCall(arguments[i], elementType);
                 Stelem(elementType);
             }
@@ -947,14 +1066,14 @@ namespace LaborasLangCompiler.Codegen.Methods
             temporaryVariables.Release(arrayVariable);
         }
 
-        private void EmitArgumentsForCallWithOptionalParameters(IReadOnlyList<IExpressionNode> arguments, IList<ParameterDefinition> methodParameters, MethodDefinition resolvedMethod)
+        private void EmitArgumentsForCallWithOptionalParameters(IReadOnlyList<IExpressionNode> arguments, IReadOnlyList<TypeReference> methodParameterTypes, MethodDefinition resolvedMethod)
         {
             for (int i = 0; i < arguments.Count; i++)
             {
-                EmitArgumentForCall(arguments[i], methodParameters[i].ParameterType);
+                EmitArgumentForCall(arguments[i], methodParameterTypes[i]);
             }
 
-            for (int i = arguments.Count; i < methodParameters.Count; i++)
+            for (int i = arguments.Count; i < methodParameterTypes.Count; i++)
             {
                 // Use resolved method here for getting constant value, as it will not be present in method reference parameters.
                 // Furthermore, we must not reference resolved method parameter TYPES as they will be resolved as well
@@ -1755,10 +1874,11 @@ namespace LaborasLangCompiler.Codegen.Methods
             else
             {
                 var storeElementMethod = AssemblyRegistry.GetArrayStoreElement(arrayType);
+                var parameterTypes = storeElementMethod.GetParameterTypes();
 
                 for (int i = 0; i < indices.Count; i++)
                 {
-                    EmitArgumentForCall(indices[i], storeElementMethod.Parameters[i].ParameterType);
+                    EmitArgumentForCall(indices[i], parameterTypes[i]);
                 }
             }
         }
@@ -1796,9 +1916,11 @@ namespace LaborasLangCompiler.Codegen.Methods
                 Emit(indexOperator.ObjectInstance, EmissionType.ThisArg);
             }
 
+            var parameterTypes = setter.GetParameterTypes();
+
             for (int i = 0; i < indexOperator.Indices.Count; i++)
             {
-                EmitArgumentForCall(indexOperator.Indices[i], setter.Parameters[i].ParameterType);
+                EmitArgumentForCall(indexOperator.Indices[i], parameterTypes[i]);
             }
         }
 
@@ -1928,8 +2050,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
             else if (!sourceType.IsValueType && targetType.IsValueType)
             {
-                Unbox(targetType);
-                Ldobj(targetType);
+                Unbox_Any(targetType);
                 return;
             }
 
@@ -2011,6 +2132,11 @@ namespace LaborasLangCompiler.Codegen.Methods
         private bool ShouldEmitAddress(IExpressionNode expression, EmissionType emissionType)
         {
             return (expression.ExpressionReturnType.IsValueType && emissionType == EmissionType.ThisArg) || emissionType == EmissionType.ReferenceToValue;
+        }
+
+        private bool ShouldEmitAddress(VariableDefinition variable, EmissionType emissionType)
+        {
+            return (variable.VariableType.IsValueType && emissionType == EmissionType.ThisArg) || emissionType == EmissionType.ReferenceToValue;
         }
 
         private void LoadAddressOfValue(IExpressionNode expression)

@@ -51,7 +51,7 @@ namespace LaborasLangCompiler.Codegen.Types
 
         public void AddMethod(MethodDefinition method)
         {
-            CheckForDuplicates(method.Name, method.Parameters);
+            CheckForDuplicates(method.Name, method.GetParameterTypes());
             typeDefinition.Methods.Add(method);
         }
 
@@ -100,10 +100,12 @@ namespace LaborasLangCompiler.Codegen.Types
             }
 
             AddTypeToAssemblyIfNeeded(property.PropertyType);
+            
+            var accessor = property.GetMethod ?? property.SetMethod;
 
-            foreach (var parameter in (property.GetMethod ?? property.SetMethod).Parameters)
+            foreach (var type in accessor.GetParameterTypes())
             {
-                AddTypeToAssemblyIfNeeded(parameter.ParameterType);
+                AddTypeToAssemblyIfNeeded(type);
             }
         }
 
@@ -124,12 +126,12 @@ namespace LaborasLangCompiler.Codegen.Types
             }
         }
 
-        private void CheckForDuplicates(string name, IList<ParameterDefinition> parameters)
+        private void CheckForDuplicates(string name, IReadOnlyList<TypeReference> parameterTypes)
         {
-            var targetParameterTypes = parameters.Select(parameter => parameter.ParameterType.FullName);
+            var targetParameterTypes = parameterTypes.Select(type => type.FullName);
 
             if (typeDefinition.Methods.Any(method => method.Name == name &&
-                method.Parameters.Select(parameter => parameter.ParameterType.FullName).SequenceEqual(targetParameterTypes)))
+                method.GetParameterTypes().Select(type => type.FullName).SequenceEqual(targetParameterTypes)))
             {
                 throw new InvalidOperationException(string.Format("A method with same name and parameters already exists in type {0}.", typeDefinition.FullName));
             }

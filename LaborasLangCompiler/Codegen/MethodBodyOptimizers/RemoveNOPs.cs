@@ -8,9 +8,9 @@ namespace LaborasLangCompiler.Codegen.MethodBodyOptimizers
     {
         public override bool ReleaseOnlyOpmization { get { return true; } }
 
-        protected override bool MatchesPredicate(IList<Instruction> instructions, int instructionIndex)
+        protected override bool MatchesPredicate(MethodBody body, int instructionIndex)
         {
-            return instructions[instructionIndex].OpCode == OpCodes.Nop;
+            return body.Instructions[instructionIndex].OpCode == OpCodes.Nop;
         }
 
         protected override ModifierBase.InstructionOperation GetOperation()

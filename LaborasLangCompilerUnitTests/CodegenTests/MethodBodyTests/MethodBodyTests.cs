@@ -218,7 +218,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                 {
                     new MethodCallNode()
                     {
-                        ExpressionReturnType = methodWithArgument.Get().ReturnType,
+                        ExpressionReturnType = methodWithArgument.Get().GetReturnType(),
                         Function = new FunctionNode()
                         {
                             Method = methodWithArgument.Get()
@@ -1492,6 +1492,88 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             ExpectedOutput = Enumerable.Range(0, 10).Select(i => i + Environment.NewLine).Aggregate((x, y) => x + y);
             AssertSuccessByExecution();
+        }
+
+        private void TestForEachLoopHelper(IExpressionNode collection, TypeReference elementType, string expectedOutput)
+        {
+            var loopVariable = new VariableDefinition(elementType);
+            var loopVariableNode = new LocalVariableNode(loopVariable);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new ForEachLoop()
+                    {
+                        Collection = collection,
+                        LoopVariable = new SymbolDeclarationNode()
+                        {
+                            Variable = loopVariable
+                        },
+                        Body = new CodeBlockNode()
+                        {
+                            Nodes = new IParserNode[]
+                            {
+                                CallConsoleWriteLine(loopVariableNode)
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedOutput = expectedOutput;
+            AssertSuccessByExecution();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestForEachLoop_Vector()
+        {
+            var arrayCreation = new ArrayCreationNode()
+            {
+                ExpressionReturnType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.Int32, 1),
+                Dimensions = new IExpressionNode[] { new LiteralNode(assemblyEmitter.TypeSystem.Int32, 10) },
+                Initializer = Enumerable.Range(0, 10).Select(i => new LiteralNode(assemblyEmitter.TypeSystem.Int32, i)).ToArray()
+            };
+
+            var expectedOutput = Enumerable.Range(0, 10).Select(i => i + Environment.NewLine).Aggregate((x, y) => x + y);
+            TestForEachLoopHelper(arrayCreation, assemblyEmitter.TypeSystem.Int32, expectedOutput);
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestForEachLoop_Array()
+        {
+            var arrayCreation = new ArrayCreationNode()
+            {
+                ExpressionReturnType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.Int32, 3),
+                Dimensions = new IExpressionNode[] { new LiteralNode(assemblyEmitter.TypeSystem.Int32, 2), new LiteralNode(assemblyEmitter.TypeSystem.Int32, 2), new LiteralNode(assemblyEmitter.TypeSystem.Int32, 2) },
+                Initializer = Enumerable.Range(0, 8).Select(i => new LiteralNode(assemblyEmitter.TypeSystem.Int32, i)).ToArray()
+            };
+
+            var expectedOutput = Enumerable.Range(0, 8).Select(i => i + Environment.NewLine).Aggregate((x, y) => x + y);
+            TestForEachLoopHelper(arrayCreation, assemblyEmitter.TypeSystem.Int32, expectedOutput);
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestForEachLoop_List()
+        {
+            var arrayType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.Int32, 1);
+            var arrayCreation = new ArrayCreationNode()
+            {
+                ExpressionReturnType = arrayType,
+                Dimensions = new IExpressionNode[] { new LiteralNode(assemblyEmitter.TypeSystem.Int32, 10) },
+                Initializer = Enumerable.Range(0, 10).Select(i => new LiteralNode(assemblyEmitter.TypeSystem.Int32, i)).ToArray()
+            };
+
+            var listType = AssemblyRegistry.FindType(assemblyEmitter, "System.Collections.Generic.List`1").MakeGenericType(assemblyEmitter.TypeSystem.Int32);
+            var listCreation = new ObjectCreationNode()
+            {
+                ExpressionReturnType = listType,
+                Constructor = AssemblyRegistry.GetCompatibleConstructor(assemblyEmitter, listType, new TypeReference[] { listType }),
+                Args = new IExpressionNode[] { arrayCreation }
+            };
+
+            var expectedOutput = Enumerable.Range(0, 10).Select(i => i + Environment.NewLine).Aggregate((x, y) => x + y);
+            TestForEachLoopHelper(listCreation, assemblyEmitter.TypeSystem.Int32, expectedOutput);
         }
 
         #endregion
