@@ -11,21 +11,21 @@ Children:
 			Type: Symbol
 			Children:
 
-			Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
-			Type: PostfixNode
+			Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Type: PrefixNode
 			Children:
-				Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
-				Type: PrefixNode
+				Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+				Type: PostfixNode
 				Children:
 					Content: Type: Symbol, Start: 1, 9, End: 1, 10, Content: "i"
 					Type: Symbol
 					Children:
 
-					Content: Type: PlusPlus, Start: 1, 7, End: 1, 9, Content: "++"
+					Content: Type: PlusPlus, Start: 1, 10, End: 1, 12, Content: "++"
 					Type: PlusPlus
 					Children:
 
-				Content: Type: PlusPlus, Start: 1, 10, End: 1, 12, Content: "++"
+				Content: Type: PlusPlus, Start: 1, 7, End: 1, 9, Content: "++"
 				Type: PlusPlus
 				Children:
 

@@ -2,12 +2,40 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 using System.Collections.Generic;
+using Lexer;
+using System.Text;
 
 namespace LaborasLangCompilerUnitTests.LexerTests
 {
     [TestClass]
     public class ValueBlockTests : SyntaxMatcherTestBase
     {
+
+
+        public string Structure(IAbstractSyntaxTree tree)
+        {
+            if (!tree.Type.IsTerminal() && tree.Children.Count == 1)
+            {
+                return Structure(tree.Children[0]);
+            }
+
+            var content = tree.Node.Type.IsTerminal() ? tree.Node.Content : string.Empty;
+            string childrenContent = string.Empty;
+            if (tree.Children.Count > 1)
+            {
+                childrenContent = string.Format("[{0}]", string.Join(" ", tree.Children.Select(v => Structure(v))));
+            }
+            else
+            {
+                if (tree.Children.Count == 1)
+                {
+                    childrenContent = Structure(tree.Children[0]);
+                }
+            }
+
+            return string.Format("{0}{1}", content, childrenContent);
+        }
+
         [TestMethod, TestCategory("Lexer: value processor"), TestCategory("Lexer")]
         public void TestBasicOperator()
         {
@@ -15,6 +43,203 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             var actual = Lexer.Lexer.Lex(source);
 
             Assert.AreEqual("ab+;", actual.FullContent);
+        }
+
+
+        [TestMethod, TestCategory("Lexer: value processor"), TestCategory("Lexer")]
+        public void TestStructure()
+        {
+            var source = "a + b * c;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[a [b c *] +] ;]", Structure(actual));
+        }
+
+
+        [TestMethod, TestCategory("Lexer: value processor"), TestCategory("Lexer")]
+        public void TestPrefix()
+        {
+            var source = "a + ++b;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[a [b ++] +] ;]", Structure(actual));
+        }
+        
+        [TestMethod, TestCategory("Lexer: value processor"), TestCategory("Lexer")]
+        public void TestDivisionEqualityPrecedence()
+        {
+            var source = "value % divisor == 0;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[[value divisor %] 0 ==] ;]", Structure(actual));
+        }
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedence()
+        {
+            var source = "ab;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[ab ;]", Structure(actual));
+        }
+
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestMinusMinusPrecedence()
+        {
+            var source = "a - - ++b();";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[a [[[b [( )]] ++] -] -] ;]", Structure(actual));
+        }
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedencePeriodAddition()
+        {
+            var source = "a.b + c.d;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[[a b .] [c d .] +] ;]", Structure(actual));
+        }
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedencePeriodAdditionAssignment()
+        {
+            var source = "foo = a.b + c.d;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[foo [[a b .] [c d .] +] =] ;]", Structure(actual));
+        }
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedencePrefixAssignmentAdition()
+        {
+            var source = "i = ++a + 1;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[i [[a ++] 1 +] =] ;]", Structure(actual));
+        }
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedenceShiftAssignment()
+        {
+            var source = "a = b << c;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[a [b c <<] =] ;]", Structure(actual));
+        }
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedenceShiftAddition()
+        {
+            var source = "a + c << b;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[[a c +] b <<] ;]", Structure(actual));
+        }
+
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedenceAditionMultiplication()
+        {
+            var source = "a + b * c;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[a [b c *] +] ;]", Structure(actual));
+        }
+
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedenceMultiplicationBiwise()
+        {
+            var source = "a * b | c;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[a [b c |] *] ;]", Structure(actual));
+        }
+
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedenceBitwisePrefix()
+        {
+            var source = "++a | b;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[[a ++] b |] ;]", Structure(actual));
+        }
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedenceBitwisePrefix2()
+        {
+            var source = "a | ++b;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[a [b ++] |] ;]", Structure(actual));
+        }
+
+        
+        [TestMethod, TestCategory("Lexer: value processor"), TestCategory("Lexer")]
+        public void TestPrefixMultiplication()
+        {
+            var source = "a + ++b * c;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[a [[b ++] c *] +] ;]", Structure(actual));
+        }
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedencePrefixPostfix()
+        {
+            var source = "!b--;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[[b --] !] ;]", Structure(actual));
+        }
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedenceComparisonMultiplication()
+        {
+            var source = "a * b > c;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[[a b *] c >] ;]", Structure(actual));
+        }
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedenceLogicalMultiplication()
+        {
+            var source = "a * b && 3;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[[a b *] 3 &&] ;]", Structure(actual));
+        }
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedencePeriodPostfix()
+        {
+            var source = "a.b++;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[[a b .] ++] ;]", Structure(actual));
+        }
+
+        
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedencePrefixParenthesis()
+        {
+            var source = "++foo();";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[[foo [( )]] ++] ;]", Structure(actual));
+        }
+        
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPrecedencePeriodPrefix()
+        {
+            var source = "++a.b;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[[a b .] ++] ;]", Structure(actual));
         }
 
         [TestMethod, TestCategory("Lexer: value processor"), TestCategory("Lexer")]
