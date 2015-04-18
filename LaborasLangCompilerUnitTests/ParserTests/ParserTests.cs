@@ -1092,5 +1092,20 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestSimpleForLoop()
+        {
+            string source = @"
+                auto func = void()
+                {
+                    int num = 0;
+                    for(int i = 0; i < 5; i++)
+                    {
+                        num += i;
+                    }
+                };
+            ";
+            CompareTrees(source);
+        }
     }
 }

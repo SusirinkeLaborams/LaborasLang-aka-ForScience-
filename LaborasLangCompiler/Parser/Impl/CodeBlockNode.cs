@@ -123,6 +123,8 @@ namespace LaborasLangCompiler.Parser.Impl
                     return CodeBlockNode.Parse(this, lexerNode);
                 case Lexer.TokenType.ReturnNode:
                     return ReturnNode.Parse(this, lexerNode);
+                case Lexer.TokenType.ForLoop:
+                    return ForLoopNode.Parse(this, lexerNode);
                 default:
                     ErrorCode.InvalidStructure.ReportAndThrow(Parser.GetSequencePoint(lexerNode), "Unexpected node {0} in while parsing code block", lexerNode.Type);
                     return null;//unreachable
