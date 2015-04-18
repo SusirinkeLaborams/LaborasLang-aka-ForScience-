@@ -49,7 +49,7 @@ namespace Lexer
                         Mutable),
                                 
                     ParseRule(InfixOperator,
-                        Period,          
+                        Period,
                         Assignment,
                         PlusEqual,
                         MinusEqual,

@@ -101,6 +101,27 @@ namespace LaborasLangCompilerUnitTests.LexerTests
 
             Assert.AreEqual("[[[[v d %] 0 ==] [d v <] &&] ;]", Structure(actual));
         }
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestPeriodCallPrecedence()
+        {
+            var source = "foo().bar();";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[[[foo [( )]] bar .] [( )]] ;]", Structure(actual));
+        }
+
+
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestRightAssociativeAfterPostfix()
+        {
+            var source = "foo() = bar();";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[[foo [( )]] [bar [( )]] =] ;]", Structure(actual));
+        }
+
+
         [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
         public void TestPrecedencePeriodAddition()
         {
@@ -231,6 +252,14 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             Assert.AreEqual("[[[a b .] ++] ;]", Structure(actual));
         }
 
+        [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
+        public void TestConsoleReadLinePrecedence()
+        {
+            var source = "Console.ReadLine();";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[[Console ReadLine .] [( )]] ;]", Structure(actual));
+        }
         
         [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
         public void TestPrecedencePrefixParenthesis()

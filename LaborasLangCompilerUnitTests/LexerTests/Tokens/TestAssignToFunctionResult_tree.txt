@@ -7,34 +7,34 @@ Children:
 		Content: Type: InfixNode, Start: 1, 1, End: 1, 12, Content: ""
 		Type: InfixNode
 		Children:
-			Content: Type: PostfixNode, Start: 1, 1, End: 1, 6, Content: ""
-			Type: PostfixNode
+			Content: Type: InfixNode, Start: 1, 1, End: 1, 7, Content: ""
+			Type: InfixNode
 			Children:
-				Content: Type: InfixNode, Start: 1, 1, End: 1, 7, Content: ""
-				Type: InfixNode
+				Content: Type: PostfixNode, Start: 1, 1, End: 1, 6, Content: ""
+				Type: PostfixNode
 				Children:
 					Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
 					Type: Symbol
 					Children:
 
-					Content: Type: Symbol, Start: 1, 7, End: 1, 10, Content: "bar"
-					Type: Symbol
+					Content: Type: FunctionArgumentsList, Start: 1, 4, End: 1, 6, Content: ""
+					Type: FunctionArgumentsList
 					Children:
+						Content: Type: LeftParenthesis, Start: 1, 4, End: 1, 5, Content: "("
+						Type: LeftParenthesis
+						Children:
 
-					Content: Type: Period, Start: 1, 6, End: 1, 7, Content: "."
-					Type: Period
-					Children:
+						Content: Type: RightParenthesis, Start: 1, 5, End: 1, 6, Content: ")"
+						Type: RightParenthesis
+						Children:
 
-				Content: Type: FunctionArgumentsList, Start: 1, 4, End: 1, 6, Content: ""
-				Type: FunctionArgumentsList
+				Content: Type: Symbol, Start: 1, 7, End: 1, 10, Content: "bar"
+				Type: Symbol
 				Children:
-					Content: Type: LeftParenthesis, Start: 1, 4, End: 1, 5, Content: "("
-					Type: LeftParenthesis
-					Children:
 
-					Content: Type: RightParenthesis, Start: 1, 5, End: 1, 6, Content: ")"
-					Type: RightParenthesis
-					Children:
+				Content: Type: Period, Start: 1, 6, End: 1, 7, Content: "."
+				Type: Period
+				Children:
 
 			Content: Type: LiteralNode, Start: 1, 13, End: 1, 14, Content: ""
 			Type: LiteralNode

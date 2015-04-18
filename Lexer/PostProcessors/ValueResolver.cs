@@ -38,25 +38,25 @@ namespace Lexer.PostProcessors
         #region bitwise
             new[]{TokenType.BitwiseAnd, TokenType.BitwiseOr, TokenType.BitwiseXor, TokenType.BitwiseComplement},
         #endregion 
-       
+        
         #region prefixes
             new[]{TokenType.PrefixOperator},
         #endregion
-      
+
         #region postfixes
             new[]{TokenType.PostfixOperator},
-        #endregion     
-     
-        #region period
-            new[]{TokenType.Period},
+        #endregion 
+
+         #region functionCall, ArrayAccess
+            new[]{TokenType.FunctionArgumentsList, TokenType.IndexNode, TokenType.Period},
         #endregion
-        
+ 
         };
         private int[] m_Priorities;
 
         public ValueResolver()
         {
-            m_Priorities = Enumerable.Repeat(int.MaxValue, (int) TokenType.TokenTypeCount).ToArray();
+            m_Priorities = Enumerable.Repeat(int.MinValue, (int) TokenType.TokenTypeCount).ToArray();
            
             for (int i = 0; i < c_OperatorGroups.Length; i++)
             {
@@ -70,9 +70,13 @@ namespace Lexer.PostProcessors
         private int Priority(AbstractSyntaxTree type)
         {
             var parentPriority = m_Priorities[(int)type.Type];
-            var childPriority = m_Priorities[(int)type.Children[0].Type];
-
-            return parentPriority < childPriority ? parentPriority : childPriority;
+            var childPriority = parentPriority;
+            if (type.Children.Count > 0)
+            {
+                childPriority = m_Priorities[(int)type.Children[0].Type];
+            }
+            
+            return Math.Max(childPriority, parentPriority);
         }
 
         public override void Transform(AbstractSyntaxTree astNode)
