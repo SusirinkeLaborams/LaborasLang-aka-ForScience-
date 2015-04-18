@@ -116,7 +116,11 @@ namespace Lexer
                     /*PrefixNode is transformed using PrefixResolver. It is transformed to a recursive list {T, PrefixOperator}
                       where T can be PrefixNode, ParenthesesNode, Operand. T will be as specific as possible.*/
                     AlwaysCollapsableParseRule(PrefixNode,
-                         ZeroOrMore(PrefixOperator) + ParenthesesNode),
+                         PrefixOperator + PrefixNode,
+                         PrefixOperator + ParenthesesNode,
+                         // (foo()) is both a valid cast operator and a valid parenthesis node. have to add parenthesis node to make sure that if it fails
+                         // as prefix it will be handled as parenthesis node
+                         ParenthesesNode),
                          
                     /*PostfixNode is transformed using InfixResolver. It is transformed to a recursive list {T, PostfixOperator}
                       where T can be PostfixNode, PrefixNode, ParenthesesNode, Operand. T will be as specific as possible.*/
