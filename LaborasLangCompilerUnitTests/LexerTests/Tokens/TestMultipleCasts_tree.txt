@@ -4,17 +4,17 @@ Children:
 	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Content: Type: InfixNode, Start: 1, 1, End: 1, 6, Content: ""
 		Type: InfixNode
 		Children:
 			Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
 			Type: Symbol
 			Children:
 
-			Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Content: Type: PrefixNode, Start: 1, 18, End: 1, 12, Content: ""
 			Type: PrefixNode
 			Children:
-				Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
+				Content: Type: PrefixNode, Start: 1, 18, End: 1, 17, Content: ""
 				Type: PrefixNode
 				Children:
 					Content: Type: Symbol, Start: 1, 18, End: 1, 21, Content: "foo"

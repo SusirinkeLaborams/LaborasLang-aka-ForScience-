@@ -4,14 +4,14 @@ Children:
 	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Content: Type: InfixNode, Start: 1, 1, End: 1, 4, Content: ""
 		Type: InfixNode
 		Children:
 			Content: Type: Symbol, Start: 1, 1, End: 1, 2, Content: "a"
 			Type: Symbol
 			Children:
 
-			Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Content: Type: InfixNode, Start: 1, 5, End: 1, 9, Content: ""
 			Type: InfixNode
 			Children:
 				Content: Type: Symbol, Start: 1, 5, End: 1, 6, Content: "i"

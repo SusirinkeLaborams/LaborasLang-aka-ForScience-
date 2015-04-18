@@ -144,8 +144,11 @@ namespace Lexer.PostProcessors
             tree.Children.RemoveRange(tree.Children.Count - tokensToConsume, tokensToConsume);
             source.Add(value);
 
-            tree.Children.Add(new AbstractSyntaxTree(new Node(nodetype), source));
-            
+            var node = new Node(nodetype);
+            node.Start = source.First().Node.Start;
+            node.End = source.Last().Node.End;
+
+            tree.Children.Add(new AbstractSyntaxTree(node, source));         
         }
         private bool ShouldPop(Stack<AbstractSyntaxTree> stack, AbstractSyntaxTree item)
         {            

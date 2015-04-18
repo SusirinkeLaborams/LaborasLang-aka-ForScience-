@@ -4,10 +4,10 @@ Children:
 	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Content: Type: PostfixNode, Start: 1, 1, End: 1, 22, Content: ""
 		Type: PostfixNode
 		Children:
-			Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Content: Type: InfixNode, Start: 1, 1, End: 1, 9, Content: ""
 			Type: InfixNode
 			Children:
 				Content: Type: ParenthesesNode, Start: 1, 1, End: 1, 8, Content: ""
@@ -20,7 +20,7 @@ Children:
 					Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 					Type: Value
 					Children:
-						Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+						Content: Type: InfixNode, Start: 1, 2, End: 1, 5, Content: ""
 						Type: InfixNode
 						Children:
 							Content: Type: LiteralNode, Start: 1, 2, End: 1, 3, Content: ""

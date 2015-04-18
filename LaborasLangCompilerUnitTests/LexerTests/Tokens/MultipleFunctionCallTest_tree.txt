@@ -4,13 +4,13 @@ Children:
 	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Content: Type: PostfixNode, Start: 2, 1, End: 2, 12, Content: ""
 		Type: PostfixNode
 		Children:
-			Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Content: Type: PostfixNode, Start: 2, 1, End: 2, 6, Content: ""
 			Type: PostfixNode
 			Children:
-				Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+				Content: Type: InfixNode, Start: 2, 1, End: 2, 7, Content: ""
 				Type: InfixNode
 				Children:
 					Content: Type: Symbol, Start: 2, 1, End: 2, 4, Content: "foo"
@@ -54,13 +54,13 @@ Children:
 	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Content: Type: InfixNode, Start: 3, 1, End: 3, 12, Content: ""
 		Type: InfixNode
 		Children:
-			Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Content: Type: PostfixNode, Start: 3, 1, End: 3, 6, Content: ""
 			Type: PostfixNode
 			Children:
-				Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+				Content: Type: InfixNode, Start: 3, 1, End: 3, 7, Content: ""
 				Type: InfixNode
 				Children:
 					Content: Type: Symbol, Start: 3, 1, End: 3, 4, Content: "foo"
@@ -104,10 +104,10 @@ Children:
 	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Content: Type: PostfixNode, Start: 4, 1, End: 4, 16, Content: ""
 		Type: PostfixNode
 		Children:
-			Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Content: Type: InfixNode, Start: 4, 1, End: 4, 11, Content: ""
 			Type: InfixNode
 			Children:
 				Content: Type: ParenthesesNode, Start: 4, 1, End: 4, 10, Content: ""
@@ -120,7 +120,7 @@ Children:
 					Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 					Type: Value
 					Children:
-						Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+						Content: Type: InfixNode, Start: 4, 2, End: 4, 7, Content: ""
 						Type: InfixNode
 						Children:
 							Content: Type: Symbol, Start: 4, 2, End: 4, 5, Content: "foo"

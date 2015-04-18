@@ -25,7 +25,7 @@ Children:
 		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 		Type: Value
 		Children:
-			Content: Type: PrefixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Content: Type: PrefixNode, Start: 1, 11, End: 1, 11, Content: ""
 			Type: PrefixNode
 			Children:
 				Content: Type: ParenthesesNode, Start: 1, 11, End: 1, 18, Content: ""
@@ -38,7 +38,7 @@ Children:
 					Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 					Type: Value
 					Children:
-						Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+						Content: Type: PostfixNode, Start: 1, 12, End: 1, 17, Content: ""
 						Type: PostfixNode
 						Children:
 							Content: Type: Symbol, Start: 1, 12, End: 1, 15, Content: "foo"

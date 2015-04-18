@@ -15,7 +15,7 @@ Children:
 		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 		Type: Value
 		Children:
-			Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Content: Type: PostfixNode, Start: 1, 5, End: 1, 14, Content: ""
 			Type: PostfixNode
 			Children:
 				Content: Type: Symbol, Start: 1, 5, End: 1, 11, Content: "IsEven"
