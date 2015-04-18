@@ -151,6 +151,7 @@
     <Compile Include="ParseRule.cs" />
     <Compile Include="PostProcessors\ArrayFunctionResolver.cs" />
     <Compile Include="PostProcessors\BottomUpPostProcessor.cs" />
+    <Compile Include="PostProcessors\ForResolver.cs" />
     <Compile Include="PostProcessors\FullSymbolPostProcessor.cs" />
     <Compile Include="PostProcessors\ValueResolver.cs" />
     <Compile Include="PostProcessors\OperatorColapser.cs" />

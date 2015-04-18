@@ -68,6 +68,8 @@
         For, 
         In,
 
+        Empty,//empty node
+
         NoInstance,
         Private,
         Public,
