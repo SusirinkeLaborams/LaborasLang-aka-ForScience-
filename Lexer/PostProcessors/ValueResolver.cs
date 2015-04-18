@@ -15,12 +15,12 @@ namespace Lexer.PostProcessors
             new[]{TokenType.Assignment, TokenType.PlusEqual, TokenType.MinusEqual, TokenType.DivideEqual, TokenType.MultiplyEqual, TokenType.RemainderEqual, TokenType.LeftShiftEqual, TokenType.RightShiftEqual, TokenType.LogicalAndEqual, TokenType.LogicalOrEqual, TokenType.BitwiseAndEqual, TokenType.BitwiseXorEqual, TokenType.BitwiseOrEqual },
         #endregion
 
-        #region comparison
-            new[]{TokenType.Equal, TokenType.NotEqual, TokenType.More, TokenType.Less, TokenType.MoreOrEqual, TokenType.LessOrEqual},
-        #endregion
-
         #region logical
             new[]{TokenType.LogicalOr, TokenType.LogicalAnd},
+        #endregion
+
+        #region comparison
+            new[]{TokenType.Equal, TokenType.NotEqual, TokenType.More, TokenType.Less, TokenType.MoreOrEqual, TokenType.LessOrEqual},
         #endregion
 
         #region shifts
