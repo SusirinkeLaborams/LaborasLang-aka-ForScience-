@@ -76,6 +76,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     switch(node.Type)
                     {
                         case TokenType.For:
+                        case TokenType.LeftParenthesis:
                             break;
                         case TokenType.DeclarationSubnode:
                             if (initializerDone)
@@ -106,6 +107,30 @@ namespace LaborasLangCompiler.Parser.Impl
                                 ContractsHelper.AssumeUnreachable("Found node Value after all for nodes were parsed");
                             }
                             break;
+                        case TokenType.RightParenthesis:
+                            if(!initializerDone || !conditionDone)
+                            {
+                                ContractsHelper.AssertUnreachable("Right parenthesis found in for before condition and initializer were parsed");
+                            }
+                            if(incrementDone)
+                            {
+                                ContractsHelper.AssumeUnreachable("Right parenthesis found in for after increment was parsed");
+                            }
+                            incrementDone = true;
+                            break;
+                        case TokenType.EndOfLine:
+                            if(!initializerDone)
+                            {
+                                initializerDone = true;
+                            }
+                            else if(!conditionDone)
+                            {
+                                conditionDone = true;
+                            }
+                            else if(!incrementDone)
+                            {
+                                ContractsHelper.AssumeUnreachable
+                            }
                     }
                 }
             }
