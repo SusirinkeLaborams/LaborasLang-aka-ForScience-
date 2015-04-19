@@ -156,13 +156,18 @@ namespace LaborasLangCompiler.Codegen
                 right = right.GetElementType();
                 Contract.Assume(right != null);
             }
-            
-            if (left.FullName == right.FullName)
+
+            if (left.IsNullType())
             {
-                return true;
+                return false;
             }
 
-            if(right.IsNullType() && !left.IsValueType)
+            if (right.IsNullType())
+            {
+                return !left.IsValueType;
+            }
+            
+            if (left.FullName == right.FullName)
             {
                 return true;
             }

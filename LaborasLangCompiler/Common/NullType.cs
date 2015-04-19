@@ -11,10 +11,10 @@ namespace LaborasLangCompiler.Common
     {
         public static TypeReference Instance { get; private set; }
 
-        public override string FullName { get { return "null"; } }
+        public override string FullName { get { return "$nulltype"; } }
 
         private NullType()
-            : base("", "null")
+            : base("", "$nulltype")
         {
         }
 
