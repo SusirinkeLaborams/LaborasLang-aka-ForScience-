@@ -2660,5 +2660,95 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         }
 
         #endregion
+
+        #region Cast tests
+
+        private void TestCanEmit_CastHelper(IExpressionNode emitValueNode, string expectedOutput, TypeReference castFrom, TypeReference castTo)
+        {
+            var createValueMethod = new MethodEmitter(typeEmitter, "CreateValue", castFrom, MethodAttributes.Static | MethodAttributes.Private);
+
+            createValueMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new ReturnNode()
+                    {
+                        Expression = emitValueNode
+                    }
+                }
+            });
+
+            var printValueMethod = new MethodEmitter(typeEmitter, "PrintValue", assemblyEmitter.TypeSystem.Void, MethodAttributes.Static | MethodAttributes.Private);
+            var argument = printValueMethod.AddArgument(castTo, "arg");
+
+            printValueMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    CallConsoleWriteLine(new ParameterNode(argument))
+                }
+            });
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new MethodCallNode()
+                    {
+                        Function = new FunctionNode()
+                        {
+                            Method = printValueMethod.Get()
+                        },
+                        Args = new IExpressionNode[]
+                        {
+                            new CastNode()
+                            {
+                                ExpressionReturnType = castTo,
+                                TargetExpression = new MethodCallNode()
+                                {
+                                    Function = new FunctionNode()
+                                    {
+                                        Method = createValueMethod.Get()
+                                    },
+                                    Args = new IExpressionNode[0]
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedOutput = expectedOutput;
+            AssertSuccessByExecution();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_CastObjectToString()
+        {
+            var expectedOutput = "Hello";
+            var valueExpression = new LiteralNode(assemblyEmitter.TypeSystem.String, expectedOutput);
+
+            TestCanEmit_CastHelper(valueExpression, expectedOutput, assemblyEmitter.TypeSystem.Object, assemblyEmitter.TypeSystem.String);
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_CastObjectToInt()
+        {
+            var intValue = 333;
+            var valueExpression = new LiteralNode(assemblyEmitter.TypeSystem.Int32, intValue);
+
+            TestCanEmit_CastHelper(valueExpression, intValue.ToString(), assemblyEmitter.TypeSystem.Object, assemblyEmitter.TypeSystem.Int32);
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_CastIntToObject()
+        {
+            var intValue = 333;
+            var valueExpression = new LiteralNode(assemblyEmitter.TypeSystem.Int32, intValue);
+
+            TestCanEmit_CastHelper(valueExpression, intValue.ToString(), assemblyEmitter.TypeSystem.Int32, assemblyEmitter.TypeSystem.Object);
+        }
+
+        #endregion
     }
 }

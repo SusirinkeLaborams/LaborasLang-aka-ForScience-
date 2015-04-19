@@ -189,6 +189,10 @@ namespace LaborasLangCompiler.Codegen.Methods
                 case ExpressionNodeType.Call:
                     Emit((IFunctionCallNode)expression, emissionType);
                     return;
+                    
+                case ExpressionNodeType.Cast:
+                    Emit((ICastNode)expression, emissionType);
+                    return;
 
                 case ExpressionNodeType.Field:
                     Emit((IFieldNode)expression, emissionType);
@@ -251,7 +255,7 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             if (returnNode.Expression != null)
             {
-                Emit(returnNode.Expression, EmissionType.Value);
+                EmitExpressionWithTargetType(returnNode.Expression, methodDefinition.ReturnType);
             }
 
             Ret();
@@ -1495,7 +1499,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (arrayType.IsVector)
             {
-                Emit(arrayCreation.Dimensions[0], EmissionType.Value);
+                EmitExpressionWithTargetType(arrayCreation.Dimensions[0], Assembly.TypeSystem.Int32);
                 Newarr(arrayType.ElementType);
             }
             else
@@ -1505,7 +1509,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
                 for (int i = 0; i < rank; i++)
                 {
-                    Emit(arrayCreation.Dimensions[i], EmissionType.Value);
+                    EmitExpressionWithTargetType(arrayCreation.Dimensions[i], Assembly.TypeSystem.Int32);
                 }
 
                 Newobj(constructor);
@@ -2087,6 +2091,14 @@ namespace LaborasLangCompiler.Codegen.Methods
                     ContractsHelper.AssumeUnreachable(string.Format("Unknown shift operator: {0}.", binaryOperator.BinaryOperatorType));
                     break;
             }
+        }
+
+        private void Emit(ICastNode castNode, EmissionType emissionType)
+        {
+            EmitExpressionWithTargetType(castNode.TargetExpression, castNode.ExpressionReturnType);
+
+            if (ShouldEmitAddress(castNode, emissionType))
+                LoadAddressOfValue(castNode);
         }
 
         #endregion
