@@ -410,7 +410,6 @@ namespace LaborasLangCompiler.Codegen.Methods
             var collectionType = (ArrayType)forEachLoop.Collection.ExpressionReturnType;
             var getLengthMethod = AssemblyRegistry.GetMethod(Assembly, collectionType, "get_Length");
             var addressMethod = AssemblyRegistry.GetArrayLoadElementAddress(collectionType);
-            VariableDefinition collectionVariable;
             
             var referenceType = new ByReferenceType(collectionType.ElementType);
             var pinnedType = new PinnedType(referenceType);
