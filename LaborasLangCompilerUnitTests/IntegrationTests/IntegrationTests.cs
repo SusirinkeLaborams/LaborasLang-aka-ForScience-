@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.IO;
 using System.Linq;
 
@@ -167,6 +168,12 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             var expected = expected1 + expected1 + expected2 + expected3;
 
             Test("MinMaxValues.ll", expected);
+        }
+
+        [TestMethod, TestCategory("Integration Tests")]
+        public void Test_CharLiterals()
+        {
+            Test("CharLiterals.ll", new[] { "some", "words", "separated", "by", "commas" }.Aggregate((x, y) => x + Environment.NewLine + y));
         }
 
         #region Helpers

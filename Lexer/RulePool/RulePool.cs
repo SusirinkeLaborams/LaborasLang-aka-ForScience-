@@ -149,6 +149,7 @@ namespace Lexer
                         Integer,
                         Double,
                         Long,
+                        CharLiteral,
                         StringLiteral,
                         True,
                         False),

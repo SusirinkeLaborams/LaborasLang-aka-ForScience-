@@ -69,6 +69,8 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 case Lexer.TokenType.Integer:
                     return parser.Int32;
+                case Lexer.TokenType.CharLiteral:
+                    return parser.Char;
                 case Lexer.TokenType.StringLiteral:
                     return parser.String;
                 case Lexer.TokenType.Float:
@@ -103,7 +105,12 @@ namespace LaborasLangCompiler.Parser.Impl
                         return Convert.ToByte(value, CultureInfo.InvariantCulture);
 
                     case MetadataType.Char:
-                        return Convert.ToChar(value, CultureInfo.InvariantCulture);
+                        {
+                            if (value.Length > 1)
+                                ErrorCode.MultipleCharacterLiteral.ReportAndThrow(point, "Character literal must be one character long (found: '{0}').", value);
+
+                            return value[0];
+                        }
 
                     case MetadataType.Int16:
                         return Convert.ToInt16(value, CultureInfo.InvariantCulture);

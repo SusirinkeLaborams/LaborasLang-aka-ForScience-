@@ -14,8 +14,8 @@ Children:
 			Content: Type: LiteralNode, Start: 1, 8, End: 1, 12, Content: ""
 			Type: LiteralNode
 			Children:
-				Content: Type: StringLiteral, Start: 1, 8, End: 1, 12, Content: "bar"
-				Type: StringLiteral
+				Content: Type: CharLiteral, Start: 1, 8, End: 1, 12, Content: "bar"
+				Type: CharLiteral
 				Children:
 
 			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="

@@ -513,7 +513,7 @@ foo().bar = 5;
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
-        public void TestStringLiteralToken()
+        public void TestCharLiteralToken()
         {
             var source = @"foo = 'bar';";
             ExecuteTest(source);
@@ -536,7 +536,7 @@ foo().bar = 5;
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
-        public void TestStringLiteralTokenDoubleQuote()
+        public void TestStringLiteralToken()
         {
             var source = @"foo = ""bar"";";
             ExecuteTest(source);

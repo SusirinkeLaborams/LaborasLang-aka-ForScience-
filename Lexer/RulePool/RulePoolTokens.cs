@@ -28,6 +28,7 @@ namespace Lexer
         private static Condition NotEqual { get { return TokenType.NotEqual; } }
         private static Condition Not { get { return TokenType.Not; } }
         private static Condition PlusEqual { get { return TokenType.PlusEqual; } }
+        private static Condition CharLiteral { get { return TokenType.CharLiteral; } }
         private static Condition StringLiteral { get { return TokenType.StringLiteral; } }
         private static Condition BitwiseComplement { get { return TokenType.BitwiseComplement; } }
         private static Condition BitwiseXor { get { return TokenType.BitwiseXor; } }

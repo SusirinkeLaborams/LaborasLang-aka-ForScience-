@@ -758,13 +758,27 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
             else
             {
-                if (ShouldEmitAddress(field, emissionType))
+                var declaringType = field.Field.DeclaringType;
+
+                if (declaringType.Resolve().IsEnum)
                 {
-                    Ldsflda(field.Field);
+                    var resolvedField = field.Field.Resolve();
+                    var value = resolvedField.Constant;
+                    EmitConstant(value);
+
+                    if (ShouldEmitAddress(field, emissionType))
+                        LoadAddressOfValue(field);
                 }
                 else
                 {
-                    Ldsfld(field.Field);
+                    if (ShouldEmitAddress(field, emissionType))
+                    {
+                        Ldsflda(field.Field);
+                    }
+                    else
+                    {
+                        Ldsfld(field.Field);
+                    }
                 }
             }
         }
@@ -1313,39 +1327,44 @@ namespace LaborasLangCompiler.Codegen.Methods
                     continue;
                 }
 
-                var constantType = defaultValue.GetType();
+                EmitConstant(defaultValue);
+            }
+        }
 
-                if (constantType == typeof(SByte) ||
-                    constantType == typeof(Byte) ||
-                    constantType == typeof(Int16) ||
-                    constantType == typeof(UInt16) ||
-                    constantType == typeof(Int32) ||
-                    constantType == typeof(UInt32))
-                {
-                    Ldc_I4((int)defaultValue);
-                }
-                else if (constantType == typeof(Int64) ||
-                         constantType == typeof(UInt64))
-                {
-                    Ldc_I8((long)defaultValue);
-                }
-                else if (constantType == typeof(float))
-                {
-                    Ldc_R4((float)defaultValue);
-                }
-                else if (constantType == typeof(double))
-                {
-                    Ldc_R8((double)defaultValue);
-                }
-                else if (constantType == typeof(string))
-                {
-                    Ldstr((string)defaultValue);
-                }
-                else
-                {
-                    ContractsHelper.AssumeUnreachable(string.Format("Unknown default value literal: {0} with value of {1}.",
-                        defaultValue.GetType().FullName, defaultValue));
-                }
+        private void EmitConstant(object value)
+        {
+            var constantType = value.GetType();
+
+            if (constantType == typeof(SByte) ||
+                constantType == typeof(Byte) ||
+                constantType == typeof(Int16) ||
+                constantType == typeof(UInt16) ||
+                constantType == typeof(Int32) ||
+                constantType == typeof(UInt32))
+            {
+                Ldc_I4((int)value);
+            }
+            else if (constantType == typeof(Int64) ||
+                     constantType == typeof(UInt64))
+            {
+                Ldc_I8((long)value);
+            }
+            else if (constantType == typeof(float))
+            {
+                Ldc_R4((float)value);
+            }
+            else if (constantType == typeof(double))
+            {
+                Ldc_R8((double)value);
+            }
+            else if (constantType == typeof(string))
+            {
+                Ldstr((string)value);
+            }
+            else
+            {
+                ContractsHelper.AssumeUnreachable(string.Format("Unknown default value literal: {0} with value of {1}.",
+                    value.GetType().FullName, value));
             }
         }
 
