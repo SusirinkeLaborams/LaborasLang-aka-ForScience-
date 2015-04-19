@@ -314,13 +314,20 @@ namespace LaborasLangCompiler.Codegen.Methods
             var getCurrentMethod = AssemblyRegistry.GetEnumeratorCurrentMethod(enumeratorType, loopVariable.VariableType);
             var idisposable = AssemblyRegistry.FindType(Assembly, "System.IDisposable");
             bool isDisposable = enumeratorType.DerivesFrom(idisposable);
+            bool shouldAttemptToDispose = !enumeratorType.IsValueType || isDisposable;
+
+            Instruction beginTry = null, endTry = null, endFinally = null;
 
             // Define labels for later use
             var loopStart = CreateLabel();
             var loopCondition = CreateLabel();
-            var beginTry = CreateLabel();
-            var endTry = CreateLabel();
-            var endFinally = CreateLabel();
+
+            if (shouldAttemptToDispose)
+            {
+                beginTry = CreateLabel();
+                endTry = CreateLabel();
+                endFinally = CreateLabel();
+            }
 
             // Declare loop vriable
             Emit(foreachLoop.LoopVariable);
@@ -335,7 +342,10 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             // try
             {
-                Emit(beginTry);
+                if (shouldAttemptToDispose)
+                {
+                    Emit(beginTry);
+                }
 
                 // Jump to condition block
                 Br(loopCondition);
@@ -357,61 +367,67 @@ namespace LaborasLangCompiler.Codegen.Methods
                 Call(moveNextMethod);
                 Brtrue(loopStart);
 
-                Leave(endFinally);
-                Emit(endTry);
+                if (shouldAttemptToDispose)
+                {
+                    Leave(endFinally);
+                    Emit(endTry);
+                }
             }
             // finally
             {
-                var justBeforeEndFinally = CreateLabel();
-
-                var disposeMethod = AssemblyRegistry.GetMethod(Assembly, idisposable, "Dispose");
-                VariableDefinition disposableVariable = null;
-
-                // If enumerator is not disposable, we have to check it at runtime
-                if (!isDisposable)
+                if (shouldAttemptToDispose)
                 {
-                    disposableVariable = temporaryVariables.Acquire(idisposable);
+                    var justBeforeEndFinally = CreateLabel();
 
-                    // Check if enumerator is disposable, and if it is, store it into a temporary variable
-                    // Otherwise jump to just before finally end
-                    EmitLocalVariable(enumeratorVariable, EmissionType.Value);
-                    EmitConversionIfNeeded(enumeratorVariable.VariableType, Assembly.TypeSystem.Object);
-                    Isinst(idisposable);
-                    Stloc(disposableVariable.Index);
-                    EmitLocalVariable(disposableVariable, EmissionType.Value);
-                    Brfalse(justBeforeEndFinally);
+                    var disposeMethod = AssemblyRegistry.GetMethod(Assembly, idisposable, "Dispose");
+                    VariableDefinition disposableVariable = null;
 
-                    // Dispose enumerator
-                    EmitLocalVariable(disposableVariable, EmissionType.ThisArg);
-                    Call(disposeMethod);
-                }
-                else
-                {
-                    // Check if enumerator is null, jump to just before finally end
-
-                    if (!enumeratorType.IsValueType)
+                    // If enumerator is not disposable, we have to check it at runtime
+                    if (!isDisposable)
                     {
+                        disposableVariable = temporaryVariables.Acquire(idisposable);
+
+                        // Check if enumerator is disposable, and if it is, store it into a temporary variable
+                        // Otherwise jump to just before finally end
                         EmitLocalVariable(enumeratorVariable, EmissionType.Value);
+                        EmitConversionIfNeeded(enumeratorVariable.VariableType, Assembly.TypeSystem.Object);
+                        Isinst(idisposable);
+                        Stloc(disposableVariable.Index);
+                        EmitLocalVariable(disposableVariable, EmissionType.Value);
                         Brfalse(justBeforeEndFinally);
+
+                        // Dispose enumerator
+                        EmitLocalVariable(disposableVariable, EmissionType.ThisArg);
+                        Call(disposeMethod);
+                    }
+                    else
+                    {
+                        // Check if enumerator is null, jump to just before finally end
+
+                        if (!enumeratorType.IsValueType)
+                        {
+                            EmitLocalVariable(enumeratorVariable, EmissionType.Value);
+                            Brfalse(justBeforeEndFinally);
+                        }
+
+                        EmitLocalVariable(enumeratorVariable, EmissionType.ThisArg);
+                        Call(AssemblyRegistry.GetCompatibleMethod(Assembly, enumeratorType, "Dispose", new TypeReference[0]));
                     }
 
-                    EmitLocalVariable(enumeratorVariable, EmissionType.ThisArg);
-                    Call(AssemblyRegistry.GetCompatibleMethod(Assembly, enumeratorType, "Dispose", new TypeReference[0]));
+                    // Done
+                    Emit(justBeforeEndFinally);
+                    EndFinally();
+                    Emit(endFinally);
+
+                    body.ExceptionHandlers.Add(new ExceptionHandler(ExceptionHandlerType.Finally)
+                    {
+                        TryStart = beginTry,
+                        TryEnd = endTry,
+                        HandlerStart = endTry,
+                        HandlerEnd = endFinally
+                    });
                 }
-
-                // Done
-                Emit(justBeforeEndFinally);
-                EndFinally();
-                Emit(endFinally);
             }
-
-            body.ExceptionHandlers.Add(new ExceptionHandler(ExceptionHandlerType.Finally)
-                {
-                    TryStart = beginTry,
-                    TryEnd = endTry,
-                    HandlerStart = endTry,
-                    HandlerEnd = endFinally
-                });
 
             temporaryVariables.Release(enumeratorVariable);
         }
