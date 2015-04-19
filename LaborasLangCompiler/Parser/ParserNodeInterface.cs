@@ -55,6 +55,7 @@ namespace LaborasLangCompiler.Parser
         ArrayAccess,
         IndexOperator,
         Null,
+        Cast,
         ParserInternal
     }
 
@@ -219,6 +220,12 @@ namespace LaborasLangCompiler.Parser
 
     interface IIndexOperatorNode : IArrayAccessNode, IPropertyNode
     {
+    }
+
+    [ContractClass(typeof(ICastNodeContract))]
+    interface ICastNode : IExpressionNode
+    {
+        IExpressionNode TargetExpression { get; }
     }
 
     [ContractClass(typeof(ISymbolDeclarationNodeContract))]
@@ -680,6 +687,24 @@ namespace LaborasLangCompiler.Parser
             {
                 Contract.Ensures(Contract.Result<IReadOnlyList<IExpressionNode>>() != null);
                 Contract.Ensures(Contract.Result<IReadOnlyList<IExpressionNode>>().Count > 0);
+                throw new NotImplementedException();
+            }
+        }
+    }
+
+    [ContractClassFor(typeof(ICastNode))]
+    abstract class ICastNodeContract : ICastNode
+    {
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract NodeType Type { get; }
+        public abstract SequencePoint SequencePoint { get; }
+
+        public IExpressionNode TargetExpression
+        {
+            get 
+            {
+                Contract.Ensures(Contract.Result<IExpressionNode>() != null);
                 throw new NotImplementedException();
             }
         }
