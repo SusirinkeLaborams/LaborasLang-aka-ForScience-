@@ -1,7 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace LaborasLangCompilerUnitTests.IntegrationTests
 {
@@ -193,5 +195,33 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         }
 
         #endregion
+
+        [TestMethod, TestCategory("All Tests")]
+        public void AllIntegrationTests()
+        {
+            var baseType = typeof(IntegrationTestBase);
+            var allMethods = baseType.Assembly.GetTypes().Where(t => baseType.IsAssignableFrom(t)).SelectMany(t => t.GetMethods());
+            var testMethods = new List<MethodInfo>();
+
+            foreach (var method in allMethods)
+            {
+                var customAttributes = method.GetCustomAttributes(typeof(TestCategoryAttribute), false);
+
+                foreach (TestCategoryAttribute attribute in customAttributes)
+                {
+                    if (attribute.TestCategories.Contains("Integration Tests"))
+                    {
+                        testMethods.Add(method);
+                        break;
+                    }
+                }
+            }
+
+            foreach (var method in testMethods)
+            {
+                var instance = Activator.CreateInstance(method.DeclaringType);
+                method.Invoke(instance, new object[0]);
+            }
+        }
     }
 }
