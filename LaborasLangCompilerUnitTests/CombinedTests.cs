@@ -3,40 +3,93 @@ using LaborasLangCompiler.Codegen.Methods;
 using LaborasLangCompiler.Codegen.Types;
 using LaborasLangCompiler.FrontEnd;
 using LaborasLangCompiler.Parser;
+using LaborasLangCompilerUnitTests.CodegenTests;
+using LaborasLangCompilerUnitTests.LexerTests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using MethodAttributes = Mono.Cecil.MethodAttributes;
+using BindingFlags = System.Reflection.BindingFlags;
+using MethodInfo = System.Reflection.MethodInfo;
 
-namespace LaborasLangCompilerUnitTests.CodegenTests
+namespace LaborasLangCompilerUnitTests
 {
     [TestClass]
-    public class AllCodegenTests
+    public class CombinedTests : TestBase
     {
+        public CombinedTests() :
+            base(false)
+        {
+        }
+
         [TestMethod, TestCategory("All Tests")]
+        public void AllTests()
+        {
+            var testMethods = GetAllTestsFromCategory("Combined Test Suites");
+
+            foreach (var method in testMethods)
+            {
+                var instance = Activator.CreateInstance(method.DeclaringType);
+                method.Invoke(instance, new object[0]);
+            }
+        }
+
+        [TestMethod, TestCategory("Combined Test Suites")]
+        public void AllIntegrationTests()
+        {
+            var testMethods = GetAllTestsFromCategory("Integration Tests");
+
+            foreach (var method in testMethods)
+            {
+                var instance = Activator.CreateInstance(method.DeclaringType);
+                method.Invoke(instance, new object[0]);
+            }
+        }
+
+        [TestMethod, TestCategory("Combined Test Suites")]
+        public void TestParser()
+        {
+            var testClass = typeof(LaborasLangCompilerUnitTests.ParserTests.ParserTests);
+            var methods = testClass.GetMethods().Where(m => m.GetCustomAttributes(typeof(TestMethodAttribute), false).Any()).ToList();
+            var instance = new LaborasLangCompilerUnitTests.ParserTests.ParserTests();
+
+            foreach (var method in methods)
+                method.Invoke(instance, null);
+        }
+
+        [TestMethod, TestCategory("Combined Test Suites")]
+        public void TestLexer()
+        {
+            var classes = new List<Type>() { typeof(RuleValidation), typeof(SyntaxMatcherTests), typeof(TokenizerTests), typeof(ValueBlockTests) };
+
+            foreach (var cls in classes)
+            {
+                var methods = cls.GetMethods().Where(m => m.GetCustomAttributes(typeof(TestMethodAttribute), false).Any());
+                var instance = cls.GetConstructor(new Type[] { }).Invoke(null);
+
+                foreach (var method in methods)
+                    method.Invoke(instance, null);
+            }
+        }
+
+        [TestMethod, TestCategory("Combined Test Suites")]
+        public void AllMiscILTests()
+        {
+            var testMethods = GetAllTestsFromCategory("Misc IL Tests");
+
+            foreach (var method in testMethods)
+            {
+                var instance = Activator.CreateInstance(method.DeclaringType);
+                method.Invoke(instance, new object[0]);
+            }
+        }
+
+        [TestMethod, TestCategory("Combined Test Suites")]
         public void AllExecutionBasedCodegenTests()
         {
-            var baseType = typeof(CodegenTestBase);
-            var allMethods = baseType.Assembly.GetTypes().Where(t => baseType.IsAssignableFrom(t)).SelectMany(t => t.GetMethods());
-            var testMethods = new List<MethodInfo>();
-
-            foreach (var method in allMethods)
-            {
-                var customAttributes = method.GetCustomAttributes(typeof(TestCategoryAttribute), false);
-
-                foreach (TestCategoryAttribute attribute in customAttributes)
-                {
-                    if (attribute.TestCategories.Contains("Execution Based Codegen Tests"))
-                    {
-                        testMethods.Add(method);
-                        break;
-                    }
-                }
-            }
+            var testMethods = GetAllTestsFromCategory("Execution Based Codegen Tests");
 
             var tests = new List<CodegenTestBase>();
             var compilerArgs = CompilerArguments.Parse(new[] { "ExecuteTest.il" });
@@ -45,7 +98,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
             foreach (var method in testMethods)
             {
-                var ctor = method.DeclaringType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, 
+                var ctor = method.DeclaringType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null,
                     new Type[] { typeof(AssemblyEmitter), typeof(string), typeof(bool) }, null);
                 var instance = (CodegenTestBase)ctor.Invoke(new object[] { assembly, method.Name, true });
                 method.Invoke(instance, new object[] { });
@@ -168,11 +221,9 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                 succeededTests, failedTests, didntRunTests, testReport.ToString()));
         }
 
-        [TestMethod, TestCategory("All Tests")]
-        public void AllMiscILTests()
+        private static IReadOnlyList<MethodInfo> GetAllTestsFromCategory(string category)
         {
-            var baseType = typeof(TestBase);
-            var allMethods = baseType.Assembly.GetTypes().Where(t => baseType.IsAssignableFrom(t)).SelectMany(t => t.GetMethods());
+            var allMethods = typeof(TestBase).Assembly.GetTypes().SelectMany(t => t.GetMethods());
             var testMethods = new List<MethodInfo>();
 
             foreach (var method in allMethods)
@@ -181,7 +232,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
                 foreach (TestCategoryAttribute attribute in customAttributes)
                 {
-                    if (attribute.TestCategories.Contains("Misc IL Tests"))
+                    if (attribute.TestCategories.Contains(category))
                     {
                         testMethods.Add(method);
                         break;
@@ -189,11 +240,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
                 }
             }
 
-            foreach (var method in testMethods)
-            {
-                var instance = Activator.CreateInstance(method.DeclaringType);
-                method.Invoke(instance, new object[0]);
-            }
+            return testMethods;
         }
     }
 }
