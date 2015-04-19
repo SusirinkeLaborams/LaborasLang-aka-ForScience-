@@ -310,7 +310,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             {
                 if (arrayType.IsVector)
                 {
-                    EmitForEachLoopForArray(forEachLoop);
+                    EmitForEachLoopForVector(forEachLoop);
                     return;
                 }
             }
@@ -318,7 +318,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             EmitForEachLoopForCollection(forEachLoop);
         }
 
-        private void EmitForEachLoopForArray(IForEachLoopNode forEachLoop)
+        private void EmitForEachLoopForVector(IForEachLoopNode forEachLoop)
         {
             Contract.Requires(forEachLoop.LoopVariable.Initializer == null);
             Contract.Requires(forEachLoop.Collection.ExpressionReturnType is ArrayType);
