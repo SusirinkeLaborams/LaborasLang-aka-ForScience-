@@ -25,7 +25,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             var source =
 @"auto Main = void()
 {
-	System.Console.WriteLine('Hello, world!');
+	System.Console.WriteLine(""Hello, world!"");
 	System.Console.ReadKey();
 };";
             ExecuteTest(source);
@@ -40,16 +40,22 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             ExecuteTest(source);
         }
 
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
+        public void TestTokenizerCharLiteral1()
+        {
+            var source = @"'ė'";
+            ExecuteTest(source);
+        }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
-        public void TestTokenizerStringLiteral1()
+        public void TestTokenizerCharLiteral2()
         {
             var source = @"'str\'ing'";
             ExecuteTest(source);
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: Tokenizer"), Timeout(1000)]
-        public void TestTokenizerStringLiteral2()
+        public void TestTokenizerStringLiteral()
         {
             var source = @"""str\""ing""";
             ExecuteTest(source);

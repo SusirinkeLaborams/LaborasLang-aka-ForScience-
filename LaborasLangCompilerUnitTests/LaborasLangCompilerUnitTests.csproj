@@ -97,6 +97,7 @@
     <Compile Include="CodegenTests\MethodBodyTests\FunctorTests.cs" />
     <Compile Include="CodegenTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="CodegenTests\ILHelpersTests.cs" />
+    <None Include="IntegrationTests\SourceFiles\CharLiterals.ll" />
     <Compile Include="LexerTests\AllLexerTests.cs" />
     <Compile Include="ParserTests\AllParserTests.cs" />
     <Compile Include="PEVerifyRunner.cs" />

@@ -59,6 +59,8 @@ namespace LaborasLangCompiler.Common
         ArrayDimMissmatch = 0032,
         NotLiteralArrayDims = 0033,
 
+        MultipleCharacterLiteral = 0034,
+
         CompilerArgumentErrors = 1000,
         NoSourceFiles = 1001,
         UnknownCompilerSwitch = 1002,

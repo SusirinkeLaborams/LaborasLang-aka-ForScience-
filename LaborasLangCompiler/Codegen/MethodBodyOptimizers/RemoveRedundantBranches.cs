@@ -7,9 +7,13 @@ namespace LaborasLangCompiler.Codegen.MethodBodyOptimizers
     {
         public override bool ReleaseOnlyOpmization { get { return false; } }
 
-        protected override bool MatchesPredicate(IList<Instruction> instructions, int instructionIndex)
+        protected override bool MatchesPredicate(MethodBody body, int instructionIndex)
         {
+            var instructions = body.Instructions;
             var instruction = instructions[instructionIndex];
+
+            if (IsWithinExceptionHandler(body.ExceptionHandlers, instruction))
+                return false;
 
             if (instruction.OpCode != OpCodes.Ret && instruction.Next != null &&
                 instruction.Next.OpCode != OpCodes.Ret && LeadsToRet(instruction.Next))

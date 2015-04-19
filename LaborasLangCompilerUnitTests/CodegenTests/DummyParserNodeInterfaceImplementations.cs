@@ -66,12 +66,12 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
                 var methodNode = Function as IMethodNode;
                 if (methodNode != null)
-                    return methodNode.Method.ReturnType;
+                    return methodNode.Method.GetReturnType();
 
                 var functorType = Function.ExpressionReturnType;
 
                 if (functorType != null)
-                    return functorType.Resolve().Methods.SingleOrDefault(method => method.Name == "Invoke").ReturnType;
+                    return functorType.Resolve().Methods.SingleOrDefault(method => method.Name == "Invoke").GetReturnType();
 
                 return null;
             }
@@ -351,6 +351,16 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public ICodeBlockNode InitializationBlock { get; set; }
         public IExpressionNode ConditionBlock { get; set; }
         public ICodeBlockNode IncrementBlock { get; set; }
+        public ICodeBlockNode Body { get; set; }
+    }
+
+    class ForEachLoop : IForEachLoopNode
+    {
+        public SequencePoint SequencePoint { get { return null; } }
+        public NodeType Type { get { return NodeType.ForEachLoop; } }
+
+        public IExpressionNode Collection { get; set; }
+        public ISymbolDeclarationNode LoopVariable { get; set; }
         public ICodeBlockNode Body { get; set; }
     }
 

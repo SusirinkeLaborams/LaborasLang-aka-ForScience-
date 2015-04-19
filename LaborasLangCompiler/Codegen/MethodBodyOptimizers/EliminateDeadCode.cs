@@ -33,8 +33,9 @@ namespace LaborasLangCompiler.Codegen.MethodBodyOptimizers
 
         // Basically, do a Depth first search on instructions to find 
         // which ones are not gonna be visited and remember that for later
-        protected override void OnBegin(IList<Instruction> instructions)
+        protected override void OnBegin(MethodBody body)
         {
+            var instructions = body.Instructions;
             MakeInstructionIndexMap(instructions);
             var dfsStack = new Instruction[instructions.Count];
 
@@ -67,9 +68,9 @@ namespace LaborasLangCompiler.Codegen.MethodBodyOptimizers
             }
         }
 
-        protected override bool MatchesPredicate(IList<Mono.Cecil.Cil.Instruction> instructions, int instructionIndex)
+        protected override bool MatchesPredicate(MethodBody body, int instructionIndex)
         {
-            return !isVisitedMap[instructions[instructionIndex]];
+            return !isVisitedMap[body.Instructions[instructionIndex]] && !IsWithinExceptionHandler(body.ExceptionHandlers, body.Instructions[instructionIndex]);
         }
 
         protected override InstructionOperation GetOperation()

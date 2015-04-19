@@ -25,7 +25,7 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             this.isStatic = isStatic;
 
-            if (!isStatic)
+            if (!isStatic && !declaringType.IsValueType)
             {
                 var objectCtor = AssemblyRegistry.GetCompatibleMethod(declaringType.Assembly, declaringType.Assembly.TypeSystem.Object, ".ctor", new TypeReference[0]);
 

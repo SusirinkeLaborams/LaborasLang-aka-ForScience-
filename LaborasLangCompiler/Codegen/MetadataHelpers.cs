@@ -155,60 +155,56 @@ namespace LaborasLangCompiler.Codegen
                 return assignmentMap[left.MetadataType].Any(type => type == right.MetadataType);
             }
 
-            // We support no type specs atm
-            if (left is TypeSpecification || right is TypeSpecification)
+            var leftArrayType = left as ArrayType;
+            var rightArrayType = right as ArrayType;
+
+            if (leftArrayType != null && rightArrayType != null)
+            {
+                var leftElementType = leftArrayType.ElementType;
+                var rightElementType = rightArrayType.ElementType;
+
+                if (!leftElementType.IsValueType && !rightElementType.IsValueType)
+                    return rightElementType.IsAssignableTo(leftElementType);
+
                 return false;
-
-            var leftType = left.Resolve();
-            var rightType = right.Resolve();
-
-            if (leftType.HasGenericParameters || rightType.HasGenericParameters)
-            {
-                throw new NotSupportedException("Generic types are not supported!");
             }
 
-            if (leftType.IsInterface)
+            if (left.Resolve().IsInterface)
             {
-                return rightType.Interfaces.Any(interfaze => interfaze.FullName == leftType.FullName);
+                return right.GetInterfaces().Any(interfaze => interfaze.FullName == left.FullName);
             }
-                        
-            while (rightType.BaseType != null)
-            {
-                rightType = rightType.BaseType.Resolve();
 
-                if (leftType.FullName == rightType.FullName)
-                {
-                    return true;
-                }
-            }
+            var rightBaseType = right.GetBaseType();
+
+            if (rightBaseType != null)
+                return rightBaseType.IsAssignableTo(left);
 
             return false;
         }
 
-        public static bool DerivesFrom(this TypeReference childRef, TypeReference parentRef)
+        public static bool DerivesFrom(this TypeReference child, TypeReference parent)
         {
-            if (childRef.FullName == parentRef.FullName)
+            if (child.FullName == parent.FullName)
             {
                 return true;
             }
-
-            var child = childRef.Resolve();
-            var parent = parentRef.Resolve();
             
-            if (parent.IsInterface)
+            if (parent.Resolve().IsInterface)
             {
-                if (child.Interfaces.Any(interfaze => interfaze.FullName == parent.FullName))
+                if (child.GetInterfaces().Any(interfaze => interfaze.DerivesFrom(parent)))
                 {
                     return true;
                 }
             }
 
-            if (child.BaseType == null)
+            var childBaseType = child.GetBaseType();
+
+            if (childBaseType == null)
             {
                 return false;
             }
 
-            return child.BaseType.DerivesFrom(parent);
+            return childBaseType.DerivesFrom(parent);
         }
 
         public static bool DeclaredBy(this TypeReference nestedType, TypeReference type)
@@ -229,17 +225,17 @@ namespace LaborasLangCompiler.Codegen
 
         public static bool MatchesArgumentList(this MethodReference method, IReadOnlyList<TypeReference> desiredParameters)
         {
-            var methodParameters = method.Resolve().Parameters; // Resolve is needed or otherwise we will not know methods parameter attributes
-            return MatchesArgumentList(methodParameters, desiredParameters);
+            var methodParameters = method.Resolve().Parameters; // Resolve is needed or otherwise we will not know methods parameter attributes.
+            return MatchesArgumentList(methodParameters, method.GetParameterTypes(), desiredParameters);
         }
 
         public static bool MatchesArgumentList(this PropertyReference property, IReadOnlyList<TypeReference> desiredParameters)
         {
             var propertyParameters = property.Resolve().Parameters;
-            return MatchesArgumentList(propertyParameters, desiredParameters);
+            return MatchesArgumentList(propertyParameters, propertyParameters.Select(p => p.ParameterType).ToArray(), desiredParameters);
         }
 
-        public static bool MatchesArgumentList(IList<ParameterDefinition> methodParameters, IReadOnlyList<TypeReference> desiredParameters)
+        private static bool MatchesArgumentList(IList<ParameterDefinition> methodParameters, IReadOnlyList<TypeReference> parameterTypes, IReadOnlyList<TypeReference> desiredParameters)
         {
             // Doesn't match if parameter count doesn't match and either method has no parameters, or last parameter is neither params, nor default one.
             var lastParameter = methodParameters.LastOrDefault();
@@ -253,7 +249,7 @@ namespace LaborasLangCompiler.Codegen
             int numberOfMatches = 0;
             while (numberOfMatches < methodParameters.Count && numberOfMatches < desiredParameters.Count)
             {
-                if (desiredParameters[numberOfMatches].IsAssignableTo(methodParameters[numberOfMatches].ParameterType))
+                if (desiredParameters[numberOfMatches].IsAssignableTo(parameterTypes[numberOfMatches]))
                 {
                     numberOfMatches++;
                 }
@@ -276,7 +272,7 @@ namespace LaborasLangCompiler.Codegen
                     return false;
                 }
 
-                var paramsArgument = methodParameters.Last().ParameterType.GetElementType();
+                var paramsArgument = parameterTypes[parameterTypes.Count - 1].GetElementType();
 
                 for (int i = methodParameters.Count - 1; i < desiredParameters.Count; i++)
                 {
@@ -336,21 +332,21 @@ namespace LaborasLangCompiler.Codegen
         public static TypeReference GetFunctorReturnType(AssemblyEmitter assemblyScope, TypeReference functorType)
         {
             var invokeMethod = GetFunctorInvokeMethod(assemblyScope, functorType);
-            return invokeMethod.ReturnType;
+            return invokeMethod.GetReturnType();
         }
 
         public static TypeReference GetFunctorReturnTypeAndArguments(AssemblyEmitter assemblyScope, TypeReference functorType, 
-            out List<TypeReference> arguments)
-        {
-            var invokeMethod = GetFunctorInvokeMethod(assemblyScope, functorType);      
-            arguments = invokeMethod.Parameters.Select(parameter => parameter.ParameterType).ToList();
-            return invokeMethod.ReturnType;
-        }
-
-        public static List<TypeReference> GetFunctorParamTypes(AssemblyEmitter assemblyScope, TypeReference functorType)
+            out IReadOnlyList<TypeReference> arguments)
         {
             var invokeMethod = GetFunctorInvokeMethod(assemblyScope, functorType);
-            return invokeMethod.Parameters.Select(param => param.ParameterType).ToList();
+            arguments = invokeMethod.GetParameterTypes();
+            return invokeMethod.GetReturnType();
+        }
+
+        public static IReadOnlyList<TypeReference> GetFunctorParamTypes(AssemblyEmitter assemblyScope, TypeReference functorType)
+        {
+            var invokeMethod = GetFunctorInvokeMethod(assemblyScope, functorType);
+            return invokeMethod.GetParameterTypes();
         }
 
         private static MethodReference GetFunctorInvokeMethod(AssemblyEmitter assemblyScope, TypeReference functorType)
@@ -505,6 +501,272 @@ namespace LaborasLangCompiler.Codegen
 
                 default:
                     return null;
+            }
+        }
+
+        public static TypeReference ScopeToAssembly(AssemblyEmitter assemblyScope, TypeReference reference)
+        {
+            return ScopeToAssembly(assemblyScope.MainModule, reference);
+        }
+
+        public static TypeReference ScopeToAssembly(ModuleDefinition module, TypeReference reference)
+        {
+            if ((reference.Scope.MetadataScopeType != MetadataScopeType.ModuleDefinition) || (ModuleDefinition)reference.Scope != module)
+            {
+                return module.Import(reference);
+            }
+            else
+            {
+                return reference;
+            }
+        }
+
+        public static MethodReference ScopeToAssembly(AssemblyEmitter assemblyScope, MethodReference reference)
+        {
+            return ScopeToAssembly(assemblyScope.MainModule, reference);
+        }
+
+        public static MethodReference ScopeToAssembly(ModuleDefinition module, MethodReference reference)
+        {
+            if (reference.DeclaringType.Scope == null)
+                return reference;
+
+            if ((reference.DeclaringType.Scope.MetadataScopeType != MetadataScopeType.ModuleDefinition) ||
+                    (ModuleDefinition)reference.DeclaringType.Scope != module)
+            {
+                return module.Import(reference);
+            }
+            else
+            {
+                return reference.Resolve();
+            }
+        }
+
+        public static FieldReference ScopeToAssembly(AssemblyEmitter assemblyScope, FieldReference reference)
+        {
+            return ScopeToAssembly(assemblyScope.MainModule, reference);
+        }
+
+        public static FieldReference ScopeToAssembly(ModuleDefinition module, FieldReference reference)
+        {
+            if ((reference.DeclaringType.Scope.MetadataScopeType != MetadataScopeType.ModuleDefinition) ||
+                    (ModuleDefinition)reference.DeclaringType.Scope != module)
+            {
+                return module.Import(reference);
+            }
+            else
+            {
+                return reference.Resolve();
+            }
+        }
+
+        public static TypeReference MakeGenericType(this TypeReference type, TypeReference genericArgument)
+        {
+            var genericInstance = new GenericInstanceType(type);
+            genericInstance.GenericArguments.Add(genericArgument);
+            return genericInstance;
+        }
+
+        public static TypeReference MakeGenericType(this TypeReference type, params TypeReference[] genericArguments)
+        {
+            var genericInstance = new GenericInstanceType(type);
+
+            foreach (var genericArgument in genericArguments)
+                genericInstance.GenericArguments.Add(genericArgument);
+
+            return genericInstance;
+        }
+
+        public static TypeReference InflateGenericParameters(TypeReference typeRef, GenericInstanceType genericInstanceType)
+        {
+            var genericParameter = typeRef as GenericParameter;
+
+            if (genericParameter != null)
+                return genericInstanceType.GenericArguments[genericParameter.Position];
+
+            var arrayType = typeRef as ArrayType;
+
+            if (arrayType != null)
+            {
+                var inflatedElementType = InflateGenericParameters(arrayType.ElementType, genericInstanceType);
+
+                if (inflatedElementType == typeRef)
+                    return typeRef;
+
+                return new ArrayType(inflatedElementType, arrayType.Rank);
+            }
+
+            var genericBaseInstance = typeRef as GenericInstanceType;
+
+            if (genericBaseInstance != null)
+            {
+                var inflatedType = new GenericInstanceType(ScopeToAssembly(genericInstanceType.Module, genericBaseInstance.Resolve()));
+
+                for (int i = 0; i < genericBaseInstance.GenericArguments.Count; i++)
+                {
+                    var genericArgument = InflateGenericParameters(genericBaseInstance.GenericArguments[i], genericInstanceType);
+                    inflatedType.GenericArguments.Add(genericArgument);
+                }
+
+                return inflatedType;
+            }
+
+            if (typeRef is TypeSpecification)
+                throw new NotImplementedException();
+
+            return ScopeToAssembly(genericInstanceType.Module, typeRef);
+        }
+
+        public static TypeReference GetBaseType(this TypeReference type)
+        {
+            var arrayType = type as ArrayType;
+
+            if (arrayType != null)
+                return AssemblyRegistry.FindType(arrayType.Module, "System.Array");
+
+            var baseType = type.Resolve().BaseType;
+
+            if (baseType == null)
+                return null;
+
+            var genericInstanceType = type as GenericInstanceType;
+
+            if (genericInstanceType != null)
+                return InflateGenericParameters(baseType, genericInstanceType);
+
+            return ScopeToAssembly(type.Module, baseType);
+        }
+
+        public static IReadOnlyList<TypeReference> GetInterfaces(this TypeReference type)
+        {
+            var arrayType = type as ArrayType;
+
+            if (arrayType != null)
+            {
+                if (arrayType.IsVector)
+                {
+                    return new TypeReference[]
+                    {
+                        AssemblyRegistry.FindType(type.Module, "System.ICloneable"),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.Generic.IList`1").MakeGenericType(arrayType.ElementType),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.Generic.IReadOnlyList`1").MakeGenericType(arrayType.ElementType),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.IStructuralComparable"),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.IStructuralEquatable"),
+                    };
+                }
+                else
+                {
+                    return new TypeReference[]
+                    {
+                        AssemblyRegistry.FindType(type.Module, "System.ICloneable"),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.IList"),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.IStructuralComparable"),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.IStructuralEquatable"),
+                    };
+                }
+            }
+
+            var interfacesDef = type.Resolve().Interfaces;
+            var interfaces = new TypeReference[interfacesDef.Count];
+            var genericInstanceType = type as GenericInstanceType;
+
+            if (genericInstanceType != null)
+            {
+                for (int i = 0; i < interfaces.Length; i++)
+                {
+                    interfaces[i] = InflateGenericParameters(interfacesDef[i], genericInstanceType);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < interfaces.Length; i++)
+                {
+                    interfaces[i] = ScopeToAssembly(type.Module, interfacesDef[i]);
+                }
+            }
+
+            return interfaces;
+        }
+
+        public static TypeReference GetReturnType(this MethodReference method)
+        {
+            var genericInstanceType = method.DeclaringType as GenericInstanceType;
+
+            if (genericInstanceType == null)
+                return method.ReturnType;
+
+            return InflateGenericParameters(method.ReturnType, genericInstanceType);
+        }
+
+        public static IReadOnlyList<TypeReference> GetParameterTypes(this MethodReference method)
+        {
+            var parameterTypes = new TypeReference[method.Parameters.Count];
+            var genericInstanceType = method.DeclaringType as GenericInstanceType;
+
+            if (genericInstanceType == null)
+            {
+                for (int i = 0; i < parameterTypes.Length; i++)
+                {
+                    parameterTypes[i] = method.Parameters[i].ParameterType;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < parameterTypes.Length; i++)
+                {
+                    parameterTypes[i] = InflateGenericParameters(method.Parameters[i].ParameterType, genericInstanceType);
+                }
+            }
+
+            return parameterTypes;
+        }
+
+        public static bool IsDelegate(this TypeReference type)
+        {
+            var resolvedType = type.Resolve();
+
+            if (resolvedType == null)
+                return false;
+
+            var baseType = resolvedType.BaseType;
+
+            if (baseType == null)
+                return false;
+
+            return baseType.FullName == "System.MulticastDelegate";
+        }
+
+        public static bool GetSizeOfType(TypeReference type, out int size)
+        {
+            switch (type.MetadataType)
+            {
+                case MetadataType.Boolean:
+                case MetadataType.SByte:
+                case MetadataType.Byte:
+                    size = 1;
+                    return true;
+                    
+                case MetadataType.Char:
+                case MetadataType.Int16:
+                case MetadataType.UInt16:
+                    size = 2;
+                    return true;
+
+                case MetadataType.Int32:
+                case MetadataType.UInt32:
+                case MetadataType.Single:
+                    size = 4;
+                    return true;
+
+                case MetadataType.Int64:
+                case MetadataType.UInt64:
+                case MetadataType.Double:
+                    size = 8;
+                    return true;
+
+                default:
+                    size = -1;
+                    return false;
             }
         }
 
