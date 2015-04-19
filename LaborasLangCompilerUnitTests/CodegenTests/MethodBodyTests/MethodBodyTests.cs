@@ -1438,6 +1438,62 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestForLoop()
+        {
+            var indexVariable = new VariableDefinition("i", assemblyEmitter.TypeSystem.Int32);
+            var indexVariableNode = new LocalVariableNode(indexVariable);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new ForLoopNode()
+                    {
+                        InitializationBlock = new CodeBlockNode()
+                        {
+                            Nodes = new IParserNode[]
+                            {
+                                new SymbolDeclarationNode()
+                                {
+                                    Variable = indexVariable,
+                                    Initializer = new LiteralNode(assemblyEmitter.TypeSystem.Int32, 0)
+                                }
+                            }
+                        },
+                        ConditionBlock = new BinaryOperatorNode()
+                        {
+                            ExpressionReturnType = assemblyEmitter.TypeSystem.Boolean,
+                            BinaryOperatorType = BinaryOperatorNodeType.LessThan,
+                            LeftOperand = indexVariableNode,
+                            RightOperand = new LiteralNode(assemblyEmitter.TypeSystem.Int32, 10)
+                        },
+                        IncrementBlock = new CodeBlockNode()
+                        {
+                            Nodes = new IParserNode[]
+                            {
+                                new IncrementDecrementOperatorNode()
+                                {
+                                    IncrementDecrementType = IncrementDecrementOperatorType.PostIncrement,
+                                    Operand = indexVariableNode
+                                }
+                            }
+                        },
+                        Body = new CodeBlockNode()
+                        {
+                            Nodes = new IParserNode[]
+                            {
+                                CallConsoleWriteLine(indexVariableNode)
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedOutput = Enumerable.Range(0, 10).Select(i => i + Environment.NewLine).Aggregate((x, y) => x + y);
+            AssertSuccessByExecution();
+        }
+
         #endregion
 
         /* Missing tests:

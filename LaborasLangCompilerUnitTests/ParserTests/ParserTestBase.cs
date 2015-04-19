@@ -27,6 +27,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             base(false)
         {
             Errors.Clear();
+
             var compilerArgs = CompilerArguments.Parse(new[] { "ParserTests.il" });
             AssemblyRegistry.CreateAndOverrideIfNeeded(compilerArgs.References);
             assembly = new AssemblyEmitter(compilerArgs);
@@ -49,6 +50,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
 
         protected void CompareTrees(IEnumerable<string> sources, IEnumerable<string> fileNames, IEnumerable<ErrorCode> errors, [CallerMemberName] string testName = "")
         {
+            Errors.Clear();
 
             var file = path + testName;
             var compilerArgs = CompilerArguments.Parse(fileNames.Select(n => Path.Combine("$" + testName, n)).Union(new[] { string.Format("/out:{0}.exe", testName) }).ToArray());

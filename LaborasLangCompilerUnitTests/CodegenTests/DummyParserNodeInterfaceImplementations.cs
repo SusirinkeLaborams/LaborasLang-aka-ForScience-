@@ -343,6 +343,17 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public ICodeBlockNode ExecutedBlock { get; set; }
     }
 
+    class ForLoopNode : IForLoopNode
+    {
+        public SequencePoint SequencePoint { get { return null; } }
+        public NodeType Type { get { return NodeType.ForLoop; } }
+
+        public ICodeBlockNode InitializationBlock { get; set; }
+        public IExpressionNode ConditionBlock { get; set; }
+        public ICodeBlockNode IncrementBlock { get; set; }
+        public ICodeBlockNode Body { get; set; }
+    }
+
     class ReturnNode : IReturnNode
     {
         public SequencePoint SequencePoint { get { return null; } }

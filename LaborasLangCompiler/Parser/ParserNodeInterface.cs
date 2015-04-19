@@ -18,12 +18,15 @@ namespace LaborasLangCompiler.Parser
         CodeBlockNode,
         ConditionBlock,
         WhileBlock,
+        ForLoop,
+        ForEachLoop,
         ReturnNode,
         ExceptionHandler,
         Throw,
         Catch,
         ParserInternal
     }
+
     interface IParserNode
     {
         NodeType Type { get; }
@@ -51,6 +54,7 @@ namespace LaborasLangCompiler.Parser
         ArrayCreation,
         ArrayAccess,
         IndexOperator,
+        Null,
         ParserInternal
     }
 

@@ -3,6 +3,7 @@ using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Parser.Impl;
 using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace LaborasLangCompiler.FrontEnd
 {
@@ -10,11 +11,25 @@ namespace LaborasLangCompiler.FrontEnd
     {
         internal static int Main(params string[] args)
         {
+            try
+            {
+                return Compile(args);
+            }
+            catch (Exception e)
+            {
+                var exceptionMessage = e.ToString().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Aggregate((x, y) => x + "r\r\n\t" + y);
+                Console.WriteLine("Internal compiler error has occurred. Details for inquiring minds: {0}\t{1}", Environment.NewLine, exceptionMessage);
+                return -2;
+            }
+        }
+
+        private static int Compile(params string[] args)
+        {
             Errors.Clear();
-            
+
             var compilerArgs = CompilerArguments.Parse(args);
 
-            if (compilerArgs == null)
+            if (compilerArgs.HasErrors)
                 return FailCompilation();
 
             AssemblyRegistry.Create(compilerArgs.References);
