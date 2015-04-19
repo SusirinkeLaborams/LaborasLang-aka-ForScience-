@@ -1,0 +1,26 @@
+Class:
+	TestNullVar
+	Fields:
+	Methods:
+		Method:
+			Name:
+				main
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+						System.String str
+					Nodes:
+						VariableDeclaration:
+							Symbol:
+								System.String str
+							Initializer:
+								NullNode
+
+
+
+

@@ -80,6 +80,9 @@ Children:
 		Type: RightParenthesis
 		Children:
 
-		Content: Type: EndOfLine, Start: 1, 23, End: 1, 24, Content: ";"
-		Type: EndOfLine
+		Content: Type: StatementWithEndOfLine, Start: 1, 23, End: 1, 24, Content: ""
+		Type: StatementWithEndOfLine
 		Children:
+			Content: Type: EndOfLine, Start: 1, 23, End: 1, 24, Content: ";"
+			Type: EndOfLine
+			Children:

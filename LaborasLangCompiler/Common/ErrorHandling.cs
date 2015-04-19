@@ -61,6 +61,9 @@ namespace LaborasLangCompiler.Common
 
         MultipleCharacterLiteral = 0034,
 
+        NullInsideDot = 0035,
+        InferrenceFromTypeless = 0036,
+
         CompilerArgumentErrors = 1000,
         NoSourceFiles = 1001,
         UnknownCompilerSwitch = 1002,

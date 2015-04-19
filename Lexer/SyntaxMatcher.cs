@@ -45,7 +45,8 @@ namespace Lexer
         
         public AstNode Match()
         {
-            var defaultConditions = new Condition[] { new Condition(TokenType.StatementNode, ConditionType.OneOrMore) };
+            var defaultConditions = new Condition[] { 
+                new Condition(TokenType.CodeConstruct, ConditionType.OneOrMore)};
             return Match(defaultConditions);
 
         }

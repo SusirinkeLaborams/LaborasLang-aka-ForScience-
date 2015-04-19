@@ -1,4 +1,5 @@
-﻿using Mono.Cecil;
+﻿using LaborasLangCompiler.Common;
+using Mono.Cecil;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
@@ -126,6 +127,17 @@ namespace LaborasLangCompiler.Codegen
             return type.FullName.StartsWith("$Functors.") && type.IsDefinition;
         }
 
+        [Pure]
+        public static bool IsNullType(this TypeReference type)
+        {
+            return type is NullType;
+        }
+
+        public static bool IsTypeless(this TypeReference type)
+        {
+            return type.IsNullType();
+        }
+
         public static bool IsAssignableTo(this TypeReference right, TypeReference left)
         {
             Contract.Requires(left != null);
@@ -143,6 +155,16 @@ namespace LaborasLangCompiler.Codegen
             {
                 right = right.GetElementType();
                 Contract.Assume(right != null);
+            }
+
+            if (left.IsNullType())
+            {
+                return false;
+            }
+
+            if (right.IsNullType())
+            {
+                return !left.IsValueType;
             }
             
             if (left.FullName == right.FullName)

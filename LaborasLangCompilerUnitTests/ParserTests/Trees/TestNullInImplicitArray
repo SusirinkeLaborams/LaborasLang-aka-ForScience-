@@ -1,0 +1,39 @@
+Class:
+	TestNullInImplicitArray
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.String[]
+			Name:
+				arr
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ArrayCreation:
+					ElementType: System.String
+					Rank: 1
+					Dimensions:
+						Literal:
+							Type: System.Int32
+							Value: 3
+
+					Initializer:
+						InitializerList:
+							Element type: System.String
+							Dimensions:
+								3
+							Values:
+								Literal:
+									Type: System.String
+									Value: foo
+
+								Literal:
+									Type: System.String
+									Value: bar
+
+								NullNode
+
+
+
+
+	Methods:

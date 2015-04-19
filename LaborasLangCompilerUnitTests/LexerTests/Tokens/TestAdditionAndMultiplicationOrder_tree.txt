@@ -1,77 +1,80 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 24, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-	Type: Value
+	Content: Type: StatementWithEndOfLine, Start: 1, 1, End: 1, 24, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: InfixNode, Start: 1, 1, End: 1, 9, Content: ""
-		Type: InfixNode
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Value
 		Children:
-			Content: Type: InfixNode, Start: 1, 1, End: 1, 5, Content: ""
+			Content: Type: InfixNode, Start: 1, 1, End: 1, 9, Content: ""
 			Type: InfixNode
 			Children:
-				Content: Type: PostfixNode, Start: 1, 1, End: 1, 4, Content: ""
-				Type: PostfixNode
-				Children:
-					Content: Type: Symbol, Start: 1, 1, End: 1, 2, Content: "f"
-					Type: Symbol
-					Children:
-
-					Content: Type: FunctionArgumentsList, Start: 1, 2, End: 1, 4, Content: ""
-					Type: FunctionArgumentsList
-					Children:
-						Content: Type: LeftParenthesis, Start: 1, 2, End: 1, 3, Content: "("
-						Type: LeftParenthesis
-						Children:
-
-						Content: Type: RightParenthesis, Start: 1, 3, End: 1, 4, Content: ")"
-						Type: RightParenthesis
-						Children:
-
-				Content: Type: Symbol, Start: 1, 5, End: 1, 7, Content: "oo"
-				Type: Symbol
-				Children:
-
-				Content: Type: Period, Start: 1, 4, End: 1, 5, Content: "."
-				Type: Period
-				Children:
-
-			Content: Type: InfixNode, Start: 1, 10, End: 1, 13, Content: ""
-			Type: InfixNode
-			Children:
-				Content: Type: LiteralNode, Start: 1, 10, End: 1, 11, Content: ""
-				Type: LiteralNode
-				Children:
-					Content: Type: Integer, Start: 1, 10, End: 1, 11, Content: "5"
-					Type: Integer
-					Children:
-
-				Content: Type: InfixNode, Start: 1, 14, End: 1, 19, Content: ""
+				Content: Type: InfixNode, Start: 1, 1, End: 1, 5, Content: ""
 				Type: InfixNode
 				Children:
-					Content: Type: LiteralNode, Start: 1, 14, End: 1, 17, Content: ""
-					Type: LiteralNode
+					Content: Type: PostfixNode, Start: 1, 1, End: 1, 4, Content: ""
+					Type: PostfixNode
 					Children:
-						Content: Type: Double, Start: 1, 14, End: 1, 17, Content: "1.2"
-						Type: Double
+						Content: Type: Symbol, Start: 1, 1, End: 1, 2, Content: "f"
+						Type: Symbol
 						Children:
 
-					Content: Type: Symbol, Start: 1, 20, End: 1, 23, Content: "bar"
+						Content: Type: FunctionArgumentsList, Start: 1, 2, End: 1, 4, Content: ""
+						Type: FunctionArgumentsList
+						Children:
+							Content: Type: LeftParenthesis, Start: 1, 2, End: 1, 3, Content: "("
+							Type: LeftParenthesis
+							Children:
+
+							Content: Type: RightParenthesis, Start: 1, 3, End: 1, 4, Content: ")"
+							Type: RightParenthesis
+							Children:
+
+					Content: Type: Symbol, Start: 1, 5, End: 1, 7, Content: "oo"
 					Type: Symbol
 					Children:
 
-					Content: Type: Multiply, Start: 1, 18, End: 1, 19, Content: "*"
-					Type: Multiply
+					Content: Type: Period, Start: 1, 4, End: 1, 5, Content: "."
+					Type: Period
 					Children:
 
-				Content: Type: Plus, Start: 1, 12, End: 1, 13, Content: "+"
-				Type: Plus
+				Content: Type: InfixNode, Start: 1, 10, End: 1, 13, Content: ""
+				Type: InfixNode
+				Children:
+					Content: Type: LiteralNode, Start: 1, 10, End: 1, 11, Content: ""
+					Type: LiteralNode
+					Children:
+						Content: Type: Integer, Start: 1, 10, End: 1, 11, Content: "5"
+						Type: Integer
+						Children:
+
+					Content: Type: InfixNode, Start: 1, 14, End: 1, 19, Content: ""
+					Type: InfixNode
+					Children:
+						Content: Type: LiteralNode, Start: 1, 14, End: 1, 17, Content: ""
+						Type: LiteralNode
+						Children:
+							Content: Type: Double, Start: 1, 14, End: 1, 17, Content: "1.2"
+							Type: Double
+							Children:
+
+						Content: Type: Symbol, Start: 1, 20, End: 1, 23, Content: "bar"
+						Type: Symbol
+						Children:
+
+						Content: Type: Multiply, Start: 1, 18, End: 1, 19, Content: "*"
+						Type: Multiply
+						Children:
+
+					Content: Type: Plus, Start: 1, 12, End: 1, 13, Content: "+"
+					Type: Plus
+					Children:
+
+				Content: Type: Assignment, Start: 1, 8, End: 1, 9, Content: "="
+				Type: Assignment
 				Children:
 
-			Content: Type: Assignment, Start: 1, 8, End: 1, 9, Content: "="
-			Type: Assignment
-			Children:
-
-	Content: Type: EndOfLine, Start: 1, 23, End: 1, 24, Content: ";"
-	Type: EndOfLine
-	Children:
+		Content: Type: EndOfLine, Start: 1, 23, End: 1, 24, Content: ";"
+		Type: EndOfLine
+		Children:

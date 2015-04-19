@@ -1,151 +1,157 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 58, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-	Type: Value
+	Content: Type: StatementWithEndOfLine, Start: 1, 1, End: 1, 58, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: InfixNode, Start: 1, 1, End: 1, 6, Content: ""
-		Type: InfixNode
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Value
 		Children:
-			Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
-			Type: Symbol
+			Content: Type: InfixNode, Start: 1, 1, End: 1, 6, Content: ""
+			Type: InfixNode
 			Children:
-
-			Content: Type: Function, Start: 1, 7, End: 1, 57, Content: ""
-			Type: Function
-			Children:
-				Content: Type: Type, Start: 1, 7, End: 1, 46, Content: ""
-				Type: Type
+				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+				Type: Symbol
 				Children:
-					Content: Type: FullSymbol, Start: 1, 7, End: 1, 10, Content: ""
-					Type: FullSymbol
-					Children:
-						Content: Type: Symbol, Start: 1, 7, End: 1, 10, Content: "int"
-						Type: Symbol
-						Children:
 
-					Content: Type: ParameterList, Start: 1, 10, End: 1, 46, Content: ""
-					Type: ParameterList
-					Children:
-						Content: Type: FunctorParameters, Start: 1, 10, End: 1, 46, Content: ""
-						Type: FunctorParameters
-						Children:
-							Content: Type: LeftParenthesis, Start: 1, 10, End: 1, 11, Content: "("
-							Type: LeftParenthesis
-							Children:
-
-							Content: Type: Type, Start: 1, 11, End: 1, 14, Content: ""
-							Type: Type
-							Children:
-								Content: Type: FullSymbol, Start: 1, 11, End: 1, 14, Content: ""
-								Type: FullSymbol
-								Children:
-									Content: Type: Symbol, Start: 1, 11, End: 1, 14, Content: "int"
-									Type: Symbol
-									Children:
-
-							Content: Type: Symbol, Start: 1, 15, End: 1, 16, Content: "a"
-							Type: Symbol
-							Children:
-
-							Content: Type: Comma, Start: 1, 16, End: 1, 17, Content: ","
-							Type: Comma
-							Children:
-
-							Content: Type: Type, Start: 1, 18, End: 1, 23, Content: ""
-							Type: Type
-							Children:
-								Content: Type: FullSymbol, Start: 1, 18, End: 1, 23, Content: ""
-								Type: FullSymbol
-								Children:
-									Content: Type: Symbol, Start: 1, 18, End: 1, 23, Content: "float"
-									Type: Symbol
-									Children:
-
-							Content: Type: Symbol, Start: 1, 24, End: 1, 25, Content: "c"
-							Type: Symbol
-							Children:
-
-							Content: Type: Comma, Start: 1, 25, End: 1, 26, Content: ","
-							Type: Comma
-							Children:
-
-							Content: Type: Type, Start: 1, 27, End: 1, 32, Content: ""
-							Type: Type
-							Children:
-								Content: Type: FullSymbol, Start: 1, 27, End: 1, 32, Content: ""
-								Type: FullSymbol
-								Children:
-									Content: Type: Symbol, Start: 1, 27, End: 1, 32, Content: "float"
-									Type: Symbol
-									Children:
-
-							Content: Type: Symbol, Start: 1, 33, End: 1, 34, Content: "d"
-							Type: Symbol
-							Children:
-
-							Content: Type: Comma, Start: 1, 34, End: 1, 35, Content: ","
-							Type: Comma
-							Children:
-
-							Content: Type: Type, Start: 1, 37, End: 1, 42, Content: ""
-							Type: Type
-							Children:
-								Content: Type: FullSymbol, Start: 1, 37, End: 1, 42, Content: ""
-								Type: FullSymbol
-								Children:
-									Content: Type: Symbol, Start: 1, 37, End: 1, 42, Content: "float"
-									Type: Symbol
-									Children:
-
-							Content: Type: Symbol, Start: 1, 43, End: 1, 45, Content: "d2"
-							Type: Symbol
-							Children:
-
-							Content: Type: RightParenthesis, Start: 1, 45, End: 1, 46, Content: ")"
-							Type: RightParenthesis
-							Children:
-
-				Content: Type: CodeBlockNode, Start: 1, 47, End: 1, 57, Content: ""
-				Type: CodeBlockNode
+				Content: Type: Function, Start: 1, 7, End: 1, 57, Content: ""
+				Type: Function
 				Children:
-					Content: Type: LeftCurlyBrace, Start: 1, 47, End: 1, 48, Content: "{"
-					Type: LeftCurlyBrace
+					Content: Type: Type, Start: 1, 7, End: 1, 46, Content: ""
+					Type: Type
 					Children:
-
-					Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-					Type: Value
-					Children:
-						Content: Type: PostfixNode, Start: 1, 49, End: 1, 54, Content: ""
-						Type: PostfixNode
+						Content: Type: FullSymbol, Start: 1, 7, End: 1, 10, Content: ""
+						Type: FullSymbol
 						Children:
-							Content: Type: Symbol, Start: 1, 49, End: 1, 52, Content: "bar"
+							Content: Type: Symbol, Start: 1, 7, End: 1, 10, Content: "int"
 							Type: Symbol
 							Children:
 
-							Content: Type: FunctionArgumentsList, Start: 1, 52, End: 1, 54, Content: ""
-							Type: FunctionArgumentsList
+						Content: Type: ParameterList, Start: 1, 10, End: 1, 46, Content: ""
+						Type: ParameterList
+						Children:
+							Content: Type: FunctorParameters, Start: 1, 10, End: 1, 46, Content: ""
+							Type: FunctorParameters
 							Children:
-								Content: Type: LeftParenthesis, Start: 1, 52, End: 1, 53, Content: "("
+								Content: Type: LeftParenthesis, Start: 1, 10, End: 1, 11, Content: "("
 								Type: LeftParenthesis
 								Children:
 
-								Content: Type: RightParenthesis, Start: 1, 53, End: 1, 54, Content: ")"
+								Content: Type: Type, Start: 1, 11, End: 1, 14, Content: ""
+								Type: Type
+								Children:
+									Content: Type: FullSymbol, Start: 1, 11, End: 1, 14, Content: ""
+									Type: FullSymbol
+									Children:
+										Content: Type: Symbol, Start: 1, 11, End: 1, 14, Content: "int"
+										Type: Symbol
+										Children:
+
+								Content: Type: Symbol, Start: 1, 15, End: 1, 16, Content: "a"
+								Type: Symbol
+								Children:
+
+								Content: Type: Comma, Start: 1, 16, End: 1, 17, Content: ","
+								Type: Comma
+								Children:
+
+								Content: Type: Type, Start: 1, 18, End: 1, 23, Content: ""
+								Type: Type
+								Children:
+									Content: Type: FullSymbol, Start: 1, 18, End: 1, 23, Content: ""
+									Type: FullSymbol
+									Children:
+										Content: Type: Symbol, Start: 1, 18, End: 1, 23, Content: "float"
+										Type: Symbol
+										Children:
+
+								Content: Type: Symbol, Start: 1, 24, End: 1, 25, Content: "c"
+								Type: Symbol
+								Children:
+
+								Content: Type: Comma, Start: 1, 25, End: 1, 26, Content: ","
+								Type: Comma
+								Children:
+
+								Content: Type: Type, Start: 1, 27, End: 1, 32, Content: ""
+								Type: Type
+								Children:
+									Content: Type: FullSymbol, Start: 1, 27, End: 1, 32, Content: ""
+									Type: FullSymbol
+									Children:
+										Content: Type: Symbol, Start: 1, 27, End: 1, 32, Content: "float"
+										Type: Symbol
+										Children:
+
+								Content: Type: Symbol, Start: 1, 33, End: 1, 34, Content: "d"
+								Type: Symbol
+								Children:
+
+								Content: Type: Comma, Start: 1, 34, End: 1, 35, Content: ","
+								Type: Comma
+								Children:
+
+								Content: Type: Type, Start: 1, 37, End: 1, 42, Content: ""
+								Type: Type
+								Children:
+									Content: Type: FullSymbol, Start: 1, 37, End: 1, 42, Content: ""
+									Type: FullSymbol
+									Children:
+										Content: Type: Symbol, Start: 1, 37, End: 1, 42, Content: "float"
+										Type: Symbol
+										Children:
+
+								Content: Type: Symbol, Start: 1, 43, End: 1, 45, Content: "d2"
+								Type: Symbol
+								Children:
+
+								Content: Type: RightParenthesis, Start: 1, 45, End: 1, 46, Content: ")"
 								Type: RightParenthesis
 								Children:
 
-					Content: Type: EndOfLine, Start: 1, 54, End: 1, 55, Content: ";"
-					Type: EndOfLine
+					Content: Type: CodeBlockNode, Start: 1, 47, End: 1, 57, Content: ""
+					Type: CodeBlockNode
 					Children:
+						Content: Type: LeftCurlyBrace, Start: 1, 47, End: 1, 48, Content: "{"
+						Type: LeftCurlyBrace
+						Children:
 
-					Content: Type: RightCurlyBrace, Start: 1, 56, End: 1, 57, Content: "}"
-					Type: RightCurlyBrace
-					Children:
+						Content: Type: StatementWithEndOfLine, Start: 1, 49, End: 1, 55, Content: ""
+						Type: StatementWithEndOfLine
+						Children:
+							Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+							Type: Value
+							Children:
+								Content: Type: PostfixNode, Start: 1, 49, End: 1, 54, Content: ""
+								Type: PostfixNode
+								Children:
+									Content: Type: Symbol, Start: 1, 49, End: 1, 52, Content: "bar"
+									Type: Symbol
+									Children:
 
-			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
-			Type: Assignment
-			Children:
+									Content: Type: FunctionArgumentsList, Start: 1, 52, End: 1, 54, Content: ""
+									Type: FunctionArgumentsList
+									Children:
+										Content: Type: LeftParenthesis, Start: 1, 52, End: 1, 53, Content: "("
+										Type: LeftParenthesis
+										Children:
 
-	Content: Type: EndOfLine, Start: 1, 57, End: 1, 58, Content: ";"
-	Type: EndOfLine
-	Children:
+										Content: Type: RightParenthesis, Start: 1, 53, End: 1, 54, Content: ")"
+										Type: RightParenthesis
+										Children:
+
+							Content: Type: EndOfLine, Start: 1, 54, End: 1, 55, Content: ";"
+							Type: EndOfLine
+							Children:
+
+						Content: Type: RightCurlyBrace, Start: 1, 56, End: 1, 57, Content: "}"
+						Type: RightCurlyBrace
+						Children:
+
+				Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
+				Type: Assignment
+				Children:
+
+		Content: Type: EndOfLine, Start: 1, 57, End: 1, 58, Content: ";"
+		Type: EndOfLine
+		Children:

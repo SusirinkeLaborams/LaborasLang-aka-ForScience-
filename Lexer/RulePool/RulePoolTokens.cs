@@ -10,6 +10,7 @@ namespace Lexer
     {
         private static Condition CastOperator { get { return TokenType.CastOperator; } }
         private static Condition ForLoop { get { return TokenType.ForLoop; } }
+        private static Condition ForEachLoop { get { return TokenType.ForEachLoop; } }
         private static Condition For { get { return TokenType.For; } }
         private static Condition In { get { return TokenType.In; } }
         private static Condition InfixNode { get { return TokenType.InfixNode; } }
@@ -74,17 +75,17 @@ namespace Lexer
         private static Condition True { get { return TokenType.True; } }
         private static Condition Use { get { return TokenType.Use; } }
         private static Condition Virtual { get { return TokenType.Virtual; } }
+        private static Condition CodeConstruct { get { return TokenType.CodeConstruct; } }
         private static Condition While { get { return TokenType.While; } }
         private static Condition NoInstance { get { return TokenType.NoInstance; } }
         private static Condition Private { get { return TokenType.Private; } }
         private static Condition Public { get { return TokenType.Public; } }
         private static Condition NonTerminalToken { get { return TokenType.NonTerminalToken; } }
+        private static Condition StatementWithEndOfLine { get { return TokenType.StatementWithEndOfLine; } }
         private static Condition StatementNode { get { return TokenType.StatementNode; } }
         private static Condition CodeBlockNode { get { return TokenType.CodeBlockNode; } }
         private static Condition DeclarationNode { get { return TokenType.DeclarationNode; } }
-        private static Condition DeclarationSubnode { get { return TokenType.DeclarationSubnode; } }
         private static Condition UseNode { get { return TokenType.UseNode; } }
-        private static Condition ValueStatementNode { get { return TokenType.ValueStatementNode; } }
         private static Condition ReturnNode { get { return TokenType.ReturnNode; } }
         private static Condition RootNode { get { return TokenType.RootNode; } }
         private static Condition FullSymbol { get { return TokenType.FullSymbol; } }
@@ -116,5 +117,7 @@ namespace Lexer
         private static Condition LeftBracket { get { return TokenType.LeftBracket; } }
         private static Condition FunctorParameters { get { return TokenType.FunctorParameters; } }
         private static Condition InitializerList { get { return TokenType.InitializerList; } }
+        private static Condition Null { get { return TokenType.Null; } }
+        private static Condition SpecialValue { get { return TokenType.SpecialValue; } }
     }
 }

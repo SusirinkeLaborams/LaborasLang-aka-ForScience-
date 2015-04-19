@@ -97,6 +97,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     ErrorCode.MissingArraySize.ReportAndThrow(point, "Cannot create array without size or an initializer");
                 }
+                if (initializer.ElementType.IsTypeless())
+                {
+                    ErrorCode.InferrenceFromTypeless.ReportAndThrow(initializer.SequencePoint, "Cannot infer array type from typeless expressions");
+                }
                 elementType = initializer.ElementType;
                 instance.IsImplicit = true;
                 dims = CreateArrayDims(context, point, initializer.Dimensions.ToArray());

@@ -5,6 +5,7 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace LaborasLangCompiler.Parser.Utils
             return type.FullName == typeof(void).FullName;
         }
 
+        [Pure]
         public static bool IsAuto(this TypeReference type)
         {
             return type is AutoType;
@@ -122,7 +124,12 @@ namespace LaborasLangCompiler.Parser.Utils
             if (types.Count() == 0)
                 throw new ArgumentException("types must not be empty");
 
-            var bases = types.Select(t => t.GetInheritance()).ToList();
+            var bases = types.Where(t => !t.IsTypeless()).Select(t => t.GetInheritance()).ToList();
+            if(!bases.Any())
+            {
+                return NullType.Instance;
+            }
+
             var result = assembly.TypeSystem.Object;
 
             for (int i = 0; i < bases.Min(x => x.Count); i++)

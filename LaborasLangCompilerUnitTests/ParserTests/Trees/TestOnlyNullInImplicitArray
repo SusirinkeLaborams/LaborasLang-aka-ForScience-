@@ -1,0 +1,12 @@
+Class:
+	TestOnlyNullInImplicitArray
+	Fields:
+		FieldDeclaration:
+			Type:
+				auto
+			Name:
+				arr
+			Modifiers:
+				0
+
+	Methods:

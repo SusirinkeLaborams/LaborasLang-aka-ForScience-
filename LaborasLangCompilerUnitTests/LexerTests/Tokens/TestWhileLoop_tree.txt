@@ -23,30 +23,33 @@ Children:
 		Type: RightParenthesis
 		Children:
 
-		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-		Type: Value
+		Content: Type: StatementWithEndOfLine, Start: 1, 18, End: 1, 29, Content: ""
+		Type: StatementWithEndOfLine
 		Children:
-			Content: Type: PostfixNode, Start: 1, 18, End: 1, 28, Content: ""
-			Type: PostfixNode
+			Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+			Type: Value
 			Children:
-				Content: Type: Symbol, Start: 1, 18, End: 1, 26, Content: "function"
-				Type: Symbol
+				Content: Type: PostfixNode, Start: 1, 18, End: 1, 28, Content: ""
+				Type: PostfixNode
 				Children:
-
-				Content: Type: FunctionArgumentsList, Start: 1, 26, End: 1, 28, Content: ""
-				Type: FunctionArgumentsList
-				Children:
-					Content: Type: LeftParenthesis, Start: 1, 26, End: 1, 27, Content: "("
-					Type: LeftParenthesis
+					Content: Type: Symbol, Start: 1, 18, End: 1, 26, Content: "function"
+					Type: Symbol
 					Children:
 
-					Content: Type: RightParenthesis, Start: 1, 27, End: 1, 28, Content: ")"
-					Type: RightParenthesis
+					Content: Type: FunctionArgumentsList, Start: 1, 26, End: 1, 28, Content: ""
+					Type: FunctionArgumentsList
 					Children:
+						Content: Type: LeftParenthesis, Start: 1, 26, End: 1, 27, Content: "("
+						Type: LeftParenthesis
+						Children:
 
-		Content: Type: EndOfLine, Start: 1, 28, End: 1, 29, Content: ";"
-		Type: EndOfLine
-		Children:
+						Content: Type: RightParenthesis, Start: 1, 27, End: 1, 28, Content: ")"
+						Type: RightParenthesis
+						Children:
+
+			Content: Type: EndOfLine, Start: 1, 28, End: 1, 29, Content: ";"
+			Type: EndOfLine
+			Children:
 
 	Content: Type: WhileLoop, Start: 2, 13, End: 2, 45, Content: ""
 	Type: WhileLoop
@@ -91,30 +94,33 @@ Children:
 			Type: LeftCurlyBrace
 			Children:
 
-			Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-			Type: Value
+			Content: Type: StatementWithEndOfLine, Start: 2, 33, End: 2, 44, Content: ""
+			Type: StatementWithEndOfLine
 			Children:
-				Content: Type: PostfixNode, Start: 2, 33, End: 2, 43, Content: ""
-				Type: PostfixNode
+				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+				Type: Value
 				Children:
-					Content: Type: Symbol, Start: 2, 33, End: 2, 41, Content: "function"
-					Type: Symbol
+					Content: Type: PostfixNode, Start: 2, 33, End: 2, 43, Content: ""
+					Type: PostfixNode
 					Children:
-
-					Content: Type: FunctionArgumentsList, Start: 2, 41, End: 2, 43, Content: ""
-					Type: FunctionArgumentsList
-					Children:
-						Content: Type: LeftParenthesis, Start: 2, 41, End: 2, 42, Content: "("
-						Type: LeftParenthesis
+						Content: Type: Symbol, Start: 2, 33, End: 2, 41, Content: "function"
+						Type: Symbol
 						Children:
 
-						Content: Type: RightParenthesis, Start: 2, 42, End: 2, 43, Content: ")"
-						Type: RightParenthesis
+						Content: Type: FunctionArgumentsList, Start: 2, 41, End: 2, 43, Content: ""
+						Type: FunctionArgumentsList
 						Children:
+							Content: Type: LeftParenthesis, Start: 2, 41, End: 2, 42, Content: "("
+							Type: LeftParenthesis
+							Children:
 
-			Content: Type: EndOfLine, Start: 2, 43, End: 2, 44, Content: ";"
-			Type: EndOfLine
-			Children:
+							Content: Type: RightParenthesis, Start: 2, 42, End: 2, 43, Content: ")"
+							Type: RightParenthesis
+							Children:
+
+				Content: Type: EndOfLine, Start: 2, 43, End: 2, 44, Content: ";"
+				Type: EndOfLine
+				Children:
 
 			Content: Type: RightCurlyBrace, Start: 2, 44, End: 2, 45, Content: "}"
 			Type: RightCurlyBrace

@@ -1,11 +1,11 @@
 Content: Type: RootNode, Start: 2, 1, End: 5, 7, Content: ""
 Type: RootNode
 Children:
-	Content: Type: DeclarationNode, Start: 2, 1, End: 2, 7, Content: ""
-	Type: DeclarationNode
+	Content: Type: StatementWithEndOfLine, Start: 2, 1, End: 2, 7, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: DeclarationSubnode, Start: 2, 1, End: 2, 6, Content: ""
-		Type: DeclarationSubnode
+		Content: Type: DeclarationNode, Start: 2, 1, End: 2, 6, Content: ""
+		Type: DeclarationNode
 		Children:
 			Content: Type: Type, Start: 2, 1, End: 2, 4, Content: ""
 			Type: Type
@@ -25,11 +25,11 @@ Children:
 		Type: EndOfLine
 		Children:
 
-	Content: Type: DeclarationNode, Start: 3, 1, End: 3, 7, Content: ""
-	Type: DeclarationNode
+	Content: Type: StatementWithEndOfLine, Start: 3, 1, End: 3, 7, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: DeclarationSubnode, Start: 3, 1, End: 3, 6, Content: ""
-		Type: DeclarationSubnode
+		Content: Type: DeclarationNode, Start: 3, 1, End: 3, 6, Content: ""
+		Type: DeclarationNode
 		Children:
 			Content: Type: Type, Start: 3, 1, End: 3, 4, Content: ""
 			Type: Type
@@ -49,49 +49,55 @@ Children:
 		Type: EndOfLine
 		Children:
 
-	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-	Type: Value
+	Content: Type: StatementWithEndOfLine, Start: 4, 1, End: 4, 7, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: InfixNode, Start: 4, 1, End: 4, 4, Content: ""
-		Type: InfixNode
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Value
 		Children:
-			Content: Type: Symbol, Start: 4, 1, End: 4, 2, Content: "a"
-			Type: Symbol
+			Content: Type: InfixNode, Start: 4, 1, End: 4, 4, Content: ""
+			Type: InfixNode
 			Children:
-
-			Content: Type: Symbol, Start: 4, 5, End: 4, 6, Content: "b"
-			Type: Symbol
-			Children:
-
-			Content: Type: Assignment, Start: 4, 3, End: 4, 4, Content: "="
-			Type: Assignment
-			Children:
-
-	Content: Type: EndOfLine, Start: 4, 6, End: 4, 7, Content: ";"
-	Type: EndOfLine
-	Children:
-
-	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-	Type: Value
-	Children:
-		Content: Type: InfixNode, Start: 5, 1, End: 5, 4, Content: ""
-		Type: InfixNode
-		Children:
-			Content: Type: Symbol, Start: 5, 1, End: 5, 2, Content: "a"
-			Type: Symbol
-			Children:
-
-			Content: Type: LiteralNode, Start: 5, 5, End: 5, 6, Content: ""
-			Type: LiteralNode
-			Children:
-				Content: Type: Integer, Start: 5, 5, End: 5, 6, Content: "5"
-				Type: Integer
+				Content: Type: Symbol, Start: 4, 1, End: 4, 2, Content: "a"
+				Type: Symbol
 				Children:
 
-			Content: Type: Assignment, Start: 5, 3, End: 5, 4, Content: "="
-			Type: Assignment
-			Children:
+				Content: Type: Symbol, Start: 4, 5, End: 4, 6, Content: "b"
+				Type: Symbol
+				Children:
 
-	Content: Type: EndOfLine, Start: 5, 6, End: 5, 7, Content: ";"
-	Type: EndOfLine
+				Content: Type: Assignment, Start: 4, 3, End: 4, 4, Content: "="
+				Type: Assignment
+				Children:
+
+		Content: Type: EndOfLine, Start: 4, 6, End: 4, 7, Content: ";"
+		Type: EndOfLine
+		Children:
+
+	Content: Type: StatementWithEndOfLine, Start: 5, 1, End: 5, 7, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Value
+		Children:
+			Content: Type: InfixNode, Start: 5, 1, End: 5, 4, Content: ""
+			Type: InfixNode
+			Children:
+				Content: Type: Symbol, Start: 5, 1, End: 5, 2, Content: "a"
+				Type: Symbol
+				Children:
+
+				Content: Type: LiteralNode, Start: 5, 5, End: 5, 6, Content: ""
+				Type: LiteralNode
+				Children:
+					Content: Type: Integer, Start: 5, 5, End: 5, 6, Content: "5"
+					Type: Integer
+					Children:
+
+				Content: Type: Assignment, Start: 5, 3, End: 5, 4, Content: "="
+				Type: Assignment
+				Children:
+
+		Content: Type: EndOfLine, Start: 5, 6, End: 5, 7, Content: ";"
+		Type: EndOfLine
+		Children:

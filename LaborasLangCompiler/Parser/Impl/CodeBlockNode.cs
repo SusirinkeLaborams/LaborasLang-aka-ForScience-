@@ -111,30 +111,49 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             switch (lexerNode.Type)
             {
-                case Lexer.TokenType.DeclarationNode:
-                case Lexer.TokenType.DeclarationSubnode:
-                    return AddNode(SymbolDeclarationNode.Parse(this, lexerNode));
-                case Lexer.TokenType.Value:
-                    return AddNode(ExpressionNode.Parse(this, lexerNode));
                 case Lexer.TokenType.WhileLoop:
                     return AddNode(WhileBlock.Parse(this, lexerNode));
                 case Lexer.TokenType.ConditionalSentence:
                     return AddNode(ConditionBlockNode.Parse(this, lexerNode));
                 case Lexer.TokenType.CodeBlockNode:
                     return AddNode(CodeBlockNode.Parse(this, lexerNode));
-                case Lexer.TokenType.ReturnNode:
-                    return AddNode(ReturnNode.Parse(this, lexerNode));
                 case Lexer.TokenType.ForLoop:
                     return AddNode(ForLoopNode.Parse(this, lexerNode));
+                case Lexer.TokenType.StatementWithEndOfLine:
+                    if (lexerNode.Children.Count == 2)
+                    {
+                        return AddStatement(lexerNode.Children[0]);
+                    }
+                    else
+                    {
+                        //empty statement a.k.a ";"
+                        return this;
+                    }
                 default:
                     ErrorCode.InvalidStructure.ReportAndThrow(Parser.GetSequencePoint(lexerNode), "Unexpected node {0} in while parsing code block", lexerNode.Type);
                     return null;//unreachable
             }
         }
 
+        public CodeBlockNode AddStatement(IAbstractSyntaxTree lexerNode)
+        {
+            switch(lexerNode.Type)
+            {
+                case Lexer.TokenType.DeclarationNode:
+                    return AddNode(SymbolDeclarationNode.Parse(this, lexerNode));
+                case Lexer.TokenType.Value:
+                    return AddNode(ExpressionNode.Parse(this, lexerNode));
+                case Lexer.TokenType.ReturnNode:
+                    return AddNode(ReturnNode.Parse(this, lexerNode));
+                default:
+                    ErrorCode.InvalidStructure.ReportAndThrow(Parser.GetSequencePoint(lexerNode), "Unexpected statement {0} in while parsing code block", lexerNode.Type);
+                    return Utils.Utils.Fail<CodeBlockNode>();
+            }
+        }
+
         public static CodeBlockNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
-            Contract.Requires(lexerNode.Type == Lexer.TokenType.CodeBlockNode || lexerNode.Type == Lexer.TokenType.StatementNode);
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.CodeBlockNode || lexerNode.Type == Lexer.TokenType.StatementWithEndOfLine);
             CodeBlockNode instance = null;
             if(lexerNode.Type == Lexer.TokenType.CodeBlockNode)
             {
@@ -147,7 +166,6 @@ namespace LaborasLangCompiler.Parser.Impl
                         {
                             case Lexer.TokenType.LeftCurlyBrace:
                             case Lexer.TokenType.RightCurlyBrace:
-                            case Lexer.TokenType.EndOfLine:
                                 break;
                             default:
                                 instance.AddNode(node);
@@ -160,7 +178,7 @@ namespace LaborasLangCompiler.Parser.Impl
             else
             {
                 instance = new CodeBlockNode(context, context.Parser.GetSequencePoint(lexerNode));
-                instance.AddNode(instance.AddNode(lexerNode.Children[0]));
+                instance.AddNode(lexerNode);
             }
             return instance;
         }

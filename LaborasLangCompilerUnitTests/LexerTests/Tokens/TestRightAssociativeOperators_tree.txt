@@ -1,46 +1,49 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 31, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-	Type: Value
+	Content: Type: StatementWithEndOfLine, Start: 1, 1, End: 1, 31, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: InfixNode, Start: 1, 1, End: 1, 21, Content: ""
-		Type: InfixNode
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Value
 		Children:
-			Content: Type: InfixNode, Start: 1, 1, End: 1, 12, Content: ""
+			Content: Type: InfixNode, Start: 1, 1, End: 1, 21, Content: ""
 			Type: InfixNode
 			Children:
-				Content: Type: InfixNode, Start: 1, 1, End: 1, 6, Content: ""
+				Content: Type: InfixNode, Start: 1, 1, End: 1, 12, Content: ""
 				Type: InfixNode
 				Children:
-					Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+					Content: Type: InfixNode, Start: 1, 1, End: 1, 6, Content: ""
+					Type: InfixNode
+					Children:
+						Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+						Type: Symbol
+						Children:
+
+						Content: Type: Symbol, Start: 1, 7, End: 1, 10, Content: "bar"
+						Type: Symbol
+						Children:
+
+						Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
+						Type: Assignment
+						Children:
+
+					Content: Type: Symbol, Start: 1, 13, End: 1, 19, Content: "foobar"
 					Type: Symbol
 					Children:
 
-					Content: Type: Symbol, Start: 1, 7, End: 1, 10, Content: "bar"
-					Type: Symbol
-					Children:
-
-					Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
+					Content: Type: Assignment, Start: 1, 11, End: 1, 12, Content: "="
 					Type: Assignment
 					Children:
 
-				Content: Type: Symbol, Start: 1, 13, End: 1, 19, Content: "foobar"
+				Content: Type: Symbol, Start: 1, 22, End: 1, 30, Content: "foobar2k"
 				Type: Symbol
 				Children:
 
-				Content: Type: Assignment, Start: 1, 11, End: 1, 12, Content: "="
+				Content: Type: Assignment, Start: 1, 20, End: 1, 21, Content: "="
 				Type: Assignment
 				Children:
 
-			Content: Type: Symbol, Start: 1, 22, End: 1, 30, Content: "foobar2k"
-			Type: Symbol
-			Children:
-
-			Content: Type: Assignment, Start: 1, 20, End: 1, 21, Content: "="
-			Type: Assignment
-			Children:
-
-	Content: Type: EndOfLine, Start: 1, 30, End: 1, 31, Content: ";"
-	Type: EndOfLine
-	Children:
+		Content: Type: EndOfLine, Start: 1, 30, End: 1, 31, Content: ";"
+		Type: EndOfLine
+		Children:

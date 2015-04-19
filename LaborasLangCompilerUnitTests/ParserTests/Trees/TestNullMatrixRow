@@ -1,0 +1,12 @@
+Class:
+	TestNullMatrixRow
+	Fields:
+		FieldDeclaration:
+			Type:
+				auto
+			Name:
+				foo
+			Modifiers:
+				0
+
+	Methods:

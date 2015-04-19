@@ -1,11 +1,11 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 54, Content: ""
 Type: RootNode
 Children:
-	Content: Type: DeclarationNode, Start: 1, 1, End: 1, 54, Content: ""
-	Type: DeclarationNode
+	Content: Type: StatementWithEndOfLine, Start: 1, 1, End: 1, 54, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: DeclarationSubnode, Start: 1, 1, End: 1, 53, Content: ""
-		Type: DeclarationSubnode
+		Content: Type: DeclarationNode, Start: 1, 1, End: 1, 53, Content: ""
+		Type: DeclarationNode
 		Children:
 			Content: Type: Type, Start: 1, 1, End: 1, 5, Content: ""
 			Type: Type
@@ -113,12 +113,15 @@ Children:
 									Type: LeftCurlyBrace
 									Children:
 
-									Content: Type: ReturnNode, Start: 1, 26, End: 1, 33, Content: ""
-									Type: ReturnNode
+									Content: Type: StatementWithEndOfLine, Start: 1, 26, End: 1, 33, Content: ""
+									Type: StatementWithEndOfLine
 									Children:
-										Content: Type: Return, Start: 1, 26, End: 1, 32, Content: "return"
-										Type: Return
+										Content: Type: ReturnNode, Start: 1, 26, End: 1, 32, Content: ""
+										Type: ReturnNode
 										Children:
+											Content: Type: Return, Start: 1, 26, End: 1, 32, Content: "return"
+											Type: Return
+											Children:
 
 										Content: Type: EndOfLine, Start: 1, 32, End: 1, 33, Content: ";"
 										Type: EndOfLine
@@ -169,12 +172,15 @@ Children:
 									Type: LeftCurlyBrace
 									Children:
 
-									Content: Type: ReturnNode, Start: 1, 44, End: 1, 51, Content: ""
-									Type: ReturnNode
+									Content: Type: StatementWithEndOfLine, Start: 1, 44, End: 1, 51, Content: ""
+									Type: StatementWithEndOfLine
 									Children:
-										Content: Type: Return, Start: 1, 44, End: 1, 50, Content: "return"
-										Type: Return
+										Content: Type: ReturnNode, Start: 1, 44, End: 1, 50, Content: ""
+										Type: ReturnNode
 										Children:
+											Content: Type: Return, Start: 1, 44, End: 1, 50, Content: "return"
+											Type: Return
+											Children:
 
 										Content: Type: EndOfLine, Start: 1, 50, End: 1, 51, Content: ";"
 										Type: EndOfLine

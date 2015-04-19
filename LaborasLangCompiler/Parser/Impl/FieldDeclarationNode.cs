@@ -84,6 +84,10 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (TypeReference.IsAuto())
             {
+                if(Initializer.ExpressionReturnType.IsTypeless())
+                {
+                    ErrorCode.InferrenceFromTypeless.ReportAndThrow(Initializer.SequencePoint, "Cannot infer type from a typeless expression");
+                }
                 TypeReference = Initializer.ExpressionReturnType;
                 GetClass().TypeEmitter.AddField(FieldDefinition);
             }

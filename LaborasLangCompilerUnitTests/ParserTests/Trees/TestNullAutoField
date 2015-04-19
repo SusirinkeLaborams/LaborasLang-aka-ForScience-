@@ -1,0 +1,15 @@
+Class:
+	TestNullAutoField
+	Fields:
+		FieldDeclaration:
+			Type:
+				auto
+			Name:
+				str
+			Modifiers:
+				0
+			Initializer:
+				NullNode
+
+
+	Methods:

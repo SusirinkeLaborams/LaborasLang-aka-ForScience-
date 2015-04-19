@@ -1,138 +1,141 @@
 Content: Type: RootNode, Start: 2, 13, End: 2, 41, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-	Type: Value
+	Content: Type: StatementWithEndOfLine, Start: 2, 13, End: 2, 41, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: InfixNode, Start: 2, 13, End: 2, 16, Content: ""
-		Type: InfixNode
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Value
 		Children:
-			Content: Type: Symbol, Start: 2, 13, End: 2, 14, Content: "a"
-			Type: Symbol
+			Content: Type: InfixNode, Start: 2, 13, End: 2, 16, Content: ""
+			Type: InfixNode
 			Children:
-
-			Content: Type: ArrayLiteral, Start: 2, 17, End: 2, 40, Content: ""
-			Type: ArrayLiteral
-			Children:
-				Content: Type: Type, Start: 2, 17, End: 2, 24, Content: ""
-				Type: Type
+				Content: Type: Symbol, Start: 2, 13, End: 2, 14, Content: "a"
+				Type: Symbol
 				Children:
-					Content: Type: FullSymbol, Start: 2, 17, End: 2, 20, Content: ""
-					Type: FullSymbol
-					Children:
-						Content: Type: Symbol, Start: 2, 17, End: 2, 20, Content: "int"
-						Type: Symbol
-						Children:
 
-					Content: Type: ParameterList, Start: 2, 20, End: 2, 22, Content: ""
-					Type: ParameterList
-					Children:
-						Content: Type: IndexNode, Start: 2, 20, End: 2, 22, Content: ""
-						Type: IndexNode
-						Children:
-							Content: Type: LeftBracket, Start: 2, 20, End: 2, 21, Content: "["
-							Type: LeftBracket
-							Children:
-
-							Content: Type: RightBracket, Start: 2, 21, End: 2, 22, Content: "]"
-							Type: RightBracket
-							Children:
-
-					Content: Type: ParameterList, Start: 2, 22, End: 2, 24, Content: ""
-					Type: ParameterList
-					Children:
-						Content: Type: IndexNode, Start: 2, 22, End: 2, 24, Content: ""
-						Type: IndexNode
-						Children:
-							Content: Type: LeftBracket, Start: 2, 22, End: 2, 23, Content: "["
-							Type: LeftBracket
-							Children:
-
-							Content: Type: RightBracket, Start: 2, 23, End: 2, 24, Content: "]"
-							Type: RightBracket
-							Children:
-
-				Content: Type: InitializerList, Start: 2, 24, End: 2, 40, Content: ""
-				Type: InitializerList
+				Content: Type: ArrayLiteral, Start: 2, 17, End: 2, 40, Content: ""
+				Type: ArrayLiteral
 				Children:
-					Content: Type: LeftCurlyBrace, Start: 2, 24, End: 2, 25, Content: "{"
-					Type: LeftCurlyBrace
+					Content: Type: Type, Start: 2, 17, End: 2, 24, Content: ""
+					Type: Type
 					Children:
-
-					Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-					Type: Value
-					Children:
-						Content: Type: PostfixNode, Start: 2, 25, End: 2, 31, Content: ""
-						Type: PostfixNode
+						Content: Type: FullSymbol, Start: 2, 17, End: 2, 20, Content: ""
+						Type: FullSymbol
 						Children:
-							Content: Type: Symbol, Start: 2, 25, End: 2, 28, Content: "int"
+							Content: Type: Symbol, Start: 2, 17, End: 2, 20, Content: "int"
 							Type: Symbol
 							Children:
 
-							Content: Type: IndexNode, Start: 2, 28, End: 2, 31, Content: ""
-							Type: IndexNode
-							Children:
-								Content: Type: LeftBracket, Start: 2, 28, End: 2, 29, Content: "["
-								Type: LeftBracket
-								Children:
-
-								Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-								Type: Value
-								Children:
-									Content: Type: LiteralNode, Start: 2, 29, End: 2, 30, Content: ""
-									Type: LiteralNode
-									Children:
-										Content: Type: Integer, Start: 2, 29, End: 2, 30, Content: "0"
-										Type: Integer
-										Children:
-
-								Content: Type: RightBracket, Start: 2, 30, End: 2, 31, Content: "]"
-								Type: RightBracket
-								Children:
-
-					Content: Type: Comma, Start: 2, 31, End: 2, 32, Content: ","
-					Type: Comma
-					Children:
-
-					Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-					Type: Value
-					Children:
-						Content: Type: PostfixNode, Start: 2, 33, End: 2, 39, Content: ""
-						Type: PostfixNode
+						Content: Type: ParameterList, Start: 2, 20, End: 2, 22, Content: ""
+						Type: ParameterList
 						Children:
-							Content: Type: Symbol, Start: 2, 33, End: 2, 36, Content: "int"
-							Type: Symbol
-							Children:
-
-							Content: Type: IndexNode, Start: 2, 36, End: 2, 39, Content: ""
+							Content: Type: IndexNode, Start: 2, 20, End: 2, 22, Content: ""
 							Type: IndexNode
 							Children:
-								Content: Type: LeftBracket, Start: 2, 36, End: 2, 37, Content: "["
+								Content: Type: LeftBracket, Start: 2, 20, End: 2, 21, Content: "["
 								Type: LeftBracket
 								Children:
 
-								Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-								Type: Value
-								Children:
-									Content: Type: LiteralNode, Start: 2, 37, End: 2, 38, Content: ""
-									Type: LiteralNode
-									Children:
-										Content: Type: Integer, Start: 2, 37, End: 2, 38, Content: "0"
-										Type: Integer
-										Children:
-
-								Content: Type: RightBracket, Start: 2, 38, End: 2, 39, Content: "]"
+								Content: Type: RightBracket, Start: 2, 21, End: 2, 22, Content: "]"
 								Type: RightBracket
 								Children:
 
-					Content: Type: RightCurlyBrace, Start: 2, 39, End: 2, 40, Content: "}"
-					Type: RightCurlyBrace
+						Content: Type: ParameterList, Start: 2, 22, End: 2, 24, Content: ""
+						Type: ParameterList
+						Children:
+							Content: Type: IndexNode, Start: 2, 22, End: 2, 24, Content: ""
+							Type: IndexNode
+							Children:
+								Content: Type: LeftBracket, Start: 2, 22, End: 2, 23, Content: "["
+								Type: LeftBracket
+								Children:
+
+								Content: Type: RightBracket, Start: 2, 23, End: 2, 24, Content: "]"
+								Type: RightBracket
+								Children:
+
+					Content: Type: InitializerList, Start: 2, 24, End: 2, 40, Content: ""
+					Type: InitializerList
 					Children:
+						Content: Type: LeftCurlyBrace, Start: 2, 24, End: 2, 25, Content: "{"
+						Type: LeftCurlyBrace
+						Children:
 
-			Content: Type: Assignment, Start: 2, 15, End: 2, 16, Content: "="
-			Type: Assignment
-			Children:
+						Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+						Type: Value
+						Children:
+							Content: Type: PostfixNode, Start: 2, 25, End: 2, 31, Content: ""
+							Type: PostfixNode
+							Children:
+								Content: Type: Symbol, Start: 2, 25, End: 2, 28, Content: "int"
+								Type: Symbol
+								Children:
 
-	Content: Type: EndOfLine, Start: 2, 40, End: 2, 41, Content: ";"
-	Type: EndOfLine
-	Children:
+								Content: Type: IndexNode, Start: 2, 28, End: 2, 31, Content: ""
+								Type: IndexNode
+								Children:
+									Content: Type: LeftBracket, Start: 2, 28, End: 2, 29, Content: "["
+									Type: LeftBracket
+									Children:
+
+									Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+									Type: Value
+									Children:
+										Content: Type: LiteralNode, Start: 2, 29, End: 2, 30, Content: ""
+										Type: LiteralNode
+										Children:
+											Content: Type: Integer, Start: 2, 29, End: 2, 30, Content: "0"
+											Type: Integer
+											Children:
+
+									Content: Type: RightBracket, Start: 2, 30, End: 2, 31, Content: "]"
+									Type: RightBracket
+									Children:
+
+						Content: Type: Comma, Start: 2, 31, End: 2, 32, Content: ","
+						Type: Comma
+						Children:
+
+						Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+						Type: Value
+						Children:
+							Content: Type: PostfixNode, Start: 2, 33, End: 2, 39, Content: ""
+							Type: PostfixNode
+							Children:
+								Content: Type: Symbol, Start: 2, 33, End: 2, 36, Content: "int"
+								Type: Symbol
+								Children:
+
+								Content: Type: IndexNode, Start: 2, 36, End: 2, 39, Content: ""
+								Type: IndexNode
+								Children:
+									Content: Type: LeftBracket, Start: 2, 36, End: 2, 37, Content: "["
+									Type: LeftBracket
+									Children:
+
+									Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+									Type: Value
+									Children:
+										Content: Type: LiteralNode, Start: 2, 37, End: 2, 38, Content: ""
+										Type: LiteralNode
+										Children:
+											Content: Type: Integer, Start: 2, 37, End: 2, 38, Content: "0"
+											Type: Integer
+											Children:
+
+									Content: Type: RightBracket, Start: 2, 38, End: 2, 39, Content: "]"
+									Type: RightBracket
+									Children:
+
+						Content: Type: RightCurlyBrace, Start: 2, 39, End: 2, 40, Content: "}"
+						Type: RightCurlyBrace
+						Children:
+
+				Content: Type: Assignment, Start: 2, 15, End: 2, 16, Content: "="
+				Type: Assignment
+				Children:
+
+		Content: Type: EndOfLine, Start: 2, 40, End: 2, 41, Content: ";"
+		Type: EndOfLine
+		Children:

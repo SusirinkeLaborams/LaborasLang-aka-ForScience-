@@ -12,8 +12,8 @@ Children:
 		Type: LeftParenthesis
 		Children:
 
-		Content: Type: DeclarationSubnode, Start: 1, 5, End: 1, 15, Content: ""
-		Type: DeclarationSubnode
+		Content: Type: DeclarationNode, Start: 1, 5, End: 1, 15, Content: ""
+		Type: DeclarationNode
 		Children:
 			Content: Type: Type, Start: 1, 5, End: 1, 9, Content: ""
 			Type: Type
@@ -90,6 +90,9 @@ Children:
 		Type: RightParenthesis
 		Children:
 
-		Content: Type: EndOfLine, Start: 1, 28, End: 1, 29, Content: ";"
-		Type: EndOfLine
+		Content: Type: StatementWithEndOfLine, Start: 1, 28, End: 1, 29, Content: ""
+		Type: StatementWithEndOfLine
 		Children:
+			Content: Type: EndOfLine, Start: 1, 28, End: 1, 29, Content: ";"
+			Type: EndOfLine
+			Children:

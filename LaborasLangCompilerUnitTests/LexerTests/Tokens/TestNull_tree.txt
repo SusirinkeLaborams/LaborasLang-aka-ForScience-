@@ -1,0 +1,143 @@
+Content: Type: RootNode, Start: 2, 17, End: 5, 28, Content: ""
+Type: RootNode
+Children:
+	Content: Type: StatementWithEndOfLine, Start: 2, 17, End: 2, 30, Content: ""
+	Type: StatementWithEndOfLine
+	Children:
+		Content: Type: DeclarationNode, Start: 2, 17, End: 2, 29, Content: ""
+		Type: DeclarationNode
+		Children:
+			Content: Type: Type, Start: 2, 17, End: 2, 20, Content: ""
+			Type: Type
+			Children:
+				Content: Type: FullSymbol, Start: 2, 17, End: 2, 20, Content: ""
+				Type: FullSymbol
+				Children:
+					Content: Type: Symbol, Start: 2, 17, End: 2, 20, Content: "int"
+					Type: Symbol
+					Children:
+
+			Content: Type: Symbol, Start: 2, 21, End: 2, 22, Content: "i"
+			Type: Symbol
+			Children:
+
+			Content: Type: Assignment, Start: 2, 23, End: 2, 24, Content: "="
+			Type: Assignment
+			Children:
+
+			Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+			Type: Value
+			Children:
+				Content: Type: Null, Start: 2, 25, End: 2, 29, Content: "null"
+				Type: Null
+				Children:
+
+		Content: Type: EndOfLine, Start: 2, 29, End: 2, 30, Content: ";"
+		Type: EndOfLine
+		Children:
+
+	Content: Type: StatementWithEndOfLine, Start: 3, 17, End: 3, 36, Content: ""
+	Type: StatementWithEndOfLine
+	Children:
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Value
+		Children:
+			Content: Type: InfixNode, Start: 3, 17, End: 3, 23, Content: ""
+			Type: InfixNode
+			Children:
+				Content: Type: Null, Start: 3, 17, End: 3, 21, Content: "null"
+				Type: Null
+				Children:
+
+				Content: Type: InfixNode, Start: 3, 24, End: 3, 30, Content: ""
+				Type: InfixNode
+				Children:
+					Content: Type: Null, Start: 3, 24, End: 3, 28, Content: "null"
+					Type: Null
+					Children:
+
+					Content: Type: Null, Start: 3, 31, End: 3, 35, Content: "null"
+					Type: Null
+					Children:
+
+					Content: Type: Plus, Start: 3, 29, End: 3, 30, Content: "+"
+					Type: Plus
+					Children:
+
+				Content: Type: Assignment, Start: 3, 22, End: 3, 23, Content: "="
+				Type: Assignment
+				Children:
+
+		Content: Type: EndOfLine, Start: 3, 35, End: 3, 36, Content: ";"
+		Type: EndOfLine
+		Children:
+
+	Content: Type: StatementWithEndOfLine, Start: 4, 17, End: 4, 27, Content: ""
+	Type: StatementWithEndOfLine
+	Children:
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Value
+		Children:
+			Content: Type: PostfixNode, Start: 4, 17, End: 4, 26, Content: ""
+			Type: PostfixNode
+			Children:
+				Content: Type: Symbol, Start: 4, 17, End: 4, 20, Content: "foo"
+				Type: Symbol
+				Children:
+
+				Content: Type: FunctionArgumentsList, Start: 4, 20, End: 4, 26, Content: ""
+				Type: FunctionArgumentsList
+				Children:
+					Content: Type: LeftParenthesis, Start: 4, 20, End: 4, 21, Content: "("
+					Type: LeftParenthesis
+					Children:
+
+					Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+					Type: Value
+					Children:
+						Content: Type: Null, Start: 4, 21, End: 4, 25, Content: "null"
+						Type: Null
+						Children:
+
+					Content: Type: RightParenthesis, Start: 4, 25, End: 4, 26, Content: ")"
+					Type: RightParenthesis
+					Children:
+
+		Content: Type: EndOfLine, Start: 4, 26, End: 4, 27, Content: ";"
+		Type: EndOfLine
+		Children:
+
+	Content: Type: StatementWithEndOfLine, Start: 5, 17, End: 5, 28, Content: ""
+	Type: StatementWithEndOfLine
+	Children:
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Value
+		Children:
+			Content: Type: PostfixNode, Start: 5, 17, End: 5, 27, Content: ""
+			Type: PostfixNode
+			Children:
+				Content: Type: Null, Start: 5, 17, End: 5, 21, Content: "null"
+				Type: Null
+				Children:
+
+				Content: Type: FunctionArgumentsList, Start: 5, 21, End: 5, 27, Content: ""
+				Type: FunctionArgumentsList
+				Children:
+					Content: Type: LeftParenthesis, Start: 5, 21, End: 5, 22, Content: "("
+					Type: LeftParenthesis
+					Children:
+
+					Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+					Type: Value
+					Children:
+						Content: Type: Null, Start: 5, 22, End: 5, 26, Content: "null"
+						Type: Null
+						Children:
+
+					Content: Type: RightParenthesis, Start: 5, 26, End: 5, 27, Content: ")"
+					Type: RightParenthesis
+					Children:
+
+		Content: Type: EndOfLine, Start: 5, 27, End: 5, 28, Content: ";"
+		Type: EndOfLine
+		Children:

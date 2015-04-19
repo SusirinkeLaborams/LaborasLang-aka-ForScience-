@@ -25,11 +25,6 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             DeclarationInfo instance = new DeclarationInfo();
 
-            if (lexerNode.Type == TokenType.DeclarationNode)
-            {
-                lexerNode = lexerNode.Children[0];
-            }
-
             instance.Point = parser.GetSequencePoint(lexerNode);
             foreach(var node in lexerNode.Children)
             {

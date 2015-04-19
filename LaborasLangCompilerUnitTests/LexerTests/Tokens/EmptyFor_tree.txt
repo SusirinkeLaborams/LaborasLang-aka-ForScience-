@@ -36,6 +36,9 @@ Children:
 		Type: RightParenthesis
 		Children:
 
-		Content: Type: EndOfLine, Start: 1, 8, End: 1, 9, Content: ";"
-		Type: EndOfLine
+		Content: Type: StatementWithEndOfLine, Start: 1, 8, End: 1, 9, Content: ""
+		Type: StatementWithEndOfLine
 		Children:
+			Content: Type: EndOfLine, Start: 1, 8, End: 1, 9, Content: ";"
+			Type: EndOfLine
+			Children:

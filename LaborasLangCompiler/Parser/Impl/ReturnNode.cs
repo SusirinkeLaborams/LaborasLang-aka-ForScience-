@@ -31,7 +31,7 @@ namespace LaborasLangCompiler.Parser.Impl
             var returnType = context.GetMethod().MethodReturnType;
             ExpressionNode expression = null;
 
-            if (lexerNode.Children.Count == 3)
+            if (lexerNode.Children.Count == 2)
             {
                 expression = ExpressionNode.Parse(context, lexerNode.Children[1], returnType);
             }

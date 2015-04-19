@@ -68,6 +68,7 @@
         While,
         For, 
         In,
+        Null,
 
         Empty,//empty node
 
@@ -89,6 +90,7 @@
         DeclarationNode,
         ReturnNode,
         Value,
+        SpecialValue,
 
         RootNode,
 
@@ -96,8 +98,10 @@
         Type,
         UseNode,
 
+        CodeConstruct,
         WhileLoop,
         ForLoop,
+        ForEachLoop,
         Function,
         ConditionalSentence,
 
@@ -115,9 +119,8 @@
         InfixSubnode,
         LexerInternalTokens,    // Lexer internal-only tokens start from here
 
+        StatementWithEndOfLine,
         StatementNode,
-        DeclarationSubnode,
-        ValueStatementNode,
 
         ParameterList,
         TypeSubnode,
@@ -133,7 +136,6 @@
         PostfixOperator,
                                                 
         TokenTypeCount,
-        
     }
 
     public static class TokenInfo

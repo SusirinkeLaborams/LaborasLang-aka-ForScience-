@@ -195,16 +195,21 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 try
                 {
-                    switch (node.Type)
+                    if (node.Type != Lexer.TokenType.StatementWithEndOfLine)
+                    {
+                        ErrorCode.InvalidStructure.ReportAndThrow(Parser.GetSequencePoint(node), "Import or declaration expected, {0} received", node.Type);
+                    }
+                    var statement = node.Children[0];
+                    switch (statement.Type)
                     {
                         case Lexer.TokenType.UseNode:
-                            ImportNode.Parse(this, node);
+                            ImportNode.Parse(this, statement);
                             break;
                         case Lexer.TokenType.DeclarationNode:
-                            ParseDeclaration(node);
+                            ParseDeclaration(statement);
                             break;
                         default:
-                            ErrorCode.InvalidStructure.ReportAndThrow(Parser.GetSequencePoint(node), "Import or declaration expected, {0} received", node.Type);
+                            ErrorCode.InvalidStructure.ReportAndThrow(Parser.GetSequencePoint(statement), "Import or declaration expected, {0} received", statement.Type);
                             break;//unreachable
                     }
                 }

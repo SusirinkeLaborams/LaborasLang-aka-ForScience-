@@ -14,10 +14,7 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class ForLoopNode : ParserNode, IForLoopNode
     {
-        public override NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public override NodeType Type { get { return NodeType.ForLoop; } }
         public ICodeBlockNode InitializationBlock { get { return initializer; } }
         public IExpressionNode ConditionBlock { get { return condition; } }
         public ICodeBlockNode IncrementBlock { get { return increment; } }
@@ -56,7 +53,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (initNode.Type != TokenType.Empty)
             {
                 init = CodeBlockNode.Create(context, context.Parser.GetSequencePoint(initNode));
-                init.AddNode(initNode);
+                init.AddStatement(initNode);
                 //makes init scope encompass for scope
                 context = init;
             }
@@ -69,7 +66,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (incrementNode.Type != TokenType.Empty)
             {
                 increment = CodeBlockNode.Create(context, context.Parser.GetSequencePoint(incrementNode));
-                increment.AddNode(incrementNode);
+                increment.AddStatement(incrementNode);
             }
 
             var body = CodeBlockNode.Parse(context, bodyNode);

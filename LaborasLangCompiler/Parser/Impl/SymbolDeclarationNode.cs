@@ -35,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static SymbolDeclarationNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
-            Contract.Requires(lexerNode.Type == Lexer.TokenType.DeclarationNode || lexerNode.Type == Lexer.TokenType.DeclarationSubnode);
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.DeclarationNode);
             var info = DeclarationInfo.Parse(context.Parser, lexerNode);
             var name = info.SymbolName.GetSingleSymbolOrThrow();
             var declaredType = TypeNode.Parse(context, info.Type);
@@ -69,8 +69,14 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (type.IsAuto())
             {
+                if (initializer.ExpressionReturnType.IsTypeless())
+                {
+                    ErrorCode.InferrenceFromTypeless.ReportAndThrow(initializer.SequencePoint, "Cannot infer type from a typeless expression");
+                }
                 if (initializer == null)
+                {
                     ErrorCode.MissingInit.ReportAndThrow(point, "Type inference requires initialization");
+                }
             }
 
             if (initializer != null)

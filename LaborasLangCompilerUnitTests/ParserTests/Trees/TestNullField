@@ -1,0 +1,15 @@
+Class:
+	TestNullField
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.String
+			Name:
+				str
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				NullNode
+
+
+	Methods:

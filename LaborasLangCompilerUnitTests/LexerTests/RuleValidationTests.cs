@@ -47,7 +47,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             visited[(int)TokenType.UnknownNode] = true;
             visited[(int)TokenType.Empty] = true;
             var stack = new Stack<TokenType>();
-            stack.Push(TokenType.StatementNode);
+            stack.Push(TokenType.CodeConstruct);
             
             while(stack.Count != 0)
             {

@@ -1,0 +1,18 @@
+Class:
+	TestNullAutoVar
+	Fields:
+	Methods:
+		Method:
+			Name:
+				main
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+
+

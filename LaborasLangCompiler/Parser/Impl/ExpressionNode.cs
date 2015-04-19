@@ -12,6 +12,7 @@ using LaborasLangCompiler.Codegen;
 using Lexer;
 using LaborasLangCompiler.Parser.Impl.Operators;
 using System.Diagnostics.Contracts;
+using LaborasLangCompiler.Common;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -56,8 +57,12 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.ArrayLiteral:
                     ret = ArrayCreationNode.Parse(context, lexerNode);
                     break;
+                case Lexer.TokenType.Null:
+                    ret = NullNode.Parse(context, lexerNode);
+                    break;
                 default:
-                    throw new NotImplementedException();
+                    ContractsHelper.AssumeUnreachable("Unknown expression type {0}", lexerNode.Type);
+                    break;
             }
             if(!(expectedType == null || expectedType.IsAuto()))
             {

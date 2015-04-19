@@ -298,7 +298,10 @@ namespace LaborasLangCompiler.Parser
         {
             get 
             {
-                Contract.Ensures(Contract.Result<TypeReference>() != null);
+                TypeReference ret = Contract.Result<TypeReference>();
+                Contract.Ensures(ret != null);
+                Contract.Ensures(!Utils.TypeUtils.IsAuto(ret));
+                Contract.Ensures(!ret.IsNullType() || ExpressionType == ExpressionNodeType.Null);
                 throw new NotImplementedException();
             }
         }

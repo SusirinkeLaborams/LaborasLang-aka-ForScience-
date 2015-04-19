@@ -107,7 +107,9 @@ namespace LaborasLangCompiler.Parser.Impl
                     case MetadataType.Char:
                         {
                             if (value.Length > 1)
+                            {
                                 ErrorCode.MultipleCharacterLiteral.ReportAndThrow(point, "Character literal must be one character long (found: '{0}').", value);
+                            }
 
                             return value[0];
                         }
@@ -184,7 +186,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 if(type.IsSignedInteger())
                 {
                     var value = (long)node.Value;
-                    if (value > 0)
+                    if (value >= 0)
                     {
                         return parser.ProjectParser.MaxValues.Where(kv => kv.Key >= (ulong)value).Select(kv => kv.Value);
                     }
