@@ -28,7 +28,7 @@ namespace LaborasLangCompiler.Codegen.Types
 
         private static string ComputeName(MethodReference targetMethod)
         {
-            return targetMethod.Name + ComputeNameArgumentTypes(targetMethod.Parameters.Select(x => x.ParameterType).ToList()) + "$Invoker";
+            return targetMethod.Name + ComputeNameArgumentTypes(targetMethod.GetParameterTypes()) + "$Invoker";
         }
     }
 }

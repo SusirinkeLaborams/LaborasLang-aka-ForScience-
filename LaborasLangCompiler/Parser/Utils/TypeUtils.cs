@@ -108,10 +108,10 @@ namespace LaborasLangCompiler.Parser.Utils
         public static List<TypeReference> GetInheritance(this TypeReference type)
         {
             var ret = new List<TypeReference>();
-            while(type != null)
+            while (type != null)
             {
                 ret.Add(type);
-                type = type.Resolve().BaseType;
+                type = type.GetBaseType();
             }
             ret.Reverse();
             return ret;

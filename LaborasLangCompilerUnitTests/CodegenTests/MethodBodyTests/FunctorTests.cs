@@ -43,7 +43,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
                     },
                     new MethodCallNode()
                     {
-                        ExpressionReturnType = consoleWriteLine.ReturnType,
+                        ExpressionReturnType = consoleWriteLine.GetReturnType(),
                         Function = new LocalVariableNode(localVariable),
                         Args = new[]
                         {

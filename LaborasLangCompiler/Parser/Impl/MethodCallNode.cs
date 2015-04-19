@@ -127,13 +127,13 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if(MetadataHelpers.MatchesArgumentList(method.Method, args.Select(arg => arg.ExpressionReturnType).ToList()))
                 {
-                    return new MethodCallNode(method, method.Method.ReturnType, args.ToList(), point);
+                    return new MethodCallNode(method, method.Method.GetReturnType(), args.ToList(), point);
                 }
                 else
                 {
                     ErrorCode.TypeMissmatch.ReportAndThrow(point, "Cannot call method, {0} requires parameters ({1}), called with ({2})",
                         method.Method.FullName,
-                        String.Join(", ", method.Method.Parameters.Select(p => p.ParameterType.FullName)),
+                        String.Join(", ", method.Method.GetParameterTypes().Select(type => type.FullName)),
                         String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
                 }
             }
@@ -150,7 +150,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
             }
 
-            return new MethodCallNode(method, method.Method.ReturnType, args.ToList(), point);
+            return new MethodCallNode(method, method.Method.GetReturnType(), args.ToList(), point);
         }
 
         private static ExpressionNode AsObjectCreation(ContextNode context, ExpressionNode node, IEnumerable<ExpressionNode> args, SequencePoint point)
@@ -168,7 +168,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if(methods.Count == 0)
             {
                 if (resolved.IsValueType && args.Count() == 0)
-                    return new ValueCreationNode(resolved, point);
+                    return new ValueCreationNode(type.ParsedType, point);
 
                 ErrorCode.CannotCreate.ReportAndThrow(point, "No constructor for {0} found, cannot create instance", type.ParsedType.FullName);
             }
@@ -180,7 +180,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     ErrorCode.TypeMissmatch.ReportAndThrow(point, "Cannot call constructor for {0} requires parameters ({1}), called with ({2})",
                         type.ParsedType.FullName,
-                        String.Join(", ", methods.Single().Parameters.Select(p => p.ParameterType.FullName)),
+                        String.Join(", ", methods.Single().GetParameterTypes().Select(t => t.FullName)),
                         String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
                 }
                 else

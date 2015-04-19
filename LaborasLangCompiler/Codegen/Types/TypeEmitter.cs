@@ -11,7 +11,7 @@ namespace LaborasLangCompiler.Codegen.Types
 {
     internal class TypeEmitter
     {
-        const TypeAttributes DefaultTypeAttributes = TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
+        public const TypeAttributes DefaultTypeAttributes = TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
 
         private ConstructorEmitter instanceConstructor;
         private ConstructorEmitter staticConstructor;
@@ -19,6 +19,7 @@ namespace LaborasLangCompiler.Codegen.Types
 
         public AssemblyEmitter Assembly { get; private set; }
         public TypeReference BaseType { get { return typeDefinition.BaseType; } }
+        public bool IsValueType { get { return typeDefinition.IsValueType; } }
 
         public TypeEmitter(AssemblyEmitter assembly, string className, string @namespace = "",
                             TypeAttributes typeAttributes = DefaultTypeAttributes, TypeReference baseType = null) :
@@ -43,6 +44,14 @@ namespace LaborasLangCompiler.Codegen.Types
 
             typeDefinition = new TypeDefinition(@namespace, className, typeAttributes, baseType);
 
+            // Structs without fields must have specified class and packing size parameters
+            if (typeDefinition.IsValueType)
+            {
+                typeDefinition.IsSequentialLayout = true;
+                typeDefinition.ClassSize = 1;
+                typeDefinition.PackingSize = 0;
+            }
+
             if (addToAssembly)
             {
                 Assembly.AddType(typeDefinition);
@@ -51,13 +60,21 @@ namespace LaborasLangCompiler.Codegen.Types
 
         public void AddMethod(MethodDefinition method)
         {
-            CheckForDuplicates(method.Name, method.Parameters);
+            CheckForDuplicates(method.Name, method.GetParameterTypes());
             typeDefinition.Methods.Add(method);
         }
 
         public void AddField(FieldDefinition field)
         {
             CheckForDuplicates(field.Name);
+
+            // If we add any field, reset its class and packing size parameters to unspecified again
+            if (typeDefinition.IsValueType && typeDefinition.Fields.Count == 0)
+            {
+                typeDefinition.ClassSize = -1;
+                typeDefinition.PackingSize = -1;
+            }
+
             typeDefinition.Fields.Add(field);
             AddTypeToAssemblyIfNeeded(field.FieldType);
         }
@@ -100,10 +117,12 @@ namespace LaborasLangCompiler.Codegen.Types
             }
 
             AddTypeToAssemblyIfNeeded(property.PropertyType);
+            
+            var accessor = property.GetMethod ?? property.SetMethod;
 
-            foreach (var parameter in (property.GetMethod ?? property.SetMethod).Parameters)
+            foreach (var type in accessor.GetParameterTypes())
             {
-                AddTypeToAssemblyIfNeeded(parameter.ParameterType);
+                AddTypeToAssemblyIfNeeded(type);
             }
         }
 
@@ -124,12 +143,12 @@ namespace LaborasLangCompiler.Codegen.Types
             }
         }
 
-        private void CheckForDuplicates(string name, IList<ParameterDefinition> parameters)
+        private void CheckForDuplicates(string name, IReadOnlyList<TypeReference> parameterTypes)
         {
-            var targetParameterTypes = parameters.Select(parameter => parameter.ParameterType.FullName);
+            var targetParameterTypes = parameterTypes.Select(type => type.FullName);
 
             if (typeDefinition.Methods.Any(method => method.Name == name &&
-                method.Parameters.Select(parameter => parameter.ParameterType.FullName).SequenceEqual(targetParameterTypes)))
+                method.GetParameterTypes().Select(type => type.FullName).SequenceEqual(targetParameterTypes)))
             {
                 throw new InvalidOperationException(string.Format("A method with same name and parameters already exists in type {0}.", typeDefinition.FullName));
             }

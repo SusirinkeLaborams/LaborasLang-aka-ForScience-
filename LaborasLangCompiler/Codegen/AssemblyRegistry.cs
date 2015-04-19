@@ -50,6 +50,17 @@ namespace LaborasLangCompiler.Codegen
             }
         }
 
+        private struct DoubleTypeReferenceKey
+        {
+            private readonly TypeReference first, second;
+            
+            public DoubleTypeReferenceKey(TypeReference first, TypeReference second)
+            {
+                this.first = first;
+                this.second = second;
+            }
+        }
+
         private static AssemblyRegistry instance;
 
         private readonly HashSet<string> assemblyPaths;             // Keep assembly paths to prevent from registering single assembly twice
@@ -62,6 +73,9 @@ namespace LaborasLangCompiler.Codegen
         private readonly Dictionary<ArrayType, MethodReference> arrayLoadElementAddressMethods;
         private readonly Dictionary<ArrayType, MethodReference> arrayStoreElementMethods;
         private readonly Dictionary<ArrayInitializerKey, FieldDefinition> arrayInitializers;
+        private readonly Dictionary<DoubleTypeReferenceKey, MethodReference> getEnumeratorMethods;
+        private readonly Dictionary<DoubleTypeReferenceKey, MethodReference> enumeratorCurrentMethods;
+        private readonly Dictionary<DoubleTypeReferenceKey, MethodReference> enumeratorMoveNextMethods;
         private readonly AssemblyDefinition mscorlib;
 
         private AssemblyRegistry()
@@ -78,6 +92,9 @@ namespace LaborasLangCompiler.Codegen
             arrayLoadElementAddressMethods = new Dictionary<ArrayType, MethodReference>();
             arrayStoreElementMethods = new Dictionary<ArrayType, MethodReference>();
             arrayInitializers = new Dictionary<ArrayInitializerKey, FieldDefinition>();
+            getEnumeratorMethods = new Dictionary<DoubleTypeReferenceKey, MethodReference>();
+            enumeratorCurrentMethods = new Dictionary<DoubleTypeReferenceKey, MethodReference>();
+            enumeratorMoveNextMethods = new Dictionary<DoubleTypeReferenceKey, MethodReference>();
         }
 
         private AssemblyRegistry(IEnumerable<string> references)
@@ -180,13 +197,25 @@ namespace LaborasLangCompiler.Codegen
                 return null;
             }
 
-            return ScopeToAssembly(assemblyScope, type);
+            return MetadataHelpers.ScopeToAssembly(assemblyScope, type);
+        }
+
+        public static TypeReference FindType(ModuleDefinition module, string typeName)
+        {
+            var type = FindTypeInternal(typeName);
+
+            if (type == null)
+            {
+                return null;
+            }
+
+            return MetadataHelpers.ScopeToAssembly(module, type);
         }
 
         public static TypeReference GetFunctorType(AssemblyEmitter assembly, MethodReference containedMethod)
         {
-            var parameters = containedMethod.Parameters.Select(parameter => parameter.ParameterType).ToArray();
-            return GetFunctorType(assembly, containedMethod.ReturnType, parameters);
+            var parameters = containedMethod.GetParameterTypes();
+            return GetFunctorType(assembly, containedMethod.GetReturnType(), parameters);
         }
 
         public static TypeReference GetFunctorType(AssemblyEmitter assembly, TypeReference returnType, IReadOnlyList<TypeReference> arguments)
@@ -264,85 +293,77 @@ namespace LaborasLangCompiler.Codegen
             return arrayType;
         }
 
-        public static MethodReference GetMethod(AssemblyEmitter assembly, string typeName, string methodName)
+        public static MethodReference GetMethod(AssemblyEmitter assembly, string typeName, string methodName, bool searchBaseType = true)
         {
-            return GetMethods(assembly, FindTypeInternal(typeName), methodName).Single();
+            return GetMethods(assembly, FindType(assembly, typeName), methodName, searchBaseType).Single();
         }
 
-        public static MethodReference GetMethod(AssemblyEmitter assembly, TypeEmitter type, string methodName)
+        public static MethodReference GetMethod(AssemblyEmitter assembly, TypeEmitter type, string methodName, bool searchBaseType = true)
         {
-            return GetMethods(assembly, type.Get(assembly), methodName).Single();
+            return GetMethods(assembly, type.Get(assembly), methodName, searchBaseType).Single();
         }
 
-        public static MethodReference GetMethod(AssemblyEmitter assembly, TypeReference type, string methodName)
+        public static MethodReference GetMethod(AssemblyEmitter assembly, TypeReference type, string methodName, bool searchBaseType = true)
         {
-            return GetMethods(assembly, type, methodName).Single();
+            return GetMethods(assembly, type, methodName, searchBaseType).Single();
         }
 
-        public static IReadOnlyList<MethodReference> GetMethods(AssemblyEmitter assembly, string typeName, string methodName)
+        public static IReadOnlyList<MethodReference> GetMethods(AssemblyEmitter assembly, string typeName, string methodName, bool searchBaseType = true)
         {
-            return GetMethods(assembly, FindTypeInternal(typeName), methodName);
+            return GetMethods(assembly, FindType(assembly, typeName), methodName, searchBaseType);
         }
 
-        public static IReadOnlyList<MethodReference> GetMethods(AssemblyEmitter assembly, TypeEmitter type, string methodName)
+        public static IReadOnlyList<MethodReference> GetMethods(AssemblyEmitter assembly, TypeEmitter type, string methodName, bool searchBaseType = true)
         {
-            return GetMethods(assembly, type.Get(assembly), methodName);
+            return GetMethods(assembly, type.Get(assembly), methodName, searchBaseType);
         }
 
-        public static IReadOnlyList<MethodReference> GetMethods(AssemblyEmitter assembly, TypeReference type, string methodName)
+        public static IReadOnlyList<MethodReference> GetMethods(AssemblyEmitter assembly, TypeReference type, string methodName, bool searchBaseType = true)
         {
-            var resolvedType = type.Resolve();
-
-            if (!resolvedType.HasMethods)
-            {
-                return new MethodReference[0];
-            }
-
-            return resolvedType.Methods.Where(methodDef => methodDef.Name == methodName)
-                                       .Select(methodDef => ScopeToAssembly(assembly, methodDef)).ToArray<MethodReference>();
+            return GetMethodsImpl(type, methodName, searchBaseType);
         }
 
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, string type,
-            string methodName, IReadOnlyList<string> arguments)
+            string methodName, IReadOnlyList<string> arguments, bool searchBaseType = true)
         {
-            return GetCompatibleMethod(assembly, FindTypeInternal(type), methodName, arguments);
+            return GetCompatibleMethod(assembly, FindType(assembly, type), methodName, arguments, searchBaseType);
         }
 
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeEmitter type,
-            string methodName, IReadOnlyList<string> arguments)
+            string methodName, IReadOnlyList<string> arguments, bool searchBaseType = true)
         {
-            return GetCompatibleMethod(assembly, type.Get(assembly), methodName, arguments);
+            return GetCompatibleMethod(assembly, type.Get(assembly), methodName, arguments, searchBaseType);
         }
 
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, string type,
-            string methodName, IReadOnlyList<TypeReference> arguments)
+            string methodName, IReadOnlyList<TypeReference> arguments, bool searchBaseType = true)
         {
-            var typeRef = FindTypeInternal(type);
+            var typeRef = FindType(assembly, type);
 
             if (typeRef == null)
             {
                 throw new Exception(string.Format("Could not find type: {0}.", type));
             }
 
-            return GetCompatibleMethod(assembly, typeRef, methodName, arguments);
+            return GetCompatibleMethod(assembly, typeRef, methodName, arguments, searchBaseType);
         }
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeEmitter type,
-            string methodName, IReadOnlyList<TypeReference> arguments)
+            string methodName, IReadOnlyList<TypeReference> arguments, bool searchBaseType = true)
         {
-            return GetCompatibleMethod(assembly, type.Get(assembly), methodName, arguments);
+            return GetCompatibleMethod(assembly, type.Get(assembly), methodName, arguments, searchBaseType);
         }
 
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeReference type,
-            string methodName, IReadOnlyList<string> arguments)
+            string methodName, IReadOnlyList<string> arguments, bool searchBaseType = true)
         {
-            var argumentTypes = arguments.Select(arg => FindTypeInternal(arg)).ToArray();
-            return GetCompatibleMethod(assembly, type, methodName, argumentTypes);
+            var argumentTypes = arguments.Select(arg => FindType(assembly, arg)).ToArray();
+            return GetCompatibleMethod(assembly, type, methodName, argumentTypes, searchBaseType);
         }
 
         public static MethodReference GetCompatibleMethod(AssemblyEmitter assembly, TypeReference type,
-            string methodName, IReadOnlyList<TypeReference> arguments)
+            string methodName, IReadOnlyList<TypeReference> arguments, bool searchBaseType = true)
         {
-            return GetCompatibleMethod(GetMethods(assembly, type, methodName), arguments);
+            return GetCompatibleMethod(GetMethods(assembly, type, methodName, searchBaseType), arguments);
         }
 
         public static MethodReference GetCompatibleMethod(IEnumerable<MethodReference> methods, IReadOnlyList<TypeReference> arguments)
@@ -360,62 +381,62 @@ namespace LaborasLangCompiler.Codegen
 
         public static MethodReference GetConstructor(AssemblyEmitter assembly, string typeName, bool staticCtor = false)
         {
-            return staticCtor ? GetMethod(assembly, typeName, ".cctor") : GetMethod(assembly, typeName, ".ctor");
+            return staticCtor ? GetMethod(assembly, typeName, ".cctor", false) : GetMethod(assembly, typeName, ".ctor", false);
         }
 
         public static MethodReference GetConstructor(AssemblyEmitter assembly, TypeEmitter type, bool staticCtor = false)
         {
-            return staticCtor ? GetMethod(assembly, type, ".cctor") : GetMethod(assembly, type, ".ctor");
+            return staticCtor ? GetMethod(assembly, type, ".cctor", false) : GetMethod(assembly, type, ".ctor", false);
         }
 
         public static MethodReference GetConstructor(AssemblyEmitter assembly, TypeReference type, bool staticCtor = false)
         {
-            return staticCtor ? GetMethod(assembly, type, ".cctor") : GetMethod(assembly, type, ".ctor");
+            return staticCtor ? GetMethod(assembly, type, ".cctor", false) : GetMethod(assembly, type, ".ctor", false);
         }
 
         public static IReadOnlyList<MethodReference> GetConstructors(AssemblyEmitter assembly, string typeName)
         {
-            return GetMethods(assembly, typeName, ".ctor");
+            return GetMethods(assembly, typeName, ".ctor", false);
         }
 
         public static IReadOnlyList<MethodReference> GetConstructors(AssemblyEmitter assembly, TypeEmitter type)
         {
-            return GetMethods(assembly, type, ".ctor");
+            return GetMethods(assembly, type, ".ctor", false);
         }
 
         public static IReadOnlyList<MethodReference> GetConstructors(AssemblyEmitter assembly, TypeReference type)
         {
-            return GetMethods(assembly, type, ".ctor");
+            return GetMethods(assembly, type, ".ctor", false);
         }
 
         public static MethodReference GetCompatibleConstructor(AssemblyEmitter assembly, string typeName, IReadOnlyList<string> arguments)
         {
-            return GetCompatibleMethod(assembly, typeName, ".ctor", arguments);
+            return GetCompatibleMethod(assembly, typeName, ".ctor", arguments, false);
         }
 
         public static MethodReference GetCompatibleConstructor(AssemblyEmitter assembly, TypeEmitter type, IReadOnlyList<string> arguments)
         {
-            return GetCompatibleMethod(assembly, type, ".ctor", arguments);
+            return GetCompatibleMethod(assembly, type, ".ctor", arguments, false);
         }
 
         public static MethodReference GetCompatibleConstructor(AssemblyEmitter assembly, TypeReference type, IReadOnlyList<string> arguments)
         {
-            return GetCompatibleMethod(assembly, type, ".ctor", arguments);
+            return GetCompatibleMethod(assembly, type, ".ctor", arguments, false);
         }
 
         public static MethodReference GetCompatibleConstructor(AssemblyEmitter assembly, string typeName, IReadOnlyList<TypeReference> arguments)
         {
-            return GetCompatibleMethod(assembly, typeName, ".ctor", arguments);
+            return GetCompatibleMethod(assembly, typeName, ".ctor", arguments, false);
         }
 
         public static MethodReference GetCompatibleConstructor(AssemblyEmitter assembly, TypeEmitter type, IReadOnlyList<TypeReference> arguments)
         {
-            return GetCompatibleMethod(assembly, type, ".ctor", arguments);
+            return GetCompatibleMethod(assembly, type, ".ctor", arguments, false);
         }
 
         public static MethodReference GetCompatibleConstructor(AssemblyEmitter assembly, TypeReference type, IReadOnlyList<TypeReference> arguments)
         {
-            return GetCompatibleMethod(assembly, type, ".ctor", arguments);
+            return GetCompatibleMethod(assembly, type, ".ctor", arguments, false);
         }
 
         public static MethodReference GetArrayConstructor(ArrayType arrayType)
@@ -503,6 +524,45 @@ namespace LaborasLangCompiler.Codegen
             return storeElement;
         }
 
+        internal static MethodReference GetGetEnumeratorMethod(TypeReference collectionType, TypeReference elementType)
+        {
+            MethodReference getEnumeratorMethod;
+            var key = new DoubleTypeReferenceKey(collectionType, elementType);
+
+            if (instance.getEnumeratorMethods.TryGetValue(key, out getEnumeratorMethod))
+                return getEnumeratorMethod;
+
+            getEnumeratorMethod = GetGetEnumeratorMethodImpl(collectionType, elementType);
+            instance.getEnumeratorMethods.Add(key, getEnumeratorMethod);
+            return getEnumeratorMethod;
+        }
+
+        internal static MethodReference GetEnumeratorCurrentMethod(TypeReference enumeratorType, TypeReference elementType)
+        {
+            MethodReference enumeratorCurrentMethod;
+            var key = new DoubleTypeReferenceKey(enumeratorType, elementType);
+
+            if (instance.enumeratorCurrentMethods.TryGetValue(key, out enumeratorCurrentMethod))
+                return enumeratorCurrentMethod;
+
+            enumeratorCurrentMethod = GetEnumeratorCurrentMethodImpl(enumeratorType, elementType);
+            instance.enumeratorCurrentMethods.Add(key, enumeratorCurrentMethod);
+            return enumeratorCurrentMethod;
+        }
+
+        internal static MethodReference GetEnumeratorMoveNextMethod(TypeReference enumeratorType, TypeReference elementType)
+        {
+            MethodReference enumeratorMoveNextMethod;
+            var key = new DoubleTypeReferenceKey(enumeratorType, elementType);
+
+            if (instance.enumeratorMoveNextMethods.TryGetValue(key, out enumeratorMoveNextMethod))
+                return enumeratorMoveNextMethod;
+
+            enumeratorMoveNextMethod = GetEnumeratorMoveNextMethodImpl(enumeratorType, elementType);
+            instance.enumeratorMoveNextMethods.Add(key, enumeratorMoveNextMethod);
+            return enumeratorMoveNextMethod;
+        }
+
         public static IReadOnlyList<PropertyReference> GetProperties(TypeReference type, string propertyName)
         {
             return type.Resolve().Properties.Where(property => property.Name == propertyName).ToArray();
@@ -538,7 +598,7 @@ namespace LaborasLangCompiler.Codegen
 
         public static TypeReference GetPropertyType(AssemblyEmitter assembly, PropertyReference property)
         {
-            return ScopeToAssembly(assembly, property.PropertyType);
+            return MetadataHelpers.ScopeToAssembly(assembly, property.PropertyType);
         }
 
         public static MethodReference GetPropertyGetter(AssemblyEmitter assembly, PropertyReference property)
@@ -550,7 +610,7 @@ namespace LaborasLangCompiler.Codegen
                 return null;
             }
 
-            return ScopeToAssembly(assembly, resolvedProperty.GetMethod);
+            return MetadataHelpers.ScopeToAssembly(assembly, resolvedProperty.GetMethod);
         }
 
         public static MethodReference GetPropertySetter(AssemblyEmitter assembly, PropertyReference property)
@@ -562,12 +622,12 @@ namespace LaborasLangCompiler.Codegen
                 return null;
             }
 
-            return ScopeToAssembly(assembly, resolvedProperty.SetMethod);
+            return MetadataHelpers.ScopeToAssembly(assembly, resolvedProperty.SetMethod);
         }
 
         public static FieldReference GetField(AssemblyEmitter assembly, string typeName, string fieldName)
         {
-            return GetField(assembly, FindTypeInternal(typeName), fieldName);
+            return GetField(assembly, FindType(assembly, typeName), fieldName);
         }
 
         public static FieldReference GetField(AssemblyEmitter assembly, TypeEmitter type, string fieldName)
@@ -591,34 +651,86 @@ namespace LaborasLangCompiler.Codegen
                 return null;
             }
 
-            return ScopeToAssembly(assembly, field);
+            return MetadataHelpers.ScopeToAssembly(assembly, field);
         }
 
         #endregion
 
         #region Privates
-        struct ParameterKeyValuePair<T>
+
+        private static List<MethodReference> GetMethodsImpl(TypeReference type, string methodName, bool searchBaseType)
+        {
+            var methods = new List<MethodReference>();
+            var resolvedType = type.Resolve();
+            var genericInstance = type as GenericInstanceType;
+
+            if (!(type is ArrayType) && resolvedType != null)
+            {
+                for (int i = 0; i < resolvedType.Methods.Count; i++)
+                {
+                    var method = resolvedType.Methods[i];
+
+                    if (method.HasGenericParameters)
+                        continue;
+
+                    if (method.Name != methodName)
+                        continue;
+
+                    var methodRef = MetadataHelpers.ScopeToAssembly(type.Module, method);
+
+                    if (genericInstance != null)
+                        methodRef.DeclaringType = genericInstance;
+
+                    methods.Add(methodRef);
+                }
+            }
+
+            if (methods.Count == 0 && searchBaseType)
+            {
+                foreach (var iface in type.GetInterfaces())
+                    methods.AddRange(GetMethodsImpl(iface, methodName, true));
+
+                if (methods.Count == 0)
+                {
+                    var baseType = type.GetBaseType();
+
+                    if (baseType != null)
+                        methods.AddRange(GetMethodsImpl(baseType, methodName, true));
+                }
+            }
+
+            return methods;
+        }
+
+        private static void InflateForGenericInstanceType(MethodDefinition methodDef, GenericInstanceType declaringType)
+        {
+
+        }
+
+        struct ParameterInfo<T>
         {
             public readonly T key;
             public readonly IList<ParameterDefinition> parameters;
+            public readonly IReadOnlyList<TypeReference> parameterTypes;
 
-            public ParameterKeyValuePair(T key, IList<ParameterDefinition> parameters)
+            public ParameterInfo(T key, IList<ParameterDefinition> parameters, IReadOnlyList<TypeReference> parameterTypes)
             {
                 this.key = key;
                 this.parameters = parameters;
+                this.parameterTypes = parameterTypes;
             }
         }
 
-        private static int GetBestMatches<T>(IReadOnlyList<TypeReference> arguments, ParameterKeyValuePair<T>[] parameters)
+        private static int GetBestMatches<T>(IReadOnlyList<TypeReference> arguments, ParameterInfo<T>[] parameters)
         {
             Contract.Requires(parameters.Length > 0);
             int i = 0;
 
             if (parameters.Length > 1)
             {
-                Array.Sort(parameters, (x, y) => CompareMatches(arguments, y.parameters, x.parameters));
+                Array.Sort(parameters, (x, y) => CompareMatches(arguments, y, x));
 
-                while (i < parameters.Length - 1 && CompareMatches(arguments, parameters[i].parameters, parameters[i + 1].parameters) == 0)
+                while (i < parameters.Length - 1 && CompareMatches(arguments, parameters[i], parameters[i + 1]) == 0)
                     i++;
             }
 
@@ -629,7 +741,7 @@ namespace LaborasLangCompiler.Codegen
         {
             Contract.Requires(methods.Count > 0);
 
-            var parameterArray = methods.Select(method => new ParameterKeyValuePair<MethodReference>(method, method.Resolve().Parameters)).ToArray();
+            var parameterArray = methods.Select(method => new ParameterInfo<MethodReference>(method, method.Resolve().Parameters, method.GetParameterTypes())).ToArray();
             var bestMatchIndex = GetBestMatches(arguments, parameterArray);
 
             if (bestMatchIndex == 0)
@@ -643,7 +755,7 @@ namespace LaborasLangCompiler.Codegen
         {
             Contract.Requires(properties.Count > 0);
 
-            var parameterArray = properties.Select(property => new ParameterKeyValuePair<PropertyDefinition>(property, property.Parameters)).ToArray();
+            var parameterArray = properties.Select(property => new ParameterInfo<PropertyDefinition>(property, property.Parameters, property.Parameters.Select(p => p.ParameterType).ToArray())).ToArray();
             var bestMatchIndex = GetBestMatches(arguments, parameterArray);
 
             if (bestMatchIndex == 0)
@@ -690,53 +802,53 @@ namespace LaborasLangCompiler.Codegen
             return null;
         }
 
-        private static int CompareMatches(IReadOnlyList<TypeReference> arguments, IList<ParameterDefinition> aParameters, IList<ParameterDefinition> bParameters)
+        private static int CompareMatches<T>(IReadOnlyList<TypeReference> arguments, ParameterInfo<T> aParameterInfo, ParameterInfo<T> bParameterInfo)
         {
             var argumentNames = arguments.Select(arg => arg.FullName);
 
-            if (aParameters.Select(parameter => parameter.ParameterType.FullName).SequenceEqual(argumentNames))
+            if (aParameterInfo.parameterTypes.Select(type => type.FullName).SequenceEqual(argumentNames))
             {
                 return 1;
             }
 
-            if (bParameters.Select(parameter => parameter.ParameterType.FullName).SequenceEqual(argumentNames))
+            if (bParameterInfo.parameterTypes.Select(type => type.FullName).SequenceEqual(argumentNames))
             {
                 return -1;
             }
+            
+            var aParameters = aParameterInfo.parameters;
+            var bParameters = bParameterInfo.parameters;
 
-            List<TypeReference> aParameterTypes, bParameterTypes;
+            var aParameterTypes = aParameterInfo.parameterTypes;
+            var bParameterTypes = bParameterInfo.parameterTypes;
 
             var aIsParamsMethod = aParameters[aParameters.Count - 1].IsParams();
             var bIsParamsMethod = bParameters[bParameters.Count - 1].IsParams();
 
             if (aIsParamsMethod)
             {
-                aParameterTypes = aParameters.Take(aParameters.Count - 1).Select(parameter => parameter.ParameterType).ToList();
+                var types = aParameterTypes.Take(aParameters.Count - 1).ToList();
 
-                var paramsType = aParameters.Last().ParameterType;
+                var paramsType = aParameterTypes[aParameterTypes.Count - 1].GetElementType();
                 for (int i = 0; i < arguments.Count - aParameters.Count + 1; i++)
                 {
-                    aParameterTypes.Add(paramsType);
+                    types.Add(paramsType);
                 }
-            }
-            else
-            {
-                aParameterTypes = aParameters.Select(parameter => parameter.ParameterType).ToList();
+
+                aParameterTypes = types;
             }
 
             if (bIsParamsMethod)
             {
-                bParameterTypes = bParameters.Take(bParameters.Count - 1).Select(parameter => parameter.ParameterType).ToList();
+                var types = bParameterTypes.Take(bParameters.Count - 1).ToList();
 
-                var paramsType = bParameters.Last().ParameterType.GetElementType();
+                var paramsType = bParameterTypes[bParameterTypes.Count - 1].GetElementType();
                 for (int i = 0; i < arguments.Count - bParameters.Count + 1; i++)
                 {
-                    bParameterTypes.Add(paramsType);
+                    types.Add(paramsType);
                 }
-            }
-            else
-            {
-                bParameterTypes = bParameters.Select(parameter => parameter.ParameterType).ToList();
+
+                bParameterTypes = types;
             }
 
             for (int i = 0; i < arguments.Count; i++)
@@ -766,7 +878,7 @@ namespace LaborasLangCompiler.Codegen
                         }
                     }
 
-                    argument = argument.Resolve().BaseType;
+                    argument = argument.GetBaseType();
                 }
             }
 
@@ -780,53 +892,6 @@ namespace LaborasLangCompiler.Codegen
             }
 
             return 0;
-        }
-
-        private static TypeReference ScopeToAssembly(AssemblyEmitter assemblyScope, TypeReference reference)
-        {
-            var module = assemblyScope.MainModule;
-
-            if ((reference.Scope.MetadataScopeType != MetadataScopeType.ModuleDefinition) || (ModuleDefinition)reference.Scope != module)
-            {
-                return module.Import(reference);
-            }
-            else
-            {
-                return reference;
-            }
-        }
-
-        private static MethodReference ScopeToAssembly(AssemblyEmitter assemblyScope, MethodReference reference)
-        {
-            var module = assemblyScope.MainModule;
-
-            if (reference.DeclaringType.Scope == null)
-                return reference;
-
-            if ((reference.DeclaringType.Scope.MetadataScopeType != MetadataScopeType.ModuleDefinition) ||
-                    (ModuleDefinition)reference.DeclaringType.Scope != module)
-            {
-                return module.Import(reference);
-            }
-            else
-            {
-                return reference.Resolve();
-            }
-        }
-
-        private static FieldReference ScopeToAssembly(AssemblyEmitter assemblyScope, FieldReference reference)
-        {
-            var module = assemblyScope.MainModule;
-
-            if ((reference.DeclaringType.Scope.MetadataScopeType != MetadataScopeType.ModuleDefinition) ||
-                    (ModuleDefinition)reference.DeclaringType.Scope != module)
-            {
-                return module.Import(reference);
-            }
-            else
-            {
-                return reference.Resolve();
-            }
         }
 
         private static unsafe void CopyValueToByteArray(byte[] byteArray, int elementSize, int index, byte* valuePtr, int valueSize)
@@ -909,6 +974,100 @@ namespace LaborasLangCompiler.Codegen
             }
 
             return initializerBytes;
+        }
+
+        private static bool IsValidEnumerator(TypeReference enumeratorType, TypeReference elementType)
+        {
+            return GetEnumeratorCurrentMethod(enumeratorType, elementType) != null && GetEnumeratorMoveNextMethod(enumeratorType, elementType) != null;
+        }
+
+        private static MethodReference GetEnumeratorCurrentMethodImpl(TypeReference enumeratorType, TypeReference elementType)
+        {
+            var methods = GetMethodsImpl(enumeratorType, "get_Current", true).Where(method =>
+            {
+                if (method.Parameters.Count > 0)
+                    return false;
+                
+                var methodReturnType = method.GetReturnType();
+                return methodReturnType.IsAssignableTo(elementType) || elementType.IsAssignableTo(methodReturnType);
+            }).ToArray();
+
+            if (methods.Length == 0)
+                return null;
+
+            Contract.Assert(methods.Length == 1);
+            return methods[0];
+        }
+
+        private static MethodReference GetEnumeratorMoveNextMethodImpl(TypeReference enumeratorType, TypeReference elementType)
+        {
+            var methods = GetMethodsImpl(enumeratorType, "MoveNext", true).Where(m => m.Parameters.Count == 0 && m.GetReturnType().MetadataType == MetadataType.Boolean).ToArray();
+
+            if (methods.Length == 0)
+                return null;
+
+            Contract.Assert(methods.Length == 1);
+            return methods[0];
+        }
+
+        private static MethodReference GetGetEnumeratorMethodImpl(TypeReference collectionType, TypeReference elementType)
+        {
+            var methods = GetMethodsImpl(collectionType, "GetEnumerator", true).Where(m => m.Parameters.Count == 0 && IsValidEnumerator(m.GetReturnType(), elementType)).ToArray();
+
+            if (methods.Length == 0)
+                return null;
+
+            Array.Sort(methods, (x, y) =>
+            {
+                var xReturnType = x.GetReturnType();
+                var yReturnType = y.GetReturnType();
+
+                if (xReturnType.IsValueType)   
+                {
+                    if (yReturnType.IsValueType)
+                        return 0;
+
+                    return -1;
+                }
+
+                if (yReturnType.IsValueType)
+                    return 1;
+
+                var ienumerableT = FindType(elementType.Module, "System.Collections.Generic.IEnumerable`1").MakeGenericType(elementType);
+                var ienumerable = FindType(elementType.Module, "System.Collections.IEnumerable");
+
+                var xIsIEnumerable = x.DeclaringType.IsAssignableTo(ienumerable);
+                var yIsIEnumerable = y.DeclaringType.IsAssignableTo(ienumerable);
+
+                if (!xIsIEnumerable)
+                {
+                    if (!yIsIEnumerable)
+                        return 0;
+
+                    return -1;
+                }
+
+                if (!yIsIEnumerable)
+                    return 1;
+
+                var xIsIEnumerableT = x.DeclaringType.IsAssignableTo(ienumerableT);
+                var yIsIEnumerableT = y.DeclaringType.IsAssignableTo(ienumerableT);
+
+                if (xIsIEnumerableT)
+                {
+                    if (yIsIEnumerableT)
+                        return 0;
+
+                    return -1;
+                }
+
+                if (yIsIEnumerableT)
+                    return 1;
+
+                return 0;
+            });
+
+            return methods[0];
         }
 
         #endregion

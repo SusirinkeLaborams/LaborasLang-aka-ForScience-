@@ -17,7 +17,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         static public void EmitInvoke(TypeEmitter declaringType, MethodReference targetMethod)
         {
-            var definition = new FunctorMethodEmitter(declaringType, "Invoke", targetMethod.ReturnType, 
+            var definition = new FunctorMethodEmitter(declaringType, "Invoke", targetMethod.GetReturnType(), 
                 MethodAttributes.Public | MethodAttributes.Virtual | MethodAttributes.HideBySig);
 
             definition.EmitInvokeBody(targetMethod);
@@ -48,7 +48,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void EmitConstructorBody(MethodReference targetMethod)
         {
-            var baseCtor = AssemblyRegistry.GetMethod(Assembly, DeclaringType.BaseType, ".ctor");
+            var baseCtor = AssemblyRegistry.GetConstructor(Assembly, DeclaringType.BaseType);
 
             Ldarg(0);
             Call(baseCtor);
