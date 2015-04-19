@@ -381,6 +381,10 @@ namespace LaborasLangCompiler.FrontEnd
         private static string GetNormalizedSourceFileDirectory(string path)
         {
             var pathParts = path.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (pathParts.Length < 2)
+                return string.Empty;
+
             var pathBuilder = new StringBuilder();
 
             for (int i = 1; i < pathParts.Length; i++)
