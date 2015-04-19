@@ -8,9 +8,9 @@ entry auto Main = int()
     auto i = 0;
     while (i < snippets.Length)
     {
-	    Console.WriteLine(snippets[i]);
+        Console.WriteLine(snippets[i]);
         i++;
     }
 
-	return 0;
+    return 0;
 };
