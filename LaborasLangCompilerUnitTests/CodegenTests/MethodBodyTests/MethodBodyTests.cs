@@ -1,5 +1,6 @@
 ﻿using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Codegen.Methods;
+using LaborasLangCompiler.Codegen.Types;
 using LaborasLangCompiler.Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Cecil;
@@ -1574,6 +1575,112 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             var expectedOutput = Enumerable.Range(0, 10).Select(i => i + Environment.NewLine).Aggregate((x, y) => x + y);
             TestForEachLoopHelper(listCreation, assemblyEmitter.TypeSystem.Int32, expectedOutput);
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestForEachLoop_CustomCollection()
+        {
+            var systemValueType = AssemblyRegistry.FindType(assemblyEmitter, "System.ValueType");
+
+            var collectionType = new TypeEmitter(assemblyEmitter, "Collection", "", TypeEmitter.DefaultTypeAttributes, systemValueType);
+            var enumeratorType = new TypeEmitter(assemblyEmitter, "Enumerator", "", TypeEmitter.DefaultTypeAttributes, systemValueType);
+            var collectionTypeRef = collectionType.Get(assemblyEmitter);
+            var enumeratorTypeRef = enumeratorType.Get(assemblyEmitter);
+
+            var counterField = new FieldDefinition("counter", FieldAttributes.Private, assemblyEmitter.TypeSystem.Int32);
+            var counterFieldNode = new FieldNode()
+            {
+                ObjectInstance = new ThisNode(),
+                Field = counterField
+            };
+
+            enumeratorType.AddField(counterField);
+            enumeratorType.AddFieldInitializer(counterField, new LiteralNode(assemblyEmitter.TypeSystem.Int32, -1));
+
+            var getEnumeratorMethod = new MethodEmitter(collectionType, "GetEnumerator", enumeratorTypeRef, MethodAttributes.Public);
+
+            getEnumeratorMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new ReturnNode()
+                    {
+                        Expression = new ObjectCreationNode()
+                        {
+                            ExpressionReturnType = enumeratorTypeRef,
+                            Constructor = AssemblyRegistry.GetConstructor(assemblyEmitter, enumeratorTypeRef),
+                            Args = new IExpressionNode[0]
+                        }
+                    }
+                }
+            });
+
+            var moveNextMethod = new MethodEmitter(enumeratorType, "MoveNext", assemblyEmitter.TypeSystem.Boolean, MethodAttributes.Public);
+
+            moveNextMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new ConditionBlockNode()
+                    {
+                        Condition = new BinaryOperatorNode()
+                        {
+                            BinaryOperatorType = BinaryOperatorNodeType.NotEquals,
+                            ExpressionReturnType = assemblyEmitter.TypeSystem.Boolean,
+                            LeftOperand = counterFieldNode,
+                            RightOperand = new LiteralNode(assemblyEmitter.TypeSystem.Int32, 9)
+                        },
+                        TrueBlock = new CodeBlockNode()
+                        {
+                            Nodes = new IParserNode[]
+                            {
+                                new IncrementDecrementOperatorNode()
+                                {
+                                    IncrementDecrementType = IncrementDecrementOperatorType.PostIncrement,
+                                    Operand = counterFieldNode
+                                },
+                                new ReturnNode()
+                                {
+                                    Expression = new LiteralNode(assemblyEmitter.TypeSystem.Boolean, true)
+                                }
+                            }
+                        }
+                    },
+                    new ReturnNode()
+                    {
+                        Expression = new LiteralNode(assemblyEmitter.TypeSystem.Boolean, false)
+                    }
+                }
+            });
+
+            var getCurrentMethod = new MethodEmitter(enumeratorType, "get_Current", assemblyEmitter.TypeSystem.String, MethodAttributes.Public);
+
+            getCurrentMethod.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new ReturnNode()
+                    {
+                        Expression = new MethodCallNode()
+                        {
+                            Function = new FunctionNode()
+                            {
+                                ObjectInstance = counterFieldNode,
+                                Method = AssemblyRegistry.GetCompatibleMethod(assemblyEmitter, counterField.FieldType, "ToString", new TypeReference[0]),
+                            },
+                            Args = new IExpressionNode[0]
+                        }
+                    }
+                }
+            });
+
+            var collectionCreation = new ValueCreationNode()
+            {
+                ExpressionReturnType = collectionTypeRef
+            };
+
+            var expectedOutput = Enumerable.Range(0, 10).Select(i => i + Environment.NewLine).Aggregate((x, y) => x + y);
+            TestForEachLoopHelper(collectionCreation, assemblyEmitter.TypeSystem.String, expectedOutput);
         }
 
         #endregion

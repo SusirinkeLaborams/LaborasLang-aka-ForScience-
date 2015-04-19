@@ -11,7 +11,7 @@ namespace LaborasLangCompiler.Codegen.Types
 {
     internal class TypeEmitter
     {
-        const TypeAttributes DefaultTypeAttributes = TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
+        public const TypeAttributes DefaultTypeAttributes = TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit;
 
         private ConstructorEmitter instanceConstructor;
         private ConstructorEmitter staticConstructor;
@@ -19,6 +19,7 @@ namespace LaborasLangCompiler.Codegen.Types
 
         public AssemblyEmitter Assembly { get; private set; }
         public TypeReference BaseType { get { return typeDefinition.BaseType; } }
+        public bool IsValueType { get { return typeDefinition.IsValueType; } }
 
         public TypeEmitter(AssemblyEmitter assembly, string className, string @namespace = "",
                             TypeAttributes typeAttributes = DefaultTypeAttributes, TypeReference baseType = null) :
@@ -43,6 +44,14 @@ namespace LaborasLangCompiler.Codegen.Types
 
             typeDefinition = new TypeDefinition(@namespace, className, typeAttributes, baseType);
 
+            // Structs without fields must have specified class and packing size parameters
+            if (typeDefinition.IsValueType)
+            {
+                typeDefinition.IsSequentialLayout = true;
+                typeDefinition.ClassSize = 1;
+                typeDefinition.PackingSize = 0;
+            }
+
             if (addToAssembly)
             {
                 Assembly.AddType(typeDefinition);
@@ -58,6 +67,14 @@ namespace LaborasLangCompiler.Codegen.Types
         public void AddField(FieldDefinition field)
         {
             CheckForDuplicates(field.Name);
+
+            // If we add any field, reset its class and packing size parameters to unspecified again
+            if (typeDefinition.IsValueType && typeDefinition.Fields.Count == 0)
+            {
+                typeDefinition.ClassSize = -1;
+                typeDefinition.PackingSize = -1;
+            }
+
             typeDefinition.Fields.Add(field);
             AddTypeToAssemblyIfNeeded(field.FieldType);
         }

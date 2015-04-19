@@ -375,6 +375,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     // Check if enumerator is disposable, and if it is, store it into a temporary variable
                     // Otherwise jump to just before finally end
                     EmitLocalVariable(enumeratorVariable, EmissionType.Value);
+                    EmitConversionIfNeeded(enumeratorVariable.VariableType, Assembly.TypeSystem.Object);
                     Isinst(idisposable);
                     Stloc(disposableVariable.Index);
                     EmitLocalVariable(disposableVariable, EmissionType.Value);
