@@ -1,0 +1,71 @@
+Content: Type: RootNode, Start: 2, 13, End: 5, 15, Content: ""
+Type: RootNode
+Children:
+	Content: Type: StatementWithEndOfLine, Start: 2, 13, End: 5, 15, Content: ""
+	Type: StatementWithEndOfLine
+	Children:
+		Content: Type: DeclarationNode, Start: 2, 13, End: 5, 14, Content: ""
+		Type: DeclarationNode
+		Children:
+			Content: Type: Type, Start: 2, 13, End: 2, 17, Content: ""
+			Type: Type
+			Children:
+				Content: Type: FullSymbol, Start: 2, 13, End: 2, 17, Content: ""
+				Type: FullSymbol
+				Children:
+					Content: Type: Symbol, Start: 2, 13, End: 2, 17, Content: "auto"
+					Type: Symbol
+					Children:
+
+			Content: Type: Symbol, Start: 2, 18, End: 2, 22, Content: "Main"
+			Type: Symbol
+			Children:
+
+			Content: Type: Assignment, Start: 2, 23, End: 2, 24, Content: "="
+			Type: Assignment
+			Children:
+
+			Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+			Type: Value
+			Children:
+				Content: Type: Function, Start: 2, 25, End: 5, 14, Content: ""
+				Type: Function
+				Children:
+					Content: Type: Type, Start: 2, 25, End: 2, 31, Content: ""
+					Type: Type
+					Children:
+						Content: Type: FullSymbol, Start: 2, 25, End: 2, 29, Content: ""
+						Type: FullSymbol
+						Children:
+							Content: Type: Symbol, Start: 2, 25, End: 2, 29, Content: "void"
+							Type: Symbol
+							Children:
+
+						Content: Type: ParameterList, Start: 2, 29, End: 2, 31, Content: ""
+						Type: ParameterList
+						Children:
+							Content: Type: FunctorParameters, Start: 2, 29, End: 2, 31, Content: ""
+							Type: FunctorParameters
+							Children:
+								Content: Type: LeftParenthesis, Start: 2, 29, End: 2, 30, Content: "("
+								Type: LeftParenthesis
+								Children:
+
+								Content: Type: RightParenthesis, Start: 2, 30, End: 2, 31, Content: ")"
+								Type: RightParenthesis
+								Children:
+
+					Content: Type: CodeBlockNode, Start: 3, 13, End: 5, 14, Content: ""
+					Type: CodeBlockNode
+					Children:
+						Content: Type: LeftCurlyBrace, Start: 3, 13, End: 3, 14, Content: "{"
+						Type: LeftCurlyBrace
+						Children:
+
+						Content: Type: RightCurlyBrace, Start: 5, 13, End: 5, 14, Content: "}"
+						Type: RightCurlyBrace
+						Children:
+
+		Content: Type: EndOfLine, Start: 5, 14, End: 5, 15, Content: ";"
+		Type: EndOfLine
+		Children:

@@ -499,6 +499,17 @@ foo().bar = 5;
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestFunctionDeclaration()
+        {
+            var source = @"
+            auto Main = void()
+            {
+                
+            };";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void TestIntegerLiteralToken()
         {
             var source = "foo = 1;";

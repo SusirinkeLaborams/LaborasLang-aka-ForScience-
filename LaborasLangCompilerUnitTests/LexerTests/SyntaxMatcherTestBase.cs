@@ -1,4 +1,4 @@
-#define REMATCH
+//#define REMATCH
 
 using Lexer;
 using Lexer.Containers;

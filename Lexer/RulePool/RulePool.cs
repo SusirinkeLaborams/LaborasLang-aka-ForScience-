@@ -101,7 +101,7 @@ namespace Lexer
                     LeftParenthesis + Type +  RightParenthesis),
                         
                     CollapsableParseRule(CodeBlockNode,
-                        LeftCurlyBrace + ZeroOrMore(StatementWithEndOfLine) + RightCurlyBrace),
+                        LeftCurlyBrace + ZeroOrMore(CodeConstruct) + RightCurlyBrace),
                     
                     ParseRule(IndexNode,
                     LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket,

@@ -1,0 +1,40 @@
+Class:
+	TestInfiniteForNoBlock
+	Fields:
+	Methods:
+		Method:
+			Name:
+				func
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						For:
+							Initializer:
+								CodeBlock:
+									Symbols:
+									Nodes:
+
+							Condition:
+								Literal:
+									Type: System.Boolean
+									Value: True
+
+							Increment:
+								CodeBlock:
+									Symbols:
+									Nodes:
+
+							Body:
+								CodeBlock:
+									Symbols:
+									Nodes:
+
+
+
+

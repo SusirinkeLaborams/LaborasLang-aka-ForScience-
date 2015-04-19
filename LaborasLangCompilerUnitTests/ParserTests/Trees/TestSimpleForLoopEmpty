@@ -1,0 +1,73 @@
+Class:
+	TestSimpleForLoopEmpty
+	Fields:
+	Methods:
+		Method:
+			Name:
+				func
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						For:
+							Initializer:
+								CodeBlock:
+									Symbols:
+										System.Int32 i
+									Nodes:
+										VariableDeclaration:
+											Symbol:
+												System.Int32 i
+											Initializer:
+												Literal:
+													Type: System.Int32
+													Value: 0
+
+
+
+							Condition:
+								BinaryOperator:
+									Left:
+										Local:
+											Name:
+												i
+											Type:
+												System.Int32
+
+									Operator:
+										LessThan
+									Right:
+										Literal:
+											Type: System.Int32
+											Value: 5
+
+
+							Increment:
+								CodeBlock:
+									Symbols:
+									Nodes:
+										IncrementDecrementOperator:
+											Operator:
+												PostIncrement
+											Operand:
+												Local:
+													Name:
+														i
+													Type:
+														System.Int32
+
+
+
+							Body:
+								CodeBlock:
+									Symbols:
+									Nodes:
+
+
+
+
