@@ -1107,5 +1107,100 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestSimpleForLoopOutsideIndex()
+        {
+            string source = @"
+                auto func = void()
+                {
+                    int num = 0;
+                    int i;
+                    for(i = 0; i < 5; i++)
+                    {
+                        num += i;
+                    }
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestSimpleForLoopEmpty()
+        {
+            string source = @"
+                auto func = void()
+                {
+                    for(int i = 0; i < 5; i++);
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestInfiniteFor()
+        {
+            string source = @"
+                auto func = void()
+                {
+                    for(;;){}
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestInfiniteForNoBlock()
+        {
+            string source = @"
+                auto func = void()
+                {
+                    for(;;);
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestForNoInit()
+        {
+            string source = @"
+                auto func = void()
+                {
+                    int i = 0;
+                    for(; i < 5; i++){}
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestForNoCondition()
+        {
+            string source = @"
+                auto func = void()
+                {
+                    for(int i = 0; ; i++){}
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestForNoIncrement()
+        {
+            string source = @"
+                auto func = void()
+                {
+                    for(int i = 0; i < 5;){}
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestForOnlyCondition()
+        {
+            string source = @"
+                auto func = void()
+                {
+                    bool loop = true;
+                    for(;loop;){}
+                };
+            ";
+            CompareTrees(source);
+        }
     }
 }
