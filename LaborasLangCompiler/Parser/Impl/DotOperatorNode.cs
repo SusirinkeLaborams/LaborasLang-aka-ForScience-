@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Lexer;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -27,11 +28,35 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ExpressionNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
+            Contract.Requires(
+                lexerNode.Type == Lexer.TokenType.InfixNode && lexerNode.Children[2].Type == Lexer.TokenType.Period ||
+                lexerNode.Type == Lexer.TokenType.FullSymbol ||
+                lexerNode.Type == Lexer.TokenType.Symbol);
+
+            Contract.Ensures(Contract.Result<ExpressionNode>() != null);
+
             var instance = new DotOperatorNode(context);
+
+            if (lexerNode.Type == Lexer.TokenType.Symbol)
+            {
+                instance.Append(new SymbolNode(lexerNode.Content, context, context.Parser.GetSequencePoint(lexerNode)));
+                return instance.builtNode;
+            }
+
             foreach(var node in lexerNode.Children)
             {
-                if(node.Type != Lexer.TokenType.Period)
-                    instance.Append(ExpressionNode.Parse(context, node));
+                var point = context.Parser.GetSequencePoint(node);
+                switch(node.Type)
+                {
+                    case Lexer.TokenType.Period:
+                        break;
+                    case Lexer.TokenType.Symbol:
+                        instance.Append(new SymbolNode(node.Content, context, point));
+                        break;
+                    default:
+                        instance.Append(ExpressionNode.Parse(context, node));
+                        break;
+                }
             }
             return instance.builtNode;
         }
@@ -72,12 +97,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private void AppendFirst(ExpressionNode node)
         {
-            if (node.ExpressionType != ExpressionNodeType.ParserInternal)
-            {
-                //non-symbol expressions
-                builtNode = node;
-            }
-            else if (node is SymbolNode)
+            if (node is SymbolNode)
             {
                 SymbolNode symbol = node as SymbolNode;
                 builtNode = context.GetSymbol(symbol.Name, context, node.SequencePoint);
@@ -86,7 +106,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                ErrorCode.InvalidDot.ReportAndThrow(node.SequencePoint, "Unexpected node type {0}", node.ExpressionType);
+                builtNode = node;
             }
         }
 

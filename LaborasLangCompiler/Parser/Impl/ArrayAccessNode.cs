@@ -39,25 +39,25 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ExpressionNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
-            Contract.Requires(lexerNode.Type == Lexer.TokenType.IndexAccessNode);
+            Contract.Requires(lexerNode.Children[1].Type == Lexer.TokenType.IndexNode);
+            Contract.Ensures(Contract.Result<ExpressionNode>() != null);
+            var point = context.Parser.GetSequencePoint(lexerNode);
             var array = ExpressionNode.Parse(context, lexerNode.Children[0]);
-            for(int i = 1; i < lexerNode.Children.Count; i++)
+            var indexer = lexerNode.Children[1];
+
+            if (IsEmptyIndexer(indexer))
             {
-                var node = lexerNode.Children[i];
-                Contract.Assume(node.Type == Lexer.TokenType.IndexNode);
-                var point = context.Parser.GetSequencePoint(node);
-                if(IsEmptyIndexer(node))
-                {
-                    ErrorCode.MissingArraySize.ReportAndThrow(point, "Can only use implicit array size with initialization");
-                }
-                var init = ParseIndex(context, node);
-                array = Create(context, array, init, point);
+                ErrorCode.MissingArraySize.ReportAndThrow(point, "Can only use implicit array size with initialization");
             }
-            return array;
+
+            var init = ParseIndex(context, indexer);
+            return Create(context, array, init, point);
         }
 
         public static ExpressionNode Create(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
         {
+            Contract.Requires(indices.Any());
+            Contract.Ensures(Contract.Result<ExpressionNode>() != null);
             foreach (var index in indices)
             {
                 if (!index.IsGettable ||
@@ -83,7 +83,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 return result;
 
             ErrorCode.CannotIndex.ReportAndThrow(point, "Cannot use operator[], not type, array or object with overloaded [] operator");
-            return null;//unreachable
+            return Utils.Utils.Fail<ExpressionNode>();
         }
 
         private static ArrayAccessNode AsArray(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)

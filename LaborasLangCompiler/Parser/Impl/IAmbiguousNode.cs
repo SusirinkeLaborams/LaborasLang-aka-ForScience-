@@ -24,24 +24,9 @@ namespace LaborasLangCompiler.Parser.Impl
             throw new NotImplementedException();
         }
 
-        public ExpressionNodeType ExpressionType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public TypeReference ExpressionReturnType
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public Mono.Cecil.Cil.SequencePoint SequencePoint
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public abstract ExpressionNodeType ExpressionType { get; }
+        public abstract TypeReference ExpressionReturnType { get; }
+        public abstract NodeType Type { get; }
+        public abstract Mono.Cecil.Cil.SequencePoint SequencePoint { get; }
     }
 }

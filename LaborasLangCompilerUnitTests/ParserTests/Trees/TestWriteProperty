@@ -29,25 +29,20 @@ Class:
 				CodeBlock:
 					Symbols:
 					Nodes:
-						UnaryOperator:
-							Operator:
-								VoidOperator
-							Operand:
-								Assignment:
-									Left:
-										Property:
-											System.Int32 System.Collections.ArrayList::Capacity()
+						Assignment:
+							Left:
+								Property:
+									System.Int32 System.Collections.ArrayList::Capacity()
+									Instance:
+										Field:
+											System.Collections.ArrayList $TestWriteProperty.TestWriteProperty::lst
 											Instance:
-												Field:
-													System.Collections.ArrayList $TestWriteProperty.TestWriteProperty::lst
-													Instance:
-														null
+												null
 
-									Right:
-										Literal:
-											Type: System.Int32
-											Value: 5
-
+							Right:
+								Literal:
+									Type: System.Int32
+									Value: 5
 
 
 

@@ -1,24 +1,21 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 15, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 1, 1, End: 1, 14, Content: ""
+	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 14, Content: ""
-		Type: AssignmentOperatorNode
+		Content: Type: InfixNode, Start: 1, 1, End: 1, 12, Content: ""
+		Type: InfixNode
 		Children:
-			Content: Type: PeriodNode, Start: 1, 1, End: 1, 10, Content: ""
-			Type: PeriodNode
+			Content: Type: InfixNode, Start: 1, 1, End: 1, 7, Content: ""
+			Type: InfixNode
 			Children:
-				Content: Type: FunctionCallNode, Start: 1, 1, End: 1, 6, Content: ""
-				Type: FunctionCallNode
+				Content: Type: PostfixNode, Start: 1, 1, End: 1, 6, Content: ""
+				Type: PostfixNode
 				Children:
-					Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
-					Type: FullSymbol
+					Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+					Type: Symbol
 					Children:
-						Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
-						Type: Symbol
-						Children:
 
 					Content: Type: FunctionArgumentsList, Start: 1, 4, End: 1, 6, Content: ""
 					Type: FunctionArgumentsList
@@ -31,20 +28,13 @@ Children:
 						Type: RightParenthesis
 						Children:
 
+				Content: Type: Symbol, Start: 1, 7, End: 1, 10, Content: "bar"
+				Type: Symbol
+				Children:
+
 				Content: Type: Period, Start: 1, 6, End: 1, 7, Content: "."
 				Type: Period
 				Children:
-
-				Content: Type: FullSymbol, Start: 1, 7, End: 1, 10, Content: ""
-				Type: FullSymbol
-				Children:
-					Content: Type: Symbol, Start: 1, 7, End: 1, 10, Content: "bar"
-					Type: Symbol
-					Children:
-
-			Content: Type: Assignment, Start: 1, 11, End: 1, 12, Content: "="
-			Type: Assignment
-			Children:
 
 			Content: Type: LiteralNode, Start: 1, 13, End: 1, 14, Content: ""
 			Type: LiteralNode
@@ -52,6 +42,10 @@ Children:
 				Content: Type: Integer, Start: 1, 13, End: 1, 14, Content: "5"
 				Type: Integer
 				Children:
+
+			Content: Type: Assignment, Start: 1, 11, End: 1, 12, Content: "="
+			Type: Assignment
+			Children:
 
 	Content: Type: EndOfLine, Start: 1, 14, End: 1, 15, Content: ";"
 	Type: EndOfLine

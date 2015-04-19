@@ -1,21 +1,14 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 13, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 1, 1, End: 1, 12, Content: ""
+	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 12, Content: ""
-		Type: AssignmentOperatorNode
+		Content: Type: InfixNode, Start: 1, 1, End: 1, 6, Content: ""
+		Type: InfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
-				Type: Symbol
-				Children:
-
-			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
-			Type: Assignment
+			Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+			Type: Symbol
 			Children:
 
 			Content: Type: LiteralNode, Start: 1, 7, End: 1, 12, Content: ""
@@ -24,6 +17,10 @@ Children:
 				Content: Type: False, Start: 1, 7, End: 1, 12, Content: "false"
 				Type: False
 				Children:
+
+			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
+			Type: Assignment
+			Children:
 
 	Content: Type: EndOfLine, Start: 1, 12, End: 1, 13, Content: ";"
 	Type: EndOfLine

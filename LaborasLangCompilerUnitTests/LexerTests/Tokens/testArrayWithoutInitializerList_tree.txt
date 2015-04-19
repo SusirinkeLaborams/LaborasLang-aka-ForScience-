@@ -1,32 +1,22 @@
 Content: Type: RootNode, Start: 2, 13, End: 2, 23, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 2, 13, End: 2, 22, Content: ""
+	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: AssignmentOperatorNode, Start: 2, 13, End: 2, 22, Content: ""
-		Type: AssignmentOperatorNode
+		Content: Type: InfixNode, Start: 2, 13, End: 2, 16, Content: ""
+		Type: InfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 2, 13, End: 2, 14, Content: ""
-			Type: FullSymbol
+			Content: Type: Symbol, Start: 2, 13, End: 2, 14, Content: "a"
+			Type: Symbol
 			Children:
-				Content: Type: Symbol, Start: 2, 13, End: 2, 14, Content: "a"
+
+			Content: Type: PostfixNode, Start: 2, 17, End: 2, 22, Content: ""
+			Type: PostfixNode
+			Children:
+				Content: Type: Symbol, Start: 2, 17, End: 2, 20, Content: "int"
 				Type: Symbol
 				Children:
-
-			Content: Type: Assignment, Start: 2, 15, End: 2, 16, Content: "="
-			Type: Assignment
-			Children:
-
-			Content: Type: IndexAccessNode, Start: 2, 17, End: 2, 22, Content: ""
-			Type: IndexAccessNode
-			Children:
-				Content: Type: FullSymbol, Start: 2, 17, End: 2, 20, Content: ""
-				Type: FullSymbol
-				Children:
-					Content: Type: Symbol, Start: 2, 17, End: 2, 20, Content: "int"
-					Type: Symbol
-					Children:
 
 				Content: Type: IndexNode, Start: 2, 20, End: 2, 22, Content: ""
 				Type: IndexNode
@@ -38,6 +28,10 @@ Children:
 					Content: Type: RightBracket, Start: 2, 21, End: 2, 22, Content: "]"
 					Type: RightBracket
 					Children:
+
+			Content: Type: Assignment, Start: 2, 15, End: 2, 16, Content: "="
+			Type: Assignment
+			Children:
 
 	Content: Type: EndOfLine, Start: 2, 22, End: 2, 23, Content: ";"
 	Type: EndOfLine

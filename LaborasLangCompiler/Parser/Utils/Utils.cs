@@ -46,5 +46,10 @@ namespace LaborasLangCompiler.Parser.Utils
             }
             return result;
         }
+
+        public static T Fail<T>()
+        {
+            throw new Exception();
+        }
     }
 }

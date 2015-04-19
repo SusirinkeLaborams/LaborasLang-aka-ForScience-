@@ -1,21 +1,14 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 58, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 1, 1, End: 1, 57, Content: ""
+	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 57, Content: ""
-		Type: AssignmentOperatorNode
+		Content: Type: InfixNode, Start: 1, 1, End: 1, 6, Content: ""
+		Type: InfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
-				Type: Symbol
-				Children:
-
-			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
-			Type: Assignment
+			Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
+			Type: Symbol
 			Children:
 
 			Content: Type: Function, Start: 1, 7, End: 1, 57, Content: ""
@@ -120,18 +113,15 @@ Children:
 					Type: LeftCurlyBrace
 					Children:
 
-					Content: Type: Value, Start: 1, 49, End: 1, 54, Content: ""
+					Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 					Type: Value
 					Children:
-						Content: Type: FunctionCallNode, Start: 1, 49, End: 1, 54, Content: ""
-						Type: FunctionCallNode
+						Content: Type: PostfixNode, Start: 1, 49, End: 1, 54, Content: ""
+						Type: PostfixNode
 						Children:
-							Content: Type: FullSymbol, Start: 1, 49, End: 1, 52, Content: ""
-							Type: FullSymbol
+							Content: Type: Symbol, Start: 1, 49, End: 1, 52, Content: "bar"
+							Type: Symbol
 							Children:
-								Content: Type: Symbol, Start: 1, 49, End: 1, 52, Content: "bar"
-								Type: Symbol
-								Children:
 
 							Content: Type: FunctionArgumentsList, Start: 1, 52, End: 1, 54, Content: ""
 							Type: FunctionArgumentsList
@@ -151,6 +141,10 @@ Children:
 					Content: Type: RightCurlyBrace, Start: 1, 56, End: 1, 57, Content: "}"
 					Type: RightCurlyBrace
 					Children:
+
+			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
+			Type: Assignment
+			Children:
 
 	Content: Type: EndOfLine, Start: 1, 57, End: 1, 58, Content: ";"
 	Type: EndOfLine

@@ -33,12 +33,12 @@ Children:
 			Type: Symbol
 			Children:
 
-			Content: Type: Period, Start: 2, 11, End: 2, 12, Content: "."
-			Type: Period
-			Children:
-
 			Content: Type: Symbol, Start: 2, 12, End: 2, 23, Content: "Diagnostics"
 			Type: Symbol
+			Children:
+
+			Content: Type: Period, Start: 2, 11, End: 2, 12, Content: "."
+			Type: Period
 			Children:
 
 		Content: Type: EndOfLine, Start: 2, 23, End: 2, 24, Content: ";"
@@ -55,32 +55,38 @@ Children:
 		Content: Type: FullSymbol, Start: 3, 5, End: 3, 39, Content: ""
 		Type: FullSymbol
 		Children:
-			Content: Type: Symbol, Start: 3, 5, End: 3, 12, Content: "Windows"
-			Type: Symbol
+			Content: Type: FullSymbol, Start: 0, 0, End: 0, 0, Content: ""
+			Type: FullSymbol
 			Children:
+				Content: Type: FullSymbol, Start: 0, 0, End: 0, 0, Content: ""
+				Type: FullSymbol
+				Children:
+					Content: Type: Symbol, Start: 3, 5, End: 3, 12, Content: "Windows"
+					Type: Symbol
+					Children:
 
-			Content: Type: Period, Start: 3, 12, End: 3, 13, Content: "."
-			Type: Period
-			Children:
+					Content: Type: Symbol, Start: 3, 13, End: 3, 21, Content: "Security"
+					Type: Symbol
+					Children:
 
-			Content: Type: Symbol, Start: 3, 13, End: 3, 21, Content: "Security"
-			Type: Symbol
-			Children:
+					Content: Type: Period, Start: 3, 12, End: 3, 13, Content: "."
+					Type: Period
+					Children:
 
-			Content: Type: Period, Start: 3, 21, End: 3, 22, Content: "."
-			Type: Period
-			Children:
+				Content: Type: Symbol, Start: 3, 22, End: 3, 34, Content: "Cryptography"
+				Type: Symbol
+				Children:
 
-			Content: Type: Symbol, Start: 3, 22, End: 3, 34, Content: "Cryptography"
+				Content: Type: Period, Start: 3, 21, End: 3, 22, Content: "."
+				Type: Period
+				Children:
+
+			Content: Type: Symbol, Start: 3, 35, End: 3, 39, Content: "Core"
 			Type: Symbol
 			Children:
 
 			Content: Type: Period, Start: 3, 34, End: 3, 35, Content: "."
 			Type: Period
-			Children:
-
-			Content: Type: Symbol, Start: 3, 35, End: 3, 39, Content: "Core"
-			Type: Symbol
 			Children:
 
 		Content: Type: EndOfLine, Start: 3, 39, End: 3, 40, Content: ";"

@@ -1,0 +1,52 @@
+Class:
+	TestForOnlyCondition
+	Fields:
+	Methods:
+		Method:
+			Name:
+				func
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+						System.Boolean loop
+					Nodes:
+						VariableDeclaration:
+							Symbol:
+								System.Boolean loop
+							Initializer:
+								Literal:
+									Type: System.Boolean
+									Value: True
+
+
+						For:
+							Initializer:
+								CodeBlock:
+									Symbols:
+									Nodes:
+
+							Condition:
+								Local:
+									Name:
+										loop
+									Type:
+										System.Boolean
+
+							Increment:
+								CodeBlock:
+									Symbols:
+									Nodes:
+
+							Body:
+								CodeBlock:
+									Symbols:
+									Nodes:
+
+
+
+

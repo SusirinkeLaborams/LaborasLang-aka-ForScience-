@@ -39,23 +39,12 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ExpressionNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
-            if (lexerNode.Children.Count == 1)
-            {
-                return ExpressionNode.Parse(context, lexerNode.Children[0]);
-            }
-            else
-            {
-                ExpressionNode left, right;
-                left = ExpressionNode.Parse(context, lexerNode.Children[0]);
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.InfixNode);
+            var left = ExpressionNode.Parse(context, lexerNode.Children[0]);
+            var right = ExpressionNode.Parse(context, lexerNode.Children[1]);
+            var opType = lexerNode.Children[2].Type;
 
-                for (int i = 1; i < lexerNode.Children.Count; i += 2)
-                {
-                    right = ExpressionNode.Parse(context, lexerNode.Children[i + 1]);
-                    left = Create(context, Operators[lexerNode.Children[i].Type], left, right,
-                        Parser.GetSequencePoint(left.SequencePoint, right.SequencePoint));
-                }
-                return left;
-            }
+            return Create(context, Operators[opType], left, right, context.Parser.GetSequencePoint(lexerNode));
         }
 
         public static ExpressionNode Create(ContextNode context, BinaryOperatorNodeType op, ExpressionNode left, ExpressionNode right, SequencePoint point)

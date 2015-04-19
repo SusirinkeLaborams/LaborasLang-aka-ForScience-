@@ -1,18 +1,15 @@
 Content: Type: RootNode, Start: 2, 13, End: 2, 35, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 2, 13, End: 2, 34, Content: ""
+	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: FunctionCallNode, Start: 2, 13, End: 2, 34, Content: ""
-		Type: FunctionCallNode
+		Content: Type: PostfixNode, Start: 2, 13, End: 2, 34, Content: ""
+		Type: PostfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 2, 13, End: 2, 16, Content: ""
-			Type: FullSymbol
+			Content: Type: Symbol, Start: 2, 13, End: 2, 16, Content: "foo"
+			Type: Symbol
 			Children:
-				Content: Type: Symbol, Start: 2, 13, End: 2, 16, Content: "foo"
-				Type: Symbol
-				Children:
 
 			Content: Type: FunctionArgumentsList, Start: 2, 16, End: 2, 34, Content: ""
 			Type: FunctionArgumentsList
@@ -21,18 +18,15 @@ Children:
 				Type: LeftParenthesis
 				Children:
 
-				Content: Type: Value, Start: 2, 17, End: 2, 23, Content: ""
+				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 				Type: Value
 				Children:
-					Content: Type: IndexAccessNode, Start: 2, 17, End: 2, 23, Content: ""
-					Type: IndexAccessNode
+					Content: Type: PostfixNode, Start: 2, 17, End: 2, 23, Content: ""
+					Type: PostfixNode
 					Children:
-						Content: Type: FullSymbol, Start: 2, 17, End: 2, 20, Content: ""
-						Type: FullSymbol
+						Content: Type: Symbol, Start: 2, 17, End: 2, 20, Content: "int"
+						Type: Symbol
 						Children:
-							Content: Type: Symbol, Start: 2, 17, End: 2, 20, Content: "int"
-							Type: Symbol
-							Children:
 
 						Content: Type: IndexNode, Start: 2, 20, End: 2, 23, Content: ""
 						Type: IndexNode
@@ -41,7 +35,7 @@ Children:
 							Type: LeftBracket
 							Children:
 
-							Content: Type: Value, Start: 2, 21, End: 2, 22, Content: ""
+							Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 							Type: Value
 							Children:
 								Content: Type: LiteralNode, Start: 2, 21, End: 2, 22, Content: ""
@@ -59,18 +53,15 @@ Children:
 				Type: Comma
 				Children:
 
-				Content: Type: Value, Start: 2, 25, End: 2, 33, Content: ""
+				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 				Type: Value
 				Children:
-					Content: Type: IndexAccessNode, Start: 2, 25, End: 2, 33, Content: ""
-					Type: IndexAccessNode
+					Content: Type: PostfixNode, Start: 2, 25, End: 2, 33, Content: ""
+					Type: PostfixNode
 					Children:
-						Content: Type: FullSymbol, Start: 2, 25, End: 2, 30, Content: ""
-						Type: FullSymbol
+						Content: Type: Symbol, Start: 2, 25, End: 2, 30, Content: "float"
+						Type: Symbol
 						Children:
-							Content: Type: Symbol, Start: 2, 25, End: 2, 30, Content: "float"
-							Type: Symbol
-							Children:
 
 						Content: Type: IndexNode, Start: 2, 30, End: 2, 33, Content: ""
 						Type: IndexNode
@@ -79,7 +70,7 @@ Children:
 							Type: LeftBracket
 							Children:
 
-							Content: Type: Value, Start: 2, 31, End: 2, 32, Content: ""
+							Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 							Type: Value
 							Children:
 								Content: Type: LiteralNode, Start: 2, 31, End: 2, 32, Content: ""

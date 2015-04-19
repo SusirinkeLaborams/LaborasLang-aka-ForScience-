@@ -8,6 +8,13 @@ namespace Lexer
 {
     partial class RulePool
     {
+        private static Condition CastOperator { get { return TokenType.CastOperator; } }
+        private static Condition ForLoop { get { return TokenType.ForLoop; } }
+        private static Condition For { get { return TokenType.For; } }
+        private static Condition In { get { return TokenType.In; } }
+        private static Condition InfixNode { get { return TokenType.InfixNode; } }
+        private static Condition InfixSubnode { get { return TokenType.InfixSubnode; } }
+        private static Condition InfixOperator { get { return TokenType.InfixOperator; } }
         private static Condition EndOfLine { get { return TokenType.EndOfLine; } }
         private static Condition Comma { get { return TokenType.Comma; } }
         private static Condition Period { get { return TokenType.Period; } }
@@ -90,44 +97,13 @@ namespace Lexer
         private static Condition TypeAndSymbolSubnode { get { return TokenType.TypeAndSymbolSubnode; } }
         private static Condition Function { get { return TokenType.Function; } }
         private static Condition ConditionalSentence { get { return TokenType.ConditionalSentence; } }
-        private static Condition AssignmentOperator { get { return TokenType.AssignmentOperator; } }
         private static Condition CommaAndValue { get { return TokenType.CommaAndValue; } }
-        private static Condition AssignmentOperatorNode { get { return TokenType.AssignmentOperatorNode; } }
-        private static Condition LogicalOrNode { get { return TokenType.LogicalOrNode; } }
-        private static Condition LogicalOrSubnode { get { return TokenType.LogicalOrSubnode; } }
-        private static Condition LogicalAndNode { get { return TokenType.LogicalAndNode; } }
-        private static Condition LogicalAndSubnode { get { return TokenType.LogicalAndSubnode; } }
-        private static Condition BitwiseOrNode { get { return TokenType.BitwiseOrNode; } }
-        private static Condition BitwiseOrSubnode { get { return TokenType.BitwiseOrSubnode; } }
-        private static Condition BitwiseXorNode { get { return TokenType.BitwiseXorNode; } }
-        private static Condition BitwiseXorSubnode { get { return TokenType.BitwiseXorSubnode; } }
-        private static Condition BitwiseAndNode { get { return TokenType.BitwiseAndNode; } }
-        private static Condition BitwiseAndSubnode { get { return TokenType.BitwiseAndSubnode; } }
-        private static Condition EqualityOperatorNode { get { return TokenType.EqualityOperatorNode; } }
-        private static Condition RelationalOperatorNode { get { return TokenType.RelationalOperatorNode; } }
-        private static Condition ShiftOperatorNode { get { return TokenType.ShiftOperatorNode; } }
-        private static Condition AdditiveOperatorNode { get { return TokenType.AdditiveOperatorNode; } }
-        private static Condition MultiplicativeOperatorNode { get { return TokenType.MultiplicativeOperatorNode; } }
         private static Condition ParenthesesNode { get { return TokenType.ParenthesesNode; } }
-        private static Condition MultiplicativeOperatorSubnode { get { return TokenType.MultiplicativeOperatorSubnode; } }
-        private static Condition AdditiveOperatorSubnode { get { return TokenType.AdditiveOperatorSubnode; } }
-        private static Condition ShiftOperatorSubnode { get { return TokenType.ShiftOperatorSubnode; } }
-        private static Condition RelationalOperatorSubnode { get { return TokenType.RelationalOperatorSubnode; } }
-        private static Condition EqualityOperatorSubnode { get { return TokenType.EqualityOperatorSubnode; } }
-        private static Condition EqualityOperator { get { return TokenType.EqualityOperator; } }
-        private static Condition RelationalOperator { get { return TokenType.RelationalOperator; } }
-        private static Condition ShiftOperator { get { return TokenType.ShiftOperator; } }
-        private static Condition AdditiveOperator { get { return TokenType.AdditiveOperator; } }
-        private static Condition MultiplicativeOperator { get { return TokenType.MultiplicativeOperator; } }
-        private static Condition PeriodNode { get { return TokenType.PeriodNode; } }
-        private static Condition PeriodSubnode { get { return TokenType.PeriodSubnode; } }
         private static Condition Operand { get { return TokenType.Operand; } }
         private static Condition PrefixNode { get { return TokenType.PrefixNode; } }
         private static Condition PostfixNode { get { return TokenType.PostfixNode; } }
         private static Condition PostfixOperator { get { return TokenType.PostfixOperator; } }
         private static Condition PrefixOperator { get { return TokenType.PrefixOperator; } }
-        private static Condition InlineFunctionCallNode { get { return TokenType.InlineFunctionCallNode; } }
-        private static Condition FunctionCallNode { get { return TokenType.FunctionCallNode; } }
         private static Condition FunctionArgumentsList { get { return TokenType.FunctionArgumentsList; } }
         private static Condition LiteralNode { get { return TokenType.LiteralNode; } }
         private static Condition Entry { get { return TokenType.Entry; } }
@@ -135,7 +111,6 @@ namespace Lexer
         private static Condition UnknownNode { get { return TokenType.UnknownNode; } }
         private static Condition ArrayLiteral { get { return TokenType.ArrayLiteral; } }
         private static Condition IndexNode { get { return TokenType.IndexNode; } }
-        private static Condition IndexAccessNode { get { return TokenType.IndexAccessNode; } }
         private static Condition RightBracket { get { return TokenType.RightBracket; } }
         private static Condition LeftBracket { get { return TokenType.LeftBracket; } }
         private static Condition FunctorParameters { get { return TokenType.FunctorParameters; } }

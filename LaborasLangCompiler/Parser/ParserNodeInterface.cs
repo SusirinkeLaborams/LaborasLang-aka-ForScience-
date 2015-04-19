@@ -18,12 +18,15 @@ namespace LaborasLangCompiler.Parser
         CodeBlockNode,
         ConditionBlock,
         WhileBlock,
+        ForLoop,
+        ForEachLoop,
         ReturnNode,
         ExceptionHandler,
         Throw,
         Catch,
         ParserInternal
     }
+
     interface IParserNode
     {
         NodeType Type { get; }
@@ -51,6 +54,7 @@ namespace LaborasLangCompiler.Parser
         ArrayCreation,
         ArrayAccess,
         IndexOperator,
+        Null,
         ParserInternal
     }
 
@@ -167,9 +171,7 @@ namespace LaborasLangCompiler.Parser
     {
         BinaryNot,
         LogicalNot,
-        Negation,
-        [Obsolete]
-        VoidOperator,    // Discards Operand result
+        Negation
     }
 
     [ContractClass(typeof(IUnaryOperatorNodeContract))]
@@ -272,7 +274,7 @@ namespace LaborasLangCompiler.Parser
     interface IForEachLoopNode : IParserNode
     {
         IExpressionNode Collection { get; }
-        ILocalVariableNode LoopVariable { get; }
+        ISymbolDeclarationNode LoopVariable { get; }
         ICodeBlockNode Body { get; }
     }
 
@@ -855,11 +857,11 @@ namespace LaborasLangCompiler.Parser
             }
         }
 
-        public ILocalVariableNode LoopVariable
+        public ISymbolDeclarationNode LoopVariable
         {
             get 
             {
-                Contract.Ensures(Contract.Result<ILocalVariableNode>() != null);
+                Contract.Ensures(Contract.Result<ISymbolDeclarationNode>() != null);
                 throw new NotImplementedException(); 
             }
         }

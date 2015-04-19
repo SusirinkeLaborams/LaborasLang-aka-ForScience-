@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Lexer;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -33,6 +34,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static MethodNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.Function);
             var method = FunctionDeclarationNode.ParseAsFunctor(context, lexerNode);
             return new MethodNode(method.MethodReference, null, context, method.SequencePoint);
         }

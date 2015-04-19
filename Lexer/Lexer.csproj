@@ -150,7 +150,14 @@
     <Compile Include="Node.cs" />
     <Compile Include="ParseRule.cs" />
     <Compile Include="PostProcessors\ArrayFunctionResolver.cs" />
+    <Compile Include="PostProcessors\BottomUpPostProcessor.cs" />
+    <Compile Include="PostProcessors\ForResolver.cs" />
+    <Compile Include="PostProcessors\FullSymbolPostProcessor.cs" />
+    <Compile Include="PostProcessors\ValueResolver.cs" />
+    <Compile Include="PostProcessors\OperatorColapser.cs" />
     <Compile Include="PostProcessors\PostProcessor.cs" />
+    <Compile Include="PostProcessors\PostfixResolver.cs" />
+    <Compile Include="PostProcessors\PrefixResolver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="Containers\RootNode.cs" />

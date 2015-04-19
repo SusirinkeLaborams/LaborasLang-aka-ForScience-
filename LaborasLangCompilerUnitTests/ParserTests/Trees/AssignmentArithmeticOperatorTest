@@ -28,40 +28,40 @@ Class:
 				CodeBlock:
 					Symbols:
 					Nodes:
-						UnaryOperator:
-							Operator:
-								VoidOperator
-							Operand:
-								Assignment:
+						Assignment:
+							Left:
+								Field:
+									System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
+									Instance:
+										null
+							Right:
+								BinaryOperator:
 									Left:
 										Field:
 											System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
 											Instance:
 												null
+									Operator:
+										Addition
 									Right:
-										BinaryOperator:
-											Left:
-												Field:
-													System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
-													Instance:
-														null
-											Operator:
-												Addition
-											Right:
-												Param:
-													Name:
-														b
-													Type:
-														System.Int32
+										Param:
+											Name:
+												b
+											Type:
+												System.Int32
 
 
 
+						Assignment:
+							Left:
+								Param:
+									Name:
+										b
+									Type:
+										System.Int32
 
-						UnaryOperator:
-							Operator:
-								VoidOperator
-							Operand:
-								Assignment:
+							Right:
+								BinaryOperator:
 									Left:
 										Param:
 											Name:
@@ -69,76 +69,56 @@ Class:
 											Type:
 												System.Int32
 
+									Operator:
+										Multiplication
 									Right:
-										BinaryOperator:
-											Left:
-												Param:
-													Name:
-														b
-													Type:
-														System.Int32
-
-											Operator:
-												Multiplication
-											Right:
-												Field:
-													System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
-													Instance:
-														null
+										Field:
+											System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
+											Instance:
+												null
 
 
-
-						UnaryOperator:
-							Operator:
-								VoidOperator
-							Operand:
-								Assignment:
+						Assignment:
+							Left:
+								Field:
+									System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
+									Instance:
+										null
+							Right:
+								BinaryOperator:
 									Left:
 										Field:
 											System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
 											Instance:
 												null
+									Operator:
+										Division
 									Right:
-										BinaryOperator:
-											Left:
-												Field:
-													System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
-													Instance:
-														null
-											Operator:
-												Division
-											Right:
-												Literal:
-													Type: System.Int32
-													Value: 5
+										Literal:
+											Type: System.Int32
+											Value: 5
 
 
 
-
-						UnaryOperator:
-							Operator:
-								VoidOperator
-							Operand:
-								Assignment:
+						Assignment:
+							Left:
+								Field:
+									System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
+									Instance:
+										null
+							Right:
+								BinaryOperator:
 									Left:
 										Field:
 											System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
 											Instance:
 												null
+									Operator:
+										Subtraction
 									Right:
-										BinaryOperator:
-											Left:
-												Field:
-													System.Int32 $AssignmentArithmeticOperatorTest.AssignmentArithmeticOperatorTest::a
-													Instance:
-														null
-											Operator:
-												Subtraction
-											Right:
-												Literal:
-													Type: System.Int32
-													Value: 8
-
+										Literal:
+											Type: System.Int32
+											Value: 8
 
 
 

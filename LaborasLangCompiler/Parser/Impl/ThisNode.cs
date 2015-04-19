@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Parser.Utils;
 using Lexer;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {

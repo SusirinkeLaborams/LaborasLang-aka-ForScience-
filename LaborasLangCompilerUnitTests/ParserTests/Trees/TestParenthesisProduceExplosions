@@ -1,0 +1,35 @@
+Class:
+	TestParenthesisProduceExplosions
+	Fields:
+		FieldDeclaration:
+			Type:
+				$Functors.$System_Int32?
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+
+		FieldDeclaration:
+			Type:
+				System.Int32
+			Name:
+				a
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				UnaryOperator:
+					Operator:
+						Negation
+					Operand:
+						MethodCall:
+							ReturnType: System.Int32
+							Args:
+							Function:
+								Field:
+									$Functors.$System_Int32? $TestParenthesisProduceExplosions.TestParenthesisProduceExplosions::foo
+									Instance:
+										null
+
+
+
+	Methods:

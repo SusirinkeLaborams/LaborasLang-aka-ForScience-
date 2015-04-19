@@ -93,6 +93,13 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Emit((IExpressionNode)node, EmissionType.None);
                     break;
 
+                case NodeType.ForLoop:
+                    Emit((IForLoopNode)node);
+                    break;
+
+                case NodeType.ForEachLoop:
+                    throw new NotImplementedException();
+
                 case NodeType.ReturnNode:
                     Emit((IReturnNode)node);
                     break;
@@ -210,6 +217,9 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Emit((ILocalVariableNode)expression, emissionType);
                     return;
 
+                case ExpressionNodeType.Null:
+                    throw new NotImplementedException();
+
                 case ExpressionNodeType.ObjectCreation:
                     Emit((IObjectCreationNode)expression, emissionType);
                     return;
@@ -271,6 +281,23 @@ namespace LaborasLangCompiler.Codegen.Methods
             Br(loopStart);
 
             Emit(loopEnd);
+        }
+
+        private void Emit(IForLoopNode forLoop)
+        {
+            var loopBody = CreateLabel();
+            var loopCondition = CreateLabel();
+
+            Emit(forLoop.InitializationBlock);
+            Br(loopCondition);
+
+            Emit(loopBody);
+            Emit(forLoop.Body);
+            Emit(forLoop.IncrementBlock);
+
+            Emit(loopCondition);
+            Emit(forLoop.ConditionBlock, EmissionType.Value);
+            Brtrue(loopBody);
         }
 
         #endregion
@@ -1243,18 +1270,11 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void Emit(IUnaryOperatorNode unaryOperator, EmissionType emissionType)
         {
-            if (unaryOperator.UnaryOperatorType == UnaryOperatorNodeType.VoidOperator)
-            {
-                EmitVoidOperator(unaryOperator);
-                return;
-            }
             
             if (emissionType == EmissionType.None)
                 return;
 
             Emit(unaryOperator.Operand, EmissionType.Value);
-
-            Contract.Assume(unaryOperator.UnaryOperatorType != UnaryOperatorNodeType.VoidOperator);
 
             switch (unaryOperator.UnaryOperatorType)
             {
@@ -1701,11 +1721,6 @@ namespace LaborasLangCompiler.Codegen.Methods
                     ContractsHelper.AssumeUnreachable(string.Format("Unknown shift operator: {0}.", binaryOperator.BinaryOperatorType));
                     break;
             }
-        }
-
-        private void EmitVoidOperator(IUnaryOperatorNode unaryOperator)
-        {
-            Emit(unaryOperator.Operand, EmissionType.None);
         }
 
         #endregion

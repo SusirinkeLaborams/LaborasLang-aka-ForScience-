@@ -126,7 +126,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             var source = @"
             a = int[1]{ 1 };
             ";
-            AssertContainsNoUnknowns(source);
+            ExecuteTest(source);
         }
 
 
@@ -396,6 +396,53 @@ foo()()();";
             var source = @"foo = int() { bar(); };";
             ExecuteTest(source);
         }
+        
+        [TestMethod, TestCategory("Lexer: SyntaxMatcher"), TestCategory("Lexer")]
+        public void TestSymbolIsNotACast()
+        {
+            string source = @"auto a = -(foo());";
+
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void BasicForeach()
+        {
+            var source = @"for(auto i in foo);";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void BasicFor()
+        {
+            var source = @"for(auto i = 0; i < 5; i++);";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void ForWithoutDeclaration()
+        {
+            var source = @"for(; i < 5; i++);";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void EmptyFor()
+        {
+            var source = @"for(;;);";
+            ExecuteTest(source);
+        }
+
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void BasicForWithAssignment()
+        {
+            var source = @"for(i = 0; i < 5; i++);";
+            ExecuteTest(source);
+        }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void AssignFunctionTest_OneArgument()
@@ -525,6 +572,21 @@ foo().bar = 5;
             ExecuteTest(source);
         }
 
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestValue()
+        {
+            var source = @"1";
+
+            AssertCanBeLexedAs(source, TokenType.Operand);
+            AssertCanBeLexedAs(source, TokenType.ParenthesesNode);
+            AssertCanBeLexedAs(source, TokenType.PrefixNode);
+            AssertCanBeLexedAs(source, TokenType.PostfixNode);
+            AssertCanBeLexedAs(source, TokenType.InfixNode);
+            AssertCanBeLexedAs(source, TokenType.Value);
+        }
+
+
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void TestBinaryAnd()
         {
@@ -563,7 +625,7 @@ foo().bar = 5;
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void TestAdditionAndMultiplicationOrder()
         {
-            var source = @"foo = 5 + 1.2 * bar;";
+            var source = @"f().oo = 5 + 1.2 * bar;";
             ExecuteTest(source);
         }
 
@@ -624,9 +686,61 @@ foo().bar = 5;
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestInfixOperatorPrecedence()
+        {
+            var source = "foo = 1 * 2 / 3 % 4;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestPeriodPrecedence()
+        {
+            var source = "foo = a.b.c.d.e * 2 / 3 % 4;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestRightAssociativeOperators()
+        {
+            var source = "foo = bar = foobar = foobar2k;";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void TestPrefixSuffix()
         {
             var source = "foo = ++i++;";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestCast()
+        {
+            var source = "foo = (bar) foo;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestSumCast()
+        {
+            var source = "foo = (foo) (foo + 6);";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestMultipleCasts()
+        {
+            var source = "foo = (foo)(bar) foo;";
+            ExecuteTest(source);
+        }
+
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testFunctionCast()
+        {
+            var source = "foo = (bar(int)) foo;";
             ExecuteTest(source);
         }
 
@@ -742,7 +856,7 @@ auto foo = void()()
         {
             var source = @"int i = 4;
 sudo bring me beer;";
-            ExecuteTest(source);
+            ExecuteFailingTest(source);
         }       
     }
 }

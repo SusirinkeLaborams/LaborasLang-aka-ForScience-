@@ -1,18 +1,15 @@
 Content: Type: RootNode, Start: 2, 1, End: 5, 11, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 2, 1, End: 2, 6, Content: ""
+	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: FunctionCallNode, Start: 2, 1, End: 2, 6, Content: ""
-		Type: FunctionCallNode
+		Content: Type: PostfixNode, Start: 2, 1, End: 2, 6, Content: ""
+		Type: PostfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 2, 1, End: 2, 4, Content: ""
-			Type: FullSymbol
+			Content: Type: Symbol, Start: 2, 1, End: 2, 4, Content: "foo"
+			Type: Symbol
 			Children:
-				Content: Type: Symbol, Start: 2, 1, End: 2, 4, Content: "foo"
-				Type: Symbol
-				Children:
 
 			Content: Type: FunctionArgumentsList, Start: 2, 4, End: 2, 6, Content: ""
 			Type: FunctionArgumentsList
@@ -29,18 +26,15 @@ Children:
 	Type: EndOfLine
 	Children:
 
-	Content: Type: Value, Start: 3, 1, End: 3, 9, Content: ""
+	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: FunctionCallNode, Start: 3, 1, End: 3, 9, Content: ""
-		Type: FunctionCallNode
+		Content: Type: PostfixNode, Start: 3, 1, End: 3, 9, Content: ""
+		Type: PostfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 3, 1, End: 3, 4, Content: ""
-			Type: FullSymbol
+			Content: Type: Symbol, Start: 3, 1, End: 3, 4, Content: "foo"
+			Type: Symbol
 			Children:
-				Content: Type: Symbol, Start: 3, 1, End: 3, 4, Content: "foo"
-				Type: Symbol
-				Children:
 
 			Content: Type: FunctionArgumentsList, Start: 3, 4, End: 3, 9, Content: ""
 			Type: FunctionArgumentsList
@@ -49,15 +43,12 @@ Children:
 				Type: LeftParenthesis
 				Children:
 
-				Content: Type: Value, Start: 3, 5, End: 3, 8, Content: ""
+				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 				Type: Value
 				Children:
-					Content: Type: FullSymbol, Start: 3, 5, End: 3, 8, Content: ""
-					Type: FullSymbol
+					Content: Type: Symbol, Start: 3, 5, End: 3, 8, Content: "bar"
+					Type: Symbol
 					Children:
-						Content: Type: Symbol, Start: 3, 5, End: 3, 8, Content: "bar"
-						Type: Symbol
-						Children:
 
 				Content: Type: RightParenthesis, Start: 3, 8, End: 3, 9, Content: ")"
 				Type: RightParenthesis
@@ -67,18 +58,15 @@ Children:
 	Type: EndOfLine
 	Children:
 
-	Content: Type: Value, Start: 4, 1, End: 4, 16, Content: ""
+	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: FunctionCallNode, Start: 4, 1, End: 4, 16, Content: ""
-		Type: FunctionCallNode
+		Content: Type: PostfixNode, Start: 4, 1, End: 4, 16, Content: ""
+		Type: PostfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 4, 1, End: 4, 4, Content: ""
-			Type: FullSymbol
+			Content: Type: Symbol, Start: 4, 1, End: 4, 4, Content: "foo"
+			Type: Symbol
 			Children:
-				Content: Type: Symbol, Start: 4, 1, End: 4, 4, Content: "foo"
-				Type: Symbol
-				Children:
 
 			Content: Type: FunctionArgumentsList, Start: 4, 4, End: 4, 16, Content: ""
 			Type: FunctionArgumentsList
@@ -87,18 +75,15 @@ Children:
 				Type: LeftParenthesis
 				Children:
 
-				Content: Type: Value, Start: 4, 5, End: 4, 10, Content: ""
+				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 				Type: Value
 				Children:
-					Content: Type: FunctionCallNode, Start: 4, 5, End: 4, 10, Content: ""
-					Type: FunctionCallNode
+					Content: Type: PostfixNode, Start: 4, 5, End: 4, 10, Content: ""
+					Type: PostfixNode
 					Children:
-						Content: Type: FullSymbol, Start: 4, 5, End: 4, 8, Content: ""
-						Type: FullSymbol
+						Content: Type: Symbol, Start: 4, 5, End: 4, 8, Content: "foo"
+						Type: Symbol
 						Children:
-							Content: Type: Symbol, Start: 4, 5, End: 4, 8, Content: "foo"
-							Type: Symbol
-							Children:
 
 						Content: Type: FunctionArgumentsList, Start: 4, 8, End: 4, 10, Content: ""
 						Type: FunctionArgumentsList
@@ -115,15 +100,12 @@ Children:
 				Type: Comma
 				Children:
 
-				Content: Type: Value, Start: 4, 12, End: 4, 15, Content: ""
+				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 				Type: Value
 				Children:
-					Content: Type: FullSymbol, Start: 4, 12, End: 4, 15, Content: ""
-					Type: FullSymbol
+					Content: Type: Symbol, Start: 4, 12, End: 4, 15, Content: "bar"
+					Type: Symbol
 					Children:
-						Content: Type: Symbol, Start: 4, 12, End: 4, 15, Content: "bar"
-						Type: Symbol
-						Children:
 
 				Content: Type: RightParenthesis, Start: 4, 15, End: 4, 16, Content: ")"
 				Type: RightParenthesis
@@ -133,40 +115,43 @@ Children:
 	Type: EndOfLine
 	Children:
 
-	Content: Type: Value, Start: 5, 1, End: 5, 10, Content: ""
+	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: FunctionCallNode, Start: 5, 1, End: 5, 10, Content: ""
-		Type: FunctionCallNode
+		Content: Type: PostfixNode, Start: 5, 1, End: 5, 10, Content: ""
+		Type: PostfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 5, 1, End: 5, 4, Content: ""
-			Type: FullSymbol
+			Content: Type: PostfixNode, Start: 5, 1, End: 5, 8, Content: ""
+			Type: PostfixNode
 			Children:
-				Content: Type: Symbol, Start: 5, 1, End: 5, 4, Content: "foo"
-				Type: Symbol
+				Content: Type: PostfixNode, Start: 5, 1, End: 5, 6, Content: ""
+				Type: PostfixNode
 				Children:
+					Content: Type: Symbol, Start: 5, 1, End: 5, 4, Content: "foo"
+					Type: Symbol
+					Children:
 
-			Content: Type: FunctionArgumentsList, Start: 5, 4, End: 5, 6, Content: ""
-			Type: FunctionArgumentsList
-			Children:
-				Content: Type: LeftParenthesis, Start: 5, 4, End: 5, 5, Content: "("
-				Type: LeftParenthesis
-				Children:
+					Content: Type: FunctionArgumentsList, Start: 5, 4, End: 5, 6, Content: ""
+					Type: FunctionArgumentsList
+					Children:
+						Content: Type: LeftParenthesis, Start: 5, 4, End: 5, 5, Content: "("
+						Type: LeftParenthesis
+						Children:
 
-				Content: Type: RightParenthesis, Start: 5, 5, End: 5, 6, Content: ")"
-				Type: RightParenthesis
-				Children:
+						Content: Type: RightParenthesis, Start: 5, 5, End: 5, 6, Content: ")"
+						Type: RightParenthesis
+						Children:
 
-			Content: Type: FunctionArgumentsList, Start: 5, 6, End: 5, 8, Content: ""
-			Type: FunctionArgumentsList
-			Children:
-				Content: Type: LeftParenthesis, Start: 5, 6, End: 5, 7, Content: "("
-				Type: LeftParenthesis
+				Content: Type: FunctionArgumentsList, Start: 5, 6, End: 5, 8, Content: ""
+				Type: FunctionArgumentsList
 				Children:
+					Content: Type: LeftParenthesis, Start: 5, 6, End: 5, 7, Content: "("
+					Type: LeftParenthesis
+					Children:
 
-				Content: Type: RightParenthesis, Start: 5, 7, End: 5, 8, Content: ")"
-				Type: RightParenthesis
-				Children:
+					Content: Type: RightParenthesis, Start: 5, 7, End: 5, 8, Content: ")"
+					Type: RightParenthesis
+					Children:
 
 			Content: Type: FunctionArgumentsList, Start: 5, 8, End: 5, 10, Content: ""
 			Type: FunctionArgumentsList

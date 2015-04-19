@@ -42,9 +42,16 @@ namespace Lexer
             m_Source = sourceTokens;
         }
         
+        
         public AstNode Match()
         {
             var defaultConditions = new Condition[] { new Condition(TokenType.StatementNode, ConditionType.OneOrMore) };
+            return Match(defaultConditions);
+
+        }
+
+        public AstNode Match(Condition[] defaultConditions)
+        {
             var tokensConsumed = 0;
 
             AstNode matchedNode = Match(0, defaultConditions, ref tokensConsumed);
@@ -170,8 +177,8 @@ namespace Lexer
 
                 return true;
             }
-
-            return false;
+            bool success = token.Type == ConditionType.ZeroOrOne;
+            return success;
         }
 
         private bool MatchNonTerminal(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)
@@ -185,8 +192,8 @@ namespace Lexer
                     return true;
                 }
             }
-
-            return false;
+            bool success = token.Type == ConditionType.ZeroOrOne;
+            return success;
         }
 
         private bool MatchRule(Condition token, int sourceOffset, ref AstNode node, ref int tokensConsumed)

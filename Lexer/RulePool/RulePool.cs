@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Lexer
     {
-        partial class RulePool
+        public partial class RulePool
         {
             public static ParseRule[] LaborasLangRuleset = new ParseRule[]
                 {
@@ -16,8 +16,10 @@ namespace Lexer
                         ValueStatementNode,
                         CodeBlockNode,
                         WhileLoop,
+                        ForLoop,
                         ReturnNode,
-                        ConditionalSentence),
+                        ConditionalSentence,
+                        EndOfLine),
             
                     ParseRule(UseNode,
                         Use + FullSymbol + EndOfLine),
@@ -25,8 +27,8 @@ namespace Lexer
                     ParseRule(DeclarationNode,
                         DeclarationSubnode + EndOfLine),
             
-                    AlwaysCollapsableParseRule(DeclarationSubnode,
-                        ZeroOrMore(VariableModifier) + Type + Symbol + Optional(Assignment + Value)),
+                    ParseRule(DeclarationSubnode,
+                        ZeroOrMore(VariableModifier) + Type + Symbol + OptionalTail(Assignment + Value)),
 
                     AlwaysCollapsableParseRule(ValueStatementNode,
                         Value + EndOfLine),
@@ -46,7 +48,8 @@ namespace Lexer
                         Entry,
                         Mutable),
                                 
-                    AlwaysCollapsableParseRule(AssignmentOperator,
+                    ParseRule(InfixOperator,
+                        Period,
                         Assignment,
                         PlusEqual,
                         MinusEqual,
@@ -59,41 +62,44 @@ namespace Lexer
                         LogicalOrEqual,
                         BitwiseAndEqual,
                         BitwiseXorEqual,
-                        BitwiseOrEqual),
-
-                    AlwaysCollapsableParseRule(EqualityOperator,
+                        BitwiseOrEqual,              
+                        LeftShift,
+                        RightShift,
+                        Plus,
+                        Minus,
+                        Multiply,
+                        Divide,
+                        Remainder,
+                        BitwiseAnd,
+                        BitwiseOr,
+                        BitwiseXor,
+                        BitwiseComplement,
                         Equal,
-                        NotEqual),
-
-                    AlwaysCollapsableParseRule(RelationalOperator,
+                        NotEqual,
                         More,
                         Less,
                         MoreOrEqual,
-                        LessOrEqual),
+                        LessOrEqual,      
+                        LogicalAnd,
+                        LogicalOr
+               ),
 
-                    AlwaysCollapsableParseRule(ShiftOperator,
-                        LeftShift,
-                        RightShift),
-
-                    AlwaysCollapsableParseRule(AdditiveOperator,
-                        Plus,
-                        Minus),
-
-                    AlwaysCollapsableParseRule(MultiplicativeOperator,
-                        Multiply,
-                        Divide,
-                        Remainder),
-
-                    AlwaysCollapsableParseRule(PostfixOperator,
+                    ParseRule(PostfixOperator,
                         PlusPlus, 
-                        MinusMinus),
+                        MinusMinus,
+                        IndexNode,
+                        FunctionArgumentsList),
 
-                    AlwaysCollapsableParseRule(PrefixOperator,
+                    ParseRule(PrefixOperator,
                         PlusPlus, 
                         MinusMinus, 
                         Minus, 
                         Not,
-                        BitwiseComplement),
+                        BitwiseComplement,
+                        CastOperator),
+
+                    ParseRule(CastOperator,
+                    LeftParenthesis + Type +  RightParenthesis),
                         
                     CollapsableParseRule(CodeBlockNode,
                         LeftCurlyBrace + ZeroOrMore(StatementNode) + RightCurlyBrace),
@@ -102,123 +108,40 @@ namespace Lexer
                     LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket,
                     LeftBracket + ZeroOrMore(Comma) + RightBracket),
 
-                    #region Operators
-
-                    /* Operator precedence:
-                            Parentheses
-                            Period
-                            PostfixOperator
-                            PrefixOperator
-                            MultiplicativeOperator (Remainder, Division, Multiplication)
-                            AdditiveOperator (Minus, Plus)
-                            ShiftOperator (LeftShift, RightShift)
-                            RelationalOperator (LessOrEqual, MoreOrEqual, Less, More)
-                            EqualityOperator (Equal, NotEqual)
-                            BitwiseAnd
-                            BitwiseXor
-                            BitwiseOr
-                            And
-                            Or
-                            Assignment operator
-                        */
                     
-                    CollapsableParseRule(ParenthesesNode,
+                    ParseRule(ParenthesesNode,
                         LeftParenthesis + Value + RightParenthesis,
                         Operand),
-
-                    CollapsableParseRule(PeriodNode,
-                        ParenthesesNode + ZeroOrMore(PeriodSubnode)),
-
-                    AlwaysCollapsableParseRule(PeriodSubnode,
-                        Period + ParenthesesNode),
-
-                    CollapsableParseRule(IndexAccessNode,
-                        PeriodNode + ZeroOrMore(IndexNode)),
-
-                    CollapsableParseRule(PostfixNode,
-                        IndexAccessNode + ZeroOrMore(PostfixOperator)),
-
-                    CollapsableParseRule(PrefixNode,
-                        ZeroOrMore(PrefixOperator) + PostfixNode),
-
-                    CollapsableParseRule(MultiplicativeOperatorNode,
-                        PrefixNode + ZeroOrMore(MultiplicativeOperatorSubnode)),
-
-                    AlwaysCollapsableParseRule(MultiplicativeOperatorSubnode,
-                        MultiplicativeOperator + PrefixNode),
-
-                    CollapsableParseRule(AdditiveOperatorNode,
-                        MultiplicativeOperatorNode + ZeroOrMore(AdditiveOperatorSubnode)),
-
-                    AlwaysCollapsableParseRule(AdditiveOperatorSubnode,
-                        AdditiveOperator + MultiplicativeOperatorNode),
-
-                    CollapsableParseRule(ShiftOperatorNode,
-                        AdditiveOperatorNode + ZeroOrMore(ShiftOperatorSubnode)),
-
-                    AlwaysCollapsableParseRule(ShiftOperatorSubnode,
-                        ShiftOperator + AdditiveOperatorNode),
-
-                    CollapsableParseRule(RelationalOperatorNode,
-                        ShiftOperatorNode + ZeroOrMore(RelationalOperatorSubnode)),
-
-                    AlwaysCollapsableParseRule(RelationalOperatorSubnode,
-                        RelationalOperator + ShiftOperatorNode),
-
-                    CollapsableParseRule(EqualityOperatorNode,
-                        RelationalOperatorNode + ZeroOrMore(EqualityOperatorSubnode)),
-
-                    AlwaysCollapsableParseRule(EqualityOperatorSubnode,
-                        EqualityOperator + RelationalOperatorNode),
                         
-                    CollapsableParseRule(BitwiseAndNode,
-                        EqualityOperatorNode + ZeroOrMore(BitwiseAndSubnode)),
+                    /*PrefixNode is transformed using PrefixResolver. It is transformed to a recursive list {T, PrefixOperator}
+                      where T can be PrefixNode, ParenthesesNode, Operand. T will be as specific as possible.*/
+                    AlwaysCollapsableParseRule(PrefixNode,
+                         PrefixOperator + PrefixNode,
+                         PrefixOperator + ParenthesesNode,
+                         // (foo()) is both a valid cast operator and a valid parenthesis node. have to add parenthesis node to make sure that if it fails
+                         // as prefix it will be handled as parenthesis node
+                         ParenthesesNode),
+                         
+                    /*PostfixNode is transformed using InfixResolver. It is transformed to a recursive list {T, PostfixOperator}
+                      where T can be PostfixNode, PrefixNode, ParenthesesNode, Operand. T will be as specific as possible.*/
+                    AlwaysCollapsableParseRule(PostfixNode,
+                        PrefixNode + ZeroOrMore(PostfixOperator)),
 
-                    AlwaysCollapsableParseRule(BitwiseAndSubnode,
-                        BitwiseAnd + EqualityOperatorNode),
-                        
-                    CollapsableParseRule(BitwiseXorNode,
-                        BitwiseAndNode + ZeroOrMore(BitwiseXorSubnode)),
+                    /*InfixNode is transformed using InfixResolver. It is transformed to a tree with structure {A, B, InfixOperator}.
+                      A, B can have types of InfixNode, PostfixNode, PrefixNode, ParenthesesNode, Operand. A, B will be as specific as possible.*/
+                    AlwaysCollapsableParseRule(InfixNode,
+                        PostfixNode + ZeroOrMore(InfixSubnode)),
 
-                    AlwaysCollapsableParseRule(BitwiseXorSubnode,
-                        BitwiseXor + BitwiseAndNode),
-                        
-                    CollapsableParseRule(BitwiseOrNode,
-                        BitwiseXorNode + ZeroOrMore(BitwiseOrSubnode)),
-
-                    AlwaysCollapsableParseRule(BitwiseOrSubnode,
-                        BitwiseOr + BitwiseXorNode),
-                        
-                    CollapsableParseRule(LogicalAndNode,
-                        BitwiseOrNode + ZeroOrMore(LogicalAndSubnode)),
-
-                    AlwaysCollapsableParseRule(LogicalAndSubnode,
-                        LogicalAnd + BitwiseOrNode),
-                        
-                    CollapsableParseRule(LogicalOrNode,
-                        LogicalAndNode + ZeroOrMore(LogicalOrSubnode)),
-
-                    AlwaysCollapsableParseRule(LogicalOrSubnode,
-                        LogicalOr + LogicalAndNode),
-
-
-                    // Assignment operator is evaluated right to left
-                    CollapsableParseRule(AssignmentOperatorNode,
-                        LogicalOrNode + AssignmentOperator + AssignmentOperatorNode,
-                        LogicalOrNode),
- 
-                    #endregion
+                   AlwaysCollapsableParseRule(InfixSubnode,
+                        InfixOperator + PostfixNode),
 
                     ParseRule(Value,
-                        AssignmentOperatorNode),
+                        InfixNode),
                        
                     AlwaysCollapsableParseRule(Operand,
                         ArrayLiteral,
-                        InlineFunctionCallNode,
                         Function,
-                        FunctionCallNode,
-                        FullSymbol,
-                        Type,
+                        Symbol,
                         LiteralNode),
 
                     ParseRule(LiteralNode,                       
@@ -237,12 +160,6 @@ namespace Lexer
                     ParseRule(InitializerList,     
                         LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
                         LeftCurlyBrace + RightCurlyBrace),
-                        
-                    ParseRule(InlineFunctionCallNode,
-                        Function + OneOrMore(FunctionArgumentsList)),
-
-                    ParseRule(FunctionCallNode,
-                        FullSymbol + OneOrMore(FunctionArgumentsList)),
 
                     ParseRule(FunctionArgumentsList,
                         LeftParenthesis + RightParenthesis,
@@ -251,6 +168,8 @@ namespace Lexer
                     AlwaysCollapsableParseRule(CommaAndValue,
                         Comma + Value),
 
+                    /*Tail of FullSymbol is transformed using FullSymbolPostProcessor.
+                        It is transformed to a recursive list of {Symbol, FullSymbol(Optional)}*/
                     ParseRule(FullSymbol,
                         Symbol + ZeroOrMore(SubSymbol)),
 
@@ -282,8 +201,14 @@ namespace Lexer
                     ParseRule(WhileLoop,
                         While + LeftParenthesis + Value + RightParenthesis + StatementNode),
 
+                    ParseRule(ForLoop,
+                        For + LeftParenthesis + DeclarationSubnode + In + Value + RightParenthesis + StatementNode,
+                        For + LeftParenthesis + Optional(Value) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + StatementNode,
+                        For + LeftParenthesis + Optional(DeclarationSubnode) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + StatementNode
+                     ),
+
                     ParseRule(ConditionalSentence,
-                        If + LeftParenthesis + Value + RightParenthesis + StatementNode + Optional(Else + StatementNode)),
+                        If + LeftParenthesis + Value + RightParenthesis + StatementNode + OptionalTail(Else + StatementNode)),
             };
 
     }

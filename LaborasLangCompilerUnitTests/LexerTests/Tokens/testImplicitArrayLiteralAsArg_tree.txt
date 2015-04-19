@@ -1,18 +1,15 @@
 Content: Type: RootNode, Start: 2, 13, End: 2, 30, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 2, 13, End: 2, 29, Content: ""
+	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: FunctionCallNode, Start: 2, 13, End: 2, 29, Content: ""
-		Type: FunctionCallNode
+		Content: Type: PostfixNode, Start: 2, 13, End: 2, 29, Content: ""
+		Type: PostfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 2, 13, End: 2, 16, Content: ""
-			Type: FullSymbol
+			Content: Type: Symbol, Start: 2, 13, End: 2, 16, Content: "foo"
+			Type: Symbol
 			Children:
-				Content: Type: Symbol, Start: 2, 13, End: 2, 16, Content: "foo"
-				Type: Symbol
-				Children:
 
 			Content: Type: FunctionArgumentsList, Start: 2, 16, End: 2, 29, Content: ""
 			Type: FunctionArgumentsList
@@ -21,7 +18,7 @@ Children:
 				Type: LeftParenthesis
 				Children:
 
-				Content: Type: Value, Start: 2, 17, End: 2, 20, Content: ""
+				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 				Type: Value
 				Children:
 					Content: Type: ArrayLiteral, Start: 2, 17, End: 2, 20, Content: ""
@@ -34,7 +31,7 @@ Children:
 							Type: LeftCurlyBrace
 							Children:
 
-							Content: Type: Value, Start: 2, 18, End: 2, 19, Content: ""
+							Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 							Type: Value
 							Children:
 								Content: Type: LiteralNode, Start: 2, 18, End: 2, 19, Content: ""
@@ -52,7 +49,7 @@ Children:
 				Type: Comma
 				Children:
 
-				Content: Type: Value, Start: 2, 22, End: 2, 28, Content: ""
+				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 				Type: Value
 				Children:
 					Content: Type: ArrayLiteral, Start: 2, 22, End: 2, 28, Content: ""
@@ -65,7 +62,7 @@ Children:
 							Type: LeftCurlyBrace
 							Children:
 
-							Content: Type: Value, Start: 2, 23, End: 2, 24, Content: ""
+							Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 							Type: Value
 							Children:
 								Content: Type: LiteralNode, Start: 2, 23, End: 2, 24, Content: ""
@@ -79,7 +76,7 @@ Children:
 							Type: Comma
 							Children:
 
-							Content: Type: Value, Start: 2, 26, End: 2, 27, Content: ""
+							Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 							Type: Value
 							Children:
 								Content: Type: LiteralNode, Start: 2, 26, End: 2, 27, Content: ""

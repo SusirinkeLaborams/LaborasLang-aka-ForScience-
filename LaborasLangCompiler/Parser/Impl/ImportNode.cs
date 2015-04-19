@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Lexer;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -19,6 +20,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static void Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
+            Contract.Requires(lexerNode.Type == TokenType.UseNode);
             var namespaze = DotOperatorNode.Parse(context, lexerNode.Children[1]) as NamespaceNode;
             var point = context.Parser.GetSequencePoint(lexerNode);
             if (namespaze != null)

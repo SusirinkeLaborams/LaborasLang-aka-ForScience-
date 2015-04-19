@@ -26,6 +26,11 @@ namespace Lexer
             this.Content = token.Content.ToString();
         }
 
+        public Node(TokenType tokenType)
+        {
+            this.Type = tokenType;
+        }
+
         public override string ToString()
         {
             return string.Format("Type: {0}, Start: {1}, End: {2}, Content: \"{3}\"", Type, Start, End, Content);

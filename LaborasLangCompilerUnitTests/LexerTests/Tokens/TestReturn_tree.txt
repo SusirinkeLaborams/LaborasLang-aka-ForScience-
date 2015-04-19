@@ -19,7 +19,7 @@ Children:
 		Type: Return
 		Children:
 
-		Content: Type: Value, Start: 3, 16, End: 3, 17, Content: ""
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 		Type: Value
 		Children:
 			Content: Type: LiteralNode, Start: 3, 16, End: 3, 17, Content: ""

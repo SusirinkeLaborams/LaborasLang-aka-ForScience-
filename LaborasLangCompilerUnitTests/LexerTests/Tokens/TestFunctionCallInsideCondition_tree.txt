@@ -12,18 +12,15 @@ Children:
 		Type: LeftParenthesis
 		Children:
 
-		Content: Type: Value, Start: 1, 5, End: 1, 14, Content: ""
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 		Type: Value
 		Children:
-			Content: Type: FunctionCallNode, Start: 1, 5, End: 1, 14, Content: ""
-			Type: FunctionCallNode
+			Content: Type: PostfixNode, Start: 1, 5, End: 1, 14, Content: ""
+			Type: PostfixNode
 			Children:
-				Content: Type: FullSymbol, Start: 1, 5, End: 1, 11, Content: ""
-				Type: FullSymbol
+				Content: Type: Symbol, Start: 1, 5, End: 1, 11, Content: "IsEven"
+				Type: Symbol
 				Children:
-					Content: Type: Symbol, Start: 1, 5, End: 1, 11, Content: "IsEven"
-					Type: Symbol
-					Children:
 
 				Content: Type: FunctionArgumentsList, Start: 1, 11, End: 1, 14, Content: ""
 				Type: FunctionArgumentsList
@@ -32,15 +29,12 @@ Children:
 					Type: LeftParenthesis
 					Children:
 
-					Content: Type: Value, Start: 1, 12, End: 1, 13, Content: ""
+					Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 					Type: Value
 					Children:
-						Content: Type: FullSymbol, Start: 1, 12, End: 1, 13, Content: ""
-						Type: FullSymbol
+						Content: Type: Symbol, Start: 1, 12, End: 1, 13, Content: "i"
+						Type: Symbol
 						Children:
-							Content: Type: Symbol, Start: 1, 12, End: 1, 13, Content: "i"
-							Type: Symbol
-							Children:
 
 					Content: Type: RightParenthesis, Start: 1, 13, End: 1, 14, Content: ")"
 					Type: RightParenthesis

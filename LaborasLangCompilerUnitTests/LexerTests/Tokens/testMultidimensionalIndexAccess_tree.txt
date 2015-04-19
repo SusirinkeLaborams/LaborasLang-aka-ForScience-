@@ -1,32 +1,22 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 19, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 1, 1, End: 1, 18, Content: ""
+	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: AssignmentOperatorNode, Start: 1, 1, End: 1, 18, Content: ""
-		Type: AssignmentOperatorNode
+		Content: Type: InfixNode, Start: 1, 1, End: 1, 4, Content: ""
+		Type: InfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 1, 1, End: 1, 2, Content: ""
-			Type: FullSymbol
+			Content: Type: Symbol, Start: 1, 1, End: 1, 2, Content: "a"
+			Type: Symbol
 			Children:
-				Content: Type: Symbol, Start: 1, 1, End: 1, 2, Content: "a"
+
+			Content: Type: PostfixNode, Start: 1, 5, End: 1, 18, Content: ""
+			Type: PostfixNode
+			Children:
+				Content: Type: Symbol, Start: 1, 5, End: 1, 8, Content: "foo"
 				Type: Symbol
 				Children:
-
-			Content: Type: Assignment, Start: 1, 3, End: 1, 4, Content: "="
-			Type: Assignment
-			Children:
-
-			Content: Type: IndexAccessNode, Start: 1, 5, End: 1, 18, Content: ""
-			Type: IndexAccessNode
-			Children:
-				Content: Type: FullSymbol, Start: 1, 5, End: 1, 8, Content: ""
-				Type: FullSymbol
-				Children:
-					Content: Type: Symbol, Start: 1, 5, End: 1, 8, Content: "foo"
-					Type: Symbol
-					Children:
 
 				Content: Type: IndexNode, Start: 1, 8, End: 1, 18, Content: ""
 				Type: IndexNode
@@ -35,7 +25,7 @@ Children:
 					Type: LeftBracket
 					Children:
 
-					Content: Type: Value, Start: 1, 9, End: 1, 10, Content: ""
+					Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 					Type: Value
 					Children:
 						Content: Type: LiteralNode, Start: 1, 9, End: 1, 10, Content: ""
@@ -49,18 +39,15 @@ Children:
 					Type: Comma
 					Children:
 
-					Content: Type: Value, Start: 1, 12, End: 1, 17, Content: ""
+					Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 					Type: Value
 					Children:
-						Content: Type: FunctionCallNode, Start: 1, 12, End: 1, 17, Content: ""
-						Type: FunctionCallNode
+						Content: Type: PostfixNode, Start: 1, 12, End: 1, 17, Content: ""
+						Type: PostfixNode
 						Children:
-							Content: Type: FullSymbol, Start: 1, 12, End: 1, 15, Content: ""
-							Type: FullSymbol
+							Content: Type: Symbol, Start: 1, 12, End: 1, 15, Content: "bar"
+							Type: Symbol
 							Children:
-								Content: Type: Symbol, Start: 1, 12, End: 1, 15, Content: "bar"
-								Type: Symbol
-								Children:
 
 							Content: Type: FunctionArgumentsList, Start: 1, 15, End: 1, 17, Content: ""
 							Type: FunctionArgumentsList
@@ -76,6 +63,10 @@ Children:
 					Content: Type: RightBracket, Start: 1, 17, End: 1, 18, Content: "]"
 					Type: RightBracket
 					Children:
+
+			Content: Type: Assignment, Start: 1, 3, End: 1, 4, Content: "="
+			Type: Assignment
+			Children:
 
 	Content: Type: EndOfLine, Start: 1, 18, End: 1, 19, Content: ";"
 	Type: EndOfLine

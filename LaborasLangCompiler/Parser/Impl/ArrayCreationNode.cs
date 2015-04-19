@@ -46,6 +46,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public static ArrayCreationNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.ArrayLiteral);
+            Contract.Ensures(Contract.Result<ArrayCreationNode>() != null);
             var point = context.Parser.GetSequencePoint(lexerNode);
             if(lexerNode.Children.Count == 1)
             {
@@ -61,7 +62,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     builder.Append(lexerType.Children[i]);
                 }
                 //.Last() returns parameter list
-                var last = lexerType.Children[lexerType.Children.Count - 1].Children[0];
+                var last = lexerType.Children.Last().Children[0];
                 var elementType = builder.Type;
                 IReadOnlyList<ExpressionNode> dims;
                 if(ArrayAccessNode.IsEmptyIndexer(last))
@@ -86,6 +87,7 @@ namespace LaborasLangCompiler.Parser.Impl
             Contract.Requires((dims == null) == (elementType == null));
             //cant have [5,] or some shit
             Contract.Requires(dims == null || dims.All(d => d == null) || !dims.Any(d => d == null));
+            Contract.Ensures(Contract.Result<ArrayCreationNode>() != null);
 
             var instance = new ArrayCreationNode(point);
 

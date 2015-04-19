@@ -16,6 +16,16 @@ namespace LaborasLangCompilerUnitTests.LexerTests
     {
         private const string Path = @"..\..\LexerTests\Tokens\";
 
+        protected void AssertCanBeLexedAs(string source, TokenType rule)
+        {
+            using(RootNode rootNode = new RootNode()) {
+                SyntaxMatcher matcher = new SyntaxMatcher(Tokenizer.Tokenize(source, rootNode), rootNode);
+                var tree = matcher.Match(new[]{new Condition(rule, ConditionType.One)});
+                AssertContainsNoUnknowns(tree);
+            }
+        }
+
+
         protected void ExecuteTest(string source, [CallerMemberName] string fileName = "")
         {
             Contract.Assume(!String.IsNullOrWhiteSpace(fileName));
@@ -57,13 +67,29 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             }
         }
 
+
+        private void AssertContainsNoUnknowns(AstNode tree)
+        {
+            AssertContainsNoUnknowns(new AbstractSyntaxTree(tree));
+        }
+
+
+        private void AssertContainsNoUnknowns(IAbstractSyntaxTree tree)
+        {
+            if (ContaintsUnknowns(tree))
+            {
+                throw new Exception("Unknown symbols found in tree:\r\n" + tree.ToString());
+            }
+        }
+
+
         protected void AssertContainsNoUnknowns(string source)
         {
             var tree = Lexer.Lexer.Lex(source);
             if (ContaintsUnknowns(tree))
             {
-                Assert.Fail("Unknown symbols found in tree:\r\n" + tree.ToString());
-            }
+                throw new Exception("Unknown symbols found in tree:\r\n" + tree.ToString());
+            }         
         }
 
         protected void AssertContainsUnkowns(string source)
@@ -84,7 +110,10 @@ namespace LaborasLangCompilerUnitTests.LexerTests
 
             foreach (var child in tree.Children)
             {
-                return ContaintsUnknowns(child);
+                if (ContaintsUnknowns(child))
+                {
+                    return true;
+                }
             }
 
             return false;

@@ -1,25 +1,25 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 22, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 1, 1, End: 1, 21, Content: ""
+	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: FunctionCallNode, Start: 1, 1, End: 1, 21, Content: ""
-		Type: FunctionCallNode
+		Content: Type: PostfixNode, Start: 1, 1, End: 1, 21, Content: ""
+		Type: PostfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 1, 1, End: 1, 18, Content: ""
-			Type: FullSymbol
+			Content: Type: InfixNode, Start: 1, 1, End: 1, 9, Content: ""
+			Type: InfixNode
 			Children:
 				Content: Type: Symbol, Start: 1, 1, End: 1, 8, Content: "Console"
 				Type: Symbol
 				Children:
 
-				Content: Type: Period, Start: 1, 8, End: 1, 9, Content: "."
-				Type: Period
-				Children:
-
 				Content: Type: Symbol, Start: 1, 9, End: 1, 18, Content: "WriteLine"
 				Type: Symbol
+				Children:
+
+				Content: Type: Period, Start: 1, 8, End: 1, 9, Content: "."
+				Type: Period
 				Children:
 
 			Content: Type: FunctionArgumentsList, Start: 1, 18, End: 1, 21, Content: ""
@@ -29,7 +29,7 @@ Children:
 				Type: LeftParenthesis
 				Children:
 
-				Content: Type: Value, Start: 1, 19, End: 1, 20, Content: ""
+				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 				Type: Value
 				Children:
 					Content: Type: LiteralNode, Start: 1, 19, End: 1, 20, Content: ""

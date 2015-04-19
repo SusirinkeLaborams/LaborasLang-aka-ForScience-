@@ -65,6 +65,10 @@
         Use,
         Virtual,
         While,
+        For, 
+        In,
+
+        Empty,//empty node
 
         NoInstance,
         Private,
@@ -92,32 +96,22 @@
         UseNode,
 
         WhileLoop,
+        ForLoop,
         Function,
         ConditionalSentence,
 
-        AssignmentOperatorNode,
-        LogicalOrNode,
-        LogicalAndNode,
-        BitwiseOrNode,
-        BitwiseXorNode,
-        BitwiseAndNode,
-        PeriodNode,
+        CastOperator,
         PrefixNode,
         PostfixNode,
-        InlineFunctionCallNode,
-        FunctionCallNode,
         FunctionArgumentsList,
-        EqualityOperatorNode,
-        RelationalOperatorNode,
-        ShiftOperatorNode,
-        AdditiveOperatorNode,
-        MultiplicativeOperatorNode,
         ParenthesesNode,
         LiteralNode,
         UnknownNode,
-        IndexAccessNode,
         IndexNode,        
         FunctorParameters,
+        InfixNode,
+        InfixOperator,
+        InfixSubnode,
         LexerInternalTokens,    // Lexer internal-only tokens start from here
 
         StatementNode,
@@ -133,27 +127,10 @@
         Operand,
         VariableModifier,
 
-        PeriodSubnode,
-        MultiplicativeOperatorSubnode,
-        AdditiveOperatorSubnode,
-        ShiftOperatorSubnode,
-        RelationalOperatorSubnode,
-        EqualityOperatorSubnode,
-        BitwiseAndSubnode,
-        BitwiseXorSubnode,
-        BitwiseOrSubnode,
-        LogicalAndSubnode,
-        LogicalOrSubnode,
-
+                                                                                        
         PrefixOperator,
         PostfixOperator,
-        MultiplicativeOperator,
-        AdditiveOperator,
-        ShiftOperator,
-        RelationalOperator,
-        EqualityOperator,
-        AssignmentOperator,
-
+                                                
         TokenTypeCount,
         
     }
@@ -182,6 +159,86 @@
         public static bool IsMeaningful(this TokenType token)
         {
             return true;
+        }
+
+        public static bool IsRightAssociative(this TokenType token)
+        {
+            switch (token)
+            {
+                case TokenType.Assignment:
+                case TokenType.PlusEqual:
+                case TokenType.MinusEqual:
+                case TokenType.DivideEqual:
+                case TokenType.MultiplyEqual:
+                case TokenType.RemainderEqual:
+                case TokenType.LeftShiftEqual:
+                case TokenType.RightShiftEqual:
+                case TokenType.LogicalAndEqual:
+                case TokenType.LogicalOrEqual:
+                case TokenType.BitwiseAndEqual:
+                case TokenType.BitwiseXorEqual:
+                case TokenType.BitwiseOrEqual:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsAssignmentOp(this TokenType token)
+        {
+            switch(token)
+            {
+                case TokenType.Assignment:
+                case TokenType.PlusEqual:
+                case TokenType.MinusEqual:
+                case TokenType.DivideEqual:
+                case TokenType.MultiplyEqual:
+                case TokenType.RemainderEqual:
+                case TokenType.LeftShiftEqual:
+                case TokenType.RightShiftEqual:
+                case TokenType.LogicalAndEqual:
+                case TokenType.LogicalOrEqual:
+                case TokenType.BitwiseAndEqual:
+                case TokenType.BitwiseXorEqual:
+                case TokenType.BitwiseOrEqual:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsPeriodOp(this TokenType token)
+        {
+            return token == TokenType.Period;
+        }
+
+        public static bool IsBinaryOp(this TokenType token)
+        {
+            switch (token)
+            {
+                case TokenType.LeftShift:
+                case TokenType.RightShift:
+                case TokenType.Plus:
+                case TokenType.Minus:
+                case TokenType.Multiply:
+                case TokenType.Divide:
+                case TokenType.Remainder:
+                case TokenType.BitwiseAnd:
+                case TokenType.BitwiseOr:
+                case TokenType.BitwiseXor:
+                case TokenType.BitwiseComplement:
+                case TokenType.Equal:
+                case TokenType.NotEqual:
+                case TokenType.More:
+                case TokenType.Less:
+                case TokenType.MoreOrEqual:
+                case TokenType.LessOrEqual:
+                case TokenType.LogicalAnd:
+                case TokenType.LogicalOr: 
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
     

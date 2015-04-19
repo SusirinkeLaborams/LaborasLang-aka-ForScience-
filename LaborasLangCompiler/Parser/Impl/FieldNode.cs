@@ -35,6 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             this.Field = field;
         }
+
         public override string ToString(int indent)
         {
             StringBuilder builder = new StringBuilder();

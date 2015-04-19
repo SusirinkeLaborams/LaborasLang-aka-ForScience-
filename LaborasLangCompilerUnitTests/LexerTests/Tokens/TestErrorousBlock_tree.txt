@@ -24,29 +24,23 @@ Children:
 		Type: LeftCurlyBrace
 		Children:
 
-	Content: Type: Value, Start: 3, 17, End: 3, 30, Content: ""
+	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: AssignmentOperatorNode, Start: 3, 17, End: 3, 30, Content: ""
-		Type: AssignmentOperatorNode
+		Content: Type: InfixNode, Start: 3, 17, End: 3, 25, Content: ""
+		Type: InfixNode
 		Children:
-			Content: Type: FullSymbol, Start: 3, 17, End: 3, 23, Content: ""
-			Type: FullSymbol
+			Content: Type: Symbol, Start: 3, 17, End: 3, 23, Content: "should"
+			Type: Symbol
 			Children:
-				Content: Type: Symbol, Start: 3, 17, End: 3, 23, Content: "should"
-				Type: Symbol
-				Children:
+
+			Content: Type: Symbol, Start: 3, 26, End: 3, 30, Content: "work"
+			Type: Symbol
+			Children:
 
 			Content: Type: Assignment, Start: 3, 24, End: 3, 25, Content: "="
 			Type: Assignment
 			Children:
-
-			Content: Type: FullSymbol, Start: 3, 26, End: 3, 30, Content: ""
-			Type: FullSymbol
-			Children:
-				Content: Type: Symbol, Start: 3, 26, End: 3, 30, Content: "work"
-				Type: Symbol
-				Children:
 
 	Content: Type: EndOfLine, Start: 3, 30, End: 3, 31, Content: ";"
 	Type: EndOfLine
@@ -59,43 +53,43 @@ Children:
 		Type: RightCurlyBrace
 		Children:
 
-	Content: Type: UnknownNode, Start: 4, 14, End: 4, 15, Content: ""
-	Type: UnknownNode
+	Content: Type: EndOfLine, Start: 4, 14, End: 4, 15, Content: ";"
+	Type: EndOfLine
 	Children:
-		Content: Type: EndOfLine, Start: 4, 14, End: 4, 15, Content: ";"
-		Type: EndOfLine
-		Children:
 
 	Content: Type: DeclarationNode, Start: 5, 13, End: 5, 23, Content: ""
 	Type: DeclarationNode
 	Children:
-		Content: Type: Type, Start: 5, 13, End: 5, 16, Content: ""
-		Type: Type
+		Content: Type: DeclarationSubnode, Start: 5, 13, End: 5, 22, Content: ""
+		Type: DeclarationSubnode
 		Children:
-			Content: Type: FullSymbol, Start: 5, 13, End: 5, 16, Content: ""
-			Type: FullSymbol
+			Content: Type: Type, Start: 5, 13, End: 5, 16, Content: ""
+			Type: Type
 			Children:
-				Content: Type: Symbol, Start: 5, 13, End: 5, 16, Content: "int"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 5, 13, End: 5, 16, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 5, 13, End: 5, 16, Content: "int"
+					Type: Symbol
+					Children:
 
-		Content: Type: Symbol, Start: 5, 17, End: 5, 18, Content: "a"
-		Type: Symbol
-		Children:
-
-		Content: Type: Assignment, Start: 5, 19, End: 5, 20, Content: "="
-		Type: Assignment
-		Children:
-
-		Content: Type: Value, Start: 5, 21, End: 5, 22, Content: ""
-		Type: Value
-		Children:
-			Content: Type: LiteralNode, Start: 5, 21, End: 5, 22, Content: ""
-			Type: LiteralNode
+			Content: Type: Symbol, Start: 5, 17, End: 5, 18, Content: "a"
+			Type: Symbol
 			Children:
-				Content: Type: Integer, Start: 5, 21, End: 5, 22, Content: "0"
-				Type: Integer
+
+			Content: Type: Assignment, Start: 5, 19, End: 5, 20, Content: "="
+			Type: Assignment
+			Children:
+
+			Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+			Type: Value
+			Children:
+				Content: Type: LiteralNode, Start: 5, 21, End: 5, 22, Content: ""
+				Type: LiteralNode
 				Children:
+					Content: Type: Integer, Start: 5, 21, End: 5, 22, Content: "0"
+					Type: Integer
+					Children:
 
 		Content: Type: EndOfLine, Start: 5, 22, End: 5, 23, Content: ";"
 		Type: EndOfLine

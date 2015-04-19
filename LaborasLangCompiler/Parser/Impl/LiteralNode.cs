@@ -13,6 +13,7 @@ using Lexer.Containers;
 using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
 using Lexer;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -54,6 +55,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static LiteralNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.LiteralNode);
             lexerNode = lexerNode.Children[0];
             var point = context.Parser.GetSequencePoint(lexerNode);
             var type = ParseLiteralType(context.Parser, lexerNode);
@@ -77,7 +79,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 case Lexer.TokenType.Double:
                     return parser.Double;
                 default:
-                    ErrorCode.InvalidStructure.ReportAndThrow(parser.GetSequencePoint(lexerNode), "Unexpected literal type {0}", lexerNode.Type);
+                    ContractsHelper.AssumeUnreachable("Unknown literal type");
                     return null;//unreachable
             }
         }
@@ -128,10 +130,8 @@ namespace LaborasLangCompiler.Parser.Impl
                         return Convert.ToDouble(value, CultureInfo.InvariantCulture);
                         
                     default:
-                        if (type.FullName == "System.Decimal")
-                            return Convert.ToDecimal(value, CultureInfo.InvariantCulture);
 
-                        ErrorCode.InvalidStructure.ReportAndThrow(point, "Unexpected literal type {0}", type.FullName);
+                        ContractsHelper.AssertUnreachable(String.Format("Unexpected literal type {0}", type.FullName));
                         return null;//unreachable
                 }
             }

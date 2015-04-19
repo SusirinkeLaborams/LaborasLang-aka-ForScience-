@@ -45,6 +45,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             visited[(int)TokenType.NonTerminalToken] = true;
             visited[(int)TokenType.MalformedToken] = true;
             visited[(int)TokenType.UnknownNode] = true;
+            visited[(int)TokenType.Empty] = true;
             var stack = new Stack<TokenType>();
             stack.Push(TokenType.StatementNode);
             
@@ -98,6 +99,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
                 TraverseRules(rules, visited, new Stack<ParseRule>(), (int)rule.Result);
             }
         }
+
 
         void TraverseRules(ParseRule[] rules, bool[] visited, Stack<ParseRule> traverseStack, int token)
         {
