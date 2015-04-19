@@ -10,6 +10,7 @@ namespace Lexer
     {
         private static Condition CastOperator { get { return TokenType.CastOperator; } }
         private static Condition ForLoop { get { return TokenType.ForLoop; } }
+        private static Condition ForEachLoop { get { return TokenType.ForEachLoop; } }
         private static Condition For { get { return TokenType.For; } }
         private static Condition In { get { return TokenType.In; } }
         private static Condition InfixNode { get { return TokenType.InfixNode; } }

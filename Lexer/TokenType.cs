@@ -101,6 +101,7 @@
         CodeConstruct,
         WhileLoop,
         ForLoop,
+        ForEachLoop,
         Function,
         ConditionalSentence,
 
