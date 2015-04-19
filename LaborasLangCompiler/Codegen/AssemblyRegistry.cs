@@ -505,6 +505,14 @@ namespace LaborasLangCompiler.Codegen
 
         public static IReadOnlyList<PropertyReference> GetProperties(TypeReference type, string propertyName)
         {
+            var arrayType = type as ArrayType;
+
+            if (arrayType != null)
+            {
+                return GetProperties(FindTypeInternal("System.Array"), propertyName);
+            }
+
+            Contract.Assert(!(type is TypeSpecification));
             return type.Resolve().Properties.Where(property => property.Name == propertyName).ToArray();
         }
 
