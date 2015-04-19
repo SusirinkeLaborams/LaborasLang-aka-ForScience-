@@ -65,7 +65,7 @@ Children:
 						Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 						Type: Value
 						Children:
-							Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+							Content: Type: PostfixNode, Start: 1, 19, End: 1, 24, Content: ""
 							Type: PostfixNode
 							Children:
 								Content: Type: Symbol, Start: 1, 19, End: 1, 22, Content: "foo"

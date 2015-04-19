@@ -33,7 +33,7 @@ Children:
 			Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 			Type: Value
 			Children:
-				Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+				Content: Type: PostfixNode, Start: 4, 17, End: 4, 24, Content: ""
 				Type: PostfixNode
 				Children:
 					Content: Type: Symbol, Start: 4, 17, End: 4, 22, Content: "stuff"
@@ -73,7 +73,7 @@ Children:
 			Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 			Type: Value
 			Children:
-				Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+				Content: Type: PostfixNode, Start: 8, 13, End: 8, 21, Content: ""
 				Type: PostfixNode
 				Children:
 					Content: Type: Symbol, Start: 8, 13, End: 8, 19, Content: "stuff2"
@@ -131,7 +131,7 @@ Children:
 			Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 			Type: Value
 			Children:
-				Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+				Content: Type: PostfixNode, Start: 13, 17, End: 13, 24, Content: ""
 				Type: PostfixNode
 				Children:
 					Content: Type: Symbol, Start: 13, 17, End: 13, 22, Content: "stuff"

@@ -396,6 +396,14 @@ foo()()();";
             var source = @"foo = int() { bar(); };";
             ExecuteTest(source);
         }
+        
+        [TestMethod, TestCategory("Lexer: SyntaxMatcher"), TestCategory("Lexer")]
+        public void TestSymbolIsNotACast()
+        {
+            string source = @"auto a = -(foo());";
+
+            ExecuteTest(source);
+        }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void BasicForeach()

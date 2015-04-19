@@ -4,7 +4,7 @@ Children:
 	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 	Type: Value
 	Children:
-		Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+		Content: Type: PostfixNode, Start: 2, 13, End: 2, 34, Content: ""
 		Type: PostfixNode
 		Children:
 			Content: Type: Symbol, Start: 2, 13, End: 2, 16, Content: "foo"
@@ -21,7 +21,7 @@ Children:
 				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 				Type: Value
 				Children:
-					Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+					Content: Type: PostfixNode, Start: 2, 17, End: 2, 23, Content: ""
 					Type: PostfixNode
 					Children:
 						Content: Type: Symbol, Start: 2, 17, End: 2, 20, Content: "int"
@@ -56,7 +56,7 @@ Children:
 				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 				Type: Value
 				Children:
-					Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+					Content: Type: PostfixNode, Start: 2, 25, End: 2, 33, Content: ""
 					Type: PostfixNode
 					Children:
 						Content: Type: Symbol, Start: 2, 25, End: 2, 30, Content: "float"

@@ -50,7 +50,7 @@ Children:
 		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 		Type: Value
 		Children:
-			Content: Type: InfixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Content: Type: InfixNode, Start: 1, 17, End: 1, 20, Content: ""
 			Type: InfixNode
 			Children:
 				Content: Type: Symbol, Start: 1, 17, End: 1, 18, Content: "i"
@@ -75,7 +75,7 @@ Children:
 		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 		Type: Value
 		Children:
-			Content: Type: PostfixNode, Start: 0, 0, End: 0, 0, Content: ""
+			Content: Type: PostfixNode, Start: 1, 24, End: 1, 27, Content: ""
 			Type: PostfixNode
 			Children:
 				Content: Type: Symbol, Start: 1, 24, End: 1, 25, Content: "i"
