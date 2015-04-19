@@ -1269,7 +1269,15 @@ namespace LaborasLangCompiler.Codegen.Methods
             var methodParameters = method.GetParameterTypes();
             var resolvedMethod = method.Resolve();
 
-            if (resolvedMethod != null && resolvedMethod.IsParamsMethod())
+            bool isParamsCall = resolvedMethod != null && resolvedMethod.IsParamsMethod() && arguments.Count >= methodParameters.Count;
+
+            if (isParamsCall && arguments.Count == methodParameters.Count)
+            {
+                var lastParameterIndex = methodParameters.Count - 1;
+                isParamsCall &= !arguments[lastParameterIndex].ExpressionReturnType.IsAssignableTo(methodParameters[lastParameterIndex]);
+            }
+
+            if (isParamsCall)
             {
                 EmitArgumentsForParamsCall(arguments, methodParameters);
             }
