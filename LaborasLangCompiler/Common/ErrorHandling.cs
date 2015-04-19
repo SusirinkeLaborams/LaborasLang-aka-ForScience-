@@ -64,6 +64,9 @@ namespace LaborasLangCompiler.Common
         NullInsideDot = 0035,
         InferrenceFromTypeless = 0036,
 
+        InvalidForEachVariableType = 0037,
+        InvalidForEachCollection = 0038,
+
         CompilerArgumentErrors = 1000,
         NoSourceFiles = 1001,
         UnknownCompilerSwitch = 1002,

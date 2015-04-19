@@ -36,11 +36,6 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ParserNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
-            if(lexerNode.Children.Any(node => node.Type == TokenType.In))
-            {
-                throw new NotImplementedException("foreach not implemented yet");
-            }
-
             CodeBlockNode init = null;
             ExpressionNode condition = null;
             CodeBlockNode increment = null;

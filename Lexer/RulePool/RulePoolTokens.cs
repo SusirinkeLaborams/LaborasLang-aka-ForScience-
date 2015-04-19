@@ -85,6 +85,7 @@ namespace Lexer
         private static Condition StatementNode { get { return TokenType.StatementNode; } }
         private static Condition CodeBlockNode { get { return TokenType.CodeBlockNode; } }
         private static Condition DeclarationNode { get { return TokenType.DeclarationNode; } }
+        private static Condition ForEachDeclaration { get { return TokenType.ForEachDeclaration; } }
         private static Condition UseNode { get { return TokenType.UseNode; } }
         private static Condition ReturnNode { get { return TokenType.ReturnNode; } }
         private static Condition RootNode { get { return TokenType.RootNode; } }

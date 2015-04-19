@@ -1331,5 +1331,115 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source, ErrorCode.InferrenceFromTypeless.Enumerate());
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestForEachArrayList()
+        {
+            string source = @"
+                use System.Collections;
+                auto main = void()
+                {
+                    for(auto foo in ArrayList());
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestForEachIList()
+        {
+            string source = @"
+                use System.Collections;
+                auto main = void()
+                {
+                    IList lst = ArrayList();
+                    for(auto foo in lst);
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestForEachIListInvalidVarialbeType()
+        {
+            string source = @"
+                use System.Collections;
+                auto main = void()
+                {
+                    IList lst = ArrayList();
+                    for(int foo in lst);
+                };
+            ";
+            CompareTrees(source, ErrorCode.InvalidForEachVariableType.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestForEachOverInteger()
+        {
+            string source = @"
+                use System.Collections;
+                auto main = void()
+                {
+                    int lst = 5;
+                    for(int foo in lst);
+                };
+            ";
+            CompareTrees(source, ErrorCode.InvalidForEachCollection.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestForEachVarialbeScope()
+        {
+            string source = @"
+                use System.Collections;
+                auto main = void()
+                {
+                    int lst = ArrayList();
+                    for(int foo in lst);
+                    foo++;
+                };
+            ";
+            CompareTrees(source, ErrorCode.SymbolNotFound.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestForEachArray()
+        {
+            string source = @"
+                use System.Collections;
+                auto main = void()
+                {
+                    auto lst = int[]{};
+                    for(int foo in lst);
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestForEachVarialbeRead()
+        {
+            string source = @"
+                use System.Collections;
+                auto main = void()
+                {
+                    auto lst = int[]{};
+                    for(int foo in lst)
+                    {
+                        auto tmp = foo;
+                    }
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestForEachVarialbeWrite()
+        {
+            string source = @"
+                use System.Collections;
+                auto main = void()
+                {
+                    auto lst = int[]{};
+                    for(int foo in lst)
+                    {
+                        foo = 5;
+                    }
+                };
+            ";
+            CompareTrees(source, ErrorCode.NotAnLValue.Enumerate());
+        }
     }
 }

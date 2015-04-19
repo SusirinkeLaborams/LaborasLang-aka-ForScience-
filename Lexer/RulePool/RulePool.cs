@@ -207,7 +207,10 @@ namespace Lexer
                         While + LeftParenthesis + Value + RightParenthesis + CodeConstruct),
 
                     ParseRule(ForEachLoop,
-                        For + LeftParenthesis + DeclarationNode + In + Value + RightParenthesis + CodeConstruct),
+                        For + LeftParenthesis + ForEachDeclaration + In + Value + RightParenthesis + CodeConstruct),
+
+                    ParseRule(ForEachDeclaration,
+                        Type + Symbol),
 
                     ParseRule(ForLoop,
                         For + LeftParenthesis + Optional(Value) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + CodeConstruct,

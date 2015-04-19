@@ -88,6 +88,7 @@
 
         CodeBlockNode,
         DeclarationNode,
+        ForEachDeclaration,
         ReturnNode,
         Value,
         SpecialValue,
