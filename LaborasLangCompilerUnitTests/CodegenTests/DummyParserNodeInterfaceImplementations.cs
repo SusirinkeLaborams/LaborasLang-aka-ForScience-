@@ -371,4 +371,14 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         public IExpressionNode Expression { get; set; }
     }
+
+    class CastNode : ICastNode
+    {
+        public SequencePoint SequencePoint { get { return null; } }
+        public NodeType Type { get { return NodeType.Expression; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Cast; } }
+
+        public TypeReference ExpressionReturnType { get; set; }
+        public IExpressionNode TargetExpression { get; set; }
+    }
 }
