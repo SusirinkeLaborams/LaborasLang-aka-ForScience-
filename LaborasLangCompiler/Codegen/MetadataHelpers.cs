@@ -736,6 +736,40 @@ namespace LaborasLangCompiler.Codegen
             return baseType.FullName == "System.MulticastDelegate";
         }
 
+        public static bool GetSizeOfType(TypeReference type, out int size)
+        {
+            switch (type.MetadataType)
+            {
+                case MetadataType.Boolean:
+                case MetadataType.SByte:
+                case MetadataType.Byte:
+                    size = 1;
+                    return true;
+                    
+                case MetadataType.Char:
+                case MetadataType.Int16:
+                case MetadataType.UInt16:
+                    size = 2;
+                    return true;
+
+                case MetadataType.Int32:
+                case MetadataType.UInt32:
+                case MetadataType.Single:
+                    size = 4;
+                    return true;
+
+                case MetadataType.Int64:
+                case MetadataType.UInt64:
+                case MetadataType.Double:
+                    size = 8;
+                    return true;
+
+                default:
+                    size = -1;
+                    return false;
+            }
+        }
+
         static MetadataHelpers()
         {
             assignmentMap = new Dictionary<MetadataType, MetadataType[]>();

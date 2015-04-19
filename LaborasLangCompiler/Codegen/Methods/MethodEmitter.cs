@@ -311,11 +311,16 @@ namespace LaborasLangCompiler.Codegen.Methods
                 if (arrayType.IsVector)
                 {
                     EmitForEachLoopForVector(forEachLoop);
-                    return;
+                }
+                else
+                {
+                    EmitForEachLoopForArray(forEachLoop);
                 }
             }
-
-            EmitForEachLoopForCollection(forEachLoop);
+            else
+            {
+                EmitForEachLoopForCollection(forEachLoop);
+            }
         }
 
         private void EmitForEachLoopForVector(IForEachLoopNode forEachLoop)
@@ -383,10 +388,128 @@ namespace LaborasLangCompiler.Codegen.Methods
             EmitLocalVariable(arrayLengthVariable, EmissionType.Value);
             Blt_Un(loopBody);
 
+            temporaryVariables.Release(indexVariable);
+            temporaryVariables.Release(arrayLengthVariable);
+
             if (collectionLocalVariableNode != null)
             {
                 temporaryVariables.Release(collectionVariable);
-            }            
+            }
+        }
+
+        private void EmitForEachLoopForArray(IForEachLoopNode forEachLoop)
+        {
+            Contract.Requires(forEachLoop.LoopVariable.Initializer == null);
+            Contract.Requires(forEachLoop.Collection.ExpressionReturnType is ArrayType);
+
+            var loopVariable = forEachLoop.LoopVariable.Variable;
+            var collectionType = (ArrayType)forEachLoop.Collection.ExpressionReturnType;
+            var getLengthMethod = AssemblyRegistry.GetMethod(Assembly, collectionType, "get_Length");
+            var addressMethod = AssemblyRegistry.GetArrayLoadElementAddress(collectionType);
+            VariableDefinition collectionVariable;
+            
+            var referenceType = new ByReferenceType(collectionType.ElementType);
+            var pinnedType = new PinnedType(referenceType);
+            var ptrType = new PointerType(collectionType.ElementType);
+
+            var pinnedArrayStartVariable = temporaryVariables.Acquire(pinnedType);
+            var arrayEndVariable = temporaryVariables.Acquire(ptrType);
+            var ptrVariable = temporaryVariables.Acquire(ptrType);
+
+            int elementSize;
+            bool elementSizeKnown = MetadataHelpers.GetSizeOfType(collectionType.ElementType, out elementSize);
+            VariableDefinition elementSizeVariable = null;
+
+            if (!elementSizeKnown)
+            {
+                elementSizeVariable = temporaryVariables.Acquire(collectionType.ElementType);
+                Sizeof(collectionType.ElementType);
+                Stloc(elementSizeVariable.Index);
+            }
+            
+            Emit(forEachLoop.Collection, EmissionType.ThisArg);
+            Dup();
+
+            for (int i = 0; i < collectionType.Rank; i++)
+                Ldc_I4(0);
+
+            Call(addressMethod);
+            Stloc(pinnedArrayStartVariable.Index);
+
+            Call(getLengthMethod);
+
+            if (elementSizeKnown)
+            {
+                Ldc_I4(elementSize);
+            }
+            else
+            {
+                EmitLocalVariable(elementSizeVariable, EmissionType.Value);
+            }
+
+            Mul();
+            Conv_I();
+            EmitLocalVariable(pinnedArrayStartVariable, EmissionType.Value);
+            Conv_I();
+            Dup();
+            Stloc(ptrVariable.Index);
+
+            Add();
+            Stloc(arrayEndVariable.Index);
+            
+            // At this point, we have the pinned array start in PinnedArrayStartVariable and ptrVariable, and its end address in arrayEndVariable
+
+            var loopBody = CreateLabel();
+            var loopCondition = CreateLabel();
+
+            // Declare loop variable
+            Emit(forEachLoop.LoopVariable);
+            Br(loopCondition);
+
+            // Load i-th item from the array
+            Emit(loopBody);
+            EmitLocalVariable(ptrVariable, EmissionType.Value);
+            Ldind(collectionType.ElementType);
+            EmitConversionIfNeeded(collectionType.ElementType, loopVariable.VariableType);
+            Stloc(loopVariable.Index);
+
+            // Emit loop body
+            Emit(forEachLoop.Body);
+
+            // Increment index
+            EmitLocalVariable(ptrVariable, EmissionType.Value);
+
+            if (elementSizeKnown)
+            {
+                Ldc_I4(elementSize);
+            }
+            else
+            {
+                EmitLocalVariable(elementSizeVariable, EmissionType.Value);
+            }
+
+            Add();
+            Stloc(ptrVariable.Index);
+
+            // Emit loop condition
+            Emit(loopCondition);
+            EmitLocalVariable(ptrVariable, EmissionType.Value);
+            EmitLocalVariable(arrayEndVariable, EmissionType.Value);
+            Bne_Un(loopBody);
+            
+            // Store 0 into pinned local variable
+            Ldc_I4(0);
+            Conv_U();
+            Stloc(pinnedArrayStartVariable.Index);
+
+            if (!elementSizeKnown)
+            {
+                temporaryVariables.Release(elementSizeVariable);
+            }
+
+            temporaryVariables.Release(ptrVariable);
+            temporaryVariables.Release(arrayEndVariable);
+            temporaryVariables.Release(pinnedArrayStartVariable);
         }
 
         private void EmitForEachLoopForCollection(IForEachLoopNode forEachLoop)

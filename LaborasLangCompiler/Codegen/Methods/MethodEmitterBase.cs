@@ -113,6 +113,12 @@ namespace LaborasLangCompiler.Codegen.Methods
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
+        protected void Bne_Un(Instruction targetInstruction)
+        {
+            ilProcessor.Emit(OpCodes.Bne_Un, targetInstruction);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
         protected void Blt_Un(Instruction targetInstruction)
         {
             ilProcessor.Emit(OpCodes.Blt_Un, targetInstruction);
@@ -559,6 +565,63 @@ namespace LaborasLangCompiler.Codegen.Methods
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
+        protected void Ldind(TypeReference type)
+        {
+            Contract.Requires(type != null);
+
+            switch (type.MetadataType)
+            {
+                case MetadataType.IntPtr:
+                case MetadataType.UIntPtr:
+                case MetadataType.Pointer:
+                    ilProcessor.Emit(OpCodes.Ldind_I);
+                    break;
+
+                case MetadataType.Boolean:
+                case MetadataType.Byte:
+                    ilProcessor.Emit(OpCodes.Ldind_U1);
+                    break;
+
+                case MetadataType.SByte:
+                    ilProcessor.Emit(OpCodes.Ldind_I1);
+                    break;
+
+                case MetadataType.Char:
+                case MetadataType.UInt16:
+                    ilProcessor.Emit(OpCodes.Ldind_U2);
+                    break;
+
+                case MetadataType.Int16:
+                    ilProcessor.Emit(OpCodes.Ldind_I2);
+                    break;
+
+                case MetadataType.UInt32:
+                    ilProcessor.Emit(OpCodes.Ldind_U4);
+                    break;
+
+                case MetadataType.Int32:
+                    ilProcessor.Emit(OpCodes.Ldind_I4);
+                    break;
+
+                case MetadataType.UInt64:
+                case MetadataType.Int64:
+                    ilProcessor.Emit(OpCodes.Ldind_I8);
+                    break;
+
+                case MetadataType.Single:
+                    ilProcessor.Emit(OpCodes.Ldind_R4);
+                    break;
+
+                case MetadataType.Double:
+                    ilProcessor.Emit(OpCodes.Ldind_R8);
+                    break;
+
+                default:
+                    ilProcessor.Emit(OpCodes.Ldobj, type);
+                    break;
+            }
+        }
+
         protected void Ldlen()
         {
             ilProcessor.Emit(OpCodes.Ldlen);
@@ -772,6 +835,14 @@ namespace LaborasLangCompiler.Codegen.Methods
         protected void Shr()
         {
             ilProcessor.Emit(OpCodes.Shr);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
+        protected void Sizeof(TypeReference typeReference)
+        {
+            Contract.Requires(typeReference != null);
+
+            ilProcessor.Emit(OpCodes.Sizeof, typeReference);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 

@@ -15,6 +15,7 @@ namespace LaborasLangCompilerUnitTests
     {
         private static uint[] CodesToIgnore = new uint[]
         {
+            0x8013185D
         };
 
         private static string _peverifyPath;
