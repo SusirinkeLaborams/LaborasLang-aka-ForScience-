@@ -6,9 +6,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Reflection;
 
 namespace LaborasLangCompilerUnitTests
 {
+    [TestClass]
     public class TestBase
     {
         public TestBase(bool recreateAssemblyRegistry = true)

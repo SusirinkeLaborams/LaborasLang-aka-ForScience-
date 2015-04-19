@@ -9,11 +9,11 @@ using System.Linq;
 namespace LaborasLangCompilerUnitTests.CodegenTests
 {
     [TestClass]
-    public class ILHelpersTests : TestBase
+    public class MetadataHelpersTests : TestBase
     {
         private AssemblyEmitter assembly;
 
-        [TestMethod, TestCategory("Misc IL Tests"), TestCategory("All Tests")]
+        [TestMethod, TestCategory("Misc IL Tests")]
         public void TestIsAssignableTo()
         {
             var types = new Dictionary<string, TypeReference>();
@@ -163,7 +163,87 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             }
         }
 
-        public ILHelpersTests()
+        [TestMethod, TestCategory("Misc IL Tests")]
+        public void TestIsEnumerable()
+        {
+            var stringType = AssemblyRegistry.FindType(assembly, "System.String");
+            var intType = AssemblyRegistry.FindType(assembly, "System.Int32");
+            var valueType = AssemblyRegistry.FindType(assembly, "System.ValueType");
+            var boolType = AssemblyRegistry.FindType(assembly, "System.Boolean");
+            var objType = AssemblyRegistry.FindType(assembly, "System.Object");
+
+            Assert.IsTrue(stringType.IsEnumerable());
+            Assert.IsTrue(AssemblyRegistry.GetArrayType(stringType, 1).IsEnumerable());
+            Assert.IsTrue(AssemblyRegistry.GetArrayType(stringType, 2).IsEnumerable());
+            Assert.IsTrue(AssemblyRegistry.GetArrayType(stringType, 3).IsEnumerable());
+            Assert.IsTrue(AssemblyRegistry.GetArrayType(stringType, 4).IsEnumerable());
+            
+            Assert.IsFalse(intType.IsEnumerable());
+            Assert.IsTrue(AssemblyRegistry.GetArrayType(intType, 1).IsEnumerable());
+            Assert.IsTrue(AssemblyRegistry.GetArrayType(intType, 2).IsEnumerable());
+            Assert.IsTrue(AssemblyRegistry.GetArrayType(intType, 3).IsEnumerable());
+            Assert.IsTrue(AssemblyRegistry.GetArrayType(intType, 4).IsEnumerable());
+
+            Assert.IsFalse(valueType.IsEnumerable());
+            Assert.IsFalse(boolType.IsEnumerable());
+            Assert.IsFalse(objType.IsEnumerable());
+
+            var objArray1d = AssemblyRegistry.GetArrayType(objType, 1);
+            var objArray2d = AssemblyRegistry.GetArrayType(objType, 2);
+            var objArrayJagged1d = AssemblyRegistry.GetArrayType(objArray1d, 1);
+            var objArrayJagged2d = AssemblyRegistry.GetArrayType(objArray2d, 2);
+
+            Assert.IsTrue(objArray1d.IsEnumerable());
+            Assert.IsTrue(objArray2d.IsEnumerable());
+            Assert.IsTrue(objArrayJagged1d.IsEnumerable());
+            Assert.IsTrue(objArrayJagged2d.IsEnumerable());
+
+            var listType = AssemblyRegistry.FindType(assembly, "System.Collections.Generic.List`1");
+            Assert.IsTrue(listType.MakeGenericType(intType).IsEnumerable());
+            Assert.IsTrue(listType.MakeGenericType(stringType).IsEnumerable());
+        }
+
+        [TestMethod, TestCategory("Misc IL Tests")]
+        public void TestGetEnumerableElementType()
+        {
+            var stringType = AssemblyRegistry.FindType(assembly, "System.String");
+            var intType = AssemblyRegistry.FindType(assembly, "System.Int32");
+            var valueType = AssemblyRegistry.FindType(assembly, "System.ValueType");
+            var boolType = AssemblyRegistry.FindType(assembly, "System.Boolean");
+            var objType = AssemblyRegistry.FindType(assembly, "System.Object");
+
+            Assert.AreEqual(stringType.GetEnumerableElementType().MetadataType, MetadataType.Char);
+            Assert.AreEqual(AssemblyRegistry.GetArrayType(stringType, 1).GetEnumerableElementType().MetadataType, MetadataType.String);
+            Assert.AreEqual(AssemblyRegistry.GetArrayType(stringType, 2).GetEnumerableElementType().MetadataType, MetadataType.String);
+            Assert.AreEqual(AssemblyRegistry.GetArrayType(stringType, 3).GetEnumerableElementType().MetadataType, MetadataType.String);
+            Assert.AreEqual(AssemblyRegistry.GetArrayType(stringType, 4).GetEnumerableElementType().MetadataType, MetadataType.String);
+
+            Assert.AreEqual(intType.GetEnumerableElementType(), null);
+            Assert.AreEqual(AssemblyRegistry.GetArrayType(intType, 1).GetEnumerableElementType().MetadataType, MetadataType.Int32);
+            Assert.AreEqual(AssemblyRegistry.GetArrayType(intType, 2).GetEnumerableElementType().MetadataType, MetadataType.Int32);
+            Assert.AreEqual(AssemblyRegistry.GetArrayType(intType, 3).GetEnumerableElementType().MetadataType, MetadataType.Int32);
+            Assert.AreEqual(AssemblyRegistry.GetArrayType(intType, 4).GetEnumerableElementType().MetadataType, MetadataType.Int32);
+
+            Assert.AreEqual(valueType.GetEnumerableElementType(), null);
+            Assert.AreEqual(boolType.GetEnumerableElementType(), null);
+            Assert.AreEqual(objType.GetEnumerableElementType(), null);
+
+            var objArray1d = AssemblyRegistry.GetArrayType(objType, 1);
+            var objArray2d = AssemblyRegistry.GetArrayType(objType, 2);
+            var objArrayJagged1d = AssemblyRegistry.GetArrayType(objArray1d, 1);
+            var objArrayJagged2d = AssemblyRegistry.GetArrayType(objArray2d, 2);
+
+            Assert.AreEqual(objArray1d.GetEnumerableElementType().MetadataType, MetadataType.Object);
+            Assert.AreEqual(objArray2d.GetEnumerableElementType().MetadataType, MetadataType.Object);
+            Assert.AreEqual(objArrayJagged1d.GetEnumerableElementType(), objArray1d);
+            Assert.AreEqual(objArrayJagged2d.GetEnumerableElementType(), objArray2d);
+
+            var listType = AssemblyRegistry.FindType(assembly, "System.Collections.Generic.List`1");
+            Assert.AreEqual(listType.MakeGenericType(intType).GetEnumerableElementType().MetadataType, MetadataType.Int32);
+            Assert.AreEqual(listType.MakeGenericType(stringType).GetEnumerableElementType().MetadataType, MetadataType.String);
+        }
+
+        public MetadataHelpersTests()
         {
             assembly = new AssemblyEmitter(CompilerArguments.Parse(new[] { "ExecuteTest.il" }));
         }
