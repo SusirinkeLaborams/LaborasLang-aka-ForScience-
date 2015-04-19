@@ -645,13 +645,24 @@ namespace LaborasLangCompiler.Codegen
             {
                 if (arrayType.IsVector)
                 {
-                    var ilist = AssemblyRegistry.FindType(type.Module, "System.Collections.Generic.IList`1");
-                    var ilistInstance = ilist.MakeGenericType(arrayType.ElementType);
-                    return new TypeReference[1] { ilistInstance };
+                    return new TypeReference[]
+                    {
+                        AssemblyRegistry.FindType(type.Module, "System.ICloneable"),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.Generic.IList`1").MakeGenericType(arrayType.ElementType),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.Generic.IReadOnlyList`1").MakeGenericType(arrayType.ElementType),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.IStructuralComparable"),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.IStructuralEquatable"),
+                    };
                 }
                 else
                 {
-                    return new TypeReference[1] { AssemblyRegistry.FindType(type.Module, "System.Collections.IEnumerable") };
+                    return new TypeReference[]
+                    {
+                        AssemblyRegistry.FindType(type.Module, "System.ICloneable"),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.IList"),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.IStructuralComparable"),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.IStructuralEquatable"),
+                    };
                 }
             }
 
