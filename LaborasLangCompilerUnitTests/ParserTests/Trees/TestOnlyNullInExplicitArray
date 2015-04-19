@@ -19,7 +19,7 @@ Class:
 
 					Initializer:
 						InitializerList:
-							Element type: null
+							Element type: $nulltype
 							Dimensions:
 								3
 							Values:
