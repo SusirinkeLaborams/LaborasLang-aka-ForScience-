@@ -301,12 +301,100 @@ namespace LaborasLangCompiler.Codegen.Methods
             Brtrue(loopBody);
         }
 
-        private void Emit(IForEachLoopNode foreachLoop)
+        private void Emit(IForEachLoopNode forEachLoop)
         {
-            Contract.Requires(foreachLoop.LoopVariable.Initializer == null);
+            var collectionType = forEachLoop.Collection.ExpressionReturnType;
+            var arrayType = collectionType as ArrayType;
 
-            var loopVariable = foreachLoop.LoopVariable.Variable;
-            var getEnumeratorMethod = AssemblyRegistry.GetGetEnumeratorMethod(foreachLoop.Collection.ExpressionReturnType, loopVariable.VariableType);
+            if (arrayType != null)
+            {
+                if (arrayType.IsVector)
+                {
+                    EmitForEachLoopForArray(forEachLoop);
+                    return;
+                }
+            }
+
+            EmitForEachLoopForCollection(forEachLoop);
+        }
+
+        private void EmitForEachLoopForArray(IForEachLoopNode forEachLoop)
+        {
+            Contract.Requires(forEachLoop.LoopVariable.Initializer == null);
+            Contract.Requires(forEachLoop.Collection.ExpressionReturnType is ArrayType);
+
+            var loopVariable = forEachLoop.LoopVariable.Variable;
+            var collectionType = (ArrayType)forEachLoop.Collection.ExpressionReturnType;
+            VariableDefinition collectionVariable;
+
+            // Store array in a local variable
+            var collectionLocalVariableNode = forEachLoop.Collection as ILocalVariableNode;
+            if (collectionLocalVariableNode != null)
+            {
+                collectionVariable = collectionLocalVariableNode.LocalVariable;
+            }
+            else
+            {
+                collectionVariable = temporaryVariables.Acquire(forEachLoop.Collection.ExpressionReturnType);
+                Emit(forEachLoop.Collection, EmissionType.Value);
+                Stloc(collectionVariable.Index);
+            }
+
+            // Store array length in a local variable
+            var arrayLengthVariable = temporaryVariables.Acquire(Assembly.TypeSystem.UIntPtr);
+            EmitLocalVariable(collectionVariable, EmissionType.ThisArg);
+            Ldlen();
+            Stloc(arrayLengthVariable.Index);
+
+            // Store 0 in index variable
+            var indexVariable = temporaryVariables.Acquire(Assembly.TypeSystem.UIntPtr);
+            Ldc_I4(0);
+            Stloc(indexVariable.Index);
+
+            // At this point, we have the array inside collectionVariable, its length in arrayLengthVariable and 0 in index variable
+
+            var loopBody = CreateLabel();
+            var loopCondition = CreateLabel();
+            
+            // Declare loop variable
+            Emit(forEachLoop.LoopVariable);
+            Br(loopCondition);
+
+            // Load i-th item from the array
+            Emit(loopBody);
+            EmitLocalVariable(collectionVariable, EmissionType.ThisArg);
+            EmitLocalVariable(indexVariable, EmissionType.Value);
+            Ldelem(collectionType.ElementType);
+            EmitConversionIfNeeded(collectionType.ElementType, loopVariable.VariableType);
+            Stloc(loopVariable.Index);
+
+            // Emit loop body
+            Emit(forEachLoop.Body);
+
+            // Increment index
+            EmitLocalVariable(indexVariable, EmissionType.Value);
+            Ldc_I4(1);
+            Add();
+            Stloc(indexVariable.Index);
+            
+            // Emit loop condition
+            Emit(loopCondition);
+            EmitLocalVariable(indexVariable, EmissionType.Value);
+            EmitLocalVariable(arrayLengthVariable, EmissionType.Value);
+            Blt_Un(loopBody);
+
+            if (collectionLocalVariableNode != null)
+            {
+                temporaryVariables.Release(collectionVariable);
+            }            
+        }
+
+        private void EmitForEachLoopForCollection(IForEachLoopNode forEachLoop)
+        {
+            Contract.Requires(forEachLoop.LoopVariable.Initializer == null);
+
+            var loopVariable = forEachLoop.LoopVariable.Variable;
+            var getEnumeratorMethod = AssemblyRegistry.GetGetEnumeratorMethod(forEachLoop.Collection.ExpressionReturnType, loopVariable.VariableType);
             Contract.Assume(getEnumeratorMethod != null);
 
             var enumeratorType = getEnumeratorMethod.GetReturnType();
@@ -329,14 +417,14 @@ namespace LaborasLangCompiler.Codegen.Methods
                 endFinally = CreateLabel();
             }
 
-            // Declare loop vriable
-            Emit(foreachLoop.LoopVariable);
+            // Declare loop variable
+            Emit(forEachLoop.LoopVariable);
 
             // Claim temporary variable for enumerator
             var enumeratorVariable = temporaryVariables.Acquire(enumeratorType);
 
             // enumerator = collection.GetEnumerator()
-            Emit(foreachLoop.Collection, EmissionType.ThisArg);
+            Emit(forEachLoop.Collection, EmissionType.ThisArg);
             Call(getEnumeratorMethod);
             Stloc(enumeratorVariable.Index);
 
@@ -358,7 +446,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 Stloc(loopVariable.Index);
 
                 // Emit loop body
-                Emit(foreachLoop.Body);
+                Emit(forEachLoop.Body);
 
                 // Emit condition block
                 // if (enumerator.MoveNext) goto loopStart;

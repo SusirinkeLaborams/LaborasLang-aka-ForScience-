@@ -113,6 +113,12 @@ namespace LaborasLangCompiler.Codegen.Methods
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
+        protected void Blt_Un(Instruction targetInstruction)
+        {
+            ilProcessor.Emit(OpCodes.Blt_Un, targetInstruction);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
         protected void Box(TypeReference type)
         {
             Contract.Requires(type != null);
@@ -550,6 +556,12 @@ namespace LaborasLangCompiler.Codegen.Methods
             Contract.Requires(function != null);
 
             ilProcessor.Emit(OpCodes.Ldftn, function);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
+        protected void Ldlen()
+        {
+            ilProcessor.Emit(OpCodes.Ldlen);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
