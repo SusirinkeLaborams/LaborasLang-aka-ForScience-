@@ -15,7 +15,7 @@ namespace LaborasLangCompilerUnitTests
     {
         private static uint[] CodesToIgnore = new uint[]
         {
-            0x8013185D
+            0x8013185D // "Expected numeric type on the stack.". Happens when doing pointer arithmetics in multidimentional array iteration with foreach loop (converting managed pointer to native int)
         };
 
         private static string _peverifyPath;
