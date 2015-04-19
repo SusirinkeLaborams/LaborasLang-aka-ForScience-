@@ -1,11 +1,11 @@
 Content: Type: RootNode, Start: 2, 1, End: 5, 3, Content: ""
 Type: RootNode
 Children:
-	Content: Type: DeclarationNode, Start: 2, 1, End: 5, 3, Content: ""
-	Type: DeclarationNode
+	Content: Type: StatementWithEndOfLine, Start: 2, 1, End: 5, 3, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: DeclarationSubnode, Start: 2, 1, End: 5, 2, Content: ""
-		Type: DeclarationSubnode
+		Content: Type: DeclarationNode, Start: 2, 1, End: 5, 2, Content: ""
+		Type: DeclarationNode
 		Children:
 			Content: Type: Type, Start: 2, 1, End: 2, 5, Content: ""
 			Type: Type
@@ -76,53 +76,56 @@ Children:
 						Type: LeftCurlyBrace
 						Children:
 
-						Content: Type: ReturnNode, Start: 4, 5, End: 4, 21, Content: ""
-						Type: ReturnNode
+						Content: Type: StatementWithEndOfLine, Start: 4, 5, End: 4, 21, Content: ""
+						Type: StatementWithEndOfLine
 						Children:
-							Content: Type: Return, Start: 4, 5, End: 4, 11, Content: "return"
-							Type: Return
+							Content: Type: ReturnNode, Start: 4, 5, End: 4, 20, Content: ""
+							Type: ReturnNode
 							Children:
-
-							Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-							Type: Value
-							Children:
-								Content: Type: Function, Start: 4, 12, End: 4, 20, Content: ""
-								Type: Function
+								Content: Type: Return, Start: 4, 5, End: 4, 11, Content: "return"
+								Type: Return
 								Children:
-									Content: Type: Type, Start: 4, 12, End: 4, 18, Content: ""
-									Type: Type
-									Children:
-										Content: Type: FullSymbol, Start: 4, 12, End: 4, 16, Content: ""
-										Type: FullSymbol
-										Children:
-											Content: Type: Symbol, Start: 4, 12, End: 4, 16, Content: "void"
-											Type: Symbol
-											Children:
 
-										Content: Type: ParameterList, Start: 4, 16, End: 4, 18, Content: ""
-										Type: ParameterList
+								Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+								Type: Value
+								Children:
+									Content: Type: Function, Start: 4, 12, End: 4, 20, Content: ""
+									Type: Function
+									Children:
+										Content: Type: Type, Start: 4, 12, End: 4, 18, Content: ""
+										Type: Type
 										Children:
-											Content: Type: FunctorParameters, Start: 4, 16, End: 4, 18, Content: ""
-											Type: FunctorParameters
+											Content: Type: FullSymbol, Start: 4, 12, End: 4, 16, Content: ""
+											Type: FullSymbol
 											Children:
-												Content: Type: LeftParenthesis, Start: 4, 16, End: 4, 17, Content: "("
-												Type: LeftParenthesis
+												Content: Type: Symbol, Start: 4, 12, End: 4, 16, Content: "void"
+												Type: Symbol
 												Children:
 
-												Content: Type: RightParenthesis, Start: 4, 17, End: 4, 18, Content: ")"
-												Type: RightParenthesis
+											Content: Type: ParameterList, Start: 4, 16, End: 4, 18, Content: ""
+											Type: ParameterList
+											Children:
+												Content: Type: FunctorParameters, Start: 4, 16, End: 4, 18, Content: ""
+												Type: FunctorParameters
 												Children:
+													Content: Type: LeftParenthesis, Start: 4, 16, End: 4, 17, Content: "("
+													Type: LeftParenthesis
+													Children:
 
-									Content: Type: CodeBlockNode, Start: 4, 18, End: 4, 20, Content: ""
-									Type: CodeBlockNode
-									Children:
-										Content: Type: LeftCurlyBrace, Start: 4, 18, End: 4, 19, Content: "{"
-										Type: LeftCurlyBrace
-										Children:
+													Content: Type: RightParenthesis, Start: 4, 17, End: 4, 18, Content: ")"
+													Type: RightParenthesis
+													Children:
 
-										Content: Type: RightCurlyBrace, Start: 4, 19, End: 4, 20, Content: "}"
-										Type: RightCurlyBrace
+										Content: Type: CodeBlockNode, Start: 4, 18, End: 4, 20, Content: ""
+										Type: CodeBlockNode
 										Children:
+											Content: Type: LeftCurlyBrace, Start: 4, 18, End: 4, 19, Content: "{"
+											Type: LeftCurlyBrace
+											Children:
+
+											Content: Type: RightCurlyBrace, Start: 4, 19, End: 4, 20, Content: "}"
+											Type: RightCurlyBrace
+											Children:
 
 							Content: Type: EndOfLine, Start: 4, 20, End: 4, 21, Content: ";"
 							Type: EndOfLine

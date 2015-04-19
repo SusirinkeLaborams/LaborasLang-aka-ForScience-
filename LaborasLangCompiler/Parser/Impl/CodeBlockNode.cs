@@ -112,7 +112,6 @@ namespace LaborasLangCompiler.Parser.Impl
             switch (lexerNode.Type)
             {
                 case Lexer.TokenType.DeclarationNode:
-                case Lexer.TokenType.DeclarationSubnode:
                     return AddNode(SymbolDeclarationNode.Parse(this, lexerNode));
                 case Lexer.TokenType.Value:
                     return AddNode(ExpressionNode.Parse(this, lexerNode));

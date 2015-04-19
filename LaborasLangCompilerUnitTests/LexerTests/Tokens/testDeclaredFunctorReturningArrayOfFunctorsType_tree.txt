@@ -1,11 +1,11 @@
 Content: Type: RootNode, Start: 2, 13, End: 2, 51, Content: ""
 Type: RootNode
 Children:
-	Content: Type: DeclarationNode, Start: 2, 13, End: 2, 51, Content: ""
-	Type: DeclarationNode
+	Content: Type: StatementWithEndOfLine, Start: 2, 13, End: 2, 51, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: DeclarationSubnode, Start: 2, 13, End: 2, 50, Content: ""
-		Type: DeclarationSubnode
+		Content: Type: DeclarationNode, Start: 2, 13, End: 2, 50, Content: ""
+		Type: DeclarationNode
 		Children:
 			Content: Type: Type, Start: 2, 13, End: 2, 26, Content: ""
 			Type: Type

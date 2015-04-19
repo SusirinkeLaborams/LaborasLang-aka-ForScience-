@@ -30,30 +30,33 @@ Children:
 			Type: LeftCurlyBrace
 			Children:
 
-			Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-			Type: Value
+			Content: Type: StatementWithEndOfLine, Start: 4, 17, End: 4, 25, Content: ""
+			Type: StatementWithEndOfLine
 			Children:
-				Content: Type: PostfixNode, Start: 4, 17, End: 4, 24, Content: ""
-				Type: PostfixNode
+				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+				Type: Value
 				Children:
-					Content: Type: Symbol, Start: 4, 17, End: 4, 22, Content: "stuff"
-					Type: Symbol
+					Content: Type: PostfixNode, Start: 4, 17, End: 4, 24, Content: ""
+					Type: PostfixNode
 					Children:
-
-					Content: Type: FunctionArgumentsList, Start: 4, 22, End: 4, 24, Content: ""
-					Type: FunctionArgumentsList
-					Children:
-						Content: Type: LeftParenthesis, Start: 4, 22, End: 4, 23, Content: "("
-						Type: LeftParenthesis
+						Content: Type: Symbol, Start: 4, 17, End: 4, 22, Content: "stuff"
+						Type: Symbol
 						Children:
 
-						Content: Type: RightParenthesis, Start: 4, 23, End: 4, 24, Content: ")"
-						Type: RightParenthesis
+						Content: Type: FunctionArgumentsList, Start: 4, 22, End: 4, 24, Content: ""
+						Type: FunctionArgumentsList
 						Children:
+							Content: Type: LeftParenthesis, Start: 4, 22, End: 4, 23, Content: "("
+							Type: LeftParenthesis
+							Children:
 
-			Content: Type: EndOfLine, Start: 4, 24, End: 4, 25, Content: ";"
-			Type: EndOfLine
-			Children:
+							Content: Type: RightParenthesis, Start: 4, 23, End: 4, 24, Content: ")"
+							Type: RightParenthesis
+							Children:
+
+				Content: Type: EndOfLine, Start: 4, 24, End: 4, 25, Content: ";"
+				Type: EndOfLine
+				Children:
 
 			Content: Type: RightCurlyBrace, Start: 5, 13, End: 5, 14, Content: "}"
 			Type: RightCurlyBrace
@@ -70,30 +73,33 @@ Children:
 			Type: LeftCurlyBrace
 			Children:
 
-			Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-			Type: Value
+			Content: Type: StatementWithEndOfLine, Start: 8, 13, End: 8, 22, Content: ""
+			Type: StatementWithEndOfLine
 			Children:
-				Content: Type: PostfixNode, Start: 8, 13, End: 8, 21, Content: ""
-				Type: PostfixNode
+				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+				Type: Value
 				Children:
-					Content: Type: Symbol, Start: 8, 13, End: 8, 19, Content: "stuff2"
-					Type: Symbol
+					Content: Type: PostfixNode, Start: 8, 13, End: 8, 21, Content: ""
+					Type: PostfixNode
 					Children:
-
-					Content: Type: FunctionArgumentsList, Start: 8, 19, End: 8, 21, Content: ""
-					Type: FunctionArgumentsList
-					Children:
-						Content: Type: LeftParenthesis, Start: 8, 19, End: 8, 20, Content: "("
-						Type: LeftParenthesis
+						Content: Type: Symbol, Start: 8, 13, End: 8, 19, Content: "stuff2"
+						Type: Symbol
 						Children:
 
-						Content: Type: RightParenthesis, Start: 8, 20, End: 8, 21, Content: ")"
-						Type: RightParenthesis
+						Content: Type: FunctionArgumentsList, Start: 8, 19, End: 8, 21, Content: ""
+						Type: FunctionArgumentsList
 						Children:
+							Content: Type: LeftParenthesis, Start: 8, 19, End: 8, 20, Content: "("
+							Type: LeftParenthesis
+							Children:
 
-			Content: Type: EndOfLine, Start: 8, 21, End: 8, 22, Content: ";"
-			Type: EndOfLine
-			Children:
+							Content: Type: RightParenthesis, Start: 8, 20, End: 8, 21, Content: ")"
+							Type: RightParenthesis
+							Children:
+
+				Content: Type: EndOfLine, Start: 8, 21, End: 8, 22, Content: ";"
+				Type: EndOfLine
+				Children:
 
 			Content: Type: RightCurlyBrace, Start: 9, 13, End: 9, 14, Content: "}"
 			Type: RightCurlyBrace
@@ -128,30 +134,33 @@ Children:
 			Type: LeftCurlyBrace
 			Children:
 
-			Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-			Type: Value
+			Content: Type: StatementWithEndOfLine, Start: 13, 17, End: 13, 25, Content: ""
+			Type: StatementWithEndOfLine
 			Children:
-				Content: Type: PostfixNode, Start: 13, 17, End: 13, 24, Content: ""
-				Type: PostfixNode
+				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+				Type: Value
 				Children:
-					Content: Type: Symbol, Start: 13, 17, End: 13, 22, Content: "stuff"
-					Type: Symbol
+					Content: Type: PostfixNode, Start: 13, 17, End: 13, 24, Content: ""
+					Type: PostfixNode
 					Children:
-
-					Content: Type: FunctionArgumentsList, Start: 13, 22, End: 13, 24, Content: ""
-					Type: FunctionArgumentsList
-					Children:
-						Content: Type: LeftParenthesis, Start: 13, 22, End: 13, 23, Content: "("
-						Type: LeftParenthesis
+						Content: Type: Symbol, Start: 13, 17, End: 13, 22, Content: "stuff"
+						Type: Symbol
 						Children:
 
-						Content: Type: RightParenthesis, Start: 13, 23, End: 13, 24, Content: ")"
-						Type: RightParenthesis
+						Content: Type: FunctionArgumentsList, Start: 13, 22, End: 13, 24, Content: ""
+						Type: FunctionArgumentsList
 						Children:
+							Content: Type: LeftParenthesis, Start: 13, 22, End: 13, 23, Content: "("
+							Type: LeftParenthesis
+							Children:
 
-			Content: Type: EndOfLine, Start: 13, 24, End: 13, 25, Content: ";"
-			Type: EndOfLine
-			Children:
+							Content: Type: RightParenthesis, Start: 13, 23, End: 13, 24, Content: ")"
+							Type: RightParenthesis
+							Children:
+
+				Content: Type: EndOfLine, Start: 13, 24, End: 13, 25, Content: ";"
+				Type: EndOfLine
+				Children:
 
 			Content: Type: RightCurlyBrace, Start: 14, 13, End: 14, 14, Content: "}"
 			Type: RightCurlyBrace

@@ -95,6 +95,7 @@
         Type,
         UseNode,
 
+        CodeConstruct,
         WhileLoop,
         ForLoop,
         Function,
@@ -114,9 +115,8 @@
         InfixSubnode,
         LexerInternalTokens,    // Lexer internal-only tokens start from here
 
+        StatementWithEndOfLine,
         StatementNode,
-        DeclarationSubnode,
-        ValueStatementNode,
 
         ParameterList,
         TypeSubnode,
@@ -132,7 +132,6 @@
         PostfixOperator,
                                                 
         TokenTypeCount,
-        
     }
 
     public static class TokenInfo

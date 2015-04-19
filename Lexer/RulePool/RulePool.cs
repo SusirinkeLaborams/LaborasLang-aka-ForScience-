@@ -10,32 +10,31 @@ namespace Lexer
         {
             public static ParseRule[] LaborasLangRuleset = new ParseRule[]
                 {
-                    AlwaysCollapsableParseRule(StatementNode,
-                        UseNode,
-                        DeclarationNode,
-                        ValueStatementNode,
+
+                    AlwaysCollapsableParseRule(CodeConstruct,
                         CodeBlockNode,
                         WhileLoop,
                         ForLoop,
-                        ReturnNode,
                         ConditionalSentence,
-                        EndOfLine),
+                        StatementWithEndOfLine),
+
+                    AlwaysCollapsableParseRule(StatementNode,
+                        UseNode,
+                        DeclarationNode,
+                        Value,
+                        ReturnNode),
+
+                    ParseRule(StatementWithEndOfLine,
+                        Optional(StatementNode) + EndOfLine),
             
                     ParseRule(UseNode,
-                        Use + FullSymbol + EndOfLine),
+                        Use + FullSymbol),
 
                     ParseRule(DeclarationNode,
-                        DeclarationSubnode + EndOfLine),
-            
-                    ParseRule(DeclarationSubnode,
                         ZeroOrMore(VariableModifier) + Type + Symbol + OptionalTail(Assignment + Value)),
 
-                    AlwaysCollapsableParseRule(ValueStatementNode,
-                        Value + EndOfLine),
-
                     ParseRule(ReturnNode,
-                        Return + Value + EndOfLine,
-                        Return + EndOfLine),
+                        Return + OptionalTail(Value)),
 
                     ParseRule(VariableModifier, 
                         Const,
@@ -102,7 +101,7 @@ namespace Lexer
                     LeftParenthesis + Type +  RightParenthesis),
                         
                     CollapsableParseRule(CodeBlockNode,
-                        LeftCurlyBrace + ZeroOrMore(StatementNode) + RightCurlyBrace),
+                        LeftCurlyBrace + ZeroOrMore(StatementWithEndOfLine) + RightCurlyBrace),
                     
                     ParseRule(IndexNode,
                     LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket,
@@ -199,16 +198,16 @@ namespace Lexer
                         Type + CodeBlockNode),                    
 
                     ParseRule(WhileLoop,
-                        While + LeftParenthesis + Value + RightParenthesis + StatementNode),
+                        While + LeftParenthesis + Value + RightParenthesis + CodeConstruct),
 
                     ParseRule(ForLoop,
-                        For + LeftParenthesis + DeclarationSubnode + In + Value + RightParenthesis + StatementNode,
-                        For + LeftParenthesis + Optional(Value) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + StatementNode,
-                        For + LeftParenthesis + Optional(DeclarationSubnode) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + StatementNode
+                        For + LeftParenthesis + DeclarationNode + In + Value + RightParenthesis + CodeConstruct,
+                        For + LeftParenthesis + Optional(Value) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + CodeConstruct,
+                        For + LeftParenthesis + Optional(DeclarationNode) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + CodeConstruct
                      ),
 
                     ParseRule(ConditionalSentence,
-                        If + LeftParenthesis + Value + RightParenthesis + StatementNode + OptionalTail(Else + StatementNode)),
+                        If + LeftParenthesis + Value + RightParenthesis + CodeConstruct + OptionalTail(Else + CodeConstruct)),
             };
 
     }

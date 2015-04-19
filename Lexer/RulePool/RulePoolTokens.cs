@@ -73,17 +73,17 @@ namespace Lexer
         private static Condition True { get { return TokenType.True; } }
         private static Condition Use { get { return TokenType.Use; } }
         private static Condition Virtual { get { return TokenType.Virtual; } }
+        private static Condition CodeConstruct { get { return TokenType.CodeConstruct; } }
         private static Condition While { get { return TokenType.While; } }
         private static Condition NoInstance { get { return TokenType.NoInstance; } }
         private static Condition Private { get { return TokenType.Private; } }
         private static Condition Public { get { return TokenType.Public; } }
         private static Condition NonTerminalToken { get { return TokenType.NonTerminalToken; } }
+        private static Condition StatementWithEndOfLine { get { return TokenType.StatementWithEndOfLine; } }
         private static Condition StatementNode { get { return TokenType.StatementNode; } }
         private static Condition CodeBlockNode { get { return TokenType.CodeBlockNode; } }
         private static Condition DeclarationNode { get { return TokenType.DeclarationNode; } }
-        private static Condition DeclarationSubnode { get { return TokenType.DeclarationSubnode; } }
         private static Condition UseNode { get { return TokenType.UseNode; } }
-        private static Condition ValueStatementNode { get { return TokenType.ValueStatementNode; } }
         private static Condition ReturnNode { get { return TokenType.ReturnNode; } }
         private static Condition RootNode { get { return TokenType.RootNode; } }
         private static Condition FullSymbol { get { return TokenType.FullSymbol; } }

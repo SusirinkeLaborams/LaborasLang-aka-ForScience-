@@ -1,52 +1,55 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 17, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-	Type: Value
+	Content: Type: StatementWithEndOfLine, Start: 1, 1, End: 1, 17, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: InfixNode, Start: 1, 1, End: 1, 14, Content: ""
-		Type: InfixNode
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Value
 		Children:
-			Content: Type: ParenthesesNode, Start: 1, 1, End: 1, 12, Content: ""
-			Type: ParenthesesNode
+			Content: Type: InfixNode, Start: 1, 1, End: 1, 14, Content: ""
+			Type: InfixNode
 			Children:
-				Content: Type: LeftParenthesis, Start: 1, 1, End: 1, 2, Content: "("
-				Type: LeftParenthesis
+				Content: Type: ParenthesesNode, Start: 1, 1, End: 1, 12, Content: ""
+				Type: ParenthesesNode
 				Children:
-
-				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-				Type: Value
-				Children:
-					Content: Type: InfixNode, Start: 1, 2, End: 1, 7, Content: ""
-					Type: InfixNode
+					Content: Type: LeftParenthesis, Start: 1, 1, End: 1, 2, Content: "("
+					Type: LeftParenthesis
 					Children:
-						Content: Type: Symbol, Start: 1, 2, End: 1, 5, Content: "foo"
-						Type: Symbol
-						Children:
 
-						Content: Type: Symbol, Start: 1, 8, End: 1, 11, Content: "bar"
-						Type: Symbol
+					Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+					Type: Value
+					Children:
+						Content: Type: InfixNode, Start: 1, 2, End: 1, 7, Content: ""
+						Type: InfixNode
 						Children:
+							Content: Type: Symbol, Start: 1, 2, End: 1, 5, Content: "foo"
+							Type: Symbol
+							Children:
 
-						Content: Type: Plus, Start: 1, 6, End: 1, 7, Content: "+"
-						Type: Plus
-						Children:
+							Content: Type: Symbol, Start: 1, 8, End: 1, 11, Content: "bar"
+							Type: Symbol
+							Children:
 
-				Content: Type: RightParenthesis, Start: 1, 11, End: 1, 12, Content: ")"
-				Type: RightParenthesis
+							Content: Type: Plus, Start: 1, 6, End: 1, 7, Content: "+"
+							Type: Plus
+							Children:
+
+					Content: Type: RightParenthesis, Start: 1, 11, End: 1, 12, Content: ")"
+					Type: RightParenthesis
+					Children:
+
+				Content: Type: LiteralNode, Start: 1, 15, End: 1, 16, Content: ""
+				Type: LiteralNode
+				Children:
+					Content: Type: Integer, Start: 1, 15, End: 1, 16, Content: "5"
+					Type: Integer
+					Children:
+
+				Content: Type: Assignment, Start: 1, 13, End: 1, 14, Content: "="
+				Type: Assignment
 				Children:
 
-			Content: Type: LiteralNode, Start: 1, 15, End: 1, 16, Content: ""
-			Type: LiteralNode
-			Children:
-				Content: Type: Integer, Start: 1, 15, End: 1, 16, Content: "5"
-				Type: Integer
-				Children:
-
-			Content: Type: Assignment, Start: 1, 13, End: 1, 14, Content: "="
-			Type: Assignment
-			Children:
-
-	Content: Type: EndOfLine, Start: 1, 16, End: 1, 17, Content: ";"
-	Type: EndOfLine
-	Children:
+		Content: Type: EndOfLine, Start: 1, 16, End: 1, 17, Content: ";"
+		Type: EndOfLine
+		Children:

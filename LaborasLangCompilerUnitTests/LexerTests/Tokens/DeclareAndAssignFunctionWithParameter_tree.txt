@@ -1,11 +1,11 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 34, Content: ""
 Type: RootNode
 Children:
-	Content: Type: DeclarationNode, Start: 1, 1, End: 1, 34, Content: ""
-	Type: DeclarationNode
+	Content: Type: StatementWithEndOfLine, Start: 1, 1, End: 1, 34, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: DeclarationSubnode, Start: 1, 1, End: 1, 33, Content: ""
-		Type: DeclarationSubnode
+		Content: Type: DeclarationNode, Start: 1, 1, End: 1, 33, Content: ""
+		Type: DeclarationNode
 		Children:
 			Content: Type: Type, Start: 1, 1, End: 1, 5, Content: ""
 			Type: Type
@@ -76,30 +76,33 @@ Children:
 						Type: LeftCurlyBrace
 						Children:
 
-						Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-						Type: Value
+						Content: Type: StatementWithEndOfLine, Start: 1, 26, End: 1, 32, Content: ""
+						Type: StatementWithEndOfLine
 						Children:
-							Content: Type: PostfixNode, Start: 1, 26, End: 1, 31, Content: ""
-							Type: PostfixNode
+							Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+							Type: Value
 							Children:
-								Content: Type: Symbol, Start: 1, 26, End: 1, 29, Content: "foo"
-								Type: Symbol
+								Content: Type: PostfixNode, Start: 1, 26, End: 1, 31, Content: ""
+								Type: PostfixNode
 								Children:
-
-								Content: Type: FunctionArgumentsList, Start: 1, 29, End: 1, 31, Content: ""
-								Type: FunctionArgumentsList
-								Children:
-									Content: Type: LeftParenthesis, Start: 1, 29, End: 1, 30, Content: "("
-									Type: LeftParenthesis
+									Content: Type: Symbol, Start: 1, 26, End: 1, 29, Content: "foo"
+									Type: Symbol
 									Children:
 
-									Content: Type: RightParenthesis, Start: 1, 30, End: 1, 31, Content: ")"
-									Type: RightParenthesis
+									Content: Type: FunctionArgumentsList, Start: 1, 29, End: 1, 31, Content: ""
+									Type: FunctionArgumentsList
 									Children:
+										Content: Type: LeftParenthesis, Start: 1, 29, End: 1, 30, Content: "("
+										Type: LeftParenthesis
+										Children:
 
-						Content: Type: EndOfLine, Start: 1, 31, End: 1, 32, Content: ";"
-						Type: EndOfLine
-						Children:
+										Content: Type: RightParenthesis, Start: 1, 30, End: 1, 31, Content: ")"
+										Type: RightParenthesis
+										Children:
+
+							Content: Type: EndOfLine, Start: 1, 31, End: 1, 32, Content: ";"
+							Type: EndOfLine
+							Children:
 
 						Content: Type: RightCurlyBrace, Start: 1, 32, End: 1, 33, Content: "}"
 						Type: RightCurlyBrace

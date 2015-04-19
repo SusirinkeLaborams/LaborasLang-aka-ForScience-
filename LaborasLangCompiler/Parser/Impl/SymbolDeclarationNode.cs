@@ -35,7 +35,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static SymbolDeclarationNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
-            Contract.Requires(lexerNode.Type == Lexer.TokenType.DeclarationNode || lexerNode.Type == Lexer.TokenType.DeclarationSubnode);
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.DeclarationNode);
             var info = DeclarationInfo.Parse(context.Parser, lexerNode);
             var name = info.SymbolName.GetSingleSymbolOrThrow();
             var declaredType = TypeNode.Parse(context, info.Type);

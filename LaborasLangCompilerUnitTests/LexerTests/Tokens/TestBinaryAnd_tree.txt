@@ -1,38 +1,41 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 15, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-	Type: Value
+	Content: Type: StatementWithEndOfLine, Start: 1, 1, End: 1, 15, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: InfixNode, Start: 1, 1, End: 1, 6, Content: ""
-		Type: InfixNode
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Value
 		Children:
-			Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
-			Type: Symbol
-			Children:
-
-			Content: Type: InfixNode, Start: 1, 7, End: 1, 10, Content: ""
+			Content: Type: InfixNode, Start: 1, 1, End: 1, 6, Content: ""
 			Type: InfixNode
 			Children:
-				Content: Type: LiteralNode, Start: 1, 7, End: 1, 8, Content: ""
-				Type: LiteralNode
-				Children:
-					Content: Type: Integer, Start: 1, 7, End: 1, 8, Content: "1"
-					Type: Integer
-					Children:
-
-				Content: Type: Symbol, Start: 1, 11, End: 1, 14, Content: "bar"
+				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "foo"
 				Type: Symbol
 				Children:
 
-				Content: Type: BitwiseAnd, Start: 1, 9, End: 1, 10, Content: "&"
-				Type: BitwiseAnd
+				Content: Type: InfixNode, Start: 1, 7, End: 1, 10, Content: ""
+				Type: InfixNode
+				Children:
+					Content: Type: LiteralNode, Start: 1, 7, End: 1, 8, Content: ""
+					Type: LiteralNode
+					Children:
+						Content: Type: Integer, Start: 1, 7, End: 1, 8, Content: "1"
+						Type: Integer
+						Children:
+
+					Content: Type: Symbol, Start: 1, 11, End: 1, 14, Content: "bar"
+					Type: Symbol
+					Children:
+
+					Content: Type: BitwiseAnd, Start: 1, 9, End: 1, 10, Content: "&"
+					Type: BitwiseAnd
+					Children:
+
+				Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
+				Type: Assignment
 				Children:
 
-			Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
-			Type: Assignment
-			Children:
-
-	Content: Type: EndOfLine, Start: 1, 14, End: 1, 15, Content: ";"
-	Type: EndOfLine
-	Children:
+		Content: Type: EndOfLine, Start: 1, 14, End: 1, 15, Content: ";"
+		Type: EndOfLine
+		Children:

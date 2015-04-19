@@ -1,38 +1,41 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 15, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-	Type: Value
+	Content: Type: StatementWithEndOfLine, Start: 1, 1, End: 1, 15, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: InfixNode, Start: 1, 1, End: 1, 4, Content: ""
-		Type: InfixNode
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Value
 		Children:
-			Content: Type: Symbol, Start: 1, 1, End: 1, 2, Content: "a"
-			Type: Symbol
-			Children:
-
-			Content: Type: InfixNode, Start: 1, 5, End: 1, 9, Content: ""
+			Content: Type: InfixNode, Start: 1, 1, End: 1, 4, Content: ""
 			Type: InfixNode
 			Children:
-				Content: Type: Symbol, Start: 1, 5, End: 1, 6, Content: "i"
+				Content: Type: Symbol, Start: 1, 1, End: 1, 2, Content: "a"
 				Type: Symbol
 				Children:
 
-				Content: Type: LiteralNode, Start: 1, 10, End: 1, 14, Content: ""
-				Type: LiteralNode
+				Content: Type: InfixNode, Start: 1, 5, End: 1, 9, Content: ""
+				Type: InfixNode
 				Children:
-					Content: Type: True, Start: 1, 10, End: 1, 14, Content: "true"
-					Type: True
+					Content: Type: Symbol, Start: 1, 5, End: 1, 6, Content: "i"
+					Type: Symbol
 					Children:
 
-				Content: Type: LogicalOr, Start: 1, 7, End: 1, 9, Content: "||"
-				Type: LogicalOr
+					Content: Type: LiteralNode, Start: 1, 10, End: 1, 14, Content: ""
+					Type: LiteralNode
+					Children:
+						Content: Type: True, Start: 1, 10, End: 1, 14, Content: "true"
+						Type: True
+						Children:
+
+					Content: Type: LogicalOr, Start: 1, 7, End: 1, 9, Content: "||"
+					Type: LogicalOr
+					Children:
+
+				Content: Type: Assignment, Start: 1, 3, End: 1, 4, Content: "="
+				Type: Assignment
 				Children:
 
-			Content: Type: Assignment, Start: 1, 3, End: 1, 4, Content: "="
-			Type: Assignment
-			Children:
-
-	Content: Type: EndOfLine, Start: 1, 14, End: 1, 15, Content: ";"
-	Type: EndOfLine
-	Children:
+		Content: Type: EndOfLine, Start: 1, 14, End: 1, 15, Content: ";"
+		Type: EndOfLine
+		Children:

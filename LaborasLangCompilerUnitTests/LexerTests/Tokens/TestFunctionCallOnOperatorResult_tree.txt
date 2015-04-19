@@ -1,76 +1,79 @@
 Content: Type: RootNode, Start: 1, 1, End: 1, 23, Content: ""
 Type: RootNode
 Children:
-	Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-	Type: Value
+	Content: Type: StatementWithEndOfLine, Start: 1, 1, End: 1, 23, Content: ""
+	Type: StatementWithEndOfLine
 	Children:
-		Content: Type: PostfixNode, Start: 1, 1, End: 1, 22, Content: ""
-		Type: PostfixNode
+		Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+		Type: Value
 		Children:
-			Content: Type: InfixNode, Start: 1, 1, End: 1, 9, Content: ""
-			Type: InfixNode
+			Content: Type: PostfixNode, Start: 1, 1, End: 1, 22, Content: ""
+			Type: PostfixNode
 			Children:
-				Content: Type: ParenthesesNode, Start: 1, 1, End: 1, 8, Content: ""
-				Type: ParenthesesNode
+				Content: Type: InfixNode, Start: 1, 1, End: 1, 9, Content: ""
+				Type: InfixNode
 				Children:
-					Content: Type: LeftParenthesis, Start: 1, 1, End: 1, 2, Content: "("
+					Content: Type: ParenthesesNode, Start: 1, 1, End: 1, 8, Content: ""
+					Type: ParenthesesNode
+					Children:
+						Content: Type: LeftParenthesis, Start: 1, 1, End: 1, 2, Content: "("
+						Type: LeftParenthesis
+						Children:
+
+						Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
+						Type: Value
+						Children:
+							Content: Type: InfixNode, Start: 1, 2, End: 1, 5, Content: ""
+							Type: InfixNode
+							Children:
+								Content: Type: LiteralNode, Start: 1, 2, End: 1, 3, Content: ""
+								Type: LiteralNode
+								Children:
+									Content: Type: Integer, Start: 1, 2, End: 1, 3, Content: "5"
+									Type: Integer
+									Children:
+
+								Content: Type: LiteralNode, Start: 1, 6, End: 1, 7, Content: ""
+								Type: LiteralNode
+								Children:
+									Content: Type: Integer, Start: 1, 6, End: 1, 7, Content: "6"
+									Type: Integer
+									Children:
+
+								Content: Type: Plus, Start: 1, 4, End: 1, 5, Content: "+"
+								Type: Plus
+								Children:
+
+						Content: Type: RightParenthesis, Start: 1, 7, End: 1, 8, Content: ")"
+						Type: RightParenthesis
+						Children:
+
+					Content: Type: Symbol, Start: 1, 9, End: 1, 17, Content: "ToString"
+					Type: Symbol
+					Children:
+
+					Content: Type: Period, Start: 1, 8, End: 1, 9, Content: "."
+					Type: Period
+					Children:
+
+				Content: Type: FunctionArgumentsList, Start: 1, 17, End: 1, 22, Content: ""
+				Type: FunctionArgumentsList
+				Children:
+					Content: Type: LeftParenthesis, Start: 1, 17, End: 1, 18, Content: "("
 					Type: LeftParenthesis
 					Children:
 
 					Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
 					Type: Value
 					Children:
-						Content: Type: InfixNode, Start: 1, 2, End: 1, 5, Content: ""
-						Type: InfixNode
+						Content: Type: Symbol, Start: 1, 18, End: 1, 21, Content: "aaa"
+						Type: Symbol
 						Children:
-							Content: Type: LiteralNode, Start: 1, 2, End: 1, 3, Content: ""
-							Type: LiteralNode
-							Children:
-								Content: Type: Integer, Start: 1, 2, End: 1, 3, Content: "5"
-								Type: Integer
-								Children:
 
-							Content: Type: LiteralNode, Start: 1, 6, End: 1, 7, Content: ""
-							Type: LiteralNode
-							Children:
-								Content: Type: Integer, Start: 1, 6, End: 1, 7, Content: "6"
-								Type: Integer
-								Children:
-
-							Content: Type: Plus, Start: 1, 4, End: 1, 5, Content: "+"
-							Type: Plus
-							Children:
-
-					Content: Type: RightParenthesis, Start: 1, 7, End: 1, 8, Content: ")"
+					Content: Type: RightParenthesis, Start: 1, 21, End: 1, 22, Content: ")"
 					Type: RightParenthesis
 					Children:
 
-				Content: Type: Symbol, Start: 1, 9, End: 1, 17, Content: "ToString"
-				Type: Symbol
-				Children:
-
-				Content: Type: Period, Start: 1, 8, End: 1, 9, Content: "."
-				Type: Period
-				Children:
-
-			Content: Type: FunctionArgumentsList, Start: 1, 17, End: 1, 22, Content: ""
-			Type: FunctionArgumentsList
-			Children:
-				Content: Type: LeftParenthesis, Start: 1, 17, End: 1, 18, Content: "("
-				Type: LeftParenthesis
-				Children:
-
-				Content: Type: Value, Start: 0, 0, End: 0, 0, Content: ""
-				Type: Value
-				Children:
-					Content: Type: Symbol, Start: 1, 18, End: 1, 21, Content: "aaa"
-					Type: Symbol
-					Children:
-
-				Content: Type: RightParenthesis, Start: 1, 21, End: 1, 22, Content: ")"
-				Type: RightParenthesis
-				Children:
-
-	Content: Type: EndOfLine, Start: 1, 22, End: 1, 23, Content: ";"
-	Type: EndOfLine
-	Children:
+		Content: Type: EndOfLine, Start: 1, 22, End: 1, 23, Content: ";"
+		Type: EndOfLine
+		Children:
