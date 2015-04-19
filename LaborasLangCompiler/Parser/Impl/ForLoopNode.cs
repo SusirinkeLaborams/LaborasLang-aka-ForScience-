@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
 using Lexer;
+using LaborasLangCompiler.Parser.Utils;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -104,7 +105,17 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public override string ToString(int indent)
         {
-            throw new NotImplementedException();
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("For:");
+            builder.Indent(indent + 1).AppendLine("Initializer:");
+            builder.AppendLine(initializer.ToString(indent + 2));
+            builder.Indent(indent + 1).AppendLine("Condition:");
+            builder.AppendLine(condition.ToString(indent + 2));
+            builder.Indent(indent + 1).AppendLine("Increment:");
+            builder.AppendLine(increment.ToString(indent + 2));
+            builder.Indent(indent + 1).AppendLine("Body:");
+            builder.AppendLine(body.ToString(indent + 2));
+            return builder.ToString();
         }
     }
 }

@@ -4,57 +4,60 @@ Children:
 	Content: Type: DeclarationNode, Start: 1, 1, End: 1, 20, Content: ""
 	Type: DeclarationNode
 	Children:
-		Content: Type: Type, Start: 1, 1, End: 1, 15, Content: ""
-		Type: Type
+		Content: Type: DeclarationSubnode, Start: 1, 1, End: 1, 19, Content: ""
+		Type: DeclarationSubnode
 		Children:
-			Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
-			Type: FullSymbol
+			Content: Type: Type, Start: 1, 1, End: 1, 15, Content: ""
+			Type: Type
 			Children:
-				Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "int"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 1, 1, End: 1, 4, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 1, 1, End: 1, 4, Content: "int"
+					Type: Symbol
+					Children:
 
-			Content: Type: ParameterList, Start: 1, 4, End: 1, 15, Content: ""
-			Type: ParameterList
+				Content: Type: ParameterList, Start: 1, 4, End: 1, 15, Content: ""
+				Type: ParameterList
+				Children:
+					Content: Type: FunctorParameters, Start: 1, 4, End: 1, 15, Content: ""
+					Type: FunctorParameters
+					Children:
+						Content: Type: LeftParenthesis, Start: 1, 4, End: 1, 5, Content: "("
+						Type: LeftParenthesis
+						Children:
+
+						Content: Type: Type, Start: 1, 5, End: 1, 8, Content: ""
+						Type: Type
+						Children:
+							Content: Type: FullSymbol, Start: 1, 5, End: 1, 8, Content: ""
+							Type: FullSymbol
+							Children:
+								Content: Type: Symbol, Start: 1, 5, End: 1, 8, Content: "int"
+								Type: Symbol
+								Children:
+
+						Content: Type: Comma, Start: 1, 8, End: 1, 9, Content: ","
+						Type: Comma
+						Children:
+
+						Content: Type: Type, Start: 1, 10, End: 1, 14, Content: ""
+						Type: Type
+						Children:
+							Content: Type: FullSymbol, Start: 1, 10, End: 1, 14, Content: ""
+							Type: FullSymbol
+							Children:
+								Content: Type: Symbol, Start: 1, 10, End: 1, 14, Content: "bool"
+								Type: Symbol
+								Children:
+
+						Content: Type: RightParenthesis, Start: 1, 14, End: 1, 15, Content: ")"
+						Type: RightParenthesis
+						Children:
+
+			Content: Type: Symbol, Start: 1, 16, End: 1, 19, Content: "foo"
+			Type: Symbol
 			Children:
-				Content: Type: FunctorParameters, Start: 1, 4, End: 1, 15, Content: ""
-				Type: FunctorParameters
-				Children:
-					Content: Type: LeftParenthesis, Start: 1, 4, End: 1, 5, Content: "("
-					Type: LeftParenthesis
-					Children:
-
-					Content: Type: Type, Start: 1, 5, End: 1, 8, Content: ""
-					Type: Type
-					Children:
-						Content: Type: FullSymbol, Start: 1, 5, End: 1, 8, Content: ""
-						Type: FullSymbol
-						Children:
-							Content: Type: Symbol, Start: 1, 5, End: 1, 8, Content: "int"
-							Type: Symbol
-							Children:
-
-					Content: Type: Comma, Start: 1, 8, End: 1, 9, Content: ","
-					Type: Comma
-					Children:
-
-					Content: Type: Type, Start: 1, 10, End: 1, 14, Content: ""
-					Type: Type
-					Children:
-						Content: Type: FullSymbol, Start: 1, 10, End: 1, 14, Content: ""
-						Type: FullSymbol
-						Children:
-							Content: Type: Symbol, Start: 1, 10, End: 1, 14, Content: "bool"
-							Type: Symbol
-							Children:
-
-					Content: Type: RightParenthesis, Start: 1, 14, End: 1, 15, Content: ")"
-					Type: RightParenthesis
-					Children:
-
-		Content: Type: Symbol, Start: 1, 16, End: 1, 19, Content: "foo"
-		Type: Symbol
-		Children:
 
 		Content: Type: EndOfLine, Start: 1, 19, End: 1, 20, Content: ";"
 		Type: EndOfLine

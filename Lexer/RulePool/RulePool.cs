@@ -27,7 +27,7 @@ namespace Lexer
                     ParseRule(DeclarationNode,
                         DeclarationSubnode + EndOfLine),
             
-                    AlwaysCollapsableParseRule(DeclarationSubnode,
+                    ParseRule(DeclarationSubnode,
                         ZeroOrMore(VariableModifier) + Type + Symbol + OptionalTail(Assignment + Value)),
 
                     AlwaysCollapsableParseRule(ValueStatementNode,

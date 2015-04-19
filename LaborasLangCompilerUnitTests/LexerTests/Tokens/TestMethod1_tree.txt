@@ -4,19 +4,22 @@ Children:
 	Content: Type: DeclarationNode, Start: 2, 1, End: 2, 7, Content: ""
 	Type: DeclarationNode
 	Children:
-		Content: Type: Type, Start: 2, 1, End: 2, 4, Content: ""
-		Type: Type
+		Content: Type: DeclarationSubnode, Start: 2, 1, End: 2, 6, Content: ""
+		Type: DeclarationSubnode
 		Children:
-			Content: Type: FullSymbol, Start: 2, 1, End: 2, 4, Content: ""
-			Type: FullSymbol
+			Content: Type: Type, Start: 2, 1, End: 2, 4, Content: ""
+			Type: Type
 			Children:
-				Content: Type: Symbol, Start: 2, 1, End: 2, 4, Content: "int"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 2, 1, End: 2, 4, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 2, 1, End: 2, 4, Content: "int"
+					Type: Symbol
+					Children:
 
-		Content: Type: Symbol, Start: 2, 5, End: 2, 6, Content: "a"
-		Type: Symbol
-		Children:
+			Content: Type: Symbol, Start: 2, 5, End: 2, 6, Content: "a"
+			Type: Symbol
+			Children:
 
 		Content: Type: EndOfLine, Start: 2, 6, End: 2, 7, Content: ";"
 		Type: EndOfLine
@@ -25,19 +28,22 @@ Children:
 	Content: Type: DeclarationNode, Start: 3, 1, End: 3, 7, Content: ""
 	Type: DeclarationNode
 	Children:
-		Content: Type: Type, Start: 3, 1, End: 3, 4, Content: ""
-		Type: Type
+		Content: Type: DeclarationSubnode, Start: 3, 1, End: 3, 6, Content: ""
+		Type: DeclarationSubnode
 		Children:
-			Content: Type: FullSymbol, Start: 3, 1, End: 3, 4, Content: ""
-			Type: FullSymbol
+			Content: Type: Type, Start: 3, 1, End: 3, 4, Content: ""
+			Type: Type
 			Children:
-				Content: Type: Symbol, Start: 3, 1, End: 3, 4, Content: "int"
-				Type: Symbol
+				Content: Type: FullSymbol, Start: 3, 1, End: 3, 4, Content: ""
+				Type: FullSymbol
 				Children:
+					Content: Type: Symbol, Start: 3, 1, End: 3, 4, Content: "int"
+					Type: Symbol
+					Children:
 
-		Content: Type: Symbol, Start: 3, 5, End: 3, 6, Content: "b"
-		Type: Symbol
-		Children:
+			Content: Type: Symbol, Start: 3, 5, End: 3, 6, Content: "b"
+			Type: Symbol
+			Children:
 
 		Content: Type: EndOfLine, Start: 3, 6, End: 3, 7, Content: ";"
 		Type: EndOfLine
