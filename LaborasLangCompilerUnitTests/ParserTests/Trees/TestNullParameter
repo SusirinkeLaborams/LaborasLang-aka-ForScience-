@@ -1,0 +1,37 @@
+Class:
+	TestNullParameter
+	Fields:
+		FieldDeclaration:
+			Type:
+				$Functors.$System_Void*System_String?
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+
+	Methods:
+		Method:
+			Name:
+				main
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						MethodCall:
+							ReturnType: System.Void
+							Args:
+								NullNode
+
+							Function:
+								Field:
+									$Functors.$System_Void*System_String? $TestNullParameter.TestNullParameter::foo
+									Instance:
+										null
+
+
+

@@ -702,6 +702,7 @@ namespace Lexer
             keywordTypeMap[(FastStringBuilder)"while"] = (int)TokenType.While;
             keywordTypeMap[(FastStringBuilder)"for"] = (int)TokenType.For;
             keywordTypeMap[(FastStringBuilder)"in"] = (int)TokenType.In;
+            keywordTypeMap[(FastStringBuilder)"null"] = (int)TokenType.Null;
             
         }
 

@@ -141,7 +141,11 @@ namespace Lexer
                         ArrayLiteral,
                         Function,
                         Symbol,
-                        LiteralNode),
+                        LiteralNode,
+                        SpecialValue),
+
+                    AlwaysCollapsableParseRule(SpecialValue,
+                        Null),
 
                     ParseRule(LiteralNode,                       
                         Float,

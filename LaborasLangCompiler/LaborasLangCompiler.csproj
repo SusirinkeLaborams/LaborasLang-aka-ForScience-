@@ -203,6 +203,7 @@
     <Compile Include="Common\CompilerException.cs" />
     <Compile Include="Common\ContractsHelper.cs" />
     <Compile Include="Common\ErrorHandling.cs" />
+    <Compile Include="Common\NullType.cs" />
     <Compile Include="FrontEnd\CompilerArguments.cs" />
     <Compile Include="FrontEnd\Program.cs" />
     <Compile Include="Codegen\AssemblyEmitter.cs" />
@@ -234,6 +235,7 @@
     <Compile Include="Parser\Impl\InitializerList.cs" />
     <Compile Include="Parser\Impl\LocalVariableNode.cs" />
     <Compile Include="Parser\Impl\MemberNode.cs" />
+    <Compile Include="Parser\Impl\NullNode.cs" />
     <Compile Include="Parser\Impl\ObjectCreationNode.cs" />
     <Compile Include="Parser\Impl\Operators\InfixParser.cs" />
     <Compile Include="Parser\Impl\PropertyNode.cs" />

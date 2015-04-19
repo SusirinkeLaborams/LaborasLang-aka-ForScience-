@@ -1217,5 +1217,119 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNullField()
+        {
+            string source = @"
+                string str = null;
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNullAutoField()
+        {
+            string source = @"
+                auto str = null;
+            ";
+            CompareTrees(source, ErrorCode.InferrenceFromTypeless.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNullAutoVar()
+        {
+            string source = @"
+                auto main = void()
+                {
+                    auto str = null;
+                };
+            ";
+            CompareTrees(source, ErrorCode.InferrenceFromTypeless.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNullVar()
+        {
+            string source = @"
+                auto main = void()
+                {
+                    string str = null;
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNullParameter()
+        {
+            string source = @"
+                mutable void(string) foo;
+                auto main = void()
+                {
+                    foo(null);
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNullInImplicitArray()
+        {
+            string source = @"
+                auto arr = {""foo"", ""bar"", null};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestOnlyNullInImplicitArray()
+        {
+            string source = @"
+                auto arr = {null, null, null};
+            ";
+            CompareTrees(source, ErrorCode.InferrenceFromTypeless.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNullInExplicitArray()
+        {
+            string source = @"
+                auto arr = string[]{""foo"", ""bar"", null};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestOnlyNullInExplicitArray()
+        {
+            string source = @"
+                auto arr = string[]{null, null, null};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestCallOnNull()
+        {
+            string source = @"
+                auto foo = null.Bar();
+            ";
+            CompareTrees(source, ErrorCode.NullInsideDot.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNullMatrixElement()
+        {
+            string source = @"
+                auto foo = {{null, ""foo""}, {""bar"", null}};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestOnlyNullMatrixElement()
+        {
+            string source = @"
+                auto foo = {{null, null}, {null, null}};
+            ";
+            CompareTrees(source, ErrorCode.InferrenceFromTypeless.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNullMatrixRow()
+        {
+            string source = @"
+                auto foo = {{null, null}, {""bar"", ""foo""}};
+            ";
+            CompareTrees(source, ErrorCode.InferrenceFromTypeless.Enumerate());
+        }
     }
 }

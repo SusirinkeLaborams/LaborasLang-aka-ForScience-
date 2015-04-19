@@ -868,6 +868,18 @@ auto foo = void()()
             var source = @"int i = 4;
 sudo bring me beer;";
             ExecuteFailingTest(source);
-        }       
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestNull()
+        {
+            var source = @"
+                int i = null;
+                null = null + null;
+                foo(null);
+                null(null);
+                ";
+            ExecuteTest(source);
+        }    
     }
 }

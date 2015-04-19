@@ -68,6 +68,10 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public DotOperatorNode Append(ExpressionNode node)
         {
+            if(node.ExpressionType == ExpressionNodeType.Null)
+            {
+                ErrorCode.NullInsideDot.ReportAndThrow(node.SequencePoint, "Cannot use null as a value with dot operations");
+            }
             if(builtNode == null)
             {
                 AppendFirst(node);

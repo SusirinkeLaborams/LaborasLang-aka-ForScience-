@@ -69,8 +69,14 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (type.IsAuto())
             {
+                if (initializer.ExpressionReturnType.IsTypeless())
+                {
+                    ErrorCode.InferrenceFromTypeless.ReportAndThrow(initializer.SequencePoint, "Cannot infer type from a typeless expression");
+                }
                 if (initializer == null)
+                {
                     ErrorCode.MissingInit.ReportAndThrow(point, "Type inference requires initialization");
+                }
             }
 
             if (initializer != null)

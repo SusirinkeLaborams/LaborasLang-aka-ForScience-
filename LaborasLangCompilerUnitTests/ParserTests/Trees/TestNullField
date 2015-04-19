@@ -1,17 +1,15 @@
 Class:
-	CharLiteralTest
+	TestNullField
 	Fields:
 		FieldDeclaration:
 			Type:
-				System.Char
+				System.String
 			Name:
-				a
+				str
 			Modifiers:
 				Private, Mutable, NoInstance
 			Initializer:
-				Literal:
-					Type: System.Char
-					Value: ė
+				NullNode
 
 
 	Methods:
