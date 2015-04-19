@@ -271,6 +271,7 @@ namespace LaborasLangCompiler.FrontEnd
             var typeFullNames = new Dictionary<string, List<string>>();
             bool namesClash = false;
             List<string> filesWithoutMatchingRoot = null;
+            var currentDirectoryUri = new Uri(Directory.GetCurrentDirectory());
 
             for (int i = 0; i < sourceFiles.Count; i++)
             {
@@ -315,7 +316,8 @@ namespace LaborasLangCompiler.FrontEnd
                     }
                     else
                     {
-                        namespaze = Path.GetDirectoryName(sourceFiles[i]).Replace(Path.DirectorySeparatorChar, '.');
+                        var directory = GetNormalizedSourceFileDirectory(sourceFiles[i]);
+                        namespaze = directory.Replace(Path.DirectorySeparatorChar, '.');
                     }
                 }
 
@@ -374,6 +376,31 @@ namespace LaborasLangCompiler.FrontEnd
             }
 
             return fileToNamespaceMap;
+        }
+
+        private static string GetNormalizedSourceFileDirectory(string path)
+        {
+            var pathParts = path.Split(new[] { '\\', '/' }, StringSplitOptions.RemoveEmptyEntries);
+            var pathBuilder = new StringBuilder();
+
+            for (int i = 1; i < pathParts.Length; i++)
+            {
+                if (pathParts[i] != "..")
+                {
+                    pathBuilder.Append(pathParts[i - 1]);
+                    pathBuilder.Append(Path.DirectorySeparatorChar);
+
+                    if (pathParts[i] == ".")
+                        i++;
+                }
+                else
+                {
+                    i++;
+                }
+            }
+
+            pathBuilder.Remove(pathBuilder.Length - 1, 1);
+            return pathBuilder.ToString();
         }
 
         private static string ModuleKindToExtension(ModuleKind moduleKind)
