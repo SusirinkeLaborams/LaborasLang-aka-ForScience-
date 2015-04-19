@@ -14,10 +14,7 @@ namespace LaborasLangCompiler.Parser.Impl
 {
     class ForLoopNode : ParserNode, IForLoopNode
     {
-        public override NodeType Type
-        {
-            get { throw new NotImplementedException(); }
-        }
+        public override NodeType Type { get { return NodeType.ForLoop; } }
         public ICodeBlockNode InitializationBlock { get { return initializer; } }
         public IExpressionNode ConditionBlock { get { return condition; } }
         public ICodeBlockNode IncrementBlock { get { return increment; } }
