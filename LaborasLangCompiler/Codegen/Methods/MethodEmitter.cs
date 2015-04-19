@@ -422,7 +422,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (!elementSizeKnown)
             {
-                elementSizeVariable = temporaryVariables.Acquire(collectionType.ElementType);
+                elementSizeVariable = temporaryVariables.Acquire(Assembly.TypeSystem.UInt32);
                 Sizeof(collectionType.ElementType);
                 Stloc(elementSizeVariable.Index);
             }

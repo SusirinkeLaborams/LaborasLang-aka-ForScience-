@@ -1541,7 +1541,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
         }
 
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
-        public void TestForEachLoop_Array()
+        public void TestForEachLoop_IntArray()
         {
             var arrayCreation = new ArrayCreationNode()
             {
@@ -1552,6 +1552,32 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
 
             var expectedOutput = Enumerable.Range(0, 8).Select(i => i + Environment.NewLine).Aggregate((x, y) => x + y);
             TestForEachLoopHelper(arrayCreation, assemblyEmitter.TypeSystem.Int32, expectedOutput);
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestForEachLoop_StringArray()
+        {
+            var values = new[]
+            {
+                "one",
+                "two",
+                "three",
+                "four",
+                "five",
+                "six",
+                "seven",
+                "eight"
+            };
+
+            var arrayCreation = new ArrayCreationNode()
+            {
+                ExpressionReturnType = AssemblyRegistry.GetArrayType(assemblyEmitter.TypeSystem.String, 3),
+                Dimensions = new IExpressionNode[] { new LiteralNode(assemblyEmitter.TypeSystem.Int32, 2), new LiteralNode(assemblyEmitter.TypeSystem.Int32, 2), new LiteralNode(assemblyEmitter.TypeSystem.Int32, 2) },
+                Initializer = values.Select(v => new LiteralNode(assemblyEmitter.TypeSystem.String, v)).ToArray()
+            };
+
+            var expectedOutput = values.Select(i => i + Environment.NewLine).Aggregate((x, y) => x + y);
+            TestForEachLoopHelper(arrayCreation, assemblyEmitter.TypeSystem.String, expectedOutput);
         }
 
         [TestMethod, TestCategory("Execution Based Codegen Tests")]
