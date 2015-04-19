@@ -1,0 +1,17 @@
+﻿Class:
+	CharLiteralTest
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Char
+			Name:
+				a
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Literal:
+					Type: System.Char
+					Value: ė
+
+
+	Methods:

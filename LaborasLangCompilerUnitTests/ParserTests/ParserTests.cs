@@ -81,6 +81,21 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };";
             CompareTrees(source);
         }
+
+        [TestMethod, TestCategory("Parser")]
+        public void CharLiteralTest()
+        {
+            string source = @"auto a = 'ė';";
+            CompareTrees(source);
+        }
+
+        [TestMethod, TestCategory("Parser")]
+        public void MultipleCharLiteralTest()
+        {
+            string source = @"auto a = 'ėėė';";
+            CompareTrees(source, new[] { ErrorCode.MultipleCharacterLiteral });
+        }
+
         [TestMethod, TestCategory("Parser")]
         public void StringLiteralTest()
         {

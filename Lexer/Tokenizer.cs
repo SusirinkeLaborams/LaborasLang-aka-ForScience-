@@ -59,9 +59,14 @@ namespace Lexer
                     #endregion
                     #region StringLiteral
                     case '\'':
+                        {
+                            var token = CreateString(rootNode, source, builder, source.Peek(), TokenType.CharLiteral);
+                            tokens.Add(token);
+                            break;
+                        }
                     case '"':
-                        {                         
-                            var token = CreateString(rootNode, source, builder, source.Peek());
+                        {
+                            var token = CreateString(rootNode, source, builder, source.Peek(), TokenType.StringLiteral);
                             tokens.Add(token);
                             break;
                         }
@@ -624,12 +629,12 @@ namespace Lexer
             return token;
         }
 
-        private static Token CreateString(RootNode rootNode, SourceReader Source, FastStringBuilder builder, char quote)
+        private static Token CreateString(RootNode rootNode, SourceReader Source, FastStringBuilder builder, char quote, TokenType literalType)
         {
             var token = rootNode.ProvideToken();
             builder.Clear();
 
-            token.Type = TokenType.StringLiteral;
+            token.Type = literalType;
 
             //Opening quote
             Source.Pop();

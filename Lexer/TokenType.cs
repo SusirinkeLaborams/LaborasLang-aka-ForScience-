@@ -17,6 +17,7 @@
         NotEqual,
         Not,
         PlusEqual,
+        CharLiteral,
         StringLiteral,
         BitwiseComplement,
         BitwiseXor,

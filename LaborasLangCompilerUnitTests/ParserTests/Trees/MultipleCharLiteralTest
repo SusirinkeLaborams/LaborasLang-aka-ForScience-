@@ -1,0 +1,12 @@
+Class:
+	MultipleCharLiteralTest
+	Fields:
+		FieldDeclaration:
+			Type:
+				auto
+			Name:
+				a
+			Modifiers:
+				0
+
+	Methods:
