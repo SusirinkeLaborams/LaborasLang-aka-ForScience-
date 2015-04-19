@@ -770,6 +770,33 @@ namespace LaborasLangCompiler.Codegen
             }
         }
 
+        public static bool IsEnumerable(this TypeReference type)
+        {
+            if (type is ArrayType)
+                return true;
+
+            return AssemblyRegistry.GetGetEnumeratorMethod(type, type.Module.TypeSystem.Object) != null;
+        }
+
+        public static TypeReference GetEnumerableElementType(this TypeReference type)
+        {
+            var arrayType = type as ArrayType;
+            if (arrayType != null)
+                return arrayType.ElementType;
+
+            var getEnumeratorMethod = AssemblyRegistry.GetGetEnumeratorMethod(type, type.Module.TypeSystem.Object);
+
+            if (getEnumeratorMethod == null)
+                return null;
+
+            var getCurrentMethod = AssemblyRegistry.GetEnumeratorCurrentMethod(getEnumeratorMethod.GetReturnType(), type.Module.TypeSystem.Object);
+
+            if (getCurrentMethod == null)
+                return null;
+
+            return getCurrentMethod.GetReturnType();
+        }
+
         static MetadataHelpers()
         {
             assignmentMap = new Dictionary<MetadataType, MetadataType[]>();

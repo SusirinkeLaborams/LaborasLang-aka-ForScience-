@@ -167,5 +167,33 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
             throw new Exception(string.Format("Tests failed!\r\nSucceeded tests: {0}\r\nFailed tests: {1}\r\nTests that didn't run: {2}\r\n{3}",
                 succeededTests, failedTests, didntRunTests, testReport.ToString()));
         }
+
+        [TestMethod, TestCategory("All Tests")]
+        public void AllMiscILTests()
+        {
+            var baseType = typeof(TestBase);
+            var allMethods = baseType.Assembly.GetTypes().Where(t => baseType.IsAssignableFrom(t)).SelectMany(t => t.GetMethods());
+            var testMethods = new List<MethodInfo>();
+
+            foreach (var method in allMethods)
+            {
+                var customAttributes = method.GetCustomAttributes(typeof(TestCategoryAttribute), false);
+
+                foreach (TestCategoryAttribute attribute in customAttributes)
+                {
+                    if (attribute.TestCategories.Contains("Misc IL Tests"))
+                    {
+                        testMethods.Add(method);
+                        break;
+                    }
+                }
+            }
+
+            foreach (var method in testMethods)
+            {
+                var instance = Activator.CreateInstance(method.DeclaringType);
+                method.Invoke(instance, new object[0]);
+            }
+        }
     }
 }
