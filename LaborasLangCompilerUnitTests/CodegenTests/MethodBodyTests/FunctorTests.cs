@@ -522,7 +522,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             return AssemblyRegistry.GetFunctorType(assemblyEmitter, returnType, args);
         }
 
-        [TestMethod, TestCategory("Misc IL Tests"), TestCategory("All Tests")]
+        [TestMethod, TestCategory("Misc IL Tests")]
         public void Test_FunctorNamesDoNotClash()
         {
             var intType = assemblyEmitter.TypeSystem.Int32;

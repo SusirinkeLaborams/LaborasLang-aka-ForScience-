@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Threading;
 
 namespace LaborasLangCompilerUnitTests
@@ -13,8 +14,9 @@ namespace LaborasLangCompilerUnitTests
             timeOutInMilliseconds = Debugger.IsAttached ? Timeout.Infinite : timeOutInMilliseconds;
             stdIn = stdIn != null ? stdIn : string.Empty;
             string stdOut = string.Empty;
+            string exceptionText = string.Empty;
 
-            bool testFinished = false;
+            bool testTimedOut = false;
             int exitCode = -1;
 
             var testThread = new Thread(() =>
@@ -33,10 +35,13 @@ namespace LaborasLangCompilerUnitTests
                 try
                 {
                     exitCode = testDomain.ExecuteAssembly(exePath, arguments);
-                    testFinished = true;
                 }
                 catch (ThreadAbortException)
                 {
+                }
+                catch (Exception e)
+                {
+                    exceptionText = e.ToString();
                 }
                 finally
                 {
@@ -48,17 +53,25 @@ namespace LaborasLangCompilerUnitTests
             testThread.Start();
             if (!testThread.Join(timeOutInMilliseconds))
             {
+                testTimedOut = true;
                 testThread.Abort();
             }
 
-            if (!testFinished)
+            if (testTimedOut)
             {
                 throw new TimeoutException(stdOut);
             }
 
             if (exitCode != 0)
             {
-                throw new Exception(stdOut);
+                var message = new StringBuilder(stdOut);
+
+                if (!string.IsNullOrEmpty(exceptionText))
+                {
+                    message.AppendFormat("{0}{1} threw an exception: {2}", Environment.NewLine, Path.GetFileName(exePath), exceptionText);
+                }
+
+                throw new Exception(message.ToString());
             }
 
             return stdOut;
