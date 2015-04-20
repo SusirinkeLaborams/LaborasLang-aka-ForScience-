@@ -83,11 +83,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 ErrorCode.TypeMissmatch.ReportAndThrow(declaration.SequencePoint, "Cannot assign collection elements of type {0} to {1}", collectionElementType, declaration.Variable.VariableType);
             }
 
-            var body = CodeBlockNode.Parse(instance, lexerNode.Children[6]);
-
             instance.collection = collection;
             instance.variable = declaration;
-            instance.body = body;
+
+            instance.body = CodeBlockNode.Parse(instance, lexerNode.Children[6]);
 
             return instance;
         }
