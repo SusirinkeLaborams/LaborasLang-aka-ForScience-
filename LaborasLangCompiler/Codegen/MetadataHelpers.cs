@@ -138,6 +138,21 @@ namespace LaborasLangCompiler.Codegen
             return type.IsNullType();
         }
 
+        public static bool IsCastableTo(this TypeReference from, TypeReference to)
+        {
+            if (to.IsAssignableTo(from) || from.IsAssignableTo(to))
+            {
+                return true;
+            }
+
+            if(from.IsPrimitive && to.IsPrimitive)
+            {
+                return !from.IsBooleanType() || !to.IsBooleanType();
+            }
+
+            return false;
+        }
+
         public static bool IsAssignableTo(this TypeReference right, TypeReference left)
         {
             Contract.Requires(left != null);

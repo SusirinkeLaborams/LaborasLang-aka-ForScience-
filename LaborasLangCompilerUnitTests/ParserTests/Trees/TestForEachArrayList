@@ -1,0 +1,37 @@
+Class:
+	TestForEachArrayList
+	Fields:
+	Methods:
+		Method:
+			Name:
+				main
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						ForEach:
+							Variable:
+								VariableDeclaration:
+									Symbol:
+										System.Object foo
+
+							Collection:
+								ObjectCreation:
+									Type: System.Collections.ArrayList
+									Args:
+									Constructor:
+										System.Void System.Collections.ArrayList::.ctor()
+
+							Body:
+								CodeBlock:
+									Symbols:
+									Nodes:
+
+
+
+

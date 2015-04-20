@@ -1337,7 +1337,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 auto foo = null();
             ";
-            CompareTrees(source, ErrorCode.NullInsideDot.Enumerate());
+            CompareTrees(source, ErrorCode.NotCallable.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestForEachArrayList()
@@ -1375,7 +1375,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     for(int foo in lst);
                 };
             ";
-            CompareTrees(source, ErrorCode.InvalidForEachVariableType.Enumerate());
+            CompareTrees(source, ErrorCode.TypeMissmatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestForEachOverInteger()
@@ -1397,7 +1397,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 use System.Collections;
                 auto main = void()
                 {
-                    int lst = ArrayList();
+                    auto lst = int[]{};
                     for(int foo in lst);
                     foo++;
                 };
@@ -1462,7 +1462,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     }
                 };
             ";
-            CompareTrees(source, ErrorCode.NotAnLValue.Enumerate());
+            CompareTrees(source, ErrorCode.InvalidForEachCollection.Enumerate());
         }
     }
 }

@@ -97,7 +97,12 @@ namespace LaborasLangCompiler.Parser.Impl
             }
 
             // no special action
-            if(node is CodeBlockNode || node is ConditionBlockNode || node is WhileBlock || node is ReturnNode || node is ForLoopNode)
+            if(node is CodeBlockNode ||
+                node is ConditionBlockNode || 
+                node is WhileBlock || 
+                node is ReturnNode || 
+                node is ForLoopNode || 
+                node is ForEachNode)
             {
                 nodes.Add(node);
                 return this;
@@ -119,6 +124,8 @@ namespace LaborasLangCompiler.Parser.Impl
                     return AddNode(CodeBlockNode.Parse(this, lexerNode));
                 case Lexer.TokenType.ForLoop:
                     return AddNode(ForLoopNode.Parse(this, lexerNode));
+                case Lexer.TokenType.ForEachLoop:
+                    return AddNode(ForEachNode.Parse(this, lexerNode));
                 case Lexer.TokenType.StatementWithEndOfLine:
                     if (lexerNode.Children.Count == 2)
                     {

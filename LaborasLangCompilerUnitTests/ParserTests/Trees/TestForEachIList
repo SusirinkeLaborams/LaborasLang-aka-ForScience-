@@ -1,0 +1,49 @@
+Class:
+	TestForEachIList
+	Fields:
+	Methods:
+		Method:
+			Name:
+				main
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+						System.Collections.IList lst
+					Nodes:
+						VariableDeclaration:
+							Symbol:
+								System.Collections.IList lst
+							Initializer:
+								ObjectCreation:
+									Type: System.Collections.ArrayList
+									Args:
+									Constructor:
+										System.Void System.Collections.ArrayList::.ctor()
+
+
+						ForEach:
+							Variable:
+								VariableDeclaration:
+									Symbol:
+										System.Object foo
+
+							Collection:
+								Local:
+									Name:
+										lst
+									Type:
+										System.Collections.IList
+
+							Body:
+								CodeBlock:
+									Symbols:
+									Nodes:
+
+
+
+
