@@ -1300,7 +1300,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             CompareTrees(source);
         }
         [TestMethod, TestCategory("Parser")]
-        public void TestCallOnNull()
+        public void TestDotOnNull()
         {
             string source = @"
                 auto foo = null.Bar();
@@ -1330,6 +1330,14 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto foo = {{null, null}, {""bar"", ""foo""}};
             ";
             CompareTrees(source, ErrorCode.InferrenceFromTypeless.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestCallOnNull()
+        {
+            string source = @"
+                auto foo = null();
+            ";
+            CompareTrees(source, ErrorCode.NullInsideDot.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestForEachArrayList()
@@ -1434,6 +1442,21 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     auto lst = int[]{};
                     for(int foo in lst)
+                    {
+                        foo = 5;
+                    }
+                };
+            ";
+            CompareTrees(source, ErrorCode.NotAnLValue.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestForEachOverNull()
+        {
+            string source = @"
+                use System.Collections;
+                auto main = void()
+                {
+                    for(int foo in null)
                     {
                         foo = 5;
                     }
