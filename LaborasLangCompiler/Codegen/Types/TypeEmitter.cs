@@ -56,6 +56,8 @@ namespace LaborasLangCompiler.Codegen.Types
             {
                 Assembly.AddType(typeDefinition);
             }
+
+            Assembly.AddTypeUsage(baseType);
         }
 
         public void AddMethod(MethodDefinition method)
@@ -76,7 +78,7 @@ namespace LaborasLangCompiler.Codegen.Types
             }
 
             typeDefinition.Fields.Add(field);
-            AddTypeToAssemblyIfNeeded(field.FieldType);
+            Assembly.AddTypeUsage(field.FieldType);
         }
 
         public void AddFieldInitializer(FieldDefinition field, IExpressionNode initializer)
@@ -116,13 +118,13 @@ namespace LaborasLangCompiler.Codegen.Types
                 }
             }
 
-            AddTypeToAssemblyIfNeeded(property.PropertyType);
+            Assembly.AddTypeUsage(property.PropertyType);
             
             var accessor = property.GetMethod ?? property.SetMethod;
 
             foreach (var type in accessor.GetParameterTypes())
             {
-                AddTypeToAssemblyIfNeeded(type);
+                Assembly.AddTypeUsage(type);
             }
         }
 
@@ -186,17 +188,6 @@ namespace LaborasLangCompiler.Codegen.Types
         {
             Contract.Ensures(Contract.Result<TypeReference>() != null);
             return AssemblyRegistry.FindType(assembly, typeDefinition.FullName);
-        }
-
-        private void AddTypeToAssemblyIfNeeded(TypeReference type)
-        {
-            if (type.IsFunctorType())
-            {
-                var typeDef = type.Resolve();
-
-                if (typeDef.Scope == null)
-                    Assembly.AddTypeIfNotAdded(typeDef);
-            }
         }
 
         private ConstructorEmitter GetInstanceConstructor()

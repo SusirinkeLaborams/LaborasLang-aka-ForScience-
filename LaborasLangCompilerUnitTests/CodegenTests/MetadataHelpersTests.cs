@@ -164,6 +164,15 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         }
 
         [TestMethod, TestCategory("Misc IL Tests")]
+        public void TestFunctorIsAssignableTo()
+        {
+            var voidType = AssemblyRegistry.FindType(assembly, "System.Void");
+            var objectType = AssemblyRegistry.FindType(assembly, "System.Object");
+            var voidNoParams = AssemblyRegistry.GetFunctorType(assembly, voidType, new TypeReference[] { });
+            Assert.IsTrue(voidNoParams.IsAssignableTo(objectType));
+        }
+
+        [TestMethod, TestCategory("Misc IL Tests")]
         public void TestIsEnumerable()
         {
             var stringType = AssemblyRegistry.FindType(assembly, "System.String");

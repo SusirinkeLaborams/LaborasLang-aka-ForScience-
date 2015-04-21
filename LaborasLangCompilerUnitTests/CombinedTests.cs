@@ -178,7 +178,7 @@ namespace LaborasLangCompilerUnitTests
 
             for (int i = 0; i < testMethods.Count; i++)
             {
-                var startTestMessage = string.Format("Starting test: {0}", testMethods[i].Name);
+                var startTestMessage = string.Format("Starting test: {0}\r\n", testMethods[i].Name);
                 var messageIndex = stdOut.IndexOf(startTestMessage);
 
                 if (messageIndex == -1)
@@ -188,7 +188,7 @@ namespace LaborasLangCompilerUnitTests
                     continue;
                 }
 
-                var messageEndIndex = stdOut.IndexOf("Starting test:", messageIndex + startTestMessage.Length + 1);
+                var messageEndIndex = stdOut.IndexOf("Starting test:", messageIndex + startTestMessage.Length);
                 string testOutput;
 
                 if (messageEndIndex != -1)

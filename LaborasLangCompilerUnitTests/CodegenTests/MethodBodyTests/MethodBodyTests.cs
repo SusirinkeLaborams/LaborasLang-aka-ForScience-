@@ -273,6 +273,50 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             AssertSuccessByExecution();
         }
 
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_Null()
+        {
+            var localVariable = new VariableDefinition(assemblyEmitter.TypeSystem.Object);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new List<IParserNode>()
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        Variable = localVariable
+                    },
+                    new ConditionBlockNode()
+                    {
+                        Condition = new BinaryOperatorNode()
+                        {
+                            ExpressionReturnType = assemblyEmitter.TypeSystem.Boolean,
+                            BinaryOperatorType = BinaryOperatorNodeType.NotEquals,
+                            LeftOperand = new LocalVariableNode(localVariable),
+                            RightOperand = new NullNode()
+                        },
+                        TrueBlock = new CodeBlockNode()
+                        {
+                            Nodes = new IParserNode[]
+                            {
+                                CallConsoleWriteLine(new LiteralNode(assemblyEmitter.TypeSystem.String, "Empty variable is not null."))
+                            }
+                        },
+                        FalseBlock = new CodeBlockNode()
+                        {
+                            Nodes = new IParserNode[]
+                            {
+                                CallConsoleWriteLine(new LiteralNode(assemblyEmitter.TypeSystem.String, "Empty variable is null."))
+                            }
+                        }
+                    }
+                }
+            };
+
+            ExpectedOutput = "Empty variable is null.";
+            AssertSuccessByExecution();
+        }
+
         #endregion
 
         #region Operator tests
