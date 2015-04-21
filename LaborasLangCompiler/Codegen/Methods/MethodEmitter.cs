@@ -264,6 +264,7 @@ namespace LaborasLangCompiler.Codegen.Methods
         private void Emit(ISymbolDeclarationNode symbolDeclaration)
         {
             body.Variables.Add(symbolDeclaration.Variable);
+            Assembly.AddTypeUsage(symbolDeclaration.Variable.VariableType);
 
             if (symbolDeclaration.Initializer != null && symbolDeclaration.Initializer.ExpressionType != ExpressionNodeType.ValueCreation)
             {
