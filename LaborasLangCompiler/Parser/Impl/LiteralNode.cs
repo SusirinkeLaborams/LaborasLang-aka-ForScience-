@@ -14,6 +14,7 @@ using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
 using Lexer;
 using System.Diagnostics.Contracts;
+using System.Numerics;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -158,25 +159,34 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private static LiteralNode ParseInteger(string value, TypeReference expectedType, SequencePoint point)
+        private static LiteralNode ParseInteger(ProjectParser parser, string value, SequencePoint point)
         {
             try
             {
-                if (value[0] == '-')
+                var parsed = BigInteger.Parse(value, CultureInfo.InvariantCulture);
+                if (parsed.Sign > 0)
                 {
-                    long parsed = Convert.ToInt64(value, CultureInfo.InvariantCulture);
+                    var type = parser.MaxValues.Where(kv => kv.Key >= parsed).OrderBy(kv => kv.Key).FirstOrDefault().Value;
+                    if (type != null)
+                    {
+                        return new LiteralNode(new Literal((ulong)parsed), type, point);
+                    }
                 }
-            }
-            catch (OverflowException)
-            {
-                ErrorCode.InvalidStructure.ReportAndThrow(point, "Could not parse {0} as {1}, overflow", value, type.FullName);
-                return null;//unreachable
+                else
+                {
+                    var type = parser.MinValues.Where(kv => kv.Key <= parsed).OrderBy(kv => kv.Key).LastOrDefault().Value;
+                    if (type != null)
+                    {
+                        return new LiteralNode(new Literal((ulong)parsed), type, point);
+                    }
+                }
+                ErrorCode.IntegerOverlflow.ReportAndThrow(point, "Cannot fit {0} into an integer, use BigInteger.Parse", value);
             }
             catch (FormatException)
             {
-                ErrorCode.InvalidStructure.ReportAndThrow(point, "Could not parse {0} as {1}, format error", value, type.FullName);
-                return null;//unreachable
+                ContractsHelper.AssumeUnreachable("Error parsing {0} as integer", value);
             }
+            return Utils.Utils.Fail<LiteralNode>();
         }
 
         public ExpressionNode RemoveAmbiguity(ContextNode context, TypeReference expectedType)
