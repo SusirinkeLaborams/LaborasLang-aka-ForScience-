@@ -1464,5 +1464,79 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source, ErrorCode.InvalidForEachCollection.Enumerate());
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestUpCast()
+        {
+            string source = @"
+                object foo = (object)""str"";
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestDownCast()
+        {
+            string source = @"
+                string bar = (string)object();
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNestedCast()
+        {
+            string source = @"
+                string bar = (string)(object)""foo"";
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestIllegalCast()
+        {
+            string source = @"
+                string bar = (string)5;
+            ";
+            CompareTrees(source, ErrorCode.IllegalCast.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestFunctorUpCast()
+        {
+            string source = @"
+                object foo = (object)void(){};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestFunctorDownCast()
+        {
+            string source = @"
+                object foo = (object)void(){};
+                auto bar = (void())foo;
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestCallOnCast()
+        {
+            string source = @"
+                object foo = (object)void(){};
+                auto bar = ((void())foo)();
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNullCast()
+        {
+            string source = @"
+                auto str = (string)null;
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNullToValueCast()
+        {
+            string source = @"
+                auto str = (int)null;
+            ";
+            CompareTrees(source, ErrorCode.IllegalCast.Enumerate());
+        }
     }
 }
