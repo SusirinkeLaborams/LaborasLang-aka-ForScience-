@@ -1,0 +1,19 @@
+Class:
+	TestNullCast
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.String
+			Name:
+				str
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Cast:
+					Type: System.String
+					Expression:
+						NullNode
+
+
+
+	Methods:

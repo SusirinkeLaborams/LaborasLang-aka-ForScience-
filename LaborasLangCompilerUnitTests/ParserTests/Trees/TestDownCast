@@ -1,0 +1,23 @@
+Class:
+	TestDownCast
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.String
+			Name:
+				bar
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Cast:
+					Type: System.String
+					Expression:
+						ObjectCreation:
+							Type: System.Object
+							Args:
+							Constructor:
+								System.Void System.Object::.ctor()
+
+
+
+	Methods:

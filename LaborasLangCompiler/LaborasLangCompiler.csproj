@@ -226,6 +226,7 @@
     <Compile Include="Parser\Impl\AmbiguousMethodNode.cs" />
     <Compile Include="Parser\Impl\ArrayAccessNode.cs" />
     <Compile Include="Parser\Impl\ArrayCreationNode.cs" />
+    <Compile Include="Parser\Impl\CastNode.cs" />
     <Compile Include="Parser\Impl\FieldNode.cs" />
     <Compile Include="Parser\Impl\ForEachNode.cs" />
     <Compile Include="Parser\Impl\ForLoopNode.cs" />

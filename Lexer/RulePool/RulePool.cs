@@ -99,7 +99,7 @@ namespace Lexer
                         CastOperator),
 
                     ParseRule(CastOperator,
-                    LeftParenthesis + Type +  RightParenthesis),
+                        LeftParenthesis + Type + RightParenthesis),
                         
                     CollapsableParseRule(CodeBlockNode,
                         LeftCurlyBrace + ZeroOrMore(CodeConstruct) + RightCurlyBrace),
