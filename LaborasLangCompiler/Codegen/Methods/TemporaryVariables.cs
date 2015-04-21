@@ -20,11 +20,13 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
+        private readonly AssemblyEmitter assembly;
         private readonly MethodBody methodBody;
         private List<TempVariable> temporaryVariables;
 
-        public TemporaryVariables(MethodBody methodBody) : this()
+        public TemporaryVariables(AssemblyEmitter assembly, MethodBody methodBody) : this()
         {
+            this.assembly = assembly;
             this.methodBody = methodBody;
         }
 
@@ -50,6 +52,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             var variable = new VariableDefinition(variableName, type);
             temporaryVariables.Add(new TempVariable(variable, true));
             methodBody.Variables.Add(variable);
+            assembly.AddTypeUsage(type);
             return variable;
         }
 

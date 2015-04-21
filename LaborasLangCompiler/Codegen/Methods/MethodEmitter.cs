@@ -223,7 +223,8 @@ namespace LaborasLangCompiler.Codegen.Methods
                     return;
 
                 case ExpressionNodeType.Null:
-                    throw new NotImplementedException();
+                    EmitNull(expression, emissionType);
+                    return;
 
                 case ExpressionNodeType.ObjectCreation:
                     Emit((IObjectCreationNode)expression, emissionType);
@@ -264,6 +265,7 @@ namespace LaborasLangCompiler.Codegen.Methods
         private void Emit(ISymbolDeclarationNode symbolDeclaration)
         {
             body.Variables.Add(symbolDeclaration.Variable);
+            Assembly.AddTypeUsage(symbolDeclaration.Variable.VariableType);
 
             if (symbolDeclaration.Initializer != null && symbolDeclaration.Initializer.ExpressionType != ExpressionNodeType.ValueCreation)
             {
@@ -1042,7 +1044,12 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             if (targetType is ByReferenceType)
             {
-                Contract.Assert(CanEmitAsReference(expression));
+                if (expression.ExpressionType == ExpressionNodeType.Null)
+                {
+                    EmitReferenceToNull(targetType);
+                    return;
+                }
+
                 Emit(expression, EmissionType.ReferenceToValue);
                 return;
             }
@@ -1643,6 +1650,24 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (emissionType == EmissionType.ReferenceToValue && !methodDefinition.DeclaringType.IsValueType)
                 LoadAddressOfValue(expression);
+        }
+
+        private void EmitNull(IExpressionNode expression, EmissionType emissionType)
+        {
+            Contract.Requires(emissionType != EmissionType.ReferenceToValue);
+
+            if (emissionType != EmissionType.None)
+                Ldnull();
+        }
+
+        private void EmitReferenceToNull(TypeReference type)
+        {
+            Contract.Requires(!type.IsValueType);
+            var temporaryVariable = temporaryVariables.Acquire(type);
+            
+            Ldnull();
+            Stloc(temporaryVariable.Index);
+            Ldloca(temporaryVariable.Index);
         }
 
         private void Emit(IUnaryOperatorNode unaryOperator, EmissionType emissionType)
@@ -2260,28 +2285,31 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         protected void EmitOperandsAndConvertIfNeeded(IExpressionNode left, IExpressionNode right)
         {
-            bool conversionNeeded = left.ExpressionReturnType.FullName != right.ExpressionReturnType.FullName;
+            TypeReference leftType = left.ExpressionReturnType;
+            TypeReference rightType = right.ExpressionReturnType;
+
+            bool conversionNeeded = leftType.FullName != rightType.FullName;
 
             if (!conversionNeeded)
             {
                 Emit(left, EmissionType.Value);
                 Emit(right, EmissionType.Value);
             }
-            else if (left.ExpressionReturnType.IsAssignableTo(right.ExpressionReturnType))
+            else if (leftType.IsAssignableTo(rightType))
             {
                 Emit(left, EmissionType.Value);
-                EmitConversionIfNeeded(left.ExpressionReturnType, right.ExpressionReturnType);
+                EmitConversionIfNeeded(leftType, rightType);
                 Emit(right, EmissionType.Value);
             }
-            else if (right.ExpressionReturnType.IsAssignableTo(right.ExpressionReturnType))
+            else if (rightType.IsAssignableTo(leftType))
             {
                 Emit(left, EmissionType.Value);
                 Emit(right, EmissionType.Value);
-                EmitConversionIfNeeded(right.ExpressionReturnType, left.ExpressionReturnType);
+                EmitConversionIfNeeded(rightType, leftType);
             }
             else
             {
-                ContractsHelper.AssumeUnreachable(string.Format("{0} and {1} cannot be cast to each other!", left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName));
+                ContractsHelper.AssumeUnreachable(string.Format("{0} and {1} cannot be cast to each other!", leftType.FullName, rightType.FullName));
             }
         }
 

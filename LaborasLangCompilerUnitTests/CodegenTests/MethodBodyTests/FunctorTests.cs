@@ -5,6 +5,7 @@ using LaborasLangCompiler.Parser;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
+using System;
 using System.Collections.Generic;
 
 namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
@@ -550,10 +551,90 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             foreach (var type in types)
-                assemblyEmitter.AddTypeIfNotAdded(type.Resolve());
+                assemblyEmitter.AddTypeUsage(type);
 
             ExpectedILFilePath = "Test_FunctorNamesDoNotClash.il";
             AssertSuccessByILComparison();
+        }
+
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void Test_FunctorsGetIncludedToAssembly()
+        {
+            var intType = assemblyEmitter.TypeSystem.Int32;
+            var stringType = assemblyEmitter.TypeSystem.String;
+            var floatType = assemblyEmitter.TypeSystem.Single;
+            var boolType = assemblyEmitter.TypeSystem.Boolean;
+
+            var functor1 = GetFunctorType(intType, stringType, floatType, boolType);
+            var functor2 = GetFunctorType(stringType, intType, floatType, boolType);
+            var functor3 = GetFunctorType(stringType, floatType, intType, boolType);
+            var functor4 = GetFunctorType(stringType, floatType, boolType, intType);
+            var functor5 = GetFunctorType(stringType, boolType, floatType, intType);
+
+            var method1 = new MethodEmitter(typeEmitter, "ReturnsFunctor", functor1, MethodAttributes.Static | MethodAttributes.Private);
+            method1.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    CallConsoleWriteLine(new LiteralNode(stringType, "Inside method that returns functor.")),
+                    new ReturnNode()
+                    {
+                        Expression = new NullNode()
+                    }
+                }
+            });
+
+            var field = new FieldDefinition("functorField", FieldAttributes.Static | FieldAttributes.Private, functor2);
+            typeEmitter.AddField(field);
+
+            var method2 = new MethodEmitter(typeEmitter, "TakesFunctorAsArgument", assemblyEmitter.TypeSystem.Void, MethodAttributes.Static | MethodAttributes.Private);
+            var parameter = method2.AddArgument(functor3, "param");
+
+            method2.ParseTree(new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    CallConsoleWriteLine(new LiteralNode(stringType, "Inside method that takes functor parameter. Its value: {0}."), new ParameterNode(parameter))
+                }
+            });
+
+            var localVariable = new VariableDefinition(functor4);
+
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    new SymbolDeclarationNode()
+                    {
+                        Variable = localVariable
+                    },
+                    CallConsoleWriteLine(new LiteralNode(stringType, "Value of functor field: {0}."), new FieldNode(field)),
+                    CallConsoleWriteLine(new LiteralNode(stringType, "Value of functor local variable: {0}."), new LocalVariableNode(localVariable)),
+                    CallConsoleWriteLine(new LiteralNode(stringType, "Value of null cast to functor: {0}."), new CastNode(new NullNode(), functor5)),
+                    new MethodCallNode()
+                    {
+                        Function = new FunctionNode()
+                        {
+                            Method = method1.Get()
+                        },
+                        Args = new IExpressionNode[0]
+                    },
+                    new MethodCallNode()
+                    {
+                        Function = new FunctionNode()
+                        {
+                            Method = method2.Get()
+                        },
+                        Args = new IExpressionNode[]
+                        {
+                            new NullNode()
+                        }
+                    }
+                }
+            };
+
+            ExpectedOutput = string.Format("Value of functor field: .{0}Value of functor local variable: .{0}Value of null cast to functor: .{0}Inside method that returns functor.{0}Inside method that takes functor parameter. Its value: .", Environment.NewLine);
+            AssertSuccessByExecution();
         }
     }
 }
