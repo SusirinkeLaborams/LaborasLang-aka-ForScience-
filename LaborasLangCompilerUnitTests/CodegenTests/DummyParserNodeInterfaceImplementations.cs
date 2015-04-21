@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.Codegen;
+using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
@@ -21,8 +22,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
         public SequencePoint SequencePoint { get { return null; } }
         public NodeType Type { get { return NodeType.Expression; } }
         public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Null; } }
-
-        public TypeReference ExpressionReturnType { get; set; }
+        public TypeReference ExpressionReturnType { get { return NullType.Instance; } }
     }
 
     class LiteralNode : ILiteralNode

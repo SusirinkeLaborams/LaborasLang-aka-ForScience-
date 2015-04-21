@@ -2288,28 +2288,6 @@ namespace LaborasLangCompiler.Codegen.Methods
             TypeReference leftType = left.ExpressionReturnType;
             TypeReference rightType = right.ExpressionReturnType;
 
-            if (left.ExpressionType == ExpressionNodeType.Null)
-            {
-                if (right.ExpressionType == ExpressionNodeType.Null)
-                {
-                    leftType = Assembly.TypeSystem.Object;
-                    rightType = Assembly.TypeSystem.Object;
-                }
-                else
-                {
-                    leftType = rightType = right.ExpressionReturnType;
-                }
-            }
-            else if (right.ExpressionType == ExpressionNodeType.Null)
-            {
-                leftType = rightType = left.ExpressionReturnType;                
-            }
-            else
-            {
-                leftType = left.ExpressionReturnType;
-                rightType = right.ExpressionReturnType;
-            }
-
             bool conversionNeeded = leftType.FullName != rightType.FullName;
 
             if (!conversionNeeded)
@@ -2323,7 +2301,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 EmitConversionIfNeeded(leftType, rightType);
                 Emit(right, EmissionType.Value);
             }
-            else if (rightType.IsAssignableTo(rightType))
+            else if (rightType.IsAssignableTo(leftType))
             {
                 Emit(left, EmissionType.Value);
                 Emit(right, EmissionType.Value);
