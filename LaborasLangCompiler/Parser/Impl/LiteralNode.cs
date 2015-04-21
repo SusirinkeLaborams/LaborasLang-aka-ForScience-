@@ -67,6 +67,8 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             switch(lexerNode.Type)
             {
+                case Lexer.TokenType.Long:
+                    return parser.Int64;
                 case Lexer.TokenType.Integer:
                     return parser.Int32;
                 case Lexer.TokenType.CharLiteral:
@@ -150,6 +152,27 @@ namespace LaborasLangCompiler.Parser.Impl
                 return null;//unreachable
             }
             catch(FormatException)
+            {
+                ErrorCode.InvalidStructure.ReportAndThrow(point, "Could not parse {0} as {1}, format error", value, type.FullName);
+                return null;//unreachable
+            }
+        }
+
+        private static LiteralNode ParseInteger(string value, TypeReference expectedType, SequencePoint point)
+        {
+            try
+            {
+                if (value[0] == '-')
+                {
+                    long parsed = Convert.ToInt64(value, CultureInfo.InvariantCulture);
+                }
+            }
+            catch (OverflowException)
+            {
+                ErrorCode.InvalidStructure.ReportAndThrow(point, "Could not parse {0} as {1}, overflow", value, type.FullName);
+                return null;//unreachable
+            }
+            catch (FormatException)
             {
                 ErrorCode.InvalidStructure.ReportAndThrow(point, "Could not parse {0} as {1}, format error", value, type.FullName);
                 return null;//unreachable
