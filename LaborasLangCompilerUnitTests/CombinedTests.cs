@@ -229,15 +229,23 @@ namespace LaborasLangCompilerUnitTests
             foreach (var method in allMethods)
             {
                 var customAttributes = method.GetCustomAttributes(typeof(TestCategoryAttribute), false);
+                bool hasCategory = false;
+                bool isDisabled = false;
 
                 foreach (TestCategoryAttribute attribute in customAttributes)
                 {
                     if (attribute.TestCategories.Contains(category))
                     {
-                        testMethods.Add(method);
-                        break;
+                        hasCategory = true;
+                    }
+                    else if (attribute.TestCategories.Contains("Disabled"))
+                    {
+                        isDisabled = true;
                     }
                 }
+                
+                if (hasCategory && !isDisabled)
+                    testMethods.Add(method);
             }
 
             return testMethods;
