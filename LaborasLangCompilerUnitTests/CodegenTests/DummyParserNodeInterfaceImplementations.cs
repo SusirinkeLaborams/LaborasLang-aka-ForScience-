@@ -16,6 +16,14 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         public TypeReference ExpressionReturnType { get; set; }
     }
+    class NullNode : IExpressionNode
+    {
+        public SequencePoint SequencePoint { get { return null; } }
+        public NodeType Type { get { return NodeType.Expression; } }
+        public ExpressionNodeType ExpressionType { get { return ExpressionNodeType.Null; } }
+
+        public TypeReference ExpressionReturnType { get; set; }
+    }
 
     class LiteralNode : ILiteralNode
     {

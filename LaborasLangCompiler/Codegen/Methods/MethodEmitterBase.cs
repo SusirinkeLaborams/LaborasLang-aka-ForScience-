@@ -74,15 +74,6 @@ namespace LaborasLangCompiler.Codegen.Methods
             return Instruction.Create(OpCodes.Nop);
         }
 
-        [Pure]
-        protected static bool CanEmitAsReference(IExpressionNode node)
-        {
-            return node.ExpressionType == ExpressionNodeType.LocalVariable ||
-                node.ExpressionType == ExpressionNodeType.Field ||
-                node.ExpressionType == ExpressionNodeType.FunctionArgument ||
-                node.ExpressionType == ExpressionNodeType.ArrayAccess;
-        }
-
         protected static bool IsAtLeastOneOperandString(IBinaryOperatorNode binaryOperator)
         {
             var left = binaryOperator.LeftOperand;
