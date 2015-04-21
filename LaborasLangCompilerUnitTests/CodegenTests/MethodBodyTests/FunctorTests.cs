@@ -550,7 +550,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             };
 
             foreach (var type in types)
-                assemblyEmitter.AddTypeIfNotAdded(type.Resolve());
+                assemblyEmitter.AddTypeUsage(type);
 
             ExpectedILFilePath = "Test_FunctorNamesDoNotClash.il";
             AssertSuccessByILComparison();

@@ -145,7 +145,7 @@ namespace LaborasLangCompiler.Codegen
                 return true;
             }
 
-            if(from.IsPrimitive && to.IsPrimitive)
+            if (from.IsPrimitive && to.IsPrimitive)
             {
                 return !from.IsBooleanType() || !to.IsBooleanType();
             }
