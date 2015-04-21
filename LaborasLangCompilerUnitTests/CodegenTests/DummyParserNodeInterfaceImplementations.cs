@@ -388,5 +388,15 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
         public TypeReference ExpressionReturnType { get; set; }
         public IExpressionNode TargetExpression { get; set; }
+
+        public CastNode()
+        {
+        }
+
+        public CastNode(IExpressionNode expression, TypeReference targetType)
+        {
+            ExpressionReturnType = targetType;
+            TargetExpression = expression;
+        }
     }
 }
