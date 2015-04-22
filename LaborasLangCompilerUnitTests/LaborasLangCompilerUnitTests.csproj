@@ -104,6 +104,7 @@
     <Compile Include="IntegrationTests\IntegrationTests.cs" />
     <None Include="IntegrationTests\SourceFiles\ArrayItemSwap.ll" />
     <None Include="IntegrationTests\SourceFiles\ImplicitRuntimeCast.ll" />
+    <None Include="IntegrationTests\SourceFiles\HttpRequest.ll" />
     <None Include="IntegrationTests\SourceFiles\MinMaxValues.ll" />
     <None Include="IntegrationTests\SourceFiles\PrintPrimesWithInlineLambda.ll" />
     <None Include="IntegrationTests\SourceFiles\AssignToPreIncrementedValue.ll" />

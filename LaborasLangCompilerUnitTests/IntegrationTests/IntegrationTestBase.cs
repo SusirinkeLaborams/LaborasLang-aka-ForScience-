@@ -21,6 +21,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         protected class IntegrationTestInfo
         {
             public IEnumerable<string> SourceFiles { get; private set; }
+            public IEnumerable<string> AdditionalReferences { get; private set; }
             
             public string[] Arguments { get; set; }
             public string StdIn { get; set; }
@@ -29,18 +30,27 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             public IntegrationTestInfo(string sourceFile)
             {
                 SourceFiles = new[] { sourceFile };
+                AdditionalReferences = new string[0];
             }
 
-            public IntegrationTestInfo(string sourceFile, string expectedOutput)
+            public IntegrationTestInfo(string sourceFile, IEnumerable<string> additionalReferences)
             {
                 SourceFiles = new[] { sourceFile };
-                StdOut = expectedOutput;
+                AdditionalReferences = additionalReferences;
             }
-
+            
             public IntegrationTestInfo(IEnumerable<string> sourceFiles, string expectedOutput)
             {
                 SourceFiles = sourceFiles;
                 StdOut = expectedOutput;
+                AdditionalReferences = new string[0];
+            }
+
+            public IntegrationTestInfo(IEnumerable<string> sourceFiles, string expectedOutput, IEnumerable<string> additionalReferences)
+            {
+                SourceFiles = sourceFiles;
+                StdOut = expectedOutput;
+                AdditionalReferences = additionalReferences;
             }
         }
 
@@ -51,12 +61,22 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
 
         protected void Test(string sourceFile, string expectedOutput)
         {
-            Test(new IntegrationTestInfo(sourceFile, expectedOutput));
+            Test(new IntegrationTestInfo(new[] { sourceFile }, expectedOutput));
         }
 
         protected void Test(IEnumerable<string> sourceFiles, string expectedOutput)
         {
             Test(new IntegrationTestInfo(sourceFiles, expectedOutput));
+        }
+
+        protected void Test(string sourceFile, string expectedOutput, IEnumerable<string> additionalReferences)
+        {
+            Test(new IntegrationTestInfo(new[] { sourceFile }, expectedOutput, additionalReferences));
+        }
+
+        protected void Test(IEnumerable<string> sourceFiles, string expectedOutput, IEnumerable<string> additionalReferences)
+        {
+            Test(new IntegrationTestInfo(sourceFiles, expectedOutput, additionalReferences));
         }
 
         protected void Test(IntegrationTestInfo testInfo)
@@ -67,15 +87,17 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             var pdbPath = filePath + ".pdb";
 
             var files = testInfo.SourceFiles.Select(file => Path.Combine(IntegrationTestsPath, "SourceFiles", file));
-            
-            Build(files, exePath);
+            var references = testInfo.AdditionalReferences.Select(reference => string.Format("/ref:{0}", reference));
+
+            Build(files, references, exePath);
             PEVerifyRunner.Run(exePath);
             Run(exePath, testInfo);
         }
 
-        private void Build(IEnumerable<string> sourceFiles, string outPath)
+        private void Build(IEnumerable<string> sourceFiles, IEnumerable<string> references, string outPath)
         {
-            ManagedCodeRunner.CreateProcessAndRun("LaborasLangCompiler.exe", sourceFiles.Union(new[] { "/console", "/out:" + outPath }).ToArray(), null, kBuildTimeOut);
+            var args = sourceFiles.Union(references).Union(new[] { "/console", "/out:" + outPath }).ToArray();
+            ManagedCodeRunner.CreateProcessAndRun("LaborasLangCompiler.exe", args, null, kBuildTimeOut);
         }
 
         private void Run(string path, IntegrationTestInfo testInfo)
