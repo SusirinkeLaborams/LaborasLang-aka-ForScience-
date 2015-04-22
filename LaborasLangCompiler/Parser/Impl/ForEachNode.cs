@@ -125,14 +125,16 @@ namespace LaborasLangCompiler.Parser.Impl
                 Contract.Requires(lexerNode.Type == Lexer.TokenType.ForEachDeclaration);
                 var declaredType = TypeNode.Parse(context, lexerNode.Children[0]);
 
-                if (declaredType.IsVoid())
-                {
-                    ErrorCode.VoidLValue.ReportAndThrow(context.Parser.GetSequencePoint(lexerNode.Children[0]), "Cannot declare a variable of type void");
-                }
+
 
                 if (declaredType.IsAuto())
                 {
                     declaredType = collectionElementType;
+                }
+
+                if (declaredType.IsVoid())
+                {
+                    ErrorCode.VoidDeclaration.ReportAndThrow(context.Parser.GetSequencePoint(lexerNode.Children[0]), "Cannot declare a variable of type void");
                 }
                 var name = AstUtils.GetSingleSymbolOrThrow(lexerNode.Children[1]);
                 return new LoopVariableDeclaration(new VariableDefinition(name, declaredType), context.Parser.GetSequencePoint(lexerNode));

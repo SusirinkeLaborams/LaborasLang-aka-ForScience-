@@ -1,0 +1,26 @@
+Class:
+	TestVoidLocalByInferrence
+	Fields:
+		FieldDeclaration:
+			Type:
+				$Functors.$System_Void?
+			Name:
+				func
+			Modifiers:
+				Private, Mutable, NoInstance
+
+	Methods:
+		Method:
+			Name:
+				main
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+
+

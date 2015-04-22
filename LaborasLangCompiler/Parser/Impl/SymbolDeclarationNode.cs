@@ -56,9 +56,6 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static SymbolDeclarationNode Create(ContextNode parent, Modifiers mods, TypeReference type, string name, ExpressionNode initializer, SequencePoint point)
         {
-            if (type.IsVoid())
-                ErrorCode.VoidLValue.ReportAndThrow(point, "Cannot declare a variable of type void");
-
             if (initializer != null && !initializer.IsGettable)
                 ErrorCode.NotAnRValue.ReportAndThrow(point, "Initializer must be a gettable expression");
 
@@ -97,6 +94,10 @@ namespace LaborasLangCompiler.Parser.Impl
                     }
                 }
             }
+
+            if (type.IsVoid())
+                ErrorCode.VoidDeclaration.ReportAndThrow(point, "Cannot declare a variable of type void");
+
 
             return new SymbolDeclarationNode(new VariableDefinition(name, type), isConst, initializer, point);
         }
