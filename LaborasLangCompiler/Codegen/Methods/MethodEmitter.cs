@@ -1064,9 +1064,6 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (targetIsDelegate)
             {
-                // Sanity check
-                Contract.Assert(!expressionIsFunction || !expressionIsFunctor);
-
                 if (expressionIsFunctor)
                 {
                     // Here we have a functor object on top of the stack
