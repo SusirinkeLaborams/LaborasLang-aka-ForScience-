@@ -34,11 +34,11 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private readonly TypeReference type;
 
-        private LiteralNode(Literal value, TypeReference type, SequencePoint point)
+        private LiteralNode(IConvertible value, TypeReference type, SequencePoint point)
             : base(point)
         {
             this.type = type;
-            this.Value = value;
+            this.Value = new Literal(value);
         }
 
         public static LiteralNode Create(ContextNode context, IConvertible value, SequencePoint point)
@@ -51,7 +51,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     value.GetType().FullName, value);
             }
 
-            return new LiteralNode(new Literal(value), type, point);
+            return new LiteralNode(value, type, point);
         }
 
         public static LiteralNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
@@ -60,8 +60,7 @@ namespace LaborasLangCompiler.Parser.Impl
             lexerNode = lexerNode.Children[0];
             var point = context.Parser.GetSequencePoint(lexerNode);
             var type = ParseLiteralType(context.Parser, lexerNode);
-            Literal value = new Literal(ParseValue(lexerNode.Content.ToString(), type, point));
-            return new LiteralNode(value, type, point);
+            return ParseValue(context.Parser.ProjectParser, lexerNode.Content, type, point);
         }
 
         private static TypeReference ParseLiteralType(Parser parser, IAbstractSyntaxTree lexerNode)
@@ -89,57 +88,39 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private static IConvertible ParseValue(string value, TypeReference type, SequencePoint point)
+        private static LiteralNode ParseValue(ProjectParser parser, string value, TypeReference type, SequencePoint point)
         {
             try
             {
                 switch (type.MetadataType)
                 {
                     case MetadataType.String:
-                        return value;
-
                     case MetadataType.Boolean:
-                        return Convert.ToBoolean(value, CultureInfo.InvariantCulture);
-                        
-                    case MetadataType.SByte:
-                        return Convert.ToSByte(value, CultureInfo.InvariantCulture);
+                        return new LiteralNode(value, type, point);
 
+                    case MetadataType.SByte:
                     case MetadataType.Byte:
-                        return Convert.ToByte(value, CultureInfo.InvariantCulture);
+                    case MetadataType.Int16:
+                    case MetadataType.UInt16:
+                    case MetadataType.Int32:
+                    case MetadataType.UInt32:
+                    case MetadataType.Int64:
+                    case MetadataType.UInt64:
+                        return ParseInteger(parser, value, type, point);
 
                     case MetadataType.Char:
                         {
                             if (value.Length > 1)
                             {
-                                ErrorCode.MultipleCharacterLiteral.ReportAndThrow(point, "Character literal must be one character long (found: '{0}').", value);
+                                ErrorCode.MultipleCharacterLiteral.ReportAndThrow(point, "Character literal must not be longer than one character (found: '{0}').", value);
                             }
 
-                            return value[0];
+                            return new LiteralNode(value, type, point);
                         }
 
-                    case MetadataType.Int16:
-                        return Convert.ToInt16(value, CultureInfo.InvariantCulture);
-
-                    case MetadataType.UInt16:
-                        return Convert.ToUInt16(value, CultureInfo.InvariantCulture);
-
-                    case MetadataType.Int32:
-                        return Convert.ToInt32(value, CultureInfo.InvariantCulture);
-
-                    case MetadataType.UInt32:
-                        return Convert.ToUInt32(value, CultureInfo.InvariantCulture);
-
-                    case MetadataType.Int64:
-                        return Convert.ToInt64(value, CultureInfo.InvariantCulture);
-
-                    case MetadataType.UInt64:
-                        return Convert.ToUInt64(value, CultureInfo.InvariantCulture);
-                        
                     case MetadataType.Single:
-                        return Convert.ToSingle(value, CultureInfo.InvariantCulture);
-                        
                     case MetadataType.Double:
-                        return Convert.ToDouble(value, CultureInfo.InvariantCulture);
+                        return ParseRational(parser, value, type, point);
                         
                     default:
 
@@ -159,17 +140,17 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private static LiteralNode ParseInteger(ProjectParser parser, string value, SequencePoint point)
+        private static LiteralNode ParseInteger(ProjectParser parser, string value, TypeReference requestedType, SequencePoint point)
         {
             try
             {
                 var parsed = BigInteger.Parse(value, CultureInfo.InvariantCulture);
-                if (parsed.Sign > 0)
+                if (parsed.Sign >= 0)
                 {
                     var type = parser.MaxValues.Where(kv => kv.Key >= parsed).OrderBy(kv => kv.Key).FirstOrDefault().Value;
                     if (type != null)
                     {
-                        return new LiteralNode(new Literal((ulong)parsed), type, point);
+                        return new LiteralNode((ulong)parsed, type.IsAssignableTo(requestedType) ? requestedType : type, point);
                     }
                 }
                 else
@@ -177,7 +158,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     var type = parser.MinValues.Where(kv => kv.Key <= parsed).OrderBy(kv => kv.Key).LastOrDefault().Value;
                     if (type != null)
                     {
-                        return new LiteralNode(new Literal((ulong)parsed), type, point);
+                        return new LiteralNode((long)parsed, type.IsAssignableTo(requestedType) ? requestedType : type, point);
                     }
                 }
                 ErrorCode.IntegerOverlflow.ReportAndThrow(point, "Cannot fit {0} into an integer, use BigInteger.Parse", value);
@@ -187,6 +168,34 @@ namespace LaborasLangCompiler.Parser.Impl
                 ContractsHelper.AssumeUnreachable("Error parsing {0} as integer", value);
             }
             return Utils.Utils.Fail<LiteralNode>();
+        }
+
+        private static LiteralNode ParseRational(ProjectParser parser, string value, TypeReference requestedType, SequencePoint point)
+        {
+            try
+            {
+
+                switch (requestedType.MetadataType)
+                {
+                    case MetadataType.Single:
+                        return new LiteralNode(Convert.ToSingle(value, CultureInfo.InvariantCulture), requestedType, point);
+                    case MetadataType.Double:
+                        return new LiteralNode(Convert.ToDouble(value, CultureInfo.InvariantCulture), requestedType, point);
+                    default:
+                        ContractsHelper.AssertUnreachable("Unexpected type {0} in ParseRational", requestedType.MetadataType);
+                        return Utils.Utils.Fail<LiteralNode>();
+                }
+            }
+            catch (OverflowException)
+            {
+                ErrorCode.InvalidStructure.ReportAndThrow(point, "Could not parse {0} as {1}, overflow", value, requestedType.FullName);
+                return Utils.Utils.Fail<LiteralNode>();
+            }
+            catch (FormatException)
+            {
+                ErrorCode.InvalidStructure.ReportAndThrow(point, "Could not parse {0} as {1}, format error", value, requestedType.FullName);
+                return Utils.Utils.Fail<LiteralNode>();
+            }
         }
 
         public ExpressionNode RemoveAmbiguity(ContextNode context, TypeReference expectedType)
@@ -208,7 +217,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static LiteralNode ConvertLiteral(LiteralNode node, TypeReference type)
         {
-            return new LiteralNode(node.Value, type, node.SequencePoint);
+            return new LiteralNode(node.Value.Value, type, node.SequencePoint);
         }
 
         private static IEnumerable<TypeReference> GetImplicitConversions(Parser parser, LiteralNode node)
