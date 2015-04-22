@@ -1,0 +1,59 @@
+Class:
+	TestCallOnCast
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Object
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Cast:
+					Type: System.Object
+					Expression:
+						Method:
+							Instance:
+								null
+							Method:
+								System.Void $TestCallOnCast.TestCallOnCast::$Lambda_0()
+
+
+
+		FieldDeclaration:
+			Type:
+				System.Int32
+			Name:
+				bar
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				MethodCall:
+					ReturnType: System.Int32
+					Args:
+					Function:
+						Cast:
+							Type: $Functors.$System_Int32?
+							Expression:
+								Field:
+									System.Object $TestCallOnCast.TestCallOnCast::foo
+									Instance:
+										null
+
+
+
+	Methods:
+		Method:
+			Name:
+				$Lambda_0
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+
+

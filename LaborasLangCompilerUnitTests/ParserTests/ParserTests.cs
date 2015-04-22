@@ -1518,7 +1518,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string source = @"
                 object foo = (object)void(){};
-                auto bar = ((void())foo)();
+                auto bar = ((int())foo)();
             ";
             CompareTrees(source);
         }
