@@ -1,4 +1,6 @@
-﻿using LaborasLangCompiler.Codegen;
+﻿//#define GIVE_CHANCE_DEBUGGER_TO_ATTACH
+
+using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Parser.Impl;
 using System;
@@ -9,8 +11,17 @@ namespace LaborasLangCompiler.FrontEnd
 {
     class Program
     {
+#if GIVE_CHANCE_DEBUGGER_TO_ATTACH
+        [System.Runtime.InteropServices.DllImport("user32.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+        extern static void MessageBoxW(IntPtr hwnd, string text, string caption, int flags);
+#endif
+
         internal static int Main(params string[] args)
         {
+#if GIVE_CHANCE_DEBUGGER_TO_ATTACH
+            MessageBoxW(IntPtr.Zero, "You may now attach a debugger.", "LaborasLang Compiler", 0);
+#endif
+
             try
             {
                 return Compile(args);
