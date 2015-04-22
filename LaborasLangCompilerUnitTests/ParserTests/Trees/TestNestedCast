@@ -1,0 +1,25 @@
+Class:
+	TestNestedCast
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.String
+			Name:
+				bar
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Cast:
+					Type: System.String
+					Expression:
+						Cast:
+							Type: System.Object
+							Expression:
+								Literal:
+									Type: System.String
+									Value: foo
+
+
+
+
+	Methods:

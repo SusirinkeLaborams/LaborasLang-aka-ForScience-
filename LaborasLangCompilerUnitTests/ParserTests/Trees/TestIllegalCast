@@ -1,0 +1,12 @@
+Class:
+	TestIllegalCast
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.String
+			Name:
+				bar
+			Modifiers:
+				Private, Mutable, NoInstance
+
+	Methods:

@@ -162,29 +162,37 @@ namespace LaborasLangCompiler.Parser.Impl
         private static ExpressionNode ParsePrefix(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             var opType = lexerNode.Children[1].Type;
-            InternalUnaryOperatorType op;
-            switch (opType)
+
+            if(opType == Lexer.TokenType.CastOperator)
             {
-                case Lexer.TokenType.PlusPlus:
-                    op = InternalUnaryOperatorType.PreIncrement;
-                    break;
-                case Lexer.TokenType.MinusMinus:
-                    op = InternalUnaryOperatorType.PreDecrement;
-                    break;
-                case Lexer.TokenType.Not:
-                    op = InternalUnaryOperatorType.LogicalNot;
-                    break;
-                case Lexer.TokenType.BitwiseComplement:
-                    op = InternalUnaryOperatorType.BinaryNot;
-                    break;
-                case Lexer.TokenType.Minus:
-                    op = InternalUnaryOperatorType.Negation;
-                    break;
-                default:
-                    ContractsHelper.AssertUnreachable("Unknown prefix op {0}", opType);
-                    return null;//unreachable
+                return CastNode.Parse(context, lexerNode);
             }
-            return Create(context, ExpressionNode.Parse(context, lexerNode.Children[0]), op);
+            else
+            {
+                InternalUnaryOperatorType op;
+                switch (opType)
+                {
+                    case Lexer.TokenType.PlusPlus:
+                        op = InternalUnaryOperatorType.PreIncrement;
+                        break;
+                    case Lexer.TokenType.MinusMinus:
+                        op = InternalUnaryOperatorType.PreDecrement;
+                        break;
+                    case Lexer.TokenType.Not:
+                        op = InternalUnaryOperatorType.LogicalNot;
+                        break;
+                    case Lexer.TokenType.BitwiseComplement:
+                        op = InternalUnaryOperatorType.BinaryNot;
+                        break;
+                    case Lexer.TokenType.Minus:
+                        op = InternalUnaryOperatorType.Negation;
+                        break;
+                    default:
+                        ContractsHelper.AssertUnreachable("Unknown prefix op {0}", opType);
+                        return null;//unreachable
+                }
+                return Create(context, ExpressionNode.Parse(context, lexerNode.Children[0]), op);
+            }
         }
 
         private static ExpressionNode AsBuiltIn(ContextNode context, ExpressionNode expression, InternalUnaryOperatorType op)

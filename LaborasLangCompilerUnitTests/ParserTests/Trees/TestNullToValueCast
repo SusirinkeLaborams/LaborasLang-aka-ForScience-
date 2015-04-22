@@ -1,0 +1,12 @@
+Class:
+	TestNullToValueCast
+	Fields:
+		FieldDeclaration:
+			Type:
+				auto
+			Name:
+				str
+			Modifiers:
+				0
+
+	Methods:

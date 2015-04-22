@@ -529,14 +529,14 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     void a;
                 };";
-            CompareTrees(source, ErrorCode.VoidLValue.Enumerate());
+            CompareTrees(source, ErrorCode.VoidDeclaration.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestFieldVoid()
         {
             string source = @"
                 void a;";
-            CompareTrees(source, ErrorCode.VoidLValue.Enumerate());
+            CompareTrees(source, ErrorCode.VoidDeclaration.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestVoidParamFunctorType()
@@ -1463,6 +1463,101 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };
             ";
             CompareTrees(source, ErrorCode.InvalidForEachCollection.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestUpCast()
+        {
+            string source = @"
+                object foo = (object)""str"";
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestDownCast()
+        {
+            string source = @"
+                string bar = (string)object();
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNestedCast()
+        {
+            string source = @"
+                string bar = (string)(object)""foo"";
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestIllegalCast()
+        {
+            string source = @"
+                string bar = (string)5;
+            ";
+            CompareTrees(source, ErrorCode.IllegalCast.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestFunctorUpCast()
+        {
+            string source = @"
+                object foo = (object)void(){};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestFunctorDownCast()
+        {
+            string source = @"
+                object foo = (object)void(){};
+                auto bar = (void())foo;
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestCallOnCast()
+        {
+            string source = @"
+                object foo = (object)void(){};
+                auto bar = ((int())foo)();
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNullCast()
+        {
+            string source = @"
+                auto str = (string)null;
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNullToValueCast()
+        {
+            string source = @"
+                auto str = (int)null;
+            ";
+            CompareTrees(source, ErrorCode.IllegalCast.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestVoidFieldByInferrence()
+        {
+            string source = @"
+                mutable void() func;
+                auto foo = func();
+            ";
+            CompareTrees(source, ErrorCode.NotAnRValue.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestVoidLocalByInferrence()
+        {
+            string source = @"
+                mutable void() func;
+                auto main = void()
+                {
+                    auto local = func();
+                };
+            ";
+            CompareTrees(source, ErrorCode.NotAnRValue.Enumerate());
         }
     }
 }

@@ -133,6 +133,7 @@ namespace LaborasLangCompiler.Codegen
             return type is NullType;
         }
 
+        [Pure]
         public static bool IsTypeless(this TypeReference type)
         {
             return type.IsNullType();

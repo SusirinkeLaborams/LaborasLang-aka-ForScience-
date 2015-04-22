@@ -1,0 +1,54 @@
+Class:
+	TestFunctorDownCast
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Object
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Cast:
+					Type: System.Object
+					Expression:
+						Method:
+							Instance:
+								null
+							Method:
+								System.Void $TestFunctorDownCast.TestFunctorDownCast::$Lambda_0()
+
+
+
+		FieldDeclaration:
+			Type:
+				$Functors.$System_Void?
+			Name:
+				bar
+			Modifiers:
+				Private, Const, NoInstance
+			Initializer:
+				Cast:
+					Type: $Functors.$System_Void?
+					Expression:
+						Field:
+							System.Object $TestFunctorDownCast.TestFunctorDownCast::foo
+							Instance:
+								null
+
+
+	Methods:
+		Method:
+			Name:
+				$Lambda_0
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+
+

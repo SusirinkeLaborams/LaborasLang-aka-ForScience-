@@ -1,0 +1,21 @@
+Class:
+	TestUpCast
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Object
+			Name:
+				foo
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Cast:
+					Type: System.Object
+					Expression:
+						Literal:
+							Type: System.String
+							Value: str
+
+
+
+	Methods:

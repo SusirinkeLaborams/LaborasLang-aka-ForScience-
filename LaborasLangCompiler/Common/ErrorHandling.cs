@@ -20,7 +20,7 @@ namespace LaborasLangCompiler.Common
         NotCallable = 0006,
 
         MissingInit = 0007,
-        VoidLValue = 0008,
+        VoidDeclaration = 0008,
 
         NotAnRValue = 0009,
         NotAnLValue = 0010,

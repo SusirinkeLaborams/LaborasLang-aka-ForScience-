@@ -756,6 +756,13 @@ foo().bar = 5;
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void testCallOnCast()
+        {
+            var source = "foo = ((bar(int)) foo)(5);";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void TestNestedAddition()
         {
             var source = "foo = a + b + a;";
