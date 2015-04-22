@@ -1059,26 +1059,29 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             bool targetIsDelegate = targetType.IsDelegate();
 
-            // We'll want to emit expression in all cases
+            if (targetIsDelegate && expressionIsFunction)
+            {
+                EmitMethodNodeAsDelegate((IMethodNode)expression, targetType);
+                return;
+            }
+
+            // We'll want to emit expression in all following cases
             Emit(expression, EmissionType.Value);
 
-            if (targetIsDelegate)
+            if (targetIsDelegate && expressionIsFunctor)
             {
-                if (expressionIsFunctor)
-                {
-                    // Here we have a functor object on top of the stack
+                // Here we have a functor object on top of the stack
 
-                    var delegateType = targetType;
-                    var functorType = expression.ExpressionReturnType;
+                var delegateType = targetType;
+                var functorType = expression.ExpressionReturnType;
 
-                    var asDelegateMethod = AssemblyRegistry.GetMethod(Assembly, functorType, "AsDelegate");
-                    var delegateInvokeMethod = AssemblyRegistry.GetMethod(Assembly, asDelegateMethod.GetReturnType(), "Invoke");
-                    var delegateCtor = AssemblyRegistry.GetMethod(Assembly, delegateType, ".ctor");
+                var asDelegateMethod = AssemblyRegistry.GetMethod(Assembly, functorType, "AsDelegate");
+                var delegateInvokeMethod = AssemblyRegistry.GetMethod(Assembly, asDelegateMethod.GetReturnType(), "Invoke");
+                var delegateCtor = AssemblyRegistry.GetMethod(Assembly, delegateType, ".ctor");
 
-                    Callvirt(asDelegateMethod);
-                    Ldftn(delegateInvokeMethod);
-                    Newobj(delegateCtor);
-                }
+                Callvirt(asDelegateMethod);
+                Ldftn(delegateInvokeMethod);
+                Newobj(delegateCtor);
             }
             else
             {
@@ -1185,6 +1188,24 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
+        private void EmitMethodNodeAsDelegate(IMethodNode function, TypeReference delegateType)
+        {
+            var ctor = AssemblyRegistry.GetMethod(Assembly, delegateType, ".ctor");
+
+            if (function.Method.HasThis)
+            {
+                Contract.Assume(function.ObjectInstance != null);
+                EmitExpressionWithTargetType(function.ObjectInstance, Assembly.TypeSystem.Object);
+            }
+            else
+            {
+                Ldnull();
+            }
+
+            Ldftn(function.Method);
+            Newobj(ctor);
+        }
+
         private void Emit(IMethodNode function, EmissionType emissionType)
         {
             if (emissionType == EmissionType.None)
@@ -1204,23 +1225,12 @@ namespace LaborasLangCompiler.Codegen.Methods
                 }
 
                 Newobj(ctor);
+                if (ShouldEmitAddress(function, emissionType))
+                    LoadAddressOfValue(function);
             }
             else
             {
-                var ctor = AssemblyRegistry.GetMethod(Assembly, function.ExpressionReturnType, ".ctor");
-
-                if (function.Method.HasThis)
-                {
-                    Contract.Assume(function.ObjectInstance != null);
-                    EmitExpressionWithTargetType(function.ObjectInstance, Assembly.TypeSystem.Int32);
-                }
-                else
-                {
-                    Ldnull();
-                }
-
-                Ldftn(function.Method);
-                Newobj(ctor);
+                EmitMethodNodeAsDelegate(function, function.ExpressionReturnType);
             }
 
             if (ShouldEmitAddress(function, emissionType))
