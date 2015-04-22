@@ -111,7 +111,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             public IExpressionNode Initializer
             {
-                get { throw new InvalidOperationException(); }
+                get { return null; }
             }
 
             private LoopVariableDeclaration(VariableDefinition variable, SequencePoint point)

@@ -83,6 +83,22 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         }
 
         [TestMethod, TestCategory("Integration Tests")]
+        public void Test_CastsAndForeach()
+        {
+            var testInfo = new IntegrationTestInfo("Casts.ll");
+
+            testInfo.StdIn =
+@"2 3 5 6 7 8 9 411 419 0
+";
+
+            testInfo.StdOut =
+@"2 3 5 6 7 8 9 411 419 0
+";
+
+            Test(testInfo);
+        }
+
+        [TestMethod, TestCategory("Integration Tests")]
         public void Test_InlineFunctorCall()
         {
             Test("InlineFunctorCall.ll", "It Works!");
