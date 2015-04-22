@@ -145,7 +145,7 @@ namespace LaborasLangCompiler.Codegen
                 return true;
             }
 
-            if(from.IsPrimitive && to.IsPrimitive)
+            if (from.IsPrimitive && to.IsPrimitive)
             {
                 return !from.IsBooleanType() || !to.IsBooleanType();
             }
@@ -221,6 +221,9 @@ namespace LaborasLangCompiler.Codegen
 
         public static bool DerivesFrom(this TypeReference child, TypeReference parent)
         {
+            if (child.IsNullType())
+                return true;
+
             if (child.FullName == parent.FullName)
             {
                 return true;

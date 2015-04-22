@@ -178,7 +178,7 @@ namespace LaborasLangCompilerUnitTests
 
             for (int i = 0; i < testMethods.Count; i++)
             {
-                var startTestMessage = string.Format("Starting test: {0}", testMethods[i].Name);
+                var startTestMessage = string.Format("Starting test: {0}\r\n", testMethods[i].Name);
                 var messageIndex = stdOut.IndexOf(startTestMessage);
 
                 if (messageIndex == -1)
@@ -188,7 +188,7 @@ namespace LaborasLangCompilerUnitTests
                     continue;
                 }
 
-                var messageEndIndex = stdOut.IndexOf("Starting test:", messageIndex + startTestMessage.Length + 1);
+                var messageEndIndex = stdOut.IndexOf("Starting test:", messageIndex + startTestMessage.Length);
                 string testOutput;
 
                 if (messageEndIndex != -1)
@@ -229,15 +229,23 @@ namespace LaborasLangCompilerUnitTests
             foreach (var method in allMethods)
             {
                 var customAttributes = method.GetCustomAttributes(typeof(TestCategoryAttribute), false);
+                bool hasCategory = false;
+                bool isDisabled = false;
 
                 foreach (TestCategoryAttribute attribute in customAttributes)
                 {
                     if (attribute.TestCategories.Contains(category))
                     {
-                        testMethods.Add(method);
-                        break;
+                        hasCategory = true;
+                    }
+                    else if (attribute.TestCategories.Contains("Disabled"))
+                    {
+                        isDisabled = true;
                     }
                 }
+                
+                if (hasCategory && !isDisabled)
+                    testMethods.Add(method);
             }
 
             return testMethods;
