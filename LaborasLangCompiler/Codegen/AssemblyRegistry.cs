@@ -619,6 +619,29 @@ namespace LaborasLangCompiler.Codegen
             return filtered[0];
         }
 
+        public static PropertyReference GetIndexerProperty(TypeReference type, IReadOnlyList<TypeReference> arguments)
+        {
+            var typeDef = type.Resolve();
+            var customAttributes = typeDef.CustomAttributes.Where(customAttribute => customAttribute.AttributeType.FullName == "System.Runtime.CompilerServices.IndexerNameAttribute");
+
+            if (!customAttributes.Any())
+                customAttributes = typeDef.CustomAttributes.Where(customAttribute => customAttribute.AttributeType.FullName == "System.Reflection.DefaultMemberAttribute");
+
+            if (!customAttributes.Any())
+                return GetCompatibleProperty(type, "Item", arguments);
+
+            foreach (var attribute in customAttributes)
+            {
+                var propertyName = (string)attribute.ConstructorArguments[0].Value;
+                var property = GetCompatibleProperty(type, propertyName, arguments);
+
+                if (property != null)
+                    return property;
+            }
+
+            return null;
+        }
+
         public static TypeReference GetPropertyType(AssemblyEmitter assembly, PropertyReference property)
         {
             return MetadataHelpers.ScopeToAssembly(assembly, property.PropertyType);
