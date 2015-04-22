@@ -18,7 +18,7 @@ Class:
 							Condition:
 								Literal:
 									Type: System.Boolean
-									Value: True
+									Value: true
 
 							Block:
 								CodeBlock:

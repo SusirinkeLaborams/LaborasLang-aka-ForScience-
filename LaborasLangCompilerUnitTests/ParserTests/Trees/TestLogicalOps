@@ -13,14 +13,14 @@ Class:
 					Left:
 						Literal:
 							Type: System.Boolean
-							Value: True
+							Value: true
 
 					Operator:
 						LogicalAnd
 					Right:
 						Literal:
 							Type: System.Boolean
-							Value: False
+							Value: false
 
 
 
@@ -43,7 +43,7 @@ Class:
 					Right:
 						Literal:
 							Type: System.Boolean
-							Value: True
+							Value: true
 
 
 
