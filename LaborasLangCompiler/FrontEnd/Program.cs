@@ -17,7 +17,7 @@ namespace LaborasLangCompiler.FrontEnd
             }
             catch (Exception e)
             {
-                var exceptionMessage = e.ToString().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Aggregate((x, y) => x + "r\r\n\t" + y);
+                var exceptionMessage = e.ToString().Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries).Aggregate((x, y) => x + "\r\n\t" + y);
                 Console.WriteLine("Internal compiler error has occurred. Details for inquiring minds: {0}\t{1}", Environment.NewLine, exceptionMessage);
                 return -2;
             }
