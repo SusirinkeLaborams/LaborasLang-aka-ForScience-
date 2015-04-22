@@ -565,7 +565,7 @@ namespace LaborasLangCompiler.Codegen
             return enumeratorMoveNextMethod;
         }
 
-        public static IReadOnlyList<PropertyReference> GetProperties(TypeReference type, string propertyName)
+        public static IReadOnlyList<PropertyReference> GetProperties(TypeReference type, string propertyName, bool searchBaseType = true)
         {
             var arrayType = type as ArrayType;
 
@@ -575,22 +575,35 @@ namespace LaborasLangCompiler.Codegen
             }
 
             Contract.Assert(!(type is TypeSpecification));
-            return type.Resolve().Properties.Where(property => property.Name == propertyName).ToArray();
+
+            var properties = type.Resolve().Properties.Where(property => property.Name == propertyName).ToArray();
+
+            if (properties.Length > 0)
+                return properties;
+
+            if (searchBaseType)
+            {
+                var baseType = type.GetBaseType();
+                if (baseType != null)
+                    return GetProperties(baseType, propertyName);
+            }
+
+            return properties;
         }
 
-        public static PropertyReference GetProperty(string typeName, string propertyName)
+        public static PropertyReference GetProperty(string typeName, string propertyName, bool searchBaseType = true)
         {
-            return GetProperty(FindTypeInternal(typeName), propertyName);
+            return GetProperty(FindTypeInternal(typeName), propertyName, searchBaseType);
         }
 
-        public static PropertyReference GetProperty(TypeReference type, string propertyName)
+        public static PropertyReference GetProperty(TypeReference type, string propertyName, bool searchBaseType = true)
         {
-            return GetProperties(type, propertyName).SingleOrDefault();
+            return GetProperties(type, propertyName, searchBaseType).SingleOrDefault();
         }
 
-        public static PropertyReference GetCompatibleProperty(TypeReference type, string propertyName, IReadOnlyList<TypeReference> arguments)
+        public static PropertyReference GetCompatibleProperty(TypeReference type, string propertyName, IReadOnlyList<TypeReference> arguments, bool searchBaseType = true)
         {
-            return GetCompatibleProperty(GetProperties(type, propertyName), arguments);
+            return GetCompatibleProperty(GetProperties(type, propertyName, searchBaseType), arguments);
         }
 
         public static PropertyReference GetCompatibleProperty(IEnumerable<PropertyReference> properties, IReadOnlyList<TypeReference> arguments)
@@ -635,17 +648,17 @@ namespace LaborasLangCompiler.Codegen
             return MetadataHelpers.ScopeToAssembly(assembly, resolvedProperty.SetMethod);
         }
 
-        public static FieldReference GetField(AssemblyEmitter assembly, string typeName, string fieldName)
+        public static FieldReference GetField(AssemblyEmitter assembly, string typeName, string fieldName, bool searchBaseType = true)
         {
-            return GetField(assembly, FindType(assembly, typeName), fieldName);
+            return GetField(assembly, FindType(assembly, typeName), fieldName, searchBaseType);
         }
 
-        public static FieldReference GetField(AssemblyEmitter assembly, TypeEmitter type, string fieldName)
+        public static FieldReference GetField(AssemblyEmitter assembly, TypeEmitter type, string fieldName, bool searchBaseType = true)
         {
-            return GetField(assembly, type.Get(assembly), fieldName);
+            return GetField(assembly, type.Get(assembly), fieldName, searchBaseType);
         }
 
-        public static FieldReference GetField(AssemblyEmitter assembly, TypeReference type, string fieldName)
+        public static FieldReference GetField(AssemblyEmitter assembly, TypeReference type, string fieldName, bool searchBaseType = true)
         {
             var resolvedType = type.Resolve();
 
@@ -658,6 +671,13 @@ namespace LaborasLangCompiler.Codegen
 
             if (field == null)
             {
+                if (searchBaseType)
+                {
+                    var baseType = type.GetBaseType();
+                    if (baseType != null)
+                        return GetField(assembly, baseType, fieldName);
+                }
+
                 return null;
             }
 
@@ -710,11 +730,6 @@ namespace LaborasLangCompiler.Codegen
             }
 
             return methods;
-        }
-
-        private static void InflateForGenericInstanceType(MethodDefinition methodDef, GenericInstanceType declaringType)
-        {
-
         }
 
         struct ParameterInfo<T>
