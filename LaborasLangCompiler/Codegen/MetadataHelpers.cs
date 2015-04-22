@@ -193,6 +193,35 @@ namespace LaborasLangCompiler.Codegen
                 return assignmentMap[left.MetadataType].Any(type => type == right.MetadataType);
             }
 
+            if ((left.IsDelegate() || left.IsFunctorType()) && (right.IsDelegate() || right.IsFunctorType()))
+            {
+                var leftInvokeMethod = left.Resolve().Methods.Single(m => m.Name == "Invoke");
+                var rightInvokeMethod = right.Resolve().Methods.Single(m => m.Name == "Invoke");
+
+                if (leftInvokeMethod.Parameters.Count != rightInvokeMethod.Parameters.Count)
+                    return false;
+
+                for (int i = 0; i < leftInvokeMethod.Parameters.Count; i++)
+                {
+                    var leftParameter = leftInvokeMethod.Parameters[i].ParameterType;
+                    var rightParameter = rightInvokeMethod.Parameters[i].ParameterType;
+
+                    if (leftParameter.IsValueType != rightParameter.IsValueType)
+                        return false;
+
+                    if (leftParameter.IsValueType && leftParameter.FullName != rightParameter.FullName)
+                    {
+                        return false;
+                    }
+                    else if (!leftParameter.DerivesFrom(rightParameter))
+                    {
+                        return false;
+                    }                    
+                }
+
+                return true;
+            }
+
             var leftArrayType = left as ArrayType;
             var rightArrayType = right as ArrayType;
 
@@ -764,17 +793,8 @@ namespace LaborasLangCompiler.Codegen
 
         public static bool IsDelegate(this TypeReference type)
         {
-            var resolvedType = type.Resolve();
-
-            if (resolvedType == null)
-                return false;
-
-            var baseType = resolvedType.BaseType;
-
-            if (baseType == null)
-                return false;
-
-            return baseType.FullName == "System.MulticastDelegate";
+            var baseType = type.GetBaseType();
+            return baseType != null && baseType.FullName == "System.MulticastDelegate";
         }
 
         public static bool GetSizeOfType(TypeReference type, out int size)
