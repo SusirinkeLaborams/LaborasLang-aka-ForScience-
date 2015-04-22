@@ -10,6 +10,7 @@ using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Parser.Utils;
 using Lexer;
+using System.Diagnostics.Contracts;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -64,9 +65,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (!TypeReference.IsAuto())
             {
-                if (TypeReference.IsVoid())
-                    ErrorCode.VoidLValue.ReportAndThrow(point, "Cannot declare a field of type void");
-                parent.TypeEmitter.AddField(FieldDefinition);
+                DeclareField();
             }
 
         }
@@ -82,6 +81,11 @@ namespace LaborasLangCompiler.Parser.Impl
 
             Initializer = ExpressionNode.Parse(this, initializer, TypeReference);
 
+            if (!Initializer.IsGettable)
+            {
+                ErrorCode.NotAnRValue.ReportAndThrow(Initializer.SequencePoint, "Initializer must be a gettable expression");
+            }
+
             if (TypeReference.IsAuto())
             {
                 if(Initializer.ExpressionReturnType.IsTypeless())
@@ -89,7 +93,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     ErrorCode.InferrenceFromTypeless.ReportAndThrow(Initializer.SequencePoint, "Cannot infer type from a typeless expression");
                 }
                 TypeReference = Initializer.ExpressionReturnType;
-                GetClass().TypeEmitter.AddField(FieldDefinition);
+                DeclareField();
             }
             else
             {
@@ -102,6 +106,14 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if(Parser.ProjectParser.ShouldEmit)
                 GetClass().TypeEmitter.AddFieldInitializer(FieldDefinition, Initializer);
+        }
+
+        private void DeclareField()
+        {
+            Contract.Requires(!TypeReference.IsAuto() && !TypeReference.IsTypeless());
+            if (TypeReference.IsVoid())
+                ErrorCode.VoidDeclaration.ReportAndThrow(SequencePoint, "Cannot declare a field of type void");
+            GetClass().TypeEmitter.AddField(FieldDefinition);
         }
 
         public FieldAttributes GetAttributes()

@@ -529,14 +529,14 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {
                     void a;
                 };";
-            CompareTrees(source, ErrorCode.VoidLValue.Enumerate());
+            CompareTrees(source, ErrorCode.VoidDeclaration.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestFieldVoid()
         {
             string source = @"
                 void a;";
-            CompareTrees(source, ErrorCode.VoidLValue.Enumerate());
+            CompareTrees(source, ErrorCode.VoidDeclaration.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestVoidParamFunctorType()
@@ -1518,7 +1518,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string source = @"
                 object foo = (object)void(){};
-                auto bar = ((void())foo)();
+                auto bar = ((int())foo)();
             ";
             CompareTrees(source);
         }
@@ -1537,6 +1537,27 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 auto str = (int)null;
             ";
             CompareTrees(source, ErrorCode.IllegalCast.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestVoidFieldByInferrence()
+        {
+            string source = @"
+                mutable void() func;
+                auto foo = func();
+            ";
+            CompareTrees(source, ErrorCode.NotAnRValue.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestVoidLocalByInferrence()
+        {
+            string source = @"
+                mutable void() func;
+                auto main = void()
+                {
+                    auto local = func();
+                };
+            ";
+            CompareTrees(source, ErrorCode.NotAnRValue.Enumerate());
         }
     }
 }

@@ -228,7 +228,9 @@ namespace LaborasLangCompiler.Codegen
 
             value = FunctorBaseTypeEmitter.Create(assembly, returnType, arguments);
             instance.functorTypes.Add(name, value);
-            return value;
+            assembly.AddType(value);
+
+            return MetadataHelpers.ScopeToAssembly(assembly, value);
         }
 
         public static TypeReference GetImplementationFunctorType(AssemblyEmitter assembly, TypeEmitter declaringType, MethodReference targetMethod)

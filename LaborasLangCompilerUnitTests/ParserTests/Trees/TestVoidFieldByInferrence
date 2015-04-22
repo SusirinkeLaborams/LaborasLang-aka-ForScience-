@@ -1,0 +1,30 @@
+Class:
+	TestVoidFieldByInferrence
+	Fields:
+		FieldDeclaration:
+			Type:
+				$Functors.$System_Void?
+			Name:
+				func
+			Modifiers:
+				Private, Mutable, NoInstance
+
+		FieldDeclaration:
+			Type:
+				auto
+			Name:
+				foo
+			Modifiers:
+				0
+			Initializer:
+				MethodCall:
+					ReturnType: System.Void
+					Args:
+					Function:
+						Field:
+							$Functors.$System_Void? $TestVoidFieldByInferrence.TestVoidFieldByInferrence::func
+							Instance:
+								null
+
+
+	Methods:

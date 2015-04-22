@@ -1,1 +1,1 @@
-﻿Type: CharLiteral, Start: 1, 2, End: 1, 4, Content: "ė" 
+Type: CharLiteral, Start: 1, 2, End: 1, 4, Content: "ė" 

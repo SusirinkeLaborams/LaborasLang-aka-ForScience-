@@ -83,6 +83,22 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         }
 
         [TestMethod, TestCategory("Integration Tests")]
+        public void Test_CastsAndForeach()
+        {
+            var testInfo = new IntegrationTestInfo("Casts.ll");
+
+            testInfo.StdIn =
+@"2 3 5 6 7 8 9 411 419 0
+";
+
+            testInfo.StdOut =
+@"2 3 5 6 7 8 9 411 419 0
+";
+
+            Test(testInfo);
+        }
+
+        [TestMethod, TestCategory("Integration Tests")]
         public void Test_InlineFunctorCall()
         {
             Test("InlineFunctorCall.ll", "It Works!");
@@ -140,7 +156,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             Test("AssignToPreIncrementedValue.ll", "5");
         }
 
-        [TestMethod, TestCategory("Integration Tests")]
+        [TestMethod, TestCategory("Integration Tests"), TestCategory("Disabled")]
         public void Test_MinMaxValues()
         {
             var expected1 = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, ",

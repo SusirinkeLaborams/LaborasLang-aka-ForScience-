@@ -2,6 +2,7 @@
 using Mono.Cecil;
 using Mono.Cecil.Pdb;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace LaborasLangCompiler.Codegen
@@ -10,6 +11,7 @@ namespace LaborasLangCompiler.Codegen
     {
         private readonly AssemblyDefinition assemblyDefinition;
         private readonly string outputPath;
+        private readonly Dictionary<TypeReference, bool> functorUsageMap;
 
         public string OutputPath { get { return outputPath; } }
         public ModuleDefinition MainModule { get { return assemblyDefinition.MainModule; } }
@@ -34,19 +36,29 @@ namespace LaborasLangCompiler.Codegen
             AssemblyRegistry.RegisterAssembly(assemblyDefinition);
             outputPath = compilerArgs.OutputPath;
             DebugBuild = compilerArgs.DebugBuild;
+            functorUsageMap = new Dictionary<TypeReference, bool>();
         }
 
         public void AddType(TypeDefinition type)
         {
             assemblyDefinition.MainModule.Types.Add(type);
+
+            if (type.IsFunctorType())
+                functorUsageMap.Add(type, false);
         }
 
-        public void AddTypeIfNotAdded(TypeDefinition type)
+        public void AddTypeUsage(TypeReference type)
         {
-            var types = assemblyDefinition.MainModule.Types;
+            var arrayType = type as ArrayType;
 
-            if (!types.Contains(type))
-                types.Add(type);
+            if (arrayType != null)
+            {
+                AddTypeUsage(arrayType.ElementType);
+                return;
+            }
+
+            if (type.IsFunctorType() && type.Resolve().Module == MainModule)
+                functorUsageMap[type] = true;
         }
 
         public void Save()
@@ -56,11 +68,22 @@ namespace LaborasLangCompiler.Codegen
                 throw new Exception(string.Format("Current module kind ({0}) requires entry point set!", assemblyDefinition.MainModule.Kind));
             }
 
+            RemoveUnusedFunctors();
+
             var writerParams = new WriterParameters();
             writerParams.SymbolWriterProvider = new PdbWriterProvider();
             writerParams.WriteSymbols = true;
 
             assemblyDefinition.Write(outputPath, writerParams);
+        }
+
+        private void RemoveUnusedFunctors()
+        {
+            foreach (var functor in functorUsageMap)
+            {
+                if (!functor.Value)
+                    MainModule.Types.Remove(functor.Key.Resolve());
+            }
         }
     }
 }
