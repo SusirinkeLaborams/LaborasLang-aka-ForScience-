@@ -17,5 +17,5 @@ entry auto Program = void()
 	auto titleEndIndex = html.IndexOf(titleClosingTag, titleStartIndex, StringComparison.InvariantCultureIgnoreCase);
 	auto pageTitle = html.Substring(titleStartIndex, titleEndIndex - titleStartIndex);
 
-    System.Console.WriteLine(pageTitle);
+	System.Console.WriteLine(pageTitle);
 };
