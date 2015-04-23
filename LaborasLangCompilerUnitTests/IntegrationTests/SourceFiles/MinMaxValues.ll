@@ -3,9 +3,9 @@
 	int8 min_i8_literal    = -128;
 	int8 max_i8_literal    = 127;
 	uint8 min_u8_literal   = 0;
-	uint8 max_u8_literal   = 256;
-	char min_char_literal  = -32768;
-	char max_char_literal  = 32767;
+	uint8 max_u8_literal   = 255;
+	char min_char_literal  = 0;
+	char max_char_literal  = 65535;
 	int16 min_i16_literal  = -32768;
 	int16 max_i16_literal  = 32767;
 	uint16 min_u16_literal = 0;
