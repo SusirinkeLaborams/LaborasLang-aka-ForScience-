@@ -2374,6 +2374,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Conv_U1();
                     break;
 
+                case MetadataType.Char:
                 case MetadataType.UInt16:
                     Conv_U2();
                     break;

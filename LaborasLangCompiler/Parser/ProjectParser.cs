@@ -86,6 +86,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 {(ulong)sbyte.MaxValue, Int8},
                 {byte.MaxValue, UInt8},
+                {char.MaxValue, Char},
                 {(ulong)short.MaxValue, Int16},
                 {ushort.MaxValue, UInt16},
                 {int.MaxValue, Int32},
