@@ -10,18 +10,19 @@ namespace Lexer.PostProcessors
     {
         public override void Transform(AbstractSyntaxTree astNode)
         {
-            if(astNode.Type == TokenType.PrefixNode && astNode.Children[1].Type == TokenType.Minus)
+            if(astNode.Type == TokenType.PrefixNode && astNode.Children[1].Type == TokenType.Minus && astNode.Children[0].Type == TokenType.LiteralNode)
             {
-
-                switch (astNode.Children[0].Type)
+                var literal = astNode.Children[0];
+                var child = literal.Children[0];
+                switch (child.Type)
                 {
                     case TokenType.Float:
                     case TokenType.Integer:
                     case TokenType.Double:
                     case TokenType.Long:
-                        astNode.ReplaceWith(astNode.Children[0]);
-                        astNode.Content = "-" + astNode.Content;
-                        astNode.Node.Start = new Location(astNode.Node.Start.Column - 1, astNode.Node.Start.Row);
+                        child.Content = "-" + child.Content;
+                        child.Node.Start = new Location(child.Node.Start.Column - 1, child.Node.Start.Row);
+                        astNode.ReplaceWith(literal);
                         break;
                 }
             }

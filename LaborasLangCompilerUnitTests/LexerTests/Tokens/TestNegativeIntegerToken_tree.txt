@@ -14,18 +14,11 @@ Children:
 				Type: Symbol
 				Children:
 
-				Content: Type: PrefixNode, Start: 1, 8, End: 1, 8, Content: ""
-				Type: PrefixNode
+				Content: Type: LiteralNode, Start: 1, 8, End: 1, 9, Content: ""
+				Type: LiteralNode
 				Children:
-					Content: Type: LiteralNode, Start: 1, 8, End: 1, 9, Content: ""
-					Type: LiteralNode
-					Children:
-						Content: Type: Integer, Start: 1, 8, End: 1, 9, Content: "1"
-						Type: Integer
-						Children:
-
-					Content: Type: Minus, Start: 1, 7, End: 1, 8, Content: "-"
-					Type: Minus
+					Content: Type: Integer, Start: 1, 7, End: 1, 9, Content: "-1"
+					Type: Integer
 					Children:
 
 				Content: Type: Assignment, Start: 1, 5, End: 1, 6, Content: "="
