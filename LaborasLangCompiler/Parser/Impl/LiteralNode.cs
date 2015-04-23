@@ -148,6 +148,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 if (parsed.Sign >= 0)
                 {
                     var type = parser.MaxValues.Where(kv => kv.Key >= parsed).OrderBy(kv => kv.Key).FirstOrDefault().Value;
+                    if(IsDigit(value.Last()))
+                    {
+                        requestedType = type;
+                    }
                     if (type != null)
                     {
                         return new LiteralNode((ulong)parsed, type.IsAssignableTo(requestedType) ? requestedType : type, point);
@@ -156,6 +160,10 @@ namespace LaborasLangCompiler.Parser.Impl
                 else
                 {
                     var type = parser.MinValues.Where(kv => kv.Key <= parsed).OrderBy(kv => kv.Key).LastOrDefault().Value;
+                    if (IsDigit(value.Last()))
+                    {
+                        requestedType = type;
+                    }
                     if (type != null)
                     {
                         return new LiteralNode((long)parsed, type.IsAssignableTo(requestedType) ? requestedType : type, point);
@@ -247,6 +255,11 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 return Enumerable.Empty<TypeReference>();
             }
+        }
+
+        private static bool IsDigit(char c)
+        {
+            return c >= '0' && c <= '9';
         }
 
         public override string ToString(int indent)
