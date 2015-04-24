@@ -14,17 +14,17 @@ Class:
 					Rank: 1
 					Dimensions:
 						Literal:
-							Type: System.Int32
+							Type: System.Byte
 							Value: 1
 
 					Initializer:
 						InitializerList:
-							Element type: System.Int32
+							Element type: System.Byte
 							Dimensions:
 								1
 							Values:
 								Literal:
-									Type: System.Int32
+									Type: System.Byte
 									Value: 5
 
 

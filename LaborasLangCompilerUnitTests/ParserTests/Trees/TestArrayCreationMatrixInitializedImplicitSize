@@ -23,16 +23,16 @@ Class:
 
 					Initializer:
 						InitializerList:
-							Element type: System.Int32
+							Element type: System.Byte
 							Dimensions:
 								2, 1
 							Values:
 								Literal:
-									Type: System.Int32
+									Type: System.Byte
 									Value: 1
 
 								Literal:
-									Type: System.Int32
+									Type: System.Byte
 									Value: 2
 
 

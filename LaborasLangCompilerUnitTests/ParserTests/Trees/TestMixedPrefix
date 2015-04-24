@@ -3,20 +3,20 @@ Class:
 	Fields:
 		FieldDeclaration:
 			Type:
-				System.Int32
+				System.Byte
 			Name:
 				i
 			Modifiers:
 				Private, Mutable, NoInstance
 			Initializer:
 				Literal:
-					Type: System.Int32
+					Type: System.Byte
 					Value: 1
 
 
 		FieldDeclaration:
 			Type:
-				System.Int32
+				System.Byte
 			Name:
 				a
 			Modifiers:
@@ -31,7 +31,7 @@ Class:
 								PreIncrement
 							Operand:
 								Field:
-									System.Int32 $TestMixedPrefix.TestMixedPrefix::i
+									System.Byte $TestMixedPrefix.TestMixedPrefix::i
 									Instance:
 										null
 

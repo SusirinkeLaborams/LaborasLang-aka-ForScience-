@@ -53,7 +53,7 @@ Class:
 										LessThan
 									Right:
 										Literal:
-											Type: System.Int32
+											Type: System.Byte
 											Value: 5
 
 

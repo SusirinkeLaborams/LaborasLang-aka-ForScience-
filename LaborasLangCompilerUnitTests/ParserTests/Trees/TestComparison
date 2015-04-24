@@ -58,14 +58,14 @@ Class:
 				BinaryOperator:
 					Left:
 						Literal:
-							Type: System.Int32
+							Type: System.Byte
 							Value: 5
 
 					Operator:
 						GreaterThan
 					Right:
 						Literal:
-							Type: System.Int32
+							Type: System.Byte
 							Value: 6
 
 
@@ -81,14 +81,14 @@ Class:
 				BinaryOperator:
 					Left:
 						Literal:
-							Type: System.Int32
+							Type: System.Byte
 							Value: 8
 
 					Operator:
 						LessEqualThan
 					Right:
 						Literal:
-							Type: System.Int32
+							Type: System.Byte
 							Value: 10
 
 

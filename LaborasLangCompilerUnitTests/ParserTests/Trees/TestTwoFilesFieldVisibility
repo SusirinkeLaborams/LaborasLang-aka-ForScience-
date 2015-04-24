@@ -3,14 +3,14 @@ Class:
 	Fields:
 		FieldDeclaration:
 			Type:
-				System.Int32
+				System.Byte
 			Name:
 				foo
 			Modifiers:
 				Public, Mutable, NoInstance
 			Initializer:
 				Literal:
-					Type: System.Int32
+					Type: System.Byte
 					Value: 5
 
 
@@ -21,14 +21,14 @@ Class:
 	Fields:
 		FieldDeclaration:
 			Type:
-				System.Int32
+				System.Byte
 			Name:
 				foo
 			Modifiers:
 				Private, Mutable, NoInstance
 			Initializer:
 				Field:
-					System.Int32 $TestTwoFilesFieldVisibility.file1::foo
+					System.Byte $TestTwoFilesFieldVisibility.file1::foo
 					Instance:
 						null
 

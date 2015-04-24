@@ -31,7 +31,7 @@ Class:
 					ElementType: System.Int32
 					Indices:
 						Literal:
-							Type: System.Int32
+							Type: System.Byte
 							Value: 5
 
 

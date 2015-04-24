@@ -234,7 +234,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         public void AssignmentArithmeticOperatorTest()
         {
             string source = @"
-                auto a = 5;
+                int a = 5;
                 auto Main = void(int b)
                 {
                     a += b;

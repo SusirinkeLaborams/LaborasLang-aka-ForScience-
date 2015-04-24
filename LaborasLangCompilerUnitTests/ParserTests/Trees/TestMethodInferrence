@@ -3,14 +3,14 @@ Class:
 	Fields:
 		FieldDeclaration:
 			Type:
-				System.Int32
+				System.Byte
 			Name:
 				a
 			Modifiers:
 				Private, Mutable, NoInstance
 			Initializer:
 				Literal:
-					Type: System.Int32
+					Type: System.Byte
 					Value: 5
 
 
@@ -35,11 +35,11 @@ Class:
 								Method:
 									Instance:
 										Field:
-											System.Int32 $TestMethodInferrence.TestMethodInferrence::a
+											System.Byte $TestMethodInferrence.TestMethodInferrence::a
 											Instance:
 												null
 									Method:
-										System.String System.Int32::ToString()
+										System.String System.Byte::ToString()
 
 
 						MethodCall:

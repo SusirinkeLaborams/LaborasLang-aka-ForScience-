@@ -145,31 +145,32 @@ namespace LaborasLangCompiler.Parser.Impl
             try
             {
                 var parsed = BigInteger.Parse(value, CultureInfo.InvariantCulture);
-                if (parsed.Sign >= 0)
+                var type = GetLowestConversion(parser, parsed);
+                if(type == null)
                 {
-                    var type = parser.MaxValues.Where(kv => kv.Key >= parsed).OrderBy(kv => kv.Key).FirstOrDefault().Value;
-                    if(IsDigit(value.Last()))
-                    {
-                        requestedType = type;
-                    }
-                    if (type != null)
-                    {
-                        return new LiteralNode((ulong)parsed, type.IsAssignableTo(requestedType) ? requestedType : type, point);
-                    }
+                    ErrorCode.IntegerOverlflow.ReportAndThrow(point, "Cannot fit {0} into an integer, use BigInteger.Parse", value);
+                }
+                if (IsDigit(value.Last()))
+                {
+                    //no type specified
+                    requestedType = type;
                 }
                 else
                 {
-                    var type = parser.MinValues.Where(kv => kv.Key <= parsed).OrderBy(kv => kv.Key).LastOrDefault().Value;
-                    if (IsDigit(value.Last()))
+                    //return what we parsed, if requested type can't fit
+                    if(type.IsAssignableTo(requestedType))
                     {
-                        requestedType = type;
-                    }
-                    if (type != null)
-                    {
-                        return new LiteralNode((long)parsed, type.IsAssignableTo(requestedType) ? requestedType : type, point);
+                        type = requestedType;
                     }
                 }
-                ErrorCode.IntegerOverlflow.ReportAndThrow(point, "Cannot fit {0} into an integer, use BigInteger.Parse", value);
+                if (parsed.Sign >= 0)
+                {
+                    return new LiteralNode((ulong)parsed, type, point);
+                }
+                else
+                {
+                    return new LiteralNode((long)parsed, type, point);
+                }
             }
             catch (FormatException)
             {
@@ -233,23 +234,16 @@ namespace LaborasLangCompiler.Parser.Impl
             var type = node.ExpressionReturnType;
             if(type.IsIntegerType())
             {
+                BigInteger converted;
                 if(type.IsSignedInteger())
                 {
-                    var value = (long)node.Value;
-                    if (value >= 0)
-                    {
-                        return parser.ProjectParser.MaxValues.Where(kv => kv.Key >= (ulong)value).Select(kv => kv.Value);
-                    }
-                    else
-                    {
-                        return parser.ProjectParser.MinValues.Where(kv => kv.Key >= value).Select(kv => kv.Value);
-                    }
+                    converted = new BigInteger((long)node.Value);
                 }
                 else
                 {
-                    var value = (ulong)node.Value;
-                    return parser.ProjectParser.MaxValues.Where(kv => kv.Key >= value).Select(kv => kv.Value);
+                    converted = new BigInteger((ulong)node.Value);
                 }
+                return GetImplicitConversions(parser.ProjectParser, converted);
             }
             else
             {
@@ -269,6 +263,59 @@ namespace LaborasLangCompiler.Parser.Impl
             builder.Indent(indent + 1).AppendFormat("Type: {0}", type.FullName).AppendLine();
             builder.Indent(indent + 1).AppendFormat("Value: {0}", Value.ToString()).AppendLine();
             return builder.ToString();
+        }
+
+        private static IEnumerable<TypeReference> GetImplicitConversions(ProjectParser parser, BigInteger integer)
+        {
+            List<TypeReference> ret = new List<TypeReference>();
+            if(integer >= 0)
+            {
+                if (integer <= sbyte.MaxValue)
+                    ret.Add(parser.Int8);
+                if (integer <= byte.MaxValue)
+                    ret.Add(parser.UInt8);
+                if (integer <= short.MaxValue)
+                    ret.Add(parser.Int16);
+                if (integer <= ushort.MaxValue)
+                    ret.Add(parser.UInt16);
+                if (integer <= char.MaxValue)
+                    ret.Add(parser.Char);
+                if (integer <= int.MaxValue)
+                    ret.Add(parser.Int32);
+                if (integer <= uint.MaxValue)
+                    ret.Add(parser.UInt32);
+                if (integer <= long.MaxValue)
+                    ret.Add(parser.Int64);
+                if (integer <= ulong.MaxValue)
+                    ret.Add(parser.UInt64);
+            }
+            else
+            {
+                if (integer >= sbyte.MinValue)
+                    ret.Add(parser.Int8);
+                if (integer >= short.MinValue)
+                    ret.Add(parser.Int16);
+                if (integer >= int.MinValue)
+                    ret.Add(parser.Int32);
+                if (integer >= long.MinValue)
+                    ret.Add(parser.Int64);
+            }
+            return ret;
+        }
+        /// <summary>
+        /// Returns lowest possible type for this integer or null, unsigned if possible
+        /// </summary>
+        private static TypeReference GetLowestConversion(ProjectParser parser, BigInteger integer)
+        {
+            var conversions = GetImplicitConversions(parser, integer);
+            if(integer >= 0)
+            {
+                return conversions.FirstOrDefault(type => type.IsUnsignedInteger());
+            }
+            else
+            {
+                return conversions.FirstOrDefault();
+            }
         }
     }
 }

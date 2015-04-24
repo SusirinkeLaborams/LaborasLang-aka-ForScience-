@@ -3,7 +3,7 @@ Class:
 	Fields:
 		FieldDeclaration:
 			Type:
-				System.Int32
+				System.Byte
 			Name:
 				a
 			Modifiers:
@@ -18,14 +18,14 @@ Class:
 										BinaryOperator:
 											Left:
 												Literal:
-													Type: System.Int32
+													Type: System.Byte
 													Value: 1
 
 											Operator:
 												Multiplication
 											Right:
 												Literal:
-													Type: System.Int32
+													Type: System.Byte
 													Value: 2
 
 
@@ -33,7 +33,7 @@ Class:
 										Division
 									Right:
 										Literal:
-											Type: System.Int32
+											Type: System.Byte
 											Value: 3
 
 
@@ -41,7 +41,7 @@ Class:
 								Multiplication
 							Right:
 								Literal:
-									Type: System.Int32
+									Type: System.Byte
 									Value: 4
 
 
@@ -49,7 +49,7 @@ Class:
 						Modulus
 					Right:
 						Literal:
-							Type: System.Int32
+							Type: System.Byte
 							Value: 5
 
 

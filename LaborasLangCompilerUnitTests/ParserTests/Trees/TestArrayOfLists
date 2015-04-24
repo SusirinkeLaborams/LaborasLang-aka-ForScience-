@@ -14,7 +14,7 @@ Class:
 					Rank: 1
 					Dimensions:
 						Literal:
-							Type: System.Int32
+							Type: System.Byte
 							Value: 5
 
 

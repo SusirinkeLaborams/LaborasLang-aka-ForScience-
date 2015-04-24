@@ -3,14 +3,14 @@ Class:
 	Fields:
 		FieldDeclaration:
 			Type:
-				System.Int32[]
+				System.ValueType[]
 			Name:
 				foo
 			Modifiers:
 				Private, Mutable, NoInstance
 			Initializer:
 				ArrayCreation:
-					ElementType: System.Int32
+					ElementType: System.ValueType
 					Rank: 1
 					Dimensions:
 						Literal:
@@ -19,24 +19,24 @@ Class:
 
 					Initializer:
 						InitializerList:
-							Element type: System.Int32
+							Element type: System.ValueType
 							Dimensions:
 								4
 							Values:
 								Literal:
-									Type: System.Int32
+									Type: System.Byte
 									Value: 5
 
 								Literal:
-									Type: System.Int32
+									Type: System.Byte
 									Value: 8
 
 								Literal:
-									Type: System.Int32
+									Type: System.UInt16
 									Value: 695
 
 								Literal:
-									Type: System.Int32
+									Type: System.Byte
 									Value: 0
 
 
