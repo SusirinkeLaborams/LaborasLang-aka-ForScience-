@@ -684,13 +684,10 @@ namespace LaborasLangCompiler.Codegen
         public static FieldReference GetField(AssemblyEmitter assembly, TypeReference type, string fieldName, bool searchBaseType = true)
         {
             var resolvedType = type.Resolve();
+            FieldReference field = null;
 
-            if (!resolvedType.HasFields)
-            {
-                return null;
-            }
-
-            var field = resolvedType.Fields.SingleOrDefault(fieldDef => fieldDef.Name == fieldName);
+            if (resolvedType.HasFields)
+                field = resolvedType.Fields.SingleOrDefault(fieldDef => fieldDef.Name == fieldName);
 
             if (field == null)
             {
