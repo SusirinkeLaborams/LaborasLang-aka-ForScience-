@@ -1,0 +1,180 @@
+Class:
+	TestComparisonConversions
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.SByte
+			Name:
+				i8
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Literal:
+					Type: System.SByte
+					Value: -5
+
+
+		FieldDeclaration:
+			Type:
+				System.Byte
+			Name:
+				u8
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Literal:
+					Type: System.Byte
+					Value: 5
+
+
+		FieldDeclaration:
+			Type:
+				System.Int16
+			Name:
+				i16
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Literal:
+					Type: System.Int16
+					Value: -5
+
+
+		FieldDeclaration:
+			Type:
+				System.UInt16
+			Name:
+				u16
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Literal:
+					Type: System.UInt16
+					Value: 5
+
+
+		FieldDeclaration:
+			Type:
+				System.Int32
+			Name:
+				i32
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Literal:
+					Type: System.Int32
+					Value: -5
+
+
+		FieldDeclaration:
+			Type:
+				System.UInt32
+			Name:
+				u32
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Literal:
+					Type: System.UInt32
+					Value: 5
+
+
+	Methods:
+		Method:
+			Name:
+				main
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+						System.Boolean c8
+						System.Boolean c16
+						System.Boolean c32
+					Nodes:
+						VariableDeclaration:
+							Symbol:
+								System.Boolean c8
+							Initializer:
+								BinaryOperator:
+									Left:
+										Cast:
+											Type: System.Int32
+											Expression:
+												Field:
+													System.SByte $TestComparisonConversions.TestComparisonConversions::i8
+													Instance:
+														null
+
+									Operator:
+										LessThan
+									Right:
+										Cast:
+											Type: System.Int32
+											Expression:
+												Field:
+													System.Byte $TestComparisonConversions.TestComparisonConversions::u8
+													Instance:
+														null
+
+
+
+						VariableDeclaration:
+							Symbol:
+								System.Boolean c16
+							Initializer:
+								BinaryOperator:
+									Left:
+										Cast:
+											Type: System.Int32
+											Expression:
+												Field:
+													System.Int16 $TestComparisonConversions.TestComparisonConversions::i16
+													Instance:
+														null
+
+									Operator:
+										LessThan
+									Right:
+										Cast:
+											Type: System.Int32
+											Expression:
+												Field:
+													System.UInt16 $TestComparisonConversions.TestComparisonConversions::u16
+													Instance:
+														null
+
+
+
+						VariableDeclaration:
+							Symbol:
+								System.Boolean c32
+							Initializer:
+								BinaryOperator:
+									Left:
+										Cast:
+											Type: System.Int64
+											Expression:
+												Field:
+													System.Int32 $TestComparisonConversions.TestComparisonConversions::i32
+													Instance:
+														null
+
+									Operator:
+										LessThan
+									Right:
+										Cast:
+											Type: System.Int64
+											Expression:
+												Field:
+													System.UInt32 $TestComparisonConversions.TestComparisonConversions::u32
+													Instance:
+														null
+
+
+
+
+

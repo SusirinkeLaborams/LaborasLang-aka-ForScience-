@@ -88,7 +88,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 case BinaryOperatorNodeType.LessEqualThan:
                 case BinaryOperatorNodeType.Equals:
                 case BinaryOperatorNodeType.NotEquals:
-                    verified = instance.VerifyComparison(context.Parser);
+                    verified = instance.VerifyComparison(context);
                     break;
                 case BinaryOperatorNodeType.ShiftLeft:
                 case BinaryOperatorNodeType.ShiftRight:
@@ -178,16 +178,34 @@ namespace LaborasLangCompiler.Parser.Impl
             return false;
         }
 
-        private bool VerifyComparison(Parser parser)
+        private bool VerifyComparison(ContextNode context)
         {
-            type = parser.Bool;
+            type = context.Parser.Bool;
 
-            bool assignable = left.IsAssignableTo(right) || right.IsAssignableTo(left);
+            var comparisonType = GetComparisonType(left.ExpressionReturnType, right.ExpressionReturnType);
+            if(comparisonType == null)
+            {
+                comparisonType = GetComparisonTypeWithConversion(context.Parser, left.ExpressionReturnType, right.ExpressionReturnType);
+                if(comparisonType == null)
+                {
+                    return false;
+                }
+
+                if (!left.ExpressionReturnType.TypeEquals(comparisonType))
+                {
+                    left = CastNode.Create(context, left, comparisonType, left.SequencePoint);
+                }
+
+                if (!right.ExpressionReturnType.TypeEquals(comparisonType))
+                {
+                    right = CastNode.Create(context, right, comparisonType, right.SequencePoint);
+                }
+            }
 
             if (BinaryOperatorType == BinaryOperatorNodeType.Equals || BinaryOperatorType == BinaryOperatorNodeType.NotEquals)
-                return assignable;
+                return true;
 
-            return assignable && parser.IsPrimitive(left.ExpressionReturnType) && parser.IsPrimitive(right.ExpressionReturnType);
+            return context.Parser.IsPrimitive(left.ExpressionReturnType) && context.Parser.IsPrimitive(right.ExpressionReturnType);
         }
 
         private bool VerifyShift(Parser parser)
@@ -287,5 +305,40 @@ namespace LaborasLangCompiler.Parser.Impl
             {BinaryOperatorNodeType.ShiftRight, "op_RightShift"},
             {BinaryOperatorNodeType.ShiftLeft, "op_LeftShift"}
         };
+
+        private static TypeReference GetComparisonType(TypeReference left, TypeReference right)
+        {
+            if (left.IsAssignableTo(right))
+                return right;
+
+            if (right.IsAssignableTo(left))
+                return left;
+
+            return null;
+        }
+
+        private static TypeReference GetComparisonTypeWithConversion(Parser parser, TypeReference left, TypeReference right)
+        {
+            if (left.IsAssignableTo(right))
+                return right;
+
+            if (right.IsAssignableTo(left))
+                return left;
+
+            if(left.IsIntegerType() && right.IsIntegerType())
+            {
+                if(left.IsAssignableTo(parser.Int32) && right.IsAssignableTo(parser.Int32))
+                {
+                    return parser.Int32;
+                }
+
+                if(left.IsAssignableTo(parser.Int64) && right.IsAssignableTo(parser.Int64))
+                {
+                    return parser.Int64;
+                }
+            }
+
+            return null;
+        }
     }
 }

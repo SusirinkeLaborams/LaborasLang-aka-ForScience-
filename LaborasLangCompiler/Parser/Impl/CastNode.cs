@@ -37,7 +37,17 @@ namespace LaborasLangCompiler.Parser.Impl
             Contract.Requires(lexerNode.Children[1].Type == Lexer.TokenType.CastOperator);
 
             var type = TypeNode.Parse(context, lexerNode.Children[1].Children[1]);
-            var target = ExpressionNode.Parse(context, lexerNode.Children[0], type);
+            var target = ExpressionNode.Parse(context, lexerNode.Children[0]);
+
+            return CastNode.Create(context, target, type, context.Parser.GetSequencePoint(lexerNode));
+        }
+
+        public static CastNode Create(ContextNode context, ExpressionNode target, TypeReference type, SequencePoint point)
+        {
+            if(target is IAmbiguousNode)
+            {
+                target = ((IAmbiguousNode)target).RemoveAmbiguity(context, type);
+            }
 
             if(!target.IsGettable)
             {
@@ -46,10 +56,10 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if(!target.ExpressionReturnType.IsCastableTo(type))
             {
-                ErrorCode.IllegalCast.ReportAndThrow(context.Parser.GetSequencePoint(lexerNode), "Cannot cast expression of type {0} to {1}", target.ExpressionReturnType, type);
+                ErrorCode.IllegalCast.ReportAndThrow(point, "Cannot cast expression of type {0} to {1}", target.ExpressionReturnType, type);
             }
 
-            return new CastNode(type, target, context.Parser.GetSequencePoint(lexerNode));
+            return new CastNode(type, target, point);
         }
 
         public override string ToString(int indent)

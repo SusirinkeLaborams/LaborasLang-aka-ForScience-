@@ -1559,5 +1559,37 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source, ErrorCode.NotAnRValue.Enumerate());
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestComparisonConversions()
+        {
+            string source = @"
+                int8 i8 = -5;
+                uint8 u8 = 5;
+                int16 i16 = -5;
+                uint16 u16 = 5;
+                int32 i32 = -5;
+                uint32 u32 = 5;
+                auto main = void()
+                {
+                    auto c8 = i8 < u8;
+                    auto c16 = i16 < u16;
+                    auto c32 = i32 < u32;
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestComparisonConversionsInvalid()
+        {
+            string source = @"
+                int64 i64 = -5;
+                uint64 u64 = 5;
+                auto main = void()
+                {
+                    auto c64 = i64 < u64;
+                };
+            ";
+            CompareTrees(source, ErrorCode.TypeMissmatch.Enumerate());
+        }
     }
 }
