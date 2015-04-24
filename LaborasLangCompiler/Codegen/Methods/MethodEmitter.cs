@@ -1040,7 +1040,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        private void EmitExpressionWithTargetType(IExpressionNode expression, TypeReference targetType)
+        private void EmitExpressionWithTargetType(IExpressionNode expression, TypeReference targetType, bool forcePrimitiveConversion = false)
         {
             if (targetType is ByReferenceType)
             {
@@ -1085,7 +1085,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
             else
             {
-                EmitConversionIfNeeded(expression.ExpressionReturnType, targetType);
+                EmitConversionIfNeeded(expression.ExpressionReturnType, targetType, forcePrimitiveConversion);
             }
         }
 
@@ -1924,18 +1924,23 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             Call(stringComparisonMethod);
 
-            Ldc_I4(0);
-            Clt();
-
-            Ldc_I4(0);
-            Ceq();
+            Ldc_I4(-1);
+            Cgt();
         }
 
         private void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
 
-            Clt();
+            if (left.ExpressionReturnType.IsUnsignedInteger() && right.ExpressionReturnType.IsUnsignedInteger())
+            {
+                Clt_Un();
+            }
+            else
+            {
+                Clt();
+            }
+
             Ldc_I4(0);
             Ceq();
         }
@@ -1978,7 +1983,15 @@ namespace LaborasLangCompiler.Codegen.Methods
         private void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
-            Cgt();
+
+            if (left.ExpressionReturnType.IsUnsignedInteger() && right.ExpressionReturnType.IsUnsignedInteger())
+            {
+                Cgt_Un();
+            }
+            else
+            {
+                Cgt();
+            }
         }
 
         #endregion
@@ -2012,18 +2025,23 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             Call(stringComparisonMethod);
 
-            Ldc_I4(0);
-            Cgt();
-
-            Ldc_I4(0);
-            Ceq();
+            Ldc_I4(1);
+            Clt();
         }
 
         private void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
 
-            Cgt();
+            if (left.ExpressionReturnType.IsUnsignedInteger() && right.ExpressionReturnType.IsUnsignedInteger())
+            {
+                Cgt_Un();
+            }
+            else
+            {
+                Cgt();
+            }
+
             Ldc_I4(0);
             Ceq();
         }
@@ -2067,7 +2085,14 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             EmitOperandsAndConvertIfNeeded(left, right);
 
-            Clt();
+            if (left.ExpressionReturnType.IsUnsignedInteger() && right.ExpressionReturnType.IsUnsignedInteger())
+            {
+                Clt_Un();
+            }
+            else
+            {
+                Clt();
+            }
         }
 
         #endregion
@@ -2127,7 +2152,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void Emit(ICastNode castNode, EmissionType emissionType)
         {
-            EmitExpressionWithTargetType(castNode.TargetExpression, castNode.ExpressionReturnType);
+            EmitExpressionWithTargetType(castNode.TargetExpression, castNode.ExpressionReturnType, true);
 
             if (ShouldEmitAddress(castNode, emissionType))
                 LoadAddressOfValue(castNode);
@@ -2313,7 +2338,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void EmitConversionIfNeeded(TypeReference sourceType, TypeReference targetType)
+        protected void EmitConversionIfNeeded(TypeReference sourceType, TypeReference targetType, bool forcePrimitveConversion = false)
         {
             if (targetType.IsByReference)
             {
@@ -2347,44 +2372,71 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
 
             Contract.Assert(sourceType.IsPrimitive && targetType.IsPrimitive);
+            var primitiveWidth = sourceType.GetPrimitiveWidth();
 
             switch (targetType.MetadataType)
             {
                 case MetadataType.SByte:
-                    Conv_I1();
-                    break;
-
                 case MetadataType.Int16:
-                    Conv_I2();
+                case MetadataType.Int32:
+                    {
+                        if (sourceType.IsFloatingPointType() || primitiveWidth == 8 || forcePrimitveConversion)
+                        {
+                            Conv_I4();
+                        }
+                        else if (sourceType.IsUnsignedInteger() && primitiveWidth != 4)
+                        {
+                            Conv_U4();
+                        }
+                    }
                     break;
 
-                case MetadataType.Int32:
-                    Conv_I4();
+                case MetadataType.Byte:
+                case MetadataType.Char:
+                case MetadataType.UInt16:
+                case MetadataType.UInt32:
+                    {
+                        if (sourceType.IsFloatingPointType() || primitiveWidth == 8 || forcePrimitveConversion)
+                        {
+                            Conv_U4();
+                        }
+                        else if (sourceType.IsSignedInteger() && primitiveWidth != 4)
+                        {
+                            Conv_I4();
+                        }
+                    }
                     break;
 
                 case MetadataType.Int64:
-                    Conv_I8();
+                    if (sourceType.IsFloatingPointType() || primitiveWidth != 8 || forcePrimitveConversion)
+                    {
+                        if (sourceType.IsUnsignedInteger())
+                        {
+                            Conv_U8();
+                        }
+                        else
+                        {
+                            Conv_I8();
+                        }
+                    }
+                    break;
+
+                case MetadataType.UInt64:
+                    if (sourceType.IsFloatingPointType() || primitiveWidth != 8 || forcePrimitveConversion)
+                    {
+                        if (sourceType.IsUnsignedInteger() || forcePrimitveConversion)
+                        {
+                            Conv_U8();
+                        }
+                        else
+                        {
+                            Conv_I8();
+                        }
+                    }
                     break;
 
                 case MetadataType.IntPtr:
                     Conv_I();
-                    break;
-
-                case MetadataType.Byte:
-                    Conv_U1();
-                    break;
-
-                case MetadataType.Char:
-                case MetadataType.UInt16:
-                    Conv_U2();
-                    break;
-
-                case MetadataType.UInt32:
-                    Conv_U4();
-                    break;
-
-                case MetadataType.UInt64:
-                    Conv_U8();
                     break;
 
                 case MetadataType.UIntPtr:
