@@ -1581,5 +1581,18 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source);
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestAmbiguousOverloadCall()
+        {
+            string source = @"
+                auto foo = void(long a){};
+                auto foo = void(int a){};
+                auto main = void()
+                {
+                    foo((int8)5);
+                };
+            ";
+            CompareTrees(source);
+        }
     }
 }
