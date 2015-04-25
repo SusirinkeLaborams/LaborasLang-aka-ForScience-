@@ -150,11 +150,6 @@ namespace LaborasLangCompiler.Parser.Impl
                 {
                     ErrorCode.IntegerOverlflow.ReportAndThrow(point, "Cannot fit {0} into an integer, use BigInteger.Parse", value);
                 }
-                if (IsDigit(value.Last()))
-                {
-                    //no type specified
-                    requestedType = type;
-                }
                 else
                 {
                     //return what we parsed, if requested type can't fit

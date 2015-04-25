@@ -3,7 +3,7 @@ Class:
 	Fields:
 		FieldDeclaration:
 			Type:
-				System.Byte
+				System.Int32
 			Name:
 				i
 			Modifiers:
@@ -12,21 +12,21 @@ Class:
 				BinaryOperator:
 					Left:
 						Literal:
-							Type: System.Byte
+							Type: System.Int32
 							Value: 1
 
 					Operator:
 						BinaryXor
 					Right:
 						Literal:
-							Type: System.Byte
+							Type: System.Int32
 							Value: 2
 
 
 
 		FieldDeclaration:
 			Type:
-				System.Byte
+				System.Int32
 			Name:
 				a
 			Modifiers:
@@ -35,14 +35,14 @@ Class:
 				BinaryOperator:
 					Left:
 						Field:
-							System.Byte $TestBinaryOps.TestBinaryOps::i
+							System.Int32 $TestBinaryOps.TestBinaryOps::i
 							Instance:
 								null
 					Operator:
 						BinaryAnd
 					Right:
 						Field:
-							System.Byte $TestBinaryOps.TestBinaryOps::i
+							System.Int32 $TestBinaryOps.TestBinaryOps::i
 							Instance:
 								null
 
@@ -58,14 +58,14 @@ Class:
 				BinaryOperator:
 					Left:
 						Field:
-							System.Byte $TestBinaryOps.TestBinaryOps::i
+							System.Int32 $TestBinaryOps.TestBinaryOps::i
 							Instance:
 								null
 					Operator:
 						BinaryOr
 					Right:
 						Field:
-							System.Byte $TestBinaryOps.TestBinaryOps::a
+							System.Int32 $TestBinaryOps.TestBinaryOps::a
 							Instance:
 								null
 

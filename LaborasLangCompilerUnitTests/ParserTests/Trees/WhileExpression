@@ -38,7 +38,7 @@ Class:
 										LessThan
 									Right:
 										Literal:
-											Type: System.Byte
+											Type: System.Int32
 											Value: 10
 
 

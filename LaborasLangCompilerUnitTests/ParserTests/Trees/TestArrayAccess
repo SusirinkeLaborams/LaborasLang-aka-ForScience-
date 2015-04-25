@@ -26,7 +26,7 @@ Class:
 					ElementType: System.Int32
 					Indices:
 						Literal:
-							Type: System.Byte
+							Type: System.Int32
 							Value: 5
 
 

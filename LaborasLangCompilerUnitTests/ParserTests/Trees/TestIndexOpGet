@@ -35,7 +35,7 @@ Class:
 					Gettable: True
 					Indices:
 						Literal:
-							Type: System.Byte
+							Type: System.Int32
 							Value: 5
 
 

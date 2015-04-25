@@ -3,20 +3,20 @@ Class:
 	Fields:
 		FieldDeclaration:
 			Type:
-				System.Byte
+				System.Int32
 			Name:
 				i
 			Modifiers:
 				Private, Mutable, NoInstance
 			Initializer:
 				Literal:
-					Type: System.Byte
+					Type: System.Int32
 					Value: 1
 
 
 		FieldDeclaration:
 			Type:
-				System.Byte
+				System.Int32
 			Name:
 				a
 			Modifiers:
@@ -31,7 +31,7 @@ Class:
 								PreDecrement
 							Operand:
 								Field:
-									System.Byte $TestUnaryOrder.TestUnaryOrder::i
+									System.Int32 $TestUnaryOrder.TestUnaryOrder::i
 									Instance:
 										null
 

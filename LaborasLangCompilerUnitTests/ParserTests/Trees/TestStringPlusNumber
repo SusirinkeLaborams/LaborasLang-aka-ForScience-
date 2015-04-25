@@ -12,7 +12,7 @@ Class:
 				BinaryOperator:
 					Left:
 						Literal:
-							Type: System.Byte
+							Type: System.Int32
 							Value: 5
 
 					Operator:

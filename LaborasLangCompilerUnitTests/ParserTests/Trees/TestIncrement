@@ -13,14 +13,14 @@ Class:
 			Body:
 				CodeBlock:
 					Symbols:
-						System.Byte a
+						System.Int32 a
 					Nodes:
 						VariableDeclaration:
 							Symbol:
-								System.Byte a
+								System.Int32 a
 							Initializer:
 								Literal:
-									Type: System.Byte
+									Type: System.Int32
 									Value: 5
 
 
@@ -32,7 +32,7 @@ Class:
 									Name:
 										a
 									Type:
-										System.Byte
+										System.Int32
 
 
 

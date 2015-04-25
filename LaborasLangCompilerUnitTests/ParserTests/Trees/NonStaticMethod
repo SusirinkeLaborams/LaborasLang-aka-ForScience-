@@ -13,15 +13,15 @@ Class:
 			Body:
 				CodeBlock:
 					Symbols:
-						System.Byte a
+						System.Int32 a
 						System.String str
 					Nodes:
 						VariableDeclaration:
 							Symbol:
-								System.Byte a
+								System.Int32 a
 							Initializer:
 								Literal:
-									Type: System.Byte
+									Type: System.Int32
 									Value: 5
 
 
@@ -39,10 +39,10 @@ Class:
 													Name:
 														a
 													Type:
-														System.Byte
+														System.Int32
 
 											Method:
-												System.String System.Byte::ToString()
+												System.String System.Int32::ToString()
 
 
 

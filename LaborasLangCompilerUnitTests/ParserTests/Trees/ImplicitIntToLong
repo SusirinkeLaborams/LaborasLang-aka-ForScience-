@@ -3,14 +3,14 @@ Class:
 	Fields:
 		FieldDeclaration:
 			Type:
-				System.Byte
+				System.Int32
 			Name:
 				a
 			Modifiers:
 				Private, Mutable, NoInstance
 			Initializer:
 				Literal:
-					Type: System.Byte
+					Type: System.Int32
 					Value: 5
 
 
@@ -23,7 +23,7 @@ Class:
 				Private, Mutable, NoInstance
 			Initializer:
 				Field:
-					System.Byte $ImplicitIntToLong.ImplicitIntToLong::a
+					System.Int32 $ImplicitIntToLong.ImplicitIntToLong::a
 					Instance:
 						null
 

@@ -19,7 +19,7 @@ Class:
 							ReturnType: System.Void
 							Args:
 								Literal:
-									Type: System.Byte
+									Type: System.Int32
 									Value: 4
 
 							Function:
