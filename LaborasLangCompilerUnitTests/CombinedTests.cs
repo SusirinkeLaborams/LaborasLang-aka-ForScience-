@@ -109,7 +109,7 @@ namespace LaborasLangCompilerUnitTests
             }
 
             EmitEntryPoint(assembly, testMethods);
-            assembly.Save();
+            Assert.IsTrue(assembly.Save());
 
             ExecuteTests(assembly.OutputPath, testMethods, tests);
         }

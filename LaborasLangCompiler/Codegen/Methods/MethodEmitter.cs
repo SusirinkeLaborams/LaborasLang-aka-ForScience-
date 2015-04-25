@@ -26,6 +26,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             Emit(tree);
 
+            CurrentSequencePoint = tree.SequencePoint;
             if (body.Instructions.Count == 0 || body.Instructions.Last().OpCode != OpCodes.Ret)
             {
                 Ret();

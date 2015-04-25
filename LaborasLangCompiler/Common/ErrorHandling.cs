@@ -134,6 +134,11 @@ namespace LaborasLangCompiler.Common
             errors = new List<Error>();
         }
 
+        public static string SequencePointToString(SequencePoint sequencePoint)
+        {
+            return string.Format("{0}({1},{2},{3},{4}): ", sequencePoint.Document.Url, sequencePoint.StartLine, sequencePoint.StartColumn, sequencePoint.EndLine, sequencePoint.EndColumn);
+        }
+
         public class Error
         {
             public SequencePoint Point { get; private set; }
@@ -150,9 +155,9 @@ namespace LaborasLangCompiler.Common
             public override string ToString()
             {
                 StringBuilder builder = new StringBuilder();
-                if(Point != null)
+                if (Point != null)
                 {
-                    builder.AppendFormat("{0}({1},{2},{3},{4}): ", Point.Document.Url, Point.StartLine, Point.StartColumn, Point.EndLine, Point.EndColumn);
+                    builder.AppendFormat(SequencePointToString(Point));
                 }
                 builder.AppendFormat("error LL{0:0000} {1}: {2}", (int)ErrorCode, ErrorCode, Message);
                 return builder.ToString();

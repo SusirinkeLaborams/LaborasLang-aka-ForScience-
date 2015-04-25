@@ -88,7 +88,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
             methodEmitter.ParseTree(BodyCodeBlock);
             methodEmitter.SetAsEntryPoint();
-            assemblyEmitter.Save();
+            Assert.IsTrue(assemblyEmitter.Save());
 
             var il = Disassembler.DisassembleAssembly(assemblyEmitter.OutputPath);
 
@@ -121,7 +121,7 @@ namespace LaborasLangCompilerUnitTests.CodegenTests
 
             methodEmitter.ParseTree(BodyCodeBlock);
             methodEmitter.SetAsEntryPoint();
-            assemblyEmitter.Save();
+            Assert.IsTrue(assemblyEmitter.Save());
 
             PEVerifyRunner.Run(assemblyEmitter.OutputPath);
             var stdout = ManagedCodeRunner.CreateProcessAndRun(assemblyEmitter.OutputPath, new string[0] { });
