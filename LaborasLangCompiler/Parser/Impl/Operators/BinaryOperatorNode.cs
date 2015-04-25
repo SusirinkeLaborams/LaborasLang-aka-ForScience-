@@ -80,7 +80,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 case BinaryOperatorNodeType.Multiplication:
                 case BinaryOperatorNodeType.Division:
                 case BinaryOperatorNodeType.Modulus:
-                    verified = instance.VerifyArithmetic(context.Parser);
+                    verified = instance.VerifyArithmetic(context);
                     break;
                 case BinaryOperatorNodeType.GreaterThan:
                 case BinaryOperatorNodeType.LessThan:
@@ -88,7 +88,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 case BinaryOperatorNodeType.LessEqualThan:
                 case BinaryOperatorNodeType.Equals:
                 case BinaryOperatorNodeType.NotEquals:
-                    verified = instance.VerifyComparison(context.Parser);
+                    verified = instance.VerifyComparison(context);
                     break;
                 case BinaryOperatorNodeType.ShiftLeft:
                 case BinaryOperatorNodeType.ShiftRight:
@@ -147,8 +147,11 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private bool VerifyArithmetic(Parser parser)
+        private bool VerifyArithmetic(ContextNode context)
         {
+            var parser = context.Parser;
+            ResolveLiteralOperands(context);
+
             if (left.ExpressionReturnType.IsNumericType() && right.ExpressionReturnType.IsNumericType())
             {
                 bool comparable = false;
@@ -178,16 +181,43 @@ namespace LaborasLangCompiler.Parser.Impl
             return false;
         }
 
-        private bool VerifyComparison(Parser parser)
+        private bool VerifyComparison(ContextNode context)
         {
+            var parser = context.Parser;
             type = parser.Bool;
 
+            ResolveLiteralOperands(context);
             bool assignable = left.IsAssignableTo(right) || right.IsAssignableTo(left);
 
             if (BinaryOperatorType == BinaryOperatorNodeType.Equals || BinaryOperatorType == BinaryOperatorNodeType.NotEquals)
                 return assignable;
 
             return assignable && parser.IsPrimitive(left.ExpressionReturnType) && parser.IsPrimitive(right.ExpressionReturnType);
+        }
+
+        private void ResolveLiteralOperands(ContextNode context)
+        {
+            if (left.IsAssignableTo(right) || right.IsAssignableTo(left))
+                return;
+
+            if (right.ExpressionType == ExpressionNodeType.Literal)
+            {
+                var resolvedNode = ((LiteralNode)right).RemoveAmbiguity(context, left.ExpressionReturnType);
+
+                if (resolvedNode.IsAssignableTo(left))
+                {
+                    right = resolvedNode;
+                    return;
+                }
+            }
+
+            if (left.ExpressionType == ExpressionNodeType.Literal)
+            {
+                var resolvedNode = ((LiteralNode)left).RemoveAmbiguity(context, right.ExpressionReturnType);
+
+                if (resolvedNode.IsAssignableTo(right))
+                    left = resolvedNode;
+            }
         }
 
         private bool VerifyShift(Parser parser)
