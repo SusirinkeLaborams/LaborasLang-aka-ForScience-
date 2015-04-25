@@ -160,7 +160,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static CodeBlockNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
-            Contract.Requires(lexerNode.Type == Lexer.TokenType.CodeBlockNode || lexerNode.Type == Lexer.TokenType.StatementWithEndOfLine);
+            Contract.Requires(lexerNode.Type == Lexer.TokenType.CodeBlockNode || lexerNode.Type == Lexer.TokenType.StatementWithEndOfLine || lexerNode.Type == Lexer.TokenType.ConditionalSentence);
             CodeBlockNode instance = null;
             if(lexerNode.Type == Lexer.TokenType.CodeBlockNode)
             {

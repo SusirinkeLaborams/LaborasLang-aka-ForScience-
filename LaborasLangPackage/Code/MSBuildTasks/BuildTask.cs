@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace LaborasLangPackage.MSBuildTasks
 {
@@ -74,16 +75,17 @@ namespace LaborasLangPackage.MSBuildTasks
 
             foreach (var sourceFile in SourceFiles)
             {
-                args.Add(sourceFile);
+                args.Add(string.Format("\"{0}\"", sourceFile));
             }
-
+            
             foreach (var reference in References)
             {
-                args.Add("/ref:" + reference);
+                var assemblyName = new AssemblyName(reference);
+                args.Add(string.Format("\"/ref:{0}.dll\"", assemblyName.Name));
             }
 
             TargetExtension = OutputType.ToLowerInvariant() == "library" ? ".dll" : ".exe";
-            args.Add("/out:" + Path.Combine(OutputPath, AssemblyName + TargetExtension));
+            args.Add(string.Format("\"/out:{0}\"", Path.Combine(OutputPath, AssemblyName + TargetExtension)));
             args.Add("/" + OutputType);
 
             if (!EnableOptimizations)
