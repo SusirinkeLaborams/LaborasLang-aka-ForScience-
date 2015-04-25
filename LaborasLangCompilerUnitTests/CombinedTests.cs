@@ -240,7 +240,7 @@ namespace LaborasLangCompilerUnitTests
                     {
                         hasCategory = true;
                     }
-                    else if (attribute.TestCategories.Contains("Disabled"))
+                    else if (attribute.TestCategories.Contains("Disabled") || attribute.TestCategories.Contains("CodeSamples"))
                     {
                         isDisabled = true;
                     }

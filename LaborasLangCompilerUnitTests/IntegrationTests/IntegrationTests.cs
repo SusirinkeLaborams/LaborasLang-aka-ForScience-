@@ -156,7 +156,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             Test("AssignToPreIncrementedValue.ll", "5");
         }
 
-        [TestMethod, TestCategory("Integration Tests"), TestCategory("Disabled")]
+        [TestMethod, TestCategory("Integration Tests")]
         public void Test_MinMaxValues()
         {
             var expected1 = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, ",
@@ -200,7 +200,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             Test("CharLiterals.ll", new[] { "some", "words", "separated", "by", "commas" }.Aggregate((x, y) => x + Environment.NewLine + y));
         }
 
-        [TestMethod, TestCategory("Integration Tests"), TestCategory("Disabled")]
+        [TestMethod, TestCategory("Integration Tests"), TestCategory("CodeSamples")]
         public void Test_HttpRequest()
         {
             Test("HttpRequest.ll", "The World Wide Web project", new[] { "System.dll" });
