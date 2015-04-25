@@ -58,7 +58,7 @@
     output += string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}",
                 min_i8_literal > 0, max_i8_literal > 0, min_u8_literal > 0, min_char_literal > 0, min_char_literal > 0, max_char_literal > 0,
 				min_i16_literal > 0, max_i16_literal > 0, min_u16_literal > 0, max_u16_literal > 0, min_i32_literal > 0, max_i32_literal > 0, 
-				min_u32_literal > 0, max_u32_literal > 0, min_i64_literal > 0, max_i64_literal > 0, in_u64_literal > 0, max_u64_literal > 0);
+				min_u32_literal > (uint)0, max_u32_literal > (uint)0, min_i64_literal > 0, max_i64_literal > 0, min_u64_literal > (ulong)0, max_u64_literal > (ulong)0);
 
 	System.Console.WriteLine(output);
 };
