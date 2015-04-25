@@ -12,7 +12,7 @@ namespace LaborasLangCompiler.Common
     {
         ParserErrors = 0000,
         InvalidStructure = 0001,
-        SymbolAlreadyDeclared = 0002,
+        VariableAlreadyDeclared = 0002,
         SymbolNotFound = 0003,
 
         TypeMissmatch = 0004,
@@ -67,6 +67,9 @@ namespace LaborasLangCompiler.Common
         InvalidForEachCollection = 0037,
 
         IntegerOverlflow = 0038,
+
+        FieldAlreadyDeclared = 0039,
+        MethodAlreadyDeclared = 0040,
 
         CompilerArgumentErrors = 1000,
         NoSourceFiles = 1001,

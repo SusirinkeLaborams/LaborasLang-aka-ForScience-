@@ -1559,5 +1559,32 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source, ErrorCode.NotAnRValue.Enumerate());
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestDuplicateFields()
+        {
+            string source = @"
+                int foo = 5;
+                string foo = ""asgfasg"";
+            ";
+            CompareTrees(source, ErrorCode.FieldAlreadyDeclared.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestDuplicateMethods()
+        {
+            string source = @"
+                auto foo = void(){};
+                auto foo = int(){return 5;};
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestOverloadedMethods()
+        {
+            string source = @"
+                auto foo = void(){};
+                auto foo = void(int a){};
+            ";
+            CompareTrees(source);
+        }
     }
 }

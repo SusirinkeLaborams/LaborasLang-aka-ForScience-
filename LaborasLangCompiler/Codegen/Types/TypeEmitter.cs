@@ -60,15 +60,18 @@ namespace LaborasLangCompiler.Codegen.Types
             Assembly.AddTypeUsage(baseType);
         }
 
-        public void AddMethod(MethodDefinition method)
+        public bool AddMethod(MethodDefinition method)
         {
-            CheckForDuplicates(method.Name, method.GetParameterTypes());
+            if (HasMember(method.Name, method.GetParameterTypes()))
+                return false;
             typeDefinition.Methods.Add(method);
+            return true;
         }
 
-        public void AddField(FieldDefinition field)
+        public bool AddField(FieldDefinition field)
         {
-            CheckForDuplicates(field.Name);
+            if (HasMember(field.Name))
+                return false;
 
             // If we add any field, reset its class and packing size parameters to unspecified again
             if (typeDefinition.IsValueType && typeDefinition.Fields.Count == 0)
@@ -79,10 +82,13 @@ namespace LaborasLangCompiler.Codegen.Types
 
             typeDefinition.Fields.Add(field);
             Assembly.AddTypeUsage(field.FieldType);
+
+            return true;
         }
 
         public void AddFieldInitializer(FieldDefinition field, IExpressionNode initializer)
         {
+            Contract.Assert(field.DeclaringType.FullName == typeDefinition.FullName);
             if (field.IsStatic)
             {
                 GetStaticConstructor().AddFieldInitializer(field, initializer);
@@ -93,14 +99,12 @@ namespace LaborasLangCompiler.Codegen.Types
             }
         }
 
-        public void AddProperty(PropertyDefinition property, IExpressionNode initializer = null)
+        public bool AddProperty(PropertyDefinition property, IExpressionNode initializer = null)
         {
-            if (property.SetMethod == null && property.GetMethod == null)
-            {
-                throw new ArgumentException("Property has neither a setter nor a getter!", "property");
-            }
+            Contract.Requires(property.SetMethod != null || property.GetMethod != null, "Property has neither a setter nor a getter!");
 
-            CheckForDuplicates(property.Name);
+            if (HasMember(property.Name))
+                return false;
             typeDefinition.Properties.Add(property);
 
             bool isStatic = (property.SetMethod != null && property.SetMethod.IsStatic) ||
@@ -126,6 +130,8 @@ namespace LaborasLangCompiler.Codegen.Types
             {
                 Assembly.AddTypeUsage(type);
             }
+
+            return true;
         }
 
         public void AddDefaultConstructor()
@@ -133,27 +139,46 @@ namespace LaborasLangCompiler.Codegen.Types
             GetInstanceConstructor();
         }
 
-        private void CheckForDuplicates(string name)
+        private bool HasMember(string name)
         {
             if (typeDefinition.Fields.Any(field => field.Name == name))
             {
-                throw new InvalidOperationException(string.Format("A field with same name already exists in type {0}.", typeDefinition.FullName));
+                return true;
             }
-            else if (typeDefinition.Methods.Any(method => method.Name == name))
+
+            if (typeDefinition.Methods.Any(method => method.Name == name))
             {
-                throw new InvalidOperationException(string.Format("A method with same name already exists in type {0}.", typeDefinition.FullName));
+                return true;
             }
+
+            if(typeDefinition.Properties.Any(property => property.Name == name))
+            {
+                return true;
+            }
+            return false;
         }
 
-        private void CheckForDuplicates(string name, IReadOnlyList<TypeReference> parameterTypes)
+        private bool HasMember(string name, IReadOnlyList<TypeReference> parameterTypes)
         {
+            if (typeDefinition.Fields.Any(field => field.Name == name))
+            {
+                return true;
+            }
+
+            if (typeDefinition.Properties.Any(property => property.Name == name))
+            {
+                return true;
+            }
+
             var targetParameterTypes = parameterTypes.Select(type => type.FullName);
 
             if (typeDefinition.Methods.Any(method => method.Name == name &&
                 method.GetParameterTypes().Select(type => type.FullName).SequenceEqual(targetParameterTypes)))
             {
-                throw new InvalidOperationException(string.Format("A method with same name and parameters already exists in type {0}.", typeDefinition.FullName));
+                return true;
             }
+
+            return false;
         }
 
         public static string ComputeNameFromReturnAndArgumentTypes(TypeReference returnType, IReadOnlyList<TypeReference> arguments)

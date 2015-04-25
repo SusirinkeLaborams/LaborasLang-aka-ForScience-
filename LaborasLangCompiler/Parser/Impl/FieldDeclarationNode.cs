@@ -112,8 +112,14 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             Contract.Requires(!TypeReference.IsAuto() && !TypeReference.IsTypeless());
             if (TypeReference.IsVoid())
+            {
                 ErrorCode.VoidDeclaration.ReportAndThrow(SequencePoint, "Cannot declare a field of type void");
-            GetClass().TypeEmitter.AddField(FieldDefinition);
+            }
+
+            if (!GetClass().TypeEmitter.AddField(FieldDefinition))
+            {
+                ErrorCode.FieldAlreadyDeclared.ReportAndThrow(SequencePoint, "Field {0} in type {1} is already declared", Name, DeclaringType.FullName);
+            }
         }
 
         public FieldAttributes GetAttributes()
