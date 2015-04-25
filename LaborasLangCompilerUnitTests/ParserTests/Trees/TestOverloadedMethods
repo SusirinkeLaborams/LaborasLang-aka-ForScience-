@@ -1,0 +1,62 @@
+Class:
+	TestOverloadedMethods
+	Fields:
+	Methods:
+		Method:
+			Name:
+				foo
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+
+
+		Method:
+			Name:
+				foo
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+				System.Int32 a
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+
+
+		Method:
+			Name:
+				main
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						MethodCall:
+							ReturnType: System.Void
+							Args:
+								Literal:
+									Type: System.Int32
+									Value: 5
+
+							Function:
+								Method:
+									Instance:
+										null
+									Method:
+										System.Void $TestOverloadedMethods.TestOverloadedMethods::foo(System.Int32)
+
+
+
+

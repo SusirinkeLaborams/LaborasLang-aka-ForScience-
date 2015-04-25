@@ -1569,25 +1569,15 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             CompareTrees(source, ErrorCode.FieldAlreadyDeclared.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
-        public void TestDuplicateMethods()
-        {
-            string source = @"
-                auto foo = void(){};
-                auto foo = int(){return 5;};
-                auto foo = void(){};
-                auto foo = double(){ return 5.0; };
-                auto bar = void(int a, double b){};
-                auto bar = string(int a, double b){return ""aaa"";};
-                auto bar = void(int a, double b){};
-            ";
-            CompareTrees(source);
-        }
-        [TestMethod, TestCategory("Parser")]
         public void TestOverloadedMethods()
         {
             string source = @"
                 auto foo = void(){};
                 auto foo = void(int a){};
+                auto main = void()
+                {
+                    foo(5);
+                };
             ";
             CompareTrees(source);
         }
