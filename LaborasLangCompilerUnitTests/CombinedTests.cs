@@ -77,12 +77,14 @@ namespace LaborasLangCompilerUnitTests
         [TestMethod, TestCategory("Combined Test Suites")]
         public void AllMiscILTests()
         {
-            var testMethods = GetAllTestsFromCategory("Misc IL Tests");
+            var testMethods = GetAllTestsFromCategory("Misc IL Tests").GroupBy(m => m.DeclaringType);
 
-            foreach (var method in testMethods)
+            foreach (var methodGroup in testMethods)
             {
-                var instance = Activator.CreateInstance(method.DeclaringType);
-                method.Invoke(instance, new object[0]);
+                var instance = Activator.CreateInstance(methodGroup.Key);
+
+                foreach (var method in methodGroup)
+                    method.Invoke(instance, new object[0]);
             }
         }
 

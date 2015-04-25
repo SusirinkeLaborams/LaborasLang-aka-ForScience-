@@ -100,7 +100,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static IndexOperatorAccessNode AsIndexOp(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
         {
-            var itemProperty = AssemblyRegistry.GetCompatibleProperty(array.ExpressionReturnType, "Item", indices.Select(i => i.ExpressionReturnType).ToArray());
+            var itemProperty = AssemblyRegistry.GetIndexerProperty(array.ExpressionReturnType, indices.Select(i => i.ExpressionReturnType).ToArray());
             if(itemProperty != null)
             {
                 return new IndexOperatorAccessNode(context, array, itemProperty, indices, point);

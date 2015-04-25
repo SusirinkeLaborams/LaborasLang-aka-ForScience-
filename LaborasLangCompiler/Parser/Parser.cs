@@ -44,7 +44,7 @@ namespace LaborasLangCompiler.Parser
         {
             Filename = Path.GetFileNameWithoutExtension(filePath);
             Namespace = new Namespace(namespaze, parser.Assembly);
-            Document = new Document(filePath);
+            Document = new Document(Path.GetFullPath(filePath));
             Document.Language = DocumentLanguage.Other;
             Document.LanguageVendor = DocumentLanguageVendor.Other;
             Document.Type = DocumentType.Text;
