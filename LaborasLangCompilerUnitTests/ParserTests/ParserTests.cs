@@ -903,7 +903,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 auto foo = int[1, 1]{{1}, {2}};
             ";
-            CompareTrees(source, ErrorCode.ArrayDimMissmatch.Enumerate());
+            CompareTrees(source, ErrorCode.ArrayDimMismatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestEmptyInitializedArray()

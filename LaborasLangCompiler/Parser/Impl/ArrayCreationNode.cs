@@ -159,7 +159,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     var value = numericDims[i];
                     if (value != initializer.Dimensions[i])
                     {
-                        ErrorCode.ArrayDimMissmatch.ReportAndThrow(point,
+                        ErrorCode.ArrayDimMismatch.ReportAndThrow(point,
                             "Dimension mismatch, array dimensions are [{0}] initializer are [{1}]",
                             String.Join(", ", numericDims), String.Join(", ", initializer.Dimensions));
                     }

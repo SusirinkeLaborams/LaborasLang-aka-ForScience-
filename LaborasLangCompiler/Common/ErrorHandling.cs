@@ -56,7 +56,7 @@ namespace LaborasLangCompiler.Common
         InvalidIndexType = 0029,
         CannotIndex = 0030,
         MissingArraySize = 0031,
-        ArrayDimMissmatch = 0032,
+        ArrayDimMismatch = 0032,
         NotLiteralArrayDims = 0033,
 
         MultipleCharacterLiteral = 0034,
@@ -70,6 +70,8 @@ namespace LaborasLangCompiler.Common
 
         FieldAlreadyDeclared = 0039,
         MethodAlreadyDeclared = 0040,
+
+        EntryPointNotSet = 0041,
 
         CompilerArgumentErrors = 1000,
         NoSourceFiles = 1001,
