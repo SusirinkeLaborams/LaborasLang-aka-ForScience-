@@ -62,15 +62,16 @@ namespace LaborasLangCompiler.Codegen.Types
 
         public bool AddMethod(MethodDefinition method)
         {
-            if (HasMember(method.Name, method.GetParameterTypes()))
+            if (HasMember(method.Name, MemberCheck.FieldAndProperties))
                 return false;
+
             typeDefinition.Methods.Add(method);
             return true;
         }
 
         public bool AddField(FieldDefinition field)
         {
-            if (HasMember(field.Name))
+            if (HasMember(field.Name, MemberCheck.FullCheck))
                 return false;
 
             // If we add any field, reset its class and packing size parameters to unspecified again
@@ -103,8 +104,9 @@ namespace LaborasLangCompiler.Codegen.Types
         {
             Contract.Requires(property.SetMethod != null || property.GetMethod != null, "Property has neither a setter nor a getter!");
 
-            if (HasMember(property.Name))
+            if (HasMember(property.Name, MemberCheck.FullCheck))
                 return false;
+
             typeDefinition.Properties.Add(property);
 
             bool isStatic = (property.SetMethod != null && property.SetMethod.IsStatic) ||
@@ -137,48 +139,6 @@ namespace LaborasLangCompiler.Codegen.Types
         public void AddDefaultConstructor()
         {
             GetInstanceConstructor();
-        }
-
-        private bool HasMember(string name)
-        {
-            if (typeDefinition.Fields.Any(field => field.Name == name))
-            {
-                return true;
-            }
-
-            if (typeDefinition.Methods.Any(method => method.Name == name))
-            {
-                return true;
-            }
-
-            if(typeDefinition.Properties.Any(property => property.Name == name))
-            {
-                return true;
-            }
-            return false;
-        }
-
-        private bool HasMember(string name, IReadOnlyList<TypeReference> parameterTypes)
-        {
-            if (typeDefinition.Fields.Any(field => field.Name == name))
-            {
-                return true;
-            }
-
-            if (typeDefinition.Properties.Any(property => property.Name == name))
-            {
-                return true;
-            }
-
-            var targetParameterTypes = parameterTypes.Select(type => type.FullName);
-
-            if (typeDefinition.Methods.Any(method => method.Name == name &&
-                method.GetParameterTypes().Select(type => type.FullName).SequenceEqual(targetParameterTypes)))
-            {
-                return true;
-            }
-
-            return false;
         }
 
         public static string ComputeNameFromReturnAndArgumentTypes(TypeReference returnType, IReadOnlyList<TypeReference> arguments)
@@ -233,6 +193,38 @@ namespace LaborasLangCompiler.Codegen.Types
             }
 
             return staticConstructor;
+        }
+
+        private enum MemberCheck
+        {
+            Fields = 0x1,
+            Properties = 0x2,
+            Methods = 0x4,
+            FieldAndProperties = Fields | Properties,
+            FullCheck = Fields | Properties | Methods
+        }
+
+        private bool HasMember(string name, MemberCheck check)
+        {
+            if ((check & MemberCheck.Fields) != 0)
+            {
+                if (typeDefinition.Fields.Any(field => field.Name == name))
+                    return true;
+            }
+
+            if ((check & MemberCheck.Properties) != 0)
+            {
+                if (typeDefinition.Properties.Any(property => property.Name == name))
+                    return true;
+            }
+
+            if ((check & MemberCheck.Methods) != 0)
+            {
+                if (typeDefinition.Methods.Any(method => method.Name == name))
+                    return true;
+            }
+
+            return false;
         }
     }
 }
