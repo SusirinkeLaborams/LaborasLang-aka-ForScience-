@@ -194,7 +194,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             Test("CharLiterals.ll", new[] { "some", "words", "separated", "by", "commas" }.Aggregate((x, y) => x + Environment.NewLine + y));
         }
 
-        [TestMethod, TestCategory("Integration Tests")]
+        [TestMethod, TestCategory("Integration Tests"), TestCategory("Disabled")]
         public void Test_HttpRequest()
         {
             Test("HttpRequest.ll", "The World Wide Web project", new[] { "System.dll" });
