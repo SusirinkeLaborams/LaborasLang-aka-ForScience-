@@ -17,7 +17,8 @@ namespace Lexer.PostProcessors
                 new ValueResolver(), 
                 new FullSymbolPostProcessor(), 
                 new OperatorColapser(),
-                new ForResolver()};
+                new ForResolver(),
+                new NegativeNumberResolver()};
         }
 
         public PostProcessor()

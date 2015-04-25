@@ -59,8 +59,6 @@ namespace LaborasLangCompiler.Parser.Impl
             return new ClassNode(context.Parser, context.Parent, null);
         }
 
-        #region type wrapper
-
         public FieldReference GetField(string name)
         {
             return AssemblyRegistry.GetField(Parser.Assembly, TypeEmitter, name);
@@ -75,8 +73,6 @@ namespace LaborasLangCompiler.Parser.Impl
         {
             return null; 
         }
-
-        #endregion typewrapper
 
         #region context
 

@@ -156,7 +156,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             Test("AssignToPreIncrementedValue.ll", "5");
         }
 
-        [TestMethod, TestCategory("Integration Tests"), TestCategory("Disabled")]
+        [TestMethod, TestCategory("Integration Tests")]
         public void Test_MinMaxValues()
         {
             var expected1 = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}, ",
@@ -170,7 +170,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
                 long.MinValue, long.MaxValue,
                 ulong.MinValue, ulong.MaxValue);
 
-            var expected2 = Enumerable.Repeat<string>(string.Format("{0}, ", true), 18);
+            var expected2 = Enumerable.Repeat<string>(string.Format("{0}, ", true), 18).Aggregate((x, y) => x + y);
 
             var expected3 = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}",
                 sbyte.MinValue > 0, sbyte.MaxValue > 0,
@@ -189,12 +189,18 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         }
 
         [TestMethod, TestCategory("Integration Tests")]
+        public void Test_CanAddLiteralToUnsignedInt()
+        {
+            Test("CanAddLiteralToUnsignedInt.ll", "6");
+        }
+
+        [TestMethod, TestCategory("Integration Tests")]
         public void Test_CharLiterals()
         {
             Test("CharLiterals.ll", new[] { "some", "words", "separated", "by", "commas" }.Aggregate((x, y) => x + Environment.NewLine + y));
         }
 
-        [TestMethod, TestCategory("Integration Tests")]
+        [TestMethod, TestCategory("Integration Tests"), TestCategory("CodeSamples")]
         public void Test_HttpRequest()
         {
             Test("HttpRequest.ll", "The World Wide Web project", new[] { "System.dll" });

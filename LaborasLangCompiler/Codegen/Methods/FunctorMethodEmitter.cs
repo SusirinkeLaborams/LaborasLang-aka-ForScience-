@@ -51,7 +51,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             var baseCtor = AssemblyRegistry.GetConstructor(Assembly, DeclaringType.BaseType);
 
             Ldarg(0);
-            Call(baseCtor);
+            Call(methodDefinition.DeclaringType, baseCtor);
 
             if (targetMethod.HasThis)
             {
@@ -91,15 +91,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
 
             Tail();
-
-            if (targetMethod.Resolve().IsVirtual)
-            {
-                Callvirt(targetMethod);
-            }
-            else
-            {
-                Call(targetMethod);
-            }
+            Call(targetMethod.HasThis ? ThisField.FieldType : null, targetMethod);
 
             Ret();
         }

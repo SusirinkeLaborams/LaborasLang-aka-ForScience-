@@ -66,6 +66,8 @@ namespace LaborasLangCompiler.Common
 
         InvalidForEachCollection = 0037,
 
+        IntegerOverlflow = 0038,
+
         CompilerArgumentErrors = 1000,
         NoSourceFiles = 1001,
         UnknownCompilerSwitch = 1002,

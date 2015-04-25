@@ -23,9 +23,6 @@ namespace LaborasLangCompiler.Parser.Impl
         private readonly Dictionary<string, TypeReference> aliases;
         private readonly HashSet<TypeReference> primitives;
 
-        public IReadOnlyDictionary<ulong, TypeReference> MaxValues { get; private set; }
-        public IReadOnlyDictionary<long, TypeReference> MinValues { get; private set; }
-
         private readonly List<Parser> parsers;
 
         #region types
@@ -82,25 +79,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             primitives = new HashSet<TypeReference>(Utils.Utils.Enumerate(Bool, Char, Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64, Float, Double, String), new TypeComparer());
 
-            MaxValues = new Dictionary<ulong, TypeReference>()
-            {
-                {(ulong)sbyte.MaxValue, Int8},
-                {byte.MaxValue, UInt8},
-                {(ulong)short.MaxValue, Int16},
-                {ushort.MaxValue, UInt16},
-                {int.MaxValue, Int32},
-                {uint.MaxValue, UInt32},
-                {long.MaxValue, Int64},
-                {ulong.MaxValue, UInt64}
-            };
-
-            MinValues = new Dictionary<long, TypeReference>()
-            {
-                {sbyte.MinValue, Int8},
-                {short.MinValue, Int16},
-                {int.MinValue, Int32},
-                {long.MinValue, Int64},
-            };
+            
         }
 
         private class TypeComparer : IEqualityComparer<TypeReference>

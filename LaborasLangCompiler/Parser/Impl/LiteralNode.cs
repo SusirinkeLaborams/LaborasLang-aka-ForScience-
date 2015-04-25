@@ -14,6 +14,7 @@ using LaborasLangCompiler.Codegen;
 using LaborasLangCompiler.Common;
 using Lexer;
 using System.Diagnostics.Contracts;
+using System.Numerics;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -33,11 +34,11 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private readonly TypeReference type;
 
-        private LiteralNode(Literal value, TypeReference type, SequencePoint point)
+        private LiteralNode(IConvertible value, TypeReference type, SequencePoint point)
             : base(point)
         {
             this.type = type;
-            this.Value = value;
+            this.Value = new Literal(value);
         }
 
         public static LiteralNode Create(ContextNode context, IConvertible value, SequencePoint point)
@@ -50,7 +51,7 @@ namespace LaborasLangCompiler.Parser.Impl
                     value.GetType().FullName, value);
             }
 
-            return new LiteralNode(new Literal(value), type, point);
+            return new LiteralNode(value, type, point);
         }
 
         public static LiteralNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
@@ -59,14 +60,15 @@ namespace LaborasLangCompiler.Parser.Impl
             lexerNode = lexerNode.Children[0];
             var point = context.Parser.GetSequencePoint(lexerNode);
             var type = ParseLiteralType(context.Parser, lexerNode);
-            Literal value = new Literal(ParseValue(lexerNode.Content.ToString(), type, point));
-            return new LiteralNode(value, type, point);
+            return ParseValue(context.Parser.ProjectParser, lexerNode.Content, type, point);
         }
 
         private static TypeReference ParseLiteralType(Parser parser, IAbstractSyntaxTree lexerNode)
         {
             switch(lexerNode.Type)
             {
+                case Lexer.TokenType.Long:
+                    return parser.Int64;
                 case Lexer.TokenType.Integer:
                     return parser.Int32;
                 case Lexer.TokenType.CharLiteral:
@@ -86,57 +88,39 @@ namespace LaborasLangCompiler.Parser.Impl
             }
         }
 
-        private static IConvertible ParseValue(string value, TypeReference type, SequencePoint point)
+        private static LiteralNode ParseValue(ProjectParser parser, string value, TypeReference type, SequencePoint point)
         {
             try
             {
                 switch (type.MetadataType)
                 {
                     case MetadataType.String:
-                        return value;
-
                     case MetadataType.Boolean:
-                        return Convert.ToBoolean(value, CultureInfo.InvariantCulture);
-                        
-                    case MetadataType.SByte:
-                        return Convert.ToSByte(value, CultureInfo.InvariantCulture);
+                        return new LiteralNode(value, type, point);
 
+                    case MetadataType.SByte:
                     case MetadataType.Byte:
-                        return Convert.ToByte(value, CultureInfo.InvariantCulture);
+                    case MetadataType.Int16:
+                    case MetadataType.UInt16:
+                    case MetadataType.Int32:
+                    case MetadataType.UInt32:
+                    case MetadataType.Int64:
+                    case MetadataType.UInt64:
+                        return ParseInteger(parser, value, type, point);
 
                     case MetadataType.Char:
                         {
                             if (value.Length > 1)
                             {
-                                ErrorCode.MultipleCharacterLiteral.ReportAndThrow(point, "Character literal must be one character long (found: '{0}').", value);
+                                ErrorCode.MultipleCharacterLiteral.ReportAndThrow(point, "Character literal must not be longer than one character (found: '{0}').", value);
                             }
 
-                            return value[0];
+                            return new LiteralNode(value, type, point);
                         }
 
-                    case MetadataType.Int16:
-                        return Convert.ToInt16(value, CultureInfo.InvariantCulture);
-
-                    case MetadataType.UInt16:
-                        return Convert.ToUInt16(value, CultureInfo.InvariantCulture);
-
-                    case MetadataType.Int32:
-                        return Convert.ToInt32(value, CultureInfo.InvariantCulture);
-
-                    case MetadataType.UInt32:
-                        return Convert.ToUInt32(value, CultureInfo.InvariantCulture);
-
-                    case MetadataType.Int64:
-                        return Convert.ToInt64(value, CultureInfo.InvariantCulture);
-
-                    case MetadataType.UInt64:
-                        return Convert.ToUInt64(value, CultureInfo.InvariantCulture);
-                        
                     case MetadataType.Single:
-                        return Convert.ToSingle(value, CultureInfo.InvariantCulture);
-                        
                     case MetadataType.Double:
-                        return Convert.ToDouble(value, CultureInfo.InvariantCulture);
+                        return ParseRational(parser, value, type, point);
                         
                     default:
 
@@ -153,6 +137,68 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 ErrorCode.InvalidStructure.ReportAndThrow(point, "Could not parse {0} as {1}, format error", value, type.FullName);
                 return null;//unreachable
+            }
+        }
+
+        private static LiteralNode ParseInteger(ProjectParser parser, string value, TypeReference requestedType, SequencePoint point)
+        {
+            try
+            {
+                var parsed = BigInteger.Parse(value, CultureInfo.InvariantCulture);
+                var type = GetLowestConversion(parser, parsed);
+                if(type == null)
+                {
+                    ErrorCode.IntegerOverlflow.ReportAndThrow(point, "Cannot fit {0} into an integer, use BigInteger.Parse", value);
+                }
+                else
+                {
+                    //return what we parsed, if requested type can't fit
+                    if(type.IsAssignableTo(requestedType))
+                    {
+                        type = requestedType;
+                    }
+                }
+                if (parsed.Sign >= 0)
+                {
+                    return new LiteralNode((ulong)parsed, type, point);
+                }
+                else
+                {
+                    return new LiteralNode((long)parsed, type, point);
+                }
+            }
+            catch (FormatException)
+            {
+                ContractsHelper.AssumeUnreachable("Error parsing {0} as integer", value);
+            }
+            return Utils.Utils.Fail<LiteralNode>();
+        }
+
+        private static LiteralNode ParseRational(ProjectParser parser, string value, TypeReference requestedType, SequencePoint point)
+        {
+            try
+            {
+
+                switch (requestedType.MetadataType)
+                {
+                    case MetadataType.Single:
+                        return new LiteralNode(Convert.ToSingle(value, CultureInfo.InvariantCulture), requestedType, point);
+                    case MetadataType.Double:
+                        return new LiteralNode(Convert.ToDouble(value, CultureInfo.InvariantCulture), requestedType, point);
+                    default:
+                        ContractsHelper.AssertUnreachable("Unexpected type {0} in ParseRational", requestedType.MetadataType);
+                        return Utils.Utils.Fail<LiteralNode>();
+                }
+            }
+            catch (OverflowException)
+            {
+                ErrorCode.InvalidStructure.ReportAndThrow(point, "Could not parse {0} as {1}, overflow", value, requestedType.FullName);
+                return Utils.Utils.Fail<LiteralNode>();
+            }
+            catch (FormatException)
+            {
+                ErrorCode.InvalidStructure.ReportAndThrow(point, "Could not parse {0} as {1}, format error", value, requestedType.FullName);
+                return Utils.Utils.Fail<LiteralNode>();
             }
         }
 
@@ -175,7 +221,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static LiteralNode ConvertLiteral(LiteralNode node, TypeReference type)
         {
-            return new LiteralNode(node.Value, type, node.SequencePoint);
+            return new LiteralNode(node.Value.Value, type, node.SequencePoint);
         }
 
         private static IEnumerable<TypeReference> GetImplicitConversions(Parser parser, LiteralNode node)
@@ -183,28 +229,26 @@ namespace LaborasLangCompiler.Parser.Impl
             var type = node.ExpressionReturnType;
             if(type.IsIntegerType())
             {
+                BigInteger converted;
                 if(type.IsSignedInteger())
                 {
-                    var value = (long)node.Value;
-                    if (value >= 0)
-                    {
-                        return parser.ProjectParser.MaxValues.Where(kv => kv.Key >= (ulong)value).Select(kv => kv.Value);
-                    }
-                    else
-                    {
-                        return parser.ProjectParser.MinValues.Where(kv => kv.Key >= value).Select(kv => kv.Value);
-                    }
+                    converted = new BigInteger((long)node.Value);
                 }
                 else
                 {
-                    var value = (ulong)node.Value;
-                    return parser.ProjectParser.MaxValues.Where(kv => kv.Key >= value).Select(kv => kv.Value);
+                    converted = new BigInteger((ulong)node.Value);
                 }
+                return GetImplicitConversions(parser.ProjectParser, converted);
             }
             else
             {
                 return Enumerable.Empty<TypeReference>();
             }
+        }
+
+        private static bool IsDigit(char c)
+        {
+            return c >= '0' && c <= '9';
         }
 
         public override string ToString(int indent)
@@ -214,6 +258,59 @@ namespace LaborasLangCompiler.Parser.Impl
             builder.Indent(indent + 1).AppendFormat("Type: {0}", type.FullName).AppendLine();
             builder.Indent(indent + 1).AppendFormat("Value: {0}", Value.ToString()).AppendLine();
             return builder.ToString();
+        }
+
+        private static IEnumerable<TypeReference> GetImplicitConversions(ProjectParser parser, BigInteger integer)
+        {
+            List<TypeReference> ret = new List<TypeReference>();
+            if(integer >= 0)
+            {
+                if (integer <= sbyte.MaxValue)
+                    ret.Add(parser.Int8);
+                if (integer <= byte.MaxValue)
+                    ret.Add(parser.UInt8);
+                if (integer <= short.MaxValue)
+                    ret.Add(parser.Int16);
+                if (integer <= ushort.MaxValue)
+                    ret.Add(parser.UInt16);
+                if (integer <= char.MaxValue)
+                    ret.Add(parser.Char);
+                if (integer <= int.MaxValue)
+                    ret.Add(parser.Int32);
+                if (integer <= uint.MaxValue)
+                    ret.Add(parser.UInt32);
+                if (integer <= long.MaxValue)
+                    ret.Add(parser.Int64);
+                if (integer <= ulong.MaxValue)
+                    ret.Add(parser.UInt64);
+            }
+            else
+            {
+                if (integer >= sbyte.MinValue)
+                    ret.Add(parser.Int8);
+                if (integer >= short.MinValue)
+                    ret.Add(parser.Int16);
+                if (integer >= int.MinValue)
+                    ret.Add(parser.Int32);
+                if (integer >= long.MinValue)
+                    ret.Add(parser.Int64);
+            }
+            return ret;
+        }
+        /// <summary>
+        /// Returns lowest possible type for this integer or null, unsigned if possible
+        /// </summary>
+        private static TypeReference GetLowestConversion(ProjectParser parser, BigInteger integer)
+        {
+            var conversions = GetImplicitConversions(parser, integer);
+            if(integer >= 0)
+            {
+                return conversions.FirstOrDefault(type => type.IsUnsignedInteger());
+            }
+            else
+            {
+                return conversions.FirstOrDefault();
+            }
         }
     }
 }

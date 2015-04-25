@@ -524,6 +524,20 @@ foo().bar = 5;
         }
 
         [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestNestedNegativeOps()
+        {
+            var source = "foo = - - - 1;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
+        public void TestMixedBinaryAndUnaryMinus()
+        {
+            var source = "foo = 5 - - 1 - 5;";
+            ExecuteTest(source);
+        }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: SyntaxMatcher"), Timeout(timeout)]
         public void TestCharLiteralToken()
         {
             var source = @"foo = 'bar';";

@@ -40,11 +40,16 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             for (int i = 0; i < temporaryVariables.Count; i++)
             {
-                if (!temporaryVariables[i].isTaken && temporaryVariables[i].variable.VariableType == type)
+                if (!temporaryVariables[i].isTaken)
                 {
-                    var result = temporaryVariables[i].variable;
-                    temporaryVariables[i] = new TempVariable(result, true);
-                    return result;
+                    var tempVariableType = temporaryVariables[i].variable.VariableType;
+
+                    if (tempVariableType.FullName == type.FullName && tempVariableType.Scope == type.Scope)
+                    {
+                        var result = temporaryVariables[i].variable;
+                        temporaryVariables[i] = new TempVariable(result, true);
+                        return result;
+                    }
                 }
             }
 

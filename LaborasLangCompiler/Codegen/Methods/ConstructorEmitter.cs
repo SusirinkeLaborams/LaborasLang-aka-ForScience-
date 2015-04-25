@@ -30,7 +30,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 var objectCtor = AssemblyRegistry.GetCompatibleMethod(declaringType.Assembly, declaringType.Assembly.TypeSystem.Object, ".ctor", new TypeReference[0]);
 
                 Ldarg(0);
-                Call(objectCtor);
+                Call(methodDefinition.DeclaringType, objectCtor);
             }
 
             Parsed = true;
@@ -75,7 +75,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
 
             Emit(initializer, EmissionType.Value);
-            Call(setter);
+            Call(methodDefinition.DeclaringType, setter);
 
             AddEpilogue();
         }
