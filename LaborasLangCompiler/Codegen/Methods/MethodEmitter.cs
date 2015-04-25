@@ -763,11 +763,10 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
             else
             {
-                var declaringType = field.Field.DeclaringType;
+                var resolvedField = field.Field.Resolve();
 
-                if (declaringType.Resolve().IsEnum)
+                if (resolvedField.IsLiteral)
                 {
-                    var resolvedField = field.Field.Resolve();
                     var value = resolvedField.Constant;
                     EmitConstant(value);
 
@@ -1373,19 +1372,41 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             var constantType = value.GetType();
 
-            if (constantType == typeof(SByte) ||
-                constantType == typeof(Byte) ||
-                constantType == typeof(Int16) ||
-                constantType == typeof(UInt16) ||
-                constantType == typeof(Int32) ||
-                constantType == typeof(UInt32))
+            if (constantType == typeof(SByte))
             {
-                Ldc_I4((int)value);
+                Ldc_I4((SByte)value);
             }
-            else if (constantType == typeof(Int64) ||
-                     constantType == typeof(UInt64))
+            else if (constantType == typeof(Byte))
             {
-                Ldc_I8((long)value);
+                Ldc_I4((Byte)value);
+            }
+            else if (constantType == typeof(Int16))
+            {
+                Ldc_I4((Int16)value);
+            }
+            else if (constantType == typeof(UInt16))
+            {
+                Ldc_I4((UInt16)value);
+            }
+            else if (constantType == typeof(Char))
+            {
+                Ldc_I4((Char)value);
+            }
+            else if (constantType == typeof(Int32))
+            {
+                Ldc_I4((Int32)value);
+            }
+            else if (constantType == typeof(UInt32))
+            {
+                Ldc_I4((int)(UInt32)value);
+            }
+            else if (constantType == typeof(Int64))
+            {
+                Ldc_I8((Int64)value);
+            }
+            else if (constantType == typeof(UInt64))
+            {
+                Ldc_I8((long)(UInt64)value);
             }
             else if (constantType == typeof(float))
             {
