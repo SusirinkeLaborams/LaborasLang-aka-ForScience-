@@ -80,7 +80,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if(!collectionElementType.IsAssignableTo(declaration.Variable.VariableType))
             {
-                ErrorCode.TypeMissmatch.ReportAndThrow(declaration.SequencePoint, "Cannot assign collection elements of type {0} to {1}", collectionElementType, declaration.Variable.VariableType);
+                ErrorCode.TypeMismatch.ReportAndThrow(declaration.SequencePoint, "Cannot assign collection elements of type {0} to {1}", collectionElementType, declaration.Variable.VariableType);
             }
 
             instance.collection = collection;

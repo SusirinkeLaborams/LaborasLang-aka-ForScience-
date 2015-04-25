@@ -72,7 +72,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (!right.ExpressionReturnType.IsAssignableTo(left.ExpressionReturnType))
             {
-                ErrorCode.TypeMissmatch.ReportAndThrow(point,
+                ErrorCode.TypeMismatch.ReportAndThrow(point,
                     "Cannot assign {0} to {1}", right.ExpressionReturnType, left.ExpressionReturnType);
             }
 
@@ -95,7 +95,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static void AssignmentMissmatch(ExpressionNode left, ExpressionNode right, SequencePoint point)
         {
-            ErrorCode.TypeMissmatch.ReportAndThrow(point,
+            ErrorCode.TypeMismatch.ReportAndThrow(point,
                     "Cannot assign {0} to {1}", right.ExpressionReturnType, left.ExpressionReturnType);
         }
 

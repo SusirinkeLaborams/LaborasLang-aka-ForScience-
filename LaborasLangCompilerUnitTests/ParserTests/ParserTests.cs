@@ -69,7 +69,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         public void TypeExceptionTest()
         {
             string source = "int a = 0.0;";
-            CompareTrees(source, ErrorCode.TypeMissmatch.Enumerate());
+            CompareTrees(source, ErrorCode.TypeMismatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void MethodCallTest()
@@ -323,7 +323,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string source = @"
                 auto Main = int(){return 4.0;};";
-            CompareTrees(source, Utils.Enumerate(ErrorCode.TypeMissmatch, ErrorCode.MissingReturn));
+            CompareTrees(source, Utils.Enumerate(ErrorCode.TypeMismatch, ErrorCode.MissingReturn));
         }
         [TestMethod, TestCategory("Parser")]
         public void TestReturnTypeSuccess()
@@ -417,7 +417,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {  
                     return 5;
                 };";
-            CompareTrees(source, ErrorCode.TypeMissmatch.Enumerate());
+            CompareTrees(source, ErrorCode.TypeMismatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestImport()
@@ -1375,7 +1375,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     for(int foo in lst);
                 };
             ";
-            CompareTrees(source, ErrorCode.TypeMissmatch.Enumerate());
+            CompareTrees(source, ErrorCode.TypeMismatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestForEachOverInteger()

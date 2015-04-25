@@ -113,7 +113,7 @@ namespace LaborasLangCompiler.Parser.Impl
             }
             else
             {
-                ErrorCode.TypeMissmatch.ReportAndThrow(point, "Cannot call functor, requires parameters ({0}), called with ({1})",
+                ErrorCode.TypeMismatch.ReportAndThrow(point, "Cannot call functor, requires parameters ({0}), called with ({1})",
                         String.Join(", ", MetadataHelpers.GetFunctorParamTypes(context.Parser.Assembly, node.ExpressionReturnType).Select(p => p.FullName)),
                         String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
                 return null;//unreachable
@@ -131,7 +131,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 else
                 {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(point, "Cannot call method, {0} requires parameters ({1}), called with ({2})",
+                    ErrorCode.TypeMismatch.ReportAndThrow(point, "Cannot call method, {0} requires parameters ({1}), called with ({2})",
                         method.Method.FullName,
                         String.Join(", ", method.Method.GetParameterTypes().Select(type => type.FullName)),
                         String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
@@ -145,7 +145,7 @@ namespace LaborasLangCompiler.Parser.Impl
             method = ambiguous.RemoveAmbiguity(context, args.Select(a => a.ExpressionReturnType));
             if (method == null)
             {
-                ErrorCode.TypeMissmatch.ReportAndThrow(point, "Cannot call method, {0} with arguments ({1}), none of the overloads match",
+                ErrorCode.TypeMismatch.ReportAndThrow(point, "Cannot call method, {0} with arguments ({1}), none of the overloads match",
                     ambiguous.FullName,
                     String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
             }
@@ -178,14 +178,14 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if(methods.Count == 1)
                 {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(point, "Cannot call constructor for {0} requires parameters ({1}), called with ({2})",
+                    ErrorCode.TypeMismatch.ReportAndThrow(point, "Cannot call constructor for {0} requires parameters ({1}), called with ({2})",
                         type.ParsedType.FullName,
                         String.Join(", ", methods.Single().GetParameterTypes().Select(t => t.FullName)),
                         String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
                 }
                 else
                 {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(point, "Cannot call constructor for {0} with arguments ({1}), none of the overloads match",
+                    ErrorCode.TypeMismatch.ReportAndThrow(point, "Cannot call constructor for {0} with arguments ({1}), none of the overloads match",
                         type.ParsedType.FullName,
                         String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
                 }

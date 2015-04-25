@@ -147,7 +147,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if(!initializer.ElementType.IsAssignableTo(elementType))
                 {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(point,
+                    ErrorCode.TypeMismatch.ReportAndThrow(point,
                         "Cannot initializer array of element type {0} when initializer element type is {1}",
                         elementType.FullName, initializer.ElementType.FullName);
                 }

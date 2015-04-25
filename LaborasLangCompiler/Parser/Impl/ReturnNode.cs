@@ -47,12 +47,12 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if(returnType.TypeEquals(context.Parser.Void))
                 {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, "Cannot return a value in a void method");
+                    ErrorCode.TypeMismatch.ReportAndThrow(instance.SequencePoint, "Cannot return a value in a void method");
                 }
 
                 if (!expression.ExpressionReturnType.IsAssignableTo(returnType))
                 {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, "Method returns {0}, cannot return {1}", returnType, expression.ExpressionReturnType);
+                    ErrorCode.TypeMismatch.ReportAndThrow(instance.SequencePoint, "Method returns {0}, cannot return {1}", returnType, expression.ExpressionReturnType);
                 }
 
                 if (!expression.IsGettable)
@@ -64,7 +64,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if(!returnType.TypeEquals(context.Parser.Void))
                 {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(instance.SequencePoint, "Method returns {0}, must return a value", returnType);
+                    ErrorCode.TypeMismatch.ReportAndThrow(instance.SequencePoint, "Method returns {0}, must return a value", returnType);
                 }
             }
 

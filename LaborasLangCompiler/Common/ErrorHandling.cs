@@ -15,7 +15,7 @@ namespace LaborasLangCompiler.Common
         VariableAlreadyDeclared = 0002,
         SymbolNotFound = 0003,
 
-        TypeMissmatch = 0004,
+        TypeMismatch = 0004,
         IllegalCast = 0005,
         NotCallable = 0006,
 
@@ -66,7 +66,7 @@ namespace LaborasLangCompiler.Common
 
         InvalidForEachCollection = 0037,
 
-        IntegerOverlflow = 0038,
+        IntegerOverflow = 0038,
 
         FieldAlreadyDeclared = 0039,
         MethodAlreadyDeclared = 0040,

@@ -99,7 +99,7 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 if (!Initializer.ExpressionReturnType.IsAssignableTo(TypeReference))
                 {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(Initializer.SequencePoint, 
+                    ErrorCode.TypeMismatch.ReportAndThrow(Initializer.SequencePoint, 
                         "Field of type {0} initialized with {1}", TypeReference, Initializer.ExpressionReturnType);
                 }
             }
