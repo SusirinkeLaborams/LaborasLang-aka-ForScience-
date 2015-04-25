@@ -438,10 +438,10 @@ namespace LaborasLangCompiler.Codegen.Methods
             for (int i = 0; i < collectionType.Rank; i++)
                 Ldc_I4(0);
 
-            Call(addressMethod);
+            Call(forEachLoop.Collection.ExpressionReturnType, addressMethod);
             Stloc(pinnedArrayStartVariable.Index);
 
-            Call(getLengthMethod);
+            Call(forEachLoop.Collection.ExpressionReturnType, getLengthMethod);
 
             if (elementSizeKnown)
             {
@@ -553,7 +553,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             // enumerator = collection.GetEnumerator()
             Emit(forEachLoop.Collection, EmissionType.ThisArg);
-            Call(getEnumeratorMethod);
+            Call(forEachLoop.Collection.ExpressionReturnType, getEnumeratorMethod);
             Stloc(enumeratorVariable.Index);
 
             // try
@@ -569,7 +569,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 // loopVariable = enumerator.get_Current()
                 Emit(loopStart);
                 EmitLocalVariable(enumeratorVariable, EmissionType.ThisArg);
-                Call(getCurrentMethod);
+                Call(enumeratorVariable.VariableType, getCurrentMethod);
                 EmitConversionIfNeeded(getCurrentMethod.GetReturnType(), loopVariable.VariableType);
                 Stloc(loopVariable.Index);
 
@@ -580,7 +580,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 // if (enumerator.MoveNext) goto loopStart;
                 Emit(loopCondition);
                 EmitLocalVariable(enumeratorVariable, EmissionType.ThisArg);
-                Call(moveNextMethod);
+                Call(enumeratorVariable.VariableType, moveNextMethod);
                 Brtrue(loopStart);
 
                 if (shouldAttemptToDispose)
@@ -614,7 +614,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
                         // Dispose enumerator
                         EmitLocalVariable(disposableVariable, EmissionType.ThisArg);
-                        Call(disposeMethod);
+                        Call(disposableVariable.VariableType, disposeMethod);
                     }
                     else
                     {
@@ -627,7 +627,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                         }
 
                         EmitLocalVariable(enumeratorVariable, EmissionType.ThisArg);
-                        Call(AssemblyRegistry.GetCompatibleMethod(Assembly, enumeratorType, "Dispose", new TypeReference[0]));
+                        Call(enumeratorVariable.VariableType, AssemblyRegistry.GetCompatibleMethod(Assembly, enumeratorType, "Dispose", new TypeReference[0]));
                     }
 
                     // Done
@@ -835,9 +835,13 @@ namespace LaborasLangCompiler.Codegen.Methods
             {
                 Contract.Assume(property.ObjectInstance != null);
                 Emit(property.ObjectInstance, EmissionType.ThisArg);
+                Call(property.ObjectInstance.ExpressionReturnType, getter);
+            }
+            else
+            {
+                Call(null, getter);
             }
 
-            Call(getter);
 
             if (emissionType == EmissionType.None)
             {
@@ -881,7 +885,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             {
                 var loadElementMethod = ShouldEmitAddress(arrayAccess, emissionType) ? AssemblyRegistry.GetArrayLoadElementAddress(arrayType) : AssemblyRegistry.GetArrayLoadElement(arrayType);
                 EmitArgumentsForCall(indices, loadElementMethod);
-                Call(loadElementMethod);
+                Call(array.ExpressionReturnType, loadElementMethod);
             }
         }
 
@@ -894,10 +898,14 @@ namespace LaborasLangCompiler.Codegen.Methods
             {
                 Contract.Assume(indexOperator.ObjectInstance != null);
                 Emit(indexOperator.ObjectInstance, EmissionType.ThisArg);
+                EmitArgumentsForCall(indexOperator.Indices, getter);
+                Call(indexOperator.ObjectInstance.ExpressionReturnType, getter);
             }
-
-            EmitArgumentsForCall(indexOperator.Indices, getter);
-            Call(getter);
+            else
+            {
+                EmitArgumentsForCall(indexOperator.Indices, getter);
+                Call(null, getter);
+            }
 
             if (emissionType == EmissionType.None)
             {
@@ -1040,7 +1048,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        private void EmitExpressionWithTargetType(IExpressionNode expression, TypeReference targetType)
+        private void EmitExpressionWithTargetType(IExpressionNode expression, TypeReference targetType, bool forcePrimitiveConversion = false)
         {
             if (targetType is ByReferenceType)
             {
@@ -1085,7 +1093,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
             else
             {
-                EmitConversionIfNeeded(expression.ExpressionReturnType, targetType);
+                EmitConversionIfNeeded(expression.ExpressionReturnType, targetType, forcePrimitiveConversion);
             }
         }
 
@@ -1243,10 +1251,15 @@ namespace LaborasLangCompiler.Codegen.Methods
                 {
                     Contract.Assume(functionNode.ObjectInstance != null);
                     Emit(functionNode.ObjectInstance, EmissionType.ThisArg);
-                }
 
-                EmitArgumentsForCall(functionCall.Args, functionNode.Method);
-                Call(functionNode.Method);
+                    EmitArgumentsForCall(functionCall.Args, functionNode.Method);
+                    Call(functionNode.ObjectInstance.ExpressionReturnType, functionNode.Method);
+                }
+                else
+                {
+                    EmitArgumentsForCall(functionCall.Args, functionNode.Method);
+                    Call(null, functionNode.Method);
+                }
             }
             else
             {
@@ -1574,7 +1587,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             Dup();
             Ldtoken(field);
-            Call(initializeArrayMethod);
+            Call(arrayType, initializeArrayMethod);
         }
 
         // Assumes array is on the stack but it must leave it on the stack after the function is done
@@ -1633,7 +1646,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 }
 
                 EmitExpressionWithTargetType(initializer[i], arrayType.ElementType);
-                Call(storeElementMethod);
+                Call(arrayType, storeElementMethod);
             }
 
             CurrentSequencePoint = oldSequencePoint;
@@ -1743,7 +1756,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                 {
                     case IncrementDecrementOperatorType.PreDecrement:
                     case IncrementDecrementOperatorType.PreIncrement:
-                        beforeValueSnapshot = () => Call(incrementDecrementOperator.OverloadedOperatorMethod);
+                        beforeValueSnapshot = () => Call(null, incrementDecrementOperator.OverloadedOperatorMethod);
                         afterValueSnapshot = () => EmitStore(incrementDecrementOperator.Operand);
                         break;
 
@@ -1752,7 +1765,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                         beforeValueSnapshot = () => { };
                         afterValueSnapshot = () =>
                         {
-                            Call(incrementDecrementOperator.OverloadedOperatorMethod);
+                            Call(null, incrementDecrementOperator.OverloadedOperatorMethod);
                             EmitStore(incrementDecrementOperator.Operand);
                         };
                         break;
@@ -1855,7 +1868,7 @@ namespace LaborasLangCompiler.Codegen.Methods
                     Assembly.TypeSystem.Object
                 });
 
-            Call(concatMethod);
+            Call(null, concatMethod);
         }
 
         #endregion
@@ -1922,20 +1935,25 @@ namespace LaborasLangCompiler.Codegen.Methods
             Emit(left, EmissionType.Value);
             Emit(right, EmissionType.Value);
 
-            Call(stringComparisonMethod);
+            Call(null, stringComparisonMethod);
 
-            Ldc_I4(0);
-            Clt();
-
-            Ldc_I4(0);
-            Ceq();
+            Ldc_I4(-1);
+            Cgt();
         }
 
         private void EmitGreaterEqualThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
 
-            Clt();
+            if (left.ExpressionReturnType.IsUnsignedInteger() && right.ExpressionReturnType.IsUnsignedInteger())
+            {
+                Clt_Un();
+            }
+            else
+            {
+                Clt();
+            }
+
             Ldc_I4(0);
             Ceq();
         }
@@ -1969,7 +1987,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             Emit(left, EmissionType.Value);
             Emit(right, EmissionType.Value);
 
-            Call(stringComparisonMethod);
+            Call(null, stringComparisonMethod);
 
             Ldc_I4(0);
             Cgt();
@@ -1978,7 +1996,15 @@ namespace LaborasLangCompiler.Codegen.Methods
         private void EmitGreaterThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
-            Cgt();
+
+            if (left.ExpressionReturnType.IsUnsignedInteger() && right.ExpressionReturnType.IsUnsignedInteger())
+            {
+                Cgt_Un();
+            }
+            else
+            {
+                Cgt();
+            }
         }
 
         #endregion
@@ -2010,20 +2036,25 @@ namespace LaborasLangCompiler.Codegen.Methods
             Emit(left, EmissionType.Value);
             Emit(right, EmissionType.Value);
 
-            Call(stringComparisonMethod);
+            Call(null, stringComparisonMethod);
 
-            Ldc_I4(0);
-            Cgt();
-
-            Ldc_I4(0);
-            Ceq();
+            Ldc_I4(1);
+            Clt();
         }
 
         private void EmitLessEqualThanNumeral(IExpressionNode left, IExpressionNode right)
         {
             EmitOperandsAndConvertIfNeeded(left, right);
 
-            Cgt();
+            if (left.ExpressionReturnType.IsUnsignedInteger() && right.ExpressionReturnType.IsUnsignedInteger())
+            {
+                Cgt_Un();
+            }
+            else
+            {
+                Cgt();
+            }
+
             Ldc_I4(0);
             Ceq();
         }
@@ -2057,7 +2088,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             Emit(left, EmissionType.Value);
             Emit(right, EmissionType.Value);
 
-            Call(stringComparisonMethod);
+            Call(null, stringComparisonMethod);
 
             Ldc_I4(0);
             Clt();
@@ -2067,7 +2098,14 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             EmitOperandsAndConvertIfNeeded(left, right);
 
-            Clt();
+            if (left.ExpressionReturnType.IsUnsignedInteger() && right.ExpressionReturnType.IsUnsignedInteger())
+            {
+                Clt_Un();
+            }
+            else
+            {
+                Clt();
+            }
         }
 
         #endregion
@@ -2127,7 +2165,7 @@ namespace LaborasLangCompiler.Codegen.Methods
 
         private void Emit(ICastNode castNode, EmissionType emissionType)
         {
-            EmitExpressionWithTargetType(castNode.TargetExpression, castNode.ExpressionReturnType);
+            EmitExpressionWithTargetType(castNode.TargetExpression, castNode.ExpressionReturnType, true);
 
             if (ShouldEmitAddress(castNode, emissionType))
                 LoadAddressOfValue(castNode);
@@ -2229,7 +2267,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             else
             {
                 var storeElementMethod = AssemblyRegistry.GetArrayStoreElement(arrayType);
-                Call(storeElementMethod);
+                Call(array.ExpressionReturnType, storeElementMethod);
             }
         }
 
@@ -2262,7 +2300,9 @@ namespace LaborasLangCompiler.Codegen.Methods
         {
             var setter = AssemblyRegistry.GetPropertySetter(Assembly, indexOperator.Property);
             Contract.Assume(setter != null);
-            Call(setter);
+
+            var objectInstanceType = setter.HasThis ? indexOperator.ObjectInstance.ExpressionReturnType : null;
+            Call(objectInstanceType, setter);
         }
 
         private void EmitStore(ILocalVariableNode variable)
@@ -2278,7 +2318,8 @@ namespace LaborasLangCompiler.Codegen.Methods
         private void EmitStore(IPropertyNode property)
         {
             var setter = AssemblyRegistry.GetPropertySetter(Assembly, property.Property);
-            Call(setter);
+            var objectInstanceType = setter.HasThis ? property.ObjectInstance.ExpressionReturnType : null;
+            Call(objectInstanceType, setter);
         }
 
         #endregion
@@ -2313,7 +2354,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
         }
 
-        protected void EmitConversionIfNeeded(TypeReference sourceType, TypeReference targetType)
+        protected void EmitConversionIfNeeded(TypeReference sourceType, TypeReference targetType, bool forcePrimitveConversion = false)
         {
             if (targetType.IsByReference)
             {
@@ -2347,44 +2388,71 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
 
             Contract.Assert(sourceType.IsPrimitive && targetType.IsPrimitive);
+            var primitiveWidth = sourceType.GetPrimitiveWidth();
 
             switch (targetType.MetadataType)
             {
                 case MetadataType.SByte:
-                    Conv_I1();
-                    break;
-
                 case MetadataType.Int16:
-                    Conv_I2();
+                case MetadataType.Int32:
+                    {
+                        if (sourceType.IsFloatingPointType() || primitiveWidth == 8 || forcePrimitveConversion)
+                        {
+                            Conv_I4();
+                        }
+                        else if (sourceType.IsUnsignedInteger() && primitiveWidth != 4)
+                        {
+                            Conv_U4();
+                        }
+                    }
                     break;
 
-                case MetadataType.Int32:
-                    Conv_I4();
+                case MetadataType.Byte:
+                case MetadataType.Char:
+                case MetadataType.UInt16:
+                case MetadataType.UInt32:
+                    {
+                        if (sourceType.IsFloatingPointType() || primitiveWidth == 8 || forcePrimitveConversion)
+                        {
+                            Conv_U4();
+                        }
+                        else if (sourceType.IsSignedInteger() && primitiveWidth != 4)
+                        {
+                            Conv_I4();
+                        }
+                    }
                     break;
 
                 case MetadataType.Int64:
-                    Conv_I8();
+                    if (sourceType.IsFloatingPointType() || primitiveWidth != 8 || forcePrimitveConversion)
+                    {
+                        if (sourceType.IsUnsignedInteger())
+                        {
+                            Conv_U8();
+                        }
+                        else
+                        {
+                            Conv_I8();
+                        }
+                    }
+                    break;
+
+                case MetadataType.UInt64:
+                    if (sourceType.IsFloatingPointType() || primitiveWidth != 8 || forcePrimitveConversion)
+                    {
+                        if (sourceType.IsUnsignedInteger() || forcePrimitveConversion)
+                        {
+                            Conv_U8();
+                        }
+                        else
+                        {
+                            Conv_I8();
+                        }
+                    }
                     break;
 
                 case MetadataType.IntPtr:
                     Conv_I();
-                    break;
-
-                case MetadataType.Byte:
-                    Conv_U1();
-                    break;
-
-                case MetadataType.Char:
-                case MetadataType.UInt16:
-                    Conv_U2();
-                    break;
-
-                case MetadataType.UInt32:
-                    Conv_U4();
-                    break;
-
-                case MetadataType.UInt64:
-                    Conv_U8();
                     break;
 
                 case MetadataType.UIntPtr:

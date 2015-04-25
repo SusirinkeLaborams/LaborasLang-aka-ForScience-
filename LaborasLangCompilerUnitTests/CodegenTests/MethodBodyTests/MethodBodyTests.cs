@@ -2793,6 +2793,35 @@ namespace LaborasLangCompilerUnitTests.CodegenTests.MethodBodyTests
             TestCanEmit_CastHelper(valueExpression, intValue.ToString(), assemblyEmitter.TypeSystem.Int32, assemblyEmitter.TypeSystem.Object);
         }
 
+        [TestMethod, TestCategory("Execution Based Codegen Tests")]
+        public void TestCanEmit_CastIntToShort()
+        {
+            const int kIntValue = 14548916;
+            
+            BodyCodeBlock = new CodeBlockNode()
+            {
+                Nodes = new IParserNode[]
+                {
+                    CallConsoleWriteLine(new MethodCallNode()
+                    {
+                        Function = new FunctionNode()
+                        {
+                            ObjectInstance = new CastNode()
+                            {
+                                ExpressionReturnType = assemblyEmitter.TypeSystem.Int16,
+                                TargetExpression = new LiteralNode(assemblyEmitter.TypeSystem.Int32, kIntValue)
+                            },
+                            Method = AssemblyRegistry.GetMethod(assemblyEmitter, assemblyEmitter.TypeSystem.Object, "ToString")
+                        },
+                        Args = new IExpressionNode[0]
+                    })
+                }
+            };
+
+            ExpectedOutput = unchecked((short)kIntValue).ToString();
+            AssertSuccessByExecution();
+        }
+
         #endregion
     }
 }

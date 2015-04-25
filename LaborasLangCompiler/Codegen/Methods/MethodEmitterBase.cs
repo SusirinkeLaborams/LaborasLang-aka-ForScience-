@@ -180,7 +180,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
-        protected void Call(MethodReference method)
+        protected void Call(TypeReference thisType, MethodReference method)
         {
             Contract.Requires(method != null);
 
@@ -191,7 +191,12 @@ namespace LaborasLangCompiler.Codegen.Methods
                 var resolvedMethod = method.Resolve();
 
                 if (resolvedMethod != null && resolvedMethod.IsVirtual)
+                {
+                    if (thisType.IsValueType)
+                        ilProcessor.Emit(OpCodes.Constrained, thisType);
+
                     opcode = OpCodes.Callvirt;
+                }
             }
 
             ilProcessor.Emit(opcode, method);
@@ -228,9 +233,21 @@ namespace LaborasLangCompiler.Codegen.Methods
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 
+        protected void Cgt_Un()
+        {
+            ilProcessor.Emit(OpCodes.Cgt_Un);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
         protected void Clt()
         {
             ilProcessor.Emit(OpCodes.Clt);
+            body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
+        }
+
+        protected void Clt_Un()
+        {
+            ilProcessor.Emit(OpCodes.Clt_Un);
             body.Instructions[body.Instructions.Count - 1].SequencePoint = CurrentSequencePoint;
         }
 

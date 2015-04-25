@@ -55,6 +55,7 @@ namespace LaborasLangCompilerUnitTests
             {
                 testTimedOut = true;
                 testThread.Abort();
+                testThread.Join();
             }
 
             if (testTimedOut)
