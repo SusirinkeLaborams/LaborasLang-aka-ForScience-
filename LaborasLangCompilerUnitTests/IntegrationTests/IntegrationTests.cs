@@ -170,7 +170,7 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
                 long.MinValue, long.MaxValue,
                 ulong.MinValue, ulong.MaxValue);
 
-            var expected2 = Enumerable.Repeat<string>(string.Format("{0}, ", true), 18);
+            var expected2 = Enumerable.Repeat<string>(string.Format("{0}, ", true), 18).Aggregate((x, y) => x + y);
 
             var expected3 = string.Format("{0}, {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}, {9}, {10}, {11}, {12}, {13}, {14}, {15}, {16}, {17}",
                 sbyte.MinValue > 0, sbyte.MaxValue > 0,
@@ -186,6 +186,12 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             var expected = expected1 + expected1 + expected2 + expected3;
 
             Test("MinMaxValues.ll", expected);
+        }
+
+        [TestMethod, TestCategory("Integration Tests")]
+        public void Test_CanAddLiteralToUnsignedInt()
+        {
+            Test("CanAddLiteralToUnsignedInt.ll", "6");
         }
 
         [TestMethod, TestCategory("Integration Tests")]
