@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Common
 {
-    public enum ErrorCode
+    internal enum ErrorCode
     {
         ParserErrors = 0000,
         InvalidStructure = 0001,
@@ -92,7 +92,7 @@ namespace LaborasLangCompiler.Common
         UnresolvedReference = 1011,
     }
 
-    public static class Errors
+    internal static class Errors
     {
         public static IReadOnlyList<Error> Reported { get { return errors; } }
 
