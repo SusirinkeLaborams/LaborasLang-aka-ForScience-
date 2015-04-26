@@ -33,9 +33,16 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 return this;
             }
-            var paramz = MetadataHelpers.GetFunctorParamTypes(context.Parser.Assembly, expectedType);
-            var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), paramz);
-            return new MethodNode(method, instance, context, SequencePoint);
+            try
+            {
+                var paramz = MetadataHelpers.GetFunctorParamTypes(context.Parser.Assembly, expectedType);
+                var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), paramz);
+                return new MethodNode(method, instance, context, SequencePoint);
+            }
+            catch(AssemblyRegistry.AmbiguousMethodException)
+            {
+                return this;
+            }
         }
 
         public MethodNode RemoveAmbiguity(ContextNode context, IEnumerable<TypeReference> args)
