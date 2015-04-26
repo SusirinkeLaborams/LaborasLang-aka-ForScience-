@@ -1,0 +1,12 @@
+Class:
+	TestAutoFieldNoInitializer
+	Fields:
+		FieldDeclaration:
+			Type:
+				auto
+			Name:
+				a
+			Modifiers:
+				0
+
+	Methods:

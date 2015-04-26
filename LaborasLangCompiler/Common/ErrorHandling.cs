@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Common
 {
-    public enum ErrorCode
+    internal enum ErrorCode
     {
         ParserErrors = 0000,
         InvalidStructure = 0001,
-        SymbolAlreadyDeclared = 0002,
+        VariableAlreadyDeclared = 0002,
         SymbolNotFound = 0003,
 
-        TypeMissmatch = 0004,
+        TypeMismatch = 0004,
         IllegalCast = 0005,
         NotCallable = 0006,
 
@@ -41,7 +41,7 @@ namespace LaborasLangCompiler.Common
         InvalidCondition = 0019,
         
         TypeExpected = 0020,
-        AmbiguousSymbol = 0021,
+        //AmbiguousSymbol = 0021, removed
         UnreachableMember = 0022,
 
         MissingInstance = 0023,
@@ -56,7 +56,7 @@ namespace LaborasLangCompiler.Common
         InvalidIndexType = 0029,
         CannotIndex = 0030,
         MissingArraySize = 0031,
-        ArrayDimMissmatch = 0032,
+        ArrayDimMismatch = 0032,
         NotLiteralArrayDims = 0033,
 
         MultipleCharacterLiteral = 0034,
@@ -66,7 +66,17 @@ namespace LaborasLangCompiler.Common
 
         InvalidForEachCollection = 0037,
 
-        IntegerOverlflow = 0038,
+        IntegerOverflow = 0038,
+
+        FieldAlreadyDeclared = 0039,
+        MethodAlreadyDeclared = 0040,
+
+        EntryPointNotSet = 0041,
+
+        AmbiguousType = 0042,
+        AmbiguousNamespace = 0043,
+        AmbiguousMethod = 0044,
+        AmbiguousProperty = 0045,
 
         CompilerArgumentErrors = 1000,
         NoSourceFiles = 1001,
@@ -82,7 +92,7 @@ namespace LaborasLangCompiler.Common
         UnresolvedReference = 1011,
     }
 
-    public static class Errors
+    internal static class Errors
     {
         public static IReadOnlyList<Error> Reported { get { return errors; } }
 
@@ -129,6 +139,12 @@ namespace LaborasLangCompiler.Common
             errors = new List<Error>();
         }
 
+        public static string SequencePointToString(SequencePoint sequencePoint)
+        {
+            Contract.Requires(sequencePoint != null);
+            return string.Format("{0}({1},{2},{3},{4}): ", sequencePoint.Document.Url, sequencePoint.StartLine, sequencePoint.StartColumn, sequencePoint.EndLine, sequencePoint.EndColumn);
+        }
+
         public class Error
         {
             public SequencePoint Point { get; private set; }
@@ -145,9 +161,9 @@ namespace LaborasLangCompiler.Common
             public override string ToString()
             {
                 StringBuilder builder = new StringBuilder();
-                if(Point != null)
+                if (Point != null)
                 {
-                    builder.AppendFormat("{0}({1},{2},{3},{4}): ", Point.Document.Url, Point.StartLine, Point.StartColumn, Point.EndLine, Point.EndColumn);
+                    builder.AppendFormat(SequencePointToString(Point));
                 }
                 builder.AppendFormat("error LL{0:0000} {1}: {2}", (int)ErrorCode, ErrorCode, Message);
                 return builder.ToString();

@@ -88,7 +88,7 @@ namespace LaborasLangCompiler.Parser.Impl
             public IncrementDecrementOperatorType IncrementDecrementType { get; private set; }
             public MethodReference OverloadedOperatorMethod { get; private set; }
 
-            private ExpressionNode operand;
+            private readonly ExpressionNode operand;
 
             internal IncrementDecrementOperatorNode(InternalUnaryOperatorType type, ExpressionNode operand, MethodReference overload)
                 : base(operand.SequencePoint)
@@ -245,7 +245,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 else
                 {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(point,
+                    ErrorCode.TypeMismatch.ReportAndThrow(point,
                         "Overloaded operator {0} for operand {1} is ambiguous",
                         name, expression.ExpressionReturnType.FullName);
                     return null;//unreachable
@@ -311,7 +311,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static void OperatorMissmatch(SequencePoint point, InternalUnaryOperatorType op, TypeReference operand)
         {
-            ErrorCode.TypeMissmatch.ReportAndThrow(point,
+            ErrorCode.TypeMismatch.ReportAndThrow(point,
                 "Unable to perform {0} on operand {1}, no built int operation or operaror overload found",
                 op, operand.FullName);
         }

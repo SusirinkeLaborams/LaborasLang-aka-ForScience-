@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LaborasLangCompiler.Parser
 {
-    public enum NodeType
+    internal enum NodeType
     {
         Expression,
         SymbolDeclaration,
@@ -35,7 +35,7 @@ namespace LaborasLangCompiler.Parser
 
     // Literals, function calls, function arguments, local variables and fields
 
-    public enum ExpressionNodeType
+    internal enum ExpressionNodeType
     {
         Literal,
         Function,
@@ -138,7 +138,7 @@ namespace LaborasLangCompiler.Parser
         ParameterDefinition Parameter { get; }
     }
 
-    public enum BinaryOperatorNodeType
+    internal enum BinaryOperatorNodeType
     {
         Addition,
         Subtraction,
@@ -168,7 +168,7 @@ namespace LaborasLangCompiler.Parser
         IExpressionNode RightOperand { get; }
     }
 
-    public enum UnaryOperatorNodeType
+    internal enum UnaryOperatorNodeType
     {
         BinaryNot,
         LogicalNot,
@@ -708,6 +708,7 @@ namespace LaborasLangCompiler.Parser
             get 
             {
                 Contract.Ensures(Contract.Result<IExpressionNode>() != null);
+                Contract.Ensures(Contract.Result<IExpressionNode>().ExpressionType != ExpressionNodeType.ParserInternal);
                 throw new NotImplementedException();
             }
         }

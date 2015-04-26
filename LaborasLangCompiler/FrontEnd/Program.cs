@@ -51,7 +51,9 @@ namespace LaborasLangCompiler.FrontEnd
             if (Errors.Reported.Count > 0)
                 return FailCompilation();
 
-            assembly.Save();
+            if (!assembly.Save())
+                FailCompilation();
+
             return 0;
         }
 

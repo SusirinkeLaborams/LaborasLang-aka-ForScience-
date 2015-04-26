@@ -60,7 +60,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 ret = AsBuiltIn(context, op, left, right, point);
 
             if (ret == null)
-                OperatorMissmatch(point, op, left.ExpressionReturnType, right.ExpressionReturnType);
+                OperatorMismatch(point, op, left.ExpressionReturnType, right.ExpressionReturnType);
 
             Contract.Assume(ret != null);
             return ret;
@@ -139,7 +139,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 else
                 {
-                    ErrorCode.TypeMissmatch.ReportAndThrow(point,
+                    ErrorCode.TypeMismatch.ReportAndThrow(point,
                         "Overloaded operator {0} for operands {1} and {2} is ambiguous",
                         name, left.ExpressionReturnType.FullName, right.ExpressionReturnType.FullName);
                     return null;//unreachable
@@ -267,9 +267,9 @@ namespace LaborasLangCompiler.Parser.Impl
             return builder.ToString();
         }
 
-        private static void OperatorMissmatch(SequencePoint point, BinaryOperatorNodeType op, TypeReference left, TypeReference right)
+        private static void OperatorMismatch(SequencePoint point, BinaryOperatorNodeType op, TypeReference left, TypeReference right)
         {
-            ErrorCode.TypeMissmatch.ReportAndThrow(point,
+            ErrorCode.TypeMismatch.ReportAndThrow(point,
                 "Unable to perform {0} on operands {1} and {2}, no built int operation or operaror overload found",
                 op, left.FullName, right.FullName);
         }

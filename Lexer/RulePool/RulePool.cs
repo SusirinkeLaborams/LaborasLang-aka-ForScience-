@@ -5,221 +5,218 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Lexer
+{
+    internal partial class RulePool
     {
-        public partial class RulePool
+        public static ParseRule[] LaborasLangRuleset = new ParseRule[]
         {
-            public static ParseRule[] LaborasLangRuleset = new ParseRule[]
-                {
+            AlwaysCollapsableParseRule(CodeConstruct,
+                CodeBlockNode,
+                WhileLoop,
+                ForLoop,
+                ForEachLoop,
+                ConditionalSentence,
+                StatementWithEndOfLine),
 
-                    AlwaysCollapsableParseRule(CodeConstruct,
-                        CodeBlockNode,
-                        WhileLoop,
-                        ForLoop,
-                        ForEachLoop,
-                        ConditionalSentence,
-                        StatementWithEndOfLine),
+            AlwaysCollapsableParseRule(StatementNode,
+                UseNode,
+                DeclarationNode,
+                Value,
+                ReturnNode),
 
-                    AlwaysCollapsableParseRule(StatementNode,
-                        UseNode,
-                        DeclarationNode,
-                        Value,
-                        ReturnNode),
-
-                    ParseRule(StatementWithEndOfLine,
-                        Optional(StatementNode) + EndOfLine),
+            ParseRule(StatementWithEndOfLine,
+                Optional(StatementNode) + EndOfLine),
             
-                    ParseRule(UseNode,
-                        Use + FullSymbol),
+            ParseRule(UseNode,
+                Use + FullSymbol),
 
-                    ParseRule(DeclarationNode,
-                        ZeroOrMore(VariableModifier) + Type + Symbol + OptionalTail(Assignment + Value)),
+            ParseRule(DeclarationNode,
+                ZeroOrMore(VariableModifier) + Type + Symbol + OptionalTail(Assignment + Value)),
 
-                    ParseRule(ReturnNode,
-                        Return + OptionalTail(Value)),
+            ParseRule(ReturnNode,
+                Return + OptionalTail(Value)),
 
-                    ParseRule(VariableModifier, 
-                        Const,
-                        Internal,
-                        Private,
-                        Public,
-                        Protected,
-                        NoInstance,
-                        Virtual,
-                        Entry,
-                        Mutable),
+            ParseRule(VariableModifier, 
+                Const,
+                Internal,
+                Private,
+                Public,
+                Protected,
+                NoInstance,
+                Virtual,
+                Entry,
+                Mutable),
                                 
-                    ParseRule(InfixOperator,
-                        Period,
-                        Assignment,
-                        PlusEqual,
-                        MinusEqual,
-                        DivideEqual,
-                        MultiplyEqual,
-                        RemainderEqual,
-                        LeftShiftEqual,
-                        RightShiftEqual,
-                        LogicalAndEqual,
-                        LogicalOrEqual,
-                        BitwiseAndEqual,
-                        BitwiseXorEqual,
-                        BitwiseOrEqual,              
-                        LeftShift,
-                        RightShift,
-                        Plus,
-                        Minus,
-                        Multiply,
-                        Divide,
-                        Remainder,
-                        BitwiseAnd,
-                        BitwiseOr,
-                        BitwiseXor,
-                        BitwiseComplement,
-                        Equal,
-                        NotEqual,
-                        More,
-                        Less,
-                        MoreOrEqual,
-                        LessOrEqual,      
-                        LogicalAnd,
-                        LogicalOr
-               ),
+            ParseRule(InfixOperator,
+                Period,
+                Assignment,
+                PlusEqual,
+                MinusEqual,
+                DivideEqual,
+                MultiplyEqual,
+                RemainderEqual,
+                LeftShiftEqual,
+                RightShiftEqual,
+                LogicalAndEqual,
+                LogicalOrEqual,
+                BitwiseAndEqual,
+                BitwiseXorEqual,
+                BitwiseOrEqual,              
+                LeftShift,
+                RightShift,
+                Plus,
+                Minus,
+                Multiply,
+                Divide,
+                Remainder,
+                BitwiseAnd,
+                BitwiseOr,
+                BitwiseXor,
+                BitwiseComplement,
+                Equal,
+                NotEqual,
+                More,
+                Less,
+                MoreOrEqual,
+                LessOrEqual,      
+                LogicalAnd,
+                LogicalOr),
 
-                    ParseRule(PostfixOperator,
-                        PlusPlus, 
-                        MinusMinus,
-                        IndexNode,
-                        FunctionArgumentsList),
+            ParseRule(PostfixOperator,
+                PlusPlus, 
+                MinusMinus,
+                IndexNode,
+                FunctionArgumentsList),
 
-                    ParseRule(PrefixOperator,
-                        PlusPlus, 
-                        MinusMinus, 
-                        Minus, 
-                        Not,
-                        BitwiseComplement,
-                        CastOperator),
+            ParseRule(PrefixOperator,
+                PlusPlus, 
+                MinusMinus, 
+                Minus, 
+                Not,
+                BitwiseComplement,
+                CastOperator),
 
-                    ParseRule(CastOperator,
-                        LeftParenthesis + Type + RightParenthesis),
+            ParseRule(CastOperator,
+                LeftParenthesis + Type + RightParenthesis),
                         
-                    CollapsableParseRule(CodeBlockNode,
-                        LeftCurlyBrace + ZeroOrMore(CodeConstruct) + RightCurlyBrace),
+            CollapsableParseRule(CodeBlockNode,
+                LeftCurlyBrace + ZeroOrMore(CodeConstruct) + RightCurlyBrace),
                     
-                    ParseRule(IndexNode,
-                    LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket,
-                    LeftBracket + ZeroOrMore(Comma) + RightBracket),
+            ParseRule(IndexNode,
+            LeftBracket + Value + ZeroOrMore(CommaAndValue) + RightBracket,
+            LeftBracket + ZeroOrMore(Comma) + RightBracket),
 
                     
-                    ParseRule(ParenthesesNode,
-                        LeftParenthesis + Value + RightParenthesis,
-                        Operand),
+            ParseRule(ParenthesesNode,
+                LeftParenthesis + Value + RightParenthesis,
+                Operand),
                         
-                    /*PrefixNode is transformed using PrefixResolver. It is transformed to a recursive list {T, PrefixOperator}
-                      where T can be PrefixNode, ParenthesesNode, Operand. T will be as specific as possible.*/
-                    AlwaysCollapsableParseRule(PrefixNode,
-                         PrefixOperator + PrefixNode,
-                         PrefixOperator + ParenthesesNode,
-                         // (foo()) is both a valid cast operator and a valid parenthesis node. have to add parenthesis node to make sure that if it fails
-                         // as prefix it will be handled as parenthesis node
-                         ParenthesesNode),
+            /*PrefixNode is transformed using PrefixResolver. It is transformed to a recursive list {T, PrefixOperator}
+                where T can be PrefixNode, ParenthesesNode, Operand. T will be as specific as possible.*/
+            AlwaysCollapsableParseRule(PrefixNode,
+                    PrefixOperator + PrefixNode,
+                    PrefixOperator + ParenthesesNode,
+                    // (foo()) is both a valid cast operator and a valid parenthesis node. have to add parenthesis node to make sure that if it fails
+                    // as prefix it will be handled as parenthesis node
+                    ParenthesesNode),
                          
-                    /*PostfixNode is transformed using InfixResolver. It is transformed to a recursive list {T, PostfixOperator}
-                      where T can be PostfixNode, PrefixNode, ParenthesesNode, Operand. T will be as specific as possible.*/
-                    AlwaysCollapsableParseRule(PostfixNode,
-                        PrefixNode + ZeroOrMore(PostfixOperator)),
+            /*PostfixNode is transformed using InfixResolver. It is transformed to a recursive list {T, PostfixOperator}
+                where T can be PostfixNode, PrefixNode, ParenthesesNode, Operand. T will be as specific as possible.*/
+            AlwaysCollapsableParseRule(PostfixNode,
+                PrefixNode + ZeroOrMore(PostfixOperator)),
 
-                    /*InfixNode is transformed using InfixResolver. It is transformed to a tree with structure {A, B, InfixOperator}.
-                      A, B can have types of InfixNode, PostfixNode, PrefixNode, ParenthesesNode, Operand. A, B will be as specific as possible.*/
-                    AlwaysCollapsableParseRule(InfixNode,
-                        PostfixNode + ZeroOrMore(InfixSubnode)),
+            /*InfixNode is transformed using InfixResolver. It is transformed to a tree with structure {A, B, InfixOperator}.
+                A, B can have types of InfixNode, PostfixNode, PrefixNode, ParenthesesNode, Operand. A, B will be as specific as possible.*/
+            AlwaysCollapsableParseRule(InfixNode,
+                PostfixNode + ZeroOrMore(InfixSubnode)),
 
-                   AlwaysCollapsableParseRule(InfixSubnode,
-                        InfixOperator + PostfixNode),
+            AlwaysCollapsableParseRule(InfixSubnode,
+                InfixOperator + PostfixNode),
 
-                    ParseRule(Value,
-                        InfixNode),
+            ParseRule(Value,
+                InfixNode),
                        
-                    AlwaysCollapsableParseRule(Operand,
-                        ArrayLiteral,
-                        Function,
-                        Symbol,
-                        LiteralNode,
-                        SpecialValue),
+            AlwaysCollapsableParseRule(Operand,
+                ArrayLiteral,
+                Function,
+                Symbol,
+                LiteralNode,
+                SpecialValue),
 
-                    AlwaysCollapsableParseRule(SpecialValue,
-                        Null),
+            AlwaysCollapsableParseRule(SpecialValue,
+                Null),
 
-                    ParseRule(LiteralNode,                       
-                        Float,
-                        Integer,
-                        Double,
-                        Long,
-                        CharLiteral,
-                        StringLiteral,
-                        True,
-                        False),
+            ParseRule(LiteralNode,                       
+                Float,
+                Integer,
+                Double,
+                Long,
+                CharLiteral,
+                StringLiteral,
+                True,
+                False),
                     
-                    ParseRule(ArrayLiteral, 
-                        Type + InitializerList,
-                        InitializerList),
+            ParseRule(ArrayLiteral, 
+                Type + InitializerList,
+                InitializerList),
 
-                    ParseRule(InitializerList,     
-                        LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
-                        LeftCurlyBrace + RightCurlyBrace),
+            ParseRule(InitializerList,     
+                LeftCurlyBrace + Value + ZeroOrMore(CommaAndValue) + RightCurlyBrace,
+                LeftCurlyBrace + RightCurlyBrace),
 
-                    ParseRule(FunctionArgumentsList,
-                        LeftParenthesis + RightParenthesis,
-                        LeftParenthesis + Value + ZeroOrMore(CommaAndValue) + RightParenthesis),
+            ParseRule(FunctionArgumentsList,
+                LeftParenthesis + RightParenthesis,
+                LeftParenthesis + Value + ZeroOrMore(CommaAndValue) + RightParenthesis),
 
-                    AlwaysCollapsableParseRule(CommaAndValue,
-                        Comma + Value),
+            AlwaysCollapsableParseRule(CommaAndValue,
+                Comma + Value),
 
-                    /*Tail of FullSymbol is transformed using FullSymbolPostProcessor.
-                        It is transformed to a recursive list of {Symbol, FullSymbol(Optional)}*/
-                    ParseRule(FullSymbol,
-                        Symbol + ZeroOrMore(SubSymbol)),
+            /*Tail of FullSymbol is transformed using FullSymbolPostProcessor.
+                It is transformed to a recursive list of {Symbol, FullSymbol(Optional)}*/
+            ParseRule(FullSymbol,
+                Symbol + ZeroOrMore(SubSymbol)),
 
-                    AlwaysCollapsableParseRule(SubSymbol,
-                        Period + Symbol),
+            AlwaysCollapsableParseRule(SubSymbol,
+                Period + Symbol),
 
-                    ParseRule(ParameterList,
-                        FunctorParameters,   
-                        IndexNode                     
-                    ),
+            ParseRule(ParameterList,
+                FunctorParameters,   
+                IndexNode                     
+            ),
                     
-                    ParseRule(FunctorParameters,
-                        LeftParenthesis + Type + ZeroOrMore(TypeSubnode) + RightParenthesis,
-                        LeftParenthesis + Type + Symbol + ZeroOrMore(TypeAndSymbolSubnode) + RightParenthesis,
-                        LeftParenthesis + RightParenthesis),
+            ParseRule(FunctorParameters,
+                LeftParenthesis + Type + ZeroOrMore(TypeSubnode) + RightParenthesis,
+                LeftParenthesis + Type + Symbol + ZeroOrMore(TypeAndSymbolSubnode) + RightParenthesis,
+                LeftParenthesis + RightParenthesis),
 
-                    ParseRule(Type,                        
-                        FullSymbol + ZeroOrMore(ParameterList)),
+            ParseRule(Type,                        
+                FullSymbol + ZeroOrMore(ParameterList)),
                        
-                    AlwaysCollapsableParseRule(TypeSubnode,
-                        Comma + Type),
+            AlwaysCollapsableParseRule(TypeSubnode,
+                Comma + Type),
 
-                    AlwaysCollapsableParseRule(TypeAndSymbolSubnode,
-                        Comma + Type + Symbol),
+            AlwaysCollapsableParseRule(TypeAndSymbolSubnode,
+                Comma + Type + Symbol),
 
-                    ParseRule(Function,
-                        Type + CodeBlockNode),                    
+            ParseRule(Function,
+                Type + CodeBlockNode),                    
 
-                    ParseRule(WhileLoop,
-                        While + LeftParenthesis + Value + RightParenthesis + CodeConstruct),
+            ParseRule(WhileLoop,
+                While + LeftParenthesis + Value + RightParenthesis + CodeConstruct),
 
-                    ParseRule(ForEachLoop,
-                        For + LeftParenthesis + ForEachDeclaration + In + Value + RightParenthesis + CodeConstruct),
+            ParseRule(ForEachLoop,
+                For + LeftParenthesis + ForEachDeclaration + In + Value + RightParenthesis + CodeConstruct),
 
-                    ParseRule(ForEachDeclaration,
-                        Type + Symbol),
+            ParseRule(ForEachDeclaration,
+                Type + Symbol),
 
-                    ParseRule(ForLoop,
-                        For + LeftParenthesis + Optional(Value) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + CodeConstruct,
-                        For + LeftParenthesis + Optional(DeclarationNode) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + CodeConstruct
-                     ),
+            ParseRule(ForLoop,
+                For + LeftParenthesis + Optional(Value) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + CodeConstruct,
+                For + LeftParenthesis + Optional(DeclarationNode) + EndOfLine + Optional(Value) + EndOfLine + Optional(Value) + RightParenthesis + CodeConstruct
+                ),
 
-                    ParseRule(ConditionalSentence,
-                        If + LeftParenthesis + Value + RightParenthesis + CodeConstruct + OptionalTail(Else + CodeConstruct)),
-            };
-
+            ParseRule(ConditionalSentence,
+                If + LeftParenthesis + Value + RightParenthesis + CodeConstruct + OptionalTail(Else + CodeConstruct)),
+        };
     }
 }

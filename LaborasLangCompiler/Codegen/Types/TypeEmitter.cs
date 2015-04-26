@@ -60,15 +60,19 @@ namespace LaborasLangCompiler.Codegen.Types
             Assembly.AddTypeUsage(baseType);
         }
 
-        public void AddMethod(MethodDefinition method)
+        public bool AddMethod(MethodDefinition method)
         {
-            CheckForDuplicates(method.Name, method.GetParameterTypes());
+            if (HasMember(method.Name, MemberCheck.FieldAndProperties))
+                return false;
+
             typeDefinition.Methods.Add(method);
+            return true;
         }
 
-        public void AddField(FieldDefinition field)
+        public bool AddField(FieldDefinition field)
         {
-            CheckForDuplicates(field.Name);
+            if (HasMember(field.Name, MemberCheck.FullCheck))
+                return false;
 
             // If we add any field, reset its class and packing size parameters to unspecified again
             if (typeDefinition.IsValueType && typeDefinition.Fields.Count == 0)
@@ -79,10 +83,13 @@ namespace LaborasLangCompiler.Codegen.Types
 
             typeDefinition.Fields.Add(field);
             Assembly.AddTypeUsage(field.FieldType);
+
+            return true;
         }
 
         public void AddFieldInitializer(FieldDefinition field, IExpressionNode initializer)
         {
+            Contract.Assume(field.DeclaringType.FullName == typeDefinition.FullName);
             if (field.IsStatic)
             {
                 GetStaticConstructor().AddFieldInitializer(field, initializer);
@@ -93,14 +100,13 @@ namespace LaborasLangCompiler.Codegen.Types
             }
         }
 
-        public void AddProperty(PropertyDefinition property, IExpressionNode initializer = null)
+        public bool AddProperty(PropertyDefinition property, IExpressionNode initializer = null)
         {
-            if (property.SetMethod == null && property.GetMethod == null)
-            {
-                throw new ArgumentException("Property has neither a setter nor a getter!", "property");
-            }
+            Contract.Requires(property.SetMethod != null || property.GetMethod != null, "Property has neither a setter nor a getter!");
 
-            CheckForDuplicates(property.Name);
+            if (HasMember(property.Name, MemberCheck.FullCheck))
+                return false;
+
             typeDefinition.Properties.Add(property);
 
             bool isStatic = (property.SetMethod != null && property.SetMethod.IsStatic) ||
@@ -126,34 +132,13 @@ namespace LaborasLangCompiler.Codegen.Types
             {
                 Assembly.AddTypeUsage(type);
             }
+
+            return true;
         }
 
         public void AddDefaultConstructor()
         {
             GetInstanceConstructor();
-        }
-
-        private void CheckForDuplicates(string name)
-        {
-            if (typeDefinition.Fields.Any(field => field.Name == name))
-            {
-                throw new InvalidOperationException(string.Format("A field with same name already exists in type {0}.", typeDefinition.FullName));
-            }
-            else if (typeDefinition.Methods.Any(method => method.Name == name))
-            {
-                throw new InvalidOperationException(string.Format("A method with same name already exists in type {0}.", typeDefinition.FullName));
-            }
-        }
-
-        private void CheckForDuplicates(string name, IReadOnlyList<TypeReference> parameterTypes)
-        {
-            var targetParameterTypes = parameterTypes.Select(type => type.FullName);
-
-            if (typeDefinition.Methods.Any(method => method.Name == name &&
-                method.GetParameterTypes().Select(type => type.FullName).SequenceEqual(targetParameterTypes)))
-            {
-                throw new InvalidOperationException(string.Format("A method with same name and parameters already exists in type {0}.", typeDefinition.FullName));
-            }
         }
 
         public static string ComputeNameFromReturnAndArgumentTypes(TypeReference returnType, IReadOnlyList<TypeReference> arguments)
@@ -208,6 +193,38 @@ namespace LaborasLangCompiler.Codegen.Types
             }
 
             return staticConstructor;
+        }
+
+        private enum MemberCheck
+        {
+            Fields = 0x1,
+            Properties = 0x2,
+            Methods = 0x4,
+            FieldAndProperties = Fields | Properties,
+            FullCheck = Fields | Properties | Methods
+        }
+
+        private bool HasMember(string name, MemberCheck check)
+        {
+            if ((check & MemberCheck.Fields) != 0)
+            {
+                if (typeDefinition.Fields.Any(field => field.Name == name))
+                    return true;
+            }
+
+            if ((check & MemberCheck.Properties) != 0)
+            {
+                if (typeDefinition.Properties.Any(property => property.Name == name))
+                    return true;
+            }
+
+            if ((check & MemberCheck.Methods) != 0)
+            {
+                if (typeDefinition.Methods.Any(method => method.Name == name))
+                    return true;
+            }
+
+            return false;
         }
     }
 }

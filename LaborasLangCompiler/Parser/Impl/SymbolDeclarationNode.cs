@@ -66,13 +66,14 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (type.IsAuto())
             {
-                if (initializer.ExpressionReturnType.IsTypeless())
-                {
-                    ErrorCode.InferrenceFromTypeless.ReportAndThrow(initializer.SequencePoint, "Cannot infer type from a typeless expression");
-                }
                 if (initializer == null)
                 {
                     ErrorCode.MissingInit.ReportAndThrow(point, "Type inference requires initialization");
+                    return Utils.Utils.Fail<SymbolDeclarationNode>();
+                }
+                if (initializer.ExpressionReturnType.IsTypeless())
+                {
+                    ErrorCode.InferrenceFromTypeless.ReportAndThrow(initializer.SequencePoint, "Cannot infer type from a typeless expression");
                 }
             }
 
@@ -89,7 +90,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         initializer = ambiguous.RemoveAmbiguity(parent, type);
                     if (!initializer.ExpressionReturnType.IsAssignableTo(type))
                     {
-                        ErrorCode.TypeMissmatch.ReportAndThrow(initializer.SequencePoint,
+                        ErrorCode.TypeMismatch.ReportAndThrow(initializer.SequencePoint,
                             "Variable of type {0} initialized with {1}", type, initializer.ExpressionReturnType);
                     }
                 }

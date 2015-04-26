@@ -1,4 +1,5 @@
 ﻿using LaborasLangCompiler.Codegen.Types;
+using LaborasLangCompiler.Common;
 using LaborasLangCompiler.Parser;
 using Mono.Cecil;
 using System;
@@ -792,8 +793,8 @@ namespace LaborasLangCompiler.Codegen
             if (bestMatchIndex == 0)
                 return parameterArray[0].key;
 
-            var matches = parameterArray.Take(bestMatchIndex + 1).Select(match => match.key.FullName);
-            throw new Exception(string.Format("Method is ambigous. Could be: \r\n{0}", string.Join("\r\n", matches)));
+            var matches = parameterArray.Take(bestMatchIndex + 1).Select(match => match.key);
+            throw new AmbiguousMethodException(matches);
         }
 
         private static PropertyReference GetBestMatch(IReadOnlyList<TypeReference> arguments, IReadOnlyList<PropertyDefinition> properties)
@@ -806,8 +807,8 @@ namespace LaborasLangCompiler.Codegen
             if (bestMatchIndex == 0)
                 return parameterArray[0].key;
 
-            var matches = parameterArray.Take(bestMatchIndex + 1).Select(match => match.key.FullName);
-            throw new Exception(string.Format("Property is ambigous. Could be: \r\n{0}", string.Join("\r\n", matches)));
+            var matches = parameterArray.Take(bestMatchIndex + 1).Select(match => match.key);
+            throw new AmbiguousPropertyException(matches);
         }
 
         private TypeDefinition FindTypeInternal(IList<TypeDefinition> types, string typeName)
@@ -1116,5 +1117,23 @@ namespace LaborasLangCompiler.Codegen
         }
 
         #endregion
+
+        public class AmbiguousMethodException : CompilerException
+        {
+            public IEnumerable<MethodReference> Matches { get; private set; }
+            public AmbiguousMethodException(IEnumerable<MethodReference> matches)
+            {
+                Matches = matches;
+            }
+        }
+
+        public class AmbiguousPropertyException : CompilerException
+        {
+            public IEnumerable<PropertyReference> Matches { get; private set; }
+            public AmbiguousPropertyException(IEnumerable<PropertyReference> matches)
+            {
+                Matches = matches;
+            }
+        }
     }
 }

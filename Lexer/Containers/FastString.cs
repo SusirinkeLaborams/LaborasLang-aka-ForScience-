@@ -3,7 +3,7 @@ using System;
 
 namespace Lexer.Containers
 {
-    public unsafe struct FastString
+    internal unsafe struct FastString
     {
         private static readonly char* kPointerToNullChar;
         private static readonly FastString kEmpty;

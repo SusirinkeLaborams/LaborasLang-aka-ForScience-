@@ -1,6 +1,7 @@
 ﻿using Lexer.Containers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,10 +15,6 @@ namespace Lexer
         public Location End { get; set; }
         public string Content { get; set; }
 
-        public Node()
-        {
-        }
-
         internal Node(Token token)
         {
             this.Type = token.Type;
@@ -29,11 +26,18 @@ namespace Lexer
         public Node(TokenType tokenType)
         {
             this.Type = tokenType;
+            this.Content = string.Empty;    // To make sure it's not null
         }
 
         public override string ToString()
         {
             return string.Format("Type: {0}, Start: {1}, End: {2}, Content: \"{3}\"", Type, Start, End, Content);
+        }
+
+        [ContractInvariantMethod]
+        private void ObjectInvariant()
+        {
+            Contract.Invariant(this.Content != null);
         }
     }
 }

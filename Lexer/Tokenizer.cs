@@ -1,6 +1,7 @@
 ﻿using Lexer.Containers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace Lexer
 {
@@ -16,6 +17,7 @@ namespace Lexer
 
             for (int i = 0; i < symbols.Length; i++)
             {
+                Contract.Assume(symbols[i] < char.MaxValue);
                 SymbolMap[symbols[i]] = true;
             }
 

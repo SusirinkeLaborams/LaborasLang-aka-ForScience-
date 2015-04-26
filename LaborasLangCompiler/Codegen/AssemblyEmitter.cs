@@ -1,9 +1,12 @@
-﻿using LaborasLangCompiler.FrontEnd;
+﻿using LaborasLangCompiler.Common;
+using LaborasLangCompiler.FrontEnd;
 using Mono.Cecil;
 using Mono.Cecil.Pdb;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.IO;
+using System.Text;
 
 namespace LaborasLangCompiler.Codegen
 {
@@ -61,20 +64,114 @@ namespace LaborasLangCompiler.Codegen
                 functorUsageMap[type] = true;
         }
 
-        public void Save()
+        public bool Save()
         {
-            if (assemblyDefinition.EntryPoint == null && assemblyDefinition.MainModule.Kind != ModuleKind.Dll)
-            {
-                throw new Exception(string.Format("Current module kind ({0}) requires entry point set!", assemblyDefinition.MainModule.Kind));
-            }
-
-            RemoveUnusedFunctors();
+            if (!FinalizeAssembly())
+                return false;
 
             var writerParams = new WriterParameters();
             writerParams.SymbolWriterProvider = new PdbWriterProvider();
             writerParams.WriteSymbols = true;
 
             assemblyDefinition.Write(outputPath, writerParams);
+            return true;
+        }
+
+        private bool FinalizeAssembly()
+        {
+            if (!CheckDuplicateMethods())
+                return false;
+
+            CheckThatEntryPointIsSet();
+            RemoveUnusedFunctors();
+
+            return true;
+        }
+
+        private bool CheckDuplicateMethods()
+        {
+            var types = MainModule.Types;
+            List<List<MethodDefinition>> duplicateMethods = null;
+
+            foreach (var type in types)
+            {
+                var sortedMethods = type.Methods.OrderBy(m => m.Name).ThenBy(m => m.Parameters.Count).ToArray();
+                
+                for (int i = 0; i < sortedMethods.Length - 1; i++)
+                {
+                    List<MethodDefinition> duplicates = null;
+
+                    int j = i;
+                    for (; j < sortedMethods.Length - 1 && AreMethodSignaturesIdentical(sortedMethods[j], sortedMethods[j + 1]); j++)
+                    {
+                        if (duplicates == null)
+                        {
+                            duplicates = new List<MethodDefinition>();
+                            duplicates.Add(sortedMethods[j]);
+                        }
+
+                        duplicates.Add(sortedMethods[j + 1]);
+                    }
+
+                    i = j;
+
+                    if (duplicates != null)
+                    {
+                        if (duplicateMethods == null)
+                            duplicateMethods = new List<List<MethodDefinition>>();
+
+                        duplicateMethods.Add(duplicates);
+                    }
+                }
+            }
+
+            if (duplicateMethods != null)
+            {
+                foreach (var duplicateMethodGroup in duplicateMethods)
+                {
+                    var builder = new StringBuilder("These methods have identical signatures:");
+                    builder.Append(Environment.NewLine);
+
+                    foreach (var method in duplicateMethodGroup)
+                    {
+                        builder.AppendFormat("\t{0}{1}{2}", Errors.SequencePointToString(method.Body.Instructions[0].SequencePoint), 
+                            method.FullName, Environment.NewLine);
+                    }
+
+                    Errors.Report(ErrorCode.MethodAlreadyDeclared, builder.ToString());
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool AreMethodSignaturesIdentical(MethodDefinition m1, MethodDefinition m2)
+        {
+            if (m1.Name != m2.Name)
+                return false;
+
+            if (m1.Parameters.Count != m2.Parameters.Count)
+                return false;
+
+            var parameterCount = m1.Parameters.Count;
+
+            for (int j = 0; j < parameterCount; j++)
+            {
+                if (m1.Parameters[j].ParameterType.FullName != m2.Parameters[j].ParameterType.FullName)
+                    return false;
+            }
+
+            return true;
+        }
+
+        private void CheckThatEntryPointIsSet()
+        {
+            if (assemblyDefinition.EntryPoint == null && assemblyDefinition.MainModule.Kind != ModuleKind.Dll)
+            {
+                Errors.ReportAndThrow(ErrorCode.EntryPointNotSet, string.Format("Current module kind ({0}) requires entry point set!", assemblyDefinition.MainModule.Kind));
+            }
         }
 
         private void RemoveUnusedFunctors()

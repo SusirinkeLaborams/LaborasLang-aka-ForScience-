@@ -47,7 +47,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (type == null)
             {
-                Errors.ReportAndThrow(ErrorCode.TypeMissmatch, point, "Cannot create literal of type {0} with value {1}",
+                Errors.ReportAndThrow(ErrorCode.TypeMismatch, point, "Cannot create literal of type {0} with value {1}",
                     value.GetType().FullName, value);
             }
 
@@ -124,7 +124,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         
                     default:
 
-                        ContractsHelper.AssertUnreachable(String.Format("Unexpected literal type {0}", type.FullName));
+                        ContractsHelper.AssumeUnreachable(String.Format("Unexpected literal type {0}", type.FullName));
                         return null;//unreachable
                 }
             }
@@ -148,7 +148,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 var type = GetLowestConversion(parser, parsed);
                 if(type == null)
                 {
-                    ErrorCode.IntegerOverlflow.ReportAndThrow(point, "Cannot fit {0} into an integer, use BigInteger.Parse", value);
+                    ErrorCode.IntegerOverflow.ReportAndThrow(point, "Cannot fit {0} into an integer, use BigInteger.Parse", value);
                 }
                 else
                 {

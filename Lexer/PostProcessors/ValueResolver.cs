@@ -52,7 +52,8 @@ namespace Lexer.PostProcessors
         #endregion
  
         };
-        private int[] m_Priorities;
+
+        private readonly int[] m_Priorities;
 
         public ValueResolver()
         {

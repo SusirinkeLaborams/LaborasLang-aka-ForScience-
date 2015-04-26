@@ -257,8 +257,8 @@ namespace LaborasLangCompiler.Parser.Impl
 
         struct FunctionParamInfo
         {
-            public IAbstractSyntaxTree Type;
-            public IAbstractSyntaxTree Name;
+            public readonly IAbstractSyntaxTree Type;
+            public readonly IAbstractSyntaxTree Name;
 
             public FunctionParamInfo(IAbstractSyntaxTree type, IAbstractSyntaxTree name)
             {

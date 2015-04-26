@@ -1,0 +1,23 @@
+Class:
+	TestVariableNoInitializer
+	Fields:
+	Methods:
+		Method:
+			Name:
+				main
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+						System.Int32 a
+					Nodes:
+						VariableDeclaration:
+							Symbol:
+								System.Int32 a
+
+
+

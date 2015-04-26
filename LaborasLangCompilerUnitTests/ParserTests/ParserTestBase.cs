@@ -33,22 +33,22 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             assembly = new AssemblyEmitter(compilerArgs);
         }
 
-        protected void CompareTrees(string source, [CallerMemberName] string testName = "")
+        internal void CompareTrees(string source, [CallerMemberName] string testName = "")
         {
             CompareTrees(source.Enumerate(), testName.Enumerate(), testName);
         }
 
-        protected void CompareTrees(string source, IEnumerable<ErrorCode> errors, [CallerMemberName] string testName = "")
+        internal void CompareTrees(string source, IEnumerable<ErrorCode> errors, [CallerMemberName] string testName = "")
         {
             CompareTrees(source.Enumerate(), testName.Enumerate(), errors, testName);
         }
 
-        protected void CompareTrees(IEnumerable<string> sources, IEnumerable<string> fileNames, [CallerMemberName] string testName = "")
+        internal void CompareTrees(IEnumerable<string> sources, IEnumerable<string> fileNames, [CallerMemberName] string testName = "")
         {
             CompareTrees(sources, fileNames, Enumerable.Empty<ErrorCode>(), testName);
         }
 
-        protected void CompareTrees(IEnumerable<string> sources, IEnumerable<string> fileNames, IEnumerable<ErrorCode> errors, [CallerMemberName] string testName = "")
+        internal void CompareTrees(IEnumerable<string> sources, IEnumerable<string> fileNames, IEnumerable<ErrorCode> errors, [CallerMemberName] string testName = "")
         {
             Errors.Clear();
 
@@ -72,7 +72,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             var expectedErrors = errors.ToHashSet();
 
 
-            Assert.IsTrue(foundErrors.SetEquals(expectedErrors), "Errors: " + String.Join("\r\n", Errors.Reported));
+            Assert.IsTrue(foundErrors.SetEquals(expectedErrors), "Errors: \r\n" + String.Join("\r\n", Errors.Reported));
             Assert.AreEqual(expected, result);
         }
     }

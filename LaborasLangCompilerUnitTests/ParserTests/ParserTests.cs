@@ -69,7 +69,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         public void TypeExceptionTest()
         {
             string source = "int a = 0.0;";
-            CompareTrees(source, ErrorCode.TypeMissmatch.Enumerate());
+            CompareTrees(source, ErrorCode.TypeMismatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void MethodCallTest()
@@ -323,7 +323,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         {
             string source = @"
                 auto Main = int(){return 4.0;};";
-            CompareTrees(source, Utils.Enumerate(ErrorCode.TypeMissmatch, ErrorCode.MissingReturn));
+            CompareTrees(source, Utils.Enumerate(ErrorCode.TypeMismatch, ErrorCode.MissingReturn));
         }
         [TestMethod, TestCategory("Parser")]
         public void TestReturnTypeSuccess()
@@ -417,7 +417,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 {  
                     return 5;
                 };";
-            CompareTrees(source, ErrorCode.TypeMissmatch.Enumerate());
+            CompareTrees(source, ErrorCode.TypeMismatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestImport()
@@ -903,7 +903,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 auto foo = int[1, 1]{{1}, {2}};
             ";
-            CompareTrees(source, ErrorCode.ArrayDimMissmatch.Enumerate());
+            CompareTrees(source, ErrorCode.ArrayDimMismatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestEmptyInitializedArray()
@@ -1375,7 +1375,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     for(int foo in lst);
                 };
             ";
-            CompareTrees(source, ErrorCode.TypeMissmatch.Enumerate());
+            CompareTrees(source, ErrorCode.TypeMismatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestForEachOverInteger()
@@ -1558,6 +1558,71 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                 };
             ";
             CompareTrees(source, ErrorCode.NotAnRValue.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestDuplicateFields()
+        {
+            string source = @"
+                int foo = 5;
+                string foo = ""asgfasg"";
+            ";
+            CompareTrees(source, ErrorCode.FieldAlreadyDeclared.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestOverloadedMethods()
+        {
+            string source = @"
+                auto foo = void(){};
+                auto foo = void(int a){};
+                auto main = void()
+                {
+                    foo(5);
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestAmbiguousOverloadCall()
+        {
+            string source = @"
+                auto foo = void(long a){};
+                auto foo = void(int a){};
+                auto main = void()
+                {
+                    foo((int8)5);
+                };
+            ";
+            CompareTrees(source, ErrorCode.AmbiguousMethod.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestVariableNoInitializer()
+        {
+            string source = @"
+                auto main = void()
+                {
+                    int a;
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestAutoVariableNoInitializer()
+        {
+            string source = @"
+                auto main = void()
+                {
+                    auto a;
+                };
+            ";
+            CompareTrees(source, ErrorCode.MissingInit.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestAutoFieldNoInitializer()
+        {
+            string source = @"
+                auto a;
+            ";
+            CompareTrees(source, ErrorCode.MissingInit.Enumerate());
         }
     }
 }
