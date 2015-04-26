@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Contracts;
 
 namespace Lexer
 {
-    public enum ConditionType
+    internal enum ConditionType
     {   
         ZeroOrOne,
         OptionalFromThis,
@@ -13,7 +14,7 @@ namespace Lexer
     }
 
     [DebuggerDisplay("Condition, {Type} {Token}")]
-    public struct Condition
+    internal struct Condition
     {
         public readonly TokenType Token;
         public ConditionType Type;
@@ -47,12 +48,14 @@ namespace Lexer
 
         public static ConditionList operator +(ConditionList list, Condition token)
         {
+            Contract.Requires(list != null);
+
             list.Add(token);
             return list;
         }
     }
 
-    public class ConditionList : List<Condition>
+    internal class ConditionList : List<Condition>
     {
         public ConditionList()
         {
@@ -61,10 +64,13 @@ namespace Lexer
         public ConditionList(int capacity) :
             base(capacity)
         {
+            Contract.Requires(capacity >= 0);
         }
         
         public static ConditionList operator +(ConditionList list, ConditionList tokens)
         {
+            Contract.Requires(tokens != null);
+
             foreach (var token in tokens)
             {
                 list.Add(token);
@@ -73,14 +79,14 @@ namespace Lexer
             return list;
         }
     }
-    public enum ParseRuleCollapsableLevel
+    internal enum ParseRuleCollapsableLevel
     {
         Never,
         OneChild,
         Always
     }
 
-    public struct ParseRule
+    internal struct ParseRule
     {
         public readonly TokenType Result;
         public Condition[][] RequiredTokens { get; private set; }
@@ -89,6 +95,8 @@ namespace Lexer
         public ParseRule(Condition result, ParseRuleCollapsableLevel collapsableLevel, params List<Condition>[] requiredTokens)
             : this()
         {
+            Contract.Requires(requiredTokens != null);
+
             Result = result.Token;
             CollapsableLevel = collapsableLevel;
             RequiredTokens = new Condition[requiredTokens.Length][];

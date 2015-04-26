@@ -32,6 +32,7 @@ namespace Lexer
 
             foreach (var rule in RulePool.LaborasLangRuleset)
             {
+                Contract.Assume(rule.Result < TokenType.TokenTypeCount);
                 m_ParseRules[(int)rule.Result] = rule;
             }
         }

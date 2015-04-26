@@ -13,7 +13,8 @@ namespace Lexer
         public List<AbstractSyntaxTree> Children { get; set; }
         IReadOnlyList<IAbstractSyntaxTree> IAbstractSyntaxTree.Children { get { return Children; } }
 
-        public Node Node { get; set; }
+        public Node Node { get; private set; }
+
         #region Node shortcuts
         public TokenType Type
         {
@@ -31,10 +32,12 @@ namespace Lexer
         {
             get
             {
+                Contract.Ensures(Contract.Result<string>() != null);
                 return Node.Content;
             }
             set
             {
+                Contract.Requires(value != null);
                 Node.Content = value;
             }
         }
@@ -68,6 +71,8 @@ namespace Lexer
 
         internal AbstractSyntaxTree(Node node, List<AbstractSyntaxTree> children) 
         {
+            Contract.Requires(children != null);
+
             Node = node;
             Children = children;
         }
@@ -76,7 +81,6 @@ namespace Lexer
         {
             this.Children = other.Children;
             this.Node = other.Node;
-
         }
         internal void Collapse()
         {
@@ -89,7 +93,7 @@ namespace Lexer
             var builder = new StringBuilder();
             var indentStr = new string('\t', indentation);
 
-            builder.AppendFormat("{0}Content: {1}\r\n", indentStr, Node != null ? Node.ToString() : string.Empty);
+            builder.AppendFormat("{0}Content: {1}\r\n", indentStr, Node.ToString());
             builder.AppendFormat("{0}Type: {1}\r\n", indentStr, Type);
             builder.AppendFormat("{0}Children:\r\n", indentStr);
 
@@ -111,6 +115,5 @@ namespace Lexer
         {
             return ToString(0);
         }
-
     }
 }
