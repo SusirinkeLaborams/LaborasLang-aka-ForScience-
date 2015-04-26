@@ -36,6 +36,8 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static ParserNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
+            Contract.Requires(context != null);
+
             CodeBlockNode init = null;
             ExpressionNode condition = null;
             CodeBlockNode increment = null;

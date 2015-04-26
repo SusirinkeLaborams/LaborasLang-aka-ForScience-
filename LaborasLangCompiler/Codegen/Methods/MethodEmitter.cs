@@ -896,10 +896,12 @@ namespace LaborasLangCompiler.Codegen.Methods
 
             if (getter.HasThis)
             {
-                Contract.Assume(indexOperator.ObjectInstance != null);
-                Emit(indexOperator.ObjectInstance, EmissionType.ThisArg);
+                var objectInstance = indexOperator.ObjectInstance;
+                Contract.Assume(objectInstance != null);
+
+                Emit(objectInstance, EmissionType.ThisArg);
                 EmitArgumentsForCall(indexOperator.Indices, getter);
-                Call(indexOperator.ObjectInstance.ExpressionReturnType, getter);
+                Call(objectInstance.ExpressionReturnType, getter);
             }
             else
             {
@@ -1256,11 +1258,12 @@ namespace LaborasLangCompiler.Codegen.Methods
 
                 if (functionNode.Method.HasThis)
                 {
-                    Contract.Assume(functionNode.ObjectInstance != null);
-                    Emit(functionNode.ObjectInstance, EmissionType.ThisArg);
+                    var objectInstance = functionNode.ObjectInstance;
+                    Contract.Assume(objectInstance != null);
 
+                    Emit(objectInstance, EmissionType.ThisArg);
                     EmitArgumentsForCall(functionCall.Args, functionNode.Method);
-                    Call(functionNode.ObjectInstance.ExpressionReturnType, functionNode.Method);
+                    Call(objectInstance.ExpressionReturnType, functionNode.Method);
                 }
                 else
                 {
@@ -2330,8 +2333,15 @@ namespace LaborasLangCompiler.Codegen.Methods
             var setter = AssemblyRegistry.GetPropertySetter(Assembly, indexOperator.Property);
             Contract.Assume(setter != null);
 
-            var objectInstanceType = setter.HasThis ? indexOperator.ObjectInstance.ExpressionReturnType : null;
-            Call(objectInstanceType, setter);
+            if (setter.HasThis)
+            {
+                Contract.Assume(indexOperator.ObjectInstance != null);
+                Call(indexOperator.ObjectInstance.ExpressionReturnType, setter);
+            }
+            else
+            {
+                Call(null, setter);
+            }
         }
 
         private void EmitStore(ILocalVariableNode variable)
@@ -2347,8 +2357,16 @@ namespace LaborasLangCompiler.Codegen.Methods
         private void EmitStore(IPropertyNode property)
         {
             var setter = AssemblyRegistry.GetPropertySetter(Assembly, property.Property);
-            var objectInstanceType = setter.HasThis ? property.ObjectInstance.ExpressionReturnType : null;
-            Call(objectInstanceType, setter);
+
+            if (setter.HasThis)
+            {
+                Contract.Assume(property.ObjectInstance != null);
+                Call(property.ObjectInstance.ExpressionReturnType, setter);
+            }
+            else
+            {
+                Call(null, setter);
+            }
         }
 
         #endregion
@@ -2367,12 +2385,16 @@ namespace LaborasLangCompiler.Codegen.Methods
             }
             else if (leftType.IsAssignableTo(rightType))
             {
+                Contract.Assume(right.ExpressionType != ExpressionNodeType.ParserInternal);
+
                 Emit(left, EmissionType.Value);
                 EmitConversionIfNeeded(leftType, rightType);
                 Emit(right, EmissionType.Value);
             }
             else if (rightType.IsAssignableTo(leftType))
             {
+                Contract.Assume(right.ExpressionType != ExpressionNodeType.ParserInternal);
+
                 Emit(left, EmissionType.Value);
                 Emit(right, EmissionType.Value);
                 EmitConversionIfNeeded(rightType, leftType);
