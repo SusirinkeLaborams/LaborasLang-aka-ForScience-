@@ -41,7 +41,7 @@ namespace LaborasLangCompiler.Common
         InvalidCondition = 0019,
         
         TypeExpected = 0020,
-        AmbiguousSymbol = 0021,
+        //AmbiguousSymbol = 0021, removed
         UnreachableMember = 0022,
 
         MissingInstance = 0023,
@@ -72,6 +72,11 @@ namespace LaborasLangCompiler.Common
         MethodAlreadyDeclared = 0040,
 
         EntryPointNotSet = 0041,
+
+        AmbiguousType = 0042,
+        AmbiguousNamespace = 0043,
+        AmbiguousMethod = 0044,
+        AmbiguousProperty = 0045,
 
         CompilerArgumentErrors = 1000,
         NoSourceFiles = 1001,

@@ -146,7 +146,7 @@ namespace LaborasLangCompiler.Parser.Impl
             if (method == null)
             {
                 ErrorCode.TypeMismatch.ReportAndThrow(point, "Cannot call method, {0} with arguments ({1}), none of the overloads match",
-                    ambiguous.FullName,
+                    ambiguous.Name,
                     String.Join(", ", args.Select(a => a.ExpressionReturnType.FullName)));
             }
 

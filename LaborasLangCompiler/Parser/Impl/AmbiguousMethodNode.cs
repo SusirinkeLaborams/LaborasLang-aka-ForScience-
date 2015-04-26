@@ -15,17 +15,16 @@ namespace LaborasLangCompiler.Parser.Impl
     class AmbiguousMethodNode : SymbolNode, IAmbiguousNode
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
-        public string FullName { get; private set; }
 
         private readonly IEnumerable<MethodReference> methods;
         private readonly ExpressionNode instance;
 
         private AmbiguousMethodNode(IEnumerable<MethodReference> methods, ExpressionNode instance, ContextNode context, SequencePoint sequencePoint)
-            : base(null, context, sequencePoint)
+            : base(GetReadableName(methods.First()), context, sequencePoint)
         {
             this.methods = methods;
             this.instance = instance;
-            FullName = methods.First().FullName;
+            var first = methods.First();
         }
 
         public ExpressionNode RemoveAmbiguity(ContextNode context, TypeReference expectedType)
@@ -41,10 +40,22 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public MethodNode RemoveAmbiguity(ContextNode context, IEnumerable<TypeReference> args)
         {
-            var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), args.ToList());
-            if (method == null)
-                return null;
-            return new MethodNode(method, instance, context, SequencePoint);
+            try
+            {
+                var method = AssemblyRegistry.GetCompatibleMethod(methods.ToList(), args.ToList());
+                if (method == null)
+                    return null;
+                return new MethodNode(method, instance, context, SequencePoint);
+            }
+            catch(AssemblyRegistry.AmbiguousMethodException e)
+            {
+                ErrorCode.AmbiguousMethod.ReportAndThrow(SequencePoint,
+                    "Method {0} is ambiguous with arguments ({1}), possible matches: \r\n {2}",
+                    Name, 
+                    String.Join(", ", args.Select(a => a.FullName)),
+                    String.Join("\r\n", e.Matches.Select(match => match.FullName)));
+                return Utils.Utils.Fail<MethodNode>();
+            }
         }
 
         public static ExpressionNode Create(IEnumerable<MethodReference> methods, ContextNode context, ExpressionNode instance, SequencePoint sequencePoint)
@@ -59,6 +70,11 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 return new AmbiguousMethodNode(methods, instance, context, sequencePoint);
             }
+        }
+
+        private static string GetReadableName(MethodReference method)
+        {
+            return method.DeclaringType.Name + "::" + method.Name;
         }
 
         public override string ToString(int indent)

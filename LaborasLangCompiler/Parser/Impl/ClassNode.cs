@@ -146,7 +146,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 else
                 {
-                    ErrorCode.AmbiguousSymbol.ReportAndThrow(point,
+                    ErrorCode.AmbiguousType.ReportAndThrow(point,
                         "Ambiguous type {0}, could be {1}", name, String.Join(", ", types.Select(t => t.FullName)));
                 }
             }
@@ -165,7 +165,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
                 else
                 {
-                    ErrorCode.AmbiguousSymbol.ReportAndThrow(point,
+                    ErrorCode.AmbiguousNamespace.ReportAndThrow(point,
                         "Ambiguous namespace {0}, could be {1}", name, String.Join(", ", namespazes.Select(t => t.Name)));
                 }
             }

@@ -72,7 +72,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             var expectedErrors = errors.ToHashSet();
 
 
-            Assert.IsTrue(foundErrors.SetEquals(expectedErrors), "Errors: " + String.Join("\r\n", Errors.Reported));
+            Assert.IsTrue(foundErrors.SetEquals(expectedErrors), "Errors: \r\n" + String.Join("\r\n", Errors.Reported));
             Assert.AreEqual(expected, result);
         }
     }

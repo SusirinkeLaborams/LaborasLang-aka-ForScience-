@@ -1592,7 +1592,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
                     foo((int8)5);
                 };
             ";
-            CompareTrees(source);
+            CompareTrees(source, ErrorCode.AmbiguousMethod.Enumerate());
         }
     }
 }
