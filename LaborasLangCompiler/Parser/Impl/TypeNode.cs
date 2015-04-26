@@ -32,6 +32,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public new static TypeReference Parse(ContextNode parent, IAbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Type == Lexer.TokenType.Type || lexerNode.Type == Lexer.TokenType.FullSymbol);
+            Contract.Ensures(Contract.Result<TypeReference>() != null);
             if (lexerNode.Type == Lexer.TokenType.FullSymbol)
             {
                 TypeNode node = DotOperatorNode.Parse(parent, lexerNode) as TypeNode;

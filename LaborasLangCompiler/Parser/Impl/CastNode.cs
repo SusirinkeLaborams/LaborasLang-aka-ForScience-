@@ -21,8 +21,8 @@ namespace LaborasLangCompiler.Parser.Impl
         public override bool IsSettable { get { return false; } }
         public IExpressionNode TargetExpression { get { return target; } }
 
-        private ExpressionNode target;
-        private TypeReference type;
+        private readonly ExpressionNode target;
+        private readonly TypeReference type;
 
         private CastNode(TypeReference type, ExpressionNode target, SequencePoint point)
             :base(point)

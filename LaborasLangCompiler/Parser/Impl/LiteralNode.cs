@@ -124,7 +124,7 @@ namespace LaborasLangCompiler.Parser.Impl
                         
                     default:
 
-                        ContractsHelper.AssertUnreachable(String.Format("Unexpected literal type {0}", type.FullName));
+                        ContractsHelper.AssumeUnreachable(String.Format("Unexpected literal type {0}", type.FullName));
                         return null;//unreachable
                 }
             }

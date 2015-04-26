@@ -141,6 +141,7 @@ namespace LaborasLangCompiler.Common
 
         public static string SequencePointToString(SequencePoint sequencePoint)
         {
+            Contract.Requires(sequencePoint != null);
             return string.Format("{0}({1},{2},{3},{4}): ", sequencePoint.Document.Url, sequencePoint.StartLine, sequencePoint.StartColumn, sequencePoint.EndLine, sequencePoint.EndColumn);
         }
 

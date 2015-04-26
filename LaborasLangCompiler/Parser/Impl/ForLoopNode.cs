@@ -20,10 +20,10 @@ namespace LaborasLangCompiler.Parser.Impl
         public ICodeBlockNode IncrementBlock { get { return increment; } }
         public ICodeBlockNode Body { get { return body; } }
 
-        private CodeBlockNode initializer;
-        private ExpressionNode condition;
-        private CodeBlockNode increment;
-        private CodeBlockNode body;
+        private readonly CodeBlockNode initializer;
+        private readonly ExpressionNode condition;
+        private readonly CodeBlockNode increment;
+        private readonly CodeBlockNode body;
 
         private ForLoopNode(CodeBlockNode init, ExpressionNode condition, CodeBlockNode increment, CodeBlockNode body, SequencePoint point)
             :base(point)

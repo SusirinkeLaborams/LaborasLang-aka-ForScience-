@@ -160,7 +160,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static CodeBlockNode Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
-            Contract.Requires(lexerNode.Type == Lexer.TokenType.CodeBlockNode || lexerNode.Type == Lexer.TokenType.StatementWithEndOfLine || lexerNode.Type == Lexer.TokenType.ConditionalSentence);
+            Contract.Requires(lexerNode.Type.IsCodeConstruct());
             CodeBlockNode instance = null;
             if(lexerNode.Type == Lexer.TokenType.CodeBlockNode)
             {
@@ -192,6 +192,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public static CodeBlockNode Create(ContextNode parent, SequencePoint point)
         {
+            Contract.Ensures(Contract.Result<CodeBlockNode>() != null);
             return new CodeBlockNode(parent, point);
         }
 

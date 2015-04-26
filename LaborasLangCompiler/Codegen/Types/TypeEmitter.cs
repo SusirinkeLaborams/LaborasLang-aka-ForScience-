@@ -89,7 +89,7 @@ namespace LaborasLangCompiler.Codegen.Types
 
         public void AddFieldInitializer(FieldDefinition field, IExpressionNode initializer)
         {
-            Contract.Assert(field.DeclaringType.FullName == typeDefinition.FullName);
+            Contract.Assume(field.DeclaringType.FullName == typeDefinition.FullName);
             if (field.IsStatic)
             {
                 GetStaticConstructor().AddFieldInitializer(field, initializer);

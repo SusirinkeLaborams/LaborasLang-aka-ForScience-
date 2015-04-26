@@ -15,7 +15,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public IReadOnlyList<IExpressionNode> Indices { get { return indices; } }
 
-        private IReadOnlyList<ExpressionNode> indices;
+        private readonly IReadOnlyList<ExpressionNode> indices;
 
         internal IndexOperatorAccessNode(ContextNode context, ExpressionNode instance, PropertyReference property, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
             : base(instance, property, context, point)

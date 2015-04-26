@@ -88,7 +88,7 @@ namespace LaborasLangCompiler.Parser.Impl
             public IncrementDecrementOperatorType IncrementDecrementType { get; private set; }
             public MethodReference OverloadedOperatorMethod { get; private set; }
 
-            private ExpressionNode operand;
+            private readonly ExpressionNode operand;
 
             internal IncrementDecrementOperatorNode(InternalUnaryOperatorType type, ExpressionNode operand, MethodReference overload)
                 : base(operand.SequencePoint)

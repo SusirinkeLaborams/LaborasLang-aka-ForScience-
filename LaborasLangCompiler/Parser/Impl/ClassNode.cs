@@ -25,12 +25,20 @@ namespace LaborasLangCompiler.Parser.Impl
         private readonly List<FunctionDeclarationNode> lambdas;
         private readonly List<Namespace> globalImports;
         private int lambdaCounter = 0;
+        private readonly TypeEmitter emitter;
         #endregion fields
 
         #region properties
 
         public override NodeType Type { get { return NodeType.ParserInternal; } }
-        public TypeEmitter TypeEmitter { get; private set; }
+        public TypeEmitter TypeEmitter 
+        { 
+            get
+            {
+                Contract.Ensures(Contract.Result<TypeEmitter>() != null);
+                return emitter;
+            }
+        }
         public string FullName { get; private set; }
         public TypeReference TypeReference { get { return TypeEmitter.Get(Parser.Assembly); } }
 
@@ -43,7 +51,7 @@ namespace LaborasLangCompiler.Parser.Impl
             fields = new List<FieldDeclarationNode>();
             globalImports = new List<Namespace>();
             FullName = parser.Filename;
-            TypeEmitter = new TypeEmitter(parser.Assembly, parser.Filename, parser.Namespace.Name);
+            emitter = new TypeEmitter(parser.Assembly, parser.Filename, parser.Namespace.Name);
 
             if (!string.IsNullOrEmpty(parser.Namespace.Name))
                 globalImports.Add(parser.Namespace);

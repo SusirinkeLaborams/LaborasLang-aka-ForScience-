@@ -1,4 +1,5 @@
-﻿namespace Lexer
+﻿using System.Diagnostics.Contracts;
+namespace Lexer
 {
     public enum TokenType
     {
@@ -239,6 +240,23 @@
                 case TokenType.LessOrEqual:
                 case TokenType.LogicalAnd:
                 case TokenType.LogicalOr: 
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        [Pure]
+        public static bool IsCodeConstruct(this TokenType token)
+        {
+            switch(token)
+            {
+                case TokenType.CodeBlockNode:
+                case TokenType.WhileLoop:
+                case TokenType.ForLoop:
+                case TokenType.ForEachLoop:
+                case TokenType.ConditionalSentence:
+                case TokenType.StatementWithEndOfLine:
                     return true;
                 default:
                     return false;

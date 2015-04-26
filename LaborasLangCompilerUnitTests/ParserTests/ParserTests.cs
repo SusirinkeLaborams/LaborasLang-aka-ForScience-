@@ -1594,5 +1594,35 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source, ErrorCode.AmbiguousMethod.Enumerate());
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestVariableNoInitializer()
+        {
+            string source = @"
+                auto main = void()
+                {
+                    int a;
+                };
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestAutoVariableNoInitializer()
+        {
+            string source = @"
+                auto main = void()
+                {
+                    auto a;
+                };
+            ";
+            CompareTrees(source, ErrorCode.MissingInit.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestAutoFieldNoInitializer()
+        {
+            string source = @"
+                auto a;
+            ";
+            CompareTrees(source, ErrorCode.MissingInit.Enumerate());
+        }
     }
 }
