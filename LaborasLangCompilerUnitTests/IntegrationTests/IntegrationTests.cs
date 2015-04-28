@@ -215,8 +215,14 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         [TestMethod, TestCategory("Integration Tests"), TestCategory("Disabled"), Timeout(5000)]
         public void Test_CanPierceTheHeavens()
         {
-            Test("PierceTheHeavens.ll", @"Win created successfully
-            ");
+            var info = new IntegrationTestInfo("PierceTheHeavens.ll");
+            info.StdIn = 
+@"5
+";
+            info.StdOut =
+                @"Your number: 5
+";
+            Test(info);
         }
 
         #region Helpers
