@@ -212,6 +212,13 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             Test("DuplicateMethods.ll", "No, mister test, I expect you to die");
         }
 
+        [TestMethod, TestCategory("Integration Tests"), TestCategory("Disabled"), Timeout(5000)]
+        public void Test_CanPierceTheHeavens()
+        {
+            Test("PierceTheHeavens.ll", @"Win created successfully
+            ");
+        }
+
         #region Helpers
         
         private string ExpectedOutputPath
