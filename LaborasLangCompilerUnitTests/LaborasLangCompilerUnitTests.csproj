@@ -145,7 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="IntegrationTests\ExpectedOutput\Bottles.txt" />
-    <None Include="IntegrationTests\SourceFiles\PierceTheHeavens.ll" />
+    <None Include="IntegrationTests\SourceFiles\Rank32Matrix.ll" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

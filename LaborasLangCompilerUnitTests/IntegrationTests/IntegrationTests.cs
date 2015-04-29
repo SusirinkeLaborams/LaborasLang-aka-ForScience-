@@ -212,10 +212,10 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             Test("DuplicateMethods.ll", "No, mister test, I expect you to die");
         }
 
-        [TestMethod, TestCategory("Integration Tests"), TestCategory("Disabled"), Timeout(5000)]
-        public void Test_CanPierceTheHeavens()
+        [TestMethod, TestCategory("Integration Tests")]
+        public void Test_Rank32Matrix()
         {
-            var info = new IntegrationTestInfo("PierceTheHeavens.ll");
+            var info = new IntegrationTestInfo("Rank32Matrix.ll");
             info.StdIn = 
 @"5
 ";
