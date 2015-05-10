@@ -225,6 +225,12 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             Test(info);
         }
 
+        [TestMethod, TestCategory("Integration Tests")]
+        public void Test_ArrayList()
+        {
+            Test("ArrayList.ll", string.Format("1{0}2{0}3", Environment.NewLine));
+        }
+
         #region Helpers
         
         private string ExpectedOutputPath

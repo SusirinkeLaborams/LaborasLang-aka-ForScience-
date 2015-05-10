@@ -238,7 +238,7 @@ namespace LaborasLangCompiler.Codegen
 
             if (left.Resolve().IsInterface)
             {
-                return right.GetInterfaces().Any(interfaze => interfaze.FullName == left.FullName);
+                return right.GetInterfaces().Any(interfaze => interfaze.IsAssignableTo(left));
             }
 
             var rightBaseType = right.GetBaseType();
@@ -720,6 +720,7 @@ namespace LaborasLangCompiler.Codegen
                         AssemblyRegistry.FindType(type.Module, "System.ICloneable"),
                         AssemblyRegistry.FindType(type.Module, "System.Collections.Generic.IList`1").MakeGenericType(arrayType.ElementType),
                         AssemblyRegistry.FindType(type.Module, "System.Collections.Generic.IReadOnlyList`1").MakeGenericType(arrayType.ElementType),
+                        AssemblyRegistry.FindType(type.Module, "System.Collections.IList"),
                         AssemblyRegistry.FindType(type.Module, "System.Collections.IStructuralComparable"),
                         AssemblyRegistry.FindType(type.Module, "System.Collections.IStructuralEquatable"),
                     };
