@@ -52,7 +52,7 @@ namespace LaborasLangCompiler.FrontEnd
                 return FailCompilation();
 
             if (!assembly.Save())
-                FailCompilation();
+                return FailCompilation();
 
             return 0;
         }
