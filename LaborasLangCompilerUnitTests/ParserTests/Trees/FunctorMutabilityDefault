@@ -1,0 +1,15 @@
+Class:
+	FunctorMutabilityDefault
+	Fields:
+		FieldDeclaration:
+			Type:
+				$Functors.$System_Void?
+			Name:
+				a
+			Modifiers:
+				Private, Const, NoInstance
+			Initializer:
+				NullNode
+
+
+	Methods:

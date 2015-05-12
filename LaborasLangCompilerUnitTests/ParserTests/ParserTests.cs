@@ -66,6 +66,20 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             CompareTrees(source);
         }
         [TestMethod, TestCategory("Parser")]
+        public void MissingConstFieldInit()
+        {
+            string source = @"
+                const int a;";
+            CompareTrees(source, ErrorCode.MissingInit.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void FunctorMutabilityDefault()
+        {
+            string source = @"
+                void() a = null;";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
         public void TypeExceptionTest()
         {
             string source = "int a = 0.0;";
