@@ -181,12 +181,12 @@ namespace LaborasLangCompiler.Parser.Impl
             return null;
         }
 
-        public void AddImport(NamespaceNode namespaze, SequencePoint point)
+        public void AddImport(string namespaze, SequencePoint point)
         {
-            if (globalImports.Any(n => n.Name == namespaze.Namespace.Name))
+            if (globalImports.Any(n => n.Name == namespaze))
                 ErrorCode.DuplicateImport.ReportAndThrow(point, "Namespace {0} already imported", namespaze);
 
-            globalImports.Add(namespaze.Namespace);
+            globalImports.Add(new Namespace(namespaze, Assembly));
         }
 
         #endregion type/namespace lookup

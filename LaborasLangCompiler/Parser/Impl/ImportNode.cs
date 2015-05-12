@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Lexer;
 using System.Diagnostics.Contracts;
+using LaborasLangCompiler.Parser.Utils;
 
 namespace LaborasLangCompiler.Parser.Impl
 {
@@ -21,15 +22,15 @@ namespace LaborasLangCompiler.Parser.Impl
         public static void Parse(ContextNode context, IAbstractSyntaxTree lexerNode)
         {
             Contract.Requires(lexerNode.Type == TokenType.UseNode);
-            var namespaze = DotOperatorNode.Parse(context, lexerNode.Children[1]) as NamespaceNode;
+            string ns = AstUtils.GetFullSymbolTextContent(lexerNode.Children[1]);
             var point = context.Parser.GetSequencePoint(lexerNode);
-            if (namespaze != null)
+            if (AssemblyRegistry.IsNamespaceKnown(ns))
             {
-                context.GetClass().AddImport(namespaze, point);
+                context.GetClass().AddImport(ns, point);
             }
             else
             {
-                ErrorCode.SymbolNotFound.ReportAndThrow(point, "Namespace {0} not found", lexerNode.Children[1].FullContent);
+                ErrorCode.SymbolNotFound.ReportAndThrow(point, "Namespace {0} not found", ns);
             }
         }
 

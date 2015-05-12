@@ -465,6 +465,15 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             CompareTrees(source);
         }
         [TestMethod, TestCategory("Parser")]
+        public void InvalidImport()
+        {
+            string source = @"
+                use System;
+                use Collections;
+                use Collections.Generic;";
+            CompareTrees(source, ErrorCode.SymbolNotFound.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
         public void TestMethodInferrence()
         {
             string source = @"
