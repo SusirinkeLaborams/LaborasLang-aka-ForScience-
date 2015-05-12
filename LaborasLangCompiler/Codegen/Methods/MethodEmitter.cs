@@ -398,7 +398,7 @@ namespace LaborasLangCompiler.Codegen.Methods
             temporaryVariables.Release(indexVariable);
             temporaryVariables.Release(arrayLengthVariable);
 
-            if (collectionLocalVariableNode != null)
+            if (collectionLocalVariableNode == null)
             {
                 temporaryVariables.Release(collectionVariable);
             }
