@@ -60,10 +60,9 @@ namespace LaborasLangCompiler.Parser.Impl
             Contract.Ensures(Contract.Result<ExpressionNode>() != null);
             foreach (var index in indices)
             {
-                if (!index.IsGettable ||
-                    !(index.ExpressionReturnType.IsAssignableTo(context.Parser.Int32) || index.ExpressionReturnType.IsAssignableTo(context.Parser.UInt32)))
+                if (!index.IsGettable)
                 {
-                    ErrorCode.InvalidIndexType.ReportAndThrow(index.SequencePoint, "Invalid index, must be a gettable integer");
+                    ErrorCode.NotAnRValue.ReportAndThrow(index.SequencePoint, "Invalid index, must be a gettable expression");
                 }
             }
 
@@ -91,6 +90,14 @@ namespace LaborasLangCompiler.Parser.Impl
             var type = array.ExpressionReturnType as ArrayType;
             if (type == null)
                 return null;
+
+            foreach (var index in indices)
+            {
+                if(!index.ExpressionReturnType.IsAssignableTo(context.Parser.Int32) || index.ExpressionReturnType.IsAssignableTo(context.Parser.UInt32))
+                {
+                    ErrorCode.InvalidIndexType.ReportAndThrow(index.SequencePoint, "Invalid index, must be an integer");
+                }
+            }
 
             if (indices.Count != type.Rank)
                 ErrorCode.InvalidIndexCount.ReportAndThrow(point, "Invalid array indexing, rank is {0}, index count is {1}", type.Rank, indices.Count);
