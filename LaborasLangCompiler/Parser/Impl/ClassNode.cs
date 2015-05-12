@@ -184,7 +184,7 @@ namespace LaborasLangCompiler.Parser.Impl
         public void AddImport(NamespaceNode namespaze, SequencePoint point)
         {
             if (globalImports.Any(n => n.Name == namespaze.Namespace.Name))
-                ErrorCode.DuplicateImport.ReportAndThrow(point, "Namespace {0} already imported", namespaze);
+                ErrorCode.DuplicateImport.ReportAndThrow(point, "Namespace {0} already imported", namespaze.Namespace.Name);
 
             globalImports.Add(namespaze.Namespace);
         }
