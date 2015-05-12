@@ -61,8 +61,8 @@ namespace LaborasLangCompilerUnitTests.ParserTests
         public void FunctorTypeTest()
         {
             string source = @"
-                int() a;
-                void(float(double), int) b;";
+                mutable int() a;
+                mutable void(float(double), int) b;";
             CompareTrees(source);
         }
         [TestMethod, TestCategory("Parser")]

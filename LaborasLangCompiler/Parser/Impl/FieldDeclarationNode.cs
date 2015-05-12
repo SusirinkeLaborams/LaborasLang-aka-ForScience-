@@ -111,9 +111,15 @@ namespace LaborasLangCompiler.Parser.Impl
         private void DeclareField()
         {
             Contract.Requires(!TypeReference.IsAuto() && !TypeReference.IsTypeless());
+
             if (TypeReference.IsVoid())
             {
                 ErrorCode.VoidDeclaration.ReportAndThrow(SequencePoint, "Cannot declare a field of type void");
+            }
+
+            if (initializer == null && FieldDefinition.Attributes.HasFlag(FieldAttributes.InitOnly))
+            {
+                ErrorCode.MissingInit.ReportAndThrow(SequencePoint, "Const variables require initialization");
             }
 
             if (!GetClass().TypeEmitter.AddField(FieldDefinition))

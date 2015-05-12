@@ -7,7 +7,7 @@ Class:
 			Name:
 				a
 			Modifiers:
-				Private, Const, NoInstance
+				Private, Mutable, NoInstance
 
 		FieldDeclaration:
 			Type:
@@ -15,6 +15,6 @@ Class:
 			Name:
 				b
 			Modifiers:
-				Private, Const, NoInstance
+				Private, Mutable, NoInstance
 
 	Methods:
