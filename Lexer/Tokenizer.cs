@@ -531,7 +531,6 @@ namespace Lexer
                             {
                                 char c = source.Pop();
 
-                                builder.Append(c);
                                 if (c == 'F' || c == 'f')
                                 {
                                     if (token.Type == TokenType.Integer || token.Type == TokenType.Double)
@@ -540,6 +539,7 @@ namespace Lexer
                                     }
                                     else
                                     {
+                                        builder.Append(c);
                                         token.Type = TokenType.MalformedToken;
                                     }
                                 }
@@ -551,24 +551,29 @@ namespace Lexer
                                     }
                                     else
                                     {
+                                        builder.Append(c);
                                         token.Type = TokenType.MalformedToken;
                                     }
                                 }
-                                else if (c == '.')
+                                else
                                 {
+                                    builder.Append(c);
 
-                                    if (token.Type == TokenType.Integer)
+                                    if (c == '.')
                                     {
-                                        token.Type = TokenType.Double;
+                                        if (token.Type == TokenType.Integer)
+                                        {
+                                            token.Type = TokenType.Double;
+                                        }
+                                        else
+                                        {
+                                            token.Type = TokenType.MalformedToken;
+                                        }
                                     }
-                                    else
+                                    else if (!IsDigit(c))
                                     {
                                         token.Type = TokenType.MalformedToken;
                                     }
-                                }
-                                else if (!IsDigit(c))
-                                {
-                                    token.Type = TokenType.MalformedToken;
                                 }
                             }
                             token.End = source.Location;

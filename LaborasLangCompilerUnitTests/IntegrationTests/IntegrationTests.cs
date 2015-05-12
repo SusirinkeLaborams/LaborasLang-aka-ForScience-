@@ -231,6 +231,12 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             Test("ArrayList.ll", string.Format("1{0}2{0}3", Environment.NewLine));
         }
 
+        [TestMethod, TestCategory("Integration Tests")]
+        public void Test_FloatLiterals()
+        {
+            Test("FloatLiterals.ll", string.Format("{1}{0}{2}{0}{3}{0}{4}", Environment.NewLine, 0.0f, 1.0f, 1.5f, 1.5f));
+        }
+
         #region Helpers
         
         private string ExpectedOutputPath
