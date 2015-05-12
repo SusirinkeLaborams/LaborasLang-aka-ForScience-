@@ -69,6 +69,10 @@ namespace LaborasLangCompiler.Codegen
             if (!FinalizeAssembly())
                 return false;
 
+            var outputDirectory = Path.GetDirectoryName(outputPath);
+            if (!Directory.Exists(outputDirectory))
+                Directory.CreateDirectory(outputDirectory);
+
             var writerParams = new WriterParameters();
             writerParams.SymbolWriterProvider = new PdbWriterProvider();
             writerParams.WriteSymbols = true;

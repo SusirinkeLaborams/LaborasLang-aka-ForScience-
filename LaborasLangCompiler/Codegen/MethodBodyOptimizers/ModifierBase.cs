@@ -143,7 +143,7 @@ namespace LaborasLangCompiler.Codegen.MethodBodyOptimizers
                 }
             }
 
-            return true;
+            return false;
         }
     }
 }

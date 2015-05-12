@@ -31,7 +31,7 @@ namespace LaborasLangCompiler.Codegen.MethodBodyOptimizers
 
             foreach (var step in optimizers)
             {
-                if (!debugBuild || !step.ReleaseOnlyOpmization)
+                //if (!debugBuild || !step.ReleaseOnlyOpmization)
                 {
                     step.Execute(body);
                 }
