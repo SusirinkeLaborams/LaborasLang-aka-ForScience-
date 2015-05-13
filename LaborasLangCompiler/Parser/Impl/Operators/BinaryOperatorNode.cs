@@ -225,7 +225,7 @@ namespace LaborasLangCompiler.Parser.Impl
             //probably wrong
             type = left.ExpressionReturnType;
 
-            if (right.ExpressionReturnType.FullName != parser.Int32.FullName)
+            if (!right.ExpressionReturnType.IsAssignableTo(parser.Int32) && !right.ExpressionReturnType.IsAssignableTo(parser.UInt32))
                 return false;
 
             if (!left.ExpressionReturnType.IsIntegerType())

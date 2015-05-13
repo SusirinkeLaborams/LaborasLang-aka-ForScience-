@@ -1647,5 +1647,16 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source, ErrorCode.MissingInit.Enumerate());
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestAssignmentRightAssociative()
+        {
+            string source = @"
+                int a;
+                int b;
+                int c;
+                int d = a = b = c;
+            ";
+            CompareTrees(source);
+        }
     }
 }
