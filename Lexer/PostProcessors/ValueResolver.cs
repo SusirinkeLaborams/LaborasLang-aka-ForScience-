@@ -11,6 +11,7 @@ namespace Lexer.PostProcessors
     {
         private static TokenType[][] c_OperatorGroups = new[]{
         
+          
         #region assignments
             new[]{TokenType.Assignment, TokenType.PlusEqual, TokenType.MinusEqual, TokenType.DivideEqual, TokenType.MultiplyEqual, TokenType.RemainderEqual, TokenType.LeftShiftEqual, TokenType.RightShiftEqual, TokenType.LogicalAndEqual, TokenType.LogicalOrEqual, TokenType.BitwiseAndEqual, TokenType.BitwiseXorEqual, TokenType.BitwiseOrEqual },
         #endregion
@@ -47,9 +48,10 @@ namespace Lexer.PostProcessors
             new[]{TokenType.PostfixOperator},
         #endregion 
 
-         #region functionCall, ArrayAccess
+        #region functionCall, ArrayAccess
             new[]{TokenType.FunctionArgumentsList, TokenType.IndexNode, TokenType.Period},
         #endregion
+  
  
         };
 
@@ -159,7 +161,7 @@ namespace Lexer.PostProcessors
         {            
             if (IsRightAssociative(item))
             {
-                return Priority(stack.Peek()) < Priority(item);
+                return Priority(stack.Peek()) > Priority(item);
             }
             else
             {

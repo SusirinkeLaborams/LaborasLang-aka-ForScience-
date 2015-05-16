@@ -209,7 +209,16 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
         [TestMethod, TestCategory("Integration Tests"), TestCategory("Disabled")]
         public void Test_DuplicateMethods()
         {
-            Test("DuplicateMethods.ll", "No, mister test, I expect you to die");
+            try
+            {
+                Test("DuplicateMethods.ll", "No, mister test, I expect you to die");
+            }
+            catch (Exception e)
+            {
+                Assert.IsTrue(e.Message.Contains("LL0040 MethodAlreadyDeclared"));
+                return;
+            }
+            Assert.Fail();
         }
 
         [TestMethod, TestCategory("Integration Tests")]
