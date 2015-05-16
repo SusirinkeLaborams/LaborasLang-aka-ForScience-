@@ -47,6 +47,16 @@ namespace LaborasLangCompilerUnitTests.LexerTests
 
 
         [TestMethod, TestCategory("Lexer: value processor"), TestCategory("Lexer")]
+        public void TestDoubleAssignment()
+        {
+            var source = "a += b = c;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("abc=+=;", actual.FullContent);
+        }
+
+
+        [TestMethod, TestCategory("Lexer: value processor"), TestCategory("Lexer")]
         public void TestStructure()
         {
             var source = "a + b * c;";

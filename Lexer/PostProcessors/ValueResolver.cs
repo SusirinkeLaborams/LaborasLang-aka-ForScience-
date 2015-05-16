@@ -157,7 +157,7 @@ namespace Lexer.PostProcessors
         }
         private bool ShouldPop(Stack<AbstractSyntaxTree> stack, AbstractSyntaxTree item)
         {            
-            if (item.Type.IsRightAssociative())
+            if (IsRightAssociative(item))
             {
                 return Priority(stack.Peek()) < Priority(item);
             }
@@ -166,5 +166,22 @@ namespace Lexer.PostProcessors
                 return Priority(stack.Peek()) >= Priority(item);
             }
         }
+
+        private static bool IsRightAssociative(AbstractSyntaxTree tree)
+        {
+            if (tree.Type.IsRightAssociative())
+            {
+                return true;
+            } 
+            else
+            {
+                if (tree.Children.Count == 1)
+                {
+                    return IsRightAssociative(tree.Children[0]);
+                }
+            }
+            return false;
+        }
+
     }
 }
