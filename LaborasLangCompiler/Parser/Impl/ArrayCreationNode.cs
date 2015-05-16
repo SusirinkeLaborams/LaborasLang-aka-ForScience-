@@ -132,7 +132,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             foreach(var dim in dims)
             {
-                if (!dim.IsGettable || !dim.ExpressionReturnType.IsIntegerType())
+                if (!IsValidArrayDim(context.Parser, dim))
                 {
                     ErrorCode.NotAnRValue.ReportAndThrow(dim.SequencePoint, "Array dimensions must be gettable integer expressions");
                 }
@@ -174,6 +174,11 @@ namespace LaborasLangCompiler.Parser.Impl
         public static ArrayCreationNode Create(ContextNode context, InitializerList initializer, SequencePoint point)
         {
             return Create(context, null, null, initializer, point);
+        }
+
+        private static bool IsValidArrayDim(Parser parser, ExpressionNode dim)
+        {
+            return dim.IsGettable && dim.ExpressionReturnType.IsIntegerType() && (dim.ExpressionReturnType.IsAssignableTo(parser.Int32) || dim.ExpressionReturnType.IsAssignableTo(parser.UInt32));
         }
 
         private static IReadOnlyList<LiteralNode> CreateArrayDims(ContextNode context, SequencePoint point, params int[] dims)

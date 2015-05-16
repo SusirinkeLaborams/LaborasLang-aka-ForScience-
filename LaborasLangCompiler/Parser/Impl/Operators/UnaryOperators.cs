@@ -296,7 +296,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private static ExpressionNode AsNegation(ExpressionNode expression, InternalUnaryOperatorType op)
         {
-            return expression.ExpressionReturnType.IsNumericType() ? new UnaryOperatorNode(op, expression) : null;
+            return expression.ExpressionReturnType.IsSignedInteger() ? new UnaryOperatorNode(op, expression) : null;
         }
 
         private static ExpressionNode AsLogical(ExpressionNode expression, InternalUnaryOperatorType op)
