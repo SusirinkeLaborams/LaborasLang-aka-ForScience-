@@ -97,6 +97,7 @@
     <Compile Include="CodegenTests\MethodBodyTests\FunctorTests.cs" />
     <Compile Include="CodegenTests\MethodBodyTests\MethodBodyTests.cs" />
     <Compile Include="CodegenTests\MetadataHelpersTests.cs" />
+    <None Include="IntegrationTests\SourceFiles\AssignmentReturn.ll" />
     <None Include="IntegrationTests\SourceFiles\Casts.ll" />
     <None Include="IntegrationTests\SourceFiles\CharLiterals.ll" />
     <Compile Include="CombinedTests.cs" />

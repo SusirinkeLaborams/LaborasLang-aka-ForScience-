@@ -1,0 +1,57 @@
+Class:
+	TestAssignmentRightAssociative
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Int32
+			Name:
+				a
+			Modifiers:
+				Private, Mutable, NoInstance
+
+		FieldDeclaration:
+			Type:
+				System.Int32
+			Name:
+				b
+			Modifiers:
+				Private, Mutable, NoInstance
+
+		FieldDeclaration:
+			Type:
+				System.Int32
+			Name:
+				c
+			Modifiers:
+				Private, Mutable, NoInstance
+
+		FieldDeclaration:
+			Type:
+				System.Int32
+			Name:
+				d
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				Assignment:
+					Left:
+						Field:
+							System.Int32 $TestAssignmentRightAssociative.TestAssignmentRightAssociative::a
+							Instance:
+								null
+					Right:
+						Assignment:
+							Left:
+								Field:
+									System.Int32 $TestAssignmentRightAssociative.TestAssignmentRightAssociative::b
+									Instance:
+										null
+							Right:
+								Field:
+									System.Int32 $TestAssignmentRightAssociative.TestAssignmentRightAssociative::c
+									Instance:
+										null
+
+
+
+	Methods:

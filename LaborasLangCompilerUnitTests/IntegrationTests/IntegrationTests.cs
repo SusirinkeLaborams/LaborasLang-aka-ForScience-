@@ -206,6 +206,12 @@ namespace LaborasLangCompilerUnitTests.IntegrationTests
             Test("HttpRequest.ll", "The World Wide Web project", new[] { "System.dll" });
         }
 
+        [TestMethod, TestCategory("Integration Tests")]
+        public void Test_AssignmentReturn()
+        {
+            Test("AssignmentReturn.ll", "True");
+        }
+
         [TestMethod, TestCategory("Integration Tests"), TestCategory("Disabled")]
         public void Test_DuplicateMethods()
         {
