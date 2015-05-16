@@ -279,6 +279,15 @@ namespace LaborasLangCompilerUnitTests.LexerTests
 
             Assert.AreEqual("[[[foo [( )]] ++] ;]", Structure(actual));
         }
+
+        [TestMethod, TestCategory("Lexer"), TestCategory("Lexer: value processor")]
+        public void TestRightAssociativeOperators()
+        {
+            var source = "foo = bar = foobar = foobar2k;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("[[foo [bar [foobar foobar2k =] =] =] ;]", Structure(actual));
+        }
         
         [TestMethod, TestCategory("Lexer: operator precedece"), TestCategory("Lexer")]
         public void TestPrecedencePeriodPrefix()
@@ -297,6 +306,16 @@ namespace LaborasLangCompilerUnitTests.LexerTests
 
             Assert.AreEqual("ab+c-d+;", actual.FullContent);
         }
+
+        [TestMethod, TestCategory("Lexer: value processor"), TestCategory("Lexer")]
+        public void TestAssignToProperty()
+        {
+            var source = "a.b=c;";
+            var actual = Lexer.Lexer.Lex(source);
+
+            Assert.AreEqual("ab.c=;", actual.FullContent);
+        }
+
 
         struct TestCase {
             public string Source;
@@ -343,6 +362,7 @@ namespace LaborasLangCompilerUnitTests.LexerTests
             var expected = sources.Select(s => s.Expected).ToList();
             CollectionAssert.AreEqual(expected, actual);
         }
+
 
         [TestMethod, TestCategory("Lexer: value processor"), TestCategory("Lexer")]
         public void TestPostfixes()
