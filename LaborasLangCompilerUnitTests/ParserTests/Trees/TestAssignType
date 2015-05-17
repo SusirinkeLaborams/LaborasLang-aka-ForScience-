@@ -1,0 +1,16 @@
+Class:
+	TestAssignType
+	Fields:
+		FieldDeclaration:
+			Type:
+				auto
+			Name:
+				foo
+			Modifiers:
+				0
+			Initializer:
+				Type:
+					System.Int32
+
+
+	Methods:

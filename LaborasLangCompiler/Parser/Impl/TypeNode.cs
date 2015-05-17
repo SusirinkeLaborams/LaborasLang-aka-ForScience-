@@ -19,7 +19,6 @@ namespace LaborasLangCompiler.Parser.Impl
     {
         public override ExpressionNodeType ExpressionType { get { return ExpressionNodeType.ParserInternal; } }
         public TypeReference ParsedType { get; private set; }
-        public override bool IsGettable { get { return true; } }
 
         private TypeNode(TypeReference type, ContextNode scope, SequencePoint point)
             : base(type != null ? type.FullName : null, scope, point)
@@ -58,7 +57,10 @@ namespace LaborasLangCompiler.Parser.Impl
 
         public override string ToString(int indent)
         {
-            throw new InvalidOperationException();
+            StringBuilder builder = new StringBuilder();
+            builder.Indent(indent).AppendLine("Type:");
+            builder.Indent(indent + 1).Append(ParsedType.FullName).AppendLine();
+            return builder.ToString();
         }
 
         public class TypeBuilder

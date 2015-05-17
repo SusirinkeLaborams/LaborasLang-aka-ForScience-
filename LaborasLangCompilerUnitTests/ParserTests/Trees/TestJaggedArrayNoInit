@@ -1,0 +1,22 @@
+Class:
+	TestJaggedArrayNoInit
+	Fields:
+		FieldDeclaration:
+			Type:
+				System.Int32[][]
+			Name:
+				arr
+			Modifiers:
+				Private, Mutable, NoInstance
+			Initializer:
+				ArrayCreation:
+					ElementType: System.Int32[]
+					Rank: 1
+					Dimensions:
+						Literal:
+							Type: System.Int32
+							Value: 1
+
+
+
+	Methods:

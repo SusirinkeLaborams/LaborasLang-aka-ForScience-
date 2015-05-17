@@ -47,11 +47,17 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if (IsEmptyIndexer(indexer))
             {
-                ErrorCode.MissingArraySize.ReportAndThrow(point, "Can only use implicit array size with initialization");
+                var type = array as TypeNode;
+                if(type == null)
+                {
+                    ErrorCode.TypeExpected.ReportAndThrow(point, "Type expected");
+                }
+                int rank = CountEmptyIndexerDims(indexer);
+                return TypeNode.Create(AssemblyRegistry.GetArrayType(type.ParsedType, rank), context, point);
             }
 
-            var init = ParseIndex(context, indexer);
-            return Create(context, array, init, point);
+            var indices = ParseIndex(context, indexer);
+            return Create(context, array, indices, point);
         }
 
         public static ExpressionNode Create(ContextNode context, ExpressionNode array, IReadOnlyList<ExpressionNode> indices, SequencePoint point)
@@ -66,7 +72,7 @@ namespace LaborasLangCompiler.Parser.Impl
                 }
             }
 
-            if (!array.IsGettable)
+            if (!array.IsGettable && array.ExpressionType != ExpressionNodeType.ParserInternal)
                 ErrorCode.NotAnRValue.ReportAndThrow(point, "Left operand for [] operator must be gettable");
 
             ExpressionNode result = AsArrayCreation(context, array, indices, point);

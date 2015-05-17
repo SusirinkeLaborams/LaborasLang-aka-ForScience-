@@ -1,0 +1,16 @@
+Class:
+	TestEmptyIndexerMoreType
+	Fields:
+		FieldDeclaration:
+			Type:
+				auto
+			Name:
+				arr
+			Modifiers:
+				0
+			Initializer:
+				Type:
+					System.Int32[][]
+
+
+	Methods:

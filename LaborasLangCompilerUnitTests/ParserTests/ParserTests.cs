@@ -1666,5 +1666,55 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source, ErrorCode.MisshapedMatrix.Enumerate());
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestJaggedArrayNoInit()
+        {
+            string source = @"
+                auto arr = int[][1];
+            ";
+            CompareTrees(source);
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestEmptyIndexerType()
+        {
+            string source = @"
+                auto arr = int[];
+            ";
+            CompareTrees(source, ErrorCode.NotAnRValue.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestEmptyIndexerMoreType()
+        {
+            string source = @"
+                auto arr = int[][];
+            ";
+            CompareTrees(source, ErrorCode.NotAnRValue.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestEmptyIndexerField()
+        {
+            string source = @"
+                auto foo = 5;
+                auto arr = foo[];
+            ";
+            CompareTrees(source, ErrorCode.TypeExpected.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestEmptyIndexerMoreField()
+        {
+            string source = @"
+                auto foo = 5;
+                auto arr = foo[][];
+            ";
+            CompareTrees(source, ErrorCode.TypeExpected.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestAssignType()
+        {
+            string source = @"
+                auto foo = int;
+            ";
+            CompareTrees(source, ErrorCode.NotAnRValue.Enumerate());
+        }
     }
 }
