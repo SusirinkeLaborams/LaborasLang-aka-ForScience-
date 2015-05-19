@@ -108,7 +108,7 @@ namespace LaborasLangCompiler.Parser.Impl
 
             if(initializer != null && dims.Count() != initializer.Dimensions.Count())
             {
-                ErrorCode.MisshapedMatrix.ReportAndThrow(point,
+                ErrorCode.ArrayDimMismatch.ReportAndThrow(point,
                         "Cannot initialize array of {0} dimmensions with a matrix of {1} dimmensions",
                         dims.Count(), initializer.Dimensions.Count());
             }

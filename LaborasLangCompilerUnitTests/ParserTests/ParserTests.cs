@@ -1664,7 +1664,7 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             string source = @"
                 auto arr = int[]{{1, 2}, {3, 4}};
             ";
-            CompareTrees(source, ErrorCode.MisshapedMatrix.Enumerate());
+            CompareTrees(source, ErrorCode.ArrayDimMismatch.Enumerate());
         }
         [TestMethod, TestCategory("Parser")]
         public void TestJaggedArrayNoInit()
