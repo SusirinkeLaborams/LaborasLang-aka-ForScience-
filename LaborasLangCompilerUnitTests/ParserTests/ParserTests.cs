@@ -1716,5 +1716,13 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source, ErrorCode.NotAnRValue.Enumerate());
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestDuplicateParams()
+        {
+            string source = @"
+                auto foo = void(int a, float a){};
+            ";
+            CompareTrees(source, ErrorCode.ParamAlreadyDeclared.Enumerate());
+        }
     }
 }

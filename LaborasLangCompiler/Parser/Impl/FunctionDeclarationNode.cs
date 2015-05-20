@@ -66,7 +66,13 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 var param = ParseParameter(Parent, p.Type, p.Name);
                 if (param.ParameterType.IsVoid())
+                {
                     ErrorCode.IllegalMethodParam.ReportAndThrow(point, "Illegal method parameter type void");
+                }
+                if(symbols.ContainsKey(param.Name))
+                {
+                    ErrorCode.ParamAlreadyDeclared.ReportAndThrow(point, "Parameter with name {0} is already declared", param.Name);
+                }
                 emitter.AddArgument(param);
                 symbols.Add(param.Name, param);
             }
