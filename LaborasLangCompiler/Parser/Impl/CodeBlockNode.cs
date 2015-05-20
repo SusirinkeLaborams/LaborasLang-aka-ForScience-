@@ -136,6 +136,9 @@ namespace LaborasLangCompiler.Parser.Impl
                         //empty statement a.k.a ";"
                         return this;
                     }
+                case Lexer.TokenType.UnknownNode:
+                    ErrorCode.InvalidStructure.ReportAndThrow(Parser.GetSequencePoint(lexerNode), "Could not parse as a statement");
+                    return null;//unreachable
                 default:
                     ErrorCode.InvalidStructure.ReportAndThrow(Parser.GetSequencePoint(lexerNode), "Unexpected node {0} in while parsing code block", lexerNode.Type);
                     return null;//unreachable

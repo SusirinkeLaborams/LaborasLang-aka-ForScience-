@@ -199,6 +199,10 @@ namespace LaborasLangCompiler.Parser.Impl
             {
                 try
                 {
+                    if(node.Type == Lexer.TokenType.UnknownNode)
+                    {
+                        ErrorCode.InvalidStructure.ReportAndThrow(Parser.GetSequencePoint(node), "Could not parse as a statement");
+                    }
                     if (node.Type != Lexer.TokenType.StatementWithEndOfLine)
                     {
                         ErrorCode.InvalidStructure.ReportAndThrow(Parser.GetSequencePoint(node), "Import or declaration expected, {0} received", node.Type);
