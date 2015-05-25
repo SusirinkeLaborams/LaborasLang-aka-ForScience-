@@ -73,6 +73,10 @@ namespace LaborasLangCompiler.Parser.Impl
 
         private void AddExpression(ExpressionNode node)
         {
+            if (node.ExpressionType == ExpressionNodeType.ParserInternal)
+            {
+                ErrorCode.InvalidStatementInBlock.ReportAndThrow(node.SequencePoint, "Cannot use this type of expression in a code block");
+            }
             nodes.Add(node);
         }
 

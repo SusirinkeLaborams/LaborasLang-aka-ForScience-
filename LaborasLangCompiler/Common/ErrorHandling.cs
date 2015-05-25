@@ -78,6 +78,7 @@ namespace LaborasLangCompiler.Common
         AmbiguousMethod = 0044,
         AmbiguousProperty = 0045,
         ParamAlreadyDeclared = 0046,
+        InvalidStatementInBlock = 0047,
 
         CompilerArgumentErrors = 1000,
         NoSourceFiles = 1001,

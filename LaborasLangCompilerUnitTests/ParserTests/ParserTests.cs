@@ -1724,5 +1724,21 @@ namespace LaborasLangCompilerUnitTests.ParserTests
             ";
             CompareTrees(source, ErrorCode.ParamAlreadyDeclared.Enumerate());
         }
+        [TestMethod, TestCategory("Parser")]
+        public void TestNullSum()
+        {
+            string source = @"
+                auto foo = null + null;
+            ";
+            CompareTrees(source, ErrorCode.TypeMismatch.Enumerate());
+        }
+        [TestMethod, TestCategory("Parser")]
+        public void TestMethodGroupSum()
+        {
+            string source = @"
+                auto foo = System.Console.WriteLine + null;
+            ";
+            CompareTrees(source, ErrorCode.NotAnRValue.Enumerate());
+        }
     }
 }
