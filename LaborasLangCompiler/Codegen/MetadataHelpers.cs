@@ -694,6 +694,9 @@ namespace LaborasLangCompiler.Codegen
             if (arrayType != null)
                 return AssemblyRegistry.FindType(arrayType.Module, "System.Array");
 
+            if (type.IsTypeless())
+                return null;
+
             var baseType = type.Resolve().BaseType;
 
             if (baseType == null)

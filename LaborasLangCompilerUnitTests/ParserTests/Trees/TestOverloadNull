@@ -1,0 +1,61 @@
+Class:
+	TestOverloadNull
+	Fields:
+	Methods:
+		Method:
+			Name:
+				foo
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+				System.String a
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+
+
+		Method:
+			Name:
+				foo
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+				System.Int32 a
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+
+
+		Method:
+			Name:
+				bar
+			Modifiers:
+				Private, NoInstance
+			Return:
+				System.Void
+			Params:
+			Body:
+				CodeBlock:
+					Symbols:
+					Nodes:
+						MethodCall:
+							ReturnType: System.Void
+							Args:
+								NullNode
+
+							Function:
+								Method:
+									Instance:
+										null
+									Method:
+										System.Void $TestOverloadNull.TestOverloadNull::foo(System.String)
+
+
+
+
